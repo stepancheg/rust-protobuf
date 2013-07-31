@@ -1,0 +1,8 @@
+*.dSYM
+*~
+.gdb_history
+tmp*
+*.dylib
+*.bin
+protobuf-bin-gen-rust
+protoc-gen-rust

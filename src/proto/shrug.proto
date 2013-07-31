@@ -1,0 +1,31 @@
+package shrug;
+
+message Test1 {
+    required int32 a = 1;
+}
+
+message Test2 {
+    required string b = 2;
+}
+
+message Test3 {
+    required Test1 c = 3;
+}
+
+message Test4 {
+    repeated int32 d = 4 [packed=true];
+}
+
+
+message TestPackedUnpacked {
+    repeated int32 unpacked = 4;
+    repeated int32 packed = 5 [packed=true];
+}
+
+message TestEmpty {
+    optional int32 foo = 10;
+}
+
+message TestRequired {
+    required bool b = 5;
+}

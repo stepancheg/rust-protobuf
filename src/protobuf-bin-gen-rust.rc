@@ -1,0 +1,41 @@
+#[crate_type = "bin"];
+
+extern mod protobuf;
+extern mod extra;
+
+use std::io;
+use std::path::Path;
+use std::os;
+use extra::getopts;
+
+use protobuf::*;
+use protobuf::descriptor::*;
+use protobuf::codegen::*;
+
+
+fn write_file(bin: &str, gen_options: &GenOptions) {
+    let is: @Reader = io::file_reader(&Path(bin)).unwrap();
+    let fds = parse_from_reader::<FileDescriptorSet>(is);
+
+    let results = gen(fds.file, gen_options);
+
+    for results.iter().advance |r| {
+        let file_writer = io::file_writer(~Path(r.name), [io::Create, io::Truncate]).get();
+        file_writer.write(r.content);
+    }
+}
+
+fn main() {
+    let args = os::args();
+    let opts: ~[getopts::Opt] = ~[
+    ];
+    let matches = getopts::getopts(args.tail(), opts).get();
+    let pb_bin = match matches.free {
+    	[ref pb_bin] => pb_bin.to_owned(),
+    	_ => fail!("must have exactly one argument")
+    };
+    let gen_options = GenOptions {
+        dummy: false,
+    };
+    write_file(pb_bin, &gen_options);
+}

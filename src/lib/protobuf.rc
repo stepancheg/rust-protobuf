@@ -1,0 +1,27 @@
+#[link(name = "protobuf")];
+#[crate_type = "lib"];
+
+#[desc = "protobuf implementation for rust"];
+#[license = "BSD"];
+#[author = "Stepan Koltsov"];
+
+pub use core::*;
+
+mod core;
+pub mod descriptor;
+pub mod codegen;
+pub mod rt;
+mod misc;
+mod zigzag;
+mod hex;
+
+#[cfg(test)]
+mod shrug;
+#[cfg(test)]
+mod test;
+
+// so `use protobuf::*` could work in descriptor mod
+priv mod protobuf {
+    pub use core::*;
+    pub use rt;
+}
