@@ -11,13 +11,25 @@ pub struct CodeGeneratorRequest {
     proto_file: ~[FileDescriptorProto],
 }
 
-impl CodeGeneratorRequest {
+impl<'self> CodeGeneratorRequest {
     pub fn new() -> CodeGeneratorRequest {
         CodeGeneratorRequest {
             file_to_generate: ~[],
             parameter: None,
             proto_file: ~[],
         }
+    }
+
+    pub fn default_instance() -> &'static CodeGeneratorRequest {
+//         // doesn't work, because rust doen't implement static constants of types like ~str
+//         // TODO: find mozilla/rust issue
+//         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
+//             file_to_generate: ~[],
+//             parameter: None,
+//             proto_file: ~[],
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -42,12 +54,73 @@ impl CodeGeneratorRequest {
         self.file_to_generate.clear();
     }
 
+    // Param is passed by value, moved
+    pub fn set_file_to_generate(&mut self, v: ~[~str]) {
+        self.file_to_generate = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_file_to_generate(&'self mut self) -> &'self mut ~[~str] {
+        &mut self.file_to_generate
+    }
+
+    pub fn get_file_to_generate(&'self self) -> &'self [~str] {
+        rt::as_slice_tmp(&self.file_to_generate)
+    }
+
+    pub fn add_file_to_generate(&mut self, v: ~str) {
+        self.file_to_generate.push(v);
+    }
+
     pub fn clear_parameter(&mut self) {
         self.parameter = None;
     }
 
+    pub fn has_parameter(&self) -> bool {
+        self.parameter.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_parameter(&mut self, v: ~str) {
+        self.parameter = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_parameter(&'self mut self) -> &'self mut ~str {
+        if self.parameter.is_none() {
+            self.parameter = Some(~"");
+        };
+        self.parameter.get_mut_ref()
+    }
+
+    pub fn get_parameter(&'self self) -> &'self str {
+        match self.parameter {
+            Some(ref v) => v.as_slice(),
+            None => &'self "",
+        }
+    }
+
     pub fn clear_proto_file(&mut self) {
         self.proto_file.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_proto_file(&mut self, v: ~[FileDescriptorProto]) {
+        self.proto_file = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_proto_file(&'self mut self) -> &'self mut ~[FileDescriptorProto] {
+        &mut self.proto_file
+    }
+
+    pub fn get_proto_file(&'self self) -> &'self [FileDescriptorProto] {
+        rt::as_slice_tmp(&self.proto_file)
+    }
+
+    pub fn add_proto_file(&mut self, v: FileDescriptorProto) {
+        self.proto_file.push(v);
     }
 }
 
@@ -130,12 +203,23 @@ pub struct CodeGeneratorResponse {
     file: ~[CodeGeneratorResponse_File],
 }
 
-impl CodeGeneratorResponse {
+impl<'self> CodeGeneratorResponse {
     pub fn new() -> CodeGeneratorResponse {
         CodeGeneratorResponse {
             error: None,
             file: ~[],
         }
+    }
+
+    pub fn default_instance() -> &'static CodeGeneratorResponse {
+//         // doesn't work, because rust doen't implement static constants of types like ~str
+//         // TODO: find mozilla/rust issue
+//         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
+//             error: None,
+//             file: ~[],
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -157,8 +241,51 @@ impl CodeGeneratorResponse {
         self.error = None;
     }
 
+    pub fn has_error(&self) -> bool {
+        self.error.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_error(&mut self, v: ~str) {
+        self.error = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_error(&'self mut self) -> &'self mut ~str {
+        if self.error.is_none() {
+            self.error = Some(~"");
+        };
+        self.error.get_mut_ref()
+    }
+
+    pub fn get_error(&'self self) -> &'self str {
+        match self.error {
+            Some(ref v) => v.as_slice(),
+            None => &'self "",
+        }
+    }
+
     pub fn clear_file(&mut self) {
         self.file.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_file(&mut self, v: ~[CodeGeneratorResponse_File]) {
+        self.file = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_file(&'self mut self) -> &'self mut ~[CodeGeneratorResponse_File] {
+        &mut self.file
+    }
+
+    pub fn get_file(&'self self) -> &'self [CodeGeneratorResponse_File] {
+        rt::as_slice_tmp(&self.file)
+    }
+
+    pub fn add_file(&mut self, v: CodeGeneratorResponse_File) {
+        self.file.push(v);
     }
 }
 
@@ -233,13 +360,22 @@ pub struct CodeGeneratorResponse_File {
     content: Option<~str>,
 }
 
-impl CodeGeneratorResponse_File {
+impl<'self> CodeGeneratorResponse_File {
     pub fn new() -> CodeGeneratorResponse_File {
         CodeGeneratorResponse_File {
             name: None,
             insertion_point: None,
             content: None,
         }
+    }
+
+    pub fn default_instance() -> &'static CodeGeneratorResponse_File {
+        static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
+            name: None,
+            insertion_point: None,
+            content: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -268,12 +404,87 @@ impl CodeGeneratorResponse_File {
         self.name = None;
     }
 
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ~str) {
+        self.name = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+        if self.name.is_none() {
+            self.name = Some(~"");
+        };
+        self.name.get_mut_ref()
+    }
+
+    pub fn get_name(&'self self) -> &'self str {
+        match self.name {
+            Some(ref v) => v.as_slice(),
+            None => &'self "",
+        }
+    }
+
     pub fn clear_insertion_point(&mut self) {
         self.insertion_point = None;
     }
 
+    pub fn has_insertion_point(&self) -> bool {
+        self.insertion_point.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_insertion_point(&mut self, v: ~str) {
+        self.insertion_point = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_insertion_point(&'self mut self) -> &'self mut ~str {
+        if self.insertion_point.is_none() {
+            self.insertion_point = Some(~"");
+        };
+        self.insertion_point.get_mut_ref()
+    }
+
+    pub fn get_insertion_point(&'self self) -> &'self str {
+        match self.insertion_point {
+            Some(ref v) => v.as_slice(),
+            None => &'self "",
+        }
+    }
+
     pub fn clear_content(&mut self) {
         self.content = None;
+    }
+
+    pub fn has_content(&self) -> bool {
+        self.content.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_content(&mut self, v: ~str) {
+        self.content = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_content(&'self mut self) -> &'self mut ~str {
+        if self.content.is_none() {
+            self.content = Some(~"");
+        };
+        self.content.get_mut_ref()
+    }
+
+    pub fn get_content(&'self self) -> &'self str {
+        match self.content {
+            Some(ref v) => v.as_slice(),
+            None => &'self "",
+        }
     }
 }
 

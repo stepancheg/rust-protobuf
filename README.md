@@ -72,9 +72,10 @@ Have a look at generated files, used internally in rust-protobuf:
 * Store unknown fields
 * Protobuf reflection
 * Extensions
-* Accessors for types (like `has_foo` or `set_foo`)
+* default_instance for messages with repeated fields
 * Generate stubs for services
 * Comprehensive test suite
+* Default value
 
 ## Contact me
 

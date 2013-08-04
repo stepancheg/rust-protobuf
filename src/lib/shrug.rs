@@ -8,11 +8,18 @@ pub struct Test1 {
     a: Option<i32>,
 }
 
-impl Test1 {
+impl<'self> Test1 {
     pub fn new() -> Test1 {
         Test1 {
             a: None,
         }
+    }
+
+    pub fn default_instance() -> &'static Test1 {
+        static instance: Test1 = Test1 {
+            a: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -27,6 +34,28 @@ impl Test1 {
 
     pub fn clear_a(&mut self) {
         self.a = None;
+    }
+
+    pub fn has_a(&self) -> bool {
+        self.a.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_a(&mut self, v: i32) {
+        self.a = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_a(&'self mut self) -> &'self mut i32 {
+        if self.a.is_none() {
+            self.a = Some(0);
+        };
+        self.a.get_mut_ref()
+    }
+
+    pub fn get_a(&self) -> i32 {
+        self.a.get_or_default(0)
     }
 }
 
@@ -91,11 +120,18 @@ pub struct Test2 {
     b: Option<~str>,
 }
 
-impl Test2 {
+impl<'self> Test2 {
     pub fn new() -> Test2 {
         Test2 {
             b: None,
         }
+    }
+
+    pub fn default_instance() -> &'static Test2 {
+        static instance: Test2 = Test2 {
+            b: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -110,6 +146,31 @@ impl Test2 {
 
     pub fn clear_b(&mut self) {
         self.b = None;
+    }
+
+    pub fn has_b(&self) -> bool {
+        self.b.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_b(&mut self, v: ~str) {
+        self.b = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_b(&'self mut self) -> &'self mut ~str {
+        if self.b.is_none() {
+            self.b = Some(~"");
+        };
+        self.b.get_mut_ref()
+    }
+
+    pub fn get_b(&'self self) -> &'self str {
+        match self.b {
+            Some(ref v) => v.as_slice(),
+            None => &'self "",
+        }
     }
 }
 
@@ -174,11 +235,18 @@ pub struct Test3 {
     c: Option<Test1>,
 }
 
-impl Test3 {
+impl<'self> Test3 {
     pub fn new() -> Test3 {
         Test3 {
             c: None,
         }
+    }
+
+    pub fn default_instance() -> &'static Test3 {
+        static instance: Test3 = Test3 {
+            c: None,
+        };
+        &'static instance
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -195,6 +263,31 @@ impl Test3 {
 
     pub fn clear_c(&mut self) {
         self.c = None;
+    }
+
+    pub fn has_c(&self) -> bool {
+        self.c.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_c(&mut self, v: Test1) {
+        self.c = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_c(&'self mut self) -> &'self mut Test1 {
+        if self.c.is_none() {
+            self.c = Some(Test1::new());
+        };
+        self.c.get_mut_ref()
+    }
+
+    pub fn get_c(&'self self) -> &'self Test1 {
+        match self.c {
+            Some(ref v) => v,
+            None => Test1::default_instance(),
+        }
     }
 }
 
@@ -261,11 +354,21 @@ pub struct Test4 {
     d: ~[i32],
 }
 
-impl Test4 {
+impl<'self> Test4 {
     pub fn new() -> Test4 {
         Test4 {
             d: ~[],
         }
+    }
+
+    pub fn default_instance() -> &'static Test4 {
+//         // doesn't work, because rust doen't implement static constants of types like ~str
+//         // TODO: find mozilla/rust issue
+//         static instance: Test4 = Test4 {
+//             d: ~[],
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -281,6 +384,24 @@ impl Test4 {
 
     pub fn clear_d(&mut self) {
         self.d.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_d(&mut self, v: ~[i32]) {
+        self.d = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_d(&'self mut self) -> &'self mut ~[i32] {
+        &mut self.d
+    }
+
+    pub fn get_d(&'self self) -> &'self [i32] {
+        rt::as_slice_tmp(&self.d)
+    }
+
+    pub fn add_d(&mut self, v: i32) {
+        self.d.push(v);
     }
 }
 
@@ -349,12 +470,23 @@ pub struct TestPackedUnpacked {
     packed: ~[i32],
 }
 
-impl TestPackedUnpacked {
+impl<'self> TestPackedUnpacked {
     pub fn new() -> TestPackedUnpacked {
         TestPackedUnpacked {
             unpacked: ~[],
             packed: ~[],
         }
+    }
+
+    pub fn default_instance() -> &'static TestPackedUnpacked {
+//         // doesn't work, because rust doen't implement static constants of types like ~str
+//         // TODO: find mozilla/rust issue
+//         static instance: TestPackedUnpacked = TestPackedUnpacked {
+//             unpacked: ~[],
+//             packed: ~[],
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -375,8 +507,44 @@ impl TestPackedUnpacked {
         self.unpacked.clear();
     }
 
+    // Param is passed by value, moved
+    pub fn set_unpacked(&mut self, v: ~[i32]) {
+        self.unpacked = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_unpacked(&'self mut self) -> &'self mut ~[i32] {
+        &mut self.unpacked
+    }
+
+    pub fn get_unpacked(&'self self) -> &'self [i32] {
+        rt::as_slice_tmp(&self.unpacked)
+    }
+
+    pub fn add_unpacked(&mut self, v: i32) {
+        self.unpacked.push(v);
+    }
+
     pub fn clear_packed(&mut self) {
         self.packed.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_packed(&mut self, v: ~[i32]) {
+        self.packed = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_packed(&'self mut self) -> &'self mut ~[i32] {
+        &mut self.packed
+    }
+
+    pub fn get_packed(&'self self) -> &'self [i32] {
+        rt::as_slice_tmp(&self.packed)
+    }
+
+    pub fn add_packed(&mut self, v: i32) {
+        self.packed.push(v);
     }
 }
 
@@ -461,11 +629,18 @@ pub struct TestEmpty {
     foo: Option<i32>,
 }
 
-impl TestEmpty {
+impl<'self> TestEmpty {
     pub fn new() -> TestEmpty {
         TestEmpty {
             foo: None,
         }
+    }
+
+    pub fn default_instance() -> &'static TestEmpty {
+        static instance: TestEmpty = TestEmpty {
+            foo: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -480,6 +655,28 @@ impl TestEmpty {
 
     pub fn clear_foo(&mut self) {
         self.foo = None;
+    }
+
+    pub fn has_foo(&self) -> bool {
+        self.foo.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_foo(&mut self, v: i32) {
+        self.foo = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_foo(&'self mut self) -> &'self mut i32 {
+        if self.foo.is_none() {
+            self.foo = Some(0);
+        };
+        self.foo.get_mut_ref()
+    }
+
+    pub fn get_foo(&self) -> i32 {
+        self.foo.get_or_default(0)
     }
 }
 
@@ -541,11 +738,18 @@ pub struct TestRequired {
     b: Option<bool>,
 }
 
-impl TestRequired {
+impl<'self> TestRequired {
     pub fn new() -> TestRequired {
         TestRequired {
             b: None,
         }
+    }
+
+    pub fn default_instance() -> &'static TestRequired {
+        static instance: TestRequired = TestRequired {
+            b: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -560,6 +764,28 @@ impl TestRequired {
 
     pub fn clear_b(&mut self) {
         self.b = None;
+    }
+
+    pub fn has_b(&self) -> bool {
+        self.b.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_b(&mut self, v: bool) {
+        self.b = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_b(&'self mut self) -> &'self mut bool {
+        if self.b.is_none() {
+            self.b = Some(false);
+        };
+        self.b.get_mut_ref()
+    }
+
+    pub fn get_b(&self) -> bool {
+        self.b.get_or_default(false)
     }
 }
 
