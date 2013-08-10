@@ -17,7 +17,7 @@ impl<'self> FileDescriptorSet {
 
     pub fn default_instance() -> &'static FileDescriptorSet {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FileDescriptorSet = FileDescriptorSet {
 //             file: ~[],
 //         };
@@ -146,7 +146,7 @@ impl<'self> FileDescriptorProto {
 
     pub fn default_instance() -> &'static FileDescriptorProto {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FileDescriptorProto = FileDescriptorProto {
 //             name: None,
 //             package: None,
@@ -698,7 +698,7 @@ impl<'self> DescriptorProto {
 
     pub fn default_instance() -> &'static DescriptorProto {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: DescriptorProto = DescriptorProto {
 //             name: None,
 //             field: ~[],
@@ -1733,7 +1733,7 @@ impl<'self> EnumDescriptorProto {
 
     pub fn default_instance() -> &'static EnumDescriptorProto {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumDescriptorProto = EnumDescriptorProto {
 //             name: None,
 //             value: ~[],
@@ -2148,7 +2148,7 @@ impl<'self> ServiceDescriptorProto {
 
     pub fn default_instance() -> &'static ServiceDescriptorProto {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
 //             name: None,
 //             method: ~[],
@@ -2627,7 +2627,7 @@ impl<'self> FileOptions {
 
     pub fn default_instance() -> &'static FileOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FileOptions = FileOptions {
 //             java_package: None,
 //             java_outer_classname: None,
@@ -3151,7 +3151,7 @@ impl<'self> MessageOptions {
 
     pub fn default_instance() -> &'static MessageOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: MessageOptions = MessageOptions {
 //             message_set_wire_format: None,
 //             no_standard_descriptor_accessor: None,
@@ -3356,7 +3356,7 @@ impl<'self> FieldOptions {
 
     pub fn default_instance() -> &'static FieldOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FieldOptions = FieldOptions {
 //             ctype: None,
 //             packed: None,
@@ -3746,7 +3746,7 @@ impl<'self> EnumOptions {
 
     pub fn default_instance() -> &'static EnumOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumOptions = EnumOptions {
 //             allow_alias: None,
 //             uninterpreted_option: ~[],
@@ -3897,7 +3897,7 @@ impl<'self> EnumValueOptions {
 
     pub fn default_instance() -> &'static EnumValueOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumValueOptions = EnumValueOptions {
 //             uninterpreted_option: ~[],
 //         };
@@ -4006,7 +4006,7 @@ impl<'self> ServiceOptions {
 
     pub fn default_instance() -> &'static ServiceOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceOptions = ServiceOptions {
 //             uninterpreted_option: ~[],
 //         };
@@ -4115,7 +4115,7 @@ impl<'self> MethodOptions {
 
     pub fn default_instance() -> &'static MethodOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: MethodOptions = MethodOptions {
 //             uninterpreted_option: ~[],
 //         };
@@ -4236,7 +4236,7 @@ impl<'self> UninterpretedOption {
 
     pub fn default_instance() -> &'static UninterpretedOption {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: UninterpretedOption = UninterpretedOption {
 //             name: ~[],
 //             identifier_value: None,
@@ -4768,7 +4768,7 @@ impl<'self> SourceCodeInfo {
 
     pub fn default_instance() -> &'static SourceCodeInfo {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: SourceCodeInfo = SourceCodeInfo {
 //             location: ~[],
 //         };
@@ -4883,7 +4883,7 @@ impl<'self> SourceCodeInfo_Location {
 
     pub fn default_instance() -> &'static SourceCodeInfo_Location {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: SourceCodeInfo_Location = SourceCodeInfo_Location {
 //             path: ~[],
 //             span: ~[],

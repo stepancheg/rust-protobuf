@@ -22,7 +22,7 @@ impl<'self> CodeGeneratorRequest {
 
     pub fn default_instance() -> &'static CodeGeneratorRequest {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
 //             file_to_generate: ~[],
 //             parameter: None,
@@ -213,7 +213,7 @@ impl<'self> CodeGeneratorResponse {
 
     pub fn default_instance() -> &'static CodeGeneratorResponse {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
 //             error: None,
 //             file: ~[],

@@ -363,7 +363,7 @@ impl<'self> Test4 {
 
     pub fn default_instance() -> &'static Test4 {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: Test4 = Test4 {
 //             d: ~[],
 //         };
@@ -480,7 +480,7 @@ impl<'self> TestPackedUnpacked {
 
     pub fn default_instance() -> &'static TestPackedUnpacked {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // TODO: find mozilla/rust issue
+//         // https://github.com/mozilla/rust/issues/8406
 //         static instance: TestPackedUnpacked = TestPackedUnpacked {
 //             unpacked: ~[],
 //             packed: ~[],

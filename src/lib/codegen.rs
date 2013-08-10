@@ -599,7 +599,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                     do w.commented |w| {
                         w.comment("doesn't work, because rust doen't implement \
                                 static constants of types like ~str");
-                        w.comment("TODO: find mozilla/rust issue");
+                        w.comment("https://github.com/mozilla/rust/issues/8406");
                         write_body(w);
                     }
                     w.todo();
