@@ -693,6 +693,7 @@ pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M 
 }
 
 pub fn parse_length_delimited_from_reader<M : Message>(r: @Reader) -> M {
+    // TODO: wrong: we may read length first, and then read exact number of bytes needed
     do r.with_coded_input_stream |is| {
         is.read_message::<M>()
     }
