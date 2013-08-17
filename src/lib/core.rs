@@ -82,7 +82,11 @@ pub struct CodedInputStream {
 impl CodedInputStream {
     pub fn new(reader: @Reader) -> CodedInputStream {
         CodedInputStream {
-            buffer: ~[0, ..4096],
+            // TODO: buffer of size 1 is used, because
+            // impl Reader for FILE* (that is io::stdin()) does not not stop
+            // reading until buffer is full of EOF reached
+            // This makes reading from pipe practically impossible.
+            buffer: ~[0, ..1],
             buffer_size: 0,
             buffer_pos: 0,
             reader: Some(reader),
