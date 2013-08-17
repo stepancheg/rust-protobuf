@@ -19,8 +19,8 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
 
     let results = gen(fds.file, gen_options);
 
-    for results.iter().advance |r| {
-        let file_writer = io::file_writer(~Path(r.name), [io::Create, io::Truncate]).get();
+    for r in results.iter() {
+        let file_writer = io::file_writer(~Path(r.name), [io::Create, io::Truncate]).unwrap();
         file_writer.write(r.content);
     }
 }
@@ -29,7 +29,7 @@ fn main() {
     let args = os::args();
     let opts: ~[getopts::Opt] = ~[
     ];
-    let matches = getopts::getopts(args.tail(), opts).get();
+    let matches = getopts::getopts(args.tail(), opts).unwrap();
     let pb_bin = match matches.free {
     	[ref pb_bin] => pb_bin.to_owned(),
     	_ => fail!("must have exactly one argument")

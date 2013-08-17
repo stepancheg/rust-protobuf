@@ -73,7 +73,7 @@ pub fn vec_packed_data_size<T : ProtobufNum>(vec: &[T], wt: wire_format::WireTyp
         wire_format::WireTypeFixed32 => vec.len() as u32 * 4,
         wire_format::WireTypeVarint => {
             let mut r = 0;
-            for vec.iter().advance |n| {
+            for n in vec.iter() {
                 r += n.len_varint();
             }
             r as u32

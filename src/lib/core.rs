@@ -1,6 +1,5 @@
 // TODO: drop all fail!
 
-use std::uint;
 use std::u32;
 use std::cast;
 use std::str::from_bytes_owned;
@@ -196,7 +195,7 @@ impl CodedInputStream {
             }
         }
         let mut r = 0u64;
-        for uint::range(0, bytes.len()) |i| {
+        for i in range(0, bytes.len()) {
             r = (r << 7) | bytes[bytes.len() - i - 1] as u64;
         }
         r
@@ -208,7 +207,7 @@ impl CodedInputStream {
 
     pub fn read_raw_little_endian32(&mut self) -> u32 {
         let mut bytes = [0u32, ..4];
-        for uint::range(0, 4) |i| {
+        for i in range(0, 4) {
             bytes[i] = self.read_raw_byte() as u32;
         }
         (bytes[0]      ) |
@@ -219,7 +218,7 @@ impl CodedInputStream {
 
     pub fn read_raw_little_endian64(&mut self) -> u64 {
         let mut bytes = [0u64, ..8];
-        for uint::range(0, 8) |i| {
+        for i in range(0, 8) {
             bytes[i] = self.read_raw_byte() as u64;
         }
         (bytes[0]      ) |
@@ -420,7 +419,7 @@ impl CodedOutputStream {
     }
 
     fn refresh_buffer(&mut self) {
-        self.writer.get().write(self.buffer.slice(0, self.position as uint));
+        self.writer.unwrap().write(self.buffer.slice(0, self.position as uint));
         self.position = 0;
     }
 
@@ -440,7 +439,7 @@ impl CodedOutputStream {
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) {
         self.refresh_buffer();
-        self.writer.get().write(bytes);
+        self.writer.unwrap().write(bytes);
     }
 
     pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) {

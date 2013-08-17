@@ -16,10 +16,14 @@ impl<'self> Test1 {
     }
 
     pub fn default_instance() -> &'static Test1 {
-        static instance: Test1 = Test1 {
-            a: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: Test1 = Test1 {
+//             a: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -55,7 +59,7 @@ impl<'self> Test1 {
     }
 
     pub fn get_a(&self) -> i32 {
-        self.a.get_or_default(0)
+        self.a.unwrap_or_default(0)
     }
 }
 
@@ -97,7 +101,7 @@ impl Message for Test1 {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.a.iter().advance |value| {
+        for value in self.a.iter() {
             my_size += rt::value_size(1, *value, wire_format::WireTypeVarint);
         };
         sizes[pos] = my_size;
@@ -105,7 +109,7 @@ impl Message for Test1 {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -128,10 +132,14 @@ impl<'self> Test2 {
     }
 
     pub fn default_instance() -> &'static Test2 {
-        static instance: Test2 = Test2 {
-            b: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: Test2 = Test2 {
+//             b: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -212,7 +220,7 @@ impl Message for Test2 {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.b.iter().advance |value| {
+        for value in self.b.iter() {
             my_size += rt::string_size(2, *value);
         };
         sizes[pos] = my_size;
@@ -220,7 +228,7 @@ impl Message for Test2 {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -243,10 +251,14 @@ impl<'self> Test3 {
     }
 
     pub fn default_instance() -> &'static Test3 {
-        static instance: Test3 = Test3 {
-            c: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: Test3 = Test3 {
+//             c: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -330,7 +342,7 @@ impl Message for Test3 {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.c.iter().advance |value| {
+        for value in self.c.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -339,7 +351,7 @@ impl Message for Test3 {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -376,7 +388,7 @@ impl<'self> Test4 {
         if !self.d.is_empty() {
             os.write_tag(4, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(rt::vec_packed_data_size(self.d, wire_format::WireTypeVarint));
-            for self.d.iter().advance |v| {
+            for v in self.d.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
@@ -454,7 +466,7 @@ impl Message for Test4 {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -491,13 +503,13 @@ impl<'self> TestPackedUnpacked {
 
     #[allow(unused_variable)]
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.unpacked.iter().advance |v| {
+        for v in self.unpacked.iter() {
             os.write_int32(4, *v);
         };
         if !self.packed.is_empty() {
             os.write_tag(5, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(rt::vec_packed_data_size(self.packed, wire_format::WireTypeVarint));
-            for self.packed.iter().advance |v| {
+            for v in self.packed.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
@@ -605,7 +617,7 @@ impl Message for TestPackedUnpacked {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.unpacked.iter().advance |value| {
+        for value in self.unpacked.iter() {
             my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
         };
         my_size += rt::vec_packed_size(5, self.packed, wire_format::WireTypeVarint);
@@ -614,7 +626,7 @@ impl Message for TestPackedUnpacked {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -637,10 +649,14 @@ impl<'self> TestEmpty {
     }
 
     pub fn default_instance() -> &'static TestEmpty {
-        static instance: TestEmpty = TestEmpty {
-            foo: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: TestEmpty = TestEmpty {
+//             foo: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -676,7 +692,7 @@ impl<'self> TestEmpty {
     }
 
     pub fn get_foo(&self) -> i32 {
-        self.foo.get_or_default(0)
+        self.foo.unwrap_or_default(0)
     }
 }
 
@@ -715,7 +731,7 @@ impl Message for TestEmpty {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.foo.iter().advance |value| {
+        for value in self.foo.iter() {
             my_size += rt::value_size(10, *value, wire_format::WireTypeVarint);
         };
         sizes[pos] = my_size;
@@ -723,7 +739,7 @@ impl Message for TestEmpty {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -746,10 +762,14 @@ impl<'self> TestRequired {
     }
 
     pub fn default_instance() -> &'static TestRequired {
-        static instance: TestRequired = TestRequired {
-            b: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: TestRequired = TestRequired {
+//             b: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -785,7 +805,7 @@ impl<'self> TestRequired {
     }
 
     pub fn get_b(&self) -> bool {
-        self.b.get_or_default(false)
+        self.b.unwrap_or_default(false)
     }
 }
 
@@ -835,7 +855,7 @@ impl Message for TestRequired {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);

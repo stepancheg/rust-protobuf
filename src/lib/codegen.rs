@@ -3,6 +3,14 @@ use misc::*;
 use core::*;
 use rt;
 
+#[deriving(Eq)]
+enum RustVersion {
+    Rust07,
+    RustMaster,
+}
+
+static USE_RUST_VERSION: RustVersion = RustMaster;
+
 fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
     match field_type {
         TYPE_DOUBLE   => "f64",
@@ -89,7 +97,7 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> ~str {
             }
         },
         None =>
-            rust_name(field.field_type.get()).to_owned()
+            rust_name(field.field_type.unwrap()).to_owned()
     }
 }
 
@@ -116,7 +124,7 @@ struct Field {
 impl Field {
     fn parse(field: &FieldDescriptorProto, pkg: &str) -> Option<Field> {
         let type_name = field_type_name(field, pkg).replace(".", "_");
-        let repeated = match field.label.get() {
+        let repeated = match field.label.unwrap() {
             LABEL_REPEATED => true,
             LABEL_OPTIONAL | LABEL_REQUIRED => false,
         };
@@ -125,7 +133,7 @@ impl Field {
             x => x,
         };
         let packed = match field.options {
-            Some(ref options) => options.packed.get_or_default(false),
+            Some(ref options) => options.packed.unwrap_or_default(false),
             None => false
         };
         let repeat_mode =
@@ -137,10 +145,10 @@ impl Field {
         Some(Field {
             proto_field: field.clone(),
             name: name,
-            field_type: field.field_type.get(),
-            wire_type: field_type_wire_type(field.field_type.get()),
+            field_type: field.field_type.unwrap(),
+            wire_type: field_type_wire_type(field.field_type.unwrap()),
             type_name: type_name,
-            number: field.number.get() as u32,
+            number: field.number.unwrap() as u32,
             repeated: repeated,
             packed: packed,
             repeat_mode: repeat_mode,
@@ -195,7 +203,7 @@ impl<'self> Message {
     }
 
     fn has_any_message_field(&self) -> bool {
-        for self.fields.iter().advance |field| {
+        for field in self.fields.iter() {
             if field.field_type == TYPE_MESSAGE {
                 return true;
             }
@@ -204,7 +212,7 @@ impl<'self> Message {
     }
 
     fn has_any_repeated_field(&self) -> bool {
-        for self.fields.iter().advance |field| {
+        for field in self.fields.iter() {
             if field.repeated {
                 return true;
             }
@@ -214,8 +222,8 @@ impl<'self> Message {
 
     fn required_fields(&'self self) -> ~[&'self Field] {
         let mut r = ~[];
-        for self.fields.iter().advance |field| {
-            if field.proto_field.label.get() == LABEL_REQUIRED {
+        for field in self.fields.iter() {
+            if field.proto_field.label.unwrap() == LABEL_REQUIRED {
                 r.push(field);
             }
         }
@@ -260,31 +268,34 @@ impl<'self> IndentWriter<'self> {
         })
     }
 
-    fn fields(&self, cb: &fn(&IndentWriter) -> bool) -> bool {
+    fn fields(&self, cb: &fn(&IndentWriter)) {
         let fields = &self.msg.get_ref().fields;
         let mut iter = fields.iter();
-        for iter.advance |field| {
-            if !self.bind_field(field, |w| cb(w)) {
-                return false;
-            }
+        for field in iter {
+            self.bind_field(field, |w| cb(w));
         }
-        true
     }
 
-    fn required_fields(&self, cb: &fn(&IndentWriter) -> bool) -> bool {
+    fn required_fields(&self, cb: &fn(&IndentWriter)) {
         let fields = &self.msg.get_ref().required_fields();
         let mut iter = fields.iter();
-        for iter.advance |field| {
-            if !self.bind_field(*field, |w| cb(w)) {
-                return false;
-            }
+        for field in iter {
+            self.bind_field(*field, |w| cb(w));
         }
-        true
     }
+    /*
+    fn fields(&'self self) -> FieldsIter<'self> {
+        FieldsIter { parent: self }
+    }
+    fn required_fields(&'self self) -> FieldsIter<'self> {
+        FieldsIter { parent: self }
+    }
+    */
+
 
     fn field(&self) -> &'self Field {
         assert!(self.field.is_some());
-        self.field.get()
+        self.field.unwrap()
     }
 
     fn self_field(&self) -> ~str {
@@ -360,7 +371,7 @@ impl<'self> IndentWriter<'self> {
     }
 
     fn write_lines(&self, lines: &[~str]) {
-        for lines.iter().advance |line| {
+        for line in lines.iter() {
             self.write_line(*line);
         }
     }
@@ -458,7 +469,10 @@ impl<'self> IndentWriter<'self> {
     }
 
     fn for_stmt(&self, over: &str, varn: &str, cb: &fn(&IndentWriter)) {
-        self.stmt_block(fmt!("for %s |%s|", over, varn), cb);
+        match USE_RUST_VERSION {
+            Rust07     => self.stmt_block(fmt!("for %s.advance |%s|", over, varn), cb),
+            RustMaster => self.stmt_block(fmt!("for %s in %s", varn, over), cb),
+        }
     }
 
     fn match_block(&self, value: &str, cb: &fn(&IndentWriter)) {
@@ -556,12 +570,11 @@ fn write_message(msg: &Message, w: &IndentWriter) {
     do w.bind_message(msg) |w| {
         w.write_line(fmt!("#[deriving(Clone,Eq)]"));
         do w.pub_struct(msg.type_name) |w| {
-            for w.fields |w| {
-                let field = w.field.get();
-                if field.type_name.contains_char('.') {
-                    loop;
+            do w.fields |w| {
+                let field = w.field.unwrap();
+                if !field.type_name.contains_char('.') {
+                    w.field_entry(field.name, field.full_type());
                 }
-                w.field_entry(field.name, field.full_type());
             }
             if msg.fields.is_empty() {
                 w.field_entry("dummy", "bool");
@@ -572,7 +585,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
         do w.impl_self_block(msg.type_name) |w| {
             do w.pub_fn(fmt!("new() -> %s", msg.type_name)) |w| {
                 do w.expr_block(msg.type_name) |w| {
-                    for w.fields |w| {
+                    do w.fields |w| {
                         w.field_default();
                     }
                     if msg.fields.is_empty() {
@@ -586,7 +599,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                 fn write_body(w: &IndentWriter) {
                     let msg = w.msg.get_ref();
                     do w.stmt_block(fmt!("static instance: %s = %s", msg.type_name, msg.type_name)) |w| {
-                        for w.fields |w| {
+                        do w.fields |w| {
                             w.field_default();
                         }
                         if msg.fields.is_empty() {
@@ -603,6 +616,15 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                         write_body(w);
                     }
                     w.todo();
+                } else if USE_RUST_VERSION == RustMaster {
+                    do w.commented |w| {
+                        w.comment("doesn't work, because rust master has broken \
+                                static constants that contains None of ~str");
+                        w.comment("https://github.com/mozilla/rust/issues/8578");
+                        w.comment("TODO: should at least keep static without ~str");
+                        write_body(w);
+                    }
+                    w.todo();
                 } else {
                     write_body(w)
                 }
@@ -614,7 +636,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                 w.write_line("#[allow(unused_variable)]");
             }
             do w.pub_fn("write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)") |w| {
-                for w.fields |w| {
+                do w.fields |w| {
                     let field = w.field();
                     let field_type = field.field_type;
                     let write_method_suffix = match field_type {
@@ -622,7 +644,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                         TYPE_ENUM => "enum",
                         t => protobuf_name(t),
                     };
-                    let field_number = field.proto_field.number.get();
+                    let field_number = field.proto_field.number.unwrap();
                     let vv = match field.field_type {
                         TYPE_MESSAGE => "v", // TODO: as &Message
                         TYPE_ENUM => "*v as i32",
@@ -653,20 +675,20 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                             do w.if_stmt(fmt!("!%s.is_empty()", w.self_field())) |w| {
                                 w.write_line(fmt!("os.write_tag(%d, wire_format::%?);", field_number as int, wire_format::WireTypeLengthDelimited));
                                 w.write_line(fmt!("os.write_raw_varint32(rt::vec_packed_data_size(%s, wire_format::%?));", w.self_field(), field_type_wire_type(field.field_type)));
-                                do w.for_stmt(fmt!("%s.iter().advance", w.self_field()), "v") |w| {
+                                do w.for_stmt(fmt!("%s.iter()", w.self_field()), "v") |w| {
                                     w.write_line(fmt!("os.write_%s_no_tag(%s);", write_method_suffix, vv));
                                 }
                             }
                         },
                         RepeatRegular => {
-                            do w.for_stmt(fmt!("%s.iter().advance", w.self_field()), "v") |w| {
+                            do w.for_stmt(fmt!("%s.iter()", w.self_field()), "v") |w| {
                                 w.write_lines(write_value_lines);
                             }
                         },
                     };
                 }
             }
-            for w.fields |w| {
+            do w.fields |w| {
                 w.write_line("");
                 do w.pub_fn(fmt!("%s(&mut self)", w.clear_field_func())) |w| {
                     w.clear_field();
@@ -758,9 +780,15 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                                 );
                             }
                         } else {
+                            let get_name = match USE_RUST_VERSION {
+                                Rust07     => "get_or_default",
+                                RustMaster => "unwrap_or_default",
+                            };
                             w.write_line(fmt!(
-                                    "%s.get_or_default(%s)",
-                                    w.self_field(), w.field_type_default()));
+                                    "%s.%s(%s)",
+                                    w.self_field(),
+                                    get_name,
+                                    w.field_type_default()));
                         }
                     } else {
                         w.write_line(fmt!("rt::as_slice_tmp(&%s)", w.self_field()));
@@ -786,13 +814,13 @@ fn write_message(msg: &Message, w: &IndentWriter) {
             }
             w.write_line("");
             do w.def_fn("clear(&mut self)") |w| {
-                for w.fields |w| {
+                do w.fields |w| {
                     w.write_line(fmt!("self.%s();", w.clear_field_func()));
                 }
             }
             w.write_line("");
             do w.def_fn(fmt!("is_initialized(&self) -> bool")) |w| {
-                for w.required_fields |w| {
+                do w.required_fields |w| {
                     do w.if_self_field_is_none |w| {
                         w.write_line("return false;");
                     }
@@ -804,7 +832,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                 do w.while_block("!is.eof()") |w| {
                     w.write_line(fmt!("let (field_number, wire_type) = is.read_tag_unpack();"));
                     do w.match_block("field_number") |w| {
-                        for w.fields |w| {
+                        do w.fields |w| {
                             do w.case_block(w.field().number.to_str()) |w| {
                                 write_merge_from_field(w);
                             }
@@ -825,7 +853,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                 w.write_line("let pos = sizes.len();");
                 w.write_line("sizes.push(0);");
                 w.write_line("let mut my_size = 0;");
-                for w.fields |w| {
+                do w.fields |w| {
                     let field = w.field();
                     match field.repeat_mode {
                         Single | RepeatRegular => {
@@ -845,7 +873,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                                     }
                                 },
                                 None => {
-                                    do w.for_stmt(fmt!("%s.iter().advance", w.self_field()), "value") |w| {
+                                    do w.for_stmt(fmt!("%s.iter()", w.self_field()), "value") |w| {
                                         match field.field_type {
                                             TYPE_MESSAGE => {
                                                 w.write_line("let len = value.compute_sizes(sizes);");
@@ -887,7 +915,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                 w.write_line("my_size");
             }
             w.write_line("");
-            do w.pub_fn("write_to(&self, os: &mut CodedOutputStream)") |w| {
+            do w.def_fn("write_to(&self, os: &mut CodedOutputStream)") |w| {
                 w.write_line("self.check_initialized();");
                 w.write_line("let mut sizes: ~[u32] = ~[];");
                 w.write_line("self.compute_sizes(&mut sizes);");
@@ -897,12 +925,12 @@ fn write_message(msg: &Message, w: &IndentWriter) {
             }
         }
 
-        for message_type.nested_type.iter().advance |nested_type| {
+        for nested_type in message_type.nested_type.iter() {
             w.write_line("");
             write_message(&Message::parse(nested_type, pkg, msg.type_name + "_"), w);
         }
 
-        for message_type.enum_type.iter().advance |enum_type| {
+        for enum_type in message_type.enum_type.iter() {
             w.write_line("");
             write_enum(msg.type_name + "_", w, enum_type);
         }
@@ -913,16 +941,16 @@ fn write_enum(prefix: &str, w: &IndentWriter, enum_type: &EnumDescriptorProto) {
     let enum_type_name = prefix + enum_type.name.get_ref().to_owned();
     w.write_line(fmt!("#[deriving(Clone,Eq)]"));
     w.write_line(fmt!("pub enum %s {", enum_type_name));
-    for enum_type.value.iter().advance |value| {
-        w.write_line(fmt!("    %s = %d,", value.name.get_ref().to_owned(), value.number.get() as int));
+    for value in enum_type.value.iter() {
+        w.write_line(fmt!("    %s = %d,", value.name.get_ref().to_owned(), value.number.unwrap() as int));
     }
     w.write_line(fmt!("}"));
     w.write_line("");
     do w.impl_block(enum_type_name) |w| {
         do w.pub_fn(fmt!("new(value: i32) -> %s", enum_type_name)) |w| {
             do w.match_expr("value") |w| {
-                for enum_type.value.iter().advance |value| {
-                    let value_number = value.number.get();
+                for value in enum_type.value.iter() {
+                    let value_number = value.number.unwrap();
                     let value_name = value.name.get_ref().to_owned();
                     w.write_line(fmt!("%d => %s,", value_number as int, value_name));
                 }
@@ -932,7 +960,7 @@ fn write_enum(prefix: &str, w: &IndentWriter, enum_type: &EnumDescriptorProto) {
     }
     w.write_line("");
     do w.impl_for_block("ProtobufEnum", enum_type_name) |w| {
-        do w.pub_fn("value(&self) -> i32") |w| {
+        do w.def_fn("value(&self) -> i32") |w| {
             w.write_line("*self as i32")
         }
     }
@@ -994,7 +1022,7 @@ struct GenOptions {
 
 pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
     let mut results: ~[GenResult] = ~[];
-    for files.iter().advance |file| {
+    for file in files.iter() {
         let base = proto_path_to_rust_base(*file.name.get_ref());
 
         let os0 = VecWriter::new();
@@ -1007,15 +1035,15 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
 
         w.write_line("use protobuf::*;");
         w.write_line("use protobuf::rt;");
-        for file.dependency.iter().advance |dep| {
+        for dep in file.dependency.iter() {
             w.write_line(fmt!("use %s::*;", proto_path_to_rust_base(*dep)));
         }
 
-        for file.message_type.iter().advance |message_type| {
+        for message_type in file.message_type.iter() {
             w.write_line("");
             write_message(&Message::parse(message_type, *file.package.get_ref(), ""), &w);
         }
-        for file.enum_type.iter().advance |enum_type| {
+        for enum_type in file.enum_type.iter() {
             w.write_line("");
             write_enum("", &w, enum_type);
         }

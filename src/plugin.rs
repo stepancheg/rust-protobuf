@@ -33,7 +33,7 @@ impl<'self> CodeGeneratorRequest {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.file_to_generate.iter().advance |v| {
+        for v in self.file_to_generate.iter() {
             os.write_string(1, *v);
         };
         match self.parameter {
@@ -42,7 +42,7 @@ impl<'self> CodeGeneratorRequest {
             },
             None => {},
         };
-        for self.proto_file.iter().advance |v| {
+        for v in self.proto_file.iter() {
             os.write_tag(15, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -172,13 +172,13 @@ impl Message for CodeGeneratorRequest {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.file_to_generate.iter().advance |value| {
+        for value in self.file_to_generate.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.parameter.iter().advance |value| {
+        for value in self.parameter.iter() {
             my_size += rt::string_size(2, *value);
         };
-        for self.proto_file.iter().advance |value| {
+        for value in self.proto_file.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -187,7 +187,7 @@ impl Message for CodeGeneratorRequest {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -229,7 +229,7 @@ impl<'self> CodeGeneratorResponse {
             },
             None => {},
         };
-        for self.file.iter().advance |v| {
+        for v in self.file.iter() {
             os.write_tag(15, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -331,10 +331,10 @@ impl Message for CodeGeneratorResponse {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.error.iter().advance |value| {
+        for value in self.error.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.file.iter().advance |value| {
+        for value in self.file.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -343,7 +343,7 @@ impl Message for CodeGeneratorResponse {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -370,12 +370,16 @@ impl<'self> CodeGeneratorResponse_File {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
-            name: None,
-            insertion_point: None,
-            content: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
+//             name: None,
+//             insertion_point: None,
+//             content: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -535,13 +539,13 @@ impl Message for CodeGeneratorResponse_File {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.insertion_point.iter().advance |value| {
+        for value in self.insertion_point.iter() {
             my_size += rt::string_size(2, *value);
         };
-        for self.content.iter().advance |value| {
+        for value in self.content.iter() {
             my_size += rt::string_size(15, *value);
         };
         sizes[pos] = my_size;
@@ -549,7 +553,7 @@ impl Message for CodeGeneratorResponse_File {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);

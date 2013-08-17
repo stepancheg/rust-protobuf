@@ -26,7 +26,7 @@ impl<'self> FileDescriptorSet {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.file.iter().advance |v| {
+        for v in self.file.iter() {
             os.write_tag(1, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -93,7 +93,7 @@ impl Message for FileDescriptorSet {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.file.iter().advance |value| {
+        for value in self.file.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -102,7 +102,7 @@ impl Message for FileDescriptorSet {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -177,34 +177,34 @@ impl<'self> FileDescriptorProto {
             },
             None => {},
         };
-        for self.dependency.iter().advance |v| {
+        for v in self.dependency.iter() {
             os.write_string(3, *v);
         };
-        for self.public_dependency.iter().advance |v| {
+        for v in self.public_dependency.iter() {
             os.write_int32(10, *v);
         };
-        for self.weak_dependency.iter().advance |v| {
+        for v in self.weak_dependency.iter() {
             os.write_int32(11, *v);
         };
-        for self.message_type.iter().advance |v| {
+        for v in self.message_type.iter() {
             os.write_tag(4, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.enum_type.iter().advance |v| {
+        for v in self.enum_type.iter() {
             os.write_tag(5, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.service.iter().advance |v| {
+        for v in self.service.iter() {
             os.write_tag(6, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.extension.iter().advance |v| {
+        for v in self.extension.iter() {
             os.write_tag(7, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -618,42 +618,42 @@ impl Message for FileDescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.package.iter().advance |value| {
+        for value in self.package.iter() {
             my_size += rt::string_size(2, *value);
         };
-        for self.dependency.iter().advance |value| {
+        for value in self.dependency.iter() {
             my_size += rt::string_size(3, *value);
         };
-        for self.public_dependency.iter().advance |value| {
+        for value in self.public_dependency.iter() {
             my_size += rt::value_size(10, *value, wire_format::WireTypeVarint);
         };
-        for self.weak_dependency.iter().advance |value| {
+        for value in self.weak_dependency.iter() {
             my_size += rt::value_size(11, *value, wire_format::WireTypeVarint);
         };
-        for self.message_type.iter().advance |value| {
+        for value in self.message_type.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.enum_type.iter().advance |value| {
+        for value in self.enum_type.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.service.iter().advance |value| {
+        for value in self.service.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.extension.iter().advance |value| {
+        for value in self.extension.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.source_code_info.iter().advance |value| {
+        for value in self.source_code_info.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -662,7 +662,7 @@ impl Message for FileDescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -719,31 +719,31 @@ impl<'self> DescriptorProto {
             },
             None => {},
         };
-        for self.field.iter().advance |v| {
+        for v in self.field.iter() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.extension.iter().advance |v| {
+        for v in self.extension.iter() {
             os.write_tag(6, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.nested_type.iter().advance |v| {
+        for v in self.nested_type.iter() {
             os.write_tag(3, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.enum_type.iter().advance |v| {
+        for v in self.enum_type.iter() {
             os.write_tag(4, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
-        for self.extension_range.iter().advance |v| {
+        for v in self.extension_range.iter() {
             os.write_tag(5, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -1006,30 +1006,30 @@ impl Message for DescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.field.iter().advance |value| {
+        for value in self.field.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.extension.iter().advance |value| {
+        for value in self.extension.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.nested_type.iter().advance |value| {
+        for value in self.nested_type.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.enum_type.iter().advance |value| {
+        for value in self.enum_type.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.extension_range.iter().advance |value| {
+        for value in self.extension_range.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -1038,7 +1038,7 @@ impl Message for DescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1063,11 +1063,15 @@ impl<'self> DescriptorProto_ExtensionRange {
     }
 
     pub fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-        static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
-            start: None,
-            end: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
+//             start: None,
+//             end: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -1109,7 +1113,7 @@ impl<'self> DescriptorProto_ExtensionRange {
     }
 
     pub fn get_start(&self) -> i32 {
-        self.start.get_or_default(0)
+        self.start.unwrap_or_default(0)
     }
 
     pub fn clear_end(&mut self) {
@@ -1135,7 +1139,7 @@ impl<'self> DescriptorProto_ExtensionRange {
     }
 
     pub fn get_end(&self) -> i32 {
-        self.end.get_or_default(0)
+        self.end.unwrap_or_default(0)
     }
 }
 
@@ -1180,10 +1184,10 @@ impl Message for DescriptorProto_ExtensionRange {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.start.iter().advance |value| {
+        for value in self.start.iter() {
             my_size += rt::value_size(1, *value, wire_format::WireTypeVarint);
         };
-        for self.end.iter().advance |value| {
+        for value in self.end.iter() {
             my_size += rt::value_size(2, *value, wire_format::WireTypeVarint);
         };
         sizes[pos] = my_size;
@@ -1191,7 +1195,7 @@ impl Message for DescriptorProto_ExtensionRange {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1228,17 +1232,21 @@ impl<'self> FieldDescriptorProto {
     }
 
     pub fn default_instance() -> &'static FieldDescriptorProto {
-        static instance: FieldDescriptorProto = FieldDescriptorProto {
-            name: None,
-            number: None,
-            label: None,
-            field_type: None,
-            type_name: None,
-            extendee: None,
-            default_value: None,
-            options: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: FieldDescriptorProto = FieldDescriptorProto {
+//             name: None,
+//             number: None,
+//             label: None,
+//             field_type: None,
+//             type_name: None,
+//             extendee: None,
+//             default_value: None,
+//             options: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -1347,7 +1355,7 @@ impl<'self> FieldDescriptorProto {
     }
 
     pub fn get_number(&self) -> i32 {
-        self.number.get_or_default(0)
+        self.number.unwrap_or_default(0)
     }
 
     pub fn clear_label(&mut self) {
@@ -1373,7 +1381,7 @@ impl<'self> FieldDescriptorProto {
     }
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
-        self.label.get_or_default(FieldDescriptorProto_Label::new(0))
+        self.label.unwrap_or_default(FieldDescriptorProto_Label::new(0))
     }
 
     pub fn clear_field_type(&mut self) {
@@ -1399,7 +1407,7 @@ impl<'self> FieldDescriptorProto {
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
-        self.field_type.get_or_default(FieldDescriptorProto_Type::new(0))
+        self.field_type.unwrap_or_default(FieldDescriptorProto_Type::new(0))
     }
 
     pub fn clear_type_name(&mut self) {
@@ -1597,28 +1605,28 @@ impl Message for FieldDescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.number.iter().advance |value| {
+        for value in self.number.iter() {
             my_size += rt::value_size(3, *value, wire_format::WireTypeVarint);
         };
-        for self.label.iter().advance |value| {
+        for value in self.label.iter() {
             my_size += rt::enum_size(4, *value);
         };
-        for self.field_type.iter().advance |value| {
+        for value in self.field_type.iter() {
             my_size += rt::enum_size(5, *value);
         };
-        for self.type_name.iter().advance |value| {
+        for value in self.type_name.iter() {
             my_size += rt::string_size(6, *value);
         };
-        for self.extendee.iter().advance |value| {
+        for value in self.extendee.iter() {
             my_size += rt::string_size(2, *value);
         };
-        for self.default_value.iter().advance |value| {
+        for value in self.default_value.iter() {
             my_size += rt::string_size(7, *value);
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -1627,7 +1635,7 @@ impl Message for FieldDescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1686,7 +1694,7 @@ impl FieldDescriptorProto_Type {
 }
 
 impl ProtobufEnum for FieldDescriptorProto_Type {
-    pub fn value(&self) -> i32 {
+    fn value(&self) -> i32 {
         *self as i32
     }
 }
@@ -1710,7 +1718,7 @@ impl FieldDescriptorProto_Label {
 }
 
 impl ProtobufEnum for FieldDescriptorProto_Label {
-    pub fn value(&self) -> i32 {
+    fn value(&self) -> i32 {
         *self as i32
     }
 }
@@ -1750,7 +1758,7 @@ impl<'self> EnumDescriptorProto {
             },
             None => {},
         };
-        for self.value.iter().advance |v| {
+        for v in self.value.iter() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -1897,14 +1905,14 @@ impl Message for EnumDescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.value.iter().advance |value| {
+        for value in self.value.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -1913,7 +1921,7 @@ impl Message for EnumDescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1940,12 +1948,16 @@ impl<'self> EnumValueDescriptorProto {
     }
 
     pub fn default_instance() -> &'static EnumValueDescriptorProto {
-        static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
-            name: None,
-            number: None,
-            options: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
+//             name: None,
+//             number: None,
+//             options: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2024,7 +2036,7 @@ impl<'self> EnumValueDescriptorProto {
     }
 
     pub fn get_number(&self) -> i32 {
-        self.number.get_or_default(0)
+        self.number.unwrap_or_default(0)
     }
 
     pub fn clear_options(&mut self) {
@@ -2105,13 +2117,13 @@ impl Message for EnumValueDescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.number.iter().advance |value| {
+        for value in self.number.iter() {
             my_size += rt::value_size(2, *value, wire_format::WireTypeVarint);
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -2120,7 +2132,7 @@ impl Message for EnumValueDescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -2165,7 +2177,7 @@ impl<'self> ServiceDescriptorProto {
             },
             None => {},
         };
-        for self.method.iter().advance |v| {
+        for v in self.method.iter() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -2312,14 +2324,14 @@ impl Message for ServiceDescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.method.iter().advance |value| {
+        for value in self.method.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -2328,7 +2340,7 @@ impl Message for ServiceDescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -2357,13 +2369,17 @@ impl<'self> MethodDescriptorProto {
     }
 
     pub fn default_instance() -> &'static MethodDescriptorProto {
-        static instance: MethodDescriptorProto = MethodDescriptorProto {
-            name: None,
-            input_type: None,
-            output_type: None,
-            options: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: MethodDescriptorProto = MethodDescriptorProto {
+//             name: None,
+//             input_type: None,
+//             output_type: None,
+//             options: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2567,16 +2583,16 @@ impl Message for MethodDescriptorProto {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.input_type.iter().advance |value| {
+        for value in self.input_type.iter() {
             my_size += rt::string_size(2, *value);
         };
-        for self.output_type.iter().advance |value| {
+        for value in self.output_type.iter() {
             my_size += rt::string_size(3, *value);
         };
-        for self.options.iter().advance |value| {
+        for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -2585,7 +2601,7 @@ impl Message for MethodDescriptorProto {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -2699,7 +2715,7 @@ impl<'self> FileOptions {
             },
             None => {},
         };
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -2788,7 +2804,7 @@ impl<'self> FileOptions {
     }
 
     pub fn get_java_multiple_files(&self) -> bool {
-        self.java_multiple_files.get_or_default(false)
+        self.java_multiple_files.unwrap_or_default(false)
     }
 
     pub fn clear_java_generate_equals_and_hash(&mut self) {
@@ -2814,7 +2830,7 @@ impl<'self> FileOptions {
     }
 
     pub fn get_java_generate_equals_and_hash(&self) -> bool {
-        self.java_generate_equals_and_hash.get_or_default(false)
+        self.java_generate_equals_and_hash.unwrap_or_default(false)
     }
 
     pub fn clear_optimize_for(&mut self) {
@@ -2840,7 +2856,7 @@ impl<'self> FileOptions {
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
-        self.optimize_for.get_or_default(FileOptions_OptimizeMode::new(0))
+        self.optimize_for.unwrap_or_default(FileOptions_OptimizeMode::new(0))
     }
 
     pub fn clear_go_package(&mut self) {
@@ -2895,7 +2911,7 @@ impl<'self> FileOptions {
     }
 
     pub fn get_cc_generic_services(&self) -> bool {
-        self.cc_generic_services.get_or_default(false)
+        self.cc_generic_services.unwrap_or_default(false)
     }
 
     pub fn clear_java_generic_services(&mut self) {
@@ -2921,7 +2937,7 @@ impl<'self> FileOptions {
     }
 
     pub fn get_java_generic_services(&self) -> bool {
-        self.java_generic_services.get_or_default(false)
+        self.java_generic_services.unwrap_or_default(false)
     }
 
     pub fn clear_py_generic_services(&mut self) {
@@ -2947,7 +2963,7 @@ impl<'self> FileOptions {
     }
 
     pub fn get_py_generic_services(&self) -> bool {
-        self.py_generic_services.get_or_default(false)
+        self.py_generic_services.unwrap_or_default(false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3063,10 +3079,10 @@ impl Message for FileOptions {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.java_package.iter().advance |value| {
+        for value in self.java_package.iter() {
             my_size += rt::string_size(1, *value);
         };
-        for self.java_outer_classname.iter().advance |value| {
+        for value in self.java_outer_classname.iter() {
             my_size += rt::string_size(8, *value);
         };
         if self.java_multiple_files.is_some() {
@@ -3075,10 +3091,10 @@ impl Message for FileOptions {
         if self.java_generate_equals_and_hash.is_some() {
             my_size += 3;
         };
-        for self.optimize_for.iter().advance |value| {
+        for value in self.optimize_for.iter() {
             my_size += rt::enum_size(9, *value);
         };
-        for self.go_package.iter().advance |value| {
+        for value in self.go_package.iter() {
             my_size += rt::string_size(11, *value);
         };
         if self.cc_generic_services.is_some() {
@@ -3090,7 +3106,7 @@ impl Message for FileOptions {
         if self.py_generic_services.is_some() {
             my_size += 3;
         };
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -3099,7 +3115,7 @@ impl Message for FileOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -3128,7 +3144,7 @@ impl FileOptions_OptimizeMode {
 }
 
 impl ProtobufEnum for FileOptions_OptimizeMode {
-    pub fn value(&self) -> i32 {
+    fn value(&self) -> i32 {
         *self as i32
     }
 }
@@ -3174,7 +3190,7 @@ impl<'self> MessageOptions {
             },
             None => {},
         };
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -3205,7 +3221,7 @@ impl<'self> MessageOptions {
     }
 
     pub fn get_message_set_wire_format(&self) -> bool {
-        self.message_set_wire_format.get_or_default(false)
+        self.message_set_wire_format.unwrap_or_default(false)
     }
 
     pub fn clear_no_standard_descriptor_accessor(&mut self) {
@@ -3231,7 +3247,7 @@ impl<'self> MessageOptions {
     }
 
     pub fn get_no_standard_descriptor_accessor(&self) -> bool {
-        self.no_standard_descriptor_accessor.get_or_default(false)
+        self.no_standard_descriptor_accessor.unwrap_or_default(false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3311,7 +3327,7 @@ impl Message for MessageOptions {
         if self.no_standard_descriptor_accessor.is_some() {
             my_size += 2;
         };
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -3320,7 +3336,7 @@ impl Message for MessageOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -3407,7 +3423,7 @@ impl<'self> FieldOptions {
             },
             None => {},
         };
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -3438,7 +3454,7 @@ impl<'self> FieldOptions {
     }
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
-        self.ctype.get_or_default(FieldOptions_CType::new(0))
+        self.ctype.unwrap_or_default(FieldOptions_CType::new(0))
     }
 
     pub fn clear_packed(&mut self) {
@@ -3464,7 +3480,7 @@ impl<'self> FieldOptions {
     }
 
     pub fn get_packed(&self) -> bool {
-        self.packed.get_or_default(false)
+        self.packed.unwrap_or_default(false)
     }
 
     pub fn clear_lazy(&mut self) {
@@ -3490,7 +3506,7 @@ impl<'self> FieldOptions {
     }
 
     pub fn get_lazy(&self) -> bool {
-        self.lazy.get_or_default(false)
+        self.lazy.unwrap_or_default(false)
     }
 
     pub fn clear_deprecated(&mut self) {
@@ -3516,7 +3532,7 @@ impl<'self> FieldOptions {
     }
 
     pub fn get_deprecated(&self) -> bool {
-        self.deprecated.get_or_default(false)
+        self.deprecated.unwrap_or_default(false)
     }
 
     pub fn clear_experimental_map_key(&mut self) {
@@ -3571,7 +3587,7 @@ impl<'self> FieldOptions {
     }
 
     pub fn get_weak(&self) -> bool {
-        self.weak.get_or_default(false)
+        self.weak.unwrap_or_default(false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3669,7 +3685,7 @@ impl Message for FieldOptions {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.ctype.iter().advance |value| {
+        for value in self.ctype.iter() {
             my_size += rt::enum_size(1, *value);
         };
         if self.packed.is_some() {
@@ -3681,13 +3697,13 @@ impl Message for FieldOptions {
         if self.deprecated.is_some() {
             my_size += 2;
         };
-        for self.experimental_map_key.iter().advance |value| {
+        for value in self.experimental_map_key.iter() {
             my_size += rt::string_size(9, *value);
         };
         if self.weak.is_some() {
             my_size += 2;
         };
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -3696,7 +3712,7 @@ impl Message for FieldOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -3725,7 +3741,7 @@ impl FieldOptions_CType {
 }
 
 impl ProtobufEnum for FieldOptions_CType {
-    pub fn value(&self) -> i32 {
+    fn value(&self) -> i32 {
         *self as i32
     }
 }
@@ -3762,7 +3778,7 @@ impl<'self> EnumOptions {
             },
             None => {},
         };
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -3793,7 +3809,7 @@ impl<'self> EnumOptions {
     }
 
     pub fn get_allow_alias(&self) -> bool {
-        self.allow_alias.get_or_default(false)
+        self.allow_alias.unwrap_or_default(false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3864,7 +3880,7 @@ impl Message for EnumOptions {
         if self.allow_alias.is_some() {
             my_size += 2;
         };
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -3873,7 +3889,7 @@ impl Message for EnumOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -3906,7 +3922,7 @@ impl<'self> EnumValueOptions {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -3973,7 +3989,7 @@ impl Message for EnumValueOptions {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -3982,7 +3998,7 @@ impl Message for EnumValueOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -4015,7 +4031,7 @@ impl<'self> ServiceOptions {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -4082,7 +4098,7 @@ impl Message for ServiceOptions {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -4091,7 +4107,7 @@ impl Message for ServiceOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -4124,7 +4140,7 @@ impl<'self> MethodOptions {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.uninterpreted_option.iter().advance |v| {
+        for v in self.uninterpreted_option.iter() {
             os.write_tag(999, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -4191,7 +4207,7 @@ impl Message for MethodOptions {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.uninterpreted_option.iter().advance |value| {
+        for value in self.uninterpreted_option.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -4200,7 +4216,7 @@ impl Message for MethodOptions {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -4251,7 +4267,7 @@ impl<'self> UninterpretedOption {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.name.iter().advance |v| {
+        for v in self.name.iter() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -4369,7 +4385,7 @@ impl<'self> UninterpretedOption {
     }
 
     pub fn get_positive_int_value(&self) -> u64 {
-        self.positive_int_value.get_or_default(0)
+        self.positive_int_value.unwrap_or_default(0)
     }
 
     pub fn clear_negative_int_value(&mut self) {
@@ -4395,7 +4411,7 @@ impl<'self> UninterpretedOption {
     }
 
     pub fn get_negative_int_value(&self) -> i64 {
-        self.negative_int_value.get_or_default(0)
+        self.negative_int_value.unwrap_or_default(0)
     }
 
     pub fn clear_double_value(&mut self) {
@@ -4421,7 +4437,7 @@ impl<'self> UninterpretedOption {
     }
 
     pub fn get_double_value(&self) -> f64 {
-        self.double_value.get_or_default(0.)
+        self.double_value.unwrap_or_default(0.)
     }
 
     pub fn clear_string_value(&mut self) {
@@ -4555,26 +4571,26 @@ impl Message for UninterpretedOption {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name.iter().advance |value| {
+        for value in self.name.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
-        for self.identifier_value.iter().advance |value| {
+        for value in self.identifier_value.iter() {
             my_size += rt::string_size(3, *value);
         };
-        for self.positive_int_value.iter().advance |value| {
+        for value in self.positive_int_value.iter() {
             my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
         };
-        for self.negative_int_value.iter().advance |value| {
+        for value in self.negative_int_value.iter() {
             my_size += rt::value_size(5, *value, wire_format::WireTypeVarint);
         };
         if self.double_value.is_some() {
             my_size += 9;
         };
-        for self.string_value.iter().advance |value| {
+        for value in self.string_value.iter() {
             my_size += rt::bytes_size(7, *value);
         };
-        for self.aggregate_value.iter().advance |value| {
+        for value in self.aggregate_value.iter() {
             my_size += rt::string_size(8, *value);
         };
         sizes[pos] = my_size;
@@ -4582,7 +4598,7 @@ impl Message for UninterpretedOption {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -4607,11 +4623,15 @@ impl<'self> UninterpretedOption_NamePart {
     }
 
     pub fn default_instance() -> &'static UninterpretedOption_NamePart {
-        static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
-            name_part: None,
-            is_extension: None,
-        };
-        &'static instance
+//         // doesn't work, because rust master has broken static constants that contains None of ~str
+//         // https://github.com/mozilla/rust/issues/8578
+//         // TODO: should at least keep static without ~str
+//         static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
+//             name_part: None,
+//             is_extension: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -4682,7 +4702,7 @@ impl<'self> UninterpretedOption_NamePart {
     }
 
     pub fn get_is_extension(&self) -> bool {
-        self.is_extension.get_or_default(false)
+        self.is_extension.unwrap_or_default(false)
     }
 }
 
@@ -4733,7 +4753,7 @@ impl Message for UninterpretedOption_NamePart {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.name_part.iter().advance |value| {
+        for value in self.name_part.iter() {
             my_size += rt::string_size(1, *value);
         };
         if self.is_extension.is_some() {
@@ -4744,7 +4764,7 @@ impl Message for UninterpretedOption_NamePart {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -4777,7 +4797,7 @@ impl<'self> SourceCodeInfo {
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        for self.location.iter().advance |v| {
+        for v in self.location.iter() {
             os.write_tag(1, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
@@ -4844,7 +4864,7 @@ impl Message for SourceCodeInfo {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        for self.location.iter().advance |value| {
+        for value in self.location.iter() {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
@@ -4853,7 +4873,7 @@ impl Message for SourceCodeInfo {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -4899,14 +4919,14 @@ impl<'self> SourceCodeInfo_Location {
         if !self.path.is_empty() {
             os.write_tag(1, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(rt::vec_packed_data_size(self.path, wire_format::WireTypeVarint));
-            for self.path.iter().advance |v| {
+            for v in self.path.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
         if !self.span.is_empty() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(rt::vec_packed_data_size(self.span, wire_format::WireTypeVarint));
-            for self.span.iter().advance |v| {
+            for v in self.span.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
@@ -5098,10 +5118,10 @@ impl Message for SourceCodeInfo_Location {
         let mut my_size = 0;
         my_size += rt::vec_packed_size(1, self.path, wire_format::WireTypeVarint);
         my_size += rt::vec_packed_size(2, self.span, wire_format::WireTypeVarint);
-        for self.leading_comments.iter().advance |value| {
+        for value in self.leading_comments.iter() {
             my_size += rt::string_size(3, *value);
         };
-        for self.trailing_comments.iter().advance |value| {
+        for value in self.trailing_comments.iter() {
             my_size += rt::string_size(4, *value);
         };
         sizes[pos] = my_size;
@@ -5109,7 +5129,7 @@ impl Message for SourceCodeInfo_Location {
         my_size
     }
 
-    pub fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
