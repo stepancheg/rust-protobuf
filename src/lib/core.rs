@@ -353,7 +353,7 @@ impl CodedInputStream {
     }
 
     pub fn read_message<M : Message>(&mut self) -> M {
-        let mut r = Message::new::<M>();
+        let mut r: M = Message::new();
         self.merge_message(&mut r);
         r.check_initialized();
         r
@@ -674,7 +674,7 @@ pub trait MessageUtil {
 }
 
 pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {
-    let mut r = Message::new::<M>();
+    let mut r: M = Message::new();
     r.merge_from(is);
     r.check_initialized();
     r
