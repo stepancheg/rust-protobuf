@@ -24,7 +24,7 @@ fn main() {
     resp.file = do result.map |file| {
         let mut r = CodeGeneratorResponse_File::new();
         r.name = Some(file.name.to_owned());
-        r.content = Some(str::from_bytes(file.content));
+        r.content = Some(str::from_utf8(file.content));
         r
     };
     resp.write_to_writer(io::stdout());

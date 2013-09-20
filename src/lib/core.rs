@@ -2,7 +2,7 @@
 
 use std::u32;
 use std::cast;
-use std::str::from_bytes_owned;
+use std::str::from_utf8_owned;
 
 use misc::*;
 use zigzag::*;
@@ -342,7 +342,7 @@ impl CodedInputStream {
     }
 
     pub fn read_string(&mut self) -> ~str {
-        from_bytes_owned(self.read_bytes())
+        from_utf8_owned(self.read_bytes())
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) {
