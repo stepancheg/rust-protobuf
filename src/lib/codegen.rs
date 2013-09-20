@@ -133,7 +133,7 @@ impl Field {
             x => x,
         };
         let packed = match field.options {
-            Some(ref options) => options.packed.unwrap_or_default(),
+            Some(ref options) => options.packed.unwrap_or(false),
             None => false
         };
         let repeat_mode =
