@@ -1,16 +1,12 @@
 // hex encoder and decoder used by rust-protobuf unittests
 
 use std::str;
+use std::char;
 
 fn decode_hex_digit(digit: char) -> u8 {
-    if digit >= '0' && digit <= '9' {
-        digit as u8 - '0' as u8
-    } else if digit >= 'a' && digit <= 'f' {
-        digit as u8 - 'a' as u8 + 10
-    } else if digit >= 'A' && digit <= 'F' {
-        digit as u8 - 'A' as u8 + 10
-    } else {
-        fail!();
+    match char::to_digit(digit, 16) {
+        Some(d) => d as u8,
+        _ => fail!()
     }
 }
 
@@ -35,12 +31,9 @@ pub fn decode_hex(hex: &str) -> ~[u8] {
 }
 
 fn encode_hex_digit(digit: u8) -> char {
-    if digit < 10 {
-        ('0' as u8 + digit) as char
-    } else if digit < 16 {
-        ('a' as u8 + digit - 10) as char
-    } else {
-        fail!();
+    match char::from_digit(digit as uint, 16) {
+        Some(c) => c,
+        _ => fail!()
     }
 }
 
