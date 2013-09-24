@@ -4,5 +4,6 @@
 tmp*
 *.dylib
 *.bin
+*.so
 protobuf-bin-gen-rust
 protoc-gen-rust
