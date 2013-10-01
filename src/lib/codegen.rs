@@ -1016,7 +1016,7 @@ struct GenResult {
     content: ~[u8],
 }
 
-struct GenOptions {
+pub struct GenOptions {
     dummy: bool,
 }
 
