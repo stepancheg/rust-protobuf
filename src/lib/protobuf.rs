@@ -7,7 +7,7 @@
 
 pub use core::*;
 
-mod core;
+pub mod core;
 pub mod descriptor;
 pub mod codegen;
 pub mod rt;
