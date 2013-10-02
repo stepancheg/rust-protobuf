@@ -1,7 +1,0 @@
-before_install:
-  - yes | sudo add-apt-repository ppa:hansjorg/rust
-  - sudo apt-get update
-install:
-  - sudo apt-get install rust-nightly
-script:
-  -  cd src/;./full-rebuild.sh
