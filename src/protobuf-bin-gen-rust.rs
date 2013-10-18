@@ -15,13 +15,13 @@ use protobuf::codegen::*;
 
 
 fn write_file(bin: &str, gen_options: &GenOptions) {
-    let is: @Reader = io::file_reader(&Path(bin)).unwrap();
+    let is: @Reader = io::file_reader(&Path::new(bin)).unwrap();
     let fds = parse_from_reader::<FileDescriptorSet>(is);
 
     let results = gen(fds.file, gen_options);
 
     for r in results.iter() {
-        let file_writer = io::file_writer(~Path(r.name), [io::Create, io::Truncate]).unwrap();
+        let file_writer = io::file_writer(&Path::new(r.name.to_owned()), [io::Create, io::Truncate]).unwrap();
         file_writer.write(r.content);
     }
 }
