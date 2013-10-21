@@ -25,7 +25,7 @@ pub fn decode_hex(hex: &str) -> ~[u8] {
         if pos == hex.char_len() {
             break;
         }
-        fail!("pos = %ud", pos);
+        fail!("pos = {:u}d", pos);
     }
     r
 }
