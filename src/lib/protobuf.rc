@@ -21,7 +21,7 @@ mod shrug;
 mod test;
 
 // so `use protobuf::*` could work in descriptor mod
-mod protobuf {
+pub mod protobuf {
     pub use core::*;
     pub use rt;
 }
