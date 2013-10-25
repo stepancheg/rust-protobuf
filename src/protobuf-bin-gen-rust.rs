@@ -31,8 +31,8 @@ fn main() {
     ];
     let matches = getopts::getopts(args.tail(), opts).unwrap();
     let pb_bin = match matches.free {
-    	[ref pb_bin] => pb_bin.to_owned(),
-    	_ => fail!("must have exactly one argument")
+        [ref pb_bin] => pb_bin.to_owned(),
+        _ => fail!("must have exactly one argument")
     };
     let gen_options = GenOptions {
         dummy: false,

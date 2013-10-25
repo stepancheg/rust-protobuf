@@ -13,7 +13,7 @@ Clean all stuff that shouldn't live in git.
 Generate .rs files from .proto files, that needed
 internally in rust-protobuf.
 
-### rust test lib/protobuf.rc
+### rust test lib/protobuf.rs
 
 Execute the test suite.
 

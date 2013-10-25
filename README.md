@@ -46,7 +46,7 @@ This will generate .rs files in current directory.
 Same procedure is used to regenerate .rs files for rust-protobuf
 itself, see `./regerate.sh`.
 
-4) Include generated files into your project .rc file:
+4) Include generated files into your project .rs file:
 
 ```
 extern mod protobuf; // depend on rust-protobuf runtime
