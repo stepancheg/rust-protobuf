@@ -1,6 +1,8 @@
 rust-protobuf
 =============
 
+[![Build Status](https://travis-ci.org/hansjorg/rust-protobuf.png)](https://travis-ci.org/hansjorg/rust-protobuf)
+
 [Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](http://www.rust-lang.org/).
 
 * Written in pure rust
@@ -46,7 +48,7 @@ This will generate .rs files in current directory.
 Same procedure is used to regenerate .rs files for rust-protobuf
 itself, see `./regerate.sh`.
 
-4) Include generated files into your project .rc file:
+4) Include generated files into your project .rs file:
 
 ```
 extern mod protobuf; // depend on rust-protobuf runtime

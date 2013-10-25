@@ -133,7 +133,7 @@ impl Field {
             x => x,
         };
         let packed = match field.options {
-            Some(ref options) => options.packed.unwrap_or_default(false),
+            Some(ref options) => options.packed.unwrap_or(false),
             None => false
         };
         let repeat_mode =
@@ -782,7 +782,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                         } else {
                             let get_name = match USE_RUST_VERSION {
                                 Rust07     => "get_or_default",
-                                RustMaster => "unwrap_or_default",
+                                RustMaster => "unwrap_or",
                             };
                             w.write_line(fmt!(
                                     "%s.%s(%s)",
@@ -1016,7 +1016,7 @@ struct GenResult {
     content: ~[u8],
 }
 
-struct GenOptions {
+pub struct GenOptions {
     dummy: bool,
 }
 
