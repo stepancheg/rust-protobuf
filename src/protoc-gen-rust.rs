@@ -19,7 +19,9 @@ mod descriptor {
 mod plugin;
 
 fn main() {
-    let req = parse_from_reader::<CodeGeneratorRequest>(@io::stdin() as @Reader);
+    // io::stdin() hangs on EOF on Linux
+    // https://github.com/mozilla/rust/issues/10237
+    let req = parse_from_reader::<CodeGeneratorRequest>(@io::native::stdio::stdin() as @Reader);
     let gen_options = GenOptions {
         dummy: false,
     };
