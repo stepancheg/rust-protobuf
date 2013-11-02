@@ -311,7 +311,7 @@ impl CodedInputStream {
                 let len = self.read_raw_varint32();
                 self.skip_raw_bytes(len);
             },
-            _ => fail!("unknown wire type: %?", wire_type)
+            _ => fail!("unknown wire type: {:i}", wire_type as int)
         }
     }
 

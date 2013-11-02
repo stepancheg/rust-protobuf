@@ -20,12 +20,12 @@ pub fn decode_hex(hex: &str) -> ~[u8] {
         if hex.char_len() - pos >= 2 {
             r.push((decode_hex_digit(hex.char_at(pos)) << 4) | decode_hex_digit(hex.char_at(pos + 1)));
             pos += 2;
-            loop;
+            continue;
         }
         if pos == hex.char_len() {
             break;
         }
-        fail!("pos = %ud", pos);
+        fail!("pos = {:u}d", pos);
     }
     r
 }

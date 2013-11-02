@@ -1,5 +1,6 @@
 #[link(name = "protobuf", vers = "0.1.0")];
 #[crate_type = "lib"];
+#[feature(globs)];
 
 #[desc = "protobuf implementation for rust"];
 #[license = "BSD"];
@@ -7,7 +8,7 @@
 
 pub use core::*;
 
-mod core;
+pub mod core;
 pub mod descriptor;
 pub mod codegen;
 pub mod rt;
