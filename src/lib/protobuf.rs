@@ -24,6 +24,8 @@ mod test;
 
 // so `use protobuf::*` could work in descriptor mod
 pub mod protobuf {
+    pub use descriptor;
+    pub use codegen;
     pub use core::*;
     pub use rt;
 }
