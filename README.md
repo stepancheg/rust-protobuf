@@ -21,6 +21,12 @@ On OS X [Homebrew](https://github.com/mxcl/homebrew) can be used:
 brew install protobuf
 ```
 
+On Ubuntu, protobuf-compiler package can be installed:
+
+```
+apt-get install protobuf-compiler
+```
+
 1) Compile the project:
 
 ```
