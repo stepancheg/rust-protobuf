@@ -1,6 +1,7 @@
 #[link(name = "protobuf", vers = "0.1.0")];
 #[crate_type = "lib"];
 #[feature(globs)];
+#[feature(managed_boxes)];
 
 #[desc = "protobuf implementation for rust"];
 #[license = "BSD"];
