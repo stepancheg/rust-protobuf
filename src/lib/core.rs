@@ -3,6 +3,7 @@
 use std::u32;
 use std::cast;
 use std::str::from_utf8_owned;
+use std::rt::io::*;
 
 use misc::*;
 use zigzag::*;
@@ -125,10 +126,16 @@ impl CodedInputStream {
         }
         match self.reader {
             Some(reader) => {
-                let len = self.buffer.len();
                 self.total_bytes_retired += self.buffer_size;
                 self.buffer_pos = 0;
-                self.buffer_size = reader.read(self.buffer, len) as u32;
+                let mut_reader: @mut Reader = unsafe { cast::transmute(reader) };
+                self.buffer_size = do io_error::cond.trap(|e| {
+                    if e.kind != EndOfFile {
+                        io_error::cond.raise(e);
+                    };
+                }).inside {
+                    mut_reader.read(self.buffer).unwrap_or(0) as u32
+                };
                 if self.buffer_size == 0 {
                     return false;
                 }
@@ -423,7 +430,8 @@ impl CodedOutputStream {
     }
 
     fn refresh_buffer(&mut self) {
-        self.writer.unwrap().write(self.buffer.slice(0, self.position as uint));
+        let mut_writer: @mut Writer = unsafe { cast::transmute(self.writer.unwrap()) };
+        mut_writer.write(self.buffer.slice(0, self.position as uint));
         self.position = 0;
     }
 
@@ -443,7 +451,8 @@ impl CodedOutputStream {
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) {
         self.refresh_buffer();
-        self.writer.unwrap().write(bytes);
+        let mut_writer: @mut Writer = unsafe { cast::transmute(self.writer.unwrap()) };
+        mut_writer.write(bytes);
     }
 
     pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) {
@@ -757,19 +766,20 @@ impl<M : Message> MessageUtil for M {
 mod test {
 
     use super::*;
-    use std::io::*;
+    use std::rt::io::*;
+    use std::rt::io::mem::*;
     use misc::*;
     use hex::*;
 
     fn test_read(hex: &str, callback: &fn(&mut CodedInputStream)) {
         let d = decode_hex(hex);
-        do with_bytes_reader(d) |reader| {
-            let mut is = CodedInputStream::new(reader);
-            assert_eq!(0, is.pos());
-            callback(&mut is);
-            assert!(is.eof());
-            assert_eq!(d.len() as u32, is.pos());
-        }
+        let len = d.len();
+        let reader = @MemReader::new(d) as @Reader;
+        let mut is = CodedInputStream::new(reader);
+        assert_eq!(0, is.pos());
+        callback(&mut is);
+        assert!(is.eof());
+        assert_eq!(len as u32, is.pos());
     }
 
     #[test]

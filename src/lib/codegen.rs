@@ -1,3 +1,6 @@
+use std::rt::io::Writer;
+use std::cast;
+
 use descriptor::*;
 use misc::*;
 use core::*;
@@ -363,10 +366,12 @@ impl<'self> IndentWriter<'self> {
     }
 
     fn write_line(&self, line: &str) {
+        let mut_writer: @mut Writer = unsafe { cast::transmute(self.writer) };
         if line.is_empty() {
-            self.writer.write_line("")
+            mut_writer.write("\n".as_bytes())
         } else {
-            self.writer.write_line(self.indent + line);
+            let s = self.indent + line + "\n";
+            mut_writer.write(s.as_bytes());
         }
     }
 
