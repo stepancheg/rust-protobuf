@@ -5,8 +5,7 @@
 extern mod protobuf;
 extern mod extra;
 
-use std::rt::io;
-use std::rt::io::file::*;
+use std::rt::io::fs::*;
 use std::rt::io::Reader;
 use std::rt::io::Writer;
 use std::path::Path;
@@ -19,13 +18,13 @@ use protobuf::codegen::*;
 
 
 fn write_file(bin: &str, gen_options: &GenOptions) {
-    let is: @Reader = @Path::new(bin).open_reader(io::Open).unwrap() as @Reader;
+    let is: @Reader = @File::open(&Path::new(bin)).unwrap() as @Reader;
     let fds = parse_from_reader::<FileDescriptorSet>(is);
 
     let results = gen(fds.file, gen_options);
 
     for r in results.iter() {
-        let file_writer = @mut Path::new(r.name.to_owned()).open_writer(io::CreateOrTruncate).unwrap()
+        let file_writer = @mut File::create(&Path::new(r.name.to_owned())).unwrap()
                 as @mut Writer;
         file_writer.write(r.content);
     }
