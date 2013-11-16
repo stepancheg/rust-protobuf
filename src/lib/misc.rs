@@ -1,5 +1,5 @@
-use std::rt::io::Writer;
-use std::rt::io::Reader;
+use std::io::Writer;
+use std::io::Reader;
 use std::vec;
 
 struct VecWriter {
@@ -80,7 +80,7 @@ impl Writer for CountWriter {
 mod test {
     use super::*;
 
-    use std::rt::io::Writer;
+    use std::io::Writer;
 
     #[test]
     fn test_vec_writer() {

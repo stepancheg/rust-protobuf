@@ -3,7 +3,7 @@
 use std::u32;
 use std::cast;
 use std::str::from_utf8_owned;
-use std::rt::io::*;
+use std::io::*;
 
 use misc::*;
 use zigzag::*;
@@ -766,8 +766,8 @@ impl<M : Message> MessageUtil for M {
 mod test {
 
     use super::*;
-    use std::rt::io::*;
-    use std::rt::io::mem::*;
+    use std::io::*;
+    use std::io::mem::*;
     use misc::*;
     use hex::*;
 

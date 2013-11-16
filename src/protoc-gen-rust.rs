@@ -4,9 +4,9 @@
 
 extern mod protobuf;
 
-use std::rt::io;
-use std::rt::io::Reader;
-use std::rt::io::Writer;
+use std::io;
+use std::io::Reader;
+use std::io::Writer;
 use std::str;
 use plugin::*;
 use protobuf::*;
@@ -19,9 +19,7 @@ mod descriptor {
 mod plugin;
 
 fn main() {
-    // io::stdin() hangs on EOF on Linux
-    // https://github.com/mozilla/rust/issues/10237
-    let req = parse_from_reader::<CodeGeneratorRequest>(@io::native::stdio::stdin() as @Reader);
+    let req = parse_from_reader::<CodeGeneratorRequest>(@io::stdio::stdin() as @Reader);
     let gen_options = GenOptions {
         dummy: false,
     };

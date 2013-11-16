@@ -5,9 +5,9 @@
 extern mod protobuf;
 extern mod extra;
 
-use std::rt::io::fs::*;
-use std::rt::io::Reader;
-use std::rt::io::Writer;
+use std::io::fs::*;
+use std::io::Reader;
+use std::io::Writer;
 use std::path::Path;
 use std::os;
 use extra::getopts;

@@ -1,4 +1,4 @@
-use std::rt::io::Writer;
+use std::io::Writer;
 use std::cast;
 
 use descriptor::*;
