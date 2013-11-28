@@ -3,20 +3,20 @@ use std::io::Reader;
 use std::vec;
 
 struct VecWriter {
-    vec: @mut ~[u8],
+    vec: ~[u8],
 }
 
 impl VecWriter {
     pub fn new() -> @mut VecWriter {
         @mut VecWriter {
-            vec: @mut ~[],
+            vec: ~[],
         } // as @Writer
     }
 }
 
 impl Writer for VecWriter {
     fn write(&mut self, v: &[u8]) {
-        (*(self.vec)).push_all(v);
+        self.vec.push_all(v);
     }
 
     fn flush(&mut self) {
@@ -25,28 +25,28 @@ impl Writer for VecWriter {
 }
 
 struct VecReader {
-    vec: @~[u8],
-    pos: @mut uint,
+    vec: ~[u8],
+    pos: uint,
 }
 
 impl VecReader {
-    pub fn new(bytes: @~[u8]) -> @VecReader {
+    pub fn new(bytes: ~[u8]) -> @VecReader {
         @VecReader {
             vec: bytes,
-            pos: @mut 0,
+            pos: 0,
         }
     }
 
     fn remaining(&self) -> uint {
-        (*self.vec).len() - *self.pos
+        self.vec.len() - self.pos
     }
 }
 
 impl Reader for VecReader {
     fn read(&mut self, bytes: &mut [u8]) -> Option<uint> {
         let n = if bytes.len() < self.remaining() { bytes.len() } else { self.remaining() };
-        vec::bytes::copy_memory(bytes, (*self.vec).slice(*self.pos, (*self.vec).len()), n);
-        *self.pos += n;
+        vec::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.vec.len()), n);
+        self.pos += n;
         Some(n)
     }
 
@@ -58,20 +58,20 @@ impl Reader for VecReader {
 
 
 struct CountWriter {
-    count: @mut uint,
+    count: uint,
 }
 
 impl CountWriter {
     pub fn new() -> @mut CountWriter {
         @mut CountWriter {
-            count: @mut 0,
+            count: 0,
         }
     }
 }
 
 impl Writer for CountWriter {
     fn write(&mut self, v: &[u8]) {
-        *self.count += v.len();
+        self.count += v.len();
     }
 }
 
@@ -96,6 +96,6 @@ mod test {
         let w = CountWriter::new();
         (w as @mut Writer).write("hi".as_bytes());
         (w as @mut Writer).write("there".as_bytes());
-        assert_eq!(7, *w.count);
+        assert_eq!(7, w.count);
     }
 }

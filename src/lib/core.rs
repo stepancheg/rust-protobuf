@@ -385,7 +385,7 @@ fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream|) -> ~[u8] {
     (w as @Writer).with_coded_output_stream(|os| {
         cb(os)
     });
-    (*w.vec).to_owned()
+    w.vec.to_owned()
 }
 
 trait WithCodedInputStream {
@@ -406,7 +406,7 @@ impl WithCodedInputStream for @Reader {
 
 impl<'self> WithCodedInputStream for &'self [u8] {
     fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T {
-        let reader = VecReader::new(@self.to_owned());
+        let reader = VecReader::new(self.to_owned());
         (reader as @Reader).with_coded_input_stream(|is| {
             cb(is)
         })
