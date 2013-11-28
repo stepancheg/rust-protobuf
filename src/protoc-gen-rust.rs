@@ -25,11 +25,11 @@ fn main() {
     };
     let result = gen(req.proto_file, &gen_options);
     let mut resp = CodeGeneratorResponse::new();
-    resp.file = do result.map |file| {
+    resp.file = result.map(|file| {
         let mut r = CodeGeneratorResponse_File::new();
         r.name = Some(file.name.to_owned());
         r.content = Some(str::from_utf8(file.content));
         r
-    };
+    });
     resp.write_to_writer(@io::stdout() as @Writer);
 }

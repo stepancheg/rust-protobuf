@@ -42,9 +42,9 @@ fn encode_hex_byte(byte: u8) -> [char, ..2] {
 }
 
 pub fn encode_hex(bytes: &[u8]) -> ~str {
-    (do bytes.map |byte| {
+    (bytes.map(|byte| {
         str::from_chars(encode_hex_byte(*byte))
-    }).connect(" ")
+    })).connect(" ")
 }
 
 #[cfg(test)]

@@ -196,12 +196,12 @@ impl<'self> Message {
             pkg: pkg.to_owned(),
             prefix: prefix.to_owned(),
             type_name: prefix + proto_message.name.get_ref().to_owned(),
-            fields: do proto_message.field.flat_map |field| {
+            fields: proto_message.field.flat_map(|field| {
                 match Field::parse(field, pkg) {
                     Some(field) => ~[field],
                     None => ~[]
                 }
-            },
+            }),
         }
     }
 
@@ -252,7 +252,7 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn bind_message<T>(&self, msg: &Message, cb: &fn(&IndentWriter) -> T) -> T {
+    fn bind_message<T>(&self, msg: &Message, cb: |&IndentWriter| -> T) -> T {
         cb(&IndentWriter {
             writer: self.writer,
             indent: self.indent.to_owned(),
@@ -261,7 +261,7 @@ impl<'self> IndentWriter<'self> {
         })
     }
 
-    fn bind_field<T>(&self, field: &'self Field, cb: &fn(&IndentWriter) -> T) -> T {
+    fn bind_field<T>(&self, field: &'self Field, cb: |&IndentWriter| -> T) -> T {
         assert!(self.msg.is_some());
         cb(&IndentWriter {
             writer: self.writer,
@@ -271,7 +271,7 @@ impl<'self> IndentWriter<'self> {
         })
     }
 
-    fn fields(&self, cb: &fn(&IndentWriter)) {
+    fn fields(&self, cb: |&IndentWriter|) {
         let fields = &self.msg.get_ref().fields;
         let mut iter = fields.iter();
         for field in iter {
@@ -279,7 +279,7 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn required_fields(&self, cb: &fn(&IndentWriter)) {
+    fn required_fields(&self, cb: |&IndentWriter|) {
         let fields = &self.msg.get_ref().required_fields();
         let mut iter = fields.iter();
         for field in iter {
@@ -315,11 +315,11 @@ impl<'self> IndentWriter<'self> {
         format!("{:s}.is_none()", self.self_field())
     }
 
-    fn if_self_field_is_some(&self, cb: &fn(&IndentWriter)) {
+    fn if_self_field_is_some(&self, cb: |&IndentWriter|) {
         self.if_stmt(self.self_field_is_some(), cb);
     }
 
-    fn if_self_field_is_none(&self, cb: &fn(&IndentWriter)) {
+    fn if_self_field_is_none(&self, cb: |&IndentWriter|) {
         self.if_stmt(self.self_field_is_none(), cb);
     }
 
@@ -381,7 +381,7 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn indented(&self, cb: &fn(&IndentWriter)) {
+    fn indented(&self, cb: |&IndentWriter|) {
         cb(&IndentWriter {
             writer: self.writer,
             indent: self.indent + "    ",
@@ -390,7 +390,7 @@ impl<'self> IndentWriter<'self> {
         });
     }
 
-    fn commented(&self, cb: &fn(&IndentWriter)) {
+    fn commented(&self, cb: |&IndentWriter|) {
         cb(&IndentWriter {
             writer: self.writer,
             indent: "// " + self.indent,
@@ -399,41 +399,41 @@ impl<'self> IndentWriter<'self> {
         });
     }
 
-    fn block(&self, first_line: &str, last_line: &str, cb: &fn(&IndentWriter)) {
+    fn block(&self, first_line: &str, last_line: &str, cb: |&IndentWriter|) {
         self.write_line(first_line);
         self.indented(cb);
         self.write_line(last_line);
     }
 
-    fn expr_block(&self, prefix: &str, cb: &fn(&IndentWriter)) {
+    fn expr_block(&self, prefix: &str, cb: |&IndentWriter|) {
         self.block(prefix + " {", "}", cb);
     }
 
-    fn stmt_block(&self, prefix: &str, cb: &fn(&IndentWriter)) {
+    fn stmt_block(&self, prefix: &str, cb: |&IndentWriter|) {
         self.block(prefix + " {", "};", cb);
     }
 
-    fn impl_block(&self, name: &str, cb: &fn(&IndentWriter)) {
+    fn impl_block(&self, name: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("impl {:s}", name), cb);
     }
 
-    fn impl_self_block(&self, name: &str, cb: &fn(&IndentWriter)) {
+    fn impl_self_block(&self, name: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("impl<'self> {:s}", name), cb);
     }
 
-    fn impl_for_block(&self, tr: &str, ty: &str, cb: &fn(&IndentWriter)) {
+    fn impl_for_block(&self, tr: &str, ty: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("impl {:s} for {:s}", tr, ty), cb);
     }
 
-    fn pub_struct(&self, name: &str, cb: &fn(&IndentWriter)) {
+    fn pub_struct(&self, name: &str, cb: |&IndentWriter|) {
         self.expr_block("pub struct " + name, cb);
     }
 
-    fn def_struct(&self, name: &str, cb: &fn(&IndentWriter)) {
+    fn def_struct(&self, name: &str, cb: |&IndentWriter|) {
         self.expr_block("struct " + name, cb);
     }
 
-    fn def_mod(&self, name: &str, cb: &fn(&IndentWriter)) {
+    fn def_mod(&self, name: &str, cb: |&IndentWriter|) {
         self.expr_block("mod " + name, cb);
     }
 
@@ -457,38 +457,38 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn pub_fn(&self, sig: &str, cb: &fn(&IndentWriter)) {
+    fn pub_fn(&self, sig: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("pub fn {:s}", sig), cb);
     }
 
-    fn def_fn(&self, sig: &str, cb: &fn(&IndentWriter)) {
+    fn def_fn(&self, sig: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("fn {:s}", sig), cb);
     }
 
-    fn while_block(&self, cond: &str, cb: &fn(&IndentWriter)) {
+    fn while_block(&self, cond: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("while {:s}", cond), cb);
     }
 
-    fn if_stmt(&self, cond: &str, cb: &fn(&IndentWriter)) {
+    fn if_stmt(&self, cond: &str, cb: |&IndentWriter|) {
         self.stmt_block(format!("if {:s}", cond), cb);
     }
 
-    fn for_stmt(&self, over: &str, varn: &str, cb: &fn(&IndentWriter)) {
+    fn for_stmt(&self, over: &str, varn: &str, cb: |&IndentWriter|) {
         match USE_RUST_VERSION {
             Rust07     => self.stmt_block(format!("for {:s}.advance |{:s}|", over, varn), cb),
             RustMaster => self.stmt_block(format!("for {:s} in {:s}", varn, over), cb),
         }
     }
 
-    fn match_block(&self, value: &str, cb: &fn(&IndentWriter)) {
+    fn match_block(&self, value: &str, cb: |&IndentWriter|) {
         self.stmt_block(format!("match {:s}", value), cb);
     }
 
-    fn match_expr(&self, value: &str, cb: &fn(&IndentWriter)) {
+    fn match_expr(&self, value: &str, cb: |&IndentWriter|) {
         self.expr_block(format!("match {:s}", value), cb);
     }
 
-    fn case_block(&self, cond: &str, cb: &fn(&IndentWriter)) {
+    fn case_block(&self, cond: &str, cb: |&IndentWriter|) {
         self.block(format!("{:s} => \\{", cond), "},", cb);
     }
 
@@ -550,19 +550,19 @@ fn write_merge_from_field(w: &IndentWriter) {
         },
         RepeatPacked => {
             w.write_line(format!("if wire_type == wire_format::{:?} \\{", wire_format::WireTypeLengthDelimited));
-            do w.indented |w| {
+            w.indented(|w| {
                 w.write_line("let len = is.read_raw_varint32();");
                 w.write_line("let old_limit = is.push_limit(len);");
-                do w.while_block("!is.eof()") |w| {
+                w.while_block("!is.eof()", |w| {
                     w.self_field_push(*read_proc.get_ref());
-                };
+                });
                 w.write_line("is.pop_limit(old_limit);");
-            }
+            });
             w.write_line("} else {");
-            do w.indented |w| {
+            w.indented(|w| {
                 w.write_line(format!("assert_eq!(wire_format::{:?}, wire_type);", wire_type));
                 w.self_field_push(*read_proc.get_ref());
-            }
+            });
             w.write_line("}");
         },
     };
@@ -572,76 +572,76 @@ fn write_message(msg: &Message, w: &IndentWriter) {
     let pkg = msg.pkg.as_slice();
     let message_type = &msg.proto_message;
 
-    do w.bind_message(msg) |w| {
+    w.bind_message(msg, |w| {
         w.write_line(format!("\\#[deriving(Clone,Eq)]"));
-        do w.pub_struct(msg.type_name) |w| {
-            do w.fields |w| {
+        w.pub_struct(msg.type_name, |w| {
+            w.fields(|w| {
                 let field = w.field.unwrap();
                 if !field.type_name.contains_char('.') {
                     w.field_entry(field.name, field.full_type());
                 }
-            }
+            });
             if msg.fields.is_empty() {
                 w.field_entry("dummy", "bool");
             }
-        }
+        });
 
         w.write_line("");
-        do w.impl_self_block(msg.type_name) |w| {
-            do w.pub_fn(format!("new() -> {:s}", msg.type_name)) |w| {
-                do w.expr_block(msg.type_name) |w| {
-                    do w.fields |w| {
+        w.impl_self_block(msg.type_name, |w| {
+            w.pub_fn(format!("new() -> {:s}", msg.type_name), |w| {
+                w.expr_block(msg.type_name, |w| {
+                    w.fields(|w| {
                         w.field_default();
-                    }
+                    });
                     if msg.fields.is_empty() {
                         w.field_entry("dummy", "false");
                     }
-                }
-            }
+                });
+            });
 
             w.write_line("");
-            do w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name)) |w| {
+            w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
                 fn write_body(w: &IndentWriter) {
                     let msg = w.msg.get_ref();
-                    do w.stmt_block(format!("static instance: {:s} = {:s}", msg.type_name, msg.type_name)) |w| {
-                        do w.fields |w| {
+                    w.stmt_block(format!("static instance: {:s} = {:s}", msg.type_name, msg.type_name), |w| {
+                        w.fields(|w| {
                             w.field_default();
-                        }
+                        });
                         if msg.fields.is_empty() {
                             w.field_entry("dummy", "false");
                         }
-                    }
+                    });
                     w.write_line("&'static instance");
                 }
                 if msg.has_any_repeated_field() {
-                    do w.commented |w| {
+                    w.commented(|w| {
                         w.comment("doesn't work, because rust doen't implement \
                                 static constants of types like ~str");
                         w.comment("https://github.com/mozilla/rust/issues/8406");
                         write_body(w);
-                    }
+                    });
                     w.todo();
                 } else if USE_RUST_VERSION == RustMaster {
-                    do w.commented |w| {
+                    w.commented(|w| {
                         w.comment("doesn't work, because rust master has broken \
                                 static constants that contains None of ~str");
                         w.comment("https://github.com/mozilla/rust/issues/8578");
                         w.comment("TODO: should at least keep static without ~str");
                         write_body(w);
-                    }
+                    });
                     w.todo();
                 } else {
                     write_body(w)
                 }
-            }
+            });
 
             w.write_line("");
             if !msg.has_any_message_field() {
                 // `sizes` and `sizes_pos` are unused
                 w.write_line("#[allow(unused_variable)]");
             }
-            do w.pub_fn("write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)") |w| {
-                do w.fields |w| {
+            w.pub_fn("write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
+                w.fields(|w| {
                     let field = w.field();
                     let field_type = field.field_type;
                     let write_method_suffix = match field_type {
@@ -669,41 +669,41 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                     };
                     match field.repeat_mode {
                         Single => {
-                            do w.match_block(w.self_field()) |w| {
-                                do w.case_block("Some(ref v)") |w| {
+                            w.match_block(w.self_field(), |w| {
+                                w.case_block("Some(ref v)", |w| {
                                     w.write_lines(write_value_lines);
-                                };
+                                });
                                 w.case_expr("None", "{}");
-                            }
+                            });
                         },
                         RepeatPacked => {
-                            do w.if_stmt(format!("!{:s}.is_empty()", w.self_field())) |w| {
+                            w.if_stmt(format!("!{:s}.is_empty()", w.self_field()), |w| {
                                 w.write_line(format!("os.write_tag({:d}, wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
                                 w.write_line(format!("os.write_raw_varint32(rt::vec_packed_data_size({:s}, wire_format::{:?}));", w.self_field(), field_type_wire_type(field.field_type)));
-                                do w.for_stmt(format!("{:s}.iter()", w.self_field()), "v") |w| {
+                                w.for_stmt(format!("{:s}.iter()", w.self_field()), "v", |w| {
                                     w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
-                                }
-                            }
+                                });
+                            });
                         },
                         RepeatRegular => {
-                            do w.for_stmt(format!("{:s}.iter()", w.self_field()), "v") |w| {
+                            w.for_stmt(format!("{:s}.iter()", w.self_field()), "v", |w| {
                                 w.write_lines(write_value_lines);
-                            }
+                            });
                         },
                     };
-                }
-            }
-            do w.fields |w| {
+                });
+            });
+            w.fields(|w| {
                 w.write_line("");
-                do w.pub_fn(format!("{:s}(&mut self)", w.clear_field_func())) |w| {
+                w.pub_fn(format!("{:s}(&mut self)", w.clear_field_func()), |w| {
                     w.clear_field();
-                }
+                });
 
                 if !w.field().repeated {
                     w.write_line("");
-                    do w.pub_fn(format!("has_{:s}(&self) -> bool", w.field().name)) |w| {
+                    w.pub_fn(format!("has_{:s}(&self) -> bool", w.field().name), |w| {
                         w.write_line(w.self_field_is_some());
-                    }
+                    });
                 }
 
                 let set_param_type = if w.field().repeated {
@@ -714,30 +714,30 @@ fn write_message(msg: &Message, w: &IndentWriter) {
 
                 w.write_line("");
                 w.comment("Param is passed by value, moved");
-                do w.pub_fn(format!("set_{:s}(&mut self, v: {:s})", w.field().name, set_param_type)) |w| {
+                w.pub_fn(format!("set_{:s}(&mut self, v: {:s})", w.field().name, set_param_type), |w| {
                     if w.field().repeated {
                         w.self_field_assign("v");
                     } else {
                         w.self_field_assign_some("v");
                     }
-                }
+                });
 
                 w.write_line("");
                 w.comment("Mutable pointer to the field.");
                 if !w.field().repeated {
                     w.comment("If field is not initialized, it is initialized with default value first.");
                 }
-                do w.pub_fn(format!("mut_{:s}(&'self mut self) -> &'self mut {:s}", w.field().name, set_param_type))
+                w.pub_fn(format!("mut_{:s}(&'self mut self) -> &'self mut {:s}", w.field().name, set_param_type),
                 |w| {
                     if !w.field().repeated {
-                        do w.if_self_field_is_none |w| {
+                        w.if_self_field_is_none(|w| {
                             w.self_field_assign_some(w.field_type_default());
-                        }
+                        });
                         w.write_line(format!("{:s}.get_mut_ref()", w.self_field()));
                     } else {
                         w.write_line(format!("&mut {:s}", w.self_field()));
                     }
-                }
+                });
 
                 w.write_line("");
                 let return_reference = w.field().repeated || match w.field().field_type {
@@ -761,11 +761,11 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                     true  => "&'self self",
                     false => "&self",
                 };
-                do w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type))
+                w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type),
                 |w| {
                     if !w.field().repeated {
                         if return_reference {
-                            do w.match_expr(w.self_field()) |w| {
+                            w.match_expr(w.self_field(), |w| {
                                 w.case_expr(
                                     "Some(ref v)",
                                     match w.field().field_type {
@@ -783,7 +783,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                                         _            => fail!(),
                                     }
                                 );
-                            }
+                            });
                         } else {
                             let get_name = match USE_RUST_VERSION {
                                 Rust07     => "get_or_default",
@@ -798,67 +798,67 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                     } else {
                         w.write_line(format!("rt::as_slice_tmp(&{:s})", w.self_field()));
                     }
-                }
+                });
 
                 if w.field().repeated {
                     w.write_line("");
-                    do w.pub_fn(format!("add_{:s}(&mut self, v: {:s})",
-                            w.field().name, w.field().type_name.to_owned()))
+                    w.pub_fn(format!("add_{:s}(&mut self, v: {:s})",
+                            w.field().name, w.field().type_name.to_owned()),
                     |w| {
                         w.self_field_push("v");
-                    }
+                    });
                 }
-            }
-        }
+            });
+        });
 
         w.write_line("");
 
-        do w.impl_for_block("Message", msg.type_name) |w| {
-            do w.def_fn(format!("new() -> {:s}", msg.type_name)) |w| {
+        w.impl_for_block("Message", msg.type_name, |w| {
+            w.def_fn(format!("new() -> {:s}", msg.type_name), |w| {
                 w.write_line(format!("{:s}::new()", msg.type_name));
-            }
+            });
             w.write_line("");
-            do w.def_fn("clear(&mut self)") |w| {
-                do w.fields |w| {
+            w.def_fn("clear(&mut self)", |w| {
+                w.fields(|w| {
                     w.write_line(format!("self.{:s}();", w.clear_field_func()));
-                }
-            }
+                });
+            });
             w.write_line("");
-            do w.def_fn(format!("is_initialized(&self) -> bool")) |w| {
-                do w.required_fields |w| {
-                    do w.if_self_field_is_none |w| {
+            w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
+                w.required_fields(|w| {
+                    w.if_self_field_is_none(|w| {
                         w.write_line("return false;");
-                    }
-                }
+                    });
+                });
                 w.write_line("true");
-            }
+            });
             w.write_line("");
-            do w.def_fn(format!("merge_from(&mut self, is: &mut CodedInputStream)")) |w| {
-                do w.while_block("!is.eof()") |w| {
+            w.def_fn(format!("merge_from(&mut self, is: &mut CodedInputStream)"), |w| {
+                w.while_block("!is.eof()", |w| {
                     w.write_line(format!("let (field_number, wire_type) = is.read_tag_unpack();"));
-                    do w.match_block("field_number") |w| {
-                        do w.fields |w| {
-                            do w.case_block(w.field().number.to_str()) |w| {
+                    w.match_block("field_number", |w| {
+                        w.fields(|w| {
+                            w.case_block(w.field().number.to_str(), |w| {
                                 write_merge_from_field(w);
-                            }
-                        }
-                        do w.case_block("_") |w| {
+                            });
+                        });
+                        w.case_block("_", |w| {
                             w.write_line(format!("// TODO: store in unknown fields"));
                             w.write_line(format!("is.skip_field(wire_type);"));
-                        }
-                    }
-                }
-            }
+                        });
+                    });
+                });
+            });
             w.write_line("");
             // Append sizes of messages in the tree to the specified vector.
             // First appended element is size of self, and then nested message sizes.
             // in serialization order are appended recursively.");
             w.comment("Compute sizes of nested messages");
-            do w.def_fn("compute_sizes(&self, sizes: &mut ~[u32]) -> u32") |w| {
+            w.def_fn("compute_sizes(&self, sizes: &mut ~[u32]) -> u32", |w| {
                 w.write_line("let pos = sizes.len();");
                 w.write_line("sizes.push(0);");
                 w.write_line("let mut my_size = 0;");
-                do w.fields |w| {
+                w.fields(|w| {
                     let field = w.field();
                     match field.repeat_mode {
                         Single | RepeatRegular => {
@@ -870,15 +870,15 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                                                 (s + rt::tag_size(field.number)) as int,
                                                 w.self_field()));
                                     } else {
-                                        do w.if_self_field_is_some |w| {
+                                        w.if_self_field_is_some(|w| {
                                             w.write_line(format!(
                                                     "my_size += {:d};",
                                                     (s + rt::tag_size(field.number)) as int));
-                                        }
+                                        });
                                     }
                                 },
                                 None => {
-                                    do w.for_stmt(format!("{:s}.iter()", w.self_field()), "value") |w| {
+                                    w.for_stmt(format!("{:s}.iter()", w.self_field()), "value", |w| {
                                         match field.field_type {
                                             TYPE_MESSAGE => {
                                                 w.write_line("let len = value.compute_sizes(sizes);");
@@ -904,7 +904,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                                                         field.number as int, field.wire_type));
                                             },
                                         }
-                                    }
+                                    });
                                 },
                             };
                         },
@@ -914,21 +914,21 @@ fn write_message(msg: &Message, w: &IndentWriter) {
                                     field.number as int, w.self_field(), field.wire_type));
                         },
                     };
-                }
+                });
                 w.write_line("sizes[pos] = my_size;");
                 w.comment("value is returned for convenience");
                 w.write_line("my_size");
-            }
+            });
             w.write_line("");
-            do w.def_fn("write_to(&self, os: &mut CodedOutputStream)") |w| {
+            w.def_fn("write_to(&self, os: &mut CodedOutputStream)", |w| {
                 w.write_line("self.check_initialized();");
                 w.write_line("let mut sizes: ~[u32] = ~[];");
                 w.write_line("self.compute_sizes(&mut sizes);");
                 w.write_line("let mut sizes_pos = 1; // first element is self");
                 w.write_line("self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);");
                 w.write_line("assert_eq!(sizes_pos, sizes.len());");
-            }
-        }
+            });
+        });
 
         for nested_type in message_type.nested_type.iter() {
             w.write_line("");
@@ -939,7 +939,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
             w.write_line("");
             write_enum(msg.type_name + "_", w, enum_type);
         }
-    }
+    });
 }
 
 fn write_enum(prefix: &str, w: &IndentWriter, enum_type: &EnumDescriptorProto) {
@@ -951,24 +951,24 @@ fn write_enum(prefix: &str, w: &IndentWriter, enum_type: &EnumDescriptorProto) {
     }
     w.write_line(format!("\\}"));
     w.write_line("");
-    do w.impl_block(enum_type_name) |w| {
-        do w.pub_fn(format!("new(value: i32) -> {:s}", enum_type_name)) |w| {
-            do w.match_expr("value") |w| {
+    w.impl_block(enum_type_name, |w| {
+        w.pub_fn(format!("new(value: i32) -> {:s}", enum_type_name), |w| {
+            w.match_expr("value", |w| {
                 for value in enum_type.value.iter() {
                     let value_number = value.number.unwrap();
                     let value_name = value.name.get_ref().to_owned();
                     w.write_line(format!("{:d} => {:s},", value_number as int, value_name));
                 }
                 w.write_line(format!("_ => fail!()"));
-            }
-        }
-    }
+            });
+        });
+    });
     w.write_line("");
-    do w.impl_for_block("ProtobufEnum", enum_type_name) |w| {
-        do w.def_fn("value(&self) -> i32") |w| {
+    w.impl_for_block("ProtobufEnum", enum_type_name, |w| {
+        w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
-        }
-    }
+        });
+    });
 }
 
 fn remove_to<'s>(s: &'s str, c: char) -> &'s str {

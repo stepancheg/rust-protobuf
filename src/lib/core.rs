@@ -129,13 +129,13 @@ impl CodedInputStream {
                 self.total_bytes_retired += self.buffer_size;
                 self.buffer_pos = 0;
                 let mut_reader: @mut Reader = unsafe { cast::transmute(reader) };
-                self.buffer_size = do io_error::cond.trap(|e| {
+                self.buffer_size = io_error::cond.trap(|e| {
                     if e.kind != EndOfFile {
                         io_error::cond.raise(e);
                     };
-                }).inside {
+                }).inside(|| {
                     mut_reader.read(self.buffer).unwrap_or(0) as u32
-                };
+                });
                 if self.buffer_size == 0 {
                     return false;
                 }
@@ -368,11 +368,11 @@ impl CodedInputStream {
 }
 
 trait WithCodedOutputStream {
-    fn with_coded_output_stream<T>(&self, cb: &fn(&mut CodedOutputStream) -> T) -> T;
+    fn with_coded_output_stream<T>(&self, cb: |&mut CodedOutputStream| -> T) -> T;
 }
 
 impl WithCodedOutputStream for @Writer {
-    fn with_coded_output_stream<T>(&self, cb: &fn(&mut CodedOutputStream) -> T) -> T {
+    fn with_coded_output_stream<T>(&self, cb: |&mut CodedOutputStream| -> T) -> T {
         let mut os = CodedOutputStream::new(*self);
         let r = cb(&mut os);
         os.flush();
@@ -380,20 +380,20 @@ impl WithCodedOutputStream for @Writer {
     }
 }
 
-fn with_coded_output_stream_to_bytes(cb: &fn(&mut CodedOutputStream)) -> ~[u8] {
+fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream|) -> ~[u8] {
     let w = VecWriter::new();
-    do (w as @Writer).with_coded_output_stream |os| {
+    (w as @Writer).with_coded_output_stream(|os| {
         cb(os)
-    }
+    });
     (*w.vec).to_owned()
 }
 
 trait WithCodedInputStream {
-    fn with_coded_input_stream<T>(&self, cb: &fn(&mut CodedInputStream) -> T) -> T;
+    fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T;
 }
 
 impl WithCodedInputStream for @Reader {
-    fn with_coded_input_stream<T>(&self, cb: &fn(&mut CodedInputStream) -> T) -> T {
+    fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T {
         let mut is = CodedInputStream::new(*self);
         let r = cb(&mut is);
         // reading from @Reader requires all data to be read,
@@ -405,11 +405,11 @@ impl WithCodedInputStream for @Reader {
 }
 
 impl<'self> WithCodedInputStream for &'self [u8] {
-    fn with_coded_input_stream<T>(&self, cb: &fn(&mut CodedInputStream) -> T) -> T {
+    fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T {
         let reader = VecReader::new(@self.to_owned());
-        do (reader as @Reader).with_coded_input_stream |is| {
+        (reader as @Reader).with_coded_input_stream(|is| {
             cb(is)
-        }
+        })
     }
 }
 
@@ -690,15 +690,15 @@ pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {
 }
 
 pub fn parse_from_reader<M : Message>(reader: @Reader) -> M {
-    do reader.with_coded_input_stream |is| {
+    reader.with_coded_input_stream(|is| {
         parse_from::<M>(is)
-    }
+    })
 }
 
 pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> M {
-    do bytes.with_coded_input_stream |is| {
+    bytes.with_coded_input_stream(|is| {
         parse_from::<M>(is)
-    }
+    })
 }
 
 pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M {
@@ -707,15 +707,15 @@ pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M 
 
 pub fn parse_length_delimited_from_reader<M : Message>(r: @Reader) -> M {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
-    do r.with_coded_input_stream |is| {
+    r.with_coded_input_stream(|is| {
         is.read_message::<M>()
-    }
+    })
 }
 
 pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> M {
-    do bytes.with_coded_input_stream |is| {
+    bytes.with_coded_input_stream(|is| {
         is.read_message::<M>()
-    }
+    })
 }
 
 
@@ -732,15 +732,15 @@ impl<M : Message> MessageUtil for M {
     }
 
     fn write_to_writer(&self, w: @Writer) {
-        do w.with_coded_output_stream |os| {
+        w.with_coded_output_stream(|os| {
             self.write_to(os);
-        }
+        })
     }
 
     fn write_to_bytes(&self) -> ~[u8] {
-        do with_coded_output_stream_to_bytes |os| {
+        with_coded_output_stream_to_bytes(|os| {
             self.write_to(os)
-        }
+        })
     }
 
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream) {
@@ -749,15 +749,15 @@ impl<M : Message> MessageUtil for M {
     }
 
     fn write_length_delimited_to_writer(&self, w: @Writer) {
-        do w.with_coded_output_stream |os| {
+        w.with_coded_output_stream(|os| {
             self.write_length_delimited_to(os);
-        }
+        })
     }
 
     fn write_length_delimited_to_bytes(&self) -> ~[u8] {
-        do with_coded_output_stream_to_bytes |os| {
+        with_coded_output_stream_to_bytes(|os| {
             self.write_length_delimited_to(os);
-        }
+        })
     }
 
 }
@@ -771,7 +771,7 @@ mod test {
     use misc::*;
     use hex::*;
 
-    fn test_read(hex: &str, callback: &fn(&mut CodedInputStream)) {
+    fn test_read(hex: &str, callback: |&mut CodedInputStream|) {
         let d = decode_hex(hex);
         let len = d.len();
         let reader = @MemReader::new(d) as @Reader;
@@ -784,66 +784,66 @@ mod test {
 
     #[test]
     fn test_input_stream_read_raw_byte() {
-        do test_read("17") |is| {
+        test_read("17", |is| {
             assert_eq!(23, is.read_raw_byte());
-        }
+        });
     }
 
     #[test]
     fn test_input_stream_read_varint() {
-        do test_read("07") |reader| {
+        test_read("07", |reader| {
             assert_eq!(7, reader.read_raw_varint32());
-        }
-        do test_read("07") |reader| {
+        });
+        test_read("07", |reader| {
             assert_eq!(7, reader.read_raw_varint64());
-        }
-        do test_read("96 01") |reader| {
+        });
+        test_read("96 01", |reader| {
             assert_eq!(150, reader.read_raw_varint32());
-        }
-        do test_read("96 01") |reader| {
+        });
+        test_read("96 01", |reader| {
             assert_eq!(150, reader.read_raw_varint64());
-        }
+        });
     }
 
     #[test]
     fn test_output_input_stream_read_float() {
-        do test_read("95 73 13 61") |is| {
+        test_read("95 73 13 61", |is| {
             assert_eq!(17e19, is.read_float());
-        }
+        });
     }
 
     #[test]
     fn test_input_stream_read_double() {
-        do test_read("40 d5 ab 68 b3 07 3d 46") |is| {
+        test_read("40 d5 ab 68 b3 07 3d 46", |is| {
             assert_eq!(23e29, is.read_double());
-        }
+        });
     }
 
     #[test]
     fn test_input_stream_skip_raw_bytes() {
-        do test_read("") |reader| {
+        test_read("", |reader| {
             reader.skip_raw_bytes(0);
-        }
-        do test_read("aa bb") |reader| {
+        });
+        test_read("aa bb", |reader| {
             reader.skip_raw_bytes(2);
-        }
-        do test_read("aa bb cc dd ee ff") |reader| {
+        });
+        test_read("aa bb cc dd ee ff", |reader| {
             reader.skip_raw_bytes(6);
-        }
+        });
     }
 
     #[test]
     fn test_input_stream_limits() {
-        do test_read("aa bb cc") |is| {
+        test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1);
             assert_eq!(1, is.bytes_until_limit());
             assert_eq!(~[0xaa], is.read_raw_bytes(1));
             is.pop_limit(old_limit);
             assert_eq!(~[0xbb, 0xcc], is.read_raw_bytes(2));
-        }
+        });
     }
 
-    fn test_write(expected: &str, gen: &fn(&mut CodedOutputStream)) {
+    fn test_write(expected: &str, gen: |&mut CodedOutputStream|) {
         let writer = VecWriter::new();
         let mut os = CodedOutputStream::new(writer as @Writer);
         gen(&mut os);
@@ -854,64 +854,64 @@ mod test {
 
     #[test]
     fn test_output_stream_write_raw_byte() {
-        do test_write("a1") |os| {
+        test_write("a1", |os| {
             os.write_raw_byte(0xa1);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_tag() {
-        do test_write("08") |os| {
+        test_write("08", |os| {
             os.write_tag(1, wire_format::WireTypeVarint);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_raw_bytes() {
-        do test_write("00 ab") |os| {
+        test_write("00 ab", |os| {
             os.write_raw_bytes([0x00, 0xab]);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_raw_varint32() {
-        do test_write("96 01") |os| {
+        test_write("96 01", |os| {
             os.write_raw_varint32(150);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_raw_varint64() {
-        do test_write("96 01") |os| {
+        test_write("96 01", |os| {
             os.write_raw_varint64(150);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_raw_little_endian32() {
-        do test_write("f1 e2 d3 c4") |os| {
+        test_write("f1 e2 d3 c4", |os| {
             os.write_raw_little_endian32(0xc4d3e2f1);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_float_no_tag() {
-        do test_write("95 73 13 61") |os| {
+        test_write("95 73 13 61", |os| {
             os.write_float_no_tag(17e19);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_double_no_tag() {
-        do test_write("40 d5 ab 68 b3 07 3d 46") |os| {
+        test_write("40 d5 ab 68 b3 07 3d 46", |os| {
             os.write_double_no_tag(23e29);
-        }
+        });
     }
 
     #[test]
     fn test_output_stream_write_raw_little_endian64() {
-        do test_write("f1 e2 d3 c4 b5 a6 07 f8") |os| {
+        test_write("f1 e2 d3 c4 b5 a6 07 f8", |os| {
             os.write_raw_little_endian64(0xf807a6b5c4d3e2f1);
-        }
+        });
     }
 }
