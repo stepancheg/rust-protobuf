@@ -19,7 +19,7 @@ mod descriptor {
 mod plugin;
 
 fn main() {
-    let req = parse_from_reader::<CodeGeneratorRequest>(@io::stdio::stdin() as @Reader);
+    let req = parse_from_reader::<CodeGeneratorRequest>(&mut io::stdio::stdin() as &mut Reader);
     let gen_options = GenOptions {
         dummy: false,
     };
@@ -31,5 +31,5 @@ fn main() {
         r.content = Some(str::from_utf8(file.content));
         r
     });
-    resp.write_to_writer(@io::stdout() as @Writer);
+    resp.write_to_writer(&mut io::stdout() as &mut Writer);
 }

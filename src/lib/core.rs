@@ -70,18 +70,18 @@ pub mod wire_format {
 
 }
 
-pub struct CodedInputStream {
+pub struct CodedInputStream<'self> {
     buffer: ~[u8],
     buffer_size: u32,
     buffer_pos: u32,
-    reader: Option<@Reader>,
+    reader: Option<&'self mut Reader>,
     total_bytes_retired: u32,
     current_limit: u32,
     buffer_size_after_limit: u32,
 }
 
-impl CodedInputStream {
-    pub fn new(reader: @Reader) -> CodedInputStream {
+impl<'self> CodedInputStream<'self> {
+    pub fn new(reader: &'self mut Reader) -> CodedInputStream {
         CodedInputStream {
             // TODO: buffer of size 1 is used, because
             // impl Reader for FILE* (that is io::stdin()) does not not stop
@@ -124,25 +124,29 @@ impl CodedInputStream {
         if self.pos() == self.current_limit {
             return false;
         }
-        match self.reader {
-            Some(reader) => {
-                self.total_bytes_retired += self.buffer_size;
-                self.buffer_pos = 0;
-                let mut_reader: @mut Reader = unsafe { cast::transmute(reader) };
-                self.buffer_size = io_error::cond.trap(|e| {
-                    if e.kind != EndOfFile {
-                        io_error::cond.raise(e);
-                    };
-                }).inside(|| {
-                    mut_reader.read(self.buffer).unwrap_or(0) as u32
-                });
-                if self.buffer_size == 0 {
-                    return false;
-                }
-                self.recompute_buffer_size_after_limit();
-                true
-            },
-            None => false,
+        if self.reader.is_none() {
+            false
+        } else {
+            match self.reader {
+                Some(ref mut reader) => {
+                    self.total_bytes_retired += self.buffer_size;
+                    self.buffer_pos = 0;
+                    let mut_reader: &mut Reader = *reader;
+                    self.buffer_size = io_error::cond.trap(|e| {
+                        if e.kind != EndOfFile {
+                            io_error::cond.raise(e);
+                        };
+                    }).inside(|| {
+                        mut_reader.read(self.buffer).unwrap_or(0) as u32
+                    });
+                    if self.buffer_size == 0 {
+                        return false;
+                    }
+                },
+                None => fail!(),
+            }
+            self.recompute_buffer_size_after_limit();
+            true
         }
     }
 
@@ -368,12 +372,12 @@ impl CodedInputStream {
 }
 
 trait WithCodedOutputStream {
-    fn with_coded_output_stream<T>(&self, cb: |&mut CodedOutputStream| -> T) -> T;
+    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T;
 }
 
-impl WithCodedOutputStream for @Writer {
-    fn with_coded_output_stream<T>(&self, cb: |&mut CodedOutputStream| -> T) -> T {
-        let mut os = CodedOutputStream::new(*self);
+impl<'self> WithCodedOutputStream for &'self mut Writer {
+    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T {
+        let mut os = CodedOutputStream::new(self);
         let r = cb(&mut os);
         os.flush();
         r
@@ -381,22 +385,22 @@ impl WithCodedOutputStream for @Writer {
 }
 
 fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream|) -> ~[u8] {
-    let w = VecWriter::new();
-    (w as @Writer).with_coded_output_stream(|os| {
+    let mut w = VecWriter::new();
+    (&mut w as &mut Writer).with_coded_output_stream(|os| {
         cb(os)
     });
     w.vec.to_owned()
 }
 
 trait WithCodedInputStream {
-    fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T;
+    fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T;
 }
 
-impl WithCodedInputStream for @Reader {
-    fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T {
-        let mut is = CodedInputStream::new(*self);
+impl<'self> WithCodedInputStream for &'self mut Reader {
+    fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
+        let mut is = CodedInputStream::new(self);
         let r = cb(&mut is);
-        // reading from @Reader requires all data to be read,
+        // reading from Reader requires all data to be read,
         // because CodedInputStream caches data, and otherwize
         // buffer would be discarded
         assert!(is.eof());
@@ -405,23 +409,23 @@ impl WithCodedInputStream for @Reader {
 }
 
 impl<'self> WithCodedInputStream for &'self [u8] {
-    fn with_coded_input_stream<T>(&self, cb: |&mut CodedInputStream| -> T) -> T {
-        let reader = VecReader::new(self.to_owned());
-        (reader as @Reader).with_coded_input_stream(|is| {
+    fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
+        let mut reader = VecReader::new(self.to_owned());
+        (&mut reader as &mut Reader).with_coded_input_stream(|is| {
             cb(is)
         })
     }
 }
 
 
-pub struct CodedOutputStream {
+pub struct CodedOutputStream<'self> {
     buffer: ~[u8],
     position: u32,
-    writer: Option<@Writer>,
+    writer: Option<&'self mut Writer>,
 }
 
-impl CodedOutputStream {
-    pub fn new(writer: @Writer) -> CodedOutputStream {
+impl<'self> CodedOutputStream<'self> {
+    pub fn new(writer: &'self mut Writer) -> CodedOutputStream<'self> {
         CodedOutputStream {
             buffer: ~[0, ..4096],
             position: 0,
@@ -430,8 +434,12 @@ impl CodedOutputStream {
     }
 
     fn refresh_buffer(&mut self) {
-        let mut_writer: @mut Writer = unsafe { cast::transmute(self.writer.unwrap()) };
-        mut_writer.write(self.buffer.slice(0, self.position as uint));
+        match self.writer {
+            Some(ref mut writer) => {
+                writer.write(self.buffer.slice(0, self.position as uint));
+            },
+            None => fail!()
+        };
         self.position = 0;
     }
 
@@ -451,8 +459,10 @@ impl CodedOutputStream {
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) {
         self.refresh_buffer();
-        let mut_writer: @mut Writer = unsafe { cast::transmute(self.writer.unwrap()) };
-        mut_writer.write(bytes);
+        match self.writer {
+            Some(ref mut writer) => writer.write(bytes),
+            None => fail!()
+        };
     }
 
     pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) {
@@ -673,10 +683,10 @@ pub trait ProtobufEnum : Eq {
 pub trait MessageUtil {
     // broken in 0.7
     //fn parse_from_**(is: &mut Xxx) -> Self;
-    fn write_to_writer(&self, w: @Writer);
+    fn write_to_writer(&self, w: &mut Writer);
     fn write_to_bytes(&self) -> ~[u8];
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream);
-    fn write_length_delimited_to_writer(&self, w: @Writer);
+    fn write_length_delimited_to_writer(&self, w: &mut Writer);
     fn write_length_delimited_to_bytes(&self) -> ~[u8];
     fn serialized_size(&self) -> u32;
     fn check_initialized(&self);
@@ -689,7 +699,7 @@ pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {
     r
 }
 
-pub fn parse_from_reader<M : Message>(reader: @Reader) -> M {
+pub fn parse_from_reader<M : Message>(reader: &mut Reader) -> M {
     reader.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })
@@ -705,7 +715,7 @@ pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M 
     is.read_message::<M>()
 }
 
-pub fn parse_length_delimited_from_reader<M : Message>(r: @Reader) -> M {
+pub fn parse_length_delimited_from_reader<M : Message>(r: &mut Reader) -> M {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| {
         is.read_message::<M>()
@@ -731,7 +741,7 @@ impl<M : Message> MessageUtil for M {
         assert!(self.is_initialized());
     }
 
-    fn write_to_writer(&self, w: @Writer) {
+    fn write_to_writer(&self, w: &mut Writer) {
         w.with_coded_output_stream(|os| {
             self.write_to(os);
         })
@@ -748,7 +758,7 @@ impl<M : Message> MessageUtil for M {
         self.write_to(os);
     }
 
-    fn write_length_delimited_to_writer(&self, w: @Writer) {
+    fn write_length_delimited_to_writer(&self, w: &mut Writer) {
         w.with_coded_output_stream(|os| {
             self.write_length_delimited_to(os);
         })
@@ -774,8 +784,8 @@ mod test {
     fn test_read(hex: &str, callback: |&mut CodedInputStream|) {
         let d = decode_hex(hex);
         let len = d.len();
-        let reader = @MemReader::new(d) as @Reader;
-        let mut is = CodedInputStream::new(reader);
+        let mut reader = MemReader::new(d);
+        let mut is = CodedInputStream::new(&mut reader as &mut Reader);
         assert_eq!(0, is.pos());
         callback(&mut is);
         assert!(is.eof());
@@ -844,8 +854,8 @@ mod test {
     }
 
     fn test_write(expected: &str, gen: |&mut CodedOutputStream|) {
-        let writer = VecWriter::new();
-        let mut os = CodedOutputStream::new(writer as @Writer);
+        let mut writer = VecWriter::new();
+        let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
         gen(&mut os);
         os.flush();
         let r = writer.vec.to_owned();

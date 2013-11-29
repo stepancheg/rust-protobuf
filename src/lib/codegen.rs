@@ -236,14 +236,14 @@ impl<'self> Message {
 
 
 struct IndentWriter<'self> {
-    writer: @Writer,
+    writer: &'self Writer,
     indent: ~str,
     msg: Option<&'self Message>,
     field: Option<&'self Field>,
 }
 
 impl<'self> IndentWriter<'self> {
-    fn new(writer: @Writer) -> IndentWriter {
+    fn new(writer: &'self mut Writer) -> IndentWriter<'self> {
         IndentWriter {
             writer: writer,
             indent: ~"",
@@ -254,7 +254,7 @@ impl<'self> IndentWriter<'self> {
 
     fn bind_message<T>(&self, msg: &Message, cb: |&IndentWriter| -> T) -> T {
         cb(&IndentWriter {
-            writer: self.writer,
+            writer: unsafe { cast::transmute(self.writer) },
             indent: self.indent.to_owned(),
             msg: Some(msg),
             field: None,
@@ -366,7 +366,7 @@ impl<'self> IndentWriter<'self> {
     }
 
     fn write_line(&self, line: &str) {
-        let mut_writer: @mut Writer = unsafe { cast::transmute(self.writer) };
+        let mut_writer: &mut Writer = unsafe { cast::transmute(self.writer) };
         if line.is_empty() {
             mut_writer.write("\n".as_bytes())
         } else {
@@ -1030,32 +1030,33 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
     for file in files.iter() {
         let base = proto_path_to_rust_base(*file.name.get_ref());
 
-        let os0 = VecWriter::new();
-        let os = os0 as @Writer;
+        let mut os = VecWriter::new();
 
-        let w = IndentWriter::new(os);
+        {
+            let w = IndentWriter::new(&mut os as &mut Writer);
 
-        w.write_line("// This file is generated. Do not edit");
-        w.write_line("");
-
-        w.write_line("use protobuf::*;");
-        w.write_line("use protobuf::rt;");
-        for dep in file.dependency.iter() {
-            w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
-        }
-
-        for message_type in file.message_type.iter() {
+            w.write_line("// This file is generated. Do not edit");
             w.write_line("");
-            write_message(&Message::parse(message_type, *file.package.get_ref(), ""), &w);
-        }
-        for enum_type in file.enum_type.iter() {
-            w.write_line("");
-            write_enum("", &w, enum_type);
+
+            w.write_line("use protobuf::*;");
+            w.write_line("use protobuf::rt;");
+            for dep in file.dependency.iter() {
+                w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
+            }
+
+            for message_type in file.message_type.iter() {
+                w.write_line("");
+                write_message(&Message::parse(message_type, *file.package.get_ref(), ""), &w);
+            }
+            for enum_type in file.enum_type.iter() {
+                w.write_line("");
+                write_enum("", &w, enum_type);
+            }
         }
 
         results.push(GenResult {
             name: base + ".rs",
-            content: os0.vec.to_owned(),
+            content: os.vec.to_owned(),
         });
     }
     results

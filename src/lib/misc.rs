@@ -7,10 +7,10 @@ struct VecWriter {
 }
 
 impl VecWriter {
-    pub fn new() -> @mut VecWriter {
-        @mut VecWriter {
+    pub fn new() -> VecWriter {
+        VecWriter {
             vec: ~[],
-        } // as @Writer
+        }
     }
 }
 
@@ -30,8 +30,8 @@ struct VecReader {
 }
 
 impl VecReader {
-    pub fn new(bytes: ~[u8]) -> @VecReader {
-        @VecReader {
+    pub fn new(bytes: ~[u8]) -> VecReader {
+        VecReader {
             vec: bytes,
             pos: 0,
         }
@@ -62,8 +62,8 @@ struct CountWriter {
 }
 
 impl CountWriter {
-    pub fn new() -> @mut CountWriter {
-        @mut CountWriter {
+    pub fn new() -> CountWriter {
+        CountWriter {
             count: 0,
         }
     }
@@ -84,18 +84,18 @@ mod test {
 
     #[test]
     fn test_vec_writer() {
-        let w = VecWriter::new();
-        fn foo(writer: @mut Writer) {
+        let mut w = VecWriter::new();
+        fn foo(writer: &mut Writer) {
             writer.write("hi".as_bytes());
         }
-        foo(w as @mut Writer);
+        foo(&mut w as &mut Writer);
         assert_eq!(~['h' as u8, 'i' as u8], w.vec.to_owned());
     }
 
     fn test_count_writer() {
-        let w = CountWriter::new();
-        (w as @mut Writer).write("hi".as_bytes());
-        (w as @mut Writer).write("there".as_bytes());
+        let mut w = CountWriter::new();
+        w.write("hi".as_bytes());
+        w.write("there".as_bytes());
         assert_eq!(7, w.count);
     }
 }
