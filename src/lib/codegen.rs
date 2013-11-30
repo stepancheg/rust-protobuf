@@ -236,6 +236,7 @@ impl<'self> Message {
 
 
 struct IndentWriter<'self> {
+    // TODO: add mut
     writer: &'self Writer,
     indent: ~str,
     msg: Option<&'self Message>,
@@ -252,8 +253,8 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn bind_message<T>(&self, msg: &Message, cb: |&IndentWriter| -> T) -> T {
-        cb(&IndentWriter {
+    fn bind_message<T>(&self, msg: &Message, cb: |&mut IndentWriter| -> T) -> T {
+        cb(&mut IndentWriter {
             writer: unsafe { cast::transmute(self.writer) },
             indent: self.indent.to_owned(),
             msg: Some(msg),
@@ -261,9 +262,9 @@ impl<'self> IndentWriter<'self> {
         })
     }
 
-    fn bind_field<T>(&self, field: &'self Field, cb: |&IndentWriter| -> T) -> T {
+    fn bind_field<T>(&self, field: &'self Field, cb: |&mut IndentWriter| -> T) -> T {
         assert!(self.msg.is_some());
-        cb(&IndentWriter {
+        cb(&mut IndentWriter {
             writer: self.writer,
             indent: self.indent.to_owned(),
             msg: self.msg,
@@ -271,7 +272,7 @@ impl<'self> IndentWriter<'self> {
         })
     }
 
-    fn fields(&self, cb: |&IndentWriter|) {
+    fn fields(&self, cb: |&mut IndentWriter|) {
         let fields = &self.msg.get_ref().fields;
         let mut iter = fields.iter();
         for field in iter {
@@ -279,7 +280,7 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn required_fields(&self, cb: |&IndentWriter|) {
+    fn required_fields(&self, cb: |&mut IndentWriter|) {
         let fields = &self.msg.get_ref().required_fields();
         let mut iter = fields.iter();
         for field in iter {
@@ -315,11 +316,11 @@ impl<'self> IndentWriter<'self> {
         format!("{:s}.is_none()", self.self_field())
     }
 
-    fn if_self_field_is_some(&self, cb: |&IndentWriter|) {
+    fn if_self_field_is_some(&self, cb: |&mut IndentWriter|) {
         self.if_stmt(self.self_field_is_some(), cb);
     }
 
-    fn if_self_field_is_none(&self, cb: |&IndentWriter|) {
+    fn if_self_field_is_none(&self, cb: |&mut IndentWriter|) {
         self.if_stmt(self.self_field_is_none(), cb);
     }
 
@@ -381,8 +382,8 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn indented(&self, cb: |&IndentWriter|) {
-        cb(&IndentWriter {
+    fn indented(&self, cb: |&mut IndentWriter|) {
+        cb(&mut IndentWriter {
             writer: self.writer,
             indent: self.indent + "    ",
             msg: self.msg,
@@ -390,8 +391,8 @@ impl<'self> IndentWriter<'self> {
         });
     }
 
-    fn commented(&self, cb: |&IndentWriter|) {
-        cb(&IndentWriter {
+    fn commented(&self, cb: |&mut IndentWriter|) {
+        cb(&mut IndentWriter {
             writer: self.writer,
             indent: "// " + self.indent,
             msg: self.msg,
@@ -399,41 +400,41 @@ impl<'self> IndentWriter<'self> {
         });
     }
 
-    fn block(&self, first_line: &str, last_line: &str, cb: |&IndentWriter|) {
+    fn block(&self, first_line: &str, last_line: &str, cb: |&mut IndentWriter|) {
         self.write_line(first_line);
         self.indented(cb);
         self.write_line(last_line);
     }
 
-    fn expr_block(&self, prefix: &str, cb: |&IndentWriter|) {
+    fn expr_block(&self, prefix: &str, cb: |&mut IndentWriter|) {
         self.block(prefix + " {", "}", cb);
     }
 
-    fn stmt_block(&self, prefix: &str, cb: |&IndentWriter|) {
+    fn stmt_block(&self, prefix: &str, cb: |&mut IndentWriter|) {
         self.block(prefix + " {", "};", cb);
     }
 
-    fn impl_block(&self, name: &str, cb: |&IndentWriter|) {
+    fn impl_block(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl {:s}", name), cb);
     }
 
-    fn impl_self_block(&self, name: &str, cb: |&IndentWriter|) {
+    fn impl_self_block(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl<'self> {:s}", name), cb);
     }
 
-    fn impl_for_block(&self, tr: &str, ty: &str, cb: |&IndentWriter|) {
+    fn impl_for_block(&self, tr: &str, ty: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl {:s} for {:s}", tr, ty), cb);
     }
 
-    fn pub_struct(&self, name: &str, cb: |&IndentWriter|) {
+    fn pub_struct(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block("pub struct " + name, cb);
     }
 
-    fn def_struct(&self, name: &str, cb: |&IndentWriter|) {
+    fn def_struct(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block("struct " + name, cb);
     }
 
-    fn def_mod(&self, name: &str, cb: |&IndentWriter|) {
+    fn def_mod(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block("mod " + name, cb);
     }
 
@@ -457,38 +458,38 @@ impl<'self> IndentWriter<'self> {
         }
     }
 
-    fn pub_fn(&self, sig: &str, cb: |&IndentWriter|) {
+    fn pub_fn(&self, sig: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("pub fn {:s}", sig), cb);
     }
 
-    fn def_fn(&self, sig: &str, cb: |&IndentWriter|) {
+    fn def_fn(&self, sig: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("fn {:s}", sig), cb);
     }
 
-    fn while_block(&self, cond: &str, cb: |&IndentWriter|) {
+    fn while_block(&self, cond: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("while {:s}", cond), cb);
     }
 
-    fn if_stmt(&self, cond: &str, cb: |&IndentWriter|) {
+    fn if_stmt(&self, cond: &str, cb: |&mut IndentWriter|) {
         self.stmt_block(format!("if {:s}", cond), cb);
     }
 
-    fn for_stmt(&self, over: &str, varn: &str, cb: |&IndentWriter|) {
+    fn for_stmt(&self, over: &str, varn: &str, cb: |&mut IndentWriter|) {
         match USE_RUST_VERSION {
             Rust07     => self.stmt_block(format!("for {:s}.advance |{:s}|", over, varn), cb),
             RustMaster => self.stmt_block(format!("for {:s} in {:s}", varn, over), cb),
         }
     }
 
-    fn match_block(&self, value: &str, cb: |&IndentWriter|) {
+    fn match_block(&self, value: &str, cb: |&mut IndentWriter|) {
         self.stmt_block(format!("match {:s}", value), cb);
     }
 
-    fn match_expr(&self, value: &str, cb: |&IndentWriter|) {
+    fn match_expr(&self, value: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("match {:s}", value), cb);
     }
 
-    fn case_block(&self, cond: &str, cb: |&IndentWriter|) {
+    fn case_block(&self, cond: &str, cb: |&mut IndentWriter|) {
         self.block(format!("{:s} => \\{", cond), "},", cb);
     }
 
@@ -510,7 +511,7 @@ impl<'self> IndentWriter<'self> {
 
 }
 
-fn write_merge_from_field(w: &IndentWriter) {
+fn write_merge_from_field(w: &mut IndentWriter) {
     let field = w.field();
     let wire_type = field_type_wire_type(field.field_type);
     let repeat_mode =
@@ -568,11 +569,12 @@ fn write_merge_from_field(w: &IndentWriter) {
     };
 }
 
-fn write_message(msg: &Message, w: &IndentWriter) {
+fn write_message(msg: &Message, w: &mut IndentWriter) {
     let pkg = msg.pkg.as_slice();
     let message_type = &msg.proto_message;
 
-    w.bind_message(msg, |w| {
+    w.bind_message(msg, |w0| {
+        let w: &mut IndentWriter = unsafe { cast::transmute_mut(w0) };
         w.write_line(format!("\\#[deriving(Clone,Eq)]"));
         w.pub_struct(msg.type_name, |w| {
             w.fields(|w| {
@@ -601,7 +603,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
 
             w.write_line("");
             w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
-                fn write_body(w: &IndentWriter) {
+                fn write_body(w: &mut IndentWriter) {
                     let msg = w.msg.get_ref();
                     w.stmt_block(format!("static instance: {:s} = {:s}", msg.type_name, msg.type_name), |w| {
                         w.fields(|w| {
@@ -942,7 +944,7 @@ fn write_message(msg: &Message, w: &IndentWriter) {
     });
 }
 
-fn write_enum(prefix: &str, w: &IndentWriter, enum_type: &EnumDescriptorProto) {
+fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProto) {
     let enum_type_name = prefix + enum_type.name.get_ref().to_owned();
     w.write_line(format!("\\#[deriving(Clone,Eq)]"));
     w.write_line(format!("pub enum {:s} \\{", enum_type_name));
@@ -1033,7 +1035,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
         let mut os = VecWriter::new();
 
         {
-            let w = IndentWriter::new(&mut os as &mut Writer);
+            let mut w = IndentWriter::new(&mut os as &mut Writer);
 
             w.write_line("// This file is generated. Do not edit");
             w.write_line("");
@@ -1046,11 +1048,11 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
 
             for message_type in file.message_type.iter() {
                 w.write_line("");
-                write_message(&Message::parse(message_type, *file.package.get_ref(), ""), &w);
+                write_message(&Message::parse(message_type, *file.package.get_ref(), ""), &mut w);
             }
             for enum_type in file.enum_type.iter() {
                 w.write_line("");
-                write_enum("", &w, enum_type);
+                write_enum("", &mut w, enum_type);
             }
         }
 
