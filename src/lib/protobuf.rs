@@ -5,7 +5,6 @@
 
 #[desc = "protobuf implementation for rust"];
 #[license = "BSD"];
-#[author = "Stepan Koltsov"];
 
 pub use core::*;
 
