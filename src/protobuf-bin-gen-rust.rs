@@ -18,13 +18,13 @@ use protobuf::codegen::*;
 
 
 fn write_file(bin: &str, gen_options: &GenOptions) {
-    let mut is = File::open(&Path::init(bin)).unwrap();
+    let mut is = File::open(&Path::new(bin)).unwrap();
     let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Reader);
 
     let results = gen(fds.file, gen_options);
 
     for r in results.iter() {
-        let mut file_writer = File::create(&Path::init(r.name.to_owned())).unwrap();
+        let mut file_writer = File::create(&Path::new(r.name.to_owned())).unwrap();
         file_writer.write(r.content);
     }
 }
