@@ -11,7 +11,7 @@ pub struct CodeGeneratorRequest {
     proto_file: ~[FileDescriptorProto],
 }
 
-impl<'self> CodeGeneratorRequest {
+impl<'a> CodeGeneratorRequest {
     pub fn new() -> CodeGeneratorRequest {
         CodeGeneratorRequest {
             file_to_generate: ~[],
@@ -60,11 +60,11 @@ impl<'self> CodeGeneratorRequest {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file_to_generate(&'self mut self) -> &'self mut ~[~str] {
+    pub fn mut_file_to_generate(&'a mut self) -> &'a mut ~[~str] {
         &mut self.file_to_generate
     }
 
-    pub fn get_file_to_generate(&'self self) -> &'self [~str] {
+    pub fn get_file_to_generate(&'a self) -> &'a [~str] {
         rt::as_slice_tmp(&self.file_to_generate)
     }
 
@@ -87,17 +87,17 @@ impl<'self> CodeGeneratorRequest {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_parameter(&'self mut self) -> &'self mut ~str {
+    pub fn mut_parameter(&'a mut self) -> &'a mut ~str {
         if self.parameter.is_none() {
             self.parameter = Some(~"");
         };
         self.parameter.get_mut_ref()
     }
 
-    pub fn get_parameter(&'self self) -> &'self str {
+    pub fn get_parameter(&'a self) -> &'a str {
         match self.parameter {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -111,11 +111,11 @@ impl<'self> CodeGeneratorRequest {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&'self mut self) -> &'self mut ~[FileDescriptorProto] {
+    pub fn mut_proto_file(&'a mut self) -> &'a mut ~[FileDescriptorProto] {
         &mut self.proto_file
     }
 
-    pub fn get_proto_file(&'self self) -> &'self [FileDescriptorProto] {
+    pub fn get_proto_file(&'a self) -> &'a [FileDescriptorProto] {
         rt::as_slice_tmp(&self.proto_file)
     }
 
@@ -203,7 +203,7 @@ pub struct CodeGeneratorResponse {
     file: ~[CodeGeneratorResponse_File],
 }
 
-impl<'self> CodeGeneratorResponse {
+impl<'a> CodeGeneratorResponse {
     pub fn new() -> CodeGeneratorResponse {
         CodeGeneratorResponse {
             error: None,
@@ -252,17 +252,17 @@ impl<'self> CodeGeneratorResponse {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_error(&'self mut self) -> &'self mut ~str {
+    pub fn mut_error(&'a mut self) -> &'a mut ~str {
         if self.error.is_none() {
             self.error = Some(~"");
         };
         self.error.get_mut_ref()
     }
 
-    pub fn get_error(&'self self) -> &'self str {
+    pub fn get_error(&'a self) -> &'a str {
         match self.error {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -276,11 +276,11 @@ impl<'self> CodeGeneratorResponse {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'self mut self) -> &'self mut ~[CodeGeneratorResponse_File] {
+    pub fn mut_file(&'a mut self) -> &'a mut ~[CodeGeneratorResponse_File] {
         &mut self.file
     }
 
-    pub fn get_file(&'self self) -> &'self [CodeGeneratorResponse_File] {
+    pub fn get_file(&'a self) -> &'a [CodeGeneratorResponse_File] {
         rt::as_slice_tmp(&self.file)
     }
 
@@ -360,7 +360,7 @@ pub struct CodeGeneratorResponse_File {
     content: Option<~str>,
 }
 
-impl<'self> CodeGeneratorResponse_File {
+impl<'a> CodeGeneratorResponse_File {
     pub fn new() -> CodeGeneratorResponse_File {
         CodeGeneratorResponse_File {
             name: None,
@@ -419,17 +419,17 @@ impl<'self> CodeGeneratorResponse_File {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -448,17 +448,17 @@ impl<'self> CodeGeneratorResponse_File {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_insertion_point(&'self mut self) -> &'self mut ~str {
+    pub fn mut_insertion_point(&'a mut self) -> &'a mut ~str {
         if self.insertion_point.is_none() {
             self.insertion_point = Some(~"");
         };
         self.insertion_point.get_mut_ref()
     }
 
-    pub fn get_insertion_point(&'self self) -> &'self str {
+    pub fn get_insertion_point(&'a self) -> &'a str {
         match self.insertion_point {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -477,17 +477,17 @@ impl<'self> CodeGeneratorResponse_File {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_content(&'self mut self) -> &'self mut ~str {
+    pub fn mut_content(&'a mut self) -> &'a mut ~str {
         if self.content.is_none() {
             self.content = Some(~"");
         };
         self.content.get_mut_ref()
     }
 
-    pub fn get_content(&'self self) -> &'self str {
+    pub fn get_content(&'a self) -> &'a str {
         match self.content {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 }

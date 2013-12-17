@@ -189,7 +189,7 @@ struct Message {
     fields: ~[Field],
 }
 
-impl<'self> Message {
+impl<'a> Message {
     fn parse(proto_message: &DescriptorProto, pkg: &str, prefix: &str) -> Message {
         Message {
             proto_message: proto_message.clone(),
@@ -223,7 +223,7 @@ impl<'self> Message {
         false
     }
 
-    fn required_fields(&'self self) -> ~[&'self Field] {
+    fn required_fields(&'a self) -> ~[&'a Field] {
         let mut r = ~[];
         for field in self.fields.iter() {
             if field.proto_field.label.unwrap() == LABEL_REQUIRED {
@@ -235,16 +235,16 @@ impl<'self> Message {
 }
 
 
-struct IndentWriter<'self> {
+struct IndentWriter<'a> {
     // TODO: add mut
-    writer: &'self Writer,
+    writer: &'a Writer,
     indent: ~str,
-    msg: Option<&'self Message>,
-    field: Option<&'self Field>,
+    msg: Option<&'a Message>,
+    field: Option<&'a Field>,
 }
 
-impl<'self> IndentWriter<'self> {
-    fn new(writer: &'self mut Writer) -> IndentWriter<'self> {
+impl<'a> IndentWriter<'a> {
+    fn new(writer: &'a mut Writer) -> IndentWriter<'a> {
         IndentWriter {
             writer: writer,
             indent: ~"",
@@ -262,7 +262,7 @@ impl<'self> IndentWriter<'self> {
         })
     }
 
-    fn bind_field<T>(&self, field: &'self Field, cb: |&mut IndentWriter| -> T) -> T {
+    fn bind_field<T>(&self, field: &'a Field, cb: |&mut IndentWriter| -> T) -> T {
         assert!(self.msg.is_some());
         cb(&mut IndentWriter {
             writer: self.writer,
@@ -288,16 +288,16 @@ impl<'self> IndentWriter<'self> {
         }
     }
     /*
-    fn fields(&'self self) -> FieldsIter<'self> {
+    fn fields(&'a self) -> FieldsIter<'a> {
         FieldsIter { parent: self }
     }
-    fn required_fields(&'self self) -> FieldsIter<'self> {
+    fn required_fields(&'a self) -> FieldsIter<'a> {
         FieldsIter { parent: self }
     }
     */
 
 
-    fn field(&self) -> &'self Field {
+    fn field(&self) -> &'a Field {
         assert!(self.field.is_some());
         self.field.unwrap()
     }
@@ -419,7 +419,7 @@ impl<'self> IndentWriter<'self> {
     }
 
     fn impl_self_block(&self, name: &str, cb: |&mut IndentWriter|) {
-        self.expr_block(format!("impl<'self> {:s}", name), cb);
+        self.expr_block(format!("impl<'a> {:s}", name), cb);
     }
 
     fn impl_for_block(&self, tr: &str, ty: &str, cb: |&mut IndentWriter|) {
@@ -729,7 +729,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                 if !w.field().repeated {
                     w.comment("If field is not initialized, it is initialized with default value first.");
                 }
-                w.pub_fn(format!("mut_{:s}(&'self mut self) -> &'self mut {:s}", w.field().name, set_param_type),
+                w.pub_fn(format!("mut_{:s}(&'a mut self) -> &'a mut {:s}", w.field().name, set_param_type),
                 |w| {
                     if !w.field().repeated {
                         w.if_self_field_is_none(|w| {
@@ -747,10 +747,10 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                     _ => false,
                 };
                 let get_xxx_return_type = match w.field().repeated {
-                    true => format!("&'self [{:s}]", w.field().type_name),
+                    true => format!("&'a [{:s}]", w.field().type_name),
                     false => match return_reference {
                         true => {
-                            format!("&'self {:s}", match w.field().field_type {
+                            format!("&'a {:s}", match w.field().field_type {
                                 TYPE_BYTES  => ~"[u8]",
                                 TYPE_STRING => ~"str",
                                 _ => set_param_type,
@@ -760,7 +760,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                     }
                 };
                 let self_param = match return_reference {
-                    true  => "&'self self",
+                    true  => "&'a self",
                     false => "&self",
                 };
                 w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type),
@@ -780,8 +780,8 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                                     "None",
                                     match w.field().field_type {
                                         TYPE_MESSAGE => format!("{:s}::default_instance()", w.field().type_name),
-                                        TYPE_BYTES   => ~"&'self []",
-                                        TYPE_STRING  => ~"&'self \"\"",
+                                        TYPE_BYTES   => ~"&'a []",
+                                        TYPE_STRING  => ~"&'a \"\"",
                                         _            => fail!(),
                                     }
                                 );

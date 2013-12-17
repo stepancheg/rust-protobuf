@@ -8,7 +8,7 @@ pub struct FileDescriptorSet {
     file: ~[FileDescriptorProto],
 }
 
-impl<'self> FileDescriptorSet {
+impl<'a> FileDescriptorSet {
     pub fn new() -> FileDescriptorSet {
         FileDescriptorSet {
             file: ~[],
@@ -44,11 +44,11 @@ impl<'self> FileDescriptorSet {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'self mut self) -> &'self mut ~[FileDescriptorProto] {
+    pub fn mut_file(&'a mut self) -> &'a mut ~[FileDescriptorProto] {
         &mut self.file
     }
 
-    pub fn get_file(&'self self) -> &'self [FileDescriptorProto] {
+    pub fn get_file(&'a self) -> &'a [FileDescriptorProto] {
         rt::as_slice_tmp(&self.file)
     }
 
@@ -127,7 +127,7 @@ pub struct FileDescriptorProto {
     source_code_info: Option<SourceCodeInfo>,
 }
 
-impl<'self> FileDescriptorProto {
+impl<'a> FileDescriptorProto {
     pub fn new() -> FileDescriptorProto {
         FileDescriptorProto {
             name: None,
@@ -245,17 +245,17 @@ impl<'self> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -274,17 +274,17 @@ impl<'self> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_package(&'self mut self) -> &'self mut ~str {
+    pub fn mut_package(&'a mut self) -> &'a mut ~str {
         if self.package.is_none() {
             self.package = Some(~"");
         };
         self.package.get_mut_ref()
     }
 
-    pub fn get_package(&'self self) -> &'self str {
+    pub fn get_package(&'a self) -> &'a str {
         match self.package {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -298,11 +298,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency(&'self mut self) -> &'self mut ~[~str] {
+    pub fn mut_dependency(&'a mut self) -> &'a mut ~[~str] {
         &mut self.dependency
     }
 
-    pub fn get_dependency(&'self self) -> &'self [~str] {
+    pub fn get_dependency(&'a self) -> &'a [~str] {
         rt::as_slice_tmp(&self.dependency)
     }
 
@@ -320,11 +320,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_public_dependency(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_public_dependency(&'a mut self) -> &'a mut ~[i32] {
         &mut self.public_dependency
     }
 
-    pub fn get_public_dependency(&'self self) -> &'self [i32] {
+    pub fn get_public_dependency(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.public_dependency)
     }
 
@@ -342,11 +342,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_weak_dependency(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_weak_dependency(&'a mut self) -> &'a mut ~[i32] {
         &mut self.weak_dependency
     }
 
-    pub fn get_weak_dependency(&'self self) -> &'self [i32] {
+    pub fn get_weak_dependency(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.weak_dependency)
     }
 
@@ -364,11 +364,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_message_type(&'self mut self) -> &'self mut ~[DescriptorProto] {
+    pub fn mut_message_type(&'a mut self) -> &'a mut ~[DescriptorProto] {
         &mut self.message_type
     }
 
-    pub fn get_message_type(&'self self) -> &'self [DescriptorProto] {
+    pub fn get_message_type(&'a self) -> &'a [DescriptorProto] {
         rt::as_slice_tmp(&self.message_type)
     }
 
@@ -386,11 +386,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'self mut self) -> &'self mut ~[EnumDescriptorProto] {
+    pub fn mut_enum_type(&'a mut self) -> &'a mut ~[EnumDescriptorProto] {
         &mut self.enum_type
     }
 
-    pub fn get_enum_type(&'self self) -> &'self [EnumDescriptorProto] {
+    pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
         rt::as_slice_tmp(&self.enum_type)
     }
 
@@ -408,11 +408,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_service(&'self mut self) -> &'self mut ~[ServiceDescriptorProto] {
+    pub fn mut_service(&'a mut self) -> &'a mut ~[ServiceDescriptorProto] {
         &mut self.service
     }
 
-    pub fn get_service(&'self self) -> &'self [ServiceDescriptorProto] {
+    pub fn get_service(&'a self) -> &'a [ServiceDescriptorProto] {
         rt::as_slice_tmp(&self.service)
     }
 
@@ -430,11 +430,11 @@ impl<'self> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'self mut self) -> &'self mut ~[FieldDescriptorProto] {
+    pub fn mut_extension(&'a mut self) -> &'a mut ~[FieldDescriptorProto] {
         &mut self.extension
     }
 
-    pub fn get_extension(&'self self) -> &'self [FieldDescriptorProto] {
+    pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
         rt::as_slice_tmp(&self.extension)
     }
 
@@ -457,14 +457,14 @@ impl<'self> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut FileOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut FileOptions {
         if self.options.is_none() {
             self.options = Some(FileOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self FileOptions {
+    pub fn get_options(&'a self) -> &'a FileOptions {
         match self.options {
             Some(ref v) => v,
             None => FileOptions::default_instance(),
@@ -486,14 +486,14 @@ impl<'self> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_code_info(&'self mut self) -> &'self mut SourceCodeInfo {
+    pub fn mut_source_code_info(&'a mut self) -> &'a mut SourceCodeInfo {
         if self.source_code_info.is_none() {
             self.source_code_info = Some(SourceCodeInfo::new());
         };
         self.source_code_info.get_mut_ref()
     }
 
-    pub fn get_source_code_info(&'self self) -> &'self SourceCodeInfo {
+    pub fn get_source_code_info(&'a self) -> &'a SourceCodeInfo {
         match self.source_code_info {
             Some(ref v) => v,
             None => SourceCodeInfo::default_instance(),
@@ -683,7 +683,7 @@ pub struct DescriptorProto {
     options: Option<MessageOptions>,
 }
 
-impl<'self> DescriptorProto {
+impl<'a> DescriptorProto {
     pub fn new() -> DescriptorProto {
         DescriptorProto {
             name: None,
@@ -775,17 +775,17 @@ impl<'self> DescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -799,11 +799,11 @@ impl<'self> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_field(&'self mut self) -> &'self mut ~[FieldDescriptorProto] {
+    pub fn mut_field(&'a mut self) -> &'a mut ~[FieldDescriptorProto] {
         &mut self.field
     }
 
-    pub fn get_field(&'self self) -> &'self [FieldDescriptorProto] {
+    pub fn get_field(&'a self) -> &'a [FieldDescriptorProto] {
         rt::as_slice_tmp(&self.field)
     }
 
@@ -821,11 +821,11 @@ impl<'self> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'self mut self) -> &'self mut ~[FieldDescriptorProto] {
+    pub fn mut_extension(&'a mut self) -> &'a mut ~[FieldDescriptorProto] {
         &mut self.extension
     }
 
-    pub fn get_extension(&'self self) -> &'self [FieldDescriptorProto] {
+    pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
         rt::as_slice_tmp(&self.extension)
     }
 
@@ -843,11 +843,11 @@ impl<'self> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested_type(&'self mut self) -> &'self mut ~[DescriptorProto] {
+    pub fn mut_nested_type(&'a mut self) -> &'a mut ~[DescriptorProto] {
         &mut self.nested_type
     }
 
-    pub fn get_nested_type(&'self self) -> &'self [DescriptorProto] {
+    pub fn get_nested_type(&'a self) -> &'a [DescriptorProto] {
         rt::as_slice_tmp(&self.nested_type)
     }
 
@@ -865,11 +865,11 @@ impl<'self> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'self mut self) -> &'self mut ~[EnumDescriptorProto] {
+    pub fn mut_enum_type(&'a mut self) -> &'a mut ~[EnumDescriptorProto] {
         &mut self.enum_type
     }
 
-    pub fn get_enum_type(&'self self) -> &'self [EnumDescriptorProto] {
+    pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
         rt::as_slice_tmp(&self.enum_type)
     }
 
@@ -887,11 +887,11 @@ impl<'self> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension_range(&'self mut self) -> &'self mut ~[DescriptorProto_ExtensionRange] {
+    pub fn mut_extension_range(&'a mut self) -> &'a mut ~[DescriptorProto_ExtensionRange] {
         &mut self.extension_range
     }
 
-    pub fn get_extension_range(&'self self) -> &'self [DescriptorProto_ExtensionRange] {
+    pub fn get_extension_range(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
         rt::as_slice_tmp(&self.extension_range)
     }
 
@@ -914,14 +914,14 @@ impl<'self> DescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut MessageOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut MessageOptions {
         if self.options.is_none() {
             self.options = Some(MessageOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self MessageOptions {
+    pub fn get_options(&'a self) -> &'a MessageOptions {
         match self.options {
             Some(ref v) => v,
             None => MessageOptions::default_instance(),
@@ -1054,7 +1054,7 @@ pub struct DescriptorProto_ExtensionRange {
     end: Option<i32>,
 }
 
-impl<'self> DescriptorProto_ExtensionRange {
+impl<'a> DescriptorProto_ExtensionRange {
     pub fn new() -> DescriptorProto_ExtensionRange {
         DescriptorProto_ExtensionRange {
             start: None,
@@ -1105,7 +1105,7 @@ impl<'self> DescriptorProto_ExtensionRange {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_start(&'self mut self) -> &'self mut i32 {
+    pub fn mut_start(&'a mut self) -> &'a mut i32 {
         if self.start.is_none() {
             self.start = Some(0);
         };
@@ -1131,7 +1131,7 @@ impl<'self> DescriptorProto_ExtensionRange {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_end(&'self mut self) -> &'self mut i32 {
+    pub fn mut_end(&'a mut self) -> &'a mut i32 {
         if self.end.is_none() {
             self.end = Some(0);
         };
@@ -1217,7 +1217,7 @@ pub struct FieldDescriptorProto {
     options: Option<FieldOptions>,
 }
 
-impl<'self> FieldDescriptorProto {
+impl<'a> FieldDescriptorProto {
     pub fn new() -> FieldDescriptorProto {
         FieldDescriptorProto {
             name: None,
@@ -1318,17 +1318,17 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -1347,7 +1347,7 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_number(&'self mut self) -> &'self mut i32 {
+    pub fn mut_number(&'a mut self) -> &'a mut i32 {
         if self.number.is_none() {
             self.number = Some(0);
         };
@@ -1373,7 +1373,7 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_label(&'self mut self) -> &'self mut FieldDescriptorProto_Label {
+    pub fn mut_label(&'a mut self) -> &'a mut FieldDescriptorProto_Label {
         if self.label.is_none() {
             self.label = Some(FieldDescriptorProto_Label::new(0));
         };
@@ -1399,7 +1399,7 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_field_type(&'self mut self) -> &'self mut FieldDescriptorProto_Type {
+    pub fn mut_field_type(&'a mut self) -> &'a mut FieldDescriptorProto_Type {
         if self.field_type.is_none() {
             self.field_type = Some(FieldDescriptorProto_Type::new(0));
         };
@@ -1425,17 +1425,17 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_type_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_type_name(&'a mut self) -> &'a mut ~str {
         if self.type_name.is_none() {
             self.type_name = Some(~"");
         };
         self.type_name.get_mut_ref()
     }
 
-    pub fn get_type_name(&'self self) -> &'self str {
+    pub fn get_type_name(&'a self) -> &'a str {
         match self.type_name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -1454,17 +1454,17 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_extendee(&'self mut self) -> &'self mut ~str {
+    pub fn mut_extendee(&'a mut self) -> &'a mut ~str {
         if self.extendee.is_none() {
             self.extendee = Some(~"");
         };
         self.extendee.get_mut_ref()
     }
 
-    pub fn get_extendee(&'self self) -> &'self str {
+    pub fn get_extendee(&'a self) -> &'a str {
         match self.extendee {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -1483,17 +1483,17 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_default_value(&'self mut self) -> &'self mut ~str {
+    pub fn mut_default_value(&'a mut self) -> &'a mut ~str {
         if self.default_value.is_none() {
             self.default_value = Some(~"");
         };
         self.default_value.get_mut_ref()
     }
 
-    pub fn get_default_value(&'self self) -> &'self str {
+    pub fn get_default_value(&'a self) -> &'a str {
         match self.default_value {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -1512,14 +1512,14 @@ impl<'self> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut FieldOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut FieldOptions {
         if self.options.is_none() {
             self.options = Some(FieldOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self FieldOptions {
+    pub fn get_options(&'a self) -> &'a FieldOptions {
         match self.options {
             Some(ref v) => v,
             None => FieldOptions::default_instance(),
@@ -1730,7 +1730,7 @@ pub struct EnumDescriptorProto {
     options: Option<EnumOptions>,
 }
 
-impl<'self> EnumDescriptorProto {
+impl<'a> EnumDescriptorProto {
     pub fn new() -> EnumDescriptorProto {
         EnumDescriptorProto {
             name: None,
@@ -1790,17 +1790,17 @@ impl<'self> EnumDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -1814,11 +1814,11 @@ impl<'self> EnumDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_value(&'self mut self) -> &'self mut ~[EnumValueDescriptorProto] {
+    pub fn mut_value(&'a mut self) -> &'a mut ~[EnumValueDescriptorProto] {
         &mut self.value
     }
 
-    pub fn get_value(&'self self) -> &'self [EnumValueDescriptorProto] {
+    pub fn get_value(&'a self) -> &'a [EnumValueDescriptorProto] {
         rt::as_slice_tmp(&self.value)
     }
 
@@ -1841,14 +1841,14 @@ impl<'self> EnumDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut EnumOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut EnumOptions {
         if self.options.is_none() {
             self.options = Some(EnumOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self EnumOptions {
+    pub fn get_options(&'a self) -> &'a EnumOptions {
         match self.options {
             Some(ref v) => v,
             None => EnumOptions::default_instance(),
@@ -1938,7 +1938,7 @@ pub struct EnumValueDescriptorProto {
     options: Option<EnumValueOptions>,
 }
 
-impl<'self> EnumValueDescriptorProto {
+impl<'a> EnumValueDescriptorProto {
     pub fn new() -> EnumValueDescriptorProto {
         EnumValueDescriptorProto {
             name: None,
@@ -1999,17 +1999,17 @@ impl<'self> EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2028,7 +2028,7 @@ impl<'self> EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_number(&'self mut self) -> &'self mut i32 {
+    pub fn mut_number(&'a mut self) -> &'a mut i32 {
         if self.number.is_none() {
             self.number = Some(0);
         };
@@ -2054,14 +2054,14 @@ impl<'self> EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut EnumValueOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut EnumValueOptions {
         if self.options.is_none() {
             self.options = Some(EnumValueOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self EnumValueOptions {
+    pub fn get_options(&'a self) -> &'a EnumValueOptions {
         match self.options {
             Some(ref v) => v,
             None => EnumValueOptions::default_instance(),
@@ -2149,7 +2149,7 @@ pub struct ServiceDescriptorProto {
     options: Option<ServiceOptions>,
 }
 
-impl<'self> ServiceDescriptorProto {
+impl<'a> ServiceDescriptorProto {
     pub fn new() -> ServiceDescriptorProto {
         ServiceDescriptorProto {
             name: None,
@@ -2209,17 +2209,17 @@ impl<'self> ServiceDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2233,11 +2233,11 @@ impl<'self> ServiceDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_method(&'self mut self) -> &'self mut ~[MethodDescriptorProto] {
+    pub fn mut_method(&'a mut self) -> &'a mut ~[MethodDescriptorProto] {
         &mut self.method
     }
 
-    pub fn get_method(&'self self) -> &'self [MethodDescriptorProto] {
+    pub fn get_method(&'a self) -> &'a [MethodDescriptorProto] {
         rt::as_slice_tmp(&self.method)
     }
 
@@ -2260,14 +2260,14 @@ impl<'self> ServiceDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut ServiceOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut ServiceOptions {
         if self.options.is_none() {
             self.options = Some(ServiceOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self ServiceOptions {
+    pub fn get_options(&'a self) -> &'a ServiceOptions {
         match self.options {
             Some(ref v) => v,
             None => ServiceOptions::default_instance(),
@@ -2358,7 +2358,7 @@ pub struct MethodDescriptorProto {
     options: Option<MethodOptions>,
 }
 
-impl<'self> MethodDescriptorProto {
+impl<'a> MethodDescriptorProto {
     pub fn new() -> MethodDescriptorProto {
         MethodDescriptorProto {
             name: None,
@@ -2427,17 +2427,17 @@ impl<'self> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut ~str {
         if self.name.is_none() {
             self.name = Some(~"");
         };
         self.name.get_mut_ref()
     }
 
-    pub fn get_name(&'self self) -> &'self str {
+    pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2456,17 +2456,17 @@ impl<'self> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_input_type(&'self mut self) -> &'self mut ~str {
+    pub fn mut_input_type(&'a mut self) -> &'a mut ~str {
         if self.input_type.is_none() {
             self.input_type = Some(~"");
         };
         self.input_type.get_mut_ref()
     }
 
-    pub fn get_input_type(&'self self) -> &'self str {
+    pub fn get_input_type(&'a self) -> &'a str {
         match self.input_type {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2485,17 +2485,17 @@ impl<'self> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_output_type(&'self mut self) -> &'self mut ~str {
+    pub fn mut_output_type(&'a mut self) -> &'a mut ~str {
         if self.output_type.is_none() {
             self.output_type = Some(~"");
         };
         self.output_type.get_mut_ref()
     }
 
-    pub fn get_output_type(&'self self) -> &'self str {
+    pub fn get_output_type(&'a self) -> &'a str {
         match self.output_type {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2514,14 +2514,14 @@ impl<'self> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'self mut self) -> &'self mut MethodOptions {
+    pub fn mut_options(&'a mut self) -> &'a mut MethodOptions {
         if self.options.is_none() {
             self.options = Some(MethodOptions::new());
         };
         self.options.get_mut_ref()
     }
 
-    pub fn get_options(&'self self) -> &'self MethodOptions {
+    pub fn get_options(&'a self) -> &'a MethodOptions {
         match self.options {
             Some(ref v) => v,
             None => MethodOptions::default_instance(),
@@ -2625,7 +2625,7 @@ pub struct FileOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> FileOptions {
+impl<'a> FileOptions {
     pub fn new() -> FileOptions {
         FileOptions {
             java_package: None,
@@ -2738,17 +2738,17 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_package(&'self mut self) -> &'self mut ~str {
+    pub fn mut_java_package(&'a mut self) -> &'a mut ~str {
         if self.java_package.is_none() {
             self.java_package = Some(~"");
         };
         self.java_package.get_mut_ref()
     }
 
-    pub fn get_java_package(&'self self) -> &'self str {
+    pub fn get_java_package(&'a self) -> &'a str {
         match self.java_package {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2767,17 +2767,17 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_outer_classname(&'self mut self) -> &'self mut ~str {
+    pub fn mut_java_outer_classname(&'a mut self) -> &'a mut ~str {
         if self.java_outer_classname.is_none() {
             self.java_outer_classname = Some(~"");
         };
         self.java_outer_classname.get_mut_ref()
     }
 
-    pub fn get_java_outer_classname(&'self self) -> &'self str {
+    pub fn get_java_outer_classname(&'a self) -> &'a str {
         match self.java_outer_classname {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2796,7 +2796,7 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_multiple_files(&'self mut self) -> &'self mut bool {
+    pub fn mut_java_multiple_files(&'a mut self) -> &'a mut bool {
         if self.java_multiple_files.is_none() {
             self.java_multiple_files = Some(false);
         };
@@ -2822,7 +2822,7 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_generate_equals_and_hash(&'self mut self) -> &'self mut bool {
+    pub fn mut_java_generate_equals_and_hash(&'a mut self) -> &'a mut bool {
         if self.java_generate_equals_and_hash.is_none() {
             self.java_generate_equals_and_hash = Some(false);
         };
@@ -2848,7 +2848,7 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_optimize_for(&'self mut self) -> &'self mut FileOptions_OptimizeMode {
+    pub fn mut_optimize_for(&'a mut self) -> &'a mut FileOptions_OptimizeMode {
         if self.optimize_for.is_none() {
             self.optimize_for = Some(FileOptions_OptimizeMode::new(0));
         };
@@ -2874,17 +2874,17 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_go_package(&'self mut self) -> &'self mut ~str {
+    pub fn mut_go_package(&'a mut self) -> &'a mut ~str {
         if self.go_package.is_none() {
             self.go_package = Some(~"");
         };
         self.go_package.get_mut_ref()
     }
 
-    pub fn get_go_package(&'self self) -> &'self str {
+    pub fn get_go_package(&'a self) -> &'a str {
         match self.go_package {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -2903,7 +2903,7 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_cc_generic_services(&'self mut self) -> &'self mut bool {
+    pub fn mut_cc_generic_services(&'a mut self) -> &'a mut bool {
         if self.cc_generic_services.is_none() {
             self.cc_generic_services = Some(false);
         };
@@ -2929,7 +2929,7 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_generic_services(&'self mut self) -> &'self mut bool {
+    pub fn mut_java_generic_services(&'a mut self) -> &'a mut bool {
         if self.java_generic_services.is_none() {
             self.java_generic_services = Some(false);
         };
@@ -2955,7 +2955,7 @@ impl<'self> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_py_generic_services(&'self mut self) -> &'self mut bool {
+    pub fn mut_py_generic_services(&'a mut self) -> &'a mut bool {
         if self.py_generic_services.is_none() {
             self.py_generic_services = Some(false);
         };
@@ -2976,11 +2976,11 @@ impl<'self> FileOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -3156,7 +3156,7 @@ pub struct MessageOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> MessageOptions {
+impl<'a> MessageOptions {
     pub fn new() -> MessageOptions {
         MessageOptions {
             message_set_wire_format: None,
@@ -3213,7 +3213,7 @@ impl<'self> MessageOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_message_set_wire_format(&'self mut self) -> &'self mut bool {
+    pub fn mut_message_set_wire_format(&'a mut self) -> &'a mut bool {
         if self.message_set_wire_format.is_none() {
             self.message_set_wire_format = Some(false);
         };
@@ -3239,7 +3239,7 @@ impl<'self> MessageOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_no_standard_descriptor_accessor(&'self mut self) -> &'self mut bool {
+    pub fn mut_no_standard_descriptor_accessor(&'a mut self) -> &'a mut bool {
         if self.no_standard_descriptor_accessor.is_none() {
             self.no_standard_descriptor_accessor = Some(false);
         };
@@ -3260,11 +3260,11 @@ impl<'self> MessageOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -3357,7 +3357,7 @@ pub struct FieldOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> FieldOptions {
+impl<'a> FieldOptions {
     pub fn new() -> FieldOptions {
         FieldOptions {
             ctype: None,
@@ -3446,7 +3446,7 @@ impl<'self> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_ctype(&'self mut self) -> &'self mut FieldOptions_CType {
+    pub fn mut_ctype(&'a mut self) -> &'a mut FieldOptions_CType {
         if self.ctype.is_none() {
             self.ctype = Some(FieldOptions_CType::new(0));
         };
@@ -3472,7 +3472,7 @@ impl<'self> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_packed(&'self mut self) -> &'self mut bool {
+    pub fn mut_packed(&'a mut self) -> &'a mut bool {
         if self.packed.is_none() {
             self.packed = Some(false);
         };
@@ -3498,7 +3498,7 @@ impl<'self> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_lazy(&'self mut self) -> &'self mut bool {
+    pub fn mut_lazy(&'a mut self) -> &'a mut bool {
         if self.lazy.is_none() {
             self.lazy = Some(false);
         };
@@ -3524,7 +3524,7 @@ impl<'self> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_deprecated(&'self mut self) -> &'self mut bool {
+    pub fn mut_deprecated(&'a mut self) -> &'a mut bool {
         if self.deprecated.is_none() {
             self.deprecated = Some(false);
         };
@@ -3550,17 +3550,17 @@ impl<'self> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_experimental_map_key(&'self mut self) -> &'self mut ~str {
+    pub fn mut_experimental_map_key(&'a mut self) -> &'a mut ~str {
         if self.experimental_map_key.is_none() {
             self.experimental_map_key = Some(~"");
         };
         self.experimental_map_key.get_mut_ref()
     }
 
-    pub fn get_experimental_map_key(&'self self) -> &'self str {
+    pub fn get_experimental_map_key(&'a self) -> &'a str {
         match self.experimental_map_key {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -3579,7 +3579,7 @@ impl<'self> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_weak(&'self mut self) -> &'self mut bool {
+    pub fn mut_weak(&'a mut self) -> &'a mut bool {
         if self.weak.is_none() {
             self.weak = Some(false);
         };
@@ -3600,11 +3600,11 @@ impl<'self> FieldOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -3752,7 +3752,7 @@ pub struct EnumOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> EnumOptions {
+impl<'a> EnumOptions {
     pub fn new() -> EnumOptions {
         EnumOptions {
             allow_alias: None,
@@ -3801,7 +3801,7 @@ impl<'self> EnumOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_allow_alias(&'self mut self) -> &'self mut bool {
+    pub fn mut_allow_alias(&'a mut self) -> &'a mut bool {
         if self.allow_alias.is_none() {
             self.allow_alias = Some(false);
         };
@@ -3822,11 +3822,11 @@ impl<'self> EnumOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -3904,7 +3904,7 @@ pub struct EnumValueOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> EnumValueOptions {
+impl<'a> EnumValueOptions {
     pub fn new() -> EnumValueOptions {
         EnumValueOptions {
             uninterpreted_option: ~[],
@@ -3940,11 +3940,11 @@ impl<'self> EnumValueOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -4013,7 +4013,7 @@ pub struct ServiceOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> ServiceOptions {
+impl<'a> ServiceOptions {
     pub fn new() -> ServiceOptions {
         ServiceOptions {
             uninterpreted_option: ~[],
@@ -4049,11 +4049,11 @@ impl<'self> ServiceOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -4122,7 +4122,7 @@ pub struct MethodOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
 
-impl<'self> MethodOptions {
+impl<'a> MethodOptions {
     pub fn new() -> MethodOptions {
         MethodOptions {
             uninterpreted_option: ~[],
@@ -4158,11 +4158,11 @@ impl<'self> MethodOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'self mut self) -> &'self mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
         &mut self.uninterpreted_option
     }
 
-    pub fn get_uninterpreted_option(&'self self) -> &'self [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         rt::as_slice_tmp(&self.uninterpreted_option)
     }
 
@@ -4237,7 +4237,7 @@ pub struct UninterpretedOption {
     aggregate_value: Option<~str>,
 }
 
-impl<'self> UninterpretedOption {
+impl<'a> UninterpretedOption {
     pub fn new() -> UninterpretedOption {
         UninterpretedOption {
             name: ~[],
@@ -4321,11 +4321,11 @@ impl<'self> UninterpretedOption {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_name(&'self mut self) -> &'self mut ~[UninterpretedOption_NamePart] {
+    pub fn mut_name(&'a mut self) -> &'a mut ~[UninterpretedOption_NamePart] {
         &mut self.name
     }
 
-    pub fn get_name(&'self self) -> &'self [UninterpretedOption_NamePart] {
+    pub fn get_name(&'a self) -> &'a [UninterpretedOption_NamePart] {
         rt::as_slice_tmp(&self.name)
     }
 
@@ -4348,17 +4348,17 @@ impl<'self> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_identifier_value(&'self mut self) -> &'self mut ~str {
+    pub fn mut_identifier_value(&'a mut self) -> &'a mut ~str {
         if self.identifier_value.is_none() {
             self.identifier_value = Some(~"");
         };
         self.identifier_value.get_mut_ref()
     }
 
-    pub fn get_identifier_value(&'self self) -> &'self str {
+    pub fn get_identifier_value(&'a self) -> &'a str {
         match self.identifier_value {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -4377,7 +4377,7 @@ impl<'self> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_positive_int_value(&'self mut self) -> &'self mut u64 {
+    pub fn mut_positive_int_value(&'a mut self) -> &'a mut u64 {
         if self.positive_int_value.is_none() {
             self.positive_int_value = Some(0);
         };
@@ -4403,7 +4403,7 @@ impl<'self> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_negative_int_value(&'self mut self) -> &'self mut i64 {
+    pub fn mut_negative_int_value(&'a mut self) -> &'a mut i64 {
         if self.negative_int_value.is_none() {
             self.negative_int_value = Some(0);
         };
@@ -4429,7 +4429,7 @@ impl<'self> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_double_value(&'self mut self) -> &'self mut f64 {
+    pub fn mut_double_value(&'a mut self) -> &'a mut f64 {
         if self.double_value.is_none() {
             self.double_value = Some(0.);
         };
@@ -4455,17 +4455,17 @@ impl<'self> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_value(&'self mut self) -> &'self mut ~[u8] {
+    pub fn mut_string_value(&'a mut self) -> &'a mut ~[u8] {
         if self.string_value.is_none() {
             self.string_value = Some(~[]);
         };
         self.string_value.get_mut_ref()
     }
 
-    pub fn get_string_value(&'self self) -> &'self [u8] {
+    pub fn get_string_value(&'a self) -> &'a [u8] {
         match self.string_value {
             Some(ref v) => rt::as_slice_tmp(v),
-            None => &'self [],
+            None => &'a [],
         }
     }
 
@@ -4484,17 +4484,17 @@ impl<'self> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_aggregate_value(&'self mut self) -> &'self mut ~str {
+    pub fn mut_aggregate_value(&'a mut self) -> &'a mut ~str {
         if self.aggregate_value.is_none() {
             self.aggregate_value = Some(~"");
         };
         self.aggregate_value.get_mut_ref()
     }
 
-    pub fn get_aggregate_value(&'self self) -> &'self str {
+    pub fn get_aggregate_value(&'a self) -> &'a str {
         match self.aggregate_value {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 }
@@ -4614,7 +4614,7 @@ pub struct UninterpretedOption_NamePart {
     is_extension: Option<bool>,
 }
 
-impl<'self> UninterpretedOption_NamePart {
+impl<'a> UninterpretedOption_NamePart {
     pub fn new() -> UninterpretedOption_NamePart {
         UninterpretedOption_NamePart {
             name_part: None,
@@ -4665,17 +4665,17 @@ impl<'self> UninterpretedOption_NamePart {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name_part(&'self mut self) -> &'self mut ~str {
+    pub fn mut_name_part(&'a mut self) -> &'a mut ~str {
         if self.name_part.is_none() {
             self.name_part = Some(~"");
         };
         self.name_part.get_mut_ref()
     }
 
-    pub fn get_name_part(&'self self) -> &'self str {
+    pub fn get_name_part(&'a self) -> &'a str {
         match self.name_part {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -4694,7 +4694,7 @@ impl<'self> UninterpretedOption_NamePart {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_is_extension(&'self mut self) -> &'self mut bool {
+    pub fn mut_is_extension(&'a mut self) -> &'a mut bool {
         if self.is_extension.is_none() {
             self.is_extension = Some(false);
         };
@@ -4779,7 +4779,7 @@ pub struct SourceCodeInfo {
     location: ~[SourceCodeInfo_Location],
 }
 
-impl<'self> SourceCodeInfo {
+impl<'a> SourceCodeInfo {
     pub fn new() -> SourceCodeInfo {
         SourceCodeInfo {
             location: ~[],
@@ -4815,11 +4815,11 @@ impl<'self> SourceCodeInfo {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_location(&'self mut self) -> &'self mut ~[SourceCodeInfo_Location] {
+    pub fn mut_location(&'a mut self) -> &'a mut ~[SourceCodeInfo_Location] {
         &mut self.location
     }
 
-    pub fn get_location(&'self self) -> &'self [SourceCodeInfo_Location] {
+    pub fn get_location(&'a self) -> &'a [SourceCodeInfo_Location] {
         rt::as_slice_tmp(&self.location)
     }
 
@@ -4891,7 +4891,7 @@ pub struct SourceCodeInfo_Location {
     trailing_comments: Option<~str>,
 }
 
-impl<'self> SourceCodeInfo_Location {
+impl<'a> SourceCodeInfo_Location {
     pub fn new() -> SourceCodeInfo_Location {
         SourceCodeInfo_Location {
             path: ~[],
@@ -4954,11 +4954,11 @@ impl<'self> SourceCodeInfo_Location {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_path(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_path(&'a mut self) -> &'a mut ~[i32] {
         &mut self.path
     }
 
-    pub fn get_path(&'self self) -> &'self [i32] {
+    pub fn get_path(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.path)
     }
 
@@ -4976,11 +4976,11 @@ impl<'self> SourceCodeInfo_Location {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_span(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_span(&'a mut self) -> &'a mut ~[i32] {
         &mut self.span
     }
 
-    pub fn get_span(&'self self) -> &'self [i32] {
+    pub fn get_span(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.span)
     }
 
@@ -5003,17 +5003,17 @@ impl<'self> SourceCodeInfo_Location {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_leading_comments(&'self mut self) -> &'self mut ~str {
+    pub fn mut_leading_comments(&'a mut self) -> &'a mut ~str {
         if self.leading_comments.is_none() {
             self.leading_comments = Some(~"");
         };
         self.leading_comments.get_mut_ref()
     }
 
-    pub fn get_leading_comments(&'self self) -> &'self str {
+    pub fn get_leading_comments(&'a self) -> &'a str {
         match self.leading_comments {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 
@@ -5032,17 +5032,17 @@ impl<'self> SourceCodeInfo_Location {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_trailing_comments(&'self mut self) -> &'self mut ~str {
+    pub fn mut_trailing_comments(&'a mut self) -> &'a mut ~str {
         if self.trailing_comments.is_none() {
             self.trailing_comments = Some(~"");
         };
         self.trailing_comments.get_mut_ref()
     }
 
-    pub fn get_trailing_comments(&'self self) -> &'self str {
+    pub fn get_trailing_comments(&'a self) -> &'a str {
         match self.trailing_comments {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 }

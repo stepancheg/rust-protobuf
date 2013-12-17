@@ -8,7 +8,7 @@ pub struct Test1 {
     a: Option<i32>,
 }
 
-impl<'self> Test1 {
+impl<'a> Test1 {
     pub fn new() -> Test1 {
         Test1 {
             a: None,
@@ -51,7 +51,7 @@ impl<'self> Test1 {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_a(&'self mut self) -> &'self mut i32 {
+    pub fn mut_a(&'a mut self) -> &'a mut i32 {
         if self.a.is_none() {
             self.a = Some(0);
         };
@@ -124,7 +124,7 @@ pub struct Test2 {
     b: Option<~str>,
 }
 
-impl<'self> Test2 {
+impl<'a> Test2 {
     pub fn new() -> Test2 {
         Test2 {
             b: None,
@@ -167,17 +167,17 @@ impl<'self> Test2 {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_b(&'self mut self) -> &'self mut ~str {
+    pub fn mut_b(&'a mut self) -> &'a mut ~str {
         if self.b.is_none() {
             self.b = Some(~"");
         };
         self.b.get_mut_ref()
     }
 
-    pub fn get_b(&'self self) -> &'self str {
+    pub fn get_b(&'a self) -> &'a str {
         match self.b {
             Some(ref v) => v.as_slice(),
-            None => &'self "",
+            None => &'a "",
         }
     }
 }
@@ -243,7 +243,7 @@ pub struct Test3 {
     c: Option<Test1>,
 }
 
-impl<'self> Test3 {
+impl<'a> Test3 {
     pub fn new() -> Test3 {
         Test3 {
             c: None,
@@ -288,14 +288,14 @@ impl<'self> Test3 {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_c(&'self mut self) -> &'self mut Test1 {
+    pub fn mut_c(&'a mut self) -> &'a mut Test1 {
         if self.c.is_none() {
             self.c = Some(Test1::new());
         };
         self.c.get_mut_ref()
     }
 
-    pub fn get_c(&'self self) -> &'self Test1 {
+    pub fn get_c(&'a self) -> &'a Test1 {
         match self.c {
             Some(ref v) => v,
             None => Test1::default_instance(),
@@ -366,7 +366,7 @@ pub struct Test4 {
     d: ~[i32],
 }
 
-impl<'self> Test4 {
+impl<'a> Test4 {
     pub fn new() -> Test4 {
         Test4 {
             d: ~[],
@@ -404,11 +404,11 @@ impl<'self> Test4 {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_d(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_d(&'a mut self) -> &'a mut ~[i32] {
         &mut self.d
     }
 
-    pub fn get_d(&'self self) -> &'self [i32] {
+    pub fn get_d(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.d)
     }
 
@@ -482,7 +482,7 @@ pub struct TestPackedUnpacked {
     packed: ~[i32],
 }
 
-impl<'self> TestPackedUnpacked {
+impl<'a> TestPackedUnpacked {
     pub fn new() -> TestPackedUnpacked {
         TestPackedUnpacked {
             unpacked: ~[],
@@ -525,11 +525,11 @@ impl<'self> TestPackedUnpacked {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_unpacked(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_unpacked(&'a mut self) -> &'a mut ~[i32] {
         &mut self.unpacked
     }
 
-    pub fn get_unpacked(&'self self) -> &'self [i32] {
+    pub fn get_unpacked(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.unpacked)
     }
 
@@ -547,11 +547,11 @@ impl<'self> TestPackedUnpacked {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_packed(&'self mut self) -> &'self mut ~[i32] {
+    pub fn mut_packed(&'a mut self) -> &'a mut ~[i32] {
         &mut self.packed
     }
 
-    pub fn get_packed(&'self self) -> &'self [i32] {
+    pub fn get_packed(&'a self) -> &'a [i32] {
         rt::as_slice_tmp(&self.packed)
     }
 
@@ -641,7 +641,7 @@ pub struct TestEmpty {
     foo: Option<i32>,
 }
 
-impl<'self> TestEmpty {
+impl<'a> TestEmpty {
     pub fn new() -> TestEmpty {
         TestEmpty {
             foo: None,
@@ -684,7 +684,7 @@ impl<'self> TestEmpty {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_foo(&'self mut self) -> &'self mut i32 {
+    pub fn mut_foo(&'a mut self) -> &'a mut i32 {
         if self.foo.is_none() {
             self.foo = Some(0);
         };
@@ -754,7 +754,7 @@ pub struct TestRequired {
     b: Option<bool>,
 }
 
-impl<'self> TestRequired {
+impl<'a> TestRequired {
     pub fn new() -> TestRequired {
         TestRequired {
             b: None,
@@ -797,7 +797,7 @@ impl<'self> TestRequired {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_b(&'self mut self) -> &'self mut bool {
+    pub fn mut_b(&'a mut self) -> &'a mut bool {
         if self.b.is_none() {
             self.b = Some(false);
         };

@@ -45,7 +45,7 @@ impl VecReader {
 impl Reader for VecReader {
     fn read(&mut self, bytes: &mut [u8]) -> Option<uint> {
         let n = if bytes.len() < self.remaining() { bytes.len() } else { self.remaining() };
-        vec::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.vec.len()), n);
+        vec::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.pos + n));
         self.pos += n;
         Some(n)
     }

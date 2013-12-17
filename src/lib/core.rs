@@ -70,18 +70,18 @@ pub mod wire_format {
 
 }
 
-pub struct CodedInputStream<'self> {
+pub struct CodedInputStream<'a> {
     buffer: ~[u8],
     buffer_size: u32,
     buffer_pos: u32,
-    reader: Option<&'self mut Reader>,
+    reader: Option<&'a mut Reader>,
     total_bytes_retired: u32,
     current_limit: u32,
     buffer_size_after_limit: u32,
 }
 
-impl<'self> CodedInputStream<'self> {
-    pub fn new(reader: &'self mut Reader) -> CodedInputStream {
+impl<'a> CodedInputStream<'a> {
+    pub fn new(reader: &'a mut Reader) -> CodedInputStream {
         CodedInputStream {
             // TODO: buffer of size 1 is used, because
             // impl Reader for FILE* (that is io::stdin()) does not not stop
@@ -375,7 +375,7 @@ trait WithCodedOutputStream {
     fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T;
 }
 
-impl<'self> WithCodedOutputStream for &'self mut Writer {
+impl<'a> WithCodedOutputStream for &'a mut Writer {
     fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T {
         let mut os = CodedOutputStream::new(self);
         let r = cb(&mut os);
@@ -396,7 +396,7 @@ trait WithCodedInputStream {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T;
 }
 
-impl<'self> WithCodedInputStream for &'self mut Reader {
+impl<'a> WithCodedInputStream for &'a mut Reader {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
         let mut is = CodedInputStream::new(self);
         let r = cb(&mut is);
@@ -408,7 +408,7 @@ impl<'self> WithCodedInputStream for &'self mut Reader {
     }
 }
 
-impl<'self> WithCodedInputStream for &'self [u8] {
+impl<'a> WithCodedInputStream for &'a [u8] {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
         let mut reader = VecReader::new(self.to_owned());
         (&mut reader as &mut Reader).with_coded_input_stream(|is| {
@@ -418,14 +418,14 @@ impl<'self> WithCodedInputStream for &'self [u8] {
 }
 
 
-pub struct CodedOutputStream<'self> {
+pub struct CodedOutputStream<'a> {
     buffer: ~[u8],
     position: u32,
-    writer: Option<&'self mut Writer>,
+    writer: Option<&'a mut Writer>,
 }
 
-impl<'self> CodedOutputStream<'self> {
-    pub fn new(writer: &'self mut Writer) -> CodedOutputStream<'self> {
+impl<'a> CodedOutputStream<'a> {
+    pub fn new(writer: &'a mut Writer) -> CodedOutputStream<'a> {
         CodedOutputStream {
             buffer: ~[0, ..4096],
             position: 0,
