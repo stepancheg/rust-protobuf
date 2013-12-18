@@ -1063,15 +1063,11 @@ impl<'a> DescriptorProto_ExtensionRange {
     }
 
     pub fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
-//             start: None,
-//             end: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
+            start: None,
+            end: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -1232,21 +1228,17 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn default_instance() -> &'static FieldDescriptorProto {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: FieldDescriptorProto = FieldDescriptorProto {
-//             name: None,
-//             number: None,
-//             label: None,
-//             field_type: None,
-//             type_name: None,
-//             extendee: None,
-//             default_value: None,
-//             options: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: FieldDescriptorProto = FieldDescriptorProto {
+            name: None,
+            number: None,
+            label: None,
+            field_type: None,
+            type_name: None,
+            extendee: None,
+            default_value: None,
+            options: None,
+        };
+        &'static instance
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -1948,16 +1940,12 @@ impl<'a> EnumValueDescriptorProto {
     }
 
     pub fn default_instance() -> &'static EnumValueDescriptorProto {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
-//             name: None,
-//             number: None,
-//             options: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
+            name: None,
+            number: None,
+            options: None,
+        };
+        &'static instance
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2369,17 +2357,13 @@ impl<'a> MethodDescriptorProto {
     }
 
     pub fn default_instance() -> &'static MethodDescriptorProto {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: MethodDescriptorProto = MethodDescriptorProto {
-//             name: None,
-//             input_type: None,
-//             output_type: None,
-//             options: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: MethodDescriptorProto = MethodDescriptorProto {
+            name: None,
+            input_type: None,
+            output_type: None,
+            options: None,
+        };
+        &'static instance
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -4623,15 +4607,11 @@ impl<'a> UninterpretedOption_NamePart {
     }
 
     pub fn default_instance() -> &'static UninterpretedOption_NamePart {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
-//             name_part: None,
-//             is_extension: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
+            name_part: None,
+            is_extension: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]

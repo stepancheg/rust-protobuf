@@ -16,14 +16,10 @@ impl<'a> Test1 {
     }
 
     pub fn default_instance() -> &'static Test1 {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: Test1 = Test1 {
-//             a: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: Test1 = Test1 {
+            a: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -132,14 +128,10 @@ impl<'a> Test2 {
     }
 
     pub fn default_instance() -> &'static Test2 {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: Test2 = Test2 {
-//             b: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: Test2 = Test2 {
+            b: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -251,14 +243,10 @@ impl<'a> Test3 {
     }
 
     pub fn default_instance() -> &'static Test3 {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: Test3 = Test3 {
-//             c: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: Test3 = Test3 {
+            c: None,
+        };
+        &'static instance
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -649,14 +637,10 @@ impl<'a> TestEmpty {
     }
 
     pub fn default_instance() -> &'static TestEmpty {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: TestEmpty = TestEmpty {
-//             foo: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: TestEmpty = TestEmpty {
+            foo: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
@@ -762,14 +746,10 @@ impl<'a> TestRequired {
     }
 
     pub fn default_instance() -> &'static TestRequired {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: TestRequired = TestRequired {
-//             b: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: TestRequired = TestRequired {
+            b: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]

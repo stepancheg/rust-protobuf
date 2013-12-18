@@ -623,15 +623,6 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                         write_body(w);
                     });
                     w.todo();
-                } else if USE_RUST_VERSION == RustMaster {
-                    w.commented(|w| {
-                        w.comment("doesn't work, because rust master has broken \
-                                static constants that contains None of ~str");
-                        w.comment("https://github.com/mozilla/rust/issues/8578");
-                        w.comment("TODO: should at least keep static without ~str");
-                        write_body(w);
-                    });
-                    w.todo();
                 } else {
                     write_body(w)
                 }

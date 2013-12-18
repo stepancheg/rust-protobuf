@@ -370,16 +370,12 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse_File {
-//         // doesn't work, because rust master has broken static constants that contains None of ~str
-//         // https://github.com/mozilla/rust/issues/8578
-//         // TODO: should at least keep static without ~str
-//         static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
-//             name: None,
-//             insertion_point: None,
-//             content: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
+            name: None,
+            insertion_point: None,
+            content: None,
+        };
+        &'static instance
     }
 
     #[allow(unused_variable)]
