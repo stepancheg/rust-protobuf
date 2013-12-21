@@ -158,20 +158,6 @@ impl Field {
         })
     }
 
-    fn is_primitive(&self) -> bool {
-        match self.field_type {
-            TYPE_STRING | TYPE_BYTES | TYPE_MESSAGE => false,
-            _ => true,
-        }
-    }
-
-    fn stored_as_pointer(&self) -> bool {
-        match self.field_type {
-            TYPE_STRING | TYPE_BYTES => true,
-            _ => false,
-        }
-    }
-
     fn full_type(&self) -> ~str {
         match self.repeated {
             true  => format!("~[{:s}]", self.type_name),
@@ -428,14 +414,6 @@ impl<'a> IndentWriter<'a> {
 
     fn pub_struct(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block("pub struct " + name, cb);
-    }
-
-    fn def_struct(&self, name: &str, cb: |&mut IndentWriter|) {
-        self.expr_block("struct " + name, cb);
-    }
-
-    fn def_mod(&self, name: &str, cb: |&mut IndentWriter|) {
-        self.expr_block("mod " + name, cb);
     }
 
     fn field_entry(&self, name: &str, value: &str) {
@@ -971,13 +949,6 @@ fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
     }
 }
 
-fn remove_from(s: &str, c: char) -> ~str {
-    match s.find(c) {
-        Some(pos) => s.slice_to(pos).to_owned(),
-        None => s.to_owned()
-    }
-}
-
 fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
     if !s.ends_with(suffix) {
         fail!();
@@ -992,18 +963,6 @@ fn remove_prefix<'s>(s: &'s str, prefix: &str) -> &'s str {
     s.slice_from(prefix.len())
 }
 
-fn remove_prefix_if_present<'s>(s: &'s str, prefix: &str) -> &'s str {
-    if s.starts_with(prefix) {
-        remove_prefix(s, prefix)
-    } else {
-        s
-    }
-}
-
-
-fn last_part_of_package<'s>(pkg: &'s str) -> &'s str {
-    remove_to(pkg, '.')
-}
 
 fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
     remove_suffix(remove_to(path, '/'), ".proto")

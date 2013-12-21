@@ -92,6 +92,7 @@ mod test {
         assert_eq!(~['h' as u8, 'i' as u8], w.vec.to_owned());
     }
 
+    #[test]
     fn test_count_writer() {
         let mut w = CountWriter::new();
         w.write("hi".as_bytes());
