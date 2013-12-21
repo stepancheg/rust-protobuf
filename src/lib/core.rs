@@ -5,7 +5,8 @@ use std::cast;
 use std::str::from_utf8_owned;
 use std::io::*;
 
-use misc::*;
+use misc::VecWriter;
+use misc::VecReader;
 use zigzag::*;
 
 pub mod wire_format {

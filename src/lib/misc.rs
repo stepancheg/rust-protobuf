@@ -2,7 +2,7 @@ use std::io::Writer;
 use std::io::Reader;
 use std::vec;
 
-struct VecWriter {
+pub struct VecWriter {
     vec: ~[u8],
 }
 
@@ -24,7 +24,7 @@ impl Writer for VecWriter {
     }
 }
 
-struct VecReader {
+pub struct VecReader {
     vec: ~[u8],
     pos: uint,
 }
@@ -57,7 +57,7 @@ impl Reader for VecReader {
 
 
 
-struct CountWriter {
+pub struct CountWriter {
     count: uint,
 }
 
