@@ -133,6 +133,9 @@ impl<'a> CodedInputStream<'a> {
                     self.total_bytes_retired += self.buffer_size;
                     self.buffer_pos = 0;
                     let mut_reader: &mut Reader = *reader;
+
+                    // condition is here because of rust issue
+                    // https://github.com/mozilla/rust/issues/11104
                     self.buffer_size = io_error::cond.trap(|e| {
                         if e.kind != EndOfFile {
                             io_error::cond.raise(e);
