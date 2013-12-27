@@ -1,4 +1,4 @@
-#[link(name = "protobuf", vers = "0.1.0")];
+#[crate_id(name = "protobuf#0.1.0")];
 #[crate_type = "lib"];
 #[feature(globs)];
 #[feature(managed_boxes)];
