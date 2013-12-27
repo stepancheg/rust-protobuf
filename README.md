@@ -27,7 +27,18 @@ On Ubuntu, protobuf-compiler package can be installed:
 apt-get install protobuf-compiler
 ```
 
-1) Compile the project:
+1) Checkout rust-protobuf sources:
+
+```
+git clone git@github.com:stepancheg/rust-protobuf.git -b <branch>
+```
+
+Where branch is:
+  * `master` compatible rust master
+  * `rust-0.8` comparible with rust 0.8
+  * `rust-0.7` compatible with rust 0.7
+
+2) Compile the project:
 
 ```
 cd src
@@ -37,13 +48,13 @@ cd src
 `protoc-gen-rust` binary is generated. `protoc-gen-rust` is a rust
 plugin for protoc.
 
-2) Add `protoc-gen-rust` to $PATH:
+3) Add `protoc-gen-rust` to $PATH:
 
 ```
 PATH="`pwd`:$PATH"
 ```
 
-3) Generate .rs files:
+4) Generate .rs files:
 
 ```
 protoc --rust_out . foo.proto
@@ -54,7 +65,7 @@ This will generate .rs files in current directory.
 Same procedure is used to regenerate .rs files for rust-protobuf
 itself, see `./regerate.sh`.
 
-4) Include generated files into your project .rs file:
+5) Include generated files into your project .rs file:
 
 ```
 extern mod protobuf; // depend on rust-protobuf runtime
