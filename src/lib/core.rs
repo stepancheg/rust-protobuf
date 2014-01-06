@@ -40,7 +40,7 @@ pub mod wire_format {
     pub struct Tag(u32);
 
     impl Tag {
-        fn value(self) -> u32 {
+        pub fn value(self) -> u32 {
             match self {
                 Tag(value) => value
             }

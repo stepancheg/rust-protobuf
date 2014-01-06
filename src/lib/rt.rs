@@ -96,7 +96,7 @@ pub fn vec_packed_size<T : ProtobufNum>(
 
 // Size of tag does not depend on wire type
 pub fn tag_size(field_number: u32) -> u32 {
-    wire_format::Tag::make(field_number, wire_format::WireTypeFixed64).len_varint()
+    wire_format::Tag::make(field_number, wire_format::WireTypeFixed64).value().len_varint()
 }
 
 pub fn value_size_no_tag<T : ProtobufNum>(value: T, wt: wire_format::WireType) -> u32 {
