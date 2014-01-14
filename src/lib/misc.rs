@@ -49,10 +49,6 @@ impl Reader for VecReader {
         self.pos += n;
         Some(n)
     }
-
-    fn eof(&mut self) -> bool {
-        fail!();
-    }
 }
 
 
