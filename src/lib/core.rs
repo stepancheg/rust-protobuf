@@ -781,7 +781,7 @@ mod test {
 
     use super::*;
     use std::io::*;
-    use std::io::mem::*;
+    use std::mem::*;
     use misc::*;
     use hex::*;
 
