@@ -4,6 +4,7 @@ use std::u32;
 use std::cast;
 use std::str::from_utf8_owned;
 use std::io::*;
+use std::num::Bounded;
 
 use misc::VecWriter;
 use misc::VecReader;
@@ -93,7 +94,7 @@ impl<'a> CodedInputStream<'a> {
             buffer_pos: 0,
             reader: Some(reader),
             total_bytes_retired: 0,
-            current_limit: u32::max_value,
+            current_limit: Bounded::max_value(),
             buffer_size_after_limit: 0,
         }
     }
@@ -357,7 +358,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_string(&mut self) -> ~str {
-        from_utf8_owned(self.read_bytes())
+        from_utf8_owned(self.read_bytes()).unwrap()
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) {
