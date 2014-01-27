@@ -968,7 +968,7 @@ fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
     remove_suffix(remove_to(path, '/'), ".proto")
 }
 
-struct GenResult {
+pub struct GenResult {
     name: ~str,
     content: ~[u8],
 }
