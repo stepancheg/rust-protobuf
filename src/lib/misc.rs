@@ -53,25 +53,6 @@ impl Reader for VecReader {
 
 
 
-pub struct CountWriter {
-    count: uint,
-}
-
-impl CountWriter {
-    pub fn new() -> CountWriter {
-        CountWriter {
-            count: 0,
-        }
-    }
-}
-
-impl Writer for CountWriter {
-    fn write(&mut self, v: &[u8]) {
-        self.count += v.len();
-    }
-}
-
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -86,13 +67,5 @@ mod test {
         }
         foo(&mut w as &mut Writer);
         assert_eq!(~['h' as u8, 'i' as u8], w.vec.to_owned());
-    }
-
-    #[test]
-    fn test_count_writer() {
-        let mut w = CountWriter::new();
-        w.write("hi".as_bytes());
-        w.write("there".as_bytes());
-        assert_eq!(7, w.count);
     }
 }
