@@ -1,6 +1,5 @@
 // TODO: drop all fail!
 
-use std::u32;
 use std::cast;
 use std::str::from_utf8_owned;
 use std::io::*;
@@ -782,7 +781,6 @@ mod test {
 
     use super::*;
     use std::io::*;
-    use std::mem::*;
     use misc::*;
     use hex::*;
 
