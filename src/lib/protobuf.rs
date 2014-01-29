@@ -2,6 +2,7 @@
 #[crate_type = "lib"];
 #[feature(globs)];
 #[feature(managed_boxes)];
+#[allow(dead_code)];
 
 #[desc = "protobuf implementation for rust"];
 #[license = "BSD"];

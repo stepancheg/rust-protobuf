@@ -1,6 +1,7 @@
 #[crate_type = "bin"];
 #[feature(globs)];
 #[feature(managed_boxes)];
+#[allow(dead_code)];
 
 extern mod protobuf;
 
