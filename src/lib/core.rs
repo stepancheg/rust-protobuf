@@ -678,63 +678,7 @@ pub trait Message : Eq {
     fn merge_from(&mut self, is: &mut CodedInputStream);
     fn write_to(&self, os: &mut CodedOutputStream);
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32;
-}
 
-pub trait ProtobufEnum : Eq {
-    fn value(&self) -> i32;
-}
-
-pub trait MessageUtil {
-    // broken in 0.7
-    //fn parse_from_**(is: &mut Xxx) -> Self;
-    fn write_to_writer(&self, w: &mut Writer);
-    fn write_to_bytes(&self) -> ~[u8];
-    fn write_length_delimited_to(&self, os: &mut CodedOutputStream);
-    fn write_length_delimited_to_writer(&self, w: &mut Writer);
-    fn write_length_delimited_to_bytes(&self) -> ~[u8];
-    fn serialized_size(&self) -> u32;
-    fn check_initialized(&self);
-}
-
-pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {
-    let mut r: M = Message::new();
-    r.merge_from(is);
-    r.check_initialized();
-    r
-}
-
-pub fn parse_from_reader<M : Message>(reader: &mut Reader) -> M {
-    reader.with_coded_input_stream(|is| {
-        parse_from::<M>(is)
-    })
-}
-
-pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> M {
-    bytes.with_coded_input_stream(|is| {
-        parse_from::<M>(is)
-    })
-}
-
-pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M {
-    is.read_message::<M>()
-}
-
-pub fn parse_length_delimited_from_reader<M : Message>(r: &mut Reader) -> M {
-    // TODO: wrong: we may read length first, and then read exact number of bytes needed
-    r.with_coded_input_stream(|is| {
-        is.read_message::<M>()
-    })
-}
-
-pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> M {
-    bytes.with_coded_input_stream(|is| {
-        is.read_message::<M>()
-    })
-}
-
-
-
-impl<M : Message> MessageUtil for M {
     fn serialized_size(&self) -> u32 {
         let mut sizes = ~[];
         self.compute_sizes(&mut sizes)
@@ -775,6 +719,48 @@ impl<M : Message> MessageUtil for M {
     }
 
 }
+
+pub trait ProtobufEnum : Eq {
+    fn value(&self) -> i32;
+}
+
+pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {
+    let mut r: M = Message::new();
+    r.merge_from(is);
+    r.check_initialized();
+    r
+}
+
+pub fn parse_from_reader<M : Message>(reader: &mut Reader) -> M {
+    reader.with_coded_input_stream(|is| {
+        parse_from::<M>(is)
+    })
+}
+
+pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> M {
+    bytes.with_coded_input_stream(|is| {
+        parse_from::<M>(is)
+    })
+}
+
+pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M {
+    is.read_message::<M>()
+}
+
+pub fn parse_length_delimited_from_reader<M : Message>(r: &mut Reader) -> M {
+    // TODO: wrong: we may read length first, and then read exact number of bytes needed
+    r.with_coded_input_stream(|is| {
+        is.read_message::<M>()
+    })
+}
+
+pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> M {
+    bytes.with_coded_input_stream(|is| {
+        is.read_message::<M>()
+    })
+}
+
+
 
 #[cfg(test)]
 mod test {
