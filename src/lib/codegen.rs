@@ -992,8 +992,23 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
 
             w.write_line("use protobuf::*;");
             w.write_line("use protobuf::rt;");
+            w.write_line("use protobuf::descriptor;");
             for dep in file.dependency.iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
+            }
+
+            {
+                w.write_line("");
+                let fdp_bytes = file.write_to_bytes();
+                let fdp_bytes_str = fdp_bytes.iter()
+                        .map(|b| format!("0x{:02x}", *b))
+                        .collect::<~[~str]>()
+                        .connect(", ");
+                w.write_line(format!("static file_descriptor_proto_data: &'static [u8] = &[{}];", fdp_bytes_str));
+                w.write_line("");
+                w.pub_fn("file_descriptor_proto() -> descriptor::FileDescriptorProto", |w| {
+                    w.write_line("parse_from_bytes(file_descriptor_proto_data)");
+                });
             }
 
             for message_type in file.message_type.iter() {

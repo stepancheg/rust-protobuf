@@ -1,5 +1,6 @@
 use core::*;
 use hex::*;
+use descriptor;
 
 use shrug::*;
 
@@ -80,4 +81,11 @@ fn test_read_missing_required() {
 #[should_fail]
 fn test_read_junk() {
     parse_from_bytes::<Test1>(decode_hex("00"));
+}
+
+#[test]
+fn test_file_descriptor_proto() {
+    let p: descriptor::FileDescriptorProto = file_descriptor_proto();
+    assert!(p.has_name());
+    assert_eq!(Some(~"proto/shrug.proto"), p.name);
 }
