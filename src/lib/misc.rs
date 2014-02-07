@@ -1,6 +1,9 @@
 use std::io::Writer;
 use std::io::Reader;
+use std::io;
 use std::vec;
+use std::result::Ok;
+use std::result::Err;
 
 pub struct VecWriter {
     vec: ~[u8],
@@ -15,12 +18,9 @@ impl VecWriter {
 }
 
 impl Writer for VecWriter {
-    fn write(&mut self, v: &[u8]) {
+    fn write(&mut self, v: &[u8]) -> io::IoResult<()> {
         self.vec.push_all(v);
-    }
-
-    fn flush(&mut self) {
-        fail!();
+        Ok(())
     }
 }
 
@@ -43,11 +43,15 @@ impl VecReader {
 }
 
 impl Reader for VecReader {
-    fn read(&mut self, bytes: &mut [u8]) -> Option<uint> {
-        let n = if bytes.len() < self.remaining() { bytes.len() } else { self.remaining() };
-        vec::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.pos + n));
-        self.pos += n;
-        Some(n)
+    fn read(&mut self, bytes: &mut [u8]) -> io::IoResult<uint> {
+        if self.remaining() == 0 {
+            Err(io::standard_error(io::EndOfFile))
+        } else {
+            let n = if bytes.len() < self.remaining() { bytes.len() } else { self.remaining() };
+            vec::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.pos + n));
+            self.pos += n;
+            Ok(n)
+        }
     }
 }
 
@@ -63,7 +67,7 @@ mod test {
     fn test_vec_writer() {
         let mut w = VecWriter::new();
         fn foo(writer: &mut Writer) {
-            writer.write("hi".as_bytes());
+            writer.write("hi".as_bytes()).unwrap();
         }
         foo(&mut w as &mut Writer);
         assert_eq!(~['h' as u8, 'i' as u8], w.vec.to_owned());

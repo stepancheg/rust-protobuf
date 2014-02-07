@@ -26,7 +26,7 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
 
     for r in results.iter() {
         let mut file_writer = File::create(&Path::new(r.name.to_owned())).unwrap();
-        file_writer.write(r.content);
+        file_writer.write(r.content).unwrap();
     }
 }
 

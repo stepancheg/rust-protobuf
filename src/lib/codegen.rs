@@ -354,12 +354,12 @@ impl<'a> IndentWriter<'a> {
 
     fn write_line(&self, line: &str) {
         let mut_writer: &mut Writer = unsafe { cast::transmute(self.writer) };
-        if line.is_empty() {
+        (if line.is_empty() {
             mut_writer.write("\n".as_bytes())
         } else {
             let s = self.indent + line + "\n";
-            mut_writer.write(s.as_bytes());
-        }
+            mut_writer.write(s.as_bytes())
+        }).unwrap();
     }
 
     fn write_lines(&self, lines: &[~str]) {

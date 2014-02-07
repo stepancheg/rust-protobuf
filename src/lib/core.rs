@@ -132,20 +132,15 @@ impl<'a> CodedInputStream<'a> {
                 Some(ref mut reader) => {
                     self.total_bytes_retired += self.buffer_size;
                     self.buffer_pos = 0;
-                    let mut_reader: &mut Reader = *reader;
+                    self.buffer_size = 0;
 
-                    // condition is here because of rust issue
-                    // https://github.com/mozilla/rust/issues/11104
-                    self.buffer_size = io_error::cond.trap(|e| {
-                        if e.kind != EndOfFile {
-                            io_error::cond.raise(e);
-                        };
-                    }).inside(|| {
-                        mut_reader.read(self.buffer).unwrap_or(0) as u32
-                    });
-                    if self.buffer_size == 0 {
-                        return false;
-                    }
+                    let r = reader.read(self.buffer);
+                    self.buffer_size = match r {
+                        Err(ref e) if e.kind == EndOfFile => return false,
+                        Err(_) => fail!(),
+                        Ok(x) => x as u32,
+                    };
+                    assert!(self.buffer_size > 0);
                 },
                 None => fail!(),
             }
@@ -199,6 +194,7 @@ impl<'a> CodedInputStream<'a> {
         if self.buffer_pos == self.buffer_size {
             self.refill_buffer_really();
         }
+        assert!(self.buffer_pos < self.buffer_size);
         let r = self.buffer[self.buffer_pos];
         self.buffer_pos += 1;
         r
@@ -440,7 +436,7 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) {
         match self.writer {
             Some(ref mut writer) => {
-                writer.write(self.buffer.slice(0, self.position as uint));
+                writer.write(self.buffer.slice(0, self.position as uint)).unwrap();
             },
             None => fail!()
         };
@@ -464,7 +460,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) {
         self.refresh_buffer();
         match self.writer {
-            Some(ref mut writer) => writer.write(bytes),
+            Some(ref mut writer) => writer.write(bytes).unwrap(),
             None => fail!()
         };
     }
