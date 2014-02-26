@@ -3,6 +3,7 @@
 #[feature(globs)];
 #[feature(managed_boxes)];
 #[allow(dead_code)];
+#[allow(non_camel_case_types)];
 
 #[desc = "protobuf implementation for rust"];
 #[license = "BSD"];

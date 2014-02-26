@@ -2,8 +2,9 @@
 #[feature(globs)];
 #[feature(managed_boxes)];
 #[allow(dead_code)];
+#[allow(non_camel_case_types)];
 
-extern mod protobuf;
+extern crate protobuf;
 
 use std::io;
 use std::io::Reader;

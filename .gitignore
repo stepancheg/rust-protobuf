@@ -3,7 +3,9 @@
 .gdb_history
 tmp*
 *.dylib
+*.rlib
 *.bin
 *.so
+test
 protobuf-bin-gen-rust
 protoc-gen-rust

@@ -3,15 +3,15 @@
 #[feature(managed_boxes)];
 #[allow(dead_code)];
 
-extern mod protobuf;
-extern mod extra;
+extern crate protobuf;
+extern crate extra;
+extern crate getopts;
 
 use std::io::fs::*;
 use std::io::Reader;
 use std::io::Writer;
 use std::path::Path;
 use std::os;
-use extra::getopts;
 
 use protobuf::*;
 use protobuf::descriptor::*;
@@ -32,10 +32,10 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
 
 fn main() {
     let args = os::args();
-    let opts: ~[getopts::Opt] = ~[
+    let opts = ~[
     ];
     let matches = getopts::getopts(args.tail(), opts).unwrap();
-    let pb_bin = match matches.free {
+    let pb_bin = match matches.free.as_slice() {
         [ref pb_bin] => pb_bin.to_owned(),
         _ => fail!("must have exactly one argument")
     };
