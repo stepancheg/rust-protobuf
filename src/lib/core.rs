@@ -13,7 +13,7 @@ pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
     pub static TAG_TYPE_MASK: u32 = (1 << TAG_TYPE_BITS) - 1;
 
-    #[deriving(Eq, Clone)]
+    #[deriving(Eq, Clone, Show)]
     pub enum WireType {
         WireTypeVarint          = 0,
         WireTypeFixed64         = 1,

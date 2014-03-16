@@ -131,9 +131,9 @@ impl Field {
             LABEL_REPEATED => true,
             LABEL_OPTIONAL | LABEL_REQUIRED => false,
         };
-        let name = match field.name.get_ref().to_owned() {
-            ~"type" => ~"field_type",
-            x => x,
+        let name = match (*field.name.get_ref()).as_slice() {
+            "type" => ~"field_type",
+            x => x.to_owned(),
         };
         let packed = match field.options {
             Some(ref options) => options.packed.unwrap_or(false),

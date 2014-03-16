@@ -4,7 +4,6 @@
 #[allow(dead_code)];
 
 extern crate protobuf;
-extern crate extra;
 extern crate getopts;
 
 use std::io::fs::*;
