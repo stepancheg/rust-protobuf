@@ -1,7 +1,7 @@
 use std::io::Writer;
 use std::io::Reader;
 use std::io;
-use std::vec;
+use std::slice;
 use std::result::Ok;
 use std::result::Err;
 
@@ -48,7 +48,7 @@ impl Reader for VecReader {
             Err(io::standard_error(io::EndOfFile))
         } else {
             let n = if bytes.len() < self.remaining() { bytes.len() } else { self.remaining() };
-            vec::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.pos + n));
+            slice::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.pos + n));
             self.pos += n;
             Ok(n)
         }
