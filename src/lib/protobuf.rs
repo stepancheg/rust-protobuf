@@ -1,12 +1,12 @@
-#[crate_id(name = "protobuf#0.1.0")];
-#[crate_type = "lib"];
-#[feature(globs)];
-#[feature(managed_boxes)];
-#[allow(dead_code)];
-#[allow(non_camel_case_types)];
+#![crate_id(name = "protobuf#0.1.0")]
+#![crate_type = "lib"]
+#![feature(globs)]
+#![feature(managed_boxes)]
+#![allow(dead_code)]
+#![allow(non_camel_case_types)]
 
-#[desc = "protobuf implementation for rust"];
-#[license = "BSD"];
+#![desc = "protobuf implementation for rust"]
+#![license = "BSD"]
 
 pub use core::*;
 

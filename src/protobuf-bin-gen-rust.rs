@@ -1,7 +1,7 @@
-#[crate_type = "bin"];
-#[feature(globs)];
-#[feature(managed_boxes)];
-#[allow(dead_code)];
+#![crate_type = "bin"]
+#![feature(globs)]
+#![feature(managed_boxes)]
+#![allow(dead_code)]
 
 extern crate protobuf;
 extern crate getopts;

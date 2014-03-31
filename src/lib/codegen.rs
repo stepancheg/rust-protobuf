@@ -182,12 +182,9 @@ impl<'a> Message {
             pkg: pkg.to_owned(),
             prefix: prefix.to_owned(),
             type_name: prefix + proto_message.name.get_ref().to_owned(),
-            fields: proto_message.field.flat_map(|field| {
-                match Field::parse(field, pkg) {
-                    Some(field) => ~[field],
-                    None => ~[]
-                }
-            }),
+            fields: proto_message.field.iter().flat_map(|field| {
+                Field::parse(field, pkg).move_iter()
+            }).collect(),
         }
     }
 

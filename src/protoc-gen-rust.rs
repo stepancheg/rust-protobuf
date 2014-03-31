@@ -1,8 +1,8 @@
-#[crate_type = "bin"];
-#[feature(globs)];
-#[feature(managed_boxes)];
-#[allow(dead_code)];
-#[allow(non_camel_case_types)];
+#![crate_type = "bin"]
+#![feature(globs)]
+#![feature(managed_boxes)]
+#![allow(dead_code)]
+#![allow(non_camel_case_types)]
 
 extern crate protobuf;
 
@@ -27,11 +27,11 @@ fn main() {
     };
     let result = gen(req.proto_file, &gen_options);
     let mut resp = CodeGeneratorResponse::new();
-    resp.file = result.map(|file| {
+    resp.file = result.iter().map(|file| {
         let mut r = CodeGeneratorResponse_File::new();
         r.name = Some(file.name.to_owned());
         r.content = Some(str::from_utf8(file.content).unwrap().to_owned());
         r
-    });
+    }).collect();
     resp.write_to_writer(&mut io::stdout() as &mut Writer);
 }
