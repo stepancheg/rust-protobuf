@@ -21,10 +21,10 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
     let mut is = File::open(&Path::new(bin)).unwrap();
     let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Reader);
 
-    let results = gen(fds.file, gen_options);
+    let results = gen(fds.get_file(), gen_options);
 
     for r in results.iter() {
-        let mut file_writer = File::create(&Path::new(r.name.to_owned())).unwrap();
+        let mut file_writer = File::create(&Path::new(r.name.as_slice())).unwrap();
         file_writer.write(r.content).unwrap();
     }
 }

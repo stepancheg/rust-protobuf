@@ -1116,7 +1116,7 @@ impl<'a> DescriptorProto_ExtensionRange {
     }
 
     pub fn get_start(&self) -> i32 {
-        self.start.unwrap_or(0)
+        self.start.unwrap_or_else(|| 0)
     }
 
     pub fn clear_end(&mut self) {
@@ -1142,7 +1142,7 @@ impl<'a> DescriptorProto_ExtensionRange {
     }
 
     pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
+        self.end.unwrap_or_else(|| 0)
     }
 }
 
@@ -1354,7 +1354,7 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn get_number(&self) -> i32 {
-        self.number.unwrap_or(0)
+        self.number.unwrap_or_else(|| 0)
     }
 
     pub fn clear_label(&mut self) {
@@ -1380,7 +1380,7 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
-        self.label.unwrap_or(FieldDescriptorProto_Label::new(0))
+        self.label.unwrap_or_else(|| FieldDescriptorProto_Label::new(0))
     }
 
     pub fn clear_field_type(&mut self) {
@@ -1406,7 +1406,7 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
-        self.field_type.unwrap_or(FieldDescriptorProto_Type::new(0))
+        self.field_type.unwrap_or_else(|| FieldDescriptorProto_Type::new(0))
     }
 
     pub fn clear_type_name(&mut self) {
@@ -2031,7 +2031,7 @@ impl<'a> EnumValueDescriptorProto {
     }
 
     pub fn get_number(&self) -> i32 {
-        self.number.unwrap_or(0)
+        self.number.unwrap_or_else(|| 0)
     }
 
     pub fn clear_options(&mut self) {
@@ -2795,7 +2795,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_java_multiple_files(&self) -> bool {
-        self.java_multiple_files.unwrap_or(false)
+        self.java_multiple_files.unwrap_or_else(|| false)
     }
 
     pub fn clear_java_generate_equals_and_hash(&mut self) {
@@ -2821,7 +2821,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_java_generate_equals_and_hash(&self) -> bool {
-        self.java_generate_equals_and_hash.unwrap_or(false)
+        self.java_generate_equals_and_hash.unwrap_or_else(|| false)
     }
 
     pub fn clear_optimize_for(&mut self) {
@@ -2847,7 +2847,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
-        self.optimize_for.unwrap_or(FileOptions_OptimizeMode::new(0))
+        self.optimize_for.unwrap_or_else(|| FileOptions_OptimizeMode::new(0))
     }
 
     pub fn clear_go_package(&mut self) {
@@ -2902,7 +2902,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_cc_generic_services(&self) -> bool {
-        self.cc_generic_services.unwrap_or(false)
+        self.cc_generic_services.unwrap_or_else(|| false)
     }
 
     pub fn clear_java_generic_services(&mut self) {
@@ -2928,7 +2928,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_java_generic_services(&self) -> bool {
-        self.java_generic_services.unwrap_or(false)
+        self.java_generic_services.unwrap_or_else(|| false)
     }
 
     pub fn clear_py_generic_services(&mut self) {
@@ -2954,7 +2954,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_py_generic_services(&self) -> bool {
-        self.py_generic_services.unwrap_or(false)
+        self.py_generic_services.unwrap_or_else(|| false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3212,7 +3212,7 @@ impl<'a> MessageOptions {
     }
 
     pub fn get_message_set_wire_format(&self) -> bool {
-        self.message_set_wire_format.unwrap_or(false)
+        self.message_set_wire_format.unwrap_or_else(|| false)
     }
 
     pub fn clear_no_standard_descriptor_accessor(&mut self) {
@@ -3238,7 +3238,7 @@ impl<'a> MessageOptions {
     }
 
     pub fn get_no_standard_descriptor_accessor(&self) -> bool {
-        self.no_standard_descriptor_accessor.unwrap_or(false)
+        self.no_standard_descriptor_accessor.unwrap_or_else(|| false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3445,7 +3445,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
-        self.ctype.unwrap_or(FieldOptions_CType::new(0))
+        self.ctype.unwrap_or_else(|| FieldOptions_CType::new(0))
     }
 
     pub fn clear_packed(&mut self) {
@@ -3471,7 +3471,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_packed(&self) -> bool {
-        self.packed.unwrap_or(false)
+        self.packed.unwrap_or_else(|| false)
     }
 
     pub fn clear_lazy(&mut self) {
@@ -3497,7 +3497,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_lazy(&self) -> bool {
-        self.lazy.unwrap_or(false)
+        self.lazy.unwrap_or_else(|| false)
     }
 
     pub fn clear_deprecated(&mut self) {
@@ -3523,7 +3523,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
+        self.deprecated.unwrap_or_else(|| false)
     }
 
     pub fn clear_experimental_map_key(&mut self) {
@@ -3578,7 +3578,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_weak(&self) -> bool {
-        self.weak.unwrap_or(false)
+        self.weak.unwrap_or_else(|| false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -3800,7 +3800,7 @@ impl<'a> EnumOptions {
     }
 
     pub fn get_allow_alias(&self) -> bool {
-        self.allow_alias.unwrap_or(false)
+        self.allow_alias.unwrap_or_else(|| false)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -4376,7 +4376,7 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn get_positive_int_value(&self) -> u64 {
-        self.positive_int_value.unwrap_or(0)
+        self.positive_int_value.unwrap_or_else(|| 0)
     }
 
     pub fn clear_negative_int_value(&mut self) {
@@ -4402,7 +4402,7 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn get_negative_int_value(&self) -> i64 {
-        self.negative_int_value.unwrap_or(0)
+        self.negative_int_value.unwrap_or_else(|| 0)
     }
 
     pub fn clear_double_value(&mut self) {
@@ -4428,7 +4428,7 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn get_double_value(&self) -> f64 {
-        self.double_value.unwrap_or(0.)
+        self.double_value.unwrap_or_else(|| 0.)
     }
 
     pub fn clear_string_value(&mut self) {
@@ -4689,7 +4689,7 @@ impl<'a> UninterpretedOption_NamePart {
     }
 
     pub fn get_is_extension(&self) -> bool {
-        self.is_extension.unwrap_or(false)
+        self.is_extension.unwrap_or_else(|| false)
     }
 }
 

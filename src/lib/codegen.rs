@@ -90,17 +90,17 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
 }
 
 fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> ~str {
-    match field.type_name {
-        Some(ref type_name) => {
-            let current_pkg_prefix = "." + pkg + ".";
-            if (*type_name).starts_with(current_pkg_prefix) {
-                remove_prefix(*type_name, current_pkg_prefix).to_owned()
-            } else {
-                remove_to(*type_name, '.').to_owned()
-            }
-        },
-        None =>
-            rust_name(field.field_type.unwrap()).to_owned()
+    if field.has_type_name() {
+        let current_pkg_prefix = "." + pkg + ".";
+        if field.get_type_name().starts_with(current_pkg_prefix) {
+            remove_prefix(field.get_type_name(), current_pkg_prefix).to_owned()
+        } else {
+            remove_to(field.get_type_name(), '.').to_owned()
+        }
+    } else if field.has_field_type() {
+        rust_name(field.get_field_type()).to_owned()
+    } else {
+        fail!("neither type_name, nor field_type specified for field: {}", field.get_name());
     }
 }
 
@@ -127,18 +127,20 @@ struct Field {
 impl Field {
     fn parse(field: &FieldDescriptorProto, pkg: &str) -> Option<Field> {
         let type_name = field_type_name(field, pkg).replace(".", "_");
-        let repeated = match field.label.unwrap() {
+        let repeated = match field.get_label() {
             LABEL_REPEATED => true,
             LABEL_OPTIONAL | LABEL_REQUIRED => false,
         };
-        let name = match (*field.name.get_ref()).as_slice() {
+        let name = match field.get_name() {
             "type" => ~"field_type",
             x => x.to_owned(),
         };
-        let packed = match field.options {
-            Some(ref options) => options.packed.unwrap_or(false),
-            None => false
-        };
+        let packed =
+            if field.has_options() {
+                field.get_options().get_packed()
+            } else {
+                false
+            };
         let repeat_mode =
             if repeated {
                 if packed { RepeatPacked } else { RepeatRegular }
@@ -148,10 +150,10 @@ impl Field {
         Some(Field {
             proto_field: field.clone(),
             name: name,
-            field_type: field.field_type.unwrap(),
-            wire_type: field_type_wire_type(field.field_type.unwrap()),
+            field_type: field.get_field_type(),
+            wire_type: field_type_wire_type(field.get_field_type()),
             type_name: type_name,
-            number: field.number.unwrap() as u32,
+            number: field.get_number() as u32,
             repeated: repeated,
             packed: packed,
             repeat_mode: repeat_mode,
@@ -181,8 +183,8 @@ impl<'a> Message {
             proto_message: proto_message.clone(),
             pkg: pkg.to_owned(),
             prefix: prefix.to_owned(),
-            type_name: prefix + proto_message.name.get_ref().to_owned(),
-            fields: proto_message.field.iter().flat_map(|field| {
+            type_name: prefix + proto_message.get_name().to_owned(),
+            fields: proto_message.get_field().iter().flat_map(|field| {
                 Field::parse(field, pkg).move_iter()
             }).collect(),
         }
@@ -209,7 +211,7 @@ impl<'a> Message {
     fn required_fields(&'a self) -> ~[&'a Field] {
         let mut r = ~[];
         for field in self.fields.iter() {
-            if field.proto_field.label.unwrap() == LABEL_REQUIRED {
+            if field.proto_field.get_label() == LABEL_REQUIRED {
                 r.push(field);
             }
         }
@@ -617,7 +619,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                         TYPE_ENUM => "enum",
                         t => protobuf_name(t),
                     };
-                    let field_number = field.proto_field.number.unwrap();
+                    let field_number = field.proto_field.get_number();
                     let vv = match field.field_type {
                         TYPE_MESSAGE => "v", // TODO: as &Message
                         TYPE_ENUM => "*v as i32",
@@ -754,11 +756,11 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                             });
                         } else {
                             let get_name = match USE_RUST_VERSION {
-                                Rust07     => "get_or_default",
-                                RustMaster => "unwrap_or",
+                                Rust07     => "get_or_else",
+                                RustMaster => "unwrap_or_else",
                             };
                             w.write_line(format!(
-                                    "{:s}.{:s}({:s})",
+                                    "{:s}.{:s}(|| {:s})",
                                     w.self_field(),
                                     get_name,
                                     w.field_type_default()));
@@ -898,12 +900,12 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
             });
         });
 
-        for nested_type in message_type.nested_type.iter() {
+        for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
             write_message(&Message::parse(nested_type, pkg, msg.type_name + "_"), w);
         }
 
-        for enum_type in message_type.enum_type.iter() {
+        for enum_type in message_type.get_enum_type().iter() {
             w.write_line("");
             write_enum(msg.type_name + "_", w, enum_type);
         }
@@ -911,20 +913,20 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 }
 
 fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProto) {
-    let enum_type_name = prefix + enum_type.name.get_ref().to_owned();
+    let enum_type_name = prefix + enum_type.get_name().to_owned();
     w.write_line(format!("\\#[deriving(Clone,Eq)]"));
     w.write_line(format!("pub enum {:s} \\{", enum_type_name));
-    for value in enum_type.value.iter() {
-        w.write_line(format!("    {:s} = {:d},", value.name.get_ref().to_owned(), value.number.unwrap() as int));
+    for value in enum_type.get_value().iter() {
+        w.write_line(format!("    {:s} = {:d},", value.get_name().to_owned(), value.get_number() as int));
     }
     w.write_line(format!("\\}"));
     w.write_line("");
     w.impl_block(enum_type_name, |w| {
         w.pub_fn(format!("new(value: i32) -> {:s}", enum_type_name), |w| {
             w.match_expr("value", |w| {
-                for value in enum_type.value.iter() {
-                    let value_number = value.number.unwrap();
-                    let value_name = value.name.get_ref().to_owned();
+                for value in enum_type.get_value().iter() {
+                    let value_number = value.get_number();
+                    let value_name = value.get_name().to_owned();
                     w.write_line(format!("{:d} => {:s},", value_number as int, value_name));
                 }
                 w.write_line(format!("_ => fail!()"));
@@ -966,18 +968,18 @@ fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
 }
 
 pub struct GenResult {
-    name: ~str,
-    content: ~[u8],
+    pub name: ~str,
+    pub content: ~[u8],
 }
 
 pub struct GenOptions {
-    dummy: bool,
+    pub dummy: bool,
 }
 
 pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
     let mut results: ~[GenResult] = ~[];
     for file in files.iter() {
-        let base = proto_path_to_rust_base(*file.name.get_ref());
+        let base = proto_path_to_rust_base(file.get_name());
 
         let mut os = VecWriter::new();
 
@@ -990,7 +992,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             w.write_line("use protobuf::*;");
             w.write_line("use protobuf::rt;");
             w.write_line("use protobuf::descriptor;");
-            for dep in file.dependency.iter() {
+            for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
             }
 
@@ -1008,11 +1010,11 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
                 });
             }
 
-            for message_type in file.message_type.iter() {
+            for message_type in file.get_message_type().iter() {
                 w.write_line("");
-                write_message(&Message::parse(message_type, *file.package.get_ref(), ""), &mut w);
+                write_message(&Message::parse(message_type, file.get_package(), ""), &mut w);
             }
-            for enum_type in file.enum_type.iter() {
+            for enum_type in file.get_enum_type().iter() {
                 w.write_line("");
                 write_enum("", &mut w, enum_type);
             }

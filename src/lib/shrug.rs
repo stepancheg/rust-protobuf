@@ -62,7 +62,7 @@ impl<'a> Test1 {
     }
 
     pub fn get_a(&self) -> i32 {
-        self.a.unwrap_or(0)
+        self.a.unwrap_or_else(|| 0)
     }
 }
 
@@ -683,7 +683,7 @@ impl<'a> TestEmpty {
     }
 
     pub fn get_foo(&self) -> i32 {
-        self.foo.unwrap_or(0)
+        self.foo.unwrap_or_else(|| 0)
     }
 }
 
@@ -792,7 +792,7 @@ impl<'a> TestRequired {
     }
 
     pub fn get_b(&self) -> bool {
-        self.b.unwrap_or(false)
+        self.b.unwrap_or_else(|| false)
     }
 }
 

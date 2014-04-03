@@ -6,7 +6,7 @@ use std::result::Ok;
 use std::result::Err;
 
 pub struct VecWriter {
-    vec: ~[u8],
+    pub vec: ~[u8],
 }
 
 impl VecWriter {

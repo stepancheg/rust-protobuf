@@ -32,32 +32,48 @@ fn test_deserialize<M : Message>(hex: &str, msg: &M) {
 
 #[test]
 fn test1() {
-    test_serialize_deserialize("08 96 01", &Test1 { a: Some(150) });
+    let mut test1 = Test1::new();
+    test1.set_a(150);
+    test_serialize_deserialize("08 96 01", &test1);
 }
 
 #[test]
 fn test2() {
-    test_serialize_deserialize("12 07 74 65 73 74 69 6e 67", &Test2 { b: Some(~"testing") });
+    let mut test2 = Test2::new();
+    test2.set_b(~"testing");
+    test_serialize_deserialize("12 07 74 65 73 74 69 6e 67", &test2);
 }
 
 #[test]
 fn test3() {
-    test_serialize_deserialize("1a 03 08 96 01", &Test3 { c: Some(Test1 { a: Some(150) }) });
+    let mut test1 = Test1::new();
+    test1.set_a(150);
+    let mut test3 = Test3::new();
+    test3.set_c(test1);
+    test_serialize_deserialize("1a 03 08 96 01", &test3);
 }
 
 #[test]
 fn test4() {
-    test_serialize_deserialize("22 06 03 8E 02 9E A7 05", &Test4 { d: ~[3, 270, 86942] });
+    let mut test4 = Test4::new();
+    test4.set_d(~[3, 270, 86942]);
+    test_serialize_deserialize("22 06 03 8E 02 9E A7 05", &test4);
 }
 
 #[test]
 fn test_read_unpacked_expect_packed() {
-    test_deserialize("20 11 20 e8 07", &TestPackedUnpacked { packed: ~[], unpacked: ~[17, 1000] });
+    let mut test_packed_unpacked = TestPackedUnpacked::new();
+    test_packed_unpacked.set_packed(~[]);
+    test_packed_unpacked.set_unpacked(~[17, 1000]);
+    test_deserialize("20 11 20 e8 07", &test_packed_unpacked);
 }
 
 #[test]
 fn test_read_packed_expect_unpacked() {
-    test_deserialize("2a 03 11 e8 07", &TestPackedUnpacked { packed: ~[17, 1000], unpacked: ~[] });
+    let mut test_packed_unpacked = TestPackedUnpacked::new();
+    test_packed_unpacked.set_packed(~[17, 1000]);
+    test_packed_unpacked.set_unpacked(~[]);
+    test_deserialize("2a 03 11 e8 07", &test_packed_unpacked);
 }
 
 #[test]
@@ -68,7 +84,7 @@ fn test_empty() {
 #[test]
 #[should_fail]
 fn test_write_missing_required() {
-    (TestRequired { b: None }).write_to_bytes();
+    TestRequired::new().write_to_bytes();
 }
 
 #[test]
@@ -87,5 +103,5 @@ fn test_read_junk() {
 fn test_file_descriptor_proto() {
     let p: descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());
-    assert_eq!(Some(~"proto/shrug.proto"), p.name);
+    assert_eq!("proto/shrug.proto", p.get_name());
 }

@@ -25,13 +25,13 @@ fn main() {
     let gen_options = GenOptions {
         dummy: false,
     };
-    let result = gen(req.proto_file, &gen_options);
+    let result = gen(req.get_proto_file(), &gen_options);
     let mut resp = CodeGeneratorResponse::new();
-    resp.file = result.iter().map(|file| {
+    resp.set_file(result.iter().map(|file| {
         let mut r = CodeGeneratorResponse_File::new();
-        r.name = Some(file.name.to_owned());
-        r.content = Some(str::from_utf8(file.content).unwrap().to_owned());
+        r.set_name(file.name.to_owned());
+        r.set_content(str::from_utf8(file.content).unwrap().to_owned());
         r
-    }).collect();
+    }).collect());
     resp.write_to_writer(&mut io::stdout() as &mut Writer);
 }
