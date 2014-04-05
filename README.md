@@ -35,6 +35,7 @@ git clone git@github.com:stepancheg/rust-protobuf.git -b <branch>
 
 Where branch is:
   * `master` compatible rust master
+  * `rust-0.10` compatible with rust 0.10
   * `rust-0.9` compatible with rust 0.9
   * `rust-0.8` compatible with rust 0.8
   * `rust-0.7` compatible with rust 0.7
