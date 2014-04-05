@@ -124,11 +124,8 @@ impl UnknownFields {
     fn find_field<'a>(&'a mut self, number: u32) -> &'a mut UnknownValues {
         self.init_map();
 
-        if !self.fields.get_ref().contains_key(&number) {
-            self.fields.get_mut_ref().insert(number, Default::default());
-        }
-
-        self.fields.get_mut_ref().find_mut(&number).unwrap()
+        self.fields.get_mut_ref()
+            .find_or_insert_with(number, |_| Default::default())
     }
 
     pub fn add_fixed32(&mut self, number: u32, fixed32: u32) {
