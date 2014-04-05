@@ -11,7 +11,7 @@ pub fn file_descriptor_proto() -> descriptor::FileDescriptorProto {
     parse_from_bytes(file_descriptor_proto_data)
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorRequest {
     file_to_generate: ~[~str],
     parameter: Option<~str>,
@@ -204,7 +204,7 @@ impl Message for CodeGeneratorRequest {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorResponse {
     error: Option<~str>,
     file: ~[CodeGeneratorResponse_File],
@@ -360,7 +360,7 @@ impl Message for CodeGeneratorResponse {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorResponse_File {
     name: Option<~str>,
     insertion_point: Option<~str>,

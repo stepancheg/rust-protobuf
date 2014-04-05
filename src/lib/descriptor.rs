@@ -10,7 +10,7 @@ pub fn file_descriptor_proto() -> descriptor::FileDescriptorProto {
     parse_from_bytes(file_descriptor_proto_data)
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct FileDescriptorSet {
     file: ~[FileDescriptorProto],
 }
@@ -119,7 +119,7 @@ impl Message for FileDescriptorSet {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct FileDescriptorProto {
     name: Option<~str>,
     package: Option<~str>,
@@ -679,7 +679,7 @@ impl Message for FileDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct DescriptorProto {
     name: Option<~str>,
     field: ~[FieldDescriptorProto],
@@ -1055,7 +1055,7 @@ impl Message for DescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct DescriptorProto_ExtensionRange {
     start: Option<i32>,
     end: Option<i32>,
@@ -1208,7 +1208,7 @@ impl Message for DescriptorProto_ExtensionRange {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct FieldDescriptorProto {
     name: Option<~str>,
     number: Option<i32>,
@@ -1722,7 +1722,7 @@ impl ProtobufEnum for FieldDescriptorProto_Label {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct EnumDescriptorProto {
     name: Option<~str>,
     value: ~[EnumValueDescriptorProto],
@@ -1930,7 +1930,7 @@ impl Message for EnumDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct EnumValueDescriptorProto {
     name: Option<~str>,
     number: Option<i32>,
@@ -2137,7 +2137,7 @@ impl Message for EnumValueDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct ServiceDescriptorProto {
     name: Option<~str>,
     method: ~[MethodDescriptorProto],
@@ -2345,7 +2345,7 @@ impl Message for ServiceDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct MethodDescriptorProto {
     name: Option<~str>,
     input_type: Option<~str>,
@@ -2602,7 +2602,7 @@ impl Message for MethodDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct FileOptions {
     java_package: Option<~str>,
     java_outer_classname: Option<~str>,
@@ -3140,7 +3140,7 @@ impl ProtobufEnum for FileOptions_OptimizeMode {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
@@ -3337,7 +3337,7 @@ impl Message for MessageOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct FieldOptions {
     ctype: Option<FieldOptions_CType>,
     packed: Option<bool>,
@@ -3737,7 +3737,7 @@ impl ProtobufEnum for FieldOptions_CType {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct EnumOptions {
     allow_alias: Option<bool>,
     uninterpreted_option: ~[UninterpretedOption],
@@ -3890,7 +3890,7 @@ impl Message for EnumOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
@@ -3999,7 +3999,7 @@ impl Message for EnumValueOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
@@ -4108,7 +4108,7 @@ impl Message for ServiceOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct MethodOptions {
     uninterpreted_option: ~[UninterpretedOption],
 }
@@ -4217,7 +4217,7 @@ impl Message for MethodOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct UninterpretedOption {
     name: ~[UninterpretedOption_NamePart],
     identifier_value: Option<~str>,
@@ -4599,7 +4599,7 @@ impl Message for UninterpretedOption {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct UninterpretedOption_NamePart {
     name_part: Option<~str>,
     is_extension: Option<bool>,
@@ -4761,7 +4761,7 @@ impl Message for UninterpretedOption_NamePart {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo {
     location: ~[SourceCodeInfo_Location],
 }
@@ -4870,7 +4870,7 @@ impl Message for SourceCodeInfo {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo_Location {
     path: ~[i32],
     span: ~[i32],

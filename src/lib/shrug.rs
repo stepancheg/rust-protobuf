@@ -10,7 +10,7 @@ pub fn file_descriptor_proto() -> descriptor::FileDescriptorProto {
     parse_from_bytes(file_descriptor_proto_data)
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct Test1 {
     a: Option<i32>,
 }
@@ -122,7 +122,7 @@ impl Message for Test1 {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct Test2 {
     b: Option<~str>,
 }
@@ -237,7 +237,7 @@ impl Message for Test2 {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct Test3 {
     c: Option<Test1>,
 }
@@ -356,7 +356,7 @@ impl Message for Test3 {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct Test4 {
     d: ~[i32],
 }
@@ -471,7 +471,7 @@ impl Message for Test4 {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct TestPackedUnpacked {
     unpacked: ~[i32],
     packed: ~[i32],
@@ -631,7 +631,7 @@ impl Message for TestPackedUnpacked {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
 }
@@ -740,7 +740,7 @@ impl Message for TestEmpty {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Default)]
 pub struct TestRequired {
     b: Option<bool>,
 }

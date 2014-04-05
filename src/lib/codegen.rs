@@ -552,7 +552,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
     w.bind_message(msg, |w0| {
         let w: &mut IndentWriter = unsafe { cast::transmute_mut(w0) };
-        w.write_line(format!("\\#[deriving(Clone,Eq)]"));
+        w.write_line(format!("\\#[deriving(Clone,Eq,Default)]"));
         w.pub_struct(msg.type_name, |w| {
             w.fields(|w| {
                 let field = w.field.unwrap();
