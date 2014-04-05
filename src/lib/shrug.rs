@@ -20,7 +20,9 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x20, 0x03, 0x28, 0x05, 0x42, 0x02, 0x10, 0x01, 0x22, 0x18, 0x0a, 0x09, 0x54, 0x65, 0x73, 0x74,
     0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x0b, 0x0a, 0x03, 0x66, 0x6f, 0x6f, 0x18, 0x0a, 0x20, 0x01,
     0x28, 0x05, 0x22, 0x19, 0x0a, 0x0c, 0x54, 0x65, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x69, 0x72,
-    0x65, 0x64, 0x12, 0x09, 0x0a, 0x01, 0x62, 0x18, 0x05, 0x20, 0x02, 0x28, 0x08,
+    0x65, 0x64, 0x12, 0x09, 0x0a, 0x01, 0x62, 0x18, 0x05, 0x20, 0x02, 0x28, 0x08, 0x22, 0x1e, 0x0a,
+    0x11, 0x54, 0x65, 0x73, 0x74, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x46, 0x69, 0x65, 0x6c,
+    0x64, 0x73, 0x12, 0x09, 0x0a, 0x01, 0x61, 0x18, 0x01, 0x20, 0x02, 0x28, 0x05,
 ];
 
 pub fn file_descriptor_proto() -> descriptor::FileDescriptorProto {
@@ -30,6 +32,7 @@ pub fn file_descriptor_proto() -> descriptor::FileDescriptorProto {
 #[deriving(Clone,Eq,Default)]
 pub struct Test1 {
     a: Option<i32>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> Test1 {
@@ -40,6 +43,7 @@ impl<'a> Test1 {
     pub fn default_instance() -> &'static Test1 {
         static instance: Test1 = Test1 {
             a: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -52,6 +56,7 @@ impl<'a> Test1 {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_a(&mut self) {
@@ -107,8 +112,8 @@ impl Message for Test1 {
                     self.a = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -122,6 +127,7 @@ impl Message for Test1 {
         for value in self.a.iter() {
             my_size += rt::value_size(1, *value, wire_format::WireTypeVarint);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -135,11 +141,27 @@ impl Message for Test1 {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct Test2 {
     b: Option<~str>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> Test2 {
@@ -150,6 +172,7 @@ impl<'a> Test2 {
     pub fn default_instance() -> &'static Test2 {
         static instance: Test2 = Test2 {
             b: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -162,6 +185,7 @@ impl<'a> Test2 {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_b(&mut self) {
@@ -220,8 +244,8 @@ impl Message for Test2 {
                     self.b = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -235,6 +259,7 @@ impl Message for Test2 {
         for value in self.b.iter() {
             my_size += rt::string_size(2, *value);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -248,11 +273,27 @@ impl Message for Test2 {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct Test3 {
     c: Option<Test1>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> Test3 {
@@ -263,6 +304,7 @@ impl<'a> Test3 {
     pub fn default_instance() -> &'static Test3 {
         static instance: Test3 = Test3 {
             c: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -277,6 +319,7 @@ impl<'a> Test3 {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_c(&mut self) {
@@ -336,8 +379,8 @@ impl Message for Test3 {
                     self.c = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -352,6 +395,7 @@ impl Message for Test3 {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -365,11 +409,27 @@ impl Message for Test3 {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct Test4 {
     d: ~[i32],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> Test4 {
@@ -382,6 +442,7 @@ impl<'a> Test4 {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: Test4 = Test4 {
 //             d: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -396,6 +457,7 @@ impl<'a> Test4 {
                 os.write_int32_no_tag(*v);
             };
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_d(&mut self) {
@@ -452,8 +514,8 @@ impl Message for Test4 {
                     }
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -465,6 +527,7 @@ impl Message for Test4 {
         sizes.push(0);
         let mut my_size = 0;
         my_size += rt::vec_packed_size(4, self.d, wire_format::WireTypeVarint);
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -478,12 +541,28 @@ impl Message for Test4 {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct TestPackedUnpacked {
     unpacked: ~[i32],
     packed: ~[i32],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> TestPackedUnpacked {
@@ -497,6 +576,7 @@ impl<'a> TestPackedUnpacked {
 //         static instance: TestPackedUnpacked = TestPackedUnpacked {
 //             unpacked: ~[],
 //             packed: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -514,6 +594,7 @@ impl<'a> TestPackedUnpacked {
                 os.write_int32_no_tag(*v);
             };
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_unpacked(&mut self) {
@@ -606,8 +687,8 @@ impl Message for TestPackedUnpacked {
                     }
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -622,6 +703,7 @@ impl Message for TestPackedUnpacked {
             my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
         };
         my_size += rt::vec_packed_size(5, self.packed, wire_format::WireTypeVarint);
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -635,11 +717,27 @@ impl Message for TestPackedUnpacked {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> TestEmpty {
@@ -650,6 +748,7 @@ impl<'a> TestEmpty {
     pub fn default_instance() -> &'static TestEmpty {
         static instance: TestEmpty = TestEmpty {
             foo: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -662,6 +761,7 @@ impl<'a> TestEmpty {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_foo(&mut self) {
@@ -714,8 +814,8 @@ impl Message for TestEmpty {
                     self.foo = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -729,6 +829,7 @@ impl Message for TestEmpty {
         for value in self.foo.iter() {
             my_size += rt::value_size(10, *value, wire_format::WireTypeVarint);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -742,11 +843,27 @@ impl Message for TestEmpty {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct TestRequired {
     b: Option<bool>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> TestRequired {
@@ -757,6 +874,7 @@ impl<'a> TestRequired {
     pub fn default_instance() -> &'static TestRequired {
         static instance: TestRequired = TestRequired {
             b: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -769,6 +887,7 @@ impl<'a> TestRequired {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_b(&mut self) {
@@ -824,8 +943,8 @@ impl Message for TestRequired {
                     self.b = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -839,6 +958,7 @@ impl Message for TestRequired {
         if self.b.is_some() {
             my_size += 2;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -851,5 +971,149 @@ impl Message for TestRequired {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
+pub struct TestUnknownFields {
+    a: Option<i32>,
+    unknown_fields: Option<~UnknownFields>,
+}
+
+impl<'a> TestUnknownFields {
+    pub fn new() -> TestUnknownFields {
+        Default::default()
+    }
+
+    pub fn default_instance() -> &'static TestUnknownFields {
+        static instance: TestUnknownFields = TestUnknownFields {
+            a: None,
+            unknown_fields: None,
+        };
+        &'static instance
+    }
+
+    #[allow(unused_variable)]
+    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        match self.a {
+            Some(ref v) => {
+                os.write_int32(1, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
+    }
+
+    pub fn clear_a(&mut self) {
+        self.a = None;
+    }
+
+    pub fn has_a(&self) -> bool {
+        self.a.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_a(&mut self, v: i32) {
+        self.a = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_a(&'a mut self) -> &'a mut i32 {
+        if self.a.is_none() {
+            self.a = Some(0);
+        };
+        self.a.get_mut_ref()
+    }
+
+    pub fn get_a(&self) -> i32 {
+        self.a.unwrap_or_else(|| 0)
+    }
+}
+
+impl Message for TestUnknownFields {
+    fn new() -> TestUnknownFields {
+        TestUnknownFields::new()
+    }
+
+    fn clear(&mut self) {
+        self.clear_a();
+    }
+
+    fn is_initialized(&self) -> bool {
+        if self.a.is_none() {
+            return false;
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut CodedInputStream) {
+        while !is.eof() {
+            let (field_number, wire_type) = is.read_tag_unpack();
+            match field_number {
+                1 => {
+                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    let tmp = is.read_int32();
+                    self.a = Some(tmp);
+                },
+                _ => {
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
+                },
+            };
+        }
+    }
+
+    // Compute sizes of nested messages
+    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        let pos = sizes.len();
+        sizes.push(0);
+        let mut my_size = 0;
+        for value in self.a.iter() {
+            my_size += rt::value_size(1, *value, wire_format::WireTypeVarint);
+        };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        sizes[pos] = my_size;
+        // value is returned for convenience
+        my_size
+    }
+
+    fn write_to(&self, os: &mut CodedOutputStream) {
+        self.check_initialized();
+        let mut sizes: ~[u32] = ~[];
+        self.compute_sizes(&mut sizes);
+        let mut sizes_pos = 1; // first element is self
+        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }

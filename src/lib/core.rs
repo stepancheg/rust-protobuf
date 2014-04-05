@@ -8,6 +8,17 @@ use std::num::Bounded;
 use misc::VecWriter;
 use misc::VecReader;
 use zigzag::*;
+use unknown::UnknownValue;
+use unknown::UnknownVarint;
+use unknown::UnknownFixed64;
+use unknown::UnknownFixed32;
+use unknown::UnknownLengthDelimited;
+use unknown::UnknownValueRef;
+use unknown::UnknownVarintRef;
+use unknown::UnknownFixed64Ref;
+use unknown::UnknownFixed32Ref;
+use unknown::UnknownLengthDelimitedRef;
+use unknown::UnknownFields;
 
 pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
@@ -313,17 +324,21 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_varint32() != 0
     }
 
-    pub fn skip_field(&mut self, wire_type: wire_format::WireType) {
+    pub fn read_unknown(&mut self, wire_type: wire_format::WireType) -> UnknownValue {
         match wire_type {
-            wire_format::WireTypeVarint => { self.read_raw_varint64(); },
-            wire_format::WireTypeFixed64 => { self.read_fixed64(); },
-            wire_format::WireTypeFixed32 => { self.read_fixed32(); } ,
+            wire_format::WireTypeVarint => { UnknownVarint(self.read_raw_varint64()) },
+            wire_format::WireTypeFixed64 => { UnknownFixed64(self.read_fixed64()) },
+            wire_format::WireTypeFixed32 => { UnknownFixed32(self.read_fixed32()) } ,
             wire_format::WireTypeLengthDelimited => {
                 let len = self.read_raw_varint32();
-                self.skip_raw_bytes(len);
+                UnknownLengthDelimited(self.read_raw_bytes(len))
             },
             _ => fail!("unknown wire type: {:i}", wire_type as int)
         }
+    }
+
+    pub fn skip_field(&mut self, wire_type: wire_format::WireType) {
+        self.read_unknown(wire_type);
     }
 
     pub fn read_raw_bytes(&mut self, count: u32) -> ~[u8] {
@@ -576,6 +591,15 @@ impl<'a> CodedOutputStream<'a> {
         self.write_int32_no_tag(value);
     }
 
+    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) {
+        match unknown {
+            UnknownFixed64Ref(fixed64) => self.write_raw_little_endian64(fixed64),
+            UnknownFixed32Ref(fixed32) => self.write_raw_little_endian32(fixed32),
+            UnknownVarintRef(varint) => self.write_raw_varint64(varint),
+            UnknownLengthDelimitedRef(bytes) => self.write_bytes_no_tag(bytes),
+        }
+    }
+
     pub fn write_uint64(&mut self, field_number: u32, value: u64) {
         self.write_tag(field_number, wire_format::WireTypeVarint);
         self.write_uint64_no_tag(value);
@@ -634,6 +658,19 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_enum(&mut self, field_number: u32, value: i32) {
         self.write_tag(field_number, wire_format::WireTypeVarint);
         self.write_enum_no_tag(value);
+    }
+
+    pub fn write_unknown(&mut self, field_number: u32, value: UnknownValueRef) {
+        self.write_tag(field_number, value.wire_type());
+        self.write_unknown_no_tag(value);
+    }
+
+    pub fn write_unknown_fields(&mut self, fields: &UnknownFields) {
+        for (number, values) in fields.iter() {
+            for value in values.iter() {
+                self.write_unknown(number, value);
+            }
+        }
     }
 
     pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) {
@@ -714,6 +751,13 @@ pub trait Message : Eq {
         })
     }
 
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        fail!();
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        fail!();
+    }
 }
 
 pub trait ProtobufEnum : Eq {

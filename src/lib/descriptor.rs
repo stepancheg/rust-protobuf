@@ -274,6 +274,7 @@ pub fn file_descriptor_proto() -> descriptor::FileDescriptorProto {
 #[deriving(Clone,Eq,Default)]
 pub struct FileDescriptorSet {
     file: ~[FileDescriptorProto],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> FileDescriptorSet {
@@ -286,6 +287,7 @@ impl<'a> FileDescriptorSet {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FileDescriptorSet = FileDescriptorSet {
 //             file: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -298,6 +300,7 @@ impl<'a> FileDescriptorSet {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_file(&mut self) {
@@ -347,8 +350,8 @@ impl Message for FileDescriptorSet {
                     self.file.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -363,6 +366,7 @@ impl Message for FileDescriptorSet {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -375,6 +379,21 @@ impl Message for FileDescriptorSet {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }
 
@@ -391,6 +410,7 @@ pub struct FileDescriptorProto {
     extension: ~[FieldDescriptorProto],
     options: Option<FileOptions>,
     source_code_info: Option<SourceCodeInfo>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> FileDescriptorProto {
@@ -413,6 +433,7 @@ impl<'a> FileDescriptorProto {
 //             extension: ~[],
 //             options: None,
 //             source_code_info: None,
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -482,6 +503,7 @@ impl<'a> FileDescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -860,8 +882,8 @@ impl Message for FileDescriptorProto {
                     self.source_code_info = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -911,6 +933,7 @@ impl Message for FileDescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -924,6 +947,21 @@ impl Message for FileDescriptorProto {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -935,6 +973,7 @@ pub struct DescriptorProto {
     enum_type: ~[EnumDescriptorProto],
     extension_range: ~[DescriptorProto_ExtensionRange],
     options: Option<MessageOptions>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> DescriptorProto {
@@ -953,6 +992,7 @@ impl<'a> DescriptorProto {
 //             enum_type: ~[],
 //             extension_range: ~[],
 //             options: None,
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -1004,6 +1044,7 @@ impl<'a> DescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -1240,8 +1281,8 @@ impl Message for DescriptorProto {
                     self.options = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -1279,6 +1320,7 @@ impl Message for DescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -1292,12 +1334,28 @@ impl Message for DescriptorProto {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct DescriptorProto_ExtensionRange {
     start: Option<i32>,
     end: Option<i32>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> DescriptorProto_ExtensionRange {
@@ -1309,6 +1367,7 @@ impl<'a> DescriptorProto_ExtensionRange {
         static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
             start: None,
             end: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -1327,6 +1386,7 @@ impl<'a> DescriptorProto_ExtensionRange {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_start(&mut self) {
@@ -1411,8 +1471,8 @@ impl Message for DescriptorProto_ExtensionRange {
                     self.end = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -1429,6 +1489,7 @@ impl Message for DescriptorProto_ExtensionRange {
         for value in self.end.iter() {
             my_size += rt::value_size(2, *value, wire_format::WireTypeVarint);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -1442,6 +1503,21 @@ impl Message for DescriptorProto_ExtensionRange {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -1454,6 +1530,7 @@ pub struct FieldDescriptorProto {
     extendee: Option<~str>,
     default_value: Option<~str>,
     options: Option<FieldOptions>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> FieldDescriptorProto {
@@ -1471,6 +1548,7 @@ impl<'a> FieldDescriptorProto {
             extendee: None,
             default_value: None,
             options: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -1527,6 +1605,7 @@ impl<'a> FieldDescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -1819,8 +1898,8 @@ impl Message for FieldDescriptorProto {
                     self.options = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -1856,6 +1935,7 @@ impl Message for FieldDescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -1868,6 +1948,21 @@ impl Message for FieldDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }
 
@@ -1954,6 +2049,7 @@ pub struct EnumDescriptorProto {
     name: Option<~str>,
     value: ~[EnumValueDescriptorProto],
     options: Option<EnumOptions>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> EnumDescriptorProto {
@@ -1968,6 +2064,7 @@ impl<'a> EnumDescriptorProto {
 //             name: None,
 //             value: ~[],
 //             options: None,
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -1995,6 +2092,7 @@ impl<'a> EnumDescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -2115,8 +2213,8 @@ impl Message for EnumDescriptorProto {
                     self.options = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -2138,6 +2236,7 @@ impl Message for EnumDescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -2151,6 +2250,21 @@ impl Message for EnumDescriptorProto {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -2158,6 +2272,7 @@ pub struct EnumValueDescriptorProto {
     name: Option<~str>,
     number: Option<i32>,
     options: Option<EnumValueOptions>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> EnumValueDescriptorProto {
@@ -2170,6 +2285,7 @@ impl<'a> EnumValueDescriptorProto {
             name: None,
             number: None,
             options: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -2196,6 +2312,7 @@ impl<'a> EnumValueDescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -2319,8 +2436,8 @@ impl Message for EnumValueDescriptorProto {
                     self.options = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -2341,6 +2458,7 @@ impl Message for EnumValueDescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -2354,6 +2472,21 @@ impl Message for EnumValueDescriptorProto {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -2361,6 +2494,7 @@ pub struct ServiceDescriptorProto {
     name: Option<~str>,
     method: ~[MethodDescriptorProto],
     options: Option<ServiceOptions>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> ServiceDescriptorProto {
@@ -2375,6 +2509,7 @@ impl<'a> ServiceDescriptorProto {
 //             name: None,
 //             method: ~[],
 //             options: None,
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -2402,6 +2537,7 @@ impl<'a> ServiceDescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -2522,8 +2658,8 @@ impl Message for ServiceDescriptorProto {
                     self.options = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -2545,6 +2681,7 @@ impl Message for ServiceDescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -2558,6 +2695,21 @@ impl Message for ServiceDescriptorProto {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -2566,6 +2718,7 @@ pub struct MethodDescriptorProto {
     input_type: Option<~str>,
     output_type: Option<~str>,
     options: Option<MethodOptions>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> MethodDescriptorProto {
@@ -2579,6 +2732,7 @@ impl<'a> MethodDescriptorProto {
             input_type: None,
             output_type: None,
             options: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -2611,6 +2765,7 @@ impl<'a> MethodDescriptorProto {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -2772,8 +2927,8 @@ impl Message for MethodDescriptorProto {
                     self.options = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -2797,6 +2952,7 @@ impl Message for MethodDescriptorProto {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -2809,6 +2965,21 @@ impl Message for MethodDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }
 
@@ -2824,6 +2995,7 @@ pub struct FileOptions {
     java_generic_services: Option<bool>,
     py_generic_services: Option<bool>,
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> FileOptions {
@@ -2845,6 +3017,7 @@ impl<'a> FileOptions {
 //             java_generic_services: None,
 //             py_generic_services: None,
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -2911,6 +3084,7 @@ impl<'a> FileOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_java_package(&mut self) {
@@ -3257,8 +3431,8 @@ impl Message for FileOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -3300,6 +3474,7 @@ impl Message for FileOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -3312,6 +3487,21 @@ impl Message for FileOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }
 
@@ -3344,6 +3534,7 @@ pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> MessageOptions {
@@ -3358,6 +3549,7 @@ impl<'a> MessageOptions {
 //             message_set_wire_format: None,
 //             no_standard_descriptor_accessor: None,
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -3382,6 +3574,7 @@ impl<'a> MessageOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_message_set_wire_format(&mut self) {
@@ -3495,8 +3688,8 @@ impl Message for MessageOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -3517,6 +3710,7 @@ impl Message for MessageOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -3530,6 +3724,21 @@ impl Message for MessageOptions {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -3541,6 +3750,7 @@ pub struct FieldOptions {
     experimental_map_key: Option<~str>,
     weak: Option<bool>,
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> FieldOptions {
@@ -3559,6 +3769,7 @@ impl<'a> FieldOptions {
 //             experimental_map_key: None,
 //             weak: None,
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -3607,6 +3818,7 @@ impl<'a> FieldOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_ctype(&mut self) {
@@ -3851,8 +4063,8 @@ impl Message for FieldOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -3885,6 +4097,7 @@ impl Message for FieldOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -3897,6 +4110,21 @@ impl Message for FieldOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }
 
@@ -3928,6 +4156,7 @@ impl ProtobufEnum for FieldOptions_CType {
 pub struct EnumOptions {
     allow_alias: Option<bool>,
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> EnumOptions {
@@ -3941,6 +4170,7 @@ impl<'a> EnumOptions {
 //         static instance: EnumOptions = EnumOptions {
 //             allow_alias: None,
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -3959,6 +4189,7 @@ impl<'a> EnumOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_allow_alias(&mut self) {
@@ -4040,8 +4271,8 @@ impl Message for EnumOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -4059,6 +4290,7 @@ impl Message for EnumOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -4072,11 +4304,27 @@ impl Message for EnumOptions {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> EnumValueOptions {
@@ -4089,6 +4337,7 @@ impl<'a> EnumValueOptions {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumValueOptions = EnumValueOptions {
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -4101,6 +4350,7 @@ impl<'a> EnumValueOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -4150,8 +4400,8 @@ impl Message for EnumValueOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -4166,6 +4416,7 @@ impl Message for EnumValueOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -4179,11 +4430,27 @@ impl Message for EnumValueOptions {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> ServiceOptions {
@@ -4196,6 +4463,7 @@ impl<'a> ServiceOptions {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceOptions = ServiceOptions {
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -4208,6 +4476,7 @@ impl<'a> ServiceOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -4257,8 +4526,8 @@ impl Message for ServiceOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -4273,6 +4542,7 @@ impl Message for ServiceOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -4286,11 +4556,27 @@ impl Message for ServiceOptions {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct MethodOptions {
     uninterpreted_option: ~[UninterpretedOption],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> MethodOptions {
@@ -4303,6 +4589,7 @@ impl<'a> MethodOptions {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: MethodOptions = MethodOptions {
 //             uninterpreted_option: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -4315,6 +4602,7 @@ impl<'a> MethodOptions {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
@@ -4364,8 +4652,8 @@ impl Message for MethodOptions {
                     self.uninterpreted_option.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -4380,6 +4668,7 @@ impl Message for MethodOptions {
             let len = value.compute_sizes(sizes);
             my_size += 2 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -4393,6 +4682,21 @@ impl Message for MethodOptions {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -4404,6 +4708,7 @@ pub struct UninterpretedOption {
     double_value: Option<f64>,
     string_value: Option<~[u8]>,
     aggregate_value: Option<~str>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> UninterpretedOption {
@@ -4422,6 +4727,7 @@ impl<'a> UninterpretedOption {
 //             double_value: None,
 //             string_value: None,
 //             aggregate_value: None,
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -4470,6 +4776,7 @@ impl<'a> UninterpretedOption {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -4720,8 +5027,8 @@ impl Message for UninterpretedOption {
                     self.aggregate_value = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -4754,6 +5061,7 @@ impl Message for UninterpretedOption {
         for value in self.aggregate_value.iter() {
             my_size += rt::string_size(8, *value);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -4767,12 +5075,28 @@ impl Message for UninterpretedOption {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct UninterpretedOption_NamePart {
     name_part: Option<~str>,
     is_extension: Option<bool>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> UninterpretedOption_NamePart {
@@ -4784,6 +5108,7 @@ impl<'a> UninterpretedOption_NamePart {
         static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
             name_part: None,
             is_extension: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -4802,6 +5127,7 @@ impl<'a> UninterpretedOption_NamePart {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name_part(&mut self) {
@@ -4895,8 +5221,8 @@ impl Message for UninterpretedOption_NamePart {
                     self.is_extension = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -4913,6 +5239,7 @@ impl Message for UninterpretedOption_NamePart {
         if self.is_extension.is_some() {
             my_size += 2;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -4926,11 +5253,27 @@ impl Message for UninterpretedOption_NamePart {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo {
     location: ~[SourceCodeInfo_Location],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> SourceCodeInfo {
@@ -4943,6 +5286,7 @@ impl<'a> SourceCodeInfo {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: SourceCodeInfo = SourceCodeInfo {
 //             location: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -4955,6 +5299,7 @@ impl<'a> SourceCodeInfo {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_location(&mut self) {
@@ -5004,8 +5349,8 @@ impl Message for SourceCodeInfo {
                     self.location.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -5020,6 +5365,7 @@ impl Message for SourceCodeInfo {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -5033,6 +5379,21 @@ impl Message for SourceCodeInfo {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -5041,6 +5402,7 @@ pub struct SourceCodeInfo_Location {
     span: ~[i32],
     leading_comments: Option<~str>,
     trailing_comments: Option<~str>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> SourceCodeInfo_Location {
@@ -5056,6 +5418,7 @@ impl<'a> SourceCodeInfo_Location {
 //             span: ~[],
 //             leading_comments: None,
 //             trailing_comments: None,
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -5089,6 +5452,7 @@ impl<'a> SourceCodeInfo_Location {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_path(&mut self) {
@@ -5251,8 +5615,8 @@ impl Message for SourceCodeInfo_Location {
                     self.trailing_comments = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -5271,6 +5635,7 @@ impl Message for SourceCodeInfo_Location {
         for value in self.trailing_comments.iter() {
             my_size += rt::string_size(4, *value);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -5283,5 +5648,20 @@ impl Message for SourceCodeInfo_Location {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }

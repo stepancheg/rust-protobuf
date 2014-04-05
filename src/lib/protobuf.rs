@@ -8,7 +8,15 @@
 #![desc = "protobuf implementation for rust"]
 #![license = "BSD"]
 
+extern crate collections;
+
 pub use core::*;
+pub use unknown::UnknownFields;
+pub use unknown::UnknownValues;
+pub use unknown::UnknownValue;
+pub use unknown::UnknownValueRef;
+pub use unknown::UnknownValuesIter;
+pub use unknown::UnknownFieldIter;
 
 mod core;
 pub mod descriptor;
@@ -18,6 +26,7 @@ mod misc;
 mod zigzag;
 mod hex;
 mod paginate;
+mod unknown;
 
 #[cfg(test)]
 mod shrug;
@@ -30,4 +39,10 @@ pub mod protobuf {
     pub use codegen;
     pub use core::*;
     pub use rt;
+    pub use unknown::UnknownFields;
+    pub use unknown::UnknownValues;
+    pub use unknown::UnknownValue;
+    pub use unknown::UnknownValueRef;
+    pub use unknown::UnknownValuesIter;
+    pub use unknown::UnknownFieldIter;
 }

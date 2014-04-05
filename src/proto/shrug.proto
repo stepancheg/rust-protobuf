@@ -29,3 +29,7 @@ message TestEmpty {
 message TestRequired {
     required bool b = 5;
 }
+
+message TestUnknownFields {
+    required int32 a = 1;
+}

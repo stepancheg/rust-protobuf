@@ -100,6 +100,23 @@ fn test_read_junk() {
 }
 
 #[test]
+fn test_unknown_fields_length_delimited() {
+    let mut message = TestUnknownFields::new();
+    message.set_a(150);
+    message.mut_unknown_fields().add_length_delimited(4, ~[0x10, 0x20, 0x30]);
+    test_serialize_deserialize("08 96 01 22 03 10 20 30", &message);
+}
+
+#[test]
+fn test_unknown_fields_fixed32() {
+    let mut message = TestUnknownFields::new();
+    message.set_a(150);
+    message.mut_unknown_fields().add_fixed32(4, 0x01020304);
+    message.mut_unknown_fields().add_fixed32(4, 0xA1A2A3A4);
+    test_serialize_deserialize("08 96 01 25 04 03 02 01 25 A4 A3 A2 A1", &message);
+}
+
+#[test]
 fn test_file_descriptor_proto() {
     let p: descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());

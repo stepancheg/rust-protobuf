@@ -550,9 +550,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                     w.field_entry(field.name, field.full_type());
                 }
             });
-            if msg.fields.is_empty() {
-                w.field_entry("dummy", "bool");
-            }
+            w.field_entry("unknown_fields", "Option<~UnknownFields>");
         });
 
         w.write_line("");
@@ -569,9 +567,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                         w.fields(|w| {
                             w.field_default();
                         });
-                        if msg.fields.is_empty() {
-                            w.field_entry("dummy", "false");
-                        }
+                        w.field_entry("unknown_fields", "None");
                     });
                     w.write_line("&'static instance");
                 }
@@ -645,6 +641,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                         },
                     };
                 });
+                w.write_line("os.write_unknown_fields(self.get_unknown_fields());");
             });
             w.fields(|w| {
                 w.write_line("");
@@ -792,8 +789,8 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                             });
                         });
                         w.case_block("_", |w| {
-                            w.write_line(format!("// TODO: store in unknown fields"));
-                            w.write_line(format!("is.skip_field(wire_type);"));
+                            w.write_line("let unknown = is.read_unknown(wire_type);");
+                            w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
                         });
                     });
                 });
@@ -864,6 +861,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                         },
                     };
                 });
+                w.write_line("my_size += rt::unknown_fields_size(self.get_unknown_fields());");
                 w.write_line("sizes[pos] = my_size;");
                 w.comment("value is returned for convenience");
                 w.write_line("my_size");
@@ -876,6 +874,27 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                 w.write_line("let mut sizes_pos = 1; // first element is self");
                 w.write_line("self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);");
                 w.write_line("assert_eq!(sizes_pos, sizes.len());");
+            });
+            w.write_line("");
+            w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s UnknownFields", |w| {
+                w.write_line("if self.unknown_fields.is_some() {");
+                w.indented(|w| {
+                    w.write_line("&**self.unknown_fields.get_ref()");
+                });
+                w.write_line("} else {");
+                w.indented(|w| {
+                    w.write_line("UnknownFields::default_instance()");
+                });
+                w.write_line("}");
+            });
+            w.write_line("");
+            w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields", |w| {
+                w.write_line("if self.unknown_fields.is_none() {");
+                w.indented(|w| {
+                    w.write_line("self.unknown_fields = Some(Default::default())");
+                });
+                w.write_line("}");
+                w.write_line("&mut **self.unknown_fields.get_mut_ref()");
             });
         });
 

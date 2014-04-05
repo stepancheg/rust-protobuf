@@ -46,6 +46,7 @@ pub struct CodeGeneratorRequest {
     file_to_generate: ~[~str],
     parameter: Option<~str>,
     proto_file: ~[FileDescriptorProto],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> CodeGeneratorRequest {
@@ -60,6 +61,7 @@ impl<'a> CodeGeneratorRequest {
 //             file_to_generate: ~[],
 //             parameter: None,
 //             proto_file: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -81,6 +83,7 @@ impl<'a> CodeGeneratorRequest {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_file_to_generate(&mut self) {
@@ -193,8 +196,8 @@ impl Message for CodeGeneratorRequest {
                     self.proto_file.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -215,6 +218,7 @@ impl Message for CodeGeneratorRequest {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -228,12 +232,28 @@ impl Message for CodeGeneratorRequest {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorResponse {
     error: Option<~str>,
     file: ~[CodeGeneratorResponse_File],
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> CodeGeneratorResponse {
@@ -247,6 +267,7 @@ impl<'a> CodeGeneratorResponse {
 //         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
 //             error: None,
 //             file: ~[],
+//             unknown_fields: None,
 //         };
 //         &'static instance
         fail!("TODO");
@@ -265,6 +286,7 @@ impl<'a> CodeGeneratorResponse {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes, sizes_pos);
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_error(&mut self) {
@@ -349,8 +371,8 @@ impl Message for CodeGeneratorResponse {
                     self.file.push(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -368,6 +390,7 @@ impl Message for CodeGeneratorResponse {
             let len = value.compute_sizes(sizes);
             my_size += 1 + rt::compute_raw_varint32_size(len) + len;
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -381,6 +404,21 @@ impl Message for CodeGeneratorResponse {
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
     }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
 }
 
 #[deriving(Clone,Eq,Default)]
@@ -388,6 +426,7 @@ pub struct CodeGeneratorResponse_File {
     name: Option<~str>,
     insertion_point: Option<~str>,
     content: Option<~str>,
+    unknown_fields: Option<~UnknownFields>,
 }
 
 impl<'a> CodeGeneratorResponse_File {
@@ -400,6 +439,7 @@ impl<'a> CodeGeneratorResponse_File {
             name: None,
             insertion_point: None,
             content: None,
+            unknown_fields: None,
         };
         &'static instance
     }
@@ -424,6 +464,7 @@ impl<'a> CodeGeneratorResponse_File {
             },
             None => {},
         };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -549,8 +590,8 @@ impl Message for CodeGeneratorResponse_File {
                     self.content = Some(tmp);
                 },
                 _ => {
-                    // TODO: store in unknown fields
-                    is.skip_field(wire_type);
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
@@ -570,6 +611,7 @@ impl Message for CodeGeneratorResponse_File {
         for value in self.content.iter() {
             my_size += rt::string_size(15, *value);
         };
+        my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
@@ -582,5 +624,20 @@ impl Message for CodeGeneratorResponse_File {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
     }
 }
