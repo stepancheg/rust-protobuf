@@ -17,6 +17,7 @@ pub mod rt;
 mod misc;
 mod zigzag;
 mod hex;
+mod paginate;
 
 #[cfg(test)]
 mod shrug;

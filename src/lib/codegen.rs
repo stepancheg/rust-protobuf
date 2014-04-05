@@ -5,6 +5,7 @@ use descriptor::*;
 use misc::*;
 use core::*;
 use rt;
+use paginate::PaginatableIterator;
 
 fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
     match field_type {
@@ -985,11 +986,15 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             {
                 w.write_line("");
                 let fdp_bytes = file.write_to_bytes();
-                let fdp_bytes_str = fdp_bytes.iter()
-                        .map(|b| format!("0x{:02x}", *b))
-                        .collect::<~[~str]>()
-                        .connect(", ");
-                w.write_line(format!("static file_descriptor_proto_data: &'static [u8] = &[{}];", fdp_bytes_str));
+                w.write_line(format!("static file_descriptor_proto_data: &'static [u8] = &["));
+                for groups in fdp_bytes.iter().paginate(16) {
+                    let fdp_bytes_str = groups.iter()
+                            .map(|&b| format!("0x{:02x}", *b))
+                            .collect::<~[~str]>()
+                            .connect(", ");
+                    w.write_line(format!("    {},", fdp_bytes_str));
+                }
+                w.write_line(format!("];"));
                 w.write_line("");
                 w.pub_fn("file_descriptor_proto() -> descriptor::FileDescriptorProto", |w| {
                     w.write_line("parse_from_bytes(file_descriptor_proto_data)");
