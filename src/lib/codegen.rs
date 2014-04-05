@@ -6,14 +6,6 @@ use misc::*;
 use core::*;
 use rt;
 
-#[deriving(Eq)]
-enum RustVersion {
-    Rust07,
-    RustMaster,
-}
-
-static USE_RUST_VERSION: RustVersion = RustMaster;
-
 fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
     match field_type {
         TYPE_DOUBLE   => "f64",
@@ -452,10 +444,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn for_stmt(&self, over: &str, varn: &str, cb: |&mut IndentWriter|) {
-        match USE_RUST_VERSION {
-            Rust07     => self.stmt_block(format!("for {:s}.advance |{:s}|", over, varn), cb),
-            RustMaster => self.stmt_block(format!("for {:s} in {:s}", varn, over), cb),
-        }
+        self.stmt_block(format!("for {:s} in {:s}", varn, over), cb)
     }
 
     fn match_block(&self, value: &str, cb: |&mut IndentWriter|) {
@@ -755,10 +744,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                                 );
                             });
                         } else {
-                            let get_name = match USE_RUST_VERSION {
-                                Rust07     => "get_or_else",
-                                RustMaster => "unwrap_or_else",
-                            };
+                            let get_name = "unwrap_or_else";
                             w.write_line(format!(
                                     "{:s}.{:s}(|| {:s})",
                                     w.self_field(),
