@@ -558,14 +558,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
         w.write_line("");
         w.impl_self_block(msg.type_name, |w| {
             w.pub_fn(format!("new() -> {:s}", msg.type_name), |w| {
-                w.expr_block(msg.type_name, |w| {
-                    w.fields(|w| {
-                        w.field_default();
-                    });
-                    if msg.fields.is_empty() {
-                        w.field_entry("dummy", "false");
-                    }
-                });
+                w.write_line("Default::default()");
             });
 
             w.write_line("");
@@ -979,6 +972,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             w.write_line("use protobuf::*;");
             w.write_line("use protobuf::rt;");
             w.write_line("use protobuf::descriptor;");
+            w.write_line("use std::default::Default;");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
             }

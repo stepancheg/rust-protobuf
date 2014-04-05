@@ -3,6 +3,7 @@
 use protobuf::*;
 use protobuf::rt;
 use protobuf::descriptor;
+use std::default::Default;
 use descriptor::*;
 
 static file_descriptor_proto_data: &'static [u8] = &[
@@ -49,11 +50,7 @@ pub struct CodeGeneratorRequest {
 
 impl<'a> CodeGeneratorRequest {
     pub fn new() -> CodeGeneratorRequest {
-        CodeGeneratorRequest {
-            file_to_generate: ~[],
-            parameter: None,
-            proto_file: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static CodeGeneratorRequest {
@@ -241,10 +238,7 @@ pub struct CodeGeneratorResponse {
 
 impl<'a> CodeGeneratorResponse {
     pub fn new() -> CodeGeneratorResponse {
-        CodeGeneratorResponse {
-            error: None,
-            file: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse {
@@ -398,11 +392,7 @@ pub struct CodeGeneratorResponse_File {
 
 impl<'a> CodeGeneratorResponse_File {
     pub fn new() -> CodeGeneratorResponse_File {
-        CodeGeneratorResponse_File {
-            name: None,
-            insertion_point: None,
-            content: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse_File {

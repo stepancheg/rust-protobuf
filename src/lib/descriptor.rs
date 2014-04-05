@@ -3,6 +3,7 @@
 use protobuf::*;
 use protobuf::rt;
 use protobuf::descriptor;
+use std::default::Default;
 
 static file_descriptor_proto_data: &'static [u8] = &[
     0x0a, 0x20, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -277,9 +278,7 @@ pub struct FileDescriptorSet {
 
 impl<'a> FileDescriptorSet {
     pub fn new() -> FileDescriptorSet {
-        FileDescriptorSet {
-            file: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static FileDescriptorSet {
@@ -396,19 +395,7 @@ pub struct FileDescriptorProto {
 
 impl<'a> FileDescriptorProto {
     pub fn new() -> FileDescriptorProto {
-        FileDescriptorProto {
-            name: None,
-            package: None,
-            dependency: ~[],
-            public_dependency: ~[],
-            weak_dependency: ~[],
-            message_type: ~[],
-            enum_type: ~[],
-            service: ~[],
-            extension: ~[],
-            options: None,
-            source_code_info: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static FileDescriptorProto {
@@ -952,15 +939,7 @@ pub struct DescriptorProto {
 
 impl<'a> DescriptorProto {
     pub fn new() -> DescriptorProto {
-        DescriptorProto {
-            name: None,
-            field: ~[],
-            extension: ~[],
-            nested_type: ~[],
-            enum_type: ~[],
-            extension_range: ~[],
-            options: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static DescriptorProto {
@@ -1323,10 +1302,7 @@ pub struct DescriptorProto_ExtensionRange {
 
 impl<'a> DescriptorProto_ExtensionRange {
     pub fn new() -> DescriptorProto_ExtensionRange {
-        DescriptorProto_ExtensionRange {
-            start: None,
-            end: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static DescriptorProto_ExtensionRange {
@@ -1482,16 +1458,7 @@ pub struct FieldDescriptorProto {
 
 impl<'a> FieldDescriptorProto {
     pub fn new() -> FieldDescriptorProto {
-        FieldDescriptorProto {
-            name: None,
-            number: None,
-            label: None,
-            field_type: None,
-            type_name: None,
-            extendee: None,
-            default_value: None,
-            options: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static FieldDescriptorProto {
@@ -1991,11 +1958,7 @@ pub struct EnumDescriptorProto {
 
 impl<'a> EnumDescriptorProto {
     pub fn new() -> EnumDescriptorProto {
-        EnumDescriptorProto {
-            name: None,
-            value: ~[],
-            options: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static EnumDescriptorProto {
@@ -2199,11 +2162,7 @@ pub struct EnumValueDescriptorProto {
 
 impl<'a> EnumValueDescriptorProto {
     pub fn new() -> EnumValueDescriptorProto {
-        EnumValueDescriptorProto {
-            name: None,
-            number: None,
-            options: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static EnumValueDescriptorProto {
@@ -2406,11 +2365,7 @@ pub struct ServiceDescriptorProto {
 
 impl<'a> ServiceDescriptorProto {
     pub fn new() -> ServiceDescriptorProto {
-        ServiceDescriptorProto {
-            name: None,
-            method: ~[],
-            options: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static ServiceDescriptorProto {
@@ -2615,12 +2570,7 @@ pub struct MethodDescriptorProto {
 
 impl<'a> MethodDescriptorProto {
     pub fn new() -> MethodDescriptorProto {
-        MethodDescriptorProto {
-            name: None,
-            input_type: None,
-            output_type: None,
-            options: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static MethodDescriptorProto {
@@ -2878,18 +2828,7 @@ pub struct FileOptions {
 
 impl<'a> FileOptions {
     pub fn new() -> FileOptions {
-        FileOptions {
-            java_package: None,
-            java_outer_classname: None,
-            java_multiple_files: None,
-            java_generate_equals_and_hash: None,
-            optimize_for: None,
-            go_package: None,
-            cc_generic_services: None,
-            java_generic_services: None,
-            py_generic_services: None,
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static FileOptions {
@@ -3409,11 +3348,7 @@ pub struct MessageOptions {
 
 impl<'a> MessageOptions {
     pub fn new() -> MessageOptions {
-        MessageOptions {
-            message_set_wire_format: None,
-            no_standard_descriptor_accessor: None,
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static MessageOptions {
@@ -3610,15 +3545,7 @@ pub struct FieldOptions {
 
 impl<'a> FieldOptions {
     pub fn new() -> FieldOptions {
-        FieldOptions {
-            ctype: None,
-            packed: None,
-            lazy: None,
-            deprecated: None,
-            experimental_map_key: None,
-            weak: None,
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static FieldOptions {
@@ -4005,10 +3932,7 @@ pub struct EnumOptions {
 
 impl<'a> EnumOptions {
     pub fn new() -> EnumOptions {
-        EnumOptions {
-            allow_alias: None,
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static EnumOptions {
@@ -4157,9 +4081,7 @@ pub struct EnumValueOptions {
 
 impl<'a> EnumValueOptions {
     pub fn new() -> EnumValueOptions {
-        EnumValueOptions {
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static EnumValueOptions {
@@ -4266,9 +4188,7 @@ pub struct ServiceOptions {
 
 impl<'a> ServiceOptions {
     pub fn new() -> ServiceOptions {
-        ServiceOptions {
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static ServiceOptions {
@@ -4375,9 +4295,7 @@ pub struct MethodOptions {
 
 impl<'a> MethodOptions {
     pub fn new() -> MethodOptions {
-        MethodOptions {
-            uninterpreted_option: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static MethodOptions {
@@ -4490,15 +4408,7 @@ pub struct UninterpretedOption {
 
 impl<'a> UninterpretedOption {
     pub fn new() -> UninterpretedOption {
-        UninterpretedOption {
-            name: ~[],
-            identifier_value: None,
-            positive_int_value: None,
-            negative_int_value: None,
-            double_value: None,
-            string_value: None,
-            aggregate_value: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static UninterpretedOption {
@@ -4867,10 +4777,7 @@ pub struct UninterpretedOption_NamePart {
 
 impl<'a> UninterpretedOption_NamePart {
     pub fn new() -> UninterpretedOption_NamePart {
-        UninterpretedOption_NamePart {
-            name_part: None,
-            is_extension: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static UninterpretedOption_NamePart {
@@ -5028,9 +4935,7 @@ pub struct SourceCodeInfo {
 
 impl<'a> SourceCodeInfo {
     pub fn new() -> SourceCodeInfo {
-        SourceCodeInfo {
-            location: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static SourceCodeInfo {
@@ -5140,12 +5045,7 @@ pub struct SourceCodeInfo_Location {
 
 impl<'a> SourceCodeInfo_Location {
     pub fn new() -> SourceCodeInfo_Location {
-        SourceCodeInfo_Location {
-            path: ~[],
-            span: ~[],
-            leading_comments: None,
-            trailing_comments: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static SourceCodeInfo_Location {

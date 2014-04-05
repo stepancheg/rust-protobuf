@@ -3,6 +3,7 @@
 use protobuf::*;
 use protobuf::rt;
 use protobuf::descriptor;
+use std::default::Default;
 
 static file_descriptor_proto_data: &'static [u8] = &[
     0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x68, 0x72, 0x75, 0x67, 0x2e, 0x70, 0x72,
@@ -33,9 +34,7 @@ pub struct Test1 {
 
 impl<'a> Test1 {
     pub fn new() -> Test1 {
-        Test1 {
-            a: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static Test1 {
@@ -145,9 +144,7 @@ pub struct Test2 {
 
 impl<'a> Test2 {
     pub fn new() -> Test2 {
-        Test2 {
-            b: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static Test2 {
@@ -260,9 +257,7 @@ pub struct Test3 {
 
 impl<'a> Test3 {
     pub fn new() -> Test3 {
-        Test3 {
-            c: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static Test3 {
@@ -379,9 +374,7 @@ pub struct Test4 {
 
 impl<'a> Test4 {
     pub fn new() -> Test4 {
-        Test4 {
-            d: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static Test4 {
@@ -495,10 +488,7 @@ pub struct TestPackedUnpacked {
 
 impl<'a> TestPackedUnpacked {
     pub fn new() -> TestPackedUnpacked {
-        TestPackedUnpacked {
-            unpacked: ~[],
-            packed: ~[],
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static TestPackedUnpacked {
@@ -654,9 +644,7 @@ pub struct TestEmpty {
 
 impl<'a> TestEmpty {
     pub fn new() -> TestEmpty {
-        TestEmpty {
-            foo: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static TestEmpty {
@@ -763,9 +751,7 @@ pub struct TestRequired {
 
 impl<'a> TestRequired {
     pub fn new() -> TestRequired {
-        TestRequired {
-            b: None,
-        }
+        Default::default()
     }
 
     pub fn default_instance() -> &'static TestRequired {
