@@ -135,8 +135,3 @@ fn string_size_no_tag(s: &str) -> u32 {
 pub fn string_size(field_number: u32, s: &str) -> u32 {
     tag_size(field_number) + string_size_no_tag(s)
 }
-
-// TODO: drop in rust 0.8 which as as_slice() method
-pub fn as_slice_tmp<'a, T>(v: &'a ~[T]) -> &'a [T] {
-    let tmp: &'a [T] = *v; tmp
-}

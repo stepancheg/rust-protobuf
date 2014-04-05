@@ -98,7 +98,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     pub fn get_file_to_generate(&'a self) -> &'a [~str] {
-        rt::as_slice_tmp(&self.file_to_generate)
+        self.file_to_generate.as_slice()
     }
 
     pub fn add_file_to_generate(&mut self, v: ~str) {
@@ -149,7 +149,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     pub fn get_proto_file(&'a self) -> &'a [FileDescriptorProto] {
-        rt::as_slice_tmp(&self.proto_file)
+        self.proto_file.as_slice()
     }
 
     pub fn add_proto_file(&mut self, v: FileDescriptorProto) {
@@ -311,7 +311,7 @@ impl<'a> CodeGeneratorResponse {
     }
 
     pub fn get_file(&'a self) -> &'a [CodeGeneratorResponse_File] {
-        rt::as_slice_tmp(&self.file)
+        self.file.as_slice()
     }
 
     pub fn add_file(&mut self, v: CodeGeneratorResponse_File) {

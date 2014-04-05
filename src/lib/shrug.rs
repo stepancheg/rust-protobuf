@@ -413,7 +413,7 @@ impl<'a> Test4 {
     }
 
     pub fn get_d(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.d)
+        self.d.as_slice()
     }
 
     pub fn add_d(&mut self, v: i32) {
@@ -531,7 +531,7 @@ impl<'a> TestPackedUnpacked {
     }
 
     pub fn get_unpacked(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.unpacked)
+        self.unpacked.as_slice()
     }
 
     pub fn add_unpacked(&mut self, v: i32) {
@@ -553,7 +553,7 @@ impl<'a> TestPackedUnpacked {
     }
 
     pub fn get_packed(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.packed)
+        self.packed.as_slice()
     }
 
     pub fn add_packed(&mut self, v: i32) {

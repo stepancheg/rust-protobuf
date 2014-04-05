@@ -722,8 +722,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                                 w.case_expr(
                                     "Some(ref v)",
                                     match w.field().field_type {
-                                        TYPE_STRING => "v.as_slice()",
-                                        TYPE_BYTES => "rt::as_slice_tmp(v)",
+                                        TYPE_STRING | TYPE_BYTES => "v.as_slice()",
                                         _ => "v",
                                     }
                                 );
@@ -746,7 +745,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                                     w.field_type_default()));
                         }
                     } else {
-                        w.write_line(format!("rt::as_slice_tmp(&{:s})", w.self_field()));
+                        w.write_line(format!("{:s}.as_slice()", w.self_field()));
                     }
                 });
 

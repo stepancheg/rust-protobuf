@@ -315,7 +315,7 @@ impl<'a> FileDescriptorSet {
     }
 
     pub fn get_file(&'a self) -> &'a [FileDescriptorProto] {
-        rt::as_slice_tmp(&self.file)
+        self.file.as_slice()
     }
 
     pub fn add_file(&mut self, v: FileDescriptorProto) {
@@ -557,7 +557,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_dependency(&'a self) -> &'a [~str] {
-        rt::as_slice_tmp(&self.dependency)
+        self.dependency.as_slice()
     }
 
     pub fn add_dependency(&mut self, v: ~str) {
@@ -579,7 +579,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_public_dependency(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.public_dependency)
+        self.public_dependency.as_slice()
     }
 
     pub fn add_public_dependency(&mut self, v: i32) {
@@ -601,7 +601,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_weak_dependency(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.weak_dependency)
+        self.weak_dependency.as_slice()
     }
 
     pub fn add_weak_dependency(&mut self, v: i32) {
@@ -623,7 +623,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_message_type(&'a self) -> &'a [DescriptorProto] {
-        rt::as_slice_tmp(&self.message_type)
+        self.message_type.as_slice()
     }
 
     pub fn add_message_type(&mut self, v: DescriptorProto) {
@@ -645,7 +645,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
-        rt::as_slice_tmp(&self.enum_type)
+        self.enum_type.as_slice()
     }
 
     pub fn add_enum_type(&mut self, v: EnumDescriptorProto) {
@@ -667,7 +667,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_service(&'a self) -> &'a [ServiceDescriptorProto] {
-        rt::as_slice_tmp(&self.service)
+        self.service.as_slice()
     }
 
     pub fn add_service(&mut self, v: ServiceDescriptorProto) {
@@ -689,7 +689,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
-        rt::as_slice_tmp(&self.extension)
+        self.extension.as_slice()
     }
 
     pub fn add_extension(&mut self, v: FieldDescriptorProto) {
@@ -1050,7 +1050,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn get_field(&'a self) -> &'a [FieldDescriptorProto] {
-        rt::as_slice_tmp(&self.field)
+        self.field.as_slice()
     }
 
     pub fn add_field(&mut self, v: FieldDescriptorProto) {
@@ -1072,7 +1072,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
-        rt::as_slice_tmp(&self.extension)
+        self.extension.as_slice()
     }
 
     pub fn add_extension(&mut self, v: FieldDescriptorProto) {
@@ -1094,7 +1094,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn get_nested_type(&'a self) -> &'a [DescriptorProto] {
-        rt::as_slice_tmp(&self.nested_type)
+        self.nested_type.as_slice()
     }
 
     pub fn add_nested_type(&mut self, v: DescriptorProto) {
@@ -1116,7 +1116,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
-        rt::as_slice_tmp(&self.enum_type)
+        self.enum_type.as_slice()
     }
 
     pub fn add_enum_type(&mut self, v: EnumDescriptorProto) {
@@ -1138,7 +1138,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn get_extension_range(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
-        rt::as_slice_tmp(&self.extension_range)
+        self.extension_range.as_slice()
     }
 
     pub fn add_extension_range(&mut self, v: DescriptorProto_ExtensionRange) {
@@ -2041,7 +2041,7 @@ impl<'a> EnumDescriptorProto {
     }
 
     pub fn get_value(&'a self) -> &'a [EnumValueDescriptorProto] {
-        rt::as_slice_tmp(&self.value)
+        self.value.as_slice()
     }
 
     pub fn add_value(&mut self, v: EnumValueDescriptorProto) {
@@ -2448,7 +2448,7 @@ impl<'a> ServiceDescriptorProto {
     }
 
     pub fn get_method(&'a self) -> &'a [MethodDescriptorProto] {
-        rt::as_slice_tmp(&self.method)
+        self.method.as_slice()
     }
 
     pub fn add_method(&mut self, v: MethodDescriptorProto) {
@@ -3171,7 +3171,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -3451,7 +3451,7 @@ impl<'a> MessageOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -3783,7 +3783,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -4002,7 +4002,7 @@ impl<'a> EnumOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -4118,7 +4118,7 @@ impl<'a> EnumValueOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -4225,7 +4225,7 @@ impl<'a> ServiceOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -4332,7 +4332,7 @@ impl<'a> MethodOptions {
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
-        rt::as_slice_tmp(&self.uninterpreted_option)
+        self.uninterpreted_option.as_slice()
     }
 
     pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
@@ -4487,7 +4487,7 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn get_name(&'a self) -> &'a [UninterpretedOption_NamePart] {
-        rt::as_slice_tmp(&self.name)
+        self.name.as_slice()
     }
 
     pub fn add_name(&mut self, v: UninterpretedOption_NamePart) {
@@ -4625,7 +4625,7 @@ impl<'a> UninterpretedOption {
 
     pub fn get_string_value(&'a self) -> &'a [u8] {
         match self.string_value {
-            Some(ref v) => rt::as_slice_tmp(v),
+            Some(ref v) => v.as_slice(),
             None => &'a [],
         }
     }
@@ -4972,7 +4972,7 @@ impl<'a> SourceCodeInfo {
     }
 
     pub fn get_location(&'a self) -> &'a [SourceCodeInfo_Location] {
-        rt::as_slice_tmp(&self.location)
+        self.location.as_slice()
     }
 
     pub fn add_location(&mut self, v: SourceCodeInfo_Location) {
@@ -5106,7 +5106,7 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     pub fn get_path(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.path)
+        self.path.as_slice()
     }
 
     pub fn add_path(&mut self, v: i32) {
@@ -5128,7 +5128,7 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     pub fn get_span(&'a self) -> &'a [i32] {
-        rt::as_slice_tmp(&self.span)
+        self.span.as_slice()
     }
 
     pub fn add_span(&mut self, v: i32) {
