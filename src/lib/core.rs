@@ -37,7 +37,7 @@ pub mod wire_format {
         }
     }
 
-    pub struct Tag(u32);
+    pub struct Tag(pub u32);
 
     impl Tag {
         pub fn value(self) -> u32 {
