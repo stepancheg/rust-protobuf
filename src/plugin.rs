@@ -3,10 +3,8 @@
 use protobuf::*;
 use protobuf::rt;
 use protobuf::descriptor;
+use protobuf::lazy;
 use std::default::Default;
-use std::cast;
-use sync::one::Once;
-use sync::one::ONCE_INIT;
 use descriptor::*;
 
 static file_descriptor_proto_data: &'static [u8] = &[
@@ -40,8 +38,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x6f, 0x74, 0x6f, 0x73,
 ];
 
-static mut globals_once: Once = ONCE_INIT;
-static mut file_descriptor_proto_cache: *descriptor::FileDescriptorProto = 0 as *descriptor::FileDescriptorProto;
+static mut file_descriptor_proto_lazy: lazy::Lazy<descriptor::FileDescriptorProto> = lazy::Lazy { lock: lazy::ONCE_INIT, ptr: 0 as *descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> descriptor::FileDescriptorProto {
     parse_from_bytes(file_descriptor_proto_data)
@@ -49,11 +46,9 @@ fn parse_descriptor_proto() -> descriptor::FileDescriptorProto {
 
 pub fn file_descriptor_proto() -> &'static descriptor::FileDescriptorProto {
     unsafe {
-        globals_once.doit(|| {
-            // allocated memory is never freed
-            file_descriptor_proto_cache = cast::transmute(~parse_descriptor_proto());
-        });
-        cast::transmute(file_descriptor_proto_cache)
+        file_descriptor_proto_lazy.get(|| {
+            parse_descriptor_proto()
+        })
     }
 }
 

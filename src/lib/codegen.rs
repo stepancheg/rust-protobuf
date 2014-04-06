@@ -998,10 +998,8 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             w.write_line("use protobuf::*;");
             w.write_line("use protobuf::rt;");
             w.write_line("use protobuf::descriptor;");
+            w.write_line("use protobuf::lazy;");
             w.write_line("use std::default::Default;");
-            w.write_line("use std::cast;");
-            w.write_line("use sync::one::Once;");
-            w.write_line("use sync::one::ONCE_INIT;");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
             }
@@ -1019,8 +1017,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
                 }
                 w.write_line("];");
                 w.write_line("");
-                w.write_line("static mut globals_once: Once = ONCE_INIT;");
-                w.write_line("static mut file_descriptor_proto_cache: *descriptor::FileDescriptorProto = 0 as *descriptor::FileDescriptorProto;");
+                w.write_line("static mut file_descriptor_proto_lazy: lazy::Lazy<descriptor::FileDescriptorProto> = lazy::Lazy { lock: lazy::ONCE_INIT, ptr: 0 as *descriptor::FileDescriptorProto };");
                 w.write_line("");
                 w.def_fn("parse_descriptor_proto() -> descriptor::FileDescriptorProto", |w| {
                     w.write_line("parse_from_bytes(file_descriptor_proto_data)");
@@ -1028,11 +1025,9 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
                 w.write_line("");
                 w.pub_fn("file_descriptor_proto() -> &'static descriptor::FileDescriptorProto", |w| {
                     w.unsafe_expr(|w| {
-                        w.block("globals_once.doit(|| {", "});", |w| {
-                            w.comment("allocated memory is never freed");
-                            w.write_line("file_descriptor_proto_cache = cast::transmute(~parse_descriptor_proto());");
+                        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+                            w.write_line("parse_descriptor_proto()");
                         });
-                        w.write_line("cast::transmute(file_descriptor_proto_cache)");
                     });
                 });
             }

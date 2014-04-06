@@ -3,10 +3,8 @@
 use protobuf::*;
 use protobuf::rt;
 use protobuf::descriptor;
+use protobuf::lazy;
 use std::default::Default;
-use std::cast;
-use sync::one::Once;
-use sync::one::ONCE_INIT;
 
 static file_descriptor_proto_data: &'static [u8] = &[
     0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x68, 0x72, 0x75, 0x67, 0x2e, 0x70, 0x72,
@@ -28,8 +26,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x64, 0x73, 0x12, 0x09, 0x0a, 0x01, 0x61, 0x18, 0x01, 0x20, 0x02, 0x28, 0x05,
 ];
 
-static mut globals_once: Once = ONCE_INIT;
-static mut file_descriptor_proto_cache: *descriptor::FileDescriptorProto = 0 as *descriptor::FileDescriptorProto;
+static mut file_descriptor_proto_lazy: lazy::Lazy<descriptor::FileDescriptorProto> = lazy::Lazy { lock: lazy::ONCE_INIT, ptr: 0 as *descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> descriptor::FileDescriptorProto {
     parse_from_bytes(file_descriptor_proto_data)
@@ -37,11 +34,9 @@ fn parse_descriptor_proto() -> descriptor::FileDescriptorProto {
 
 pub fn file_descriptor_proto() -> &'static descriptor::FileDescriptorProto {
     unsafe {
-        globals_once.doit(|| {
-            // allocated memory is never freed
-            file_descriptor_proto_cache = cast::transmute(~parse_descriptor_proto());
-        });
-        cast::transmute(file_descriptor_proto_cache)
+        file_descriptor_proto_lazy.get(|| {
+            parse_descriptor_proto()
+        })
     }
 }
 

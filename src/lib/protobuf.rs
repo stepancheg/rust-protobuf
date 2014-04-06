@@ -21,6 +21,7 @@ pub use unknown::UnknownFieldIter;
 
 mod core;
 pub mod rt;
+pub mod lazy;
 pub mod descriptor;
 pub mod codegen;
 mod misc;
@@ -40,6 +41,7 @@ pub mod protobuf {
     pub use codegen;
     pub use core::*;
     pub use rt;
+    pub use lazy;
     pub use unknown::UnknownFields;
     pub use unknown::UnknownValues;
     pub use unknown::UnknownValue;
