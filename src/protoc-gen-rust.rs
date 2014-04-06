@@ -5,6 +5,7 @@
 #![allow(non_camel_case_types)]
 
 extern crate protobuf;
+extern crate sync;
 
 use std::io;
 use std::io::Reader;

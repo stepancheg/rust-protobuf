@@ -392,6 +392,14 @@ impl<'a> IndentWriter<'a> {
         self.block(prefix + " {", "};", cb);
     }
 
+    fn unsafe_block(&self, cb: |&mut IndentWriter|) {
+        self.stmt_block("unsafe", cb);
+    }
+
+    fn unsafe_expr(&self, cb: |&mut IndentWriter|) {
+        self.expr_block("unsafe", cb);
+    }
+
     fn impl_block(&self, name: &str, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl {:s}", name), cb);
     }
@@ -991,6 +999,9 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             w.write_line("use protobuf::rt;");
             w.write_line("use protobuf::descriptor;");
             w.write_line("use std::default::Default;");
+            w.write_line("use std::cast;");
+            w.write_line("use sync::one::Once;");
+            w.write_line("use sync::one::ONCE_INIT;");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
             }
@@ -998,7 +1009,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             {
                 w.write_line("");
                 let fdp_bytes = file.write_to_bytes();
-                w.write_line(format!("static file_descriptor_proto_data: &'static [u8] = &["));
+                w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
                 for groups in fdp_bytes.iter().paginate(16) {
                     let fdp_bytes_str = groups.iter()
                             .map(|&b| format!("0x{:02x}", *b))
@@ -1006,10 +1017,23 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
                             .connect(", ");
                     w.write_line(format!("    {},", fdp_bytes_str));
                 }
-                w.write_line(format!("];"));
+                w.write_line("];");
                 w.write_line("");
-                w.pub_fn("file_descriptor_proto() -> descriptor::FileDescriptorProto", |w| {
+                w.write_line("static mut globals_once: Once = ONCE_INIT;");
+                w.write_line("static mut file_descriptor_proto_cache: *descriptor::FileDescriptorProto = 0 as *descriptor::FileDescriptorProto;");
+                w.write_line("");
+                w.def_fn("parse_descriptor_proto() -> descriptor::FileDescriptorProto", |w| {
                     w.write_line("parse_from_bytes(file_descriptor_proto_data)");
+                });
+                w.write_line("");
+                w.pub_fn("file_descriptor_proto() -> &'static descriptor::FileDescriptorProto", |w| {
+                    w.unsafe_expr(|w| {
+                        w.block("globals_once.doit(|| {", "});", |w| {
+                            w.comment("allocated memory is never freed");
+                            w.write_line("file_descriptor_proto_cache = cast::transmute(~parse_descriptor_proto());");
+                        });
+                        w.write_line("cast::transmute(file_descriptor_proto_cache)");
+                    });
                 });
             }
 

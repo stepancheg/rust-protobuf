@@ -9,6 +9,7 @@
 #![license = "BSD"]
 
 extern crate collections;
+extern crate sync;
 
 pub use core::*;
 pub use unknown::UnknownFields;
@@ -19,9 +20,9 @@ pub use unknown::UnknownValuesIter;
 pub use unknown::UnknownFieldIter;
 
 mod core;
+pub mod rt;
 pub mod descriptor;
 pub mod codegen;
-pub mod rt;
 mod misc;
 mod zigzag;
 mod hex;

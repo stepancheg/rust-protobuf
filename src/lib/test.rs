@@ -118,7 +118,7 @@ fn test_unknown_fields_fixed32() {
 
 #[test]
 fn test_file_descriptor_proto() {
-    let p: descriptor::FileDescriptorProto = file_descriptor_proto();
+    let p: &'static descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());
     assert_eq!("proto/shrug.proto", p.get_name());
 }
