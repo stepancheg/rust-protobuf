@@ -48,6 +48,16 @@ message TestDefaultInstance {
     optional TestDefaultInstanceField field = 1;
 }
 
+message TestDescriptor {
+    optional int32 stuff = 10;
+}
+
+enum TestEnumDescriptor {
+    RED = 1;
+    BLUE = 2;
+    GREEN = 3;
+}
+
 message TestTypesSingular {
     optional double double_field = 1;
     optional float float_field = 2;

@@ -280,6 +280,23 @@ impl Field {
         }
     }
 
+    fn get_xxx_return_ref(&self) -> bool {
+        self.repeated || match self.field_type {
+            TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => true,
+            _ => false,
+        }
+    }
+
+    fn get_xxx_return_type(&self) -> RustType {
+        match self.repeated {
+            true => RustRef(~RustSlice(~self.type_name.clone())),
+            false => match self.get_xxx_return_ref() {
+                true => self.type_name.ref_type(),
+                false => self.type_name.clone(),
+            }
+        }
+    }
+
     fn is_fixed(&self) -> bool {
         field_type_size(self.field_type).is_some()
     }
@@ -334,6 +351,24 @@ impl<'a> Message {
     }
 }
 
+struct Enum {
+    proto: EnumDescriptorProto,
+    pkg: ~str,
+    prefix: ~str,
+    type_name: ~str,
+}
+
+impl Enum {
+    fn parse(proto: &EnumDescriptorProto, pkg: &str, prefix: &str) -> Enum {
+        Enum {
+            proto: proto.clone(),
+            pkg: pkg.to_owned(),
+            prefix: prefix.to_owned(),
+            type_name: prefix + proto.get_name(),
+        }
+    }
+}
+
 
 struct IndentWriter<'a> {
     // TODO: add mut
@@ -341,6 +376,7 @@ struct IndentWriter<'a> {
     indent: ~str,
     msg: Option<&'a Message>,
     field: Option<&'a Field>,
+    en: Option<&'a Enum>,
 }
 
 impl<'a> IndentWriter<'a> {
@@ -350,6 +386,7 @@ impl<'a> IndentWriter<'a> {
             indent: ~"",
             msg: None,
             field: None,
+            en: None,
         }
     }
 
@@ -359,6 +396,7 @@ impl<'a> IndentWriter<'a> {
             indent: self.indent.to_owned(),
             msg: Some(msg),
             field: None,
+            en: None,
         })
     }
 
@@ -369,6 +407,17 @@ impl<'a> IndentWriter<'a> {
             indent: self.indent.to_owned(),
             msg: self.msg,
             field: Some(field),
+            en: None,
+        })
+    }
+
+    fn bind_enum<T>(&self, en: &'a Enum, cb: |&mut IndentWriter| -> T) -> T {
+        cb(&mut IndentWriter {
+            writer: self.writer,
+            indent: self.indent.to_owned(),
+            msg: None,
+            field: None,
+            en: Some(en),
         })
     }
 
@@ -400,6 +449,10 @@ impl<'a> IndentWriter<'a> {
     fn field(&self) -> &'a Field {
         assert!(self.field.is_some());
         self.field.unwrap()
+    }
+
+    fn en(&self) -> &'a Enum {
+        self.en.unwrap()
     }
 
     fn self_field(&self) -> ~str {
@@ -551,6 +604,7 @@ impl<'a> IndentWriter<'a> {
             indent: self.indent + "    ",
             msg: self.msg,
             field: self.field,
+            en: self.en,
         });
     }
 
@@ -560,12 +614,22 @@ impl<'a> IndentWriter<'a> {
             writer: self.writer,
             indent: "// " + self.indent,
             msg: self.msg,
-            field: self.field.clone(),
+            field: self.field,
+            en: self.en,
         });
     }
 
-    fn lazy_static(&self, name: &str, ty: &str) {
+    fn lazy_static(&mut self, name: &str, ty: &str) {
         self.write_line(format!("static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy \\{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{} \\};", name, ty, ty));
+    }
+
+    fn lazy_static_decl_get(&mut self, name: &str, ty: &str, init: |&mut IndentWriter|) {
+        self.lazy_static(name, ty);
+        self.unsafe_expr(|w| {
+            w.write_line(format!("{}.get(|| \\{", name));
+            w.indented(|w| init(w));
+            w.write_line(format!("\\})"));
+        });
     }
 
     fn block(&self, first_line: &str, last_line: &str, cb: |&mut IndentWriter|) {
@@ -750,7 +814,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.deriving(["Clone", "Eq", "Show", "Default"]);
+    w.deriving(["Clone", "Eq", "Default"]);
     w.pub_struct(msg.type_name, |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
@@ -920,19 +984,14 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
 fn write_message_default_instance(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
-        let msg = w.msg.get_ref();
-        w.lazy_static("instance", msg.type_name);
-        w.unsafe_expr(|w| {
-            w.write_line("instance.get(|| {");
-            w.indented(|w| {
-                w.expr_block(format!("{:s}", msg.type_name), |w| {
-                    w.fields(|w| {
-                        w.field_default();
-                    });
-                    w.field_entry("unknown_fields", "None");
+        let msg = w.msg.unwrap();
+        w.lazy_static_decl_get("instance", msg.type_name, |w| {
+            w.expr_block(format!("{:s}", msg.type_name), |w| {
+                w.fields(|w| {
+                    w.field_default();
                 });
+                w.field_entry("unknown_fields", "None");
             });
-            w.write_line("})");
         });
     });
 }
@@ -992,24 +1051,13 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         });
 
         w.write_line("");
-        let return_reference = w.field().repeated || match w.field().field_type {
-            TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => true,
-            _ => false,
-        };
-        let get_xxx_return_type = match w.field().repeated {
-            true => RustRef(~RustSlice(~w.field().type_name.clone())),
-            false => match return_reference {
-                true => w.field().type_name.ref_type(),
-                false => w.field().type_name.clone(),
-            }
-        };
-        let self_param = match return_reference {
+        let self_param = match w.field().get_xxx_return_ref() {
             true  => "&'a self",
             false => "&self",
         };
-        let get_xxx_return_type_str = match return_reference {
-            true  => get_xxx_return_type.ref_str("a"),
-            false => format!("{}", get_xxx_return_type),
+        let get_xxx_return_type_str = match w.field().get_xxx_return_ref() {
+            true  => w.field().get_xxx_return_type().ref_str("a"),
+            false => format!("{}", w.field().get_xxx_return_type()),
         };
         w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type_str),
         |w| {
@@ -1018,21 +1066,21 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
                     w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {}::default_instance())",
                             w.self_field(), w.field().type_name));
                 } else {
-                    if return_reference {
+                    if w.field().get_xxx_return_ref() {
                         w.match_expr(w.self_field(), |w| {
                             w.case_expr(
                                 "Some(ref v)",
-                                w.field().type_name.view_as(&get_xxx_return_type, "v")
+                                w.field().type_name.view_as(&w.field().get_xxx_return_type(), "v")
                             );
                             w.case_expr(
                                 "None",
-                                get_xxx_return_type.default_value()
+                                w.field().get_xxx_return_type().default_value()
                             );
                         });
                     } else {
                         w.write_line(format!(
                                 "{:s}.unwrap_or_else(|| {:s})",
-                                w.self_field(), get_xxx_return_type.default_value()));
+                                w.self_field(), w.field().get_xxx_return_type().default_value()));
                     }
                 }
             } else {
@@ -1139,7 +1187,156 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         });
         w.write_line("");
         write_message_unknown_fields(w);
+        w.write_line("");
+        w.allow("unused_unsafe");
+        w.def_fn(format!("descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
+            w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
+                let vec_type_param = format!(
+                        "&'static ::protobuf::reflect::FieldAccessor<{}>",
+                        msg.type_name);
+                w.write_line(format!("let mut fields: Vec<{}> = Vec::new();", vec_type_param));
+                for field in msg.fields.iter() {
+                    let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
+                    // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
+                    w.write_line(format!("fields.push(unsafe \\{ ::std::cast::transmute(&'static {} as &::protobuf::reflect::FieldAccessor<{}>) \\});",
+                            acc_name, msg.type_name));
+                }
+                w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
+                w.indented(|w| {
+                    w.write_line(format!("\"{}\",", msg.type_name));
+                    w.write_line("fields,");
+                    w.write_line("file_descriptor_proto()");
+                });
+                w.write_line(")");
+            });
+        });
+        w.write_line("");
+        w.def_fn("type_id(&self) -> ::std::intrinsics::TypeId", |w| {
+            w.write_line(format!("::std::intrinsics::TypeId::of::<{}>()", msg.type_name));
+        });
     });
+}
+
+fn write_message_impl_show(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.impl_for_block("::std::fmt::Show", msg.type_name, |w| {
+        w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
+            w.write_line("use protobuf::{Message};");
+            w.write_line("self.fmt_impl(f)");
+        });
+    });
+}
+
+fn write_message_descriptor_field(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    let field = w.field.unwrap();
+    w.allow("non_camel_case_types");
+    let accessor_name = format!("{}_{}_acc", msg.type_name, field.name);
+    w.write_line(format!("struct {};", accessor_name));
+    w.write_line("");
+    w.impl_for_block(
+            format!("::protobuf::reflect::FieldAccessor<{}>", msg.type_name), accessor_name,
+    |w| {
+        w.def_fn("name(&self) -> &'static str", |w| {
+            w.write_line(format!("\"{}\"", field.name));
+        });
+
+        w.write_line("");
+        if field.repeated {
+            w.def_fn(format!("len_field(&self, m: &{}) -> uint", msg.type_name), |w| {
+                w.write_line(format!("m.get_{}().len()", field.name));
+            });
+        } else {
+            w.def_fn(format!("has_field(&self, m: &{}) -> bool", msg.type_name), |w| {
+                w.write_line(format!("m.has_{}()", field.name));
+            });
+        }
+
+        let name_suffix = match field.field_type {
+            TYPE_MESSAGE => "message".to_owned(),
+            TYPE_ENUM    => "enum".to_owned(),
+            TYPE_STRING  => "str".to_owned(),
+            TYPE_BYTES   => "bytes".to_owned(),
+            _ => field.type_name.to_str(),
+        };
+
+        w.write_line("");
+        if field.repeated {
+            match field.field_type {
+                TYPE_MESSAGE => {
+                    w.def_fn(format!("get_rep_message_item<'a>(&self, m: &'a {}, index: uint) -> &'a ::protobuf::Message",
+                            msg.type_name),
+                    |w| {
+                        w.write_line(format!("&'a m.get_{}()[index] as &'a ::protobuf::Message", field.name));
+                    });
+                },
+                TYPE_ENUM => {
+                    w.def_fn(format!("get_rep_enum_item<'a>(&self, m: &{}, index: uint) -> &'static ::protobuf::reflect::EnumValueDescriptor",
+                            msg.type_name),
+                    |w| {
+                        w.write_line("use protobuf::{ProtobufEnum};");
+                        w.write_line(format!("m.get_{}()[index].descriptor()", field.name));
+                    });
+                },
+                _ => {
+                    w.def_fn(format!("get_rep_{}<'a>(&self, m: &'a {}) -> {}",
+                            name_suffix,
+                            msg.type_name,
+                            w.field().get_xxx_return_type().ref_str("a")),
+                    |w| {
+                        w.write_line(format!("m.get_{}()", field.name));
+                    });
+                },
+            };
+        } else {
+            let (lt_decl, lt_param) = match w.field().get_xxx_return_ref() {
+                true  => ("<'a>", "'a "),
+                false => ("", ""),
+            };
+            let return_type_str = match w.field().get_xxx_return_ref() {
+                true  => w.field().get_xxx_return_type().ref_str("a"),
+                false => format!("{}", w.field().get_xxx_return_type()),
+            };
+            match field.field_type {
+                TYPE_MESSAGE => {
+                    w.def_fn(format!("get_message<'a>(&self, m: &'a {}) -> &'a ::protobuf::Message",
+                            msg.type_name),
+                    |w| {
+                        w.write_line(format!("m.get_{}() as &'a ::protobuf::Message", field.name));
+                    });
+                },
+                TYPE_ENUM => {
+                    w.def_fn(format!("get_enum<'a>(&self, m: &{}) -> &'static ::protobuf::reflect::EnumValueDescriptor",
+                            msg.type_name),
+                    |w| {
+                        w.write_line("use protobuf::{ProtobufEnum};");
+                        w.write_line(format!("m.get_{}().descriptor()", field.name));
+                    });
+                },
+                _ => {
+                    w.def_fn(format!("get_{}{}(&self, m: &{}{}) -> {}",
+                            name_suffix,
+                            lt_decl,
+                            lt_param,
+                            msg.type_name,
+                            return_type_str),
+                    |w| {
+                        w.write_line(format!("m.get_{}()", field.name));
+                    });
+                },
+            };
+        }
+    });
+}
+
+fn write_message_descriptor(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    for field in msg.fields.iter() {
+        w.bind_field(field, |w| {
+            w.write_line("");
+            write_message_descriptor_field(w);
+        });
+    }
 }
 
 fn write_message_impl_clear(w: &mut IndentWriter) {
@@ -1165,6 +1362,10 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
         write_message_impl_message(w);
         w.write_line("");
         write_message_impl_clear(w);
+        w.write_line("");
+        write_message_impl_show(w);
+        w.write_line("");
+        write_message_descriptor(w);
 
         for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
@@ -1173,24 +1374,25 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
         for enum_type in message_type.get_enum_type().iter() {
             w.write_line("");
-            write_enum(msg.type_name + "_", w, enum_type);
+            write_enum(&Enum::parse(enum_type, pkg, msg.type_name + "_"), w);
         }
     });
 }
 
-fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProto) {
-    let enum_type_name = prefix + enum_type.get_name().to_owned();
+fn write_enum_struct(w: &mut IndentWriter) {
     w.deriving(["Clone", "Eq", "Show"]);
-    w.write_line(format!("pub enum {:s} \\{", enum_type_name));
-    for value in enum_type.get_value().iter() {
+    w.write_line(format!("pub enum {:s} \\{", w.en().type_name));
+    for value in w.en().proto.get_value().iter() {
         w.write_line(format!("    {:s} = {:d},", value.get_name().to_owned(), value.get_number() as int));
     }
     w.write_line(format!("\\}"));
-    w.write_line("");
-    w.impl_block(enum_type_name, |w| {
-        w.pub_fn(format!("new(value: i32) -> {:s}", enum_type_name), |w| {
+}
+
+fn write_enum_impl(w: &mut IndentWriter) {
+    w.impl_block(w.en().type_name, |w| {
+        w.pub_fn(format!("new(value: i32) -> {:s}", w.en().type_name), |w| {
             w.match_expr("value", |w| {
-                for value in enum_type.get_value().iter() {
+                for value in w.en().proto.get_value().iter() {
                     let value_number = value.get_number();
                     let value_name = value.get_name().to_owned();
                     w.write_line(format!("{:d} => {:s},", value_number as int, value_name));
@@ -1199,11 +1401,29 @@ fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProt
             });
         });
     });
-    w.write_line("");
-    w.impl_for_block("::protobuf::ProtobufEnum", enum_type_name, |w| {
+}
+
+fn write_enum_impl_enum(w: &mut IndentWriter) {
+    w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name, |w| {
         w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
         });
+        w.write_line("");
+        w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", w.en().type_name), |w| {
+            w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
+                w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", w.en().type_name));
+            });
+        });
+    });
+}
+
+fn write_enum(en: &Enum, w: &mut IndentWriter) {
+    w.bind_enum(en, |w| {
+        write_enum_struct(w);
+        w.write_line("");
+        write_enum_impl(w);
+        w.write_line("");
+        write_enum_impl_enum(w);
     });
 }
 
@@ -1274,7 +1494,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
             }
             for enum_type in file.get_enum_type().iter() {
                 w.write_line("");
-                write_enum("", &mut w, enum_type);
+                write_enum(&Enum::parse(enum_type, file.get_package(), ""), &mut w);
             }
         }
 

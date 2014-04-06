@@ -49,7 +49,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorRequest {
     file_to_generate: Vec<StrBuf>,
     parameter: Option<StrBuf>,
@@ -252,6 +252,28 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorRequest_file_to_generate_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorRequest_parameter_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorRequest_proto_file_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
+                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
+                    "CodeGeneratorRequest",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<CodeGeneratorRequest>()
+    }
 }
 
 impl ::protobuf::Clear for CodeGeneratorRequest {
@@ -262,7 +284,66 @@ impl ::protobuf::Clear for CodeGeneratorRequest {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for CodeGeneratorRequest {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorRequest_file_to_generate_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorRequest_file_to_generate_acc {
+    fn name(&self) -> &'static str {
+        "file_to_generate"
+    }
+
+    fn len_field(&self, m: &CodeGeneratorRequest) -> uint {
+        m.get_file_to_generate().len()
+    }
+
+    fn get_rep_str<'a>(&self, m: &'a CodeGeneratorRequest) -> &'a [StrBuf] {
+        m.get_file_to_generate()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorRequest_parameter_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorRequest_parameter_acc {
+    fn name(&self) -> &'static str {
+        "parameter"
+    }
+
+    fn has_field(&self, m: &CodeGeneratorRequest) -> bool {
+        m.has_parameter()
+    }
+
+    fn get_str<'a>(&self, m: &'a CodeGeneratorRequest) -> &'a str {
+        m.get_parameter()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorRequest_proto_file_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorRequest_proto_file_acc {
+    fn name(&self) -> &'static str {
+        "proto_file"
+    }
+
+    fn len_field(&self, m: &CodeGeneratorRequest) -> uint {
+        m.get_proto_file().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a CodeGeneratorRequest, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_proto_file()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorResponse {
     error: Option<StrBuf>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
@@ -430,6 +511,27 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorResponse_error_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorResponse_file_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>) });
+                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
+                    "CodeGeneratorResponse",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse>()
+    }
 }
 
 impl ::protobuf::Clear for CodeGeneratorResponse {
@@ -439,7 +541,49 @@ impl ::protobuf::Clear for CodeGeneratorResponse {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for CodeGeneratorResponse {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorResponse_error_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGeneratorResponse_error_acc {
+    fn name(&self) -> &'static str {
+        "error"
+    }
+
+    fn has_field(&self, m: &CodeGeneratorResponse) -> bool {
+        m.has_error()
+    }
+
+    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse) -> &'a str {
+        m.get_error()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorResponse_file_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGeneratorResponse_file_acc {
+    fn name(&self) -> &'static str {
+        "file"
+    }
+
+    fn len_field(&self, m: &CodeGeneratorResponse) -> uint {
+        m.get_file().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a CodeGeneratorResponse, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_file()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorResponse_File {
     name: Option<StrBuf>,
     insertion_point: Option<StrBuf>,
@@ -659,6 +803,28 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorResponse_File_name_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorResponse_File_insertion_point_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static CodeGeneratorResponse_File_content_acc as &::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
+                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
+                    "CodeGeneratorResponse_File",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse_File>()
+    }
 }
 
 impl ::protobuf::Clear for CodeGeneratorResponse_File {
@@ -666,5 +832,64 @@ impl ::protobuf::Clear for CodeGeneratorResponse_File {
         self.clear_name();
         self.clear_insertion_point();
         self.clear_content();
+    }
+}
+
+impl ::std::fmt::Show for CodeGeneratorResponse_File {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorResponse_File_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File> for CodeGeneratorResponse_File_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &CodeGeneratorResponse_File) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse_File) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorResponse_File_insertion_point_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File> for CodeGeneratorResponse_File_insertion_point_acc {
+    fn name(&self) -> &'static str {
+        "insertion_point"
+    }
+
+    fn has_field(&self, m: &CodeGeneratorResponse_File) -> bool {
+        m.has_insertion_point()
+    }
+
+    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse_File) -> &'a str {
+        m.get_insertion_point()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct CodeGeneratorResponse_File_content_acc;
+
+impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File> for CodeGeneratorResponse_File_content_acc {
+    fn name(&self) -> &'static str {
+        "content"
+    }
+
+    fn has_field(&self, m: &CodeGeneratorResponse_File) -> bool {
+        m.has_content()
+    }
+
+    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse_File) -> &'a str {
+        m.get_content()
     }
 }

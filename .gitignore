@@ -12,6 +12,7 @@ protobuf-bin-gen-rust
 protoc-gen-rust
 shrug.rs
 test_root.rs
+text_format_test_data.rs
 src/perftest/perftest
 src/perftest/perftest-cxx
 src/perftest/perftest_proto.rs

@@ -1,11 +1,13 @@
 // TODO: drop all fail!
 
 use std::cast;
+use std::raw;
 use std::str::from_utf8;
 use std::io::*;
 use std::num::Bounded;
 use std::fmt;
 use std::default::Default;
+use std::intrinsics::TypeId;
 
 use misc::VecWriter;
 use misc::VecReader;
@@ -22,6 +24,9 @@ use unknown::UnknownFixed32Ref;
 use unknown::UnknownLengthDelimitedRef;
 use unknown::UnknownFields;
 use clear::Clear;
+use reflect::MessageDescriptor;
+use reflect::EnumDescriptor;
+use reflect::EnumValueDescriptor;
 
 pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
@@ -760,10 +765,58 @@ pub trait Message : Eq + Clone + Default + fmt::Show + Clear {
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
+
+    fn descriptor(&self) -> &'static MessageDescriptor {
+        Message::descriptor_static(None::<Self>)
+    }
+
+    // http://stackoverflow.com/q/20342436/15018
+    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
+        fail!();
+    }
+
+    fn type_id(&self) -> TypeId {
+        fail!();
+    }
+
+    // Rust does not allow implementation of trait for trait:
+    // impl<M : Message> fmt::Show for M {
+    // ...
+    // }
+    fn fmt_impl(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        ::text_format::fmt(self, f)
+    }
 }
+
+pub fn message_is<M : 'static + Message>(m: &Message) -> bool {
+    TypeId::of::<M>() == m.type_id()
+}
+
+pub fn message_down_cast<'a, M : 'static + Message>(m: &'a Message) -> &'a M {
+    assert!(message_is::<M>(m));
+    unsafe {
+        // TODO: really weird
+        let r: raw::TraitObject = cast::transmute(m);
+        cast::transmute(r.data)
+    }
+}
+
 
 pub trait ProtobufEnum : Eq {
     fn value(&self) -> i32;
+
+    fn descriptor(&self) -> &'static EnumValueDescriptor {
+        self.enum_descriptor().value_by_number(self.value())
+    }
+
+    fn enum_descriptor(&self) -> &'static EnumDescriptor {
+        ProtobufEnum::enum_descriptor_static(None::<Self>)
+    }
+
+    // http://stackoverflow.com/q/20342436/15018
+    fn enum_descriptor_static(_: Option<Self>) -> &'static EnumDescriptor {
+        fail!();
+    }
 }
 
 pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {

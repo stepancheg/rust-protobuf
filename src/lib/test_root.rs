@@ -25,7 +25,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct Root {
     nested: ::protobuf::RepeatedField<Root_Nested>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -148,6 +148,26 @@ impl ::protobuf::Message for Root {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<Root>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Root>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static Root_nested_acc as &::protobuf::reflect::FieldAccessor<Root>) });
+                ::protobuf::reflect::MessageDescriptor::new::<Root>(
+                    "Root",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Root>()
+    }
 }
 
 impl ::protobuf::Clear for Root {
@@ -156,7 +176,32 @@ impl ::protobuf::Clear for Root {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for Root {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct Root_nested_acc;
+
+impl ::protobuf::reflect::FieldAccessor<Root> for Root_nested_acc {
+    fn name(&self) -> &'static str {
+        "nested"
+    }
+
+    fn len_field(&self, m: &Root) -> uint {
+        m.get_nested().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a Root, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_nested()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct Root_Nested {
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -241,9 +286,36 @@ impl ::protobuf::Message for Root_Nested {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<Root_Nested>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Root_Nested>> = Vec::new();
+                ::protobuf::reflect::MessageDescriptor::new::<Root_Nested>(
+                    "Root_Nested",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Root_Nested>()
+    }
 }
 
 impl ::protobuf::Clear for Root_Nested {
     fn clear(&mut self) {
     }
 }
+
+impl ::std::fmt::Show for Root_Nested {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+

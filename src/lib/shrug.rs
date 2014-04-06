@@ -33,80 +33,85 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x61, 0x75, 0x6c, 0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x05,
     0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73, 0x68,
     0x72, 0x75, 0x67, 0x2e, 0x54, 0x65, 0x73, 0x74, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x49,
-    0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x22, 0xdd, 0x02, 0x0a,
-    0x11, 0x54, 0x65, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x53, 0x69, 0x6e, 0x67, 0x75, 0x6c,
-    0x61, 0x72, 0x12, 0x14, 0x0a, 0x0c, 0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69, 0x65,
-    0x6c, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x12, 0x13, 0x0a, 0x0b, 0x66, 0x6c, 0x6f, 0x61,
-    0x74, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x02, 0x12, 0x13, 0x0a,
-    0x0b, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x03, 0x20, 0x01,
-    0x28, 0x05, 0x12, 0x13, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c,
-    0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x12, 0x14, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x33,
-    0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0d, 0x12, 0x14, 0x0a,
-    0x0c, 0x75, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x06, 0x20,
-    0x01, 0x28, 0x04, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69,
-    0x65, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x11, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x69, 0x6e,
-    0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x12, 0x12,
-    0x15, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64,
-    0x18, 0x09, 0x20, 0x01, 0x28, 0x07, 0x12, 0x15, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36,
-    0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x06, 0x12, 0x16, 0x0a,
-    0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18,
-    0x0b, 0x20, 0x01, 0x28, 0x0f, 0x12, 0x16, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36,
-    0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x10, 0x12, 0x12, 0x0a,
-    0x0a, 0x62, 0x6f, 0x6f, 0x6c, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28,
-    0x08, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x69, 0x65, 0x6c,
-    0x64, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b, 0x62, 0x79, 0x74, 0x65, 0x73,
-    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0c, 0x22, 0x91, 0x03, 0x0a,
-    0x11, 0x54, 0x65, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x52, 0x65, 0x70, 0x65, 0x61, 0x74,
-    0x65, 0x64, 0x12, 0x18, 0x0a, 0x0c, 0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69, 0x65,
-    0x6c, 0x64, 0x18, 0x01, 0x20, 0x03, 0x28, 0x01, 0x42, 0x02, 0x10, 0x00, 0x12, 0x17, 0x0a, 0x0b,
-    0x66, 0x6c, 0x6f, 0x61, 0x74, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28,
-    0x02, 0x42, 0x02, 0x10, 0x00, 0x12, 0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66,
-    0x69, 0x65, 0x6c, 0x64, 0x18, 0x03, 0x20, 0x03, 0x28, 0x05, 0x42, 0x02, 0x10, 0x00, 0x12, 0x17,
-    0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x04, 0x20,
-    0x03, 0x28, 0x03, 0x42, 0x02, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x33,
-    0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0d, 0x42, 0x02, 0x10,
-    0x00, 0x12, 0x18, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c,
-    0x64, 0x18, 0x06, 0x20, 0x03, 0x28, 0x04, 0x42, 0x02, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c, 0x73,
-    0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x03, 0x28,
-    0x11, 0x42, 0x02, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x08, 0x20, 0x03, 0x28, 0x12, 0x42, 0x02, 0x10, 0x00, 0x12,
-    0x19, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64,
-    0x18, 0x09, 0x20, 0x03, 0x28, 0x07, 0x42, 0x02, 0x10, 0x00, 0x12, 0x19, 0x0a, 0x0d, 0x66, 0x69,
-    0x78, 0x65, 0x64, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0a, 0x20, 0x03, 0x28,
-    0x06, 0x42, 0x02, 0x10, 0x00, 0x12, 0x1a, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33,
-    0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0f, 0x42, 0x02, 0x10,
-    0x00, 0x12, 0x1a, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36, 0x34, 0x5f, 0x66, 0x69,
-    0x65, 0x6c, 0x64, 0x18, 0x0c, 0x20, 0x03, 0x28, 0x10, 0x42, 0x02, 0x10, 0x00, 0x12, 0x16, 0x0a,
-    0x0a, 0x62, 0x6f, 0x6f, 0x6c, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x03, 0x28,
-    0x08, 0x42, 0x02, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0e, 0x20, 0x03, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b, 0x62,
-    0x79, 0x74, 0x65, 0x73, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0c,
-    0x22, 0x97, 0x03, 0x0a, 0x17, 0x54, 0x65, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x52, 0x65,
-    0x70, 0x65, 0x61, 0x74, 0x65, 0x64, 0x50, 0x61, 0x63, 0x6b, 0x65, 0x64, 0x12, 0x18, 0x0a, 0x0c,
-    0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x03,
-    0x28, 0x01, 0x42, 0x02, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x0b, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28, 0x02, 0x42, 0x02, 0x10, 0x01, 0x12,
-    0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x03,
-    0x20, 0x03, 0x28, 0x05, 0x42, 0x02, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x36,
-    0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x04, 0x20, 0x03, 0x28, 0x03, 0x42, 0x02, 0x10,
-    0x01, 0x12, 0x18, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c,
-    0x64, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0d, 0x42, 0x02, 0x10, 0x01, 0x12, 0x18, 0x0a, 0x0c, 0x75,
-    0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x06, 0x20, 0x03, 0x28,
-    0x04, 0x42, 0x02, 0x10, 0x01, 0x12, 0x18, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x03, 0x28, 0x11, 0x42, 0x02, 0x10, 0x01, 0x12,
-    0x18, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18,
-    0x08, 0x20, 0x03, 0x28, 0x12, 0x42, 0x02, 0x10, 0x01, 0x12, 0x19, 0x0a, 0x0d, 0x66, 0x69, 0x78,
-    0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x09, 0x20, 0x03, 0x28, 0x07,
-    0x42, 0x02, 0x10, 0x01, 0x12, 0x19, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36, 0x34, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0a, 0x20, 0x03, 0x28, 0x06, 0x42, 0x02, 0x10, 0x01, 0x12,
-    0x1a, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c,
-    0x64, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0f, 0x42, 0x02, 0x10, 0x01, 0x12, 0x1a, 0x0a, 0x0e, 0x73,
-    0x66, 0x69, 0x78, 0x65, 0x64, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0c, 0x20,
-    0x03, 0x28, 0x10, 0x42, 0x02, 0x10, 0x01, 0x12, 0x16, 0x0a, 0x0a, 0x62, 0x6f, 0x6f, 0x6c, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x03, 0x28, 0x08, 0x42, 0x02, 0x10, 0x01, 0x12,
-    0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18,
-    0x0e, 0x20, 0x03, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b, 0x62, 0x79, 0x74, 0x65, 0x73, 0x5f, 0x66,
-    0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0c,
+    0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x22, 0x1f, 0x0a, 0x0e,
+    0x54, 0x65, 0x73, 0x74, 0x44, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x0d,
+    0x0a, 0x05, 0x73, 0x74, 0x75, 0x66, 0x66, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x05, 0x22, 0xdd, 0x02,
+    0x0a, 0x11, 0x54, 0x65, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x53, 0x69, 0x6e, 0x67, 0x75,
+    0x6c, 0x61, 0x72, 0x12, 0x14, 0x0a, 0x0c, 0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69,
+    0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x12, 0x13, 0x0a, 0x0b, 0x66, 0x6c, 0x6f,
+    0x61, 0x74, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x02, 0x12, 0x13,
+    0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x03, 0x20,
+    0x01, 0x28, 0x05, 0x12, 0x13, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65,
+    0x6c, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x12, 0x14, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74,
+    0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0d, 0x12, 0x14,
+    0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x06,
+    0x20, 0x01, 0x28, 0x04, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66,
+    0x69, 0x65, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x11, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x69,
+    0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x12,
+    0x12, 0x15, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c,
+    0x64, 0x18, 0x09, 0x20, 0x01, 0x28, 0x07, 0x12, 0x15, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64,
+    0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x06, 0x12, 0x16,
+    0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64,
+    0x18, 0x0b, 0x20, 0x01, 0x28, 0x0f, 0x12, 0x16, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64,
+    0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x10, 0x12, 0x12,
+    0x0a, 0x0a, 0x62, 0x6f, 0x6f, 0x6c, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x01,
+    0x28, 0x08, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x69, 0x65,
+    0x6c, 0x64, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b, 0x62, 0x79, 0x74, 0x65,
+    0x73, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0c, 0x22, 0x91, 0x03,
+    0x0a, 0x11, 0x54, 0x65, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x52, 0x65, 0x70, 0x65, 0x61,
+    0x74, 0x65, 0x64, 0x12, 0x18, 0x0a, 0x0c, 0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69,
+    0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x03, 0x28, 0x01, 0x42, 0x02, 0x10, 0x00, 0x12, 0x17, 0x0a,
+    0x0b, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x03,
+    0x28, 0x02, 0x42, 0x02, 0x10, 0x00, 0x12, 0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f,
+    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x03, 0x20, 0x03, 0x28, 0x05, 0x42, 0x02, 0x10, 0x00, 0x12,
+    0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x04,
+    0x20, 0x03, 0x28, 0x03, 0x42, 0x02, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74,
+    0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0d, 0x42, 0x02,
+    0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65,
+    0x6c, 0x64, 0x18, 0x06, 0x20, 0x03, 0x28, 0x04, 0x42, 0x02, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c,
+    0x73, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x03,
+    0x28, 0x11, 0x42, 0x02, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x36, 0x34,
+    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x08, 0x20, 0x03, 0x28, 0x12, 0x42, 0x02, 0x10, 0x00,
+    0x12, 0x19, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c,
+    0x64, 0x18, 0x09, 0x20, 0x03, 0x28, 0x07, 0x42, 0x02, 0x10, 0x00, 0x12, 0x19, 0x0a, 0x0d, 0x66,
+    0x69, 0x78, 0x65, 0x64, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0a, 0x20, 0x03,
+    0x28, 0x06, 0x42, 0x02, 0x10, 0x00, 0x12, 0x1a, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64,
+    0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0f, 0x42, 0x02,
+    0x10, 0x00, 0x12, 0x1a, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36, 0x34, 0x5f, 0x66,
+    0x69, 0x65, 0x6c, 0x64, 0x18, 0x0c, 0x20, 0x03, 0x28, 0x10, 0x42, 0x02, 0x10, 0x00, 0x12, 0x16,
+    0x0a, 0x0a, 0x62, 0x6f, 0x6f, 0x6c, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x03,
+    0x28, 0x08, 0x42, 0x02, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67,
+    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0e, 0x20, 0x03, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b,
+    0x62, 0x79, 0x74, 0x65, 0x73, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28,
+    0x0c, 0x22, 0x97, 0x03, 0x0a, 0x17, 0x54, 0x65, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x52,
+    0x65, 0x70, 0x65, 0x61, 0x74, 0x65, 0x64, 0x50, 0x61, 0x63, 0x6b, 0x65, 0x64, 0x12, 0x18, 0x0a,
+    0x0c, 0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x01, 0x20,
+    0x03, 0x28, 0x01, 0x42, 0x02, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x0b, 0x66, 0x6c, 0x6f, 0x61, 0x74,
+    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28, 0x02, 0x42, 0x02, 0x10, 0x01,
+    0x12, 0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18,
+    0x03, 0x20, 0x03, 0x28, 0x05, 0x42, 0x02, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x0b, 0x69, 0x6e, 0x74,
+    0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x04, 0x20, 0x03, 0x28, 0x03, 0x42, 0x02,
+    0x10, 0x01, 0x12, 0x18, 0x0a, 0x0c, 0x75, 0x69, 0x6e, 0x74, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65,
+    0x6c, 0x64, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0d, 0x42, 0x02, 0x10, 0x01, 0x12, 0x18, 0x0a, 0x0c,
+    0x75, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x06, 0x20, 0x03,
+    0x28, 0x04, 0x42, 0x02, 0x10, 0x01, 0x12, 0x18, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x33, 0x32,
+    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x03, 0x28, 0x11, 0x42, 0x02, 0x10, 0x01,
+    0x12, 0x18, 0x0a, 0x0c, 0x73, 0x69, 0x6e, 0x74, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64,
+    0x18, 0x08, 0x20, 0x03, 0x28, 0x12, 0x42, 0x02, 0x10, 0x01, 0x12, 0x19, 0x0a, 0x0d, 0x66, 0x69,
+    0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x09, 0x20, 0x03, 0x28,
+    0x07, 0x42, 0x02, 0x10, 0x01, 0x12, 0x19, 0x0a, 0x0d, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36, 0x34,
+    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0a, 0x20, 0x03, 0x28, 0x06, 0x42, 0x02, 0x10, 0x01,
+    0x12, 0x1a, 0x0a, 0x0e, 0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x33, 0x32, 0x5f, 0x66, 0x69, 0x65,
+    0x6c, 0x64, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0f, 0x42, 0x02, 0x10, 0x01, 0x12, 0x1a, 0x0a, 0x0e,
+    0x73, 0x66, 0x69, 0x78, 0x65, 0x64, 0x36, 0x34, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0c,
+    0x20, 0x03, 0x28, 0x10, 0x42, 0x02, 0x10, 0x01, 0x12, 0x16, 0x0a, 0x0a, 0x62, 0x6f, 0x6f, 0x6c,
+    0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x03, 0x28, 0x08, 0x42, 0x02, 0x10, 0x01,
+    0x12, 0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64,
+    0x18, 0x0e, 0x20, 0x03, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b, 0x62, 0x79, 0x74, 0x65, 0x73, 0x5f,
+    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0c, 0x2a, 0x32, 0x0a, 0x12, 0x54,
+    0x65, 0x73, 0x74, 0x45, 0x6e, 0x75, 0x6d, 0x44, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x6f,
+    0x72, 0x12, 0x07, 0x0a, 0x03, 0x52, 0x45, 0x44, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x42, 0x4c,
+    0x55, 0x45, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x47, 0x52, 0x45, 0x45, 0x4e, 0x10, 0x03,
 ];
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };
@@ -123,7 +128,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct Test1 {
     a: Option<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -253,6 +258,26 @@ impl ::protobuf::Message for Test1 {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<Test1>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test1>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static Test1_a_acc as &::protobuf::reflect::FieldAccessor<Test1>) });
+                ::protobuf::reflect::MessageDescriptor::new::<Test1>(
+                    "Test1",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Test1>()
+    }
 }
 
 impl ::protobuf::Clear for Test1 {
@@ -261,7 +286,32 @@ impl ::protobuf::Clear for Test1 {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for Test1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct Test1_a_acc;
+
+impl ::protobuf::reflect::FieldAccessor<Test1> for Test1_a_acc {
+    fn name(&self) -> &'static str {
+        "a"
+    }
+
+    fn has_field(&self, m: &Test1) -> bool {
+        m.has_a()
+    }
+
+    fn get_i32(&self, m: &Test1) -> i32 {
+        m.get_a()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct Test2 {
     b: Option<StrBuf>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -394,6 +444,26 @@ impl ::protobuf::Message for Test2 {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<Test2>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test2>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static Test2_b_acc as &::protobuf::reflect::FieldAccessor<Test2>) });
+                ::protobuf::reflect::MessageDescriptor::new::<Test2>(
+                    "Test2",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Test2>()
+    }
 }
 
 impl ::protobuf::Clear for Test2 {
@@ -402,7 +472,32 @@ impl ::protobuf::Clear for Test2 {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for Test2 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct Test2_b_acc;
+
+impl ::protobuf::reflect::FieldAccessor<Test2> for Test2_b_acc {
+    fn name(&self) -> &'static str {
+        "b"
+    }
+
+    fn has_field(&self, m: &Test2) -> bool {
+        m.has_b()
+    }
+
+    fn get_str<'a>(&self, m: &'a Test2) -> &'a str {
+        m.get_b()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct Test3 {
     c: ::protobuf::SingularField<Test1>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -535,6 +630,26 @@ impl ::protobuf::Message for Test3 {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<Test3>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test3>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static Test3_c_acc as &::protobuf::reflect::FieldAccessor<Test3>) });
+                ::protobuf::reflect::MessageDescriptor::new::<Test3>(
+                    "Test3",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Test3>()
+    }
 }
 
 impl ::protobuf::Clear for Test3 {
@@ -543,7 +658,32 @@ impl ::protobuf::Clear for Test3 {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for Test3 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct Test3_c_acc;
+
+impl ::protobuf::reflect::FieldAccessor<Test3> for Test3_c_acc {
+    fn name(&self) -> &'static str {
+        "c"
+    }
+
+    fn has_field(&self, m: &Test3) -> bool {
+        m.has_c()
+    }
+
+    fn get_message<'a>(&self, m: &'a Test3) -> &'a ::protobuf::Message {
+        m.get_c() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct Test4 {
     d: Vec<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -675,6 +815,26 @@ impl ::protobuf::Message for Test4 {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<Test4>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test4>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static Test4_d_acc as &::protobuf::reflect::FieldAccessor<Test4>) });
+                ::protobuf::reflect::MessageDescriptor::new::<Test4>(
+                    "Test4",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Test4>()
+    }
 }
 
 impl ::protobuf::Clear for Test4 {
@@ -683,7 +843,32 @@ impl ::protobuf::Clear for Test4 {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for Test4 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct Test4_d_acc;
+
+impl ::protobuf::reflect::FieldAccessor<Test4> for Test4_d_acc {
+    fn name(&self) -> &'static str {
+        "d"
+    }
+
+    fn len_field(&self, m: &Test4) -> uint {
+        m.get_d().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a Test4) -> &'a [i32] {
+        m.get_d()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestPackedUnpacked {
     unpacked: Vec<i32>,
     packed: Vec<i32>,
@@ -858,6 +1043,27 @@ impl ::protobuf::Message for TestPackedUnpacked {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestPackedUnpacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestPackedUnpacked>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestPackedUnpacked_unpacked_acc as &::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestPackedUnpacked_packed_acc as &::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestPackedUnpacked>(
+                    "TestPackedUnpacked",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestPackedUnpacked>()
+    }
 }
 
 impl ::protobuf::Clear for TestPackedUnpacked {
@@ -867,7 +1073,49 @@ impl ::protobuf::Clear for TestPackedUnpacked {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestPackedUnpacked {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestPackedUnpacked_unpacked_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestPackedUnpacked> for TestPackedUnpacked_unpacked_acc {
+    fn name(&self) -> &'static str {
+        "unpacked"
+    }
+
+    fn len_field(&self, m: &TestPackedUnpacked) -> uint {
+        m.get_unpacked().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestPackedUnpacked) -> &'a [i32] {
+        m.get_unpacked()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestPackedUnpacked_packed_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestPackedUnpacked> for TestPackedUnpacked_packed_acc {
+    fn name(&self) -> &'static str {
+        "packed"
+    }
+
+    fn len_field(&self, m: &TestPackedUnpacked) -> uint {
+        m.get_packed().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestPackedUnpacked) -> &'a [i32] {
+        m.get_packed()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -994,6 +1242,26 @@ impl ::protobuf::Message for TestEmpty {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestEmpty>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestEmpty>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestEmpty_foo_acc as &::protobuf::reflect::FieldAccessor<TestEmpty>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestEmpty>(
+                    "TestEmpty",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestEmpty>()
+    }
 }
 
 impl ::protobuf::Clear for TestEmpty {
@@ -1002,7 +1270,32 @@ impl ::protobuf::Clear for TestEmpty {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestEmpty {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestEmpty_foo_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestEmpty> for TestEmpty_foo_acc {
+    fn name(&self) -> &'static str {
+        "foo"
+    }
+
+    fn has_field(&self, m: &TestEmpty) -> bool {
+        m.has_foo()
+    }
+
+    fn get_i32(&self, m: &TestEmpty) -> i32 {
+        m.get_foo()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestRequired {
     b: Option<bool>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1132,6 +1425,26 @@ impl ::protobuf::Message for TestRequired {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestRequired>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestRequired>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestRequired_b_acc as &::protobuf::reflect::FieldAccessor<TestRequired>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestRequired>(
+                    "TestRequired",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestRequired>()
+    }
 }
 
 impl ::protobuf::Clear for TestRequired {
@@ -1140,7 +1453,32 @@ impl ::protobuf::Clear for TestRequired {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestRequired {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestRequired_b_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestRequired> for TestRequired_b_acc {
+    fn name(&self) -> &'static str {
+        "b"
+    }
+
+    fn has_field(&self, m: &TestRequired) -> bool {
+        m.has_b()
+    }
+
+    fn get_bool(&self, m: &TestRequired) -> bool {
+        m.get_b()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestUnknownFields {
     a: Option<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1270,6 +1608,26 @@ impl ::protobuf::Message for TestUnknownFields {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestUnknownFields>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestUnknownFields>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestUnknownFields_a_acc as &::protobuf::reflect::FieldAccessor<TestUnknownFields>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestUnknownFields>(
+                    "TestUnknownFields",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestUnknownFields>()
+    }
 }
 
 impl ::protobuf::Clear for TestUnknownFields {
@@ -1278,7 +1636,32 @@ impl ::protobuf::Clear for TestUnknownFields {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestUnknownFields {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestUnknownFields_a_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestUnknownFields> for TestUnknownFields_a_acc {
+    fn name(&self) -> &'static str {
+        "a"
+    }
+
+    fn has_field(&self, m: &TestUnknownFields) -> bool {
+        m.has_a()
+    }
+
+    fn get_i32(&self, m: &TestUnknownFields) -> i32 {
+        m.get_a()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestSelfReference {
     r1: ::protobuf::SingularField<TestSelfReference>,
     r2: ::protobuf::SingularField<TestSelfReference>,
@@ -1457,6 +1840,27 @@ impl ::protobuf::Message for TestSelfReference {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestSelfReference>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestSelfReference>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestSelfReference_r1_acc as &::protobuf::reflect::FieldAccessor<TestSelfReference>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestSelfReference_r2_acc as &::protobuf::reflect::FieldAccessor<TestSelfReference>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestSelfReference>(
+                    "TestSelfReference",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestSelfReference>()
+    }
 }
 
 impl ::protobuf::Clear for TestSelfReference {
@@ -1466,7 +1870,49 @@ impl ::protobuf::Clear for TestSelfReference {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestSelfReference {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestSelfReference_r1_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestSelfReference> for TestSelfReference_r1_acc {
+    fn name(&self) -> &'static str {
+        "r1"
+    }
+
+    fn has_field(&self, m: &TestSelfReference) -> bool {
+        m.has_r1()
+    }
+
+    fn get_message<'a>(&self, m: &'a TestSelfReference) -> &'a ::protobuf::Message {
+        m.get_r1() as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestSelfReference_r2_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestSelfReference> for TestSelfReference_r2_acc {
+    fn name(&self) -> &'static str {
+        "r2"
+    }
+
+    fn has_field(&self, m: &TestSelfReference) -> bool {
+        m.has_r2()
+    }
+
+    fn get_message<'a>(&self, m: &'a TestSelfReference) -> &'a ::protobuf::Message {
+        m.get_r2() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestDefaultInstanceField {
     s: Option<StrBuf>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1596,6 +2042,26 @@ impl ::protobuf::Message for TestDefaultInstanceField {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestDefaultInstanceField>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestDefaultInstanceField_s_acc as &::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestDefaultInstanceField>(
+                    "TestDefaultInstanceField",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestDefaultInstanceField>()
+    }
 }
 
 impl ::protobuf::Clear for TestDefaultInstanceField {
@@ -1604,7 +2070,32 @@ impl ::protobuf::Clear for TestDefaultInstanceField {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestDefaultInstanceField {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestDefaultInstanceField_s_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField> for TestDefaultInstanceField_s_acc {
+    fn name(&self) -> &'static str {
+        "s"
+    }
+
+    fn has_field(&self, m: &TestDefaultInstanceField) -> bool {
+        m.has_s()
+    }
+
+    fn get_str<'a>(&self, m: &'a TestDefaultInstanceField) -> &'a str {
+        m.get_s()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestDefaultInstance {
     field: ::protobuf::SingularField<TestDefaultInstanceField>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1734,6 +2225,26 @@ impl ::protobuf::Message for TestDefaultInstance {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestDefaultInstance>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstance>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestDefaultInstance_field_acc as &::protobuf::reflect::FieldAccessor<TestDefaultInstance>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestDefaultInstance>(
+                    "TestDefaultInstance",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestDefaultInstance>()
+    }
 }
 
 impl ::protobuf::Clear for TestDefaultInstance {
@@ -1742,7 +2253,212 @@ impl ::protobuf::Clear for TestDefaultInstance {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestDefaultInstance {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestDefaultInstance_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestDefaultInstance> for TestDefaultInstance_field_acc {
+    fn name(&self) -> &'static str {
+        "field"
+    }
+
+    fn has_field(&self, m: &TestDefaultInstance) -> bool {
+        m.has_field()
+    }
+
+    fn get_message<'a>(&self, m: &'a TestDefaultInstance) -> &'a ::protobuf::Message {
+        m.get_field() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
+pub struct TestDescriptor {
+    stuff: Option<i32>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
+}
+
+impl<'a> TestDescriptor {
+    pub fn new() -> TestDescriptor {
+        ::std::default::Default::default()
+    }
+
+    pub fn default_instance() -> &'static TestDescriptor {
+        static mut instance: ::protobuf::lazy::Lazy<TestDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *TestDescriptor };
+        unsafe {
+            instance.get(|| {
+                TestDescriptor {
+                    stuff: None,
+                    unknown_fields: None,
+                }
+            })
+        }
+    }
+
+    #[allow(unused_variable)]
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.stuff {
+            Some(ref v) => {
+                os.write_int32(10, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
+    }
+
+    pub fn clear_stuff(&mut self) {
+        self.stuff = None;
+    }
+
+    pub fn has_stuff(&self) -> bool {
+        self.stuff.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_stuff(&mut self, v: i32) {
+        self.stuff = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_stuff(&'a mut self) -> &'a mut i32 {
+        if self.stuff.is_none() {
+            self.stuff = Some(0);
+        };
+        self.stuff.get_mut_ref()
+    }
+
+    pub fn get_stuff(&self) -> i32 {
+        self.stuff.unwrap_or_else(|| 0)
+    }
+}
+
+impl ::protobuf::Message for TestDescriptor {
+    fn new() -> TestDescriptor {
+        TestDescriptor::new()
+    }
+
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
+        while !is.eof() {
+            let (field_number, wire_type) = is.read_tag_unpack();
+            match field_number {
+                10 => {
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    let tmp = is.read_int32();
+                    self.stuff = Some(tmp);
+                },
+                _ => {
+                    let unknown = is.read_unknown(wire_type);
+                    self.mut_unknown_fields().add_value(field_number, unknown);
+                },
+            };
+        }
+    }
+
+    // Compute sizes of nested messages
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+        use protobuf::{Message};
+        let pos = sizes.len();
+        sizes.push(0);
+        let mut my_size = 0;
+        for value in self.stuff.iter() {
+            my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
+        };
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        *sizes.get_mut(pos) = my_size;
+        // value is returned for convenience
+        my_size
+    }
+
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
+        self.check_initialized();
+        let mut sizes: Vec<u32> = Vec::new();
+        self.compute_sizes(&mut sizes);
+        let mut sizes_pos = 1; // first element is self
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
+        assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
+    }
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
+        if self.unknown_fields.is_some() {
+            &**self.unknown_fields.get_ref()
+        } else {
+            ::protobuf::UnknownFields::default_instance()
+        }
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
+        if self.unknown_fields.is_none() {
+            self.unknown_fields = Some(::std::default::Default::default())
+        }
+        &mut **self.unknown_fields.get_mut_ref()
+    }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestDescriptor>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDescriptor>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestDescriptor_stuff_acc as &::protobuf::reflect::FieldAccessor<TestDescriptor>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestDescriptor>(
+                    "TestDescriptor",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestDescriptor>()
+    }
+}
+
+impl ::protobuf::Clear for TestDescriptor {
+    fn clear(&mut self) {
+        self.clear_stuff();
+    }
+}
+
+impl ::std::fmt::Show for TestDescriptor {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestDescriptor_stuff_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestDescriptor> for TestDescriptor_stuff_acc {
+    fn name(&self) -> &'static str {
+        "stuff"
+    }
+
+    fn has_field(&self, m: &TestDescriptor) -> bool {
+        m.has_stuff()
+    }
+
+    fn get_i32(&self, m: &TestDescriptor) -> i32 {
+        m.get_stuff()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestTypesSingular {
     double_field: Option<f64>,
     float_field: Option<f32>,
@@ -2463,6 +3179,40 @@ impl ::protobuf::Message for TestTypesSingular {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestTypesSingular>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestTypesSingular>(
+                    "TestTypesSingular",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestTypesSingular>()
+    }
 }
 
 impl ::protobuf::Clear for TestTypesSingular {
@@ -2485,7 +3235,270 @@ impl ::protobuf::Clear for TestTypesSingular {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestTypesSingular {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_double_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_double_field_acc {
+    fn name(&self) -> &'static str {
+        "double_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_double_field()
+    }
+
+    fn get_f64(&self, m: &TestTypesSingular) -> f64 {
+        m.get_double_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_float_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_float_field_acc {
+    fn name(&self) -> &'static str {
+        "float_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_float_field()
+    }
+
+    fn get_f32(&self, m: &TestTypesSingular) -> f32 {
+        m.get_float_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_int32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_int32_field_acc {
+    fn name(&self) -> &'static str {
+        "int32_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_int32_field()
+    }
+
+    fn get_i32(&self, m: &TestTypesSingular) -> i32 {
+        m.get_int32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_int64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_int64_field_acc {
+    fn name(&self) -> &'static str {
+        "int64_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_int64_field()
+    }
+
+    fn get_i64(&self, m: &TestTypesSingular) -> i64 {
+        m.get_int64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_uint32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_uint32_field_acc {
+    fn name(&self) -> &'static str {
+        "uint32_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_uint32_field()
+    }
+
+    fn get_u32(&self, m: &TestTypesSingular) -> u32 {
+        m.get_uint32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_uint64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_uint64_field_acc {
+    fn name(&self) -> &'static str {
+        "uint64_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_uint64_field()
+    }
+
+    fn get_u64(&self, m: &TestTypesSingular) -> u64 {
+        m.get_uint64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_sint32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_sint32_field_acc {
+    fn name(&self) -> &'static str {
+        "sint32_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_sint32_field()
+    }
+
+    fn get_i32(&self, m: &TestTypesSingular) -> i32 {
+        m.get_sint32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_sint64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_sint64_field_acc {
+    fn name(&self) -> &'static str {
+        "sint64_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_sint64_field()
+    }
+
+    fn get_i64(&self, m: &TestTypesSingular) -> i64 {
+        m.get_sint64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_fixed32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_fixed32_field_acc {
+    fn name(&self) -> &'static str {
+        "fixed32_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_fixed32_field()
+    }
+
+    fn get_u32(&self, m: &TestTypesSingular) -> u32 {
+        m.get_fixed32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_fixed64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_fixed64_field_acc {
+    fn name(&self) -> &'static str {
+        "fixed64_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_fixed64_field()
+    }
+
+    fn get_u64(&self, m: &TestTypesSingular) -> u64 {
+        m.get_fixed64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_sfixed32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_sfixed32_field_acc {
+    fn name(&self) -> &'static str {
+        "sfixed32_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_sfixed32_field()
+    }
+
+    fn get_i32(&self, m: &TestTypesSingular) -> i32 {
+        m.get_sfixed32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_sfixed64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_sfixed64_field_acc {
+    fn name(&self) -> &'static str {
+        "sfixed64_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_sfixed64_field()
+    }
+
+    fn get_i64(&self, m: &TestTypesSingular) -> i64 {
+        m.get_sfixed64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_bool_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_bool_field_acc {
+    fn name(&self) -> &'static str {
+        "bool_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_bool_field()
+    }
+
+    fn get_bool(&self, m: &TestTypesSingular) -> bool {
+        m.get_bool_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_string_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_string_field_acc {
+    fn name(&self) -> &'static str {
+        "string_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_string_field()
+    }
+
+    fn get_str<'a>(&self, m: &'a TestTypesSingular) -> &'a str {
+        m.get_string_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesSingular_bytes_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular_bytes_field_acc {
+    fn name(&self) -> &'static str {
+        "bytes_field"
+    }
+
+    fn has_field(&self, m: &TestTypesSingular) -> bool {
+        m.has_bytes_field()
+    }
+
+    fn get_bytes<'a>(&self, m: &'a TestTypesSingular) -> &'a [u8] {
+        m.get_bytes_field()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestTypesRepeated {
     double_field: Vec<f64>,
     float_field: Vec<f32>,
@@ -3185,6 +4198,40 @@ impl ::protobuf::Message for TestTypesRepeated {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestTypesRepeated>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestTypesRepeated>(
+                    "TestTypesRepeated",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestTypesRepeated>()
+    }
 }
 
 impl ::protobuf::Clear for TestTypesRepeated {
@@ -3207,7 +4254,270 @@ impl ::protobuf::Clear for TestTypesRepeated {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for TestTypesRepeated {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_double_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_double_field_acc {
+    fn name(&self) -> &'static str {
+        "double_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_double_field().len()
+    }
+
+    fn get_rep_f64<'a>(&self, m: &'a TestTypesRepeated) -> &'a [f64] {
+        m.get_double_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_float_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_float_field_acc {
+    fn name(&self) -> &'static str {
+        "float_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_float_field().len()
+    }
+
+    fn get_rep_f32<'a>(&self, m: &'a TestTypesRepeated) -> &'a [f32] {
+        m.get_float_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_int32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_int32_field_acc {
+    fn name(&self) -> &'static str {
+        "int32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_int32_field().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestTypesRepeated) -> &'a [i32] {
+        m.get_int32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_int64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_int64_field_acc {
+    fn name(&self) -> &'static str {
+        "int64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_int64_field().len()
+    }
+
+    fn get_rep_i64<'a>(&self, m: &'a TestTypesRepeated) -> &'a [i64] {
+        m.get_int64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_uint32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_uint32_field_acc {
+    fn name(&self) -> &'static str {
+        "uint32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_uint32_field().len()
+    }
+
+    fn get_rep_u32<'a>(&self, m: &'a TestTypesRepeated) -> &'a [u32] {
+        m.get_uint32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_uint64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_uint64_field_acc {
+    fn name(&self) -> &'static str {
+        "uint64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_uint64_field().len()
+    }
+
+    fn get_rep_u64<'a>(&self, m: &'a TestTypesRepeated) -> &'a [u64] {
+        m.get_uint64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_sint32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_sint32_field_acc {
+    fn name(&self) -> &'static str {
+        "sint32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_sint32_field().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestTypesRepeated) -> &'a [i32] {
+        m.get_sint32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_sint64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_sint64_field_acc {
+    fn name(&self) -> &'static str {
+        "sint64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_sint64_field().len()
+    }
+
+    fn get_rep_i64<'a>(&self, m: &'a TestTypesRepeated) -> &'a [i64] {
+        m.get_sint64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_fixed32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_fixed32_field_acc {
+    fn name(&self) -> &'static str {
+        "fixed32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_fixed32_field().len()
+    }
+
+    fn get_rep_u32<'a>(&self, m: &'a TestTypesRepeated) -> &'a [u32] {
+        m.get_fixed32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_fixed64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_fixed64_field_acc {
+    fn name(&self) -> &'static str {
+        "fixed64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_fixed64_field().len()
+    }
+
+    fn get_rep_u64<'a>(&self, m: &'a TestTypesRepeated) -> &'a [u64] {
+        m.get_fixed64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_sfixed32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_sfixed32_field_acc {
+    fn name(&self) -> &'static str {
+        "sfixed32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_sfixed32_field().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestTypesRepeated) -> &'a [i32] {
+        m.get_sfixed32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_sfixed64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_sfixed64_field_acc {
+    fn name(&self) -> &'static str {
+        "sfixed64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_sfixed64_field().len()
+    }
+
+    fn get_rep_i64<'a>(&self, m: &'a TestTypesRepeated) -> &'a [i64] {
+        m.get_sfixed64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_bool_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_bool_field_acc {
+    fn name(&self) -> &'static str {
+        "bool_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_bool_field().len()
+    }
+
+    fn get_rep_bool<'a>(&self, m: &'a TestTypesRepeated) -> &'a [bool] {
+        m.get_bool_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_string_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_string_field_acc {
+    fn name(&self) -> &'static str {
+        "string_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_string_field().len()
+    }
+
+    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeated) -> &'a [StrBuf] {
+        m.get_string_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeated_bytes_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated_bytes_field_acc {
+    fn name(&self) -> &'static str {
+        "bytes_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeated) -> uint {
+        m.get_bytes_field().len()
+    }
+
+    fn get_rep_bytes<'a>(&self, m: &'a TestTypesRepeated) -> &'a [Vec<u8>] {
+        m.get_bytes_field()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct TestTypesRepeatedPacked {
     double_field: Vec<f64>,
     float_field: Vec<f32>,
@@ -3973,6 +5283,40 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<TestTypesRepeatedPacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                ::protobuf::reflect::MessageDescriptor::new::<TestTypesRepeatedPacked>(
+                    "TestTypesRepeatedPacked",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestTypesRepeatedPacked>()
+    }
 }
 
 impl ::protobuf::Clear for TestTypesRepeatedPacked {
@@ -3992,5 +5336,301 @@ impl ::protobuf::Clear for TestTypesRepeatedPacked {
         self.clear_bool_field();
         self.clear_string_field();
         self.clear_bytes_field();
+    }
+}
+
+impl ::std::fmt::Show for TestTypesRepeatedPacked {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_double_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_double_field_acc {
+    fn name(&self) -> &'static str {
+        "double_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_double_field().len()
+    }
+
+    fn get_rep_f64<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [f64] {
+        m.get_double_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_float_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_float_field_acc {
+    fn name(&self) -> &'static str {
+        "float_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_float_field().len()
+    }
+
+    fn get_rep_f32<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [f32] {
+        m.get_float_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_int32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_int32_field_acc {
+    fn name(&self) -> &'static str {
+        "int32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_int32_field().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [i32] {
+        m.get_int32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_int64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_int64_field_acc {
+    fn name(&self) -> &'static str {
+        "int64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_int64_field().len()
+    }
+
+    fn get_rep_i64<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [i64] {
+        m.get_int64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_uint32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_uint32_field_acc {
+    fn name(&self) -> &'static str {
+        "uint32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_uint32_field().len()
+    }
+
+    fn get_rep_u32<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [u32] {
+        m.get_uint32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_uint64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_uint64_field_acc {
+    fn name(&self) -> &'static str {
+        "uint64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_uint64_field().len()
+    }
+
+    fn get_rep_u64<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [u64] {
+        m.get_uint64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_sint32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_sint32_field_acc {
+    fn name(&self) -> &'static str {
+        "sint32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_sint32_field().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [i32] {
+        m.get_sint32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_sint64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_sint64_field_acc {
+    fn name(&self) -> &'static str {
+        "sint64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_sint64_field().len()
+    }
+
+    fn get_rep_i64<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [i64] {
+        m.get_sint64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_fixed32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_fixed32_field_acc {
+    fn name(&self) -> &'static str {
+        "fixed32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_fixed32_field().len()
+    }
+
+    fn get_rep_u32<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [u32] {
+        m.get_fixed32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_fixed64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_fixed64_field_acc {
+    fn name(&self) -> &'static str {
+        "fixed64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_fixed64_field().len()
+    }
+
+    fn get_rep_u64<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [u64] {
+        m.get_fixed64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_sfixed32_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_sfixed32_field_acc {
+    fn name(&self) -> &'static str {
+        "sfixed32_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_sfixed32_field().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [i32] {
+        m.get_sfixed32_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_sfixed64_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_sfixed64_field_acc {
+    fn name(&self) -> &'static str {
+        "sfixed64_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_sfixed64_field().len()
+    }
+
+    fn get_rep_i64<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [i64] {
+        m.get_sfixed64_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_bool_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_bool_field_acc {
+    fn name(&self) -> &'static str {
+        "bool_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_bool_field().len()
+    }
+
+    fn get_rep_bool<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [bool] {
+        m.get_bool_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_string_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_string_field_acc {
+    fn name(&self) -> &'static str {
+        "string_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_string_field().len()
+    }
+
+    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [StrBuf] {
+        m.get_string_field()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct TestTypesRepeatedPacked_bytes_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRepeatedPacked_bytes_field_acc {
+    fn name(&self) -> &'static str {
+        "bytes_field"
+    }
+
+    fn len_field(&self, m: &TestTypesRepeatedPacked) -> uint {
+        m.get_bytes_field().len()
+    }
+
+    fn get_rep_bytes<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [Vec<u8>] {
+        m.get_bytes_field()
+    }
+}
+
+#[deriving(Clone,Eq,Show)]
+pub enum TestEnumDescriptor {
+    RED = 1,
+    BLUE = 2,
+    GREEN = 3,
+}
+
+impl TestEnumDescriptor {
+    pub fn new(value: i32) -> TestEnumDescriptor {
+        match value {
+            1 => RED,
+            2 => BLUE,
+            3 => GREEN,
+            _ => fail!()
+        }
+    }
+}
+
+impl ::protobuf::ProtobufEnum for TestEnumDescriptor {
+    fn value(&self) -> i32 {
+        *self as i32
+    }
+
+    fn enum_descriptor_static(_: Option<TestEnumDescriptor>) -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("TestEnumDescriptor", file_descriptor_proto())
+            })
+        }
     }
 }

@@ -279,7 +279,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct FileDescriptorSet {
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -402,6 +402,26 @@ impl ::protobuf::Message for FileDescriptorSet {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<FileDescriptorSet>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FileDescriptorSet>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorSet_file_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorSet>) });
+                ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorSet>(
+                    "FileDescriptorSet",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FileDescriptorSet>()
+    }
 }
 
 impl ::protobuf::Clear for FileDescriptorSet {
@@ -410,7 +430,32 @@ impl ::protobuf::Clear for FileDescriptorSet {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for FileDescriptorSet {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorSet_file_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorSet> for FileDescriptorSet_file_acc {
+    fn name(&self) -> &'static str {
+        "file"
+    }
+
+    fn len_field(&self, m: &FileDescriptorSet) -> uint {
+        m.get_file().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FileDescriptorSet, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_file()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct FileDescriptorProto {
     name: Option<StrBuf>,
     package: Option<StrBuf>,
@@ -953,6 +998,36 @@ impl ::protobuf::Message for FileDescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<FileDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FileDescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_package_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_dependency_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_public_dependency_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_weak_dependency_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_message_type_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_enum_type_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_service_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_extension_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileDescriptorProto_source_code_info_acc as &::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorProto>(
+                    "FileDescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FileDescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for FileDescriptorProto {
@@ -971,7 +1046,202 @@ impl ::protobuf::Clear for FileDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for FileDescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &FileDescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a FileDescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_package_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_package_acc {
+    fn name(&self) -> &'static str {
+        "package"
+    }
+
+    fn has_field(&self, m: &FileDescriptorProto) -> bool {
+        m.has_package()
+    }
+
+    fn get_str<'a>(&self, m: &'a FileDescriptorProto) -> &'a str {
+        m.get_package()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_dependency_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_dependency_acc {
+    fn name(&self) -> &'static str {
+        "dependency"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_dependency().len()
+    }
+
+    fn get_rep_str<'a>(&self, m: &'a FileDescriptorProto) -> &'a [StrBuf] {
+        m.get_dependency()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_public_dependency_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_public_dependency_acc {
+    fn name(&self) -> &'static str {
+        "public_dependency"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_public_dependency().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a FileDescriptorProto) -> &'a [i32] {
+        m.get_public_dependency()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_weak_dependency_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_weak_dependency_acc {
+    fn name(&self) -> &'static str {
+        "weak_dependency"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_weak_dependency().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a FileDescriptorProto) -> &'a [i32] {
+        m.get_weak_dependency()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_message_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_message_type_acc {
+    fn name(&self) -> &'static str {
+        "message_type"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_message_type().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FileDescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_message_type()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_enum_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_enum_type_acc {
+    fn name(&self) -> &'static str {
+        "enum_type"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_enum_type().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FileDescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_enum_type()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_service_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_service_acc {
+    fn name(&self) -> &'static str {
+        "service"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_service().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FileDescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_service()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_extension_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_extension_acc {
+    fn name(&self) -> &'static str {
+        "extension"
+    }
+
+    fn len_field(&self, m: &FileDescriptorProto) -> uint {
+        m.get_extension().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FileDescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_extension()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &FileDescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a FileDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileDescriptorProto_source_code_info_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorProto_source_code_info_acc {
+    fn name(&self) -> &'static str {
+        "source_code_info"
+    }
+
+    fn has_field(&self, m: &FileDescriptorProto) -> bool {
+        m.has_source_code_info()
+    }
+
+    fn get_message<'a>(&self, m: &'a FileDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_source_code_info() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct DescriptorProto {
     name: Option<StrBuf>,
     field: ::protobuf::RepeatedField<FieldDescriptorProto>,
@@ -1341,6 +1611,32 @@ impl ::protobuf::Message for DescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<DescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<DescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_field_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_extension_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_nested_type_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_enum_type_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_extension_range_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto>(
+                    "DescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<DescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for DescriptorProto {
@@ -1355,7 +1651,134 @@ impl ::protobuf::Clear for DescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for DescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &DescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a DescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_field_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_field_acc {
+    fn name(&self) -> &'static str {
+        "field"
+    }
+
+    fn len_field(&self, m: &DescriptorProto) -> uint {
+        m.get_field().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a DescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_field()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_extension_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_extension_acc {
+    fn name(&self) -> &'static str {
+        "extension"
+    }
+
+    fn len_field(&self, m: &DescriptorProto) -> uint {
+        m.get_extension().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a DescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_extension()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_nested_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_nested_type_acc {
+    fn name(&self) -> &'static str {
+        "nested_type"
+    }
+
+    fn len_field(&self, m: &DescriptorProto) -> uint {
+        m.get_nested_type().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a DescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_nested_type()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_enum_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_enum_type_acc {
+    fn name(&self) -> &'static str {
+        "enum_type"
+    }
+
+    fn len_field(&self, m: &DescriptorProto) -> uint {
+        m.get_enum_type().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a DescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_enum_type()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_extension_range_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_extension_range_acc {
+    fn name(&self) -> &'static str {
+        "extension_range"
+    }
+
+    fn len_field(&self, m: &DescriptorProto) -> uint {
+        m.get_extension_range().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a DescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_extension_range()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &DescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a DescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct DescriptorProto_ExtensionRange {
     start: Option<i32>,
     end: Option<i32>,
@@ -1524,6 +1947,27 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<DescriptorProto_ExtensionRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_ExtensionRange_start_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static DescriptorProto_ExtensionRange_end_acc as &::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>) });
+                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ExtensionRange>(
+                    "DescriptorProto_ExtensionRange",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<DescriptorProto_ExtensionRange>()
+    }
 }
 
 impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
@@ -1533,7 +1977,49 @@ impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for DescriptorProto_ExtensionRange {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_ExtensionRange_start_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange> for DescriptorProto_ExtensionRange_start_acc {
+    fn name(&self) -> &'static str {
+        "start"
+    }
+
+    fn has_field(&self, m: &DescriptorProto_ExtensionRange) -> bool {
+        m.has_start()
+    }
+
+    fn get_i32(&self, m: &DescriptorProto_ExtensionRange) -> i32 {
+        m.get_start()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct DescriptorProto_ExtensionRange_end_acc;
+
+impl ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange> for DescriptorProto_ExtensionRange_end_acc {
+    fn name(&self) -> &'static str {
+        "end"
+    }
+
+    fn has_field(&self, m: &DescriptorProto_ExtensionRange) -> bool {
+        m.has_end()
+    }
+
+    fn get_i32(&self, m: &DescriptorProto_ExtensionRange) -> i32 {
+        m.get_end()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct FieldDescriptorProto {
     name: Option<StrBuf>,
     number: Option<i32>,
@@ -1969,6 +2455,33 @@ impl ::protobuf::Message for FieldDescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<FieldDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FieldDescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_number_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_label_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_field_type_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_type_name_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_extendee_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_default_value_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldDescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<FieldDescriptorProto>(
+                    "FieldDescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FieldDescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for FieldDescriptorProto {
@@ -1981,6 +2494,152 @@ impl ::protobuf::Clear for FieldDescriptorProto {
         self.clear_extendee();
         self.clear_default_value();
         self.clear_options();
+    }
+}
+
+impl ::std::fmt::Show for FieldDescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a FieldDescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_number_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_number_acc {
+    fn name(&self) -> &'static str {
+        "number"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_number()
+    }
+
+    fn get_i32(&self, m: &FieldDescriptorProto) -> i32 {
+        m.get_number()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_label_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_label_acc {
+    fn name(&self) -> &'static str {
+        "label"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_label()
+    }
+
+    fn get_enum<'a>(&self, m: &FieldDescriptorProto) -> &'static ::protobuf::reflect::EnumValueDescriptor {
+        use protobuf::{ProtobufEnum};
+        m.get_label().descriptor()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_field_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_field_type_acc {
+    fn name(&self) -> &'static str {
+        "field_type"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_field_type()
+    }
+
+    fn get_enum<'a>(&self, m: &FieldDescriptorProto) -> &'static ::protobuf::reflect::EnumValueDescriptor {
+        use protobuf::{ProtobufEnum};
+        m.get_field_type().descriptor()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_type_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_type_name_acc {
+    fn name(&self) -> &'static str {
+        "type_name"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_type_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a FieldDescriptorProto) -> &'a str {
+        m.get_type_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_extendee_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_extendee_acc {
+    fn name(&self) -> &'static str {
+        "extendee"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_extendee()
+    }
+
+    fn get_str<'a>(&self, m: &'a FieldDescriptorProto) -> &'a str {
+        m.get_extendee()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_default_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_default_value_acc {
+    fn name(&self) -> &'static str {
+        "default_value"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_default_value()
+    }
+
+    fn get_str<'a>(&self, m: &'a FieldDescriptorProto) -> &'a str {
+        m.get_default_value()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldDescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &FieldDescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a FieldDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
     }
 }
 
@@ -2036,6 +2695,15 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     fn value(&self) -> i32 {
         *self as i32
     }
+
+    fn enum_descriptor_static(_: Option<FieldDescriptorProto_Type>) -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("FieldDescriptorProto_Type", file_descriptor_proto())
+            })
+        }
+    }
 }
 
 #[deriving(Clone,Eq,Show)]
@@ -2060,9 +2728,18 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     fn value(&self) -> i32 {
         *self as i32
     }
+
+    fn enum_descriptor_static(_: Option<FieldDescriptorProto_Label>) -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("FieldDescriptorProto_Label", file_descriptor_proto())
+            })
+        }
+    }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct EnumDescriptorProto {
     name: Option<StrBuf>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
@@ -2276,6 +2953,28 @@ impl ::protobuf::Message for EnumDescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<EnumDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumDescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumDescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<EnumDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumDescriptorProto_value_acc as &::protobuf::reflect::FieldAccessor<EnumDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumDescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<EnumDescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<EnumDescriptorProto>(
+                    "EnumDescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumDescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for EnumDescriptorProto {
@@ -2286,7 +2985,66 @@ impl ::protobuf::Clear for EnumDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for EnumDescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct EnumDescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumDescriptorProto> for EnumDescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &EnumDescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a EnumDescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct EnumDescriptorProto_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumDescriptorProto> for EnumDescriptorProto_value_acc {
+    fn name(&self) -> &'static str {
+        "value"
+    }
+
+    fn len_field(&self, m: &EnumDescriptorProto) -> uint {
+        m.get_value().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a EnumDescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_value()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct EnumDescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumDescriptorProto> for EnumDescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &EnumDescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a EnumDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct EnumValueDescriptorProto {
     name: Option<StrBuf>,
     number: Option<i32>,
@@ -2503,6 +3261,28 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<EnumValueDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumValueDescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumValueDescriptorProto_number_acc as &::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumValueDescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<EnumValueDescriptorProto>(
+                    "EnumValueDescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumValueDescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for EnumValueDescriptorProto {
@@ -2513,7 +3293,66 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for EnumValueDescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct EnumValueDescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto> for EnumValueDescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &EnumValueDescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a EnumValueDescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct EnumValueDescriptorProto_number_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto> for EnumValueDescriptorProto_number_acc {
+    fn name(&self) -> &'static str {
+        "number"
+    }
+
+    fn has_field(&self, m: &EnumValueDescriptorProto) -> bool {
+        m.has_number()
+    }
+
+    fn get_i32(&self, m: &EnumValueDescriptorProto) -> i32 {
+        m.get_number()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct EnumValueDescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto> for EnumValueDescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &EnumValueDescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a EnumValueDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct ServiceDescriptorProto {
     name: Option<StrBuf>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
@@ -2727,6 +3566,28 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<ServiceDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static ServiceDescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static ServiceDescriptorProto_method_acc as &::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static ServiceDescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<ServiceDescriptorProto>(
+                    "ServiceDescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<ServiceDescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for ServiceDescriptorProto {
@@ -2737,7 +3598,66 @@ impl ::protobuf::Clear for ServiceDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for ServiceDescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct ServiceDescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto> for ServiceDescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &ServiceDescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a ServiceDescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct ServiceDescriptorProto_method_acc;
+
+impl ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto> for ServiceDescriptorProto_method_acc {
+    fn name(&self) -> &'static str {
+        "method"
+    }
+
+    fn len_field(&self, m: &ServiceDescriptorProto) -> uint {
+        m.get_method().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a ServiceDescriptorProto, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_method()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct ServiceDescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto> for ServiceDescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &ServiceDescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a ServiceDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct MethodDescriptorProto {
     name: Option<StrBuf>,
     input_type: Option<StrBuf>,
@@ -3002,6 +3922,29 @@ impl ::protobuf::Message for MethodDescriptorProto {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<MethodDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MethodDescriptorProto>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static MethodDescriptorProto_name_acc as &::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static MethodDescriptorProto_input_type_acc as &::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static MethodDescriptorProto_output_type_acc as &::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static MethodDescriptorProto_options_acc as &::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
+                ::protobuf::reflect::MessageDescriptor::new::<MethodDescriptorProto>(
+                    "MethodDescriptorProto",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<MethodDescriptorProto>()
+    }
 }
 
 impl ::protobuf::Clear for MethodDescriptorProto {
@@ -3013,7 +3956,83 @@ impl ::protobuf::Clear for MethodDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for MethodDescriptorProto {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct MethodDescriptorProto_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MethodDescriptorProto> for MethodDescriptorProto_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn has_field(&self, m: &MethodDescriptorProto) -> bool {
+        m.has_name()
+    }
+
+    fn get_str<'a>(&self, m: &'a MethodDescriptorProto) -> &'a str {
+        m.get_name()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct MethodDescriptorProto_input_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MethodDescriptorProto> for MethodDescriptorProto_input_type_acc {
+    fn name(&self) -> &'static str {
+        "input_type"
+    }
+
+    fn has_field(&self, m: &MethodDescriptorProto) -> bool {
+        m.has_input_type()
+    }
+
+    fn get_str<'a>(&self, m: &'a MethodDescriptorProto) -> &'a str {
+        m.get_input_type()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct MethodDescriptorProto_output_type_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MethodDescriptorProto> for MethodDescriptorProto_output_type_acc {
+    fn name(&self) -> &'static str {
+        "output_type"
+    }
+
+    fn has_field(&self, m: &MethodDescriptorProto) -> bool {
+        m.has_output_type()
+    }
+
+    fn get_str<'a>(&self, m: &'a MethodDescriptorProto) -> &'a str {
+        m.get_output_type()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct MethodDescriptorProto_options_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MethodDescriptorProto> for MethodDescriptorProto_options_acc {
+    fn name(&self) -> &'static str {
+        "options"
+    }
+
+    fn has_field(&self, m: &MethodDescriptorProto) -> bool {
+        m.has_options()
+    }
+
+    fn get_message<'a>(&self, m: &'a MethodDescriptorProto) -> &'a ::protobuf::Message {
+        m.get_options() as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct FileOptions {
     java_package: Option<StrBuf>,
     java_outer_classname: Option<StrBuf>,
@@ -3523,6 +4542,35 @@ impl ::protobuf::Message for FileOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<FileOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FileOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_java_package_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_java_outer_classname_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_java_multiple_files_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_java_generate_equals_and_hash_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_optimize_for_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_go_package_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_cc_generic_services_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_java_generic_services_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_py_generic_services_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FileOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<FileOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<FileOptions>(
+                    "FileOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FileOptions>()
+    }
 }
 
 impl ::protobuf::Clear for FileOptions {
@@ -3537,6 +4585,185 @@ impl ::protobuf::Clear for FileOptions {
         self.clear_java_generic_services();
         self.clear_py_generic_services();
         self.clear_uninterpreted_option();
+    }
+}
+
+impl ::std::fmt::Show for FileOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct FileOptions_java_package_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_java_package_acc {
+    fn name(&self) -> &'static str {
+        "java_package"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_java_package()
+    }
+
+    fn get_str<'a>(&self, m: &'a FileOptions) -> &'a str {
+        m.get_java_package()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_java_outer_classname_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_java_outer_classname_acc {
+    fn name(&self) -> &'static str {
+        "java_outer_classname"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_java_outer_classname()
+    }
+
+    fn get_str<'a>(&self, m: &'a FileOptions) -> &'a str {
+        m.get_java_outer_classname()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_java_multiple_files_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_java_multiple_files_acc {
+    fn name(&self) -> &'static str {
+        "java_multiple_files"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_java_multiple_files()
+    }
+
+    fn get_bool(&self, m: &FileOptions) -> bool {
+        m.get_java_multiple_files()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_java_generate_equals_and_hash_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_java_generate_equals_and_hash_acc {
+    fn name(&self) -> &'static str {
+        "java_generate_equals_and_hash"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_java_generate_equals_and_hash()
+    }
+
+    fn get_bool(&self, m: &FileOptions) -> bool {
+        m.get_java_generate_equals_and_hash()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_optimize_for_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_optimize_for_acc {
+    fn name(&self) -> &'static str {
+        "optimize_for"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_optimize_for()
+    }
+
+    fn get_enum<'a>(&self, m: &FileOptions) -> &'static ::protobuf::reflect::EnumValueDescriptor {
+        use protobuf::{ProtobufEnum};
+        m.get_optimize_for().descriptor()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_go_package_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_go_package_acc {
+    fn name(&self) -> &'static str {
+        "go_package"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_go_package()
+    }
+
+    fn get_str<'a>(&self, m: &'a FileOptions) -> &'a str {
+        m.get_go_package()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_cc_generic_services_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_cc_generic_services_acc {
+    fn name(&self) -> &'static str {
+        "cc_generic_services"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_cc_generic_services()
+    }
+
+    fn get_bool(&self, m: &FileOptions) -> bool {
+        m.get_cc_generic_services()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_java_generic_services_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_java_generic_services_acc {
+    fn name(&self) -> &'static str {
+        "java_generic_services"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_java_generic_services()
+    }
+
+    fn get_bool(&self, m: &FileOptions) -> bool {
+        m.get_java_generic_services()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_py_generic_services_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_py_generic_services_acc {
+    fn name(&self) -> &'static str {
+        "py_generic_services"
+    }
+
+    fn has_field(&self, m: &FileOptions) -> bool {
+        m.has_py_generic_services()
+    }
+
+    fn get_bool(&self, m: &FileOptions) -> bool {
+        m.get_py_generic_services()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FileOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &FileOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FileOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
     }
 }
 
@@ -3562,9 +4789,18 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     fn value(&self) -> i32 {
         *self as i32
     }
+
+    fn enum_descriptor_static(_: Option<FileOptions_OptimizeMode>) -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("FileOptions_OptimizeMode", file_descriptor_proto())
+            })
+        }
+    }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
@@ -3771,6 +5007,28 @@ impl ::protobuf::Message for MessageOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<MessageOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MessageOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static MessageOptions_message_set_wire_format_acc as &::protobuf::reflect::FieldAccessor<MessageOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static MessageOptions_no_standard_descriptor_accessor_acc as &::protobuf::reflect::FieldAccessor<MessageOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static MessageOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<MessageOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<MessageOptions>(
+                    "MessageOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<MessageOptions>()
+    }
 }
 
 impl ::protobuf::Clear for MessageOptions {
@@ -3781,7 +5039,66 @@ impl ::protobuf::Clear for MessageOptions {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for MessageOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct MessageOptions_message_set_wire_format_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MessageOptions> for MessageOptions_message_set_wire_format_acc {
+    fn name(&self) -> &'static str {
+        "message_set_wire_format"
+    }
+
+    fn has_field(&self, m: &MessageOptions) -> bool {
+        m.has_message_set_wire_format()
+    }
+
+    fn get_bool(&self, m: &MessageOptions) -> bool {
+        m.get_message_set_wire_format()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct MessageOptions_no_standard_descriptor_accessor_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MessageOptions> for MessageOptions_no_standard_descriptor_accessor_acc {
+    fn name(&self) -> &'static str {
+        "no_standard_descriptor_accessor"
+    }
+
+    fn has_field(&self, m: &MessageOptions) -> bool {
+        m.has_no_standard_descriptor_accessor()
+    }
+
+    fn get_bool(&self, m: &MessageOptions) -> bool {
+        m.get_no_standard_descriptor_accessor()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct MessageOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MessageOptions> for MessageOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &MessageOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a MessageOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct FieldOptions {
     ctype: Option<FieldOptions_CType>,
     packed: Option<bool>,
@@ -4159,6 +5476,32 @@ impl ::protobuf::Message for FieldOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<FieldOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FieldOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_ctype_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_packed_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_lazy_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_deprecated_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_experimental_map_key_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_weak_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static FieldOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<FieldOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<FieldOptions>(
+                    "FieldOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FieldOptions>()
+    }
 }
 
 impl ::protobuf::Clear for FieldOptions {
@@ -4170,6 +5513,134 @@ impl ::protobuf::Clear for FieldOptions {
         self.clear_experimental_map_key();
         self.clear_weak();
         self.clear_uninterpreted_option();
+    }
+}
+
+impl ::std::fmt::Show for FieldOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_ctype_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_ctype_acc {
+    fn name(&self) -> &'static str {
+        "ctype"
+    }
+
+    fn has_field(&self, m: &FieldOptions) -> bool {
+        m.has_ctype()
+    }
+
+    fn get_enum<'a>(&self, m: &FieldOptions) -> &'static ::protobuf::reflect::EnumValueDescriptor {
+        use protobuf::{ProtobufEnum};
+        m.get_ctype().descriptor()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_packed_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_packed_acc {
+    fn name(&self) -> &'static str {
+        "packed"
+    }
+
+    fn has_field(&self, m: &FieldOptions) -> bool {
+        m.has_packed()
+    }
+
+    fn get_bool(&self, m: &FieldOptions) -> bool {
+        m.get_packed()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_lazy_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_lazy_acc {
+    fn name(&self) -> &'static str {
+        "lazy"
+    }
+
+    fn has_field(&self, m: &FieldOptions) -> bool {
+        m.has_lazy()
+    }
+
+    fn get_bool(&self, m: &FieldOptions) -> bool {
+        m.get_lazy()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_deprecated_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_deprecated_acc {
+    fn name(&self) -> &'static str {
+        "deprecated"
+    }
+
+    fn has_field(&self, m: &FieldOptions) -> bool {
+        m.has_deprecated()
+    }
+
+    fn get_bool(&self, m: &FieldOptions) -> bool {
+        m.get_deprecated()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_experimental_map_key_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_experimental_map_key_acc {
+    fn name(&self) -> &'static str {
+        "experimental_map_key"
+    }
+
+    fn has_field(&self, m: &FieldOptions) -> bool {
+        m.has_experimental_map_key()
+    }
+
+    fn get_str<'a>(&self, m: &'a FieldOptions) -> &'a str {
+        m.get_experimental_map_key()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_weak_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_weak_acc {
+    fn name(&self) -> &'static str {
+        "weak"
+    }
+
+    fn has_field(&self, m: &FieldOptions) -> bool {
+        m.has_weak()
+    }
+
+    fn get_bool(&self, m: &FieldOptions) -> bool {
+        m.get_weak()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct FieldOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &FieldOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a FieldOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
     }
 }
 
@@ -4195,9 +5666,18 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     fn value(&self) -> i32 {
         *self as i32
     }
+
+    fn enum_descriptor_static(_: Option<FieldOptions_CType>) -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("FieldOptions_CType", file_descriptor_proto())
+            })
+        }
+    }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,Eq,Default)]
 pub struct EnumOptions {
     allow_alias: Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
@@ -4362,6 +5842,27 @@ impl ::protobuf::Message for EnumOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<EnumOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumOptions_allow_alias_acc as &::protobuf::reflect::FieldAccessor<EnumOptions>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<EnumOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<EnumOptions>(
+                    "EnumOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumOptions>()
+    }
 }
 
 impl ::protobuf::Clear for EnumOptions {
@@ -4371,7 +5872,49 @@ impl ::protobuf::Clear for EnumOptions {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for EnumOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct EnumOptions_allow_alias_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumOptions> for EnumOptions_allow_alias_acc {
+    fn name(&self) -> &'static str {
+        "allow_alias"
+    }
+
+    fn has_field(&self, m: &EnumOptions) -> bool {
+        m.has_allow_alias()
+    }
+
+    fn get_bool(&self, m: &EnumOptions) -> bool {
+        m.get_allow_alias()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct EnumOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumOptions> for EnumOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &EnumOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a EnumOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -4494,6 +6037,26 @@ impl ::protobuf::Message for EnumValueOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<EnumValueOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumValueOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static EnumValueOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<EnumValueOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<EnumValueOptions>(
+                    "EnumValueOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumValueOptions>()
+    }
 }
 
 impl ::protobuf::Clear for EnumValueOptions {
@@ -4502,7 +6065,32 @@ impl ::protobuf::Clear for EnumValueOptions {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for EnumValueOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct EnumValueOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<EnumValueOptions> for EnumValueOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &EnumValueOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a EnumValueOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -4625,6 +6213,26 @@ impl ::protobuf::Message for ServiceOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<ServiceOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<ServiceOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static ServiceOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<ServiceOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<ServiceOptions>(
+                    "ServiceOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<ServiceOptions>()
+    }
 }
 
 impl ::protobuf::Clear for ServiceOptions {
@@ -4633,7 +6241,32 @@ impl ::protobuf::Clear for ServiceOptions {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for ServiceOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct ServiceOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<ServiceOptions> for ServiceOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &ServiceOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a ServiceOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct MethodOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -4756,6 +6389,26 @@ impl ::protobuf::Message for MethodOptions {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<MethodOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MethodOptions>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static MethodOptions_uninterpreted_option_acc as &::protobuf::reflect::FieldAccessor<MethodOptions>) });
+                ::protobuf::reflect::MessageDescriptor::new::<MethodOptions>(
+                    "MethodOptions",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<MethodOptions>()
+    }
 }
 
 impl ::protobuf::Clear for MethodOptions {
@@ -4764,7 +6417,32 @@ impl ::protobuf::Clear for MethodOptions {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for MethodOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct MethodOptions_uninterpreted_option_acc;
+
+impl ::protobuf::reflect::FieldAccessor<MethodOptions> for MethodOptions_uninterpreted_option_acc {
+    fn name(&self) -> &'static str {
+        "uninterpreted_option"
+    }
+
+    fn len_field(&self, m: &MethodOptions) -> uint {
+        m.get_uninterpreted_option().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a MethodOptions, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_uninterpreted_option()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct UninterpretedOption {
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: Option<StrBuf>,
@@ -5148,6 +6826,32 @@ impl ::protobuf::Message for UninterpretedOption {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<UninterpretedOption>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<UninterpretedOption>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_name_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_identifier_value_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_positive_int_value_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_negative_int_value_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_double_value_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_string_value_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_aggregate_value_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
+                ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption>(
+                    "UninterpretedOption",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<UninterpretedOption>()
+    }
 }
 
 impl ::protobuf::Clear for UninterpretedOption {
@@ -5162,7 +6866,134 @@ impl ::protobuf::Clear for UninterpretedOption {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for UninterpretedOption {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_name_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_name_acc {
+    fn name(&self) -> &'static str {
+        "name"
+    }
+
+    fn len_field(&self, m: &UninterpretedOption) -> uint {
+        m.get_name().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a UninterpretedOption, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_name()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_identifier_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_identifier_value_acc {
+    fn name(&self) -> &'static str {
+        "identifier_value"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption) -> bool {
+        m.has_identifier_value()
+    }
+
+    fn get_str<'a>(&self, m: &'a UninterpretedOption) -> &'a str {
+        m.get_identifier_value()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_positive_int_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_positive_int_value_acc {
+    fn name(&self) -> &'static str {
+        "positive_int_value"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption) -> bool {
+        m.has_positive_int_value()
+    }
+
+    fn get_u64(&self, m: &UninterpretedOption) -> u64 {
+        m.get_positive_int_value()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_negative_int_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_negative_int_value_acc {
+    fn name(&self) -> &'static str {
+        "negative_int_value"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption) -> bool {
+        m.has_negative_int_value()
+    }
+
+    fn get_i64(&self, m: &UninterpretedOption) -> i64 {
+        m.get_negative_int_value()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_double_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_double_value_acc {
+    fn name(&self) -> &'static str {
+        "double_value"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption) -> bool {
+        m.has_double_value()
+    }
+
+    fn get_f64(&self, m: &UninterpretedOption) -> f64 {
+        m.get_double_value()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_string_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_string_value_acc {
+    fn name(&self) -> &'static str {
+        "string_value"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption) -> bool {
+        m.has_string_value()
+    }
+
+    fn get_bytes<'a>(&self, m: &'a UninterpretedOption) -> &'a [u8] {
+        m.get_string_value()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_aggregate_value_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOption_aggregate_value_acc {
+    fn name(&self) -> &'static str {
+        "aggregate_value"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption) -> bool {
+        m.has_aggregate_value()
+    }
+
+    fn get_str<'a>(&self, m: &'a UninterpretedOption) -> &'a str {
+        m.get_aggregate_value()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct UninterpretedOption_NamePart {
     name_part: Option<StrBuf>,
     is_extension: Option<bool>,
@@ -5340,6 +7171,27 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<UninterpretedOption_NamePart>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_NamePart_name_part_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static UninterpretedOption_NamePart_is_extension_acc as &::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>) });
+                ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption_NamePart>(
+                    "UninterpretedOption_NamePart",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<UninterpretedOption_NamePart>()
+    }
 }
 
 impl ::protobuf::Clear for UninterpretedOption_NamePart {
@@ -5349,7 +7201,49 @@ impl ::protobuf::Clear for UninterpretedOption_NamePart {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for UninterpretedOption_NamePart {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_NamePart_name_part_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart> for UninterpretedOption_NamePart_name_part_acc {
+    fn name(&self) -> &'static str {
+        "name_part"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption_NamePart) -> bool {
+        m.has_name_part()
+    }
+
+    fn get_str<'a>(&self, m: &'a UninterpretedOption_NamePart) -> &'a str {
+        m.get_name_part()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct UninterpretedOption_NamePart_is_extension_acc;
+
+impl ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart> for UninterpretedOption_NamePart_is_extension_acc {
+    fn name(&self) -> &'static str {
+        "is_extension"
+    }
+
+    fn has_field(&self, m: &UninterpretedOption_NamePart) -> bool {
+        m.has_is_extension()
+    }
+
+    fn get_bool(&self, m: &UninterpretedOption_NamePart) -> bool {
+        m.get_is_extension()
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo {
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -5472,6 +7366,26 @@ impl ::protobuf::Message for SourceCodeInfo {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<SourceCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static SourceCodeInfo_location_acc as &::protobuf::reflect::FieldAccessor<SourceCodeInfo>) });
+                ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo>(
+                    "SourceCodeInfo",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<SourceCodeInfo>()
+    }
 }
 
 impl ::protobuf::Clear for SourceCodeInfo {
@@ -5480,7 +7394,32 @@ impl ::protobuf::Clear for SourceCodeInfo {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+impl ::std::fmt::Show for SourceCodeInfo {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct SourceCodeInfo_location_acc;
+
+impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo> for SourceCodeInfo_location_acc {
+    fn name(&self) -> &'static str {
+        "location"
+    }
+
+    fn len_field(&self, m: &SourceCodeInfo) -> uint {
+        m.get_location().len()
+    }
+
+    fn get_rep_message_item<'a>(&self, m: &'a SourceCodeInfo, index: uint) -> &'a ::protobuf::Message {
+        &'a m.get_location()[index] as &'a ::protobuf::Message
+    }
+}
+
+#[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo_Location {
     path: Vec<i32>,
     span: Vec<i32>,
@@ -5749,6 +7688,29 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
+
+    #[allow(unused_unsafe)]
+    fn descriptor_static(_: Option<SourceCodeInfo_Location>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>> = Vec::new();
+                fields.push(unsafe { ::std::cast::transmute(&'static SourceCodeInfo_Location_path_acc as &::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static SourceCodeInfo_Location_span_acc as &::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static SourceCodeInfo_Location_leading_comments_acc as &::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });
+                fields.push(unsafe { ::std::cast::transmute(&'static SourceCodeInfo_Location_trailing_comments_acc as &::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });
+                ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo_Location>(
+                    "SourceCodeInfo_Location",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<SourceCodeInfo_Location>()
+    }
 }
 
 impl ::protobuf::Clear for SourceCodeInfo_Location {
@@ -5757,5 +7719,81 @@ impl ::protobuf::Clear for SourceCodeInfo_Location {
         self.clear_span();
         self.clear_leading_comments();
         self.clear_trailing_comments();
+    }
+}
+
+impl ::std::fmt::Show for SourceCodeInfo_Location {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        use protobuf::{Message};
+        self.fmt_impl(f)
+    }
+}
+
+
+#[allow(non_camel_case_types)]
+struct SourceCodeInfo_Location_path_acc;
+
+impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location> for SourceCodeInfo_Location_path_acc {
+    fn name(&self) -> &'static str {
+        "path"
+    }
+
+    fn len_field(&self, m: &SourceCodeInfo_Location) -> uint {
+        m.get_path().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a SourceCodeInfo_Location) -> &'a [i32] {
+        m.get_path()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct SourceCodeInfo_Location_span_acc;
+
+impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location> for SourceCodeInfo_Location_span_acc {
+    fn name(&self) -> &'static str {
+        "span"
+    }
+
+    fn len_field(&self, m: &SourceCodeInfo_Location) -> uint {
+        m.get_span().len()
+    }
+
+    fn get_rep_i32<'a>(&self, m: &'a SourceCodeInfo_Location) -> &'a [i32] {
+        m.get_span()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct SourceCodeInfo_Location_leading_comments_acc;
+
+impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location> for SourceCodeInfo_Location_leading_comments_acc {
+    fn name(&self) -> &'static str {
+        "leading_comments"
+    }
+
+    fn has_field(&self, m: &SourceCodeInfo_Location) -> bool {
+        m.has_leading_comments()
+    }
+
+    fn get_str<'a>(&self, m: &'a SourceCodeInfo_Location) -> &'a str {
+        m.get_leading_comments()
+    }
+}
+
+#[allow(non_camel_case_types)]
+struct SourceCodeInfo_Location_trailing_comments_acc;
+
+impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location> for SourceCodeInfo_Location_trailing_comments_acc {
+    fn name(&self) -> &'static str {
+        "trailing_comments"
+    }
+
+    fn has_field(&self, m: &SourceCodeInfo_Location) -> bool {
+        m.has_trailing_comments()
+    }
+
+    fn get_str<'a>(&self, m: &'a SourceCodeInfo_Location) -> &'a str {
+        m.get_trailing_comments()
     }
 }

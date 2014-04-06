@@ -8,6 +8,7 @@
 
 extern crate collections;
 extern crate sync;
+extern crate collections;
 
 pub use core::*;
 pub use unknown::UnknownFields;
@@ -28,12 +29,15 @@ pub mod codegen;
 pub mod repeated;
 pub mod singular;
 pub mod clear;
+pub mod reflect;
+pub mod text_format;
 mod misc;
 mod zigzag;
 mod hex;
 mod paginate;
 mod unknown;
 mod strx;
+mod descriptorx;
 
 #[cfg(test)]
 mod shrug;
@@ -41,11 +45,14 @@ mod shrug;
 mod test_root;
 #[cfg(test)]
 mod test;
+#[cfg(test)]
+mod text_format_test_data;
 
 // so `use protobuf::*` could work in descriptor mod
 pub mod protobuf {
     pub use descriptor;
     pub use codegen;
+    pub use reflect;
     pub use core::*;
     pub use rt;
     pub use lazy;

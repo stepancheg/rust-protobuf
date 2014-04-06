@@ -1,6 +1,7 @@
 use core::*;
 use hex::*;
 use descriptor;
+use reflect;
 
 use shrug::*;
 
@@ -196,4 +197,26 @@ fn test_file_descriptor_proto() {
 fn test_default_instance() {
     let d = TestDefaultInstance::new();
     assert_eq!("", d.get_field().get_s());
+}
+
+#[test]
+fn test_message_descriptor() {
+    assert_eq!("TestDescriptor", TestDescriptor::new().descriptor().name());
+
+    let d = reflect::MessageDescriptor::for_type::<TestDescriptor>();
+    assert_eq!("TestDescriptor", d.name());
+
+    let mut t = TestDescriptor::new();
+    t.set_stuff(55);
+
+    let field = d.field_by_name("stuff");
+    assert_eq!(55, field.get_i32(&t));
+}
+
+#[test]
+fn test_enum_descriptor() {
+    let d = RED.enum_descriptor();
+    assert_eq!("TestEnumDescriptor", d.name());
+    assert_eq!("TestEnumDescriptor", reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name());
+    assert_eq!("GREEN", d.value_by_name("GREEN").name());
 }
