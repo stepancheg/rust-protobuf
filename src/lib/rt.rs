@@ -60,6 +60,18 @@ impl ProtobufNum for bool {
     }
 }
 
+impl ProtobufNum for f32 {
+    fn len_varint(&self) -> u32 {
+        fail!("always fixed");
+    }
+}
+
+impl ProtobufNum for f64 {
+    fn len_varint(&self) -> u32 {
+        fail!("always fixed");
+    }
+}
+
 /* Commented out due to https://github.com/mozilla/rust/issues/8075
 impl<E:ProtobufEnum> ProtobufNum for E {
     fn len_varint(&self) -> u32 {
@@ -155,4 +167,16 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
         }
     }
     r
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use wire_format;
+
+    #[test]
+    fn test_vec_packed_data_size() {
+        let vec: ~[i32] = ~[1, -1];
+        assert_eq!(11, vec_packed_data_size(vec.as_slice(), wire_format::WireTypeVarint));
+    }
 }

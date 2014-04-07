@@ -19,8 +19,8 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         TYPE_SINT64   => "i64",
         TYPE_FIXED32  => "u32",
         TYPE_FIXED64  => "u64",
-        TYPE_SFIXED32 => "s32",
-        TYPE_SFIXED64 => "s64",
+        TYPE_SFIXED32 => "i32",
+        TYPE_SFIXED64 => "i64",
         TYPE_BOOL     => "bool",
         TYPE_STRING   => "~str",
         TYPE_BYTES    => "~[u8]",
@@ -636,6 +636,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                         RepeatPacked => {
                             w.if_stmt(format!("!{:s}.is_empty()", w.self_field()), |w| {
                                 w.write_line(format!("os.write_tag({:d}, wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
+                                // TODO: do not call vec_packed_data_size for fixed-length wire type
                                 w.write_line(format!("os.write_raw_varint32(rt::vec_packed_data_size({:s}, wire_format::{:?}));", w.self_field(), field_type_wire_type(field.field_type)));
                                 w.for_stmt(format!("{:s}.iter()", w.self_field()), "v", |w| {
                                     w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
@@ -820,7 +821,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
                                 Some(s) => {
                                     if field.repeated {
                                         w.write_line(format!(
-                                                "my_size += {:d} * {:s}.len();",
+                                                "my_size += {:d} * {:s}.len() as u32;",
                                                 (s + rt::tag_size(field.number)) as int,
                                                 w.self_field()));
                                     } else {

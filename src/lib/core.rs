@@ -43,7 +43,7 @@ pub mod wire_format {
                 3 => WireTypeStartGroup,
                 4 => WireTypeEndGroup,
                 5 => WireTypeFixed32,
-                _ => fail!("unknown wire type")
+                _ => fail!("unknown wire type: {}", n)
             }
         }
     }
@@ -556,7 +556,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_int32_no_tag(&mut self, value: i32) {
-        self.write_raw_varint32(value as u32);
+        self.write_raw_varint64(value as u64);
     }
 
     pub fn write_sint64_no_tag(&mut self, value: i64) {

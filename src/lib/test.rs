@@ -10,6 +10,12 @@ fn test_serialize_deserialize_length_delimited<M : Message>(msg: &M) {
     assert!(*msg == parsed);
 }
 
+fn test_serialize_deserialize_no_hex<M : Message>(msg: &M) {
+    let serialized_bytes = msg.write_to_bytes();
+    let parsed = parse_from_bytes::<M>(serialized_bytes);
+    assert!(*msg == parsed);
+}
+
 fn test_serialize_deserialize<M : Message>(hex: &str, msg: &M) {
     let expected_bytes = decode_hex(hex);
     let expected_hex = encode_hex(expected_bytes);
@@ -114,6 +120,70 @@ fn test_unknown_fields_fixed32() {
     message.mut_unknown_fields().add_fixed32(4, 0x01020304);
     message.mut_unknown_fields().add_fixed32(4, 0xA1A2A3A4);
     test_serialize_deserialize("08 96 01 25 04 03 02 01 25 A4 A3 A2 A1", &message);
+}
+
+#[test]
+fn test_types_singular() {
+    let mut message = TestTypesSingular::new();
+    message.set_double_field(19f64);
+    message.set_float_field(20f32);
+    message.set_int32_field(21);
+    message.set_int64_field(-22);
+    message.set_uint32_field(23);
+    message.set_uint64_field(24);
+    message.set_sint32_field(-25);
+    message.set_sint64_field(26);
+    message.set_fixed32_field(27);
+    message.set_fixed64_field(28);
+    message.set_sfixed32_field(-29);
+    message.set_sfixed64_field(30);
+    message.set_bool_field(true);
+    message.set_string_field(~"thirty two");
+    message.set_bytes_field(~[33, 34]);
+    test_serialize_deserialize_no_hex(&message);
+}
+
+#[test]
+fn test_types_repeated() {
+    let mut message = TestTypesRepeated::new();
+    message.set_double_field(~[19f64, 20f64]);
+    message.set_float_field(~[20f32]);
+    message.set_int32_field(~[21, -22, 23]);
+    message.set_int64_field(~[22]);
+    message.set_uint32_field(~[23, 24]);
+    message.set_uint64_field(~[24]);
+    message.set_sint32_field(~[25]);
+    message.set_sint64_field(~[26, -27]);
+    message.set_fixed32_field(~[27]);
+    message.set_fixed64_field(~[28]);
+    message.set_sfixed32_field(~[29, -30]);
+    message.set_sfixed64_field(~[30]);
+    message.set_bool_field(~[true, true]);
+    message.set_string_field(~[~"thirty two", ~"thirty three"]);
+    message.set_bytes_field(~[~[33, 34], ~[35]]);
+    test_serialize_deserialize_no_hex(&message);
+}
+
+#[test]
+fn test_types_repeated_packed() {
+    let mut message = TestTypesRepeatedPacked::new();
+    message.set_double_field(~[19f64, 20f64]);
+    message.set_float_field(~[20f32]);
+    message.set_int32_field(~[21, -22, 23]);
+    message.set_int64_field(~[22]);
+    message.set_uint32_field(~[23, 24]);
+    message.set_uint64_field(~[24]);
+    // TODO
+    //message.set_sint32_field(~[-25, 26]);
+    //message.set_sint64_field(~[26]);
+    message.set_fixed32_field(~[27]);
+    message.set_fixed64_field(~[28]);
+    message.set_sfixed32_field(~[29, -30]);
+    message.set_sfixed64_field(~[30]);
+    message.set_bool_field(~[true, true]);
+    message.set_string_field(~[~"thirty two", ~"thirty three"]);
+    message.set_bytes_field(~[~[33, 34], ~[35]]);
+    test_serialize_deserialize_no_hex(&message);
 }
 
 #[test]
