@@ -1,9 +1,13 @@
 #!/bin/sh -ex
 
+# Build protoc-gen-rust
 ./rebuild.sh
+# Generate from descriptor.proto
 ./regenerate.sh
+# Build again with regenerated descriptor.proto
 ./rebuild.sh
-rustc --test lib/protobuf.rs -o test
+
+./build-test.sh
 ./test
 
 # vim: set ts=4 sw=4 et:

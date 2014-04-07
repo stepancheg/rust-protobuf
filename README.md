@@ -79,9 +79,6 @@ mod foo; // add generated file to the project
 
 Have a look at generated files, used internally in rust-protobuf:
 
-* [shrug.rs](https://github.com/stepancheg/rust-protobuf/blob/master/src/lib/shrug.rs)
-  for [shrug.proto](https://github.com/stepancheg/rust-protobuf/blob/master/src/proto/shrug.proto)
-  (used by rust-protobuf tests)
 * [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/src/lib/descriptor.rs)
   for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/src/proto/google/protobuf/descriptor.proto)
   (that is part of Google protobuf)
