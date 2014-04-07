@@ -84,7 +84,7 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
 
 fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> ~str {
     if field.has_type_name() {
-        let current_pkg_prefix = "." + pkg + ".";
+        let current_pkg_prefix = if pkg.is_empty() { ~"." } else { "." + pkg + "." };
         if field.get_type_name().starts_with(current_pkg_prefix) {
             remove_prefix(field.get_type_name(), current_pkg_prefix).to_owned()
         } else {

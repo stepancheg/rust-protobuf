@@ -33,6 +33,8 @@ mod unknown;
 #[cfg(test)]
 mod shrug;
 #[cfg(test)]
+mod test_root;
+#[cfg(test)]
 mod test;
 
 // so `use protobuf::*` could work in descriptor mod
