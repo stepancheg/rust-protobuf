@@ -814,7 +814,7 @@ mod test {
     fn test_read(hex: &str, callback: |&mut CodedInputStream|) {
         let d = decode_hex(hex);
         let len = d.len();
-        let mut reader = MemReader::new(d);
+        let mut reader = MemReader::new(Vec::from_slice(d.as_slice()));
         let mut is = CodedInputStream::new(&mut reader as &mut Reader);
         assert_eq!(0, is.pos());
         callback(&mut is);
