@@ -6,6 +6,7 @@ use misc::*;
 use core::*;
 use rt;
 use paginate::PaginatableIterator;
+use strx::*;
 
 fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
     match field_type {
@@ -947,28 +948,6 @@ fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProt
         });
     });
 }
-
-fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
-    match s.rfind(c) {
-        Some(pos) => s.slice_from(pos + 1),
-        None => s
-    }
-}
-
-fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
-    if !s.ends_with(suffix) {
-        fail!();
-    }
-    s.slice_to(s.len() - suffix.len())
-}
-
-fn remove_prefix<'s>(s: &'s str, prefix: &str) -> &'s str {
-    if !s.starts_with(prefix) {
-        fail!();
-    }
-    s.slice_from(prefix.len())
-}
-
 
 fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
     remove_suffix(remove_to(path, '/'), ".proto")

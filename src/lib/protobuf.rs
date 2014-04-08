@@ -29,6 +29,7 @@ mod zigzag;
 mod hex;
 mod paginate;
 mod unknown;
+mod strx;
 
 #[cfg(test)]
 mod shrug;
