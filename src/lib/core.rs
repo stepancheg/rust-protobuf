@@ -435,6 +435,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 pub struct CodedOutputStream<'a> {
     buffer: ~[u8],
+    // within buffer
     position: u32,
     writer: Option<&'a mut Writer>,
 }

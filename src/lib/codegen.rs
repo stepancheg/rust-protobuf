@@ -160,6 +160,17 @@ impl Field {
             false => format!("Option<{:s}>", self.type_name),
         }
     }
+
+    fn is_fixed(&self) -> bool {
+        field_type_size(self.field_type).is_some()
+    }
+
+    fn is_zigzag(&self) -> bool {
+        match self.field_type {
+            TYPE_SINT32 | TYPE_SINT64 => true,
+            _ => false,
+        }
+    }
 }
 
 #[deriving(Clone)]
@@ -290,6 +301,11 @@ impl<'a> IndentWriter<'a> {
         format!("{:s}.is_some()", self.self_field())
     }
 
+    fn self_field_is_not_empty(&self) -> ~str {
+        assert!(self.field().repeated);
+        format!("!{:s}.is_empty()", self.self_field())
+    }
+
     fn self_field_is_none(&self) -> ~str {
         assert!(!self.field().repeated);
         format!("{:s}.is_none()", self.self_field())
@@ -299,8 +315,16 @@ impl<'a> IndentWriter<'a> {
         self.if_stmt(self.self_field_is_some(), cb);
     }
 
+    fn if_self_field_is_not_empty(&self, cb: |&mut IndentWriter|) {
+        self.if_stmt(self.self_field_is_not_empty(), cb);
+    }
+
     fn if_self_field_is_none(&self, cb: |&mut IndentWriter|) {
         self.if_stmt(self.self_field_is_none(), cb);
+    }
+
+    fn for_self_field(&mut self, varn: &str, cb: |&mut IndentWriter|) {
+        self.for_stmt(format!("{}.iter()", self.self_field()), varn, cb);
     }
 
     fn self_field_assign(&self, value: &str) {
@@ -320,6 +344,58 @@ impl<'a> IndentWriter<'a> {
     fn self_field_push(&self, value: &str) {
         assert!(self.field().repeated);
         self.write_line(format!("{:s}.push({:s});", self.self_field(), value));
+    }
+
+    fn self_field_tag_size(&self) -> u32 {
+        rt::tag_size(self.field().number)
+    }
+
+    fn self_field_vec_packed_fixed_data_size(&self) -> ~str {
+        assert!(self.field().is_fixed());
+        format!("({}.len() * {}) as u32",
+            self.self_field(), field_type_size(self.field().field_type).unwrap())
+    }
+
+    fn self_field_vec_packed_varint_data_size(&self) -> ~str {
+        assert!(!self.field().is_fixed());
+        let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
+        format!("rt::vec_packed_varint{}_data_size({:s})",
+            zigzag_suffix, self.self_field())
+    }
+
+    fn self_field_vec_packed_data_size(&self) -> ~str {
+        assert!(self.field().repeated);
+        if self.field().is_fixed() {
+            self.self_field_vec_packed_fixed_data_size()
+        } else {
+            self.self_field_vec_packed_varint_data_size()
+        }
+    }
+
+    fn self_field_vec_packed_fixed_size(&self) -> ~str {
+        // zero is filtered outside
+        format!("{} + rt::compute_raw_varint32_size({}.len() as u32) + {}",
+            self.self_field_tag_size(),
+            self.self_field(),
+            self.self_field_vec_packed_fixed_data_size())
+    }
+
+    fn self_field_vec_packed_varint_size(&self) -> ~str {
+        // zero is filtered outside
+        assert!(!self.field().is_fixed());
+        let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
+        format!("rt::vec_packed_varint{}_size({:u}, {:s})",
+            zigzag_suffix, self.field().number, self.self_field())
+    }
+
+    fn self_field_vec_packed_size(&mut self) -> ~str {
+        assert!(self.field.unwrap().packed);
+        // zero is filtered outside
+        if self.field.unwrap().is_fixed() {
+            self.self_field_vec_packed_fixed_size()
+        } else {
+            self.self_field_vec_packed_varint_size()
+        }
     }
 
     fn field_default(&self) {
@@ -429,6 +505,11 @@ impl<'a> IndentWriter<'a> {
         self.fail("TODO");
     }
 
+    fn deriving(&mut self, deriving: &[&str]) {
+        let v: ~[~str] = deriving.iter().map(|&s| s.to_owned()).collect();
+        self.write_line(format!("\\#[deriving({})]", v.connect(",")));
+    }
+
     fn comment(&self, comment: &str) {
         if comment.is_empty() {
             self.write_line("//");
@@ -484,7 +565,6 @@ impl<'a> IndentWriter<'a> {
             self.self_field_assign_none();
         }
     }
-
 }
 
 fn write_merge_from_field(w: &mut IndentWriter) {
@@ -545,368 +625,407 @@ fn write_merge_from_field(w: &mut IndentWriter) {
     };
 }
 
+fn write_message_struct(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.deriving(["Clone,Eq,Default"]);
+    w.pub_struct(msg.type_name, |w| {
+        w.fields(|w| {
+            let field = w.field.unwrap();
+            if !field.type_name.contains_char('.') {
+                w.field_entry(field.name, field.full_type());
+            }
+        });
+        w.field_entry("unknown_fields", "Option<~UnknownFields>");
+    });
+}
+
+fn write_message_compute_sizes(w: &mut IndentWriter) {
+    // Append sizes of messages in the tree to the specified vector.
+    // First appended element is size of self, and then nested message sizes.
+    // in serialization order are appended recursively.");
+    w.comment("Compute sizes of nested messages");
+    w.def_fn("compute_sizes(&self, sizes: &mut ~[u32]) -> u32", |w| {
+        w.write_line("let pos = sizes.len();");
+        w.write_line("sizes.push(0);");
+        w.write_line("let mut my_size = 0;");
+        w.fields(|w| {
+            let field = w.field();
+            match field.repeat_mode {
+                Single | RepeatRegular => {
+                    match field_type_size(field.field_type) {
+                        Some(s) => {
+                            if field.repeated {
+                                w.write_line(format!(
+                                        "my_size += {:d} * {:s}.len() as u32;",
+                                        (s + w.self_field_tag_size()) as int,
+                                        w.self_field()));
+                            } else {
+                                w.if_self_field_is_some(|w| {
+                                    w.write_line(format!(
+                                            "my_size += {:d};",
+                                            (s + w.self_field_tag_size()) as int));
+                                });
+                            }
+                        },
+                        None => {
+                            w.for_self_field("value", |w| {
+                                match field.field_type {
+                                    TYPE_MESSAGE => {
+                                        w.write_line("let len = value.compute_sizes(sizes);");
+                                        w.write_line(format!(
+                                                "my_size += {:u} + rt::compute_raw_varint32_size(len) + len;",
+                                                w.self_field_tag_size() as uint));
+                                    },
+                                    TYPE_BYTES | TYPE_STRING => {
+                                        let pn = protobuf_name(field.field_type);
+                                        w.write_line(format!(
+                                                "my_size += rt::{:s}_size({:d}, *value);",
+                                                pn,
+                                                field.number as int));
+                                    },
+                                    TYPE_ENUM => {
+                                        w.write_line(format!(
+                                                "my_size += rt::enum_size({:d}, *value);",
+                                                field.number as int));
+                                    },
+                                    _ => {
+                                        w.write_line(format!(
+                                                "my_size += rt::value_size({:d}, *value, wire_format::{:?});",
+                                                field.number as int, field.wire_type));
+                                    },
+                                }
+                            });
+                        },
+                    };
+                },
+                RepeatPacked => {
+                    w.if_self_field_is_not_empty(|w| {
+                        let size_expr = w.self_field_vec_packed_size();
+                        w.write_line(format!("my_size += {};", size_expr));
+                    });
+                },
+            };
+        });
+        w.write_line("my_size += rt::unknown_fields_size(self.get_unknown_fields());");
+        w.write_line("sizes[pos] = my_size;");
+        w.comment("value is returned for convenience");
+        w.write_line("my_size");
+    });
+}
+
+fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    if !msg.has_any_message_field() {
+        // `sizes` and `sizes_pos` are unused
+        w.write_line("#[allow(unused_variable)]");
+    }
+    w.pub_fn("write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
+        w.fields(|w| {
+            let field = w.field();
+            let field_type = field.field_type;
+            let write_method_suffix = match field_type {
+                TYPE_MESSAGE => "message",
+                TYPE_ENUM => "enum",
+                t => protobuf_name(t),
+            };
+            let field_number = field.proto_field.get_number();
+            let vv = match field.field_type {
+                TYPE_MESSAGE => "v", // TODO: as &Message
+                TYPE_ENUM => "*v as i32",
+                _ => "*v",
+            };
+            let write_value_lines = match field.field_type {
+                TYPE_MESSAGE => ~[
+                    format!("os.write_tag({:d}, wire_format::{:?});",
+                            field_number as int, wire_format::WireTypeLengthDelimited),
+                    format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
+                    format!("*sizes_pos += 1;"),
+                    format!("v.write_to_with_computed_sizes(os, sizes, sizes_pos);"),
+                ],
+                _ => ~[
+                    format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
+                ],
+            };
+            match field.repeat_mode {
+                Single => {
+                    w.match_block(w.self_field(), |w| {
+                        w.case_block("Some(ref v)", |w| {
+                            w.write_lines(write_value_lines);
+                        });
+                        w.case_expr("None", "{}");
+                    });
+                },
+                RepeatPacked => {
+                    w.if_self_field_is_not_empty(|w| {
+                        w.write_line(format!("os.write_tag({:d}, wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
+                        let data_size_expr = w.self_field_vec_packed_data_size();
+                        w.write_line(format!("os.write_raw_varint32({});", data_size_expr));
+                        w.for_self_field("v", |w| {
+                            w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
+                        });
+                    });
+                },
+                RepeatRegular => {
+                    w.for_self_field("v", |w| {
+                        w.write_lines(write_value_lines);
+                    });
+                },
+            };
+        });
+        w.write_line("os.write_unknown_fields(self.get_unknown_fields());");
+    });
+}
+
+fn write_message_default_instance(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
+        fn write_body(w: &mut IndentWriter) {
+            let msg = w.msg.get_ref();
+            w.stmt_block(format!("static instance: {:s} = {:s}", msg.type_name, msg.type_name), |w| {
+                w.fields(|w| {
+                    w.field_default();
+                });
+                w.field_entry("unknown_fields", "None");
+            });
+            w.write_line("&'static instance");
+        }
+        if msg.has_any_repeated_field() {
+            w.commented(|w| {
+                w.comment("doesn't work, because rust doen't implement \
+                        static constants of types like ~str");
+                w.comment("https://github.com/mozilla/rust/issues/8406");
+                write_body(w);
+            });
+            w.todo();
+        } else {
+            write_body(w)
+        }
+    });
+}
+
+fn write_message_field_accessors(w: &mut IndentWriter) {
+    w.fields(|w| {
+        w.write_line("");
+        w.pub_fn(format!("{:s}(&mut self)", w.clear_field_func()), |w| {
+            w.clear_field();
+        });
+
+        if !w.field().repeated {
+            w.write_line("");
+            w.pub_fn(format!("has_{:s}(&self) -> bool", w.field().name), |w| {
+                w.write_line(w.self_field_is_some());
+            });
+        }
+
+        let set_param_type = if w.field().repeated {
+            w.field().full_type()
+        } else {
+            w.field().type_name.to_owned()
+        };
+
+        w.write_line("");
+        w.comment("Param is passed by value, moved");
+        w.pub_fn(format!("set_{:s}(&mut self, v: {:s})", w.field().name, set_param_type), |w| {
+            if w.field().repeated {
+                w.self_field_assign("v");
+            } else {
+                w.self_field_assign_some("v");
+            }
+        });
+
+        w.write_line("");
+        w.comment("Mutable pointer to the field.");
+        if !w.field().repeated {
+            w.comment("If field is not initialized, it is initialized with default value first.");
+        }
+        w.pub_fn(format!("mut_{:s}(&'a mut self) -> &'a mut {:s}", w.field().name, set_param_type),
+        |w| {
+            if !w.field().repeated {
+                w.if_self_field_is_none(|w| {
+                    w.self_field_assign_some(w.field_type_default());
+                });
+                w.write_line(format!("{:s}.get_mut_ref()", w.self_field()));
+            } else {
+                w.write_line(format!("&mut {:s}", w.self_field()));
+            }
+        });
+
+        w.write_line("");
+        let return_reference = w.field().repeated || match w.field().field_type {
+            TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => true,
+            _ => false,
+        };
+        let get_xxx_return_type = match w.field().repeated {
+            true => format!("&'a [{:s}]", w.field().type_name),
+            false => match return_reference {
+                true => {
+                    format!("&'a {:s}", match w.field().field_type {
+                        TYPE_BYTES  => ~"[u8]",
+                        TYPE_STRING => ~"str",
+                        _ => set_param_type,
+                    })
+                }
+                false => set_param_type.to_owned(),
+            }
+        };
+        let self_param = match return_reference {
+            true  => "&'a self",
+            false => "&self",
+        };
+        w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type),
+        |w| {
+            if !w.field().repeated {
+                if return_reference {
+                    w.match_expr(w.self_field(), |w| {
+                        w.case_expr(
+                            "Some(ref v)",
+                            match w.field().field_type {
+                                TYPE_STRING | TYPE_BYTES => "v.as_slice()",
+                                _ => "v",
+                            }
+                        );
+                        w.case_expr(
+                            "None",
+                            match w.field().field_type {
+                                TYPE_MESSAGE => format!("{:s}::default_instance()", w.field().type_name),
+                                TYPE_BYTES   => ~"&'a []",
+                                TYPE_STRING  => ~"&'a \"\"",
+                                _            => fail!(),
+                            }
+                        );
+                    });
+                } else {
+                    w.write_line(format!(
+                            "{:s}.unwrap_or_else(|| {:s})",
+                            w.self_field(), w.field_type_default()));
+                }
+            } else {
+                w.write_line(format!("{:s}.as_slice()", w.self_field()));
+            }
+        });
+
+        if w.field().repeated {
+            w.write_line("");
+            w.pub_fn(format!("add_{:s}(&mut self, v: {:s})",
+                    w.field().name, w.field().type_name),
+            |w| {
+                w.self_field_push("v");
+            });
+        }
+    });
+}
+
+fn write_message_impl_self(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.impl_self_block(msg.type_name, |w| {
+        w.pub_fn(format!("new() -> {:s}", msg.type_name), |w| {
+            w.write_line("Default::default()");
+        });
+
+        w.write_line("");
+        write_message_default_instance(w);
+        w.write_line("");
+        write_message_write_to_with_computed_sizes(w);
+        write_message_field_accessors(w);
+    });
+}
+
+fn write_message_clear(w: &mut IndentWriter) {
+    w.def_fn("clear(&mut self)", |w| {
+        w.fields(|w| {
+            w.write_line(format!("self.{:s}();", w.clear_field_func()));
+        });
+    });
+}
+
+fn write_message_unknown_fields(w: &mut IndentWriter) {
+    w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s UnknownFields", |w| {
+        w.write_line("if self.unknown_fields.is_some() {");
+        w.indented(|w| {
+            w.write_line("&**self.unknown_fields.get_ref()");
+        });
+        w.write_line("} else {");
+        w.indented(|w| {
+            w.write_line("UnknownFields::default_instance()");
+        });
+        w.write_line("}");
+    });
+    w.write_line("");
+    w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields", |w| {
+        w.write_line("if self.unknown_fields.is_none() {");
+        w.indented(|w| {
+            w.write_line("self.unknown_fields = Some(Default::default())");
+        });
+        w.write_line("}");
+        w.write_line("&mut **self.unknown_fields.get_mut_ref()");
+    });
+}
+
+fn write_message_merge_from(w: &mut IndentWriter) {
+    w.def_fn(format!("merge_from(&mut self, is: &mut CodedInputStream)"), |w| {
+        w.while_block("!is.eof()", |w| {
+            w.write_line(format!("let (field_number, wire_type) = is.read_tag_unpack();"));
+            w.match_block("field_number", |w| {
+                w.fields(|w| {
+                    w.case_block(w.field().number.to_str(), |w| {
+                        write_merge_from_field(w);
+                    });
+                });
+                w.case_block("_", |w| {
+                    w.write_line("let unknown = is.read_unknown(wire_type);");
+                    w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
+                });
+            });
+        });
+    });
+}
+
+fn write_message_impl_message(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.impl_for_block("Message", msg.type_name, |w| {
+        w.def_fn(format!("new() -> {:s}", msg.type_name), |w| {
+            w.write_line(format!("{:s}::new()", msg.type_name));
+        });
+        w.write_line("");
+        write_message_clear(w);
+        w.write_line("");
+        w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
+            w.required_fields(|w| {
+                w.if_self_field_is_none(|w| {
+                    w.write_line("return false;");
+                });
+            });
+            w.write_line("true");
+        });
+        w.write_line("");
+        write_message_merge_from(w);
+        w.write_line("");
+        write_message_compute_sizes(w);
+        w.write_line("");
+        w.def_fn("write_to(&self, os: &mut CodedOutputStream)", |w| {
+            w.write_line("self.check_initialized();");
+            w.write_line("let mut sizes: ~[u32] = ~[];");
+            w.write_line("self.compute_sizes(&mut sizes);");
+            w.write_line("let mut sizes_pos = 1; // first element is self");
+            w.write_line("self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);");
+            w.write_line("assert_eq!(sizes_pos, sizes.len());");
+            w.comment("TODO: assert we've written same number of bytes as computed");
+        });
+        w.write_line("");
+        write_message_unknown_fields(w);
+    });
+}
+
 fn write_message(msg: &Message, w: &mut IndentWriter) {
     let pkg = msg.pkg.as_slice();
     let message_type = &msg.proto_message;
 
-    w.bind_message(msg, |w0| {
-        let w: &mut IndentWriter = unsafe { cast::transmute_mut(w0) };
-        w.write_line(format!("\\#[deriving(Clone,Eq,Default)]"));
-        w.pub_struct(msg.type_name, |w| {
-            w.fields(|w| {
-                let field = w.field.unwrap();
-                if !field.type_name.contains_char('.') {
-                    w.field_entry(field.name, field.full_type());
-                }
-            });
-            w.field_entry("unknown_fields", "Option<~UnknownFields>");
-        });
-
+    w.bind_message(msg, |w| {
+        write_message_struct(w);
         w.write_line("");
-        w.impl_self_block(msg.type_name, |w| {
-            w.pub_fn(format!("new() -> {:s}", msg.type_name), |w| {
-                w.write_line("Default::default()");
-            });
-
-            w.write_line("");
-            w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
-                fn write_body(w: &mut IndentWriter) {
-                    let msg = w.msg.get_ref();
-                    w.stmt_block(format!("static instance: {:s} = {:s}", msg.type_name, msg.type_name), |w| {
-                        w.fields(|w| {
-                            w.field_default();
-                        });
-                        w.field_entry("unknown_fields", "None");
-                    });
-                    w.write_line("&'static instance");
-                }
-                if msg.has_any_repeated_field() {
-                    w.commented(|w| {
-                        w.comment("doesn't work, because rust doen't implement \
-                                static constants of types like ~str");
-                        w.comment("https://github.com/mozilla/rust/issues/8406");
-                        write_body(w);
-                    });
-                    w.todo();
-                } else {
-                    write_body(w)
-                }
-            });
-
-            w.write_line("");
-            if !msg.has_any_message_field() {
-                // `sizes` and `sizes_pos` are unused
-                w.write_line("#[allow(unused_variable)]");
-            }
-            w.pub_fn("write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
-                w.fields(|w| {
-                    let field = w.field();
-                    let field_type = field.field_type;
-                    let write_method_suffix = match field_type {
-                        TYPE_MESSAGE => "message",
-                        TYPE_ENUM => "enum",
-                        t => protobuf_name(t),
-                    };
-                    let field_number = field.proto_field.get_number();
-                    let vv = match field.field_type {
-                        TYPE_MESSAGE => "v", // TODO: as &Message
-                        TYPE_ENUM => "*v as i32",
-                        _ => "*v",
-                    };
-                    let write_value_lines = match field.field_type {
-                        TYPE_MESSAGE => ~[
-                            format!("os.write_tag({:d}, wire_format::{:?});",
-                                    field_number as int, wire_format::WireTypeLengthDelimited),
-                            format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
-                            format!("*sizes_pos += 1;"),
-                            format!("v.write_to_with_computed_sizes(os, sizes, sizes_pos);"),
-                        ],
-                        _ => ~[
-                            format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
-                        ],
-                    };
-                    match field.repeat_mode {
-                        Single => {
-                            w.match_block(w.self_field(), |w| {
-                                w.case_block("Some(ref v)", |w| {
-                                    w.write_lines(write_value_lines);
-                                });
-                                w.case_expr("None", "{}");
-                            });
-                        },
-                        RepeatPacked => {
-                            w.if_stmt(format!("!{:s}.is_empty()", w.self_field()), |w| {
-                                w.write_line(format!("os.write_tag({:d}, wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
-                                // TODO: do not call vec_packed_data_size for fixed-length wire type
-                                w.write_line(format!("os.write_raw_varint32(rt::vec_packed_data_size({:s}, wire_format::{:?}));", w.self_field(), field_type_wire_type(field.field_type)));
-                                w.for_stmt(format!("{:s}.iter()", w.self_field()), "v", |w| {
-                                    w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
-                                });
-                            });
-                        },
-                        RepeatRegular => {
-                            w.for_stmt(format!("{:s}.iter()", w.self_field()), "v", |w| {
-                                w.write_lines(write_value_lines);
-                            });
-                        },
-                    };
-                });
-                w.write_line("os.write_unknown_fields(self.get_unknown_fields());");
-            });
-            w.fields(|w| {
-                w.write_line("");
-                w.pub_fn(format!("{:s}(&mut self)", w.clear_field_func()), |w| {
-                    w.clear_field();
-                });
-
-                if !w.field().repeated {
-                    w.write_line("");
-                    w.pub_fn(format!("has_{:s}(&self) -> bool", w.field().name), |w| {
-                        w.write_line(w.self_field_is_some());
-                    });
-                }
-
-                let set_param_type = if w.field().repeated {
-                    w.field().full_type()
-                } else {
-                    w.field().type_name.to_owned()
-                };
-
-                w.write_line("");
-                w.comment("Param is passed by value, moved");
-                w.pub_fn(format!("set_{:s}(&mut self, v: {:s})", w.field().name, set_param_type), |w| {
-                    if w.field().repeated {
-                        w.self_field_assign("v");
-                    } else {
-                        w.self_field_assign_some("v");
-                    }
-                });
-
-                w.write_line("");
-                w.comment("Mutable pointer to the field.");
-                if !w.field().repeated {
-                    w.comment("If field is not initialized, it is initialized with default value first.");
-                }
-                w.pub_fn(format!("mut_{:s}(&'a mut self) -> &'a mut {:s}", w.field().name, set_param_type),
-                |w| {
-                    if !w.field().repeated {
-                        w.if_self_field_is_none(|w| {
-                            w.self_field_assign_some(w.field_type_default());
-                        });
-                        w.write_line(format!("{:s}.get_mut_ref()", w.self_field()));
-                    } else {
-                        w.write_line(format!("&mut {:s}", w.self_field()));
-                    }
-                });
-
-                w.write_line("");
-                let return_reference = w.field().repeated || match w.field().field_type {
-                    TYPE_MESSAGE | TYPE_STRING | TYPE_BYTES => true,
-                    _ => false,
-                };
-                let get_xxx_return_type = match w.field().repeated {
-                    true => format!("&'a [{:s}]", w.field().type_name),
-                    false => match return_reference {
-                        true => {
-                            format!("&'a {:s}", match w.field().field_type {
-                                TYPE_BYTES  => ~"[u8]",
-                                TYPE_STRING => ~"str",
-                                _ => set_param_type,
-                            })
-                        }
-                        false => set_param_type.to_owned(),
-                    }
-                };
-                let self_param = match return_reference {
-                    true  => "&'a self",
-                    false => "&self",
-                };
-                w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type),
-                |w| {
-                    if !w.field().repeated {
-                        if return_reference {
-                            w.match_expr(w.self_field(), |w| {
-                                w.case_expr(
-                                    "Some(ref v)",
-                                    match w.field().field_type {
-                                        TYPE_STRING | TYPE_BYTES => "v.as_slice()",
-                                        _ => "v",
-                                    }
-                                );
-                                w.case_expr(
-                                    "None",
-                                    match w.field().field_type {
-                                        TYPE_MESSAGE => format!("{:s}::default_instance()", w.field().type_name),
-                                        TYPE_BYTES   => ~"&'a []",
-                                        TYPE_STRING  => ~"&'a \"\"",
-                                        _            => fail!(),
-                                    }
-                                );
-                            });
-                        } else {
-                            let get_name = "unwrap_or_else";
-                            w.write_line(format!(
-                                    "{:s}.{:s}(|| {:s})",
-                                    w.self_field(),
-                                    get_name,
-                                    w.field_type_default()));
-                        }
-                    } else {
-                        w.write_line(format!("{:s}.as_slice()", w.self_field()));
-                    }
-                });
-
-                if w.field().repeated {
-                    w.write_line("");
-                    w.pub_fn(format!("add_{:s}(&mut self, v: {:s})",
-                            w.field().name, w.field().type_name.to_owned()),
-                    |w| {
-                        w.self_field_push("v");
-                    });
-                }
-            });
-        });
-
+        write_message_impl_self(w);
         w.write_line("");
-
-        w.impl_for_block("Message", msg.type_name, |w| {
-            w.def_fn(format!("new() -> {:s}", msg.type_name), |w| {
-                w.write_line(format!("{:s}::new()", msg.type_name));
-            });
-            w.write_line("");
-            w.def_fn("clear(&mut self)", |w| {
-                w.fields(|w| {
-                    w.write_line(format!("self.{:s}();", w.clear_field_func()));
-                });
-            });
-            w.write_line("");
-            w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
-                w.required_fields(|w| {
-                    w.if_self_field_is_none(|w| {
-                        w.write_line("return false;");
-                    });
-                });
-                w.write_line("true");
-            });
-            w.write_line("");
-            w.def_fn(format!("merge_from(&mut self, is: &mut CodedInputStream)"), |w| {
-                w.while_block("!is.eof()", |w| {
-                    w.write_line(format!("let (field_number, wire_type) = is.read_tag_unpack();"));
-                    w.match_block("field_number", |w| {
-                        w.fields(|w| {
-                            w.case_block(w.field().number.to_str(), |w| {
-                                write_merge_from_field(w);
-                            });
-                        });
-                        w.case_block("_", |w| {
-                            w.write_line("let unknown = is.read_unknown(wire_type);");
-                            w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
-                        });
-                    });
-                });
-            });
-            w.write_line("");
-            // Append sizes of messages in the tree to the specified vector.
-            // First appended element is size of self, and then nested message sizes.
-            // in serialization order are appended recursively.");
-            w.comment("Compute sizes of nested messages");
-            w.def_fn("compute_sizes(&self, sizes: &mut ~[u32]) -> u32", |w| {
-                w.write_line("let pos = sizes.len();");
-                w.write_line("sizes.push(0);");
-                w.write_line("let mut my_size = 0;");
-                w.fields(|w| {
-                    let field = w.field();
-                    match field.repeat_mode {
-                        Single | RepeatRegular => {
-                            match field_type_size(field.field_type) {
-                                Some(s) => {
-                                    if field.repeated {
-                                        w.write_line(format!(
-                                                "my_size += {:d} * {:s}.len() as u32;",
-                                                (s + rt::tag_size(field.number)) as int,
-                                                w.self_field()));
-                                    } else {
-                                        w.if_self_field_is_some(|w| {
-                                            w.write_line(format!(
-                                                    "my_size += {:d};",
-                                                    (s + rt::tag_size(field.number)) as int));
-                                        });
-                                    }
-                                },
-                                None => {
-                                    w.for_stmt(format!("{:s}.iter()", w.self_field()), "value", |w| {
-                                        match field.field_type {
-                                            TYPE_MESSAGE => {
-                                                w.write_line("let len = value.compute_sizes(sizes);");
-                                                w.write_line(format!(
-                                                        "my_size += {:u} + rt::compute_raw_varint32_size(len) + len;",
-                                                        rt::tag_size(field.number) as uint));
-                                            },
-                                            TYPE_BYTES | TYPE_STRING => {
-                                                let pn = protobuf_name(field.field_type);
-                                                w.write_line(format!(
-                                                        "my_size += rt::{:s}_size({:d}, *value);",
-                                                        pn,
-                                                        field.number as int));
-                                            },
-                                            TYPE_ENUM => {
-                                                w.write_line(format!(
-                                                        "my_size += rt::enum_size({:d}, *value);",
-                                                        field.number as int));
-                                            },
-                                            _ => {
-                                                w.write_line(format!(
-                                                        "my_size += rt::value_size({:d}, *value, wire_format::{:?});",
-                                                        field.number as int, field.wire_type));
-                                            },
-                                        }
-                                    });
-                                },
-                            };
-                        },
-                        RepeatPacked => {
-                            w.write_line(format!(
-                                    "my_size += rt::vec_packed_size({:d}, {:s}, wire_format::{:?});",
-                                    field.number as int, w.self_field(), field.wire_type));
-                        },
-                    };
-                });
-                w.write_line("my_size += rt::unknown_fields_size(self.get_unknown_fields());");
-                w.write_line("sizes[pos] = my_size;");
-                w.comment("value is returned for convenience");
-                w.write_line("my_size");
-            });
-            w.write_line("");
-            w.def_fn("write_to(&self, os: &mut CodedOutputStream)", |w| {
-                w.write_line("self.check_initialized();");
-                w.write_line("let mut sizes: ~[u32] = ~[];");
-                w.write_line("self.compute_sizes(&mut sizes);");
-                w.write_line("let mut sizes_pos = 1; // first element is self");
-                w.write_line("self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);");
-                w.write_line("assert_eq!(sizes_pos, sizes.len());");
-            });
-            w.write_line("");
-            w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s UnknownFields", |w| {
-                w.write_line("if self.unknown_fields.is_some() {");
-                w.indented(|w| {
-                    w.write_line("&**self.unknown_fields.get_ref()");
-                });
-                w.write_line("} else {");
-                w.indented(|w| {
-                    w.write_line("UnknownFields::default_instance()");
-                });
-                w.write_line("}");
-            });
-            w.write_line("");
-            w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields", |w| {
-                w.write_line("if self.unknown_fields.is_none() {");
-                w.indented(|w| {
-                    w.write_line("self.unknown_fields = Some(Default::default())");
-                });
-                w.write_line("}");
-                w.write_line("&mut **self.unknown_fields.get_mut_ref()");
-            });
-        });
+        write_message_impl_message(w);
 
         for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
@@ -922,7 +1041,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
 fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProto) {
     let enum_type_name = prefix + enum_type.get_name().to_owned();
-    w.write_line(format!("\\#[deriving(Clone,Eq)]"));
+    w.deriving(["Clone", "Eq"]);
     w.write_line(format!("pub enum {:s} \\{", enum_type_name));
     for value in enum_type.get_value().iter() {
         w.write_line(format!("    {:s} = {:d},", value.get_name().to_owned(), value.get_number() as int));

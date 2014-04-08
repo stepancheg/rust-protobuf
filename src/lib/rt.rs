@@ -1,7 +1,10 @@
 // Functions used by generated protobuf code.
 // Should not be used by programs written by hands.
 
+use std::iter::AdditiveIterator;
+
 use core::*;
+use zigzag::*;
 
 use unknown::UnknownFields;
 
@@ -23,57 +26,61 @@ pub fn compute_raw_varint32_size(value: u32) -> u32 {
     compute_raw_varint64_size(value as u64)
 }
 
-trait ProtobufNum {
+trait ProtobufVarint {
     // size of self when written as varint
     fn len_varint(&self) -> u32;
 }
 
-impl ProtobufNum for u64 {
+trait ProtobufVarintZigzag {
+    fn len_varint_zigzag(&self) -> u32;
+}
+
+impl ProtobufVarint for u64 {
     fn len_varint(&self) -> u32 {
         compute_raw_varint64_size(*self)
     }
 }
 
-impl ProtobufNum for u32 {
+impl ProtobufVarint for u32 {
     fn len_varint(&self) -> u32 {
         (*self as u64).len_varint()
     }
 }
 
-impl ProtobufNum for i64 {
+impl ProtobufVarint for i64 {
     fn len_varint(&self) -> u32 {
         // same as length of u64
         (*self as u64).len_varint()
     }
 }
 
-impl ProtobufNum for i32 {
+impl ProtobufVarintZigzag for i64 {
+    fn len_varint_zigzag(&self) -> u32 {
+        compute_raw_varint64_size(encode_zig_zag_64(*self))
+    }
+}
+
+impl ProtobufVarint for i32 {
     fn len_varint(&self) -> u32 {
         // sign-extend and then compute
         (*self as i64).len_varint()
     }
 }
 
-impl ProtobufNum for bool {
+impl ProtobufVarintZigzag for i32 {
+    fn len_varint_zigzag(&self) -> u32 {
+        compute_raw_varint32_size(encode_zig_zag_32(*self))
+    }
+}
+
+impl ProtobufVarint for bool {
     fn len_varint(&self) -> u32 {
         1
     }
 }
 
-impl ProtobufNum for f32 {
-    fn len_varint(&self) -> u32 {
-        fail!("always fixed");
-    }
-}
-
-impl ProtobufNum for f64 {
-    fn len_varint(&self) -> u32 {
-        fail!("always fixed");
-    }
-}
-
 /* Commented out due to https://github.com/mozilla/rust/issues/8075
-impl<E:ProtobufEnum> ProtobufNum for E {
+impl<E:ProtobufEnum> ProtobufVarint for E {
     fn len_varint(&self) -> u32 {
         self.value().len_varint()
     }
@@ -81,29 +88,31 @@ impl<E:ProtobufEnum> ProtobufNum for E {
 */
 
 // Size of serialized data, excluding length and tag
-pub fn vec_packed_data_size<T : ProtobufNum>(vec: &[T], wt: wire_format::WireType) -> u32 {
-    match wt {
-        wire_format::WireTypeFixed64 => vec.len() as u32 * 8,
-        wire_format::WireTypeFixed32 => vec.len() as u32 * 4,
-        wire_format::WireTypeVarint => {
-            let mut r = 0;
-            for n in vec.iter() {
-                r += n.len_varint();
-            }
-            r as u32
-        }
-        _ => fail!()
+pub fn vec_packed_varint_data_size<T : ProtobufVarint>(vec: &[T]) -> u32 {
+    vec.iter().map(|v| v.len_varint()).sum()
+}
+
+// Size of serialized data, excluding length and tag
+pub fn vec_packed_varint_zigzag_data_size<T : ProtobufVarintZigzag>(vec: &[T]) -> u32 {
+    vec.iter().map(|v| v.len_varint_zigzag()).sum()
+}
+
+// Size of serialized data with length prefix and tag
+pub fn vec_packed_varint_size<T : ProtobufVarint>(field_number: u32, vec: &[T]) -> u32 {
+    if vec.is_empty() {
+        0
+    } else {
+        let data_size = vec_packed_varint_data_size(vec);
+        tag_size(field_number) + data_size.len_varint() + data_size
     }
 }
 
 // Size of serialized data with length prefix and tag
-pub fn vec_packed_size<T : ProtobufNum>(
-        field_number: u32, vec: &[T], wt: wire_format::WireType) -> u32
-{
+pub fn vec_packed_varint_zigzag_size<T : ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u32 {
     if vec.is_empty() {
         0
     } else {
-        let data_size = vec_packed_data_size(vec, wt);
+        let data_size = vec_packed_varint_zigzag_data_size(vec);
         tag_size(field_number) + data_size.len_varint() + data_size
     }
 }
@@ -113,7 +122,7 @@ pub fn tag_size(field_number: u32) -> u32 {
     wire_format::Tag::make(field_number, wire_format::WireTypeFixed64).value().len_varint()
 }
 
-pub fn value_size_no_tag<T : ProtobufNum>(value: T, wt: wire_format::WireType) -> u32 {
+pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: wire_format::WireType) -> u32 {
     match wt {
         wire_format::WireTypeFixed64 => 8,
         wire_format::WireTypeFixed32 => 4,
@@ -122,7 +131,7 @@ pub fn value_size_no_tag<T : ProtobufNum>(value: T, wt: wire_format::WireType) -
     }
 }
 
-pub fn value_size<T : ProtobufNum>(field_number: u32, value: T, wt: wire_format::WireType) -> u32 {
+pub fn value_size<T : ProtobufVarint>(field_number: u32, value: T, wt: wire_format::WireType) -> u32 {
     tag_size(field_number) + value_size_no_tag(value, wt)
 }
 
@@ -169,14 +178,3 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
     r
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-    use wire_format;
-
-    #[test]
-    fn test_vec_packed_data_size() {
-        let vec: ~[i32] = ~[1, -1];
-        assert_eq!(11, vec_packed_data_size(vec.as_slice(), wire_format::WireTypeVarint));
-    }
-}

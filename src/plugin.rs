@@ -242,6 +242,7 @@ impl Message for CodeGeneratorRequest {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -414,6 +415,7 @@ impl Message for CodeGeneratorResponse {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -635,6 +637,7 @@ impl Message for CodeGeneratorResponse_File {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {

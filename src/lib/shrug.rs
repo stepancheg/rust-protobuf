@@ -224,6 +224,7 @@ impl Message for Test1 {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -356,6 +357,7 @@ impl Message for Test2 {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -492,6 +494,7 @@ impl Message for Test3 {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -536,7 +539,7 @@ impl<'a> Test4 {
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
         if !self.d.is_empty() {
             os.write_tag(4, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.d, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.d));
             for v in self.d.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -610,7 +613,9 @@ impl Message for Test4 {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        my_size += rt::vec_packed_size(4, self.d, wire_format::WireTypeVarint);
+        if !self.d.is_empty() {
+            my_size += rt::vec_packed_varint_size(4, self.d);
+        };
         my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
@@ -624,6 +629,7 @@ impl Message for Test4 {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -673,7 +679,7 @@ impl<'a> TestPackedUnpacked {
         };
         if !self.packed.is_empty() {
             os.write_tag(5, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.packed, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.packed));
             for v in self.packed.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -786,7 +792,9 @@ impl Message for TestPackedUnpacked {
         for value in self.unpacked.iter() {
             my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
         };
-        my_size += rt::vec_packed_size(5, self.packed, wire_format::WireTypeVarint);
+        if !self.packed.is_empty() {
+            my_size += rt::vec_packed_varint_size(5, self.packed);
+        };
         my_size += rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
@@ -800,6 +808,7 @@ impl Message for TestPackedUnpacked {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -926,6 +935,7 @@ impl Message for TestEmpty {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -1055,6 +1065,7 @@ impl Message for TestRequired {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -1184,6 +1195,7 @@ impl Message for TestUnknownFields {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -1918,6 +1930,7 @@ impl Message for TestTypesSingular {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -2634,6 +2647,7 @@ impl Message for TestTypesRepeated {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -2706,91 +2720,91 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
         if !self.double_field.is_empty() {
             os.write_tag(1, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.double_field, wire_format::WireTypeFixed64));
+            os.write_raw_varint32((self.double_field.len() * 8) as u32);
             for v in self.double_field.iter() {
                 os.write_double_no_tag(*v);
             };
         };
         if !self.float_field.is_empty() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.float_field, wire_format::WireTypeFixed32));
+            os.write_raw_varint32((self.float_field.len() * 4) as u32);
             for v in self.float_field.iter() {
                 os.write_float_no_tag(*v);
             };
         };
         if !self.int32_field.is_empty() {
             os.write_tag(3, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.int32_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.int32_field));
             for v in self.int32_field.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
         if !self.int64_field.is_empty() {
             os.write_tag(4, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.int64_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.int64_field));
             for v in self.int64_field.iter() {
                 os.write_int64_no_tag(*v);
             };
         };
         if !self.uint32_field.is_empty() {
             os.write_tag(5, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.uint32_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.uint32_field));
             for v in self.uint32_field.iter() {
                 os.write_uint32_no_tag(*v);
             };
         };
         if !self.uint64_field.is_empty() {
             os.write_tag(6, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.uint64_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.uint64_field));
             for v in self.uint64_field.iter() {
                 os.write_uint64_no_tag(*v);
             };
         };
         if !self.sint32_field.is_empty() {
             os.write_tag(7, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.sint32_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_zigzag_data_size(self.sint32_field));
             for v in self.sint32_field.iter() {
                 os.write_sint32_no_tag(*v);
             };
         };
         if !self.sint64_field.is_empty() {
             os.write_tag(8, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.sint64_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_zigzag_data_size(self.sint64_field));
             for v in self.sint64_field.iter() {
                 os.write_sint64_no_tag(*v);
             };
         };
         if !self.fixed32_field.is_empty() {
             os.write_tag(9, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.fixed32_field, wire_format::WireTypeFixed32));
+            os.write_raw_varint32((self.fixed32_field.len() * 4) as u32);
             for v in self.fixed32_field.iter() {
                 os.write_fixed32_no_tag(*v);
             };
         };
         if !self.fixed64_field.is_empty() {
             os.write_tag(10, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.fixed64_field, wire_format::WireTypeFixed64));
+            os.write_raw_varint32((self.fixed64_field.len() * 8) as u32);
             for v in self.fixed64_field.iter() {
                 os.write_fixed64_no_tag(*v);
             };
         };
         if !self.sfixed32_field.is_empty() {
             os.write_tag(11, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.sfixed32_field, wire_format::WireTypeFixed32));
+            os.write_raw_varint32((self.sfixed32_field.len() * 4) as u32);
             for v in self.sfixed32_field.iter() {
                 os.write_sfixed32_no_tag(*v);
             };
         };
         if !self.sfixed64_field.is_empty() {
             os.write_tag(12, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.sfixed64_field, wire_format::WireTypeFixed64));
+            os.write_raw_varint32((self.sfixed64_field.len() * 8) as u32);
             for v in self.sfixed64_field.iter() {
                 os.write_sfixed64_no_tag(*v);
             };
         };
         if !self.bool_field.is_empty() {
             os.write_tag(13, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.bool_field, wire_format::WireTypeVarint));
+            os.write_raw_varint32((self.bool_field.len() * 1) as u32);
             for v in self.bool_field.iter() {
                 os.write_bool_no_tag(*v);
             };
@@ -3358,19 +3372,45 @@ impl Message for TestTypesRepeatedPacked {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        my_size += rt::vec_packed_size(1, self.double_field, wire_format::WireTypeFixed64);
-        my_size += rt::vec_packed_size(2, self.float_field, wire_format::WireTypeFixed32);
-        my_size += rt::vec_packed_size(3, self.int32_field, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(4, self.int64_field, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(5, self.uint32_field, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(6, self.uint64_field, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(7, self.sint32_field, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(8, self.sint64_field, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(9, self.fixed32_field, wire_format::WireTypeFixed32);
-        my_size += rt::vec_packed_size(10, self.fixed64_field, wire_format::WireTypeFixed64);
-        my_size += rt::vec_packed_size(11, self.sfixed32_field, wire_format::WireTypeFixed32);
-        my_size += rt::vec_packed_size(12, self.sfixed64_field, wire_format::WireTypeFixed64);
-        my_size += rt::vec_packed_size(13, self.bool_field, wire_format::WireTypeVarint);
+        if !self.double_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.double_field.len() as u32) + (self.double_field.len() * 8) as u32;
+        };
+        if !self.float_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.float_field.len() as u32) + (self.float_field.len() * 4) as u32;
+        };
+        if !self.int32_field.is_empty() {
+            my_size += rt::vec_packed_varint_size(3, self.int32_field);
+        };
+        if !self.int64_field.is_empty() {
+            my_size += rt::vec_packed_varint_size(4, self.int64_field);
+        };
+        if !self.uint32_field.is_empty() {
+            my_size += rt::vec_packed_varint_size(5, self.uint32_field);
+        };
+        if !self.uint64_field.is_empty() {
+            my_size += rt::vec_packed_varint_size(6, self.uint64_field);
+        };
+        if !self.sint32_field.is_empty() {
+            my_size += rt::vec_packed_varint_zigzag_size(7, self.sint32_field);
+        };
+        if !self.sint64_field.is_empty() {
+            my_size += rt::vec_packed_varint_zigzag_size(8, self.sint64_field);
+        };
+        if !self.fixed32_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.fixed32_field.len() as u32) + (self.fixed32_field.len() * 4) as u32;
+        };
+        if !self.fixed64_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.fixed64_field.len() as u32) + (self.fixed64_field.len() * 8) as u32;
+        };
+        if !self.sfixed32_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.sfixed32_field.len() as u32) + (self.sfixed32_field.len() * 4) as u32;
+        };
+        if !self.sfixed64_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.sfixed64_field.len() as u32) + (self.sfixed64_field.len() * 8) as u32;
+        };
+        if !self.bool_field.is_empty() {
+            my_size += 1 + rt::compute_raw_varint32_size(self.bool_field.len() as u32) + (self.bool_field.len() * 1) as u32;
+        };
         for value in self.string_field.iter() {
             my_size += rt::string_size(14, *value);
         };
@@ -3390,6 +3430,7 @@ impl Message for TestTypesRepeatedPacked {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {

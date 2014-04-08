@@ -173,9 +173,8 @@ fn test_types_repeated_packed() {
     message.set_int64_field(~[22]);
     message.set_uint32_field(~[23, 24]);
     message.set_uint64_field(~[24]);
-    // TODO
-    //message.set_sint32_field(~[-25, 26]);
-    //message.set_sint64_field(~[26]);
+    message.set_sint32_field(~[-25, 26]);
+    message.set_sint64_field(~[26, -27, 28]);
     message.set_fixed32_field(~[27]);
     message.set_fixed64_field(~[28]);
     message.set_sfixed32_field(~[29, -30]);

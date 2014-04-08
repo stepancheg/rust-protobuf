@@ -390,6 +390,7 @@ impl Message for FileDescriptorSet {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -957,6 +958,7 @@ impl Message for FileDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -1344,6 +1346,7 @@ impl Message for DescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -1513,6 +1516,7 @@ impl Message for DescriptorProto_ExtensionRange {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -1959,6 +1963,7 @@ impl Message for FieldDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -2260,6 +2265,7 @@ impl Message for EnumDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -2482,6 +2488,7 @@ impl Message for EnumValueDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -2705,6 +2712,7 @@ impl Message for ServiceDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -2976,6 +2984,7 @@ impl Message for MethodDescriptorProto {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -3498,6 +3507,7 @@ impl Message for FileOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -3734,6 +3744,7 @@ impl Message for MessageOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -4121,6 +4132,7 @@ impl Message for FieldOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -4314,6 +4326,7 @@ impl Message for EnumOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -4440,6 +4453,7 @@ impl Message for EnumValueOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -4566,6 +4580,7 @@ impl Message for ServiceOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -4692,6 +4707,7 @@ impl Message for MethodOptions {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -5085,6 +5101,7 @@ impl Message for UninterpretedOption {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -5263,6 +5280,7 @@ impl Message for UninterpretedOption_NamePart {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -5389,6 +5407,7 @@ impl Message for SourceCodeInfo {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
@@ -5439,14 +5458,14 @@ impl<'a> SourceCodeInfo_Location {
     pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
         if !self.path.is_empty() {
             os.write_tag(1, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.path, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.path));
             for v in self.path.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
         if !self.span.is_empty() {
             os.write_tag(2, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_data_size(self.span, wire_format::WireTypeVarint));
+            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.span));
             for v in self.span.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -5638,8 +5657,12 @@ impl Message for SourceCodeInfo_Location {
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
-        my_size += rt::vec_packed_size(1, self.path, wire_format::WireTypeVarint);
-        my_size += rt::vec_packed_size(2, self.span, wire_format::WireTypeVarint);
+        if !self.path.is_empty() {
+            my_size += rt::vec_packed_varint_size(1, self.path);
+        };
+        if !self.span.is_empty() {
+            my_size += rt::vec_packed_varint_size(2, self.span);
+        };
         for value in self.leading_comments.iter() {
             my_size += rt::string_size(3, *value);
         };
@@ -5659,6 +5682,7 @@ impl Message for SourceCodeInfo_Location {
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
