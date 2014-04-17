@@ -1,11 +1,5 @@
 // This file is generated. Do not edit
 
-use protobuf::*;
-use protobuf::rt;
-use protobuf::descriptor;
-use protobuf::lazy;
-use std::default::Default;
-
 static file_descriptor_proto_data: &'static [u8] = &[
     0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x68, 0x72, 0x75, 0x67, 0x2e, 0x70, 0x72,
     0x6f, 0x74, 0x6f, 0x12, 0x05, 0x73, 0x68, 0x72, 0x75, 0x67, 0x22, 0x12, 0x0a, 0x05, 0x54, 0x65,
@@ -99,13 +93,13 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0c,
 ];
 
-static mut file_descriptor_proto_lazy: lazy::Lazy<descriptor::FileDescriptorProto> = lazy::Lazy { lock: lazy::ONCE_INIT, ptr: 0 as *descriptor::FileDescriptorProto };
+static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };
 
-fn parse_descriptor_proto() -> descriptor::FileDescriptorProto {
-    parse_from_bytes(file_descriptor_proto_data)
+fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
+    ::protobuf::parse_from_bytes(file_descriptor_proto_data)
 }
 
-pub fn file_descriptor_proto() -> &'static descriptor::FileDescriptorProto {
+pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
     unsafe {
         file_descriptor_proto_lazy.get(|| {
             parse_descriptor_proto()
@@ -116,12 +110,12 @@ pub fn file_descriptor_proto() -> &'static descriptor::FileDescriptorProto {
 #[deriving(Clone,Eq,Default)]
 pub struct Test1 {
     a: Option<i32>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> Test1 {
     pub fn new() -> Test1 {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static Test1 {
@@ -133,7 +127,8 @@ impl<'a> Test1 {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.a {
             Some(ref v) => {
                 os.write_int32(1, *v);
@@ -170,7 +165,7 @@ impl<'a> Test1 {
     }
 }
 
-impl Message for Test1 {
+impl ::protobuf::Message for Test1 {
     fn new() -> Test1 {
         Test1::new()
     }
@@ -186,12 +181,12 @@ impl Message for Test1 {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 1 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_int32();
                     self.a = Some(tmp);
                 },
@@ -205,19 +200,20 @@ impl Message for Test1 {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         for value in self.a.iter() {
-            my_size += rt::value_size(1, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -227,17 +223,17 @@ impl Message for Test1 {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -246,12 +242,12 @@ impl Message for Test1 {
 #[deriving(Clone,Eq,Default)]
 pub struct Test2 {
     b: Option<~str>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> Test2 {
     pub fn new() -> Test2 {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static Test2 {
@@ -263,7 +259,8 @@ impl<'a> Test2 {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.b {
             Some(ref v) => {
                 os.write_string(2, *v);
@@ -303,7 +300,7 @@ impl<'a> Test2 {
     }
 }
 
-impl Message for Test2 {
+impl ::protobuf::Message for Test2 {
     fn new() -> Test2 {
         Test2::new()
     }
@@ -319,12 +316,12 @@ impl Message for Test2 {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 2 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_string();
                     self.b = Some(tmp);
                 },
@@ -338,19 +335,20 @@ impl Message for Test2 {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         for value in self.b.iter() {
-            my_size += rt::string_size(2, *value);
+            my_size += ::protobuf::rt::string_size(2, *value);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -360,17 +358,17 @@ impl Message for Test2 {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -379,12 +377,12 @@ impl Message for Test2 {
 #[deriving(Clone,Eq,Default)]
 pub struct Test3 {
     c: Option<Test1>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> Test3 {
     pub fn new() -> Test3 {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static Test3 {
@@ -395,10 +393,11 @@ impl<'a> Test3 {
         &'static instance
     }
 
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.c {
             Some(ref v) => {
-                os.write_tag(3, wire_format::WireTypeLengthDelimited);
+                os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
                 v.write_to_with_computed_sizes(os, sizes, sizes_pos);
@@ -438,7 +437,7 @@ impl<'a> Test3 {
     }
 }
 
-impl Message for Test3 {
+impl ::protobuf::Message for Test3 {
     fn new() -> Test3 {
         Test3::new()
     }
@@ -454,12 +453,12 @@ impl Message for Test3 {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 3 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let mut tmp = Test1::new();
                     is.merge_message(&mut tmp);
                     self.c = Some(tmp);
@@ -474,20 +473,21 @@ impl Message for Test3 {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         for value in self.c.iter() {
             let len = value.compute_sizes(sizes);
-            my_size += 1 + rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -497,17 +497,17 @@ impl Message for Test3 {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -516,12 +516,12 @@ impl Message for Test3 {
 #[deriving(Clone,Eq,Default)]
 pub struct Test4 {
     d: ~[i32],
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> Test4 {
     pub fn new() -> Test4 {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static Test4 {
@@ -536,10 +536,11 @@ impl<'a> Test4 {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         if !self.d.is_empty() {
-            os.write_tag(4, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.d));
+            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d));
             for v in self.d.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -570,7 +571,7 @@ impl<'a> Test4 {
     }
 }
 
-impl Message for Test4 {
+impl ::protobuf::Message for Test4 {
     fn new() -> Test4 {
         Test4::new()
     }
@@ -583,12 +584,12 @@ impl Message for Test4 {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 4 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -596,7 +597,7 @@ impl Message for Test4 {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.d.push(is.read_int32());
                     }
                 },
@@ -610,19 +611,20 @@ impl Message for Test4 {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         if !self.d.is_empty() {
-            my_size += rt::vec_packed_varint_size(4, self.d);
+            my_size += ::protobuf::rt::vec_packed_varint_size(4, self.d);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -632,17 +634,17 @@ impl Message for Test4 {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -652,12 +654,12 @@ impl Message for Test4 {
 pub struct TestPackedUnpacked {
     unpacked: ~[i32],
     packed: ~[i32],
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestPackedUnpacked {
     pub fn new() -> TestPackedUnpacked {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestPackedUnpacked {
@@ -673,13 +675,14 @@ impl<'a> TestPackedUnpacked {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         for v in self.unpacked.iter() {
             os.write_int32(4, *v);
         };
         if !self.packed.is_empty() {
-            os.write_tag(5, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.packed));
+            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed));
             for v in self.packed.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -732,7 +735,7 @@ impl<'a> TestPackedUnpacked {
     }
 }
 
-impl Message for TestPackedUnpacked {
+impl ::protobuf::Message for TestPackedUnpacked {
     fn new() -> TestPackedUnpacked {
         TestPackedUnpacked::new()
     }
@@ -746,12 +749,12 @@ impl Message for TestPackedUnpacked {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 4 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -759,12 +762,12 @@ impl Message for TestPackedUnpacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.unpacked.push(is.read_int32());
                     }
                 },
                 5 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -772,7 +775,7 @@ impl Message for TestPackedUnpacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.packed.push(is.read_int32());
                     }
                 },
@@ -786,22 +789,23 @@ impl Message for TestPackedUnpacked {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         for value in self.unpacked.iter() {
-            my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         if !self.packed.is_empty() {
-            my_size += rt::vec_packed_varint_size(5, self.packed);
+            my_size += ::protobuf::rt::vec_packed_varint_size(5, self.packed);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -811,17 +815,17 @@ impl Message for TestPackedUnpacked {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -830,12 +834,12 @@ impl Message for TestPackedUnpacked {
 #[deriving(Clone,Eq,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestEmpty {
     pub fn new() -> TestEmpty {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestEmpty {
@@ -847,7 +851,8 @@ impl<'a> TestEmpty {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.foo {
             Some(ref v) => {
                 os.write_int32(10, *v);
@@ -884,7 +889,7 @@ impl<'a> TestEmpty {
     }
 }
 
-impl Message for TestEmpty {
+impl ::protobuf::Message for TestEmpty {
     fn new() -> TestEmpty {
         TestEmpty::new()
     }
@@ -897,12 +902,12 @@ impl Message for TestEmpty {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 10 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_int32();
                     self.foo = Some(tmp);
                 },
@@ -916,19 +921,20 @@ impl Message for TestEmpty {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         for value in self.foo.iter() {
-            my_size += rt::value_size(10, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -938,17 +944,17 @@ impl Message for TestEmpty {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -957,12 +963,12 @@ impl Message for TestEmpty {
 #[deriving(Clone,Eq,Default)]
 pub struct TestRequired {
     b: Option<bool>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestRequired {
     pub fn new() -> TestRequired {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestRequired {
@@ -974,7 +980,8 @@ impl<'a> TestRequired {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.b {
             Some(ref v) => {
                 os.write_bool(5, *v);
@@ -1011,7 +1018,7 @@ impl<'a> TestRequired {
     }
 }
 
-impl Message for TestRequired {
+impl ::protobuf::Message for TestRequired {
     fn new() -> TestRequired {
         TestRequired::new()
     }
@@ -1027,12 +1034,12 @@ impl Message for TestRequired {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 5 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_bool();
                     self.b = Some(tmp);
                 },
@@ -1046,19 +1053,20 @@ impl Message for TestRequired {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         if self.b.is_some() {
             my_size += 2;
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1068,17 +1076,17 @@ impl Message for TestRequired {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -1087,12 +1095,12 @@ impl Message for TestRequired {
 #[deriving(Clone,Eq,Default)]
 pub struct TestUnknownFields {
     a: Option<i32>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestUnknownFields {
     pub fn new() -> TestUnknownFields {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestUnknownFields {
@@ -1104,7 +1112,8 @@ impl<'a> TestUnknownFields {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.a {
             Some(ref v) => {
                 os.write_int32(1, *v);
@@ -1141,7 +1150,7 @@ impl<'a> TestUnknownFields {
     }
 }
 
-impl Message for TestUnknownFields {
+impl ::protobuf::Message for TestUnknownFields {
     fn new() -> TestUnknownFields {
         TestUnknownFields::new()
     }
@@ -1157,12 +1166,12 @@ impl Message for TestUnknownFields {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 1 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_int32();
                     self.a = Some(tmp);
                 },
@@ -1176,19 +1185,20 @@ impl Message for TestUnknownFields {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         for value in self.a.iter() {
-            my_size += rt::value_size(1, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1198,17 +1208,17 @@ impl Message for TestUnknownFields {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -1231,12 +1241,12 @@ pub struct TestTypesSingular {
     bool_field: Option<bool>,
     string_field: Option<~str>,
     bytes_field: Option<~[u8]>,
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestTypesSingular {
     pub fn new() -> TestTypesSingular {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestTypesSingular {
@@ -1262,7 +1272,8 @@ impl<'a> TestTypesSingular {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         match self.double_field {
             Some(ref v) => {
                 os.write_double(1, *v);
@@ -1753,7 +1764,7 @@ impl<'a> TestTypesSingular {
     }
 }
 
-impl Message for TestTypesSingular {
+impl ::protobuf::Message for TestTypesSingular {
     fn new() -> TestTypesSingular {
         TestTypesSingular::new()
     }
@@ -1780,82 +1791,82 @@ impl Message for TestTypesSingular {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 1 => {
-                    assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                     let tmp = is.read_double();
                     self.double_field = Some(tmp);
                 },
                 2 => {
-                    assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                     let tmp = is.read_float();
                     self.float_field = Some(tmp);
                 },
                 3 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_int32();
                     self.int32_field = Some(tmp);
                 },
                 4 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_int64();
                     self.int64_field = Some(tmp);
                 },
                 5 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_uint32();
                     self.uint32_field = Some(tmp);
                 },
                 6 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_uint64();
                     self.uint64_field = Some(tmp);
                 },
                 7 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_sint32();
                     self.sint32_field = Some(tmp);
                 },
                 8 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_sint64();
                     self.sint64_field = Some(tmp);
                 },
                 9 => {
-                    assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                     let tmp = is.read_fixed32();
                     self.fixed32_field = Some(tmp);
                 },
                 10 => {
-                    assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                     let tmp = is.read_fixed64();
                     self.fixed64_field = Some(tmp);
                 },
                 11 => {
-                    assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                     let tmp = is.read_sfixed32();
                     self.sfixed32_field = Some(tmp);
                 },
                 12 => {
-                    assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                     let tmp = is.read_sfixed64();
                     self.sfixed64_field = Some(tmp);
                 },
                 13 => {
-                    assert_eq!(wire_format::WireTypeVarint, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                     let tmp = is.read_bool();
                     self.bool_field = Some(tmp);
                 },
                 14 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_string();
                     self.string_field = Some(tmp);
                 },
                 15 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_bytes();
                     self.bytes_field = Some(tmp);
                 },
@@ -1869,6 +1880,7 @@ impl Message for TestTypesSingular {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
@@ -1879,22 +1891,22 @@ impl Message for TestTypesSingular {
             my_size += 5;
         };
         for value in self.int32_field.iter() {
-            my_size += rt::value_size(3, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.int64_field.iter() {
-            my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.uint32_field.iter() {
-            my_size += rt::value_size(5, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(5, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.uint64_field.iter() {
-            my_size += rt::value_size(6, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(6, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.sint32_field.iter() {
-            my_size += rt::value_size(7, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(7, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.sint64_field.iter() {
-            my_size += rt::value_size(8, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(8, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         if self.fixed32_field.is_some() {
             my_size += 5;
@@ -1912,18 +1924,18 @@ impl Message for TestTypesSingular {
             my_size += 2;
         };
         for value in self.string_field.iter() {
-            my_size += rt::string_size(14, *value);
+            my_size += ::protobuf::rt::string_size(14, *value);
         };
         for value in self.bytes_field.iter() {
-            my_size += rt::bytes_size(15, *value);
+            my_size += ::protobuf::rt::bytes_size(15, *value);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -1933,17 +1945,17 @@ impl Message for TestTypesSingular {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -1966,12 +1978,12 @@ pub struct TestTypesRepeated {
     bool_field: ~[bool],
     string_field: ~[~str],
     bytes_field: ~[~[u8]],
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestTypesRepeated {
     pub fn new() -> TestTypesRepeated {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestTypesRepeated {
@@ -2000,7 +2012,8 @@ impl<'a> TestTypesRepeated {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         for v in self.double_field.iter() {
             os.write_double(1, *v);
         };
@@ -2380,7 +2393,7 @@ impl<'a> TestTypesRepeated {
     }
 }
 
-impl Message for TestTypesRepeated {
+impl ::protobuf::Message for TestTypesRepeated {
     fn new() -> TestTypesRepeated {
         TestTypesRepeated::new()
     }
@@ -2407,12 +2420,12 @@ impl Message for TestTypesRepeated {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 1 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2420,12 +2433,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                         self.double_field.push(is.read_double());
                     }
                 },
                 2 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2433,12 +2446,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                         self.float_field.push(is.read_float());
                     }
                 },
                 3 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2446,12 +2459,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.int32_field.push(is.read_int32());
                     }
                 },
                 4 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2459,12 +2472,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.int64_field.push(is.read_int64());
                     }
                 },
                 5 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2472,12 +2485,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.uint32_field.push(is.read_uint32());
                     }
                 },
                 6 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2485,12 +2498,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.uint64_field.push(is.read_uint64());
                     }
                 },
                 7 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2498,12 +2511,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.sint32_field.push(is.read_sint32());
                     }
                 },
                 8 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2511,12 +2524,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.sint64_field.push(is.read_sint64());
                     }
                 },
                 9 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2524,12 +2537,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                         self.fixed32_field.push(is.read_fixed32());
                     }
                 },
                 10 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2537,12 +2550,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                         self.fixed64_field.push(is.read_fixed64());
                     }
                 },
                 11 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2550,12 +2563,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                         self.sfixed32_field.push(is.read_sfixed32());
                     }
                 },
                 12 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2563,12 +2576,12 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                         self.sfixed64_field.push(is.read_sfixed64());
                     }
                 },
                 13 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -2576,17 +2589,17 @@ impl Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.bool_field.push(is.read_bool());
                     }
                 },
                 14 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_string();
                     self.string_field.push(tmp);
                 },
                 15 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_bytes();
                     self.bytes_field.push(tmp);
                 },
@@ -2600,28 +2613,29 @@ impl Message for TestTypesRepeated {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         my_size += 9 * self.double_field.len() as u32;
         my_size += 5 * self.float_field.len() as u32;
         for value in self.int32_field.iter() {
-            my_size += rt::value_size(3, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.int64_field.iter() {
-            my_size += rt::value_size(4, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.uint32_field.iter() {
-            my_size += rt::value_size(5, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(5, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.uint64_field.iter() {
-            my_size += rt::value_size(6, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(6, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.sint32_field.iter() {
-            my_size += rt::value_size(7, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(7, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         for value in self.sint64_field.iter() {
-            my_size += rt::value_size(8, *value, wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(8, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += 5 * self.fixed32_field.len() as u32;
         my_size += 9 * self.fixed64_field.len() as u32;
@@ -2629,18 +2643,18 @@ impl Message for TestTypesRepeated {
         my_size += 9 * self.sfixed64_field.len() as u32;
         my_size += 2 * self.bool_field.len() as u32;
         for value in self.string_field.iter() {
-            my_size += rt::string_size(14, *value);
+            my_size += ::protobuf::rt::string_size(14, *value);
         };
         for value in self.bytes_field.iter() {
-            my_size += rt::bytes_size(15, *value);
+            my_size += ::protobuf::rt::bytes_size(15, *value);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -2650,17 +2664,17 @@ impl Message for TestTypesRepeated {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
@@ -2683,12 +2697,12 @@ pub struct TestTypesRepeatedPacked {
     bool_field: ~[bool],
     string_field: ~[~str],
     bytes_field: ~[~[u8]],
-    unknown_fields: Option<~UnknownFields>,
+    unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
 impl<'a> TestTypesRepeatedPacked {
     pub fn new() -> TestTypesRepeatedPacked {
-        Default::default()
+        ::std::default::Default::default()
     }
 
     pub fn default_instance() -> &'static TestTypesRepeatedPacked {
@@ -2717,93 +2731,94 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
         if !self.double_field.is_empty() {
-            os.write_tag(1, wire_format::WireTypeLengthDelimited);
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.double_field.len() * 8) as u32);
             for v in self.double_field.iter() {
                 os.write_double_no_tag(*v);
             };
         };
         if !self.float_field.is_empty() {
-            os.write_tag(2, wire_format::WireTypeLengthDelimited);
+            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.float_field.len() * 4) as u32);
             for v in self.float_field.iter() {
                 os.write_float_no_tag(*v);
             };
         };
         if !self.int32_field.is_empty() {
-            os.write_tag(3, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.int32_field));
+            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field));
             for v in self.int32_field.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
         if !self.int64_field.is_empty() {
-            os.write_tag(4, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.int64_field));
+            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field));
             for v in self.int64_field.iter() {
                 os.write_int64_no_tag(*v);
             };
         };
         if !self.uint32_field.is_empty() {
-            os.write_tag(5, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.uint32_field));
+            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field));
             for v in self.uint32_field.iter() {
                 os.write_uint32_no_tag(*v);
             };
         };
         if !self.uint64_field.is_empty() {
-            os.write_tag(6, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_data_size(self.uint64_field));
+            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field));
             for v in self.uint64_field.iter() {
                 os.write_uint64_no_tag(*v);
             };
         };
         if !self.sint32_field.is_empty() {
-            os.write_tag(7, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_zigzag_data_size(self.sint32_field));
+            os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field));
             for v in self.sint32_field.iter() {
                 os.write_sint32_no_tag(*v);
             };
         };
         if !self.sint64_field.is_empty() {
-            os.write_tag(8, wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(rt::vec_packed_varint_zigzag_data_size(self.sint64_field));
+            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field));
             for v in self.sint64_field.iter() {
                 os.write_sint64_no_tag(*v);
             };
         };
         if !self.fixed32_field.is_empty() {
-            os.write_tag(9, wire_format::WireTypeLengthDelimited);
+            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.fixed32_field.len() * 4) as u32);
             for v in self.fixed32_field.iter() {
                 os.write_fixed32_no_tag(*v);
             };
         };
         if !self.fixed64_field.is_empty() {
-            os.write_tag(10, wire_format::WireTypeLengthDelimited);
+            os.write_tag(10, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.fixed64_field.len() * 8) as u32);
             for v in self.fixed64_field.iter() {
                 os.write_fixed64_no_tag(*v);
             };
         };
         if !self.sfixed32_field.is_empty() {
-            os.write_tag(11, wire_format::WireTypeLengthDelimited);
+            os.write_tag(11, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.sfixed32_field.len() * 4) as u32);
             for v in self.sfixed32_field.iter() {
                 os.write_sfixed32_no_tag(*v);
             };
         };
         if !self.sfixed64_field.is_empty() {
-            os.write_tag(12, wire_format::WireTypeLengthDelimited);
+            os.write_tag(12, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.sfixed64_field.len() * 8) as u32);
             for v in self.sfixed64_field.iter() {
                 os.write_sfixed64_no_tag(*v);
             };
         };
         if !self.bool_field.is_empty() {
-            os.write_tag(13, wire_format::WireTypeLengthDelimited);
+            os.write_tag(13, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32((self.bool_field.len() * 1) as u32);
             for v in self.bool_field.iter() {
                 os.write_bool_no_tag(*v);
@@ -3149,7 +3164,7 @@ impl<'a> TestTypesRepeatedPacked {
     }
 }
 
-impl Message for TestTypesRepeatedPacked {
+impl ::protobuf::Message for TestTypesRepeatedPacked {
     fn new() -> TestTypesRepeatedPacked {
         TestTypesRepeatedPacked::new()
     }
@@ -3176,12 +3191,12 @@ impl Message for TestTypesRepeatedPacked {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) {
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
         while !is.eof() {
             let (field_number, wire_type) = is.read_tag_unpack();
             match field_number {
                 1 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3189,12 +3204,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                         self.double_field.push(is.read_double());
                     }
                 },
                 2 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3202,12 +3217,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                         self.float_field.push(is.read_float());
                     }
                 },
                 3 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3215,12 +3230,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.int32_field.push(is.read_int32());
                     }
                 },
                 4 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3228,12 +3243,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.int64_field.push(is.read_int64());
                     }
                 },
                 5 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3241,12 +3256,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.uint32_field.push(is.read_uint32());
                     }
                 },
                 6 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3254,12 +3269,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.uint64_field.push(is.read_uint64());
                     }
                 },
                 7 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3267,12 +3282,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.sint32_field.push(is.read_sint32());
                     }
                 },
                 8 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3280,12 +3295,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.sint64_field.push(is.read_sint64());
                     }
                 },
                 9 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3293,12 +3308,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                         self.fixed32_field.push(is.read_fixed32());
                     }
                 },
                 10 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3306,12 +3321,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                         self.fixed64_field.push(is.read_fixed64());
                     }
                 },
                 11 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3319,12 +3334,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed32, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
                         self.sfixed32_field.push(is.read_sfixed32());
                     }
                 },
                 12 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3332,12 +3347,12 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeFixed64, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
                         self.sfixed64_field.push(is.read_sfixed64());
                     }
                 },
                 13 => {
-                    if wire_type == wire_format::WireTypeLengthDelimited {
+                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
                         let len = is.read_raw_varint32();
                         let old_limit = is.push_limit(len);
                         while !is.eof() {
@@ -3345,17 +3360,17 @@ impl Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(wire_format::WireTypeVarint, wire_type);
+                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
                         self.bool_field.push(is.read_bool());
                     }
                 },
                 14 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_string();
                     self.string_field.push(tmp);
                 },
                 15 => {
-                    assert_eq!(wire_format::WireTypeLengthDelimited, wire_type);
+                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = is.read_bytes();
                     self.bytes_field.push(tmp);
                 },
@@ -3369,61 +3384,62 @@ impl Message for TestTypesRepeatedPacked {
 
     // Compute sizes of nested messages
     fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+        use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         if !self.double_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.double_field.len() as u32) + (self.double_field.len() * 8) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.double_field.len() as u32) + (self.double_field.len() * 8) as u32;
         };
         if !self.float_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.float_field.len() as u32) + (self.float_field.len() * 4) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.float_field.len() as u32) + (self.float_field.len() * 4) as u32;
         };
         if !self.int32_field.is_empty() {
-            my_size += rt::vec_packed_varint_size(3, self.int32_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(3, self.int32_field);
         };
         if !self.int64_field.is_empty() {
-            my_size += rt::vec_packed_varint_size(4, self.int64_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(4, self.int64_field);
         };
         if !self.uint32_field.is_empty() {
-            my_size += rt::vec_packed_varint_size(5, self.uint32_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(5, self.uint32_field);
         };
         if !self.uint64_field.is_empty() {
-            my_size += rt::vec_packed_varint_size(6, self.uint64_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(6, self.uint64_field);
         };
         if !self.sint32_field.is_empty() {
-            my_size += rt::vec_packed_varint_zigzag_size(7, self.sint32_field);
+            my_size += ::protobuf::rt::vec_packed_varint_zigzag_size(7, self.sint32_field);
         };
         if !self.sint64_field.is_empty() {
-            my_size += rt::vec_packed_varint_zigzag_size(8, self.sint64_field);
+            my_size += ::protobuf::rt::vec_packed_varint_zigzag_size(8, self.sint64_field);
         };
         if !self.fixed32_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.fixed32_field.len() as u32) + (self.fixed32_field.len() * 4) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.fixed32_field.len() as u32) + (self.fixed32_field.len() * 4) as u32;
         };
         if !self.fixed64_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.fixed64_field.len() as u32) + (self.fixed64_field.len() * 8) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.fixed64_field.len() as u32) + (self.fixed64_field.len() * 8) as u32;
         };
         if !self.sfixed32_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.sfixed32_field.len() as u32) + (self.sfixed32_field.len() * 4) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.sfixed32_field.len() as u32) + (self.sfixed32_field.len() * 4) as u32;
         };
         if !self.sfixed64_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.sfixed64_field.len() as u32) + (self.sfixed64_field.len() * 8) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.sfixed64_field.len() as u32) + (self.sfixed64_field.len() * 8) as u32;
         };
         if !self.bool_field.is_empty() {
-            my_size += 1 + rt::compute_raw_varint32_size(self.bool_field.len() as u32) + (self.bool_field.len() * 1) as u32;
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.bool_field.len() as u32) + (self.bool_field.len() * 1) as u32;
         };
         for value in self.string_field.iter() {
-            my_size += rt::string_size(14, *value);
+            my_size += ::protobuf::rt::string_size(14, *value);
         };
         for value in self.bytes_field.iter() {
-            my_size += rt::bytes_size(15, *value);
+            my_size += ::protobuf::rt::bytes_size(15, *value);
         };
-        my_size += rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
         let mut sizes: ~[u32] = ~[];
         self.compute_sizes(&mut sizes);
@@ -3433,17 +3449,17 @@ impl Message for TestTypesRepeatedPacked {
         // TODO: assert we've written same number of bytes as computed
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+    fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
         if self.unknown_fields.is_some() {
             &**self.unknown_fields.get_ref()
         } else {
-            UnknownFields::default_instance()
+            ::protobuf::UnknownFields::default_instance()
         }
     }
 
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
         if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(Default::default())
+            self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
     }
