@@ -359,7 +359,7 @@ impl<'a> IndentWriter<'a> {
     fn self_field_vec_packed_varint_data_size(&self) -> ~str {
         assert!(!self.field().is_fixed());
         let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
-        format!("rt::vec_packed_varint{}_data_size({:s})",
+        format!("::protobuf::rt::vec_packed_varint{}_data_size({:s})",
             zigzag_suffix, self.self_field())
     }
 
@@ -374,7 +374,7 @@ impl<'a> IndentWriter<'a> {
 
     fn self_field_vec_packed_fixed_size(&self) -> ~str {
         // zero is filtered outside
-        format!("{} + rt::compute_raw_varint32_size({}.len() as u32) + {}",
+        format!("{} + ::protobuf::rt::compute_raw_varint32_size({}.len() as u32) + {}",
             self.self_field_tag_size(),
             self.self_field(),
             self.self_field_vec_packed_fixed_data_size())
@@ -384,7 +384,7 @@ impl<'a> IndentWriter<'a> {
         // zero is filtered outside
         assert!(!self.field().is_fixed());
         let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
-        format!("rt::vec_packed_varint{}_size({:u}, {:s})",
+        format!("::protobuf::rt::vec_packed_varint{}_size({:u}, {:s})",
             zigzag_suffix, self.field().number, self.self_field())
     }
 
@@ -589,7 +589,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
     match repeat_mode {
         Single | RepeatRegular => {
-            w.write_line(format!("assert_eq!(wire_format::{:?}, wire_type);", wire_type));
+            w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
             match field.field_type {
                 TYPE_MESSAGE => {
                     w.write_line(format!("let mut tmp = {:s}::new();", field.type_name));
@@ -606,7 +606,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             }
         },
         RepeatPacked => {
-            w.write_line(format!("if wire_type == wire_format::{:?} \\{", wire_format::WireTypeLengthDelimited));
+            w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} \\{", wire_format::WireTypeLengthDelimited));
             w.indented(|w| {
                 w.write_line("let len = is.read_raw_varint32();");
                 w.write_line("let old_limit = is.push_limit(len);");
@@ -617,7 +617,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             });
             w.write_line("} else {");
             w.indented(|w| {
-                w.write_line(format!("assert_eq!(wire_format::{:?}, wire_type);", wire_type));
+                w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
                 w.self_field_push(*read_proc.get_ref());
             });
             w.write_line("}");
@@ -635,7 +635,7 @@ fn write_message_struct(w: &mut IndentWriter) {
                 w.field_entry(field.name, field.full_type());
             }
         });
-        w.field_entry("unknown_fields", "Option<~UnknownFields>");
+        w.field_entry("unknown_fields", "Option<~::protobuf::UnknownFields>");
     });
 }
 
@@ -645,6 +645,8 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
     // in serialization order are appended recursively.");
     w.comment("Compute sizes of nested messages");
     w.def_fn("compute_sizes(&self, sizes: &mut ~[u32]) -> u32", |w| {
+        // To have access to its methods but not polute the name space.
+        w.write_line("use protobuf::{Message};");
         w.write_line("let pos = sizes.len();");
         w.write_line("sizes.push(0);");
         w.write_line("let mut my_size = 0;");
@@ -673,24 +675,24 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                                     TYPE_MESSAGE => {
                                         w.write_line("let len = value.compute_sizes(sizes);");
                                         w.write_line(format!(
-                                                "my_size += {:u} + rt::compute_raw_varint32_size(len) + len;",
+                                                "my_size += {:u} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
                                                 w.self_field_tag_size() as uint));
                                     },
                                     TYPE_BYTES | TYPE_STRING => {
                                         let pn = protobuf_name(field.field_type);
                                         w.write_line(format!(
-                                                "my_size += rt::{:s}_size({:d}, *value);",
+                                                "my_size += ::protobuf::rt::{:s}_size({:d}, *value);",
                                                 pn,
                                                 field.number as int));
                                     },
                                     TYPE_ENUM => {
                                         w.write_line(format!(
-                                                "my_size += rt::enum_size({:d}, *value);",
+                                                "my_size += ::protobuf::rt::enum_size({:d}, *value);",
                                                 field.number as int));
                                     },
                                     _ => {
                                         w.write_line(format!(
-                                                "my_size += rt::value_size({:d}, *value, wire_format::{:?});",
+                                                "my_size += ::protobuf::rt::value_size({:d}, *value, ::protobuf::wire_format::{:?});",
                                                 field.number as int, field.wire_type));
                                     },
                                 }
@@ -706,7 +708,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                 },
             };
         });
-        w.write_line("my_size += rt::unknown_fields_size(self.get_unknown_fields());");
+        w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
         w.write_line("sizes[pos] = my_size;");
         w.comment("value is returned for convenience");
         w.write_line("my_size");
@@ -719,7 +721,9 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
         // `sizes` and `sizes_pos` are unused
         w.write_line("#[allow(unused_variable)]");
     }
-    w.pub_fn("write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
+    w.pub_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
+        // To have access to its methods but not polute the name space.
+        w.write_line("use protobuf::{Message};");
         w.fields(|w| {
             let field = w.field();
             let field_type = field.field_type;
@@ -736,7 +740,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
             };
             let write_value_lines = match field.field_type {
                 TYPE_MESSAGE => ~[
-                    format!("os.write_tag({:d}, wire_format::{:?});",
+                    format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});",
                             field_number as int, wire_format::WireTypeLengthDelimited),
                     format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
                     format!("*sizes_pos += 1;"),
@@ -757,7 +761,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
                 },
                 RepeatPacked => {
                     w.if_self_field_is_not_empty(|w| {
-                        w.write_line(format!("os.write_tag({:d}, wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
+                        w.write_line(format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
                         let data_size_expr = w.self_field_vec_packed_data_size();
                         w.write_line(format!("os.write_raw_varint32({});", data_size_expr));
                         w.for_self_field("v", |w| {
@@ -919,7 +923,7 @@ fn write_message_impl_self(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.impl_self_block(msg.type_name, |w| {
         w.pub_fn(format!("new() -> {:s}", msg.type_name), |w| {
-            w.write_line("Default::default()");
+            w.write_line("::std::default::Default::default()");
         });
 
         w.write_line("");
@@ -939,22 +943,22 @@ fn write_message_clear(w: &mut IndentWriter) {
 }
 
 fn write_message_unknown_fields(w: &mut IndentWriter) {
-    w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s UnknownFields", |w| {
+    w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields", |w| {
         w.write_line("if self.unknown_fields.is_some() {");
         w.indented(|w| {
             w.write_line("&**self.unknown_fields.get_ref()");
         });
         w.write_line("} else {");
         w.indented(|w| {
-            w.write_line("UnknownFields::default_instance()");
+            w.write_line("::protobuf::UnknownFields::default_instance()");
         });
         w.write_line("}");
     });
     w.write_line("");
-    w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields", |w| {
+    w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields", |w| {
         w.write_line("if self.unknown_fields.is_none() {");
         w.indented(|w| {
-            w.write_line("self.unknown_fields = Some(Default::default())");
+            w.write_line("self.unknown_fields = Some(::std::default::Default::default())");
         });
         w.write_line("}");
         w.write_line("&mut **self.unknown_fields.get_mut_ref()");
@@ -962,7 +966,7 @@ fn write_message_unknown_fields(w: &mut IndentWriter) {
 }
 
 fn write_message_merge_from(w: &mut IndentWriter) {
-    w.def_fn(format!("merge_from(&mut self, is: &mut CodedInputStream)"), |w| {
+    w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream)"), |w| {
         w.while_block("!is.eof()", |w| {
             w.write_line(format!("let (field_number, wire_type) = is.read_tag_unpack();"));
             w.match_block("field_number", |w| {
@@ -982,7 +986,7 @@ fn write_message_merge_from(w: &mut IndentWriter) {
 
 fn write_message_impl_message(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_for_block("Message", msg.type_name, |w| {
+    w.impl_for_block("::protobuf::Message", msg.type_name, |w| {
         w.def_fn(format!("new() -> {:s}", msg.type_name), |w| {
             w.write_line(format!("{:s}::new()", msg.type_name));
         });
@@ -1002,7 +1006,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         w.write_line("");
         write_message_compute_sizes(w);
         w.write_line("");
-        w.def_fn("write_to(&self, os: &mut CodedOutputStream)", |w| {
+        w.def_fn("write_to(&self, os: &mut ::protobuf::CodedOutputStream)", |w| {
             w.write_line("self.check_initialized();");
             w.write_line("let mut sizes: ~[u32] = ~[];");
             w.write_line("self.compute_sizes(&mut sizes);");
@@ -1061,7 +1065,7 @@ fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProt
         });
     });
     w.write_line("");
-    w.impl_for_block("ProtobufEnum", enum_type_name, |w| {
+    w.impl_for_block("::protobuf::ProtobufEnum", enum_type_name, |w| {
         w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
         });
@@ -1092,13 +1096,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
             let mut w = IndentWriter::new(&mut os as &mut Writer);
 
             w.write_line("// This file is generated. Do not edit");
-            w.write_line("");
 
-            w.write_line("use protobuf::*;");
-            w.write_line("use protobuf::rt;");
-            w.write_line("use protobuf::descriptor;");
-            w.write_line("use protobuf::lazy;");
-            w.write_line("use std::default::Default;");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
             }
@@ -1116,13 +1114,13 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
                 }
                 w.write_line("];");
                 w.write_line("");
-                w.write_line("static mut file_descriptor_proto_lazy: lazy::Lazy<descriptor::FileDescriptorProto> = lazy::Lazy { lock: lazy::ONCE_INIT, ptr: 0 as *descriptor::FileDescriptorProto };");
+                w.write_line("static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };");
                 w.write_line("");
-                w.def_fn("parse_descriptor_proto() -> descriptor::FileDescriptorProto", |w| {
-                    w.write_line("parse_from_bytes(file_descriptor_proto_data)");
+                w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
+                    w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data)");
                 });
                 w.write_line("");
-                w.pub_fn("file_descriptor_proto() -> &'static descriptor::FileDescriptorProto", |w| {
+                w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
                     w.unsafe_expr(|w| {
                         w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
                             w.write_line("parse_descriptor_proto()");
