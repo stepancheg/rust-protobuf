@@ -48,9 +48,9 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 
 #[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorRequest {
-    file_to_generate: ~[~str],
+    file_to_generate: Vec<~str>,
     parameter: Option<~str>,
-    proto_file: ~[FileDescriptorProto],
+    proto_file: Vec<FileDescriptorProto>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -63,9 +63,9 @@ impl<'a> CodeGeneratorRequest {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
-//             file_to_generate: ~[],
+//             file_to_generate: Vec::new(),
 //             parameter: None,
-//             proto_file: ~[],
+//             proto_file: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -87,7 +87,7 @@ impl<'a> CodeGeneratorRequest {
             os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -97,12 +97,12 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_file_to_generate(&mut self, v: ~[~str]) {
+    pub fn set_file_to_generate(&mut self, v: Vec<~str>) {
         self.file_to_generate = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file_to_generate(&'a mut self) -> &'a mut ~[~str] {
+    pub fn mut_file_to_generate(&'a mut self) -> &'a mut Vec<~str> {
         &mut self.file_to_generate
     }
 
@@ -148,12 +148,12 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_proto_file(&mut self, v: ~[FileDescriptorProto]) {
+    pub fn set_proto_file(&mut self, v: Vec<FileDescriptorProto>) {
         self.proto_file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&'a mut self) -> &'a mut ~[FileDescriptorProto] {
+    pub fn mut_proto_file(&'a mut self) -> &'a mut Vec<FileDescriptorProto> {
         &mut self.proto_file
     }
 
@@ -210,7 +210,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -226,17 +226,17 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -260,7 +260,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
 #[deriving(Clone,Eq,Default)]
 pub struct CodeGeneratorResponse {
     error: Option<~str>,
-    file: ~[CodeGeneratorResponse_File],
+    file: Vec<CodeGeneratorResponse_File>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -274,7 +274,7 @@ impl<'a> CodeGeneratorResponse {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
 //             error: None,
-//             file: ~[],
+//             file: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -293,7 +293,7 @@ impl<'a> CodeGeneratorResponse {
             os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -332,12 +332,12 @@ impl<'a> CodeGeneratorResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_file(&mut self, v: ~[CodeGeneratorResponse_File]) {
+    pub fn set_file(&mut self, v: Vec<CodeGeneratorResponse_File>) {
         self.file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'a mut self) -> &'a mut ~[CodeGeneratorResponse_File] {
+    pub fn mut_file(&'a mut self) -> &'a mut Vec<CodeGeneratorResponse_File> {
         &mut self.file
     }
 
@@ -388,7 +388,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -401,17 +401,17 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -610,7 +610,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -625,17 +625,17 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
             my_size += ::protobuf::rt::string_size(15, *value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }

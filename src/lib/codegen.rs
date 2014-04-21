@@ -24,7 +24,7 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         TYPE_SFIXED64 => "i64",
         TYPE_BOOL     => "bool",
         TYPE_STRING   => "~str",
-        TYPE_BYTES    => "~[u8]",
+        TYPE_BYTES    => "Vec<u8>",
         TYPE_ENUM | TYPE_GROUP | TYPE_MESSAGE => fail!()
     }
 }
@@ -156,7 +156,7 @@ impl Field {
 
     fn full_type(&self) -> ~str {
         match self.repeated {
-            true  => format!("~[{:s}]", self.type_name),
+            true  => format!("Vec<{:s}>", self.type_name),
             false => format!("Option<{:s}>", self.type_name),
         }
     }
@@ -179,7 +179,7 @@ struct Message {
     pkg: ~str,
     prefix: ~str,
     type_name: ~str,
-    fields: ~[Field],
+    fields: Vec<Field>,
 }
 
 impl<'a> Message {
@@ -213,8 +213,8 @@ impl<'a> Message {
         false
     }
 
-    fn required_fields(&'a self) -> ~[&'a Field] {
-        let mut r = ~[];
+    fn required_fields(&'a self) -> Vec<&'a Field> {
+        let mut r = Vec::new();
         for field in self.fields.iter() {
             if field.proto_field.get_label() == LABEL_REQUIRED {
                 r.push(field);
@@ -359,7 +359,7 @@ impl<'a> IndentWriter<'a> {
     fn self_field_vec_packed_varint_data_size(&self) -> ~str {
         assert!(!self.field().is_fixed());
         let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
-        format!("::protobuf::rt::vec_packed_varint{}_data_size({:s})",
+        format!("::protobuf::rt::vec_packed_varint{}_data_size({:s}.as_slice())",
             zigzag_suffix, self.self_field())
     }
 
@@ -384,7 +384,7 @@ impl<'a> IndentWriter<'a> {
         // zero is filtered outside
         assert!(!self.field().is_fixed());
         let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
-        format!("::protobuf::rt::vec_packed_varint{}_size({:u}, {:s})",
+        format!("::protobuf::rt::vec_packed_varint{}_size({:u}, {:s}.as_slice())",
             zigzag_suffix, self.field().number, self.self_field())
     }
 
@@ -401,7 +401,7 @@ impl<'a> IndentWriter<'a> {
     fn field_default(&self) {
         let init =
             if self.field().repeated {
-                "~[]"
+                "Vec::new()"
             } else {
                 "None"
             };
@@ -414,7 +414,7 @@ impl<'a> IndentWriter<'a> {
             // TODO: use hardcoded constant
             TYPE_ENUM    => format!("{:s}::new(0)", self.field().type_name),
             TYPE_STRING  => ~"~\"\"",
-            TYPE_BYTES   => ~"~[]",
+            TYPE_BYTES   => ~"Vec::new()",
             TYPE_BOOL    => ~"false",
             TYPE_FLOAT | TYPE_DOUBLE => ~"0.",
             _            => ~"0",
@@ -644,7 +644,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
     // First appended element is size of self, and then nested message sizes.
     // in serialization order are appended recursively.");
     w.comment("Compute sizes of nested messages");
-    w.def_fn("compute_sizes(&self, sizes: &mut ~[u32]) -> u32", |w| {
+    w.def_fn("compute_sizes(&self, sizes: &mut Vec<u32>) -> u32", |w| {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
         w.write_line("let pos = sizes.len();");
@@ -678,11 +678,14 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                                                 "my_size += {:u} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
                                                 w.self_field_tag_size() as uint));
                                     },
-                                    TYPE_BYTES | TYPE_STRING => {
-                                        let pn = protobuf_name(field.field_type);
+                                    TYPE_BYTES => {
                                         w.write_line(format!(
-                                                "my_size += ::protobuf::rt::{:s}_size({:d}, *value);",
-                                                pn,
+                                                "my_size += ::protobuf::rt::bytes_size({:d}, value.as_slice());",
+                                                field.number as int));
+                                    },
+                                    TYPE_STRING => {
+                                        w.write_line(format!(
+                                                "my_size += ::protobuf::rt::string_size({:d}, *value);",
                                                 field.number as int));
                                     },
                                     TYPE_ENUM => {
@@ -709,7 +712,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
             };
         });
         w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
-        w.write_line("sizes[pos] = my_size;");
+        w.write_line("*sizes.get_mut(pos) = my_size;");
         w.comment("value is returned for convenience");
         w.write_line("my_size");
     });
@@ -736,6 +739,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
             let vv = match field.field_type {
                 TYPE_MESSAGE => "v", // TODO: as &Message
                 TYPE_ENUM => "*v as i32",
+                TYPE_BYTES => "v.as_slice()",
                 _ => "*v",
             };
             let write_value_lines = match field.field_type {
@@ -744,7 +748,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
                             field_number as int, wire_format::WireTypeLengthDelimited),
                     format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
                     format!("*sizes_pos += 1;"),
-                    format!("v.write_to_with_computed_sizes(os, sizes, sizes_pos);"),
+                    format!("v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);"),
                 ],
                 _ => ~[
                     format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
@@ -1008,10 +1012,10 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         w.write_line("");
         w.def_fn("write_to(&self, os: &mut ::protobuf::CodedOutputStream)", |w| {
             w.write_line("self.check_initialized();");
-            w.write_line("let mut sizes: ~[u32] = ~[];");
+            w.write_line("let mut sizes: Vec<u32> = Vec::new();");
             w.write_line("self.compute_sizes(&mut sizes);");
             w.write_line("let mut sizes_pos = 1; // first element is self");
-            w.write_line("self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);");
+            w.write_line("self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);");
             w.write_line("assert_eq!(sizes_pos, sizes.len());");
             w.comment("TODO: assert we've written same number of bytes as computed");
         });
@@ -1078,15 +1082,15 @@ fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
 
 pub struct GenResult {
     pub name: ~str,
-    pub content: ~[u8],
+    pub content: Vec<u8>,
 }
 
 pub struct GenOptions {
     pub dummy: bool,
 }
 
-pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
-    let mut results: ~[GenResult] = ~[];
+pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
+    let mut results: Vec<GenResult> = Vec::new();
     for file in files.iter() {
         let base = proto_path_to_rust_base(file.get_name());
 
@@ -1141,7 +1145,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> ~[GenResult] {
 
         results.push(GenResult {
             name: base + ".rs",
-            content: os.vec.to_owned(),
+            content: os.vec,
         });
     }
     results

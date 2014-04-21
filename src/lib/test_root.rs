@@ -24,7 +24,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 
 #[deriving(Clone,Eq,Default)]
 pub struct Root {
-    nested: ~[Root_Nested],
+    nested: Vec<Root_Nested>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -37,7 +37,7 @@ impl<'a> Root {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: Root = Root {
-//             nested: ~[],
+//             nested: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -50,7 +50,7 @@ impl<'a> Root {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -60,12 +60,12 @@ impl<'a> Root {
     }
 
     // Param is passed by value, moved
-    pub fn set_nested(&mut self, v: ~[Root_Nested]) {
+    pub fn set_nested(&mut self, v: Vec<Root_Nested>) {
         self.nested = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested(&'a mut self) -> &'a mut ~[Root_Nested] {
+    pub fn mut_nested(&'a mut self) -> &'a mut Vec<Root_Nested> {
         &mut self.nested
     }
 
@@ -110,7 +110,7 @@ impl ::protobuf::Message for Root {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -120,17 +120,17 @@ impl ::protobuf::Message for Root {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -200,23 +200,23 @@ impl ::protobuf::Message for Root_Nested {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
