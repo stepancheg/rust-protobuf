@@ -1794,7 +1794,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 
 #[deriving(Clone,Eq,Default)]
 pub struct FileDescriptorSet {
-    file: ~[FileDescriptorProto],
+    file: Vec<FileDescriptorProto>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -1807,7 +1807,7 @@ impl<'a> FileDescriptorSet {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FileDescriptorSet = FileDescriptorSet {
-//             file: ~[],
+//             file: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -1820,7 +1820,7 @@ impl<'a> FileDescriptorSet {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -1830,12 +1830,12 @@ impl<'a> FileDescriptorSet {
     }
 
     // Param is passed by value, moved
-    pub fn set_file(&mut self, v: ~[FileDescriptorProto]) {
+    pub fn set_file(&mut self, v: Vec<FileDescriptorProto>) {
         self.file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'a mut self) -> &'a mut ~[FileDescriptorProto] {
+    pub fn mut_file(&'a mut self) -> &'a mut Vec<FileDescriptorProto> {
         &mut self.file
     }
 
@@ -1880,7 +1880,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1890,17 +1890,17 @@ impl ::protobuf::Message for FileDescriptorSet {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -1925,13 +1925,13 @@ impl ::protobuf::Message for FileDescriptorSet {
 pub struct FileDescriptorProto {
     name: Option<~str>,
     package: Option<~str>,
-    dependency: ~[~str],
-    public_dependency: ~[i32],
-    weak_dependency: ~[i32],
-    message_type: ~[DescriptorProto],
-    enum_type: ~[EnumDescriptorProto],
-    service: ~[ServiceDescriptorProto],
-    extension: ~[FieldDescriptorProto],
+    dependency: Vec<~str>,
+    public_dependency: Vec<i32>,
+    weak_dependency: Vec<i32>,
+    message_type: Vec<DescriptorProto>,
+    enum_type: Vec<EnumDescriptorProto>,
+    service: Vec<ServiceDescriptorProto>,
+    extension: Vec<FieldDescriptorProto>,
     options: Option<FileOptions>,
     source_code_info: Option<SourceCodeInfo>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1948,13 +1948,13 @@ impl<'a> FileDescriptorProto {
 //         static instance: FileDescriptorProto = FileDescriptorProto {
 //             name: None,
 //             package: None,
-//             dependency: ~[],
-//             public_dependency: ~[],
-//             weak_dependency: ~[],
-//             message_type: ~[],
-//             enum_type: ~[],
-//             service: ~[],
-//             extension: ~[],
+//             dependency: Vec::new(),
+//             public_dependency: Vec::new(),
+//             weak_dependency: Vec::new(),
+//             message_type: Vec::new(),
+//             enum_type: Vec::new(),
+//             service: Vec::new(),
+//             extension: Vec::new(),
 //             options: None,
 //             source_code_info: None,
 //             unknown_fields: None,
@@ -1990,32 +1990,32 @@ impl<'a> FileDescriptorProto {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.enum_type.iter() {
             os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.service.iter() {
             os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.extension.iter() {
             os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         match self.options {
             Some(ref v) => {
                 os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -2024,7 +2024,7 @@ impl<'a> FileDescriptorProto {
                 os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -2094,12 +2094,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_dependency(&mut self, v: ~[~str]) {
+    pub fn set_dependency(&mut self, v: Vec<~str>) {
         self.dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency(&'a mut self) -> &'a mut ~[~str] {
+    pub fn mut_dependency(&'a mut self) -> &'a mut Vec<~str> {
         &mut self.dependency
     }
 
@@ -2116,12 +2116,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_public_dependency(&mut self, v: ~[i32]) {
+    pub fn set_public_dependency(&mut self, v: Vec<i32>) {
         self.public_dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_public_dependency(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_public_dependency(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.public_dependency
     }
 
@@ -2138,12 +2138,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_weak_dependency(&mut self, v: ~[i32]) {
+    pub fn set_weak_dependency(&mut self, v: Vec<i32>) {
         self.weak_dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_weak_dependency(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_weak_dependency(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.weak_dependency
     }
 
@@ -2160,12 +2160,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_message_type(&mut self, v: ~[DescriptorProto]) {
+    pub fn set_message_type(&mut self, v: Vec<DescriptorProto>) {
         self.message_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_message_type(&'a mut self) -> &'a mut ~[DescriptorProto] {
+    pub fn mut_message_type(&'a mut self) -> &'a mut Vec<DescriptorProto> {
         &mut self.message_type
     }
 
@@ -2182,12 +2182,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_enum_type(&mut self, v: ~[EnumDescriptorProto]) {
+    pub fn set_enum_type(&mut self, v: Vec<EnumDescriptorProto>) {
         self.enum_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'a mut self) -> &'a mut ~[EnumDescriptorProto] {
+    pub fn mut_enum_type(&'a mut self) -> &'a mut Vec<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -2204,12 +2204,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_service(&mut self, v: ~[ServiceDescriptorProto]) {
+    pub fn set_service(&mut self, v: Vec<ServiceDescriptorProto>) {
         self.service = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_service(&'a mut self) -> &'a mut ~[ServiceDescriptorProto] {
+    pub fn mut_service(&'a mut self) -> &'a mut Vec<ServiceDescriptorProto> {
         &mut self.service
     }
 
@@ -2226,12 +2226,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension(&mut self, v: ~[FieldDescriptorProto]) {
+    pub fn set_extension(&mut self, v: Vec<FieldDescriptorProto>) {
         self.extension = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'a mut self) -> &'a mut ~[FieldDescriptorProto] {
+    pub fn mut_extension(&'a mut self) -> &'a mut Vec<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -2415,7 +2415,7 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2460,17 +2460,17 @@ impl ::protobuf::Message for FileDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -2494,11 +2494,11 @@ impl ::protobuf::Message for FileDescriptorProto {
 #[deriving(Clone,Eq,Default)]
 pub struct DescriptorProto {
     name: Option<~str>,
-    field: ~[FieldDescriptorProto],
-    extension: ~[FieldDescriptorProto],
-    nested_type: ~[DescriptorProto],
-    enum_type: ~[EnumDescriptorProto],
-    extension_range: ~[DescriptorProto_ExtensionRange],
+    field: Vec<FieldDescriptorProto>,
+    extension: Vec<FieldDescriptorProto>,
+    nested_type: Vec<DescriptorProto>,
+    enum_type: Vec<EnumDescriptorProto>,
+    extension_range: Vec<DescriptorProto_ExtensionRange>,
     options: Option<MessageOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -2513,11 +2513,11 @@ impl<'a> DescriptorProto {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: DescriptorProto = DescriptorProto {
 //             name: None,
-//             field: ~[],
-//             extension: ~[],
-//             nested_type: ~[],
-//             enum_type: ~[],
-//             extension_range: ~[],
+//             field: Vec::new(),
+//             extension: Vec::new(),
+//             nested_type: Vec::new(),
+//             enum_type: Vec::new(),
+//             extension_range: Vec::new(),
 //             options: None,
 //             unknown_fields: None,
 //         };
@@ -2537,38 +2537,38 @@ impl<'a> DescriptorProto {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.extension.iter() {
             os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.nested_type.iter() {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.enum_type.iter() {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         for v in self.extension_range.iter() {
             os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         match self.options {
             Some(ref v) => {
                 os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -2609,12 +2609,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_field(&mut self, v: ~[FieldDescriptorProto]) {
+    pub fn set_field(&mut self, v: Vec<FieldDescriptorProto>) {
         self.field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_field(&'a mut self) -> &'a mut ~[FieldDescriptorProto] {
+    pub fn mut_field(&'a mut self) -> &'a mut Vec<FieldDescriptorProto> {
         &mut self.field
     }
 
@@ -2631,12 +2631,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension(&mut self, v: ~[FieldDescriptorProto]) {
+    pub fn set_extension(&mut self, v: Vec<FieldDescriptorProto>) {
         self.extension = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'a mut self) -> &'a mut ~[FieldDescriptorProto] {
+    pub fn mut_extension(&'a mut self) -> &'a mut Vec<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -2653,12 +2653,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_nested_type(&mut self, v: ~[DescriptorProto]) {
+    pub fn set_nested_type(&mut self, v: Vec<DescriptorProto>) {
         self.nested_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested_type(&'a mut self) -> &'a mut ~[DescriptorProto] {
+    pub fn mut_nested_type(&'a mut self) -> &'a mut Vec<DescriptorProto> {
         &mut self.nested_type
     }
 
@@ -2675,12 +2675,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_enum_type(&mut self, v: ~[EnumDescriptorProto]) {
+    pub fn set_enum_type(&mut self, v: Vec<EnumDescriptorProto>) {
         self.enum_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'a mut self) -> &'a mut ~[EnumDescriptorProto] {
+    pub fn mut_enum_type(&'a mut self) -> &'a mut Vec<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -2697,12 +2697,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension_range(&mut self, v: ~[DescriptorProto_ExtensionRange]) {
+    pub fn set_extension_range(&mut self, v: Vec<DescriptorProto_ExtensionRange>) {
         self.extension_range = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension_range(&'a mut self) -> &'a mut ~[DescriptorProto_ExtensionRange] {
+    pub fn mut_extension_range(&'a mut self) -> &'a mut Vec<DescriptorProto_ExtensionRange> {
         &mut self.extension_range
     }
 
@@ -2817,7 +2817,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2850,17 +2850,17 @@ impl ::protobuf::Message for DescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -3010,7 +3010,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3022,17 +3022,17 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
             my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -3135,7 +3135,7 @@ impl<'a> FieldDescriptorProto {
                 os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -3440,7 +3440,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3471,17 +3471,17 @@ impl ::protobuf::Message for FieldDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -3583,7 +3583,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 #[deriving(Clone,Eq,Default)]
 pub struct EnumDescriptorProto {
     name: Option<~str>,
-    value: ~[EnumValueDescriptorProto],
+    value: Vec<EnumValueDescriptorProto>,
     options: Option<EnumOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -3598,7 +3598,7 @@ impl<'a> EnumDescriptorProto {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumDescriptorProto = EnumDescriptorProto {
 //             name: None,
-//             value: ~[],
+//             value: Vec::new(),
 //             options: None,
 //             unknown_fields: None,
 //         };
@@ -3618,14 +3618,14 @@ impl<'a> EnumDescriptorProto {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         match self.options {
             Some(ref v) => {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -3666,12 +3666,12 @@ impl<'a> EnumDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: ~[EnumValueDescriptorProto]) {
+    pub fn set_value(&mut self, v: Vec<EnumValueDescriptorProto>) {
         self.value = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_value(&'a mut self) -> &'a mut ~[EnumValueDescriptorProto] {
+    pub fn mut_value(&'a mut self) -> &'a mut Vec<EnumValueDescriptorProto> {
         &mut self.value
     }
 
@@ -3758,7 +3758,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3775,17 +3775,17 @@ impl ::protobuf::Message for EnumDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -3848,7 +3848,7 @@ impl<'a> EnumValueDescriptorProto {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -3984,7 +3984,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -4000,17 +4000,17 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -4034,7 +4034,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
 #[deriving(Clone,Eq,Default)]
 pub struct ServiceDescriptorProto {
     name: Option<~str>,
-    method: ~[MethodDescriptorProto],
+    method: Vec<MethodDescriptorProto>,
     options: Option<ServiceOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -4049,7 +4049,7 @@ impl<'a> ServiceDescriptorProto {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
 //             name: None,
-//             method: ~[],
+//             method: Vec::new(),
 //             options: None,
 //             unknown_fields: None,
 //         };
@@ -4069,14 +4069,14 @@ impl<'a> ServiceDescriptorProto {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         match self.options {
             Some(ref v) => {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -4117,12 +4117,12 @@ impl<'a> ServiceDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_method(&mut self, v: ~[MethodDescriptorProto]) {
+    pub fn set_method(&mut self, v: Vec<MethodDescriptorProto>) {
         self.method = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_method(&'a mut self) -> &'a mut ~[MethodDescriptorProto] {
+    pub fn mut_method(&'a mut self) -> &'a mut Vec<MethodDescriptorProto> {
         &mut self.method
     }
 
@@ -4209,7 +4209,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -4226,17 +4226,17 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -4307,7 +4307,7 @@ impl<'a> MethodDescriptorProto {
                 os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -4481,7 +4481,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -4500,17 +4500,17 @@ impl ::protobuf::Message for MethodDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -4542,7 +4542,7 @@ pub struct FileOptions {
     cc_generic_services: Option<bool>,
     java_generic_services: Option<bool>,
     py_generic_services: Option<bool>,
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -4564,7 +4564,7 @@ impl<'a> FileOptions {
 //             cc_generic_services: None,
 //             java_generic_services: None,
 //             py_generic_services: None,
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -4631,7 +4631,7 @@ impl<'a> FileOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -4884,12 +4884,12 @@ impl<'a> FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4988,7 +4988,7 @@ impl ::protobuf::Message for FileOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5025,17 +5025,17 @@ impl ::protobuf::Message for FileOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -5084,7 +5084,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
 pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -5099,7 +5099,7 @@ impl<'a> MessageOptions {
 //         static instance: MessageOptions = MessageOptions {
 //             message_set_wire_format: None,
 //             no_standard_descriptor_accessor: None,
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -5124,7 +5124,7 @@ impl<'a> MessageOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -5186,12 +5186,12 @@ impl<'a> MessageOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5248,7 +5248,7 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5264,17 +5264,17 @@ impl ::protobuf::Message for MessageOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -5303,7 +5303,7 @@ pub struct FieldOptions {
     deprecated: Option<bool>,
     experimental_map_key: Option<~str>,
     weak: Option<bool>,
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -5322,7 +5322,7 @@ impl<'a> FieldOptions {
 //             deprecated: None,
 //             experimental_map_key: None,
 //             weak: None,
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -5371,7 +5371,7 @@ impl<'a> FieldOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -5540,12 +5540,12 @@ impl<'a> FieldOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5626,7 +5626,7 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5654,17 +5654,17 @@ impl ::protobuf::Message for FieldOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -5712,7 +5712,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 #[deriving(Clone,Eq,Default)]
 pub struct EnumOptions {
     allow_alias: Option<bool>,
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -5726,7 +5726,7 @@ impl<'a> EnumOptions {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumOptions = EnumOptions {
 //             allow_alias: None,
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -5745,7 +5745,7 @@ impl<'a> EnumOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -5781,12 +5781,12 @@ impl<'a> EnumOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5837,7 +5837,7 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5850,17 +5850,17 @@ impl ::protobuf::Message for EnumOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -5883,7 +5883,7 @@ impl ::protobuf::Message for EnumOptions {
 
 #[deriving(Clone,Eq,Default)]
 pub struct EnumValueOptions {
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -5896,7 +5896,7 @@ impl<'a> EnumValueOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumValueOptions = EnumValueOptions {
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -5909,7 +5909,7 @@ impl<'a> EnumValueOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -5919,12 +5919,12 @@ impl<'a> EnumValueOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5969,7 +5969,7 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5979,17 +5979,17 @@ impl ::protobuf::Message for EnumValueOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -6012,7 +6012,7 @@ impl ::protobuf::Message for EnumValueOptions {
 
 #[deriving(Clone,Eq,Default)]
 pub struct ServiceOptions {
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -6025,7 +6025,7 @@ impl<'a> ServiceOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceOptions = ServiceOptions {
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -6038,7 +6038,7 @@ impl<'a> ServiceOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -6048,12 +6048,12 @@ impl<'a> ServiceOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -6098,7 +6098,7 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6108,17 +6108,17 @@ impl ::protobuf::Message for ServiceOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -6141,7 +6141,7 @@ impl ::protobuf::Message for ServiceOptions {
 
 #[deriving(Clone,Eq,Default)]
 pub struct MethodOptions {
-    uninterpreted_option: ~[UninterpretedOption],
+    uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -6154,7 +6154,7 @@ impl<'a> MethodOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: MethodOptions = MethodOptions {
-//             uninterpreted_option: ~[],
+//             uninterpreted_option: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -6167,7 +6167,7 @@ impl<'a> MethodOptions {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -6177,12 +6177,12 @@ impl<'a> MethodOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ~[UninterpretedOption]) {
+    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ~[UninterpretedOption] {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -6227,7 +6227,7 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6237,17 +6237,17 @@ impl ::protobuf::Message for MethodOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -6270,12 +6270,12 @@ impl ::protobuf::Message for MethodOptions {
 
 #[deriving(Clone,Eq,Default)]
 pub struct UninterpretedOption {
-    name: ~[UninterpretedOption_NamePart],
+    name: Vec<UninterpretedOption_NamePart>,
     identifier_value: Option<~str>,
     positive_int_value: Option<u64>,
     negative_int_value: Option<i64>,
     double_value: Option<f64>,
-    string_value: Option<~[u8]>,
+    string_value: Option<Vec<u8>>,
     aggregate_value: Option<~str>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -6289,7 +6289,7 @@ impl<'a> UninterpretedOption {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: UninterpretedOption = UninterpretedOption {
-//             name: ~[],
+//             name: Vec::new(),
 //             identifier_value: None,
 //             positive_int_value: None,
 //             negative_int_value: None,
@@ -6308,7 +6308,7 @@ impl<'a> UninterpretedOption {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         match self.identifier_value {
             Some(ref v) => {
@@ -6336,7 +6336,7 @@ impl<'a> UninterpretedOption {
         };
         match self.string_value {
             Some(ref v) => {
-                os.write_bytes(7, *v);
+                os.write_bytes(7, v.as_slice());
             },
             None => {},
         };
@@ -6354,12 +6354,12 @@ impl<'a> UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ~[UninterpretedOption_NamePart]) {
+    pub fn set_name(&mut self, v: Vec<UninterpretedOption_NamePart>) {
         self.name = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_name(&'a mut self) -> &'a mut ~[UninterpretedOption_NamePart] {
+    pub fn mut_name(&'a mut self) -> &'a mut Vec<UninterpretedOption_NamePart> {
         &mut self.name
     }
 
@@ -6487,15 +6487,15 @@ impl<'a> UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_value(&mut self, v: ~[u8]) {
+    pub fn set_string_value(&mut self, v: Vec<u8>) {
         self.string_value = Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_value(&'a mut self) -> &'a mut ~[u8] {
+    pub fn mut_string_value(&'a mut self) -> &'a mut Vec<u8> {
         if self.string_value.is_none() {
-            self.string_value = Some(~[]);
+            self.string_value = Some(Vec::new());
         };
         self.string_value.get_mut_ref()
     }
@@ -6605,7 +6605,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6627,23 +6627,23 @@ impl ::protobuf::Message for UninterpretedOption {
             my_size += 9;
         };
         for value in self.string_value.iter() {
-            my_size += ::protobuf::rt::bytes_size(7, *value);
+            my_size += ::protobuf::rt::bytes_size(7, value.as_slice());
         };
         for value in self.aggregate_value.iter() {
             my_size += ::protobuf::rt::string_size(8, *value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -6802,7 +6802,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6814,17 +6814,17 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
             my_size += 2;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -6847,7 +6847,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
 
 #[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo {
-    location: ~[SourceCodeInfo_Location],
+    location: Vec<SourceCodeInfo_Location>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -6860,7 +6860,7 @@ impl<'a> SourceCodeInfo {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: SourceCodeInfo = SourceCodeInfo {
-//             location: ~[],
+//             location: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -6873,7 +6873,7 @@ impl<'a> SourceCodeInfo {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
             os.write_raw_varint32(sizes[*sizes_pos]);
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -6883,12 +6883,12 @@ impl<'a> SourceCodeInfo {
     }
 
     // Param is passed by value, moved
-    pub fn set_location(&mut self, v: ~[SourceCodeInfo_Location]) {
+    pub fn set_location(&mut self, v: Vec<SourceCodeInfo_Location>) {
         self.location = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_location(&'a mut self) -> &'a mut ~[SourceCodeInfo_Location] {
+    pub fn mut_location(&'a mut self) -> &'a mut Vec<SourceCodeInfo_Location> {
         &mut self.location
     }
 
@@ -6933,7 +6933,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6943,17 +6943,17 @@ impl ::protobuf::Message for SourceCodeInfo {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -6976,8 +6976,8 @@ impl ::protobuf::Message for SourceCodeInfo {
 
 #[deriving(Clone,Eq,Default)]
 pub struct SourceCodeInfo_Location {
-    path: ~[i32],
-    span: ~[i32],
+    path: Vec<i32>,
+    span: Vec<i32>,
     leading_comments: Option<~str>,
     trailing_comments: Option<~str>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -6992,8 +6992,8 @@ impl<'a> SourceCodeInfo_Location {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: SourceCodeInfo_Location = SourceCodeInfo_Location {
-//             path: ~[],
-//             span: ~[],
+//             path: Vec::new(),
+//             span: Vec::new(),
 //             leading_comments: None,
 //             trailing_comments: None,
 //             unknown_fields: None,
@@ -7007,14 +7007,14 @@ impl<'a> SourceCodeInfo_Location {
         use protobuf::{Message};
         if !self.path.is_empty() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.path));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.path.as_slice()));
             for v in self.path.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
         if !self.span.is_empty() {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.span));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.span.as_slice()));
             for v in self.span.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -7039,12 +7039,12 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: ~[i32]) {
+    pub fn set_path(&mut self, v: Vec<i32>) {
         self.path = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_path(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_path(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.path
     }
 
@@ -7061,12 +7061,12 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_span(&mut self, v: ~[i32]) {
+    pub fn set_span(&mut self, v: Vec<i32>) {
         self.span = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_span(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_span(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.span
     }
 
@@ -7202,16 +7202,16 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         if !self.path.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, self.path);
+            my_size += ::protobuf::rt::vec_packed_varint_size(1, self.path.as_slice());
         };
         if !self.span.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(2, self.span);
+            my_size += ::protobuf::rt::vec_packed_varint_size(2, self.span.as_slice());
         };
         for value in self.leading_comments.iter() {
             my_size += ::protobuf::rt::string_size(3, *value);
@@ -7220,17 +7220,17 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             my_size += ::protobuf::rt::string_size(4, *value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }

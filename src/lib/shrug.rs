@@ -635,7 +635,7 @@ impl ::protobuf::Message for Test1 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -644,17 +644,17 @@ impl ::protobuf::Message for Test1 {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -770,7 +770,7 @@ impl ::protobuf::Message for Test2 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -779,17 +779,17 @@ impl ::protobuf::Message for Test2 {
             my_size += ::protobuf::rt::string_size(2, *value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -836,7 +836,7 @@ impl<'a> Test3 {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes, sizes_pos);
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
             },
             None => {},
         };
@@ -908,7 +908,7 @@ impl ::protobuf::Message for Test3 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -918,17 +918,17 @@ impl ::protobuf::Message for Test3 {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -951,7 +951,7 @@ impl ::protobuf::Message for Test3 {
 
 #[deriving(Clone,Eq,Default)]
 pub struct Test4 {
-    d: ~[i32],
+    d: Vec<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -964,7 +964,7 @@ impl<'a> Test4 {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: Test4 = Test4 {
-//             d: ~[],
+//             d: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -976,7 +976,7 @@ impl<'a> Test4 {
         use protobuf::{Message};
         if !self.d.is_empty() {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d.as_slice()));
             for v in self.d.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -989,12 +989,12 @@ impl<'a> Test4 {
     }
 
     // Param is passed by value, moved
-    pub fn set_d(&mut self, v: ~[i32]) {
+    pub fn set_d(&mut self, v: Vec<i32>) {
         self.d = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_d(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_d(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.d
     }
 
@@ -1046,26 +1046,26 @@ impl ::protobuf::Message for Test4 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
         let mut my_size = 0;
         if !self.d.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(4, self.d);
+            my_size += ::protobuf::rt::vec_packed_varint_size(4, self.d.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -1088,8 +1088,8 @@ impl ::protobuf::Message for Test4 {
 
 #[deriving(Clone,Eq,Default)]
 pub struct TestPackedUnpacked {
-    unpacked: ~[i32],
-    packed: ~[i32],
+    unpacked: Vec<i32>,
+    packed: Vec<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -1102,8 +1102,8 @@ impl<'a> TestPackedUnpacked {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: TestPackedUnpacked = TestPackedUnpacked {
-//             unpacked: ~[],
-//             packed: ~[],
+//             unpacked: Vec::new(),
+//             packed: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -1118,7 +1118,7 @@ impl<'a> TestPackedUnpacked {
         };
         if !self.packed.is_empty() {
             os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed.as_slice()));
             for v in self.packed.iter() {
                 os.write_int32_no_tag(*v);
             };
@@ -1131,12 +1131,12 @@ impl<'a> TestPackedUnpacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_unpacked(&mut self, v: ~[i32]) {
+    pub fn set_unpacked(&mut self, v: Vec<i32>) {
         self.unpacked = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_unpacked(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_unpacked(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.unpacked
     }
 
@@ -1153,12 +1153,12 @@ impl<'a> TestPackedUnpacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_packed(&mut self, v: ~[i32]) {
+    pub fn set_packed(&mut self, v: Vec<i32>) {
         self.packed = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_packed(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_packed(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.packed
     }
 
@@ -1224,7 +1224,7 @@ impl ::protobuf::Message for TestPackedUnpacked {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1233,20 +1233,20 @@ impl ::protobuf::Message for TestPackedUnpacked {
             my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         if !self.packed.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(5, self.packed);
+            my_size += ::protobuf::rt::vec_packed_varint_size(5, self.packed.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -1356,7 +1356,7 @@ impl ::protobuf::Message for TestEmpty {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1365,17 +1365,17 @@ impl ::protobuf::Message for TestEmpty {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -1488,7 +1488,7 @@ impl ::protobuf::Message for TestRequired {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1497,17 +1497,17 @@ impl ::protobuf::Message for TestRequired {
             my_size += 2;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -1620,7 +1620,7 @@ impl ::protobuf::Message for TestUnknownFields {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1629,17 +1629,17 @@ impl ::protobuf::Message for TestUnknownFields {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -1676,7 +1676,7 @@ pub struct TestTypesSingular {
     sfixed64_field: Option<i64>,
     bool_field: Option<bool>,
     string_field: Option<~str>,
-    bytes_field: Option<~[u8]>,
+    bytes_field: Option<Vec<u8>>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -1796,7 +1796,7 @@ impl<'a> TestTypesSingular {
         };
         match self.bytes_field {
             Some(ref v) => {
-                os.write_bytes(15, *v);
+                os.write_bytes(15, v.as_slice());
             },
             None => {},
         };
@@ -2179,15 +2179,15 @@ impl<'a> TestTypesSingular {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: ~[u8]) {
+    pub fn set_bytes_field(&mut self, v: Vec<u8>) {
         self.bytes_field = Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut ~[u8] {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut Vec<u8> {
         if self.bytes_field.is_none() {
-            self.bytes_field = Some(~[]);
+            self.bytes_field = Some(Vec::new());
         };
         self.bytes_field.get_mut_ref()
     }
@@ -2315,7 +2315,7 @@ impl ::protobuf::Message for TestTypesSingular {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2363,20 +2363,20 @@ impl ::protobuf::Message for TestTypesSingular {
             my_size += ::protobuf::rt::string_size(14, *value);
         };
         for value in self.bytes_field.iter() {
-            my_size += ::protobuf::rt::bytes_size(15, *value);
+            my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -2399,21 +2399,21 @@ impl ::protobuf::Message for TestTypesSingular {
 
 #[deriving(Clone,Eq,Default)]
 pub struct TestTypesRepeated {
-    double_field: ~[f64],
-    float_field: ~[f32],
-    int32_field: ~[i32],
-    int64_field: ~[i64],
-    uint32_field: ~[u32],
-    uint64_field: ~[u64],
-    sint32_field: ~[i32],
-    sint64_field: ~[i64],
-    fixed32_field: ~[u32],
-    fixed64_field: ~[u64],
-    sfixed32_field: ~[i32],
-    sfixed64_field: ~[i64],
-    bool_field: ~[bool],
-    string_field: ~[~str],
-    bytes_field: ~[~[u8]],
+    double_field: Vec<f64>,
+    float_field: Vec<f32>,
+    int32_field: Vec<i32>,
+    int64_field: Vec<i64>,
+    uint32_field: Vec<u32>,
+    uint64_field: Vec<u64>,
+    sint32_field: Vec<i32>,
+    sint64_field: Vec<i64>,
+    fixed32_field: Vec<u32>,
+    fixed64_field: Vec<u64>,
+    sfixed32_field: Vec<i32>,
+    sfixed64_field: Vec<i64>,
+    bool_field: Vec<bool>,
+    string_field: Vec<~str>,
+    bytes_field: Vec<Vec<u8>>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -2426,21 +2426,21 @@ impl<'a> TestTypesRepeated {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: TestTypesRepeated = TestTypesRepeated {
-//             double_field: ~[],
-//             float_field: ~[],
-//             int32_field: ~[],
-//             int64_field: ~[],
-//             uint32_field: ~[],
-//             uint64_field: ~[],
-//             sint32_field: ~[],
-//             sint64_field: ~[],
-//             fixed32_field: ~[],
-//             fixed64_field: ~[],
-//             sfixed32_field: ~[],
-//             sfixed64_field: ~[],
-//             bool_field: ~[],
-//             string_field: ~[],
-//             bytes_field: ~[],
+//             double_field: Vec::new(),
+//             float_field: Vec::new(),
+//             int32_field: Vec::new(),
+//             int64_field: Vec::new(),
+//             uint32_field: Vec::new(),
+//             uint64_field: Vec::new(),
+//             sint32_field: Vec::new(),
+//             sint64_field: Vec::new(),
+//             fixed32_field: Vec::new(),
+//             fixed64_field: Vec::new(),
+//             sfixed32_field: Vec::new(),
+//             sfixed64_field: Vec::new(),
+//             bool_field: Vec::new(),
+//             string_field: Vec::new(),
+//             bytes_field: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -2493,7 +2493,7 @@ impl<'a> TestTypesRepeated {
             os.write_string(14, *v);
         };
         for v in self.bytes_field.iter() {
-            os.write_bytes(15, *v);
+            os.write_bytes(15, v.as_slice());
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -2503,12 +2503,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_double_field(&mut self, v: ~[f64]) {
+    pub fn set_double_field(&mut self, v: Vec<f64>) {
         self.double_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_double_field(&'a mut self) -> &'a mut ~[f64] {
+    pub fn mut_double_field(&'a mut self) -> &'a mut Vec<f64> {
         &mut self.double_field
     }
 
@@ -2525,12 +2525,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_float_field(&mut self, v: ~[f32]) {
+    pub fn set_float_field(&mut self, v: Vec<f32>) {
         self.float_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_float_field(&'a mut self) -> &'a mut ~[f32] {
+    pub fn mut_float_field(&'a mut self) -> &'a mut Vec<f32> {
         &mut self.float_field
     }
 
@@ -2547,12 +2547,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_int32_field(&mut self, v: ~[i32]) {
+    pub fn set_int32_field(&mut self, v: Vec<i32>) {
         self.int32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int32_field(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_int32_field(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.int32_field
     }
 
@@ -2569,12 +2569,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_int64_field(&mut self, v: ~[i64]) {
+    pub fn set_int64_field(&mut self, v: Vec<i64>) {
         self.int64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int64_field(&'a mut self) -> &'a mut ~[i64] {
+    pub fn mut_int64_field(&'a mut self) -> &'a mut Vec<i64> {
         &mut self.int64_field
     }
 
@@ -2591,12 +2591,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint32_field(&mut self, v: ~[u32]) {
+    pub fn set_uint32_field(&mut self, v: Vec<u32>) {
         self.uint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint32_field(&'a mut self) -> &'a mut ~[u32] {
+    pub fn mut_uint32_field(&'a mut self) -> &'a mut Vec<u32> {
         &mut self.uint32_field
     }
 
@@ -2613,12 +2613,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint64_field(&mut self, v: ~[u64]) {
+    pub fn set_uint64_field(&mut self, v: Vec<u64>) {
         self.uint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint64_field(&'a mut self) -> &'a mut ~[u64] {
+    pub fn mut_uint64_field(&'a mut self) -> &'a mut Vec<u64> {
         &mut self.uint64_field
     }
 
@@ -2635,12 +2635,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint32_field(&mut self, v: ~[i32]) {
+    pub fn set_sint32_field(&mut self, v: Vec<i32>) {
         self.sint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint32_field(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_sint32_field(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.sint32_field
     }
 
@@ -2657,12 +2657,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint64_field(&mut self, v: ~[i64]) {
+    pub fn set_sint64_field(&mut self, v: Vec<i64>) {
         self.sint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint64_field(&'a mut self) -> &'a mut ~[i64] {
+    pub fn mut_sint64_field(&'a mut self) -> &'a mut Vec<i64> {
         &mut self.sint64_field
     }
 
@@ -2679,12 +2679,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed32_field(&mut self, v: ~[u32]) {
+    pub fn set_fixed32_field(&mut self, v: Vec<u32>) {
         self.fixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed32_field(&'a mut self) -> &'a mut ~[u32] {
+    pub fn mut_fixed32_field(&'a mut self) -> &'a mut Vec<u32> {
         &mut self.fixed32_field
     }
 
@@ -2701,12 +2701,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed64_field(&mut self, v: ~[u64]) {
+    pub fn set_fixed64_field(&mut self, v: Vec<u64>) {
         self.fixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed64_field(&'a mut self) -> &'a mut ~[u64] {
+    pub fn mut_fixed64_field(&'a mut self) -> &'a mut Vec<u64> {
         &mut self.fixed64_field
     }
 
@@ -2723,12 +2723,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed32_field(&mut self, v: ~[i32]) {
+    pub fn set_sfixed32_field(&mut self, v: Vec<i32>) {
         self.sfixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.sfixed32_field
     }
 
@@ -2745,12 +2745,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed64_field(&mut self, v: ~[i64]) {
+    pub fn set_sfixed64_field(&mut self, v: Vec<i64>) {
         self.sfixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut ~[i64] {
+    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut Vec<i64> {
         &mut self.sfixed64_field
     }
 
@@ -2767,12 +2767,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_bool_field(&mut self, v: ~[bool]) {
+    pub fn set_bool_field(&mut self, v: Vec<bool>) {
         self.bool_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bool_field(&'a mut self) -> &'a mut ~[bool] {
+    pub fn mut_bool_field(&'a mut self) -> &'a mut Vec<bool> {
         &mut self.bool_field
     }
 
@@ -2789,12 +2789,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: ~[~str]) {
+    pub fn set_string_field(&mut self, v: Vec<~str>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut ~[~str] {
+    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<~str> {
         &mut self.string_field
     }
 
@@ -2811,20 +2811,20 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: ~[~[u8]]) {
+    pub fn set_bytes_field(&mut self, v: Vec<Vec<u8>>) {
         self.bytes_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut ~[~[u8]] {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut Vec<Vec<u8>> {
         &mut self.bytes_field
     }
 
-    pub fn get_bytes_field(&'a self) -> &'a [~[u8]] {
+    pub fn get_bytes_field(&'a self) -> &'a [Vec<u8>] {
         self.bytes_field.as_slice()
     }
 
-    pub fn add_bytes_field(&mut self, v: ~[u8]) {
+    pub fn add_bytes_field(&mut self, v: Vec<u8>) {
         self.bytes_field.push(v);
     }
 }
@@ -3048,7 +3048,7 @@ impl ::protobuf::Message for TestTypesRepeated {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3082,20 +3082,20 @@ impl ::protobuf::Message for TestTypesRepeated {
             my_size += ::protobuf::rt::string_size(14, *value);
         };
         for value in self.bytes_field.iter() {
-            my_size += ::protobuf::rt::bytes_size(15, *value);
+            my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }
@@ -3118,21 +3118,21 @@ impl ::protobuf::Message for TestTypesRepeated {
 
 #[deriving(Clone,Eq,Default)]
 pub struct TestTypesRepeatedPacked {
-    double_field: ~[f64],
-    float_field: ~[f32],
-    int32_field: ~[i32],
-    int64_field: ~[i64],
-    uint32_field: ~[u32],
-    uint64_field: ~[u64],
-    sint32_field: ~[i32],
-    sint64_field: ~[i64],
-    fixed32_field: ~[u32],
-    fixed64_field: ~[u64],
-    sfixed32_field: ~[i32],
-    sfixed64_field: ~[i64],
-    bool_field: ~[bool],
-    string_field: ~[~str],
-    bytes_field: ~[~[u8]],
+    double_field: Vec<f64>,
+    float_field: Vec<f32>,
+    int32_field: Vec<i32>,
+    int64_field: Vec<i64>,
+    uint32_field: Vec<u32>,
+    uint64_field: Vec<u64>,
+    sint32_field: Vec<i32>,
+    sint64_field: Vec<i64>,
+    fixed32_field: Vec<u32>,
+    fixed64_field: Vec<u64>,
+    sfixed32_field: Vec<i32>,
+    sfixed64_field: Vec<i64>,
+    bool_field: Vec<bool>,
+    string_field: Vec<~str>,
+    bytes_field: Vec<Vec<u8>>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -3145,21 +3145,21 @@ impl<'a> TestTypesRepeatedPacked {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: TestTypesRepeatedPacked = TestTypesRepeatedPacked {
-//             double_field: ~[],
-//             float_field: ~[],
-//             int32_field: ~[],
-//             int64_field: ~[],
-//             uint32_field: ~[],
-//             uint64_field: ~[],
-//             sint32_field: ~[],
-//             sint64_field: ~[],
-//             fixed32_field: ~[],
-//             fixed64_field: ~[],
-//             sfixed32_field: ~[],
-//             sfixed64_field: ~[],
-//             bool_field: ~[],
-//             string_field: ~[],
-//             bytes_field: ~[],
+//             double_field: Vec::new(),
+//             float_field: Vec::new(),
+//             int32_field: Vec::new(),
+//             int64_field: Vec::new(),
+//             uint32_field: Vec::new(),
+//             uint64_field: Vec::new(),
+//             sint32_field: Vec::new(),
+//             sint64_field: Vec::new(),
+//             fixed32_field: Vec::new(),
+//             fixed64_field: Vec::new(),
+//             sfixed32_field: Vec::new(),
+//             sfixed64_field: Vec::new(),
+//             bool_field: Vec::new(),
+//             string_field: Vec::new(),
+//             bytes_field: Vec::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -3185,42 +3185,42 @@ impl<'a> TestTypesRepeatedPacked {
         };
         if !self.int32_field.is_empty() {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field.as_slice()));
             for v in self.int32_field.iter() {
                 os.write_int32_no_tag(*v);
             };
         };
         if !self.int64_field.is_empty() {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field.as_slice()));
             for v in self.int64_field.iter() {
                 os.write_int64_no_tag(*v);
             };
         };
         if !self.uint32_field.is_empty() {
             os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field.as_slice()));
             for v in self.uint32_field.iter() {
                 os.write_uint32_no_tag(*v);
             };
         };
         if !self.uint64_field.is_empty() {
             os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field.as_slice()));
             for v in self.uint64_field.iter() {
                 os.write_uint64_no_tag(*v);
             };
         };
         if !self.sint32_field.is_empty() {
             os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field.as_slice()));
             for v in self.sint32_field.iter() {
                 os.write_sint32_no_tag(*v);
             };
         };
         if !self.sint64_field.is_empty() {
             os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field));
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field.as_slice()));
             for v in self.sint64_field.iter() {
                 os.write_sint64_no_tag(*v);
             };
@@ -3264,7 +3264,7 @@ impl<'a> TestTypesRepeatedPacked {
             os.write_string(14, *v);
         };
         for v in self.bytes_field.iter() {
-            os.write_bytes(15, *v);
+            os.write_bytes(15, v.as_slice());
         };
         os.write_unknown_fields(self.get_unknown_fields());
     }
@@ -3274,12 +3274,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_double_field(&mut self, v: ~[f64]) {
+    pub fn set_double_field(&mut self, v: Vec<f64>) {
         self.double_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_double_field(&'a mut self) -> &'a mut ~[f64] {
+    pub fn mut_double_field(&'a mut self) -> &'a mut Vec<f64> {
         &mut self.double_field
     }
 
@@ -3296,12 +3296,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_float_field(&mut self, v: ~[f32]) {
+    pub fn set_float_field(&mut self, v: Vec<f32>) {
         self.float_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_float_field(&'a mut self) -> &'a mut ~[f32] {
+    pub fn mut_float_field(&'a mut self) -> &'a mut Vec<f32> {
         &mut self.float_field
     }
 
@@ -3318,12 +3318,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_int32_field(&mut self, v: ~[i32]) {
+    pub fn set_int32_field(&mut self, v: Vec<i32>) {
         self.int32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int32_field(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_int32_field(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.int32_field
     }
 
@@ -3340,12 +3340,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_int64_field(&mut self, v: ~[i64]) {
+    pub fn set_int64_field(&mut self, v: Vec<i64>) {
         self.int64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int64_field(&'a mut self) -> &'a mut ~[i64] {
+    pub fn mut_int64_field(&'a mut self) -> &'a mut Vec<i64> {
         &mut self.int64_field
     }
 
@@ -3362,12 +3362,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint32_field(&mut self, v: ~[u32]) {
+    pub fn set_uint32_field(&mut self, v: Vec<u32>) {
         self.uint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint32_field(&'a mut self) -> &'a mut ~[u32] {
+    pub fn mut_uint32_field(&'a mut self) -> &'a mut Vec<u32> {
         &mut self.uint32_field
     }
 
@@ -3384,12 +3384,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint64_field(&mut self, v: ~[u64]) {
+    pub fn set_uint64_field(&mut self, v: Vec<u64>) {
         self.uint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint64_field(&'a mut self) -> &'a mut ~[u64] {
+    pub fn mut_uint64_field(&'a mut self) -> &'a mut Vec<u64> {
         &mut self.uint64_field
     }
 
@@ -3406,12 +3406,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint32_field(&mut self, v: ~[i32]) {
+    pub fn set_sint32_field(&mut self, v: Vec<i32>) {
         self.sint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint32_field(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_sint32_field(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.sint32_field
     }
 
@@ -3428,12 +3428,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint64_field(&mut self, v: ~[i64]) {
+    pub fn set_sint64_field(&mut self, v: Vec<i64>) {
         self.sint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint64_field(&'a mut self) -> &'a mut ~[i64] {
+    pub fn mut_sint64_field(&'a mut self) -> &'a mut Vec<i64> {
         &mut self.sint64_field
     }
 
@@ -3450,12 +3450,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed32_field(&mut self, v: ~[u32]) {
+    pub fn set_fixed32_field(&mut self, v: Vec<u32>) {
         self.fixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed32_field(&'a mut self) -> &'a mut ~[u32] {
+    pub fn mut_fixed32_field(&'a mut self) -> &'a mut Vec<u32> {
         &mut self.fixed32_field
     }
 
@@ -3472,12 +3472,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed64_field(&mut self, v: ~[u64]) {
+    pub fn set_fixed64_field(&mut self, v: Vec<u64>) {
         self.fixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed64_field(&'a mut self) -> &'a mut ~[u64] {
+    pub fn mut_fixed64_field(&'a mut self) -> &'a mut Vec<u64> {
         &mut self.fixed64_field
     }
 
@@ -3494,12 +3494,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed32_field(&mut self, v: ~[i32]) {
+    pub fn set_sfixed32_field(&mut self, v: Vec<i32>) {
         self.sfixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut ~[i32] {
+    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut Vec<i32> {
         &mut self.sfixed32_field
     }
 
@@ -3516,12 +3516,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed64_field(&mut self, v: ~[i64]) {
+    pub fn set_sfixed64_field(&mut self, v: Vec<i64>) {
         self.sfixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut ~[i64] {
+    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut Vec<i64> {
         &mut self.sfixed64_field
     }
 
@@ -3538,12 +3538,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_bool_field(&mut self, v: ~[bool]) {
+    pub fn set_bool_field(&mut self, v: Vec<bool>) {
         self.bool_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bool_field(&'a mut self) -> &'a mut ~[bool] {
+    pub fn mut_bool_field(&'a mut self) -> &'a mut Vec<bool> {
         &mut self.bool_field
     }
 
@@ -3560,12 +3560,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: ~[~str]) {
+    pub fn set_string_field(&mut self, v: Vec<~str>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut ~[~str] {
+    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<~str> {
         &mut self.string_field
     }
 
@@ -3582,20 +3582,20 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: ~[~[u8]]) {
+    pub fn set_bytes_field(&mut self, v: Vec<Vec<u8>>) {
         self.bytes_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut ~[~[u8]] {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut Vec<Vec<u8>> {
         &mut self.bytes_field
     }
 
-    pub fn get_bytes_field(&'a self) -> &'a [~[u8]] {
+    pub fn get_bytes_field(&'a self) -> &'a [Vec<u8>] {
         self.bytes_field.as_slice()
     }
 
-    pub fn add_bytes_field(&mut self, v: ~[u8]) {
+    pub fn add_bytes_field(&mut self, v: Vec<u8>) {
         self.bytes_field.push(v);
     }
 }
@@ -3819,7 +3819,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32 {
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3831,22 +3831,22 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.float_field.len() as u32) + (self.float_field.len() * 4) as u32;
         };
         if !self.int32_field.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(3, self.int32_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(3, self.int32_field.as_slice());
         };
         if !self.int64_field.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(4, self.int64_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(4, self.int64_field.as_slice());
         };
         if !self.uint32_field.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(5, self.uint32_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(5, self.uint32_field.as_slice());
         };
         if !self.uint64_field.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(6, self.uint64_field);
+            my_size += ::protobuf::rt::vec_packed_varint_size(6, self.uint64_field.as_slice());
         };
         if !self.sint32_field.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_zigzag_size(7, self.sint32_field);
+            my_size += ::protobuf::rt::vec_packed_varint_zigzag_size(7, self.sint32_field.as_slice());
         };
         if !self.sint64_field.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_zigzag_size(8, self.sint64_field);
+            my_size += ::protobuf::rt::vec_packed_varint_zigzag_size(8, self.sint64_field.as_slice());
         };
         if !self.fixed32_field.is_empty() {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.fixed32_field.len() as u32) + (self.fixed32_field.len() * 4) as u32;
@@ -3867,20 +3867,20 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
             my_size += ::protobuf::rt::string_size(14, *value);
         };
         for value in self.bytes_field.iter() {
-            my_size += ::protobuf::rt::bytes_size(15, *value);
+            my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
+        *sizes.get_mut(pos) = my_size;
         // value is returned for convenience
         my_size
     }
 
     fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: ~[u32] = ~[];
+        let mut sizes: Vec<u32> = Vec::new();
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes, &mut sizes_pos);
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
     }

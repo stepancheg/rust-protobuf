@@ -1,6 +1,5 @@
 #![crate_type = "bin"]
 #![feature(globs)]
-#![feature(managed_boxes)]
 #![allow(dead_code)]
 
 extern crate protobuf;
@@ -25,7 +24,7 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
 
     for r in results.iter() {
         let mut file_writer = File::create(&Path::new(r.name.as_slice())).unwrap();
-        file_writer.write(r.content).unwrap();
+        file_writer.write(r.content.as_slice()).unwrap();
     }
 }
 

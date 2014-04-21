@@ -6,13 +6,13 @@ use std::result::Ok;
 use std::result::Err;
 
 pub struct VecWriter {
-    pub vec: ~[u8],
+    pub vec: Vec<u8>,
 }
 
 impl VecWriter {
     pub fn new() -> VecWriter {
         VecWriter {
-            vec: ~[],
+            vec: Vec::new(),
         }
     }
 }
@@ -25,12 +25,12 @@ impl Writer for VecWriter {
 }
 
 pub struct VecReader {
-    vec: ~[u8],
+    vec: Vec<u8>,
     pos: uint,
 }
 
 impl VecReader {
-    pub fn new(bytes: ~[u8]) -> VecReader {
+    pub fn new(bytes: Vec<u8>) -> VecReader {
         VecReader {
             vec: bytes,
             pos: 0,
@@ -70,6 +70,6 @@ mod test {
             writer.write("hi".as_bytes()).unwrap();
         }
         foo(&mut w as &mut Writer);
-        assert_eq!(~['h' as u8, 'i' as u8], w.vec.to_owned());
+        assert_eq!(Vec::from_slice(['h' as u8, 'i' as u8]), w.vec);
     }
 }

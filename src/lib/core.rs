@@ -1,7 +1,7 @@
 // TODO: drop all fail!
 
 use std::cast;
-use std::str::from_utf8_owned;
+use std::str::from_utf8;
 use std::io::*;
 use std::num::Bounded;
 
@@ -212,7 +212,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_raw_varint64(&mut self) -> u64 {
-        let mut bytes: ~[u8] = ~[];
+        let mut bytes = Vec::<u8>::new();
         loop {
             let b = self.read_raw_byte();
             bytes.push(b & 0x7F);
@@ -221,8 +221,9 @@ impl<'a> CodedInputStream<'a> {
             }
         }
         let mut r = 0u64;
+        let l = bytes.len();
         for i in range(0, bytes.len()) {
-            r = (r << 7) | bytes[bytes.len() - i - 1] as u64;
+            r = (r << 7) | *bytes.get(l - i - 1) as u64;
         }
         r
     }
@@ -341,9 +342,8 @@ impl<'a> CodedInputStream<'a> {
         self.read_unknown(wire_type);
     }
 
-    pub fn read_raw_bytes(&mut self, count: u32) -> ~[u8] {
-        let mut r: ~[u8] = ~[];
-        r.reserve(count as uint);
+    pub fn read_raw_bytes(&mut self, count: u32) -> Vec<u8> {
+        let mut r = Vec::with_capacity(count as uint);
         while r.len() < count as uint {
             let rem = count - r.len() as u32;
             if rem <= self.remaining_in_buffer() {
@@ -362,13 +362,13 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_bytes(count);
     }
 
-    pub fn read_bytes(&mut self) -> ~[u8] {
+    pub fn read_bytes(&mut self) -> Vec<u8> {
         let len = self.read_raw_varint32();
         self.read_raw_bytes(len)
     }
 
     pub fn read_string(&mut self) -> ~str {
-        from_utf8_owned(self.read_bytes()).unwrap()
+        from_utf8(self.read_bytes().as_slice()).unwrap().to_owned()
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) {
@@ -399,12 +399,12 @@ impl<'a> WithCodedOutputStream for &'a mut Writer {
     }
 }
 
-fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream|) -> ~[u8] {
+fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream|) -> Vec<u8> {
     let mut w = VecWriter::new();
     (&mut w as &mut Writer).with_coded_output_stream(|os| {
         cb(os)
     });
-    w.vec.to_owned()
+    w.vec
 }
 
 trait WithCodedInputStream {
@@ -425,7 +425,7 @@ impl<'a> WithCodedInputStream for &'a mut Reader {
 
 impl<'a> WithCodedInputStream for &'a [u8] {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
-        let mut reader = VecReader::new(self.to_owned());
+        let mut reader = VecReader::new(Vec::from_slice(self));
         (&mut reader as &mut Reader).with_coded_input_stream(|is| {
             cb(is)
         })
@@ -711,10 +711,10 @@ pub trait Message : Eq {
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream);
     fn write_to(&self, os: &mut CodedOutputStream);
-    fn compute_sizes(&self, sizes: &mut ~[u32]) -> u32;
+    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32;
 
     fn serialized_size(&self) -> u32 {
-        let mut sizes = ~[];
+        let mut sizes = Vec::new();
         self.compute_sizes(&mut sizes)
     }
 
@@ -729,7 +729,7 @@ pub trait Message : Eq {
         })
     }
 
-    fn write_to_bytes(&self) -> ~[u8] {
+    fn write_to_bytes(&self) -> Vec<u8> {
         with_coded_output_stream_to_bytes(|os| {
             self.write_to(os)
         })
@@ -746,19 +746,14 @@ pub trait Message : Eq {
         })
     }
 
-    fn write_length_delimited_to_bytes(&self) -> ~[u8] {
+    fn write_length_delimited_to_bytes(&self) -> Vec<u8> {
         with_coded_output_stream_to_bytes(|os| {
             self.write_length_delimited_to(os);
         })
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
-        fail!();
-    }
-
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
-        fail!();
-    }
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
 }
 
 pub trait ProtobufEnum : Eq {
@@ -877,9 +872,9 @@ mod test {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1);
             assert_eq!(1, is.bytes_until_limit());
-            assert_eq!(~[0xaa], is.read_raw_bytes(1));
+            assert_eq!(&[0xaa], is.read_raw_bytes(1).as_slice());
             is.pop_limit(old_limit);
-            assert_eq!(~[0xbb, 0xcc], is.read_raw_bytes(2));
+            assert_eq!(&[0xbb, 0xcc], is.read_raw_bytes(2).as_slice());
         });
     }
 
@@ -888,8 +883,8 @@ mod test {
         let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
         gen(&mut os);
         os.flush();
-        let r = writer.vec.to_owned();
-        assert_eq!(encode_hex(decode_hex(expected)), encode_hex(r));
+        let r = writer.vec;
+        assert_eq!(encode_hex(decode_hex(expected).as_slice()), encode_hex(r.as_slice()));
     }
 
     #[test]
