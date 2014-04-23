@@ -8,7 +8,7 @@ pub enum UnknownValue {
     UnknownFixed32(u32),
     UnknownFixed64(u64),
     UnknownVarint(u64),
-    UnknownLengthDelimited(~[u8]),
+    UnknownLengthDelimited(Vec<u8>),
 }
 
 impl UnknownValue {
@@ -49,7 +49,7 @@ pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
     pub varint: Vec<u64>,
-    pub length_delimited: Vec<~[u8]>,
+    pub length_delimited: Vec<Vec<u8>>,
 }
 
 impl UnknownValues {
@@ -76,7 +76,7 @@ pub struct UnknownValuesIter<'o> {
     fixed32: slice::Items<'o, u32>,
     fixed64: slice::Items<'o, u64>,
     varint: slice::Items<'o, u64>,
-    length_delimited: slice::Items<'o, ~[u8]>,
+    length_delimited: slice::Items<'o, Vec<u8>>,
 }
 
 impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
@@ -140,7 +140,7 @@ impl UnknownFields {
         self.find_field(number).varint.push(varint);
     }
 
-    pub fn add_length_delimited(&mut self, number: u32, length_delimited: ~[u8]) {
+    pub fn add_length_delimited(&mut self, number: u32, length_delimited: Vec<u8>) {
         self.find_field(number).length_delimited.push(length_delimited);
     }
 

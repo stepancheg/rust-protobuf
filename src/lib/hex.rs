@@ -10,8 +10,8 @@ fn decode_hex_digit(digit: char) -> u8 {
     }
 }
 
-pub fn decode_hex(hex: &str) -> ~[u8] {
-    let mut r: ~[u8] = ~[];
+pub fn decode_hex(hex: &str) -> Vec<u8> {
+    let mut r: Vec<u8> = Vec::new();
     let mut pos = 0;
     loop {
         while pos < hex.char_len() && hex[pos] == ' ' as u8 {
@@ -54,11 +54,11 @@ mod test {
 
     #[test]
     fn test_decode_hex() {
-        assert_eq!(~[], decode_hex(""));
-        assert_eq!(~[0x00], decode_hex("00"));
-        assert_eq!(~[0xff], decode_hex("ff"));
-        assert_eq!(~[0xab], decode_hex("AB"));
-        assert_eq!(~[0xfa, 0x19], decode_hex("fa 19"));
+        assert_eq!(Vec::from_slice([]), decode_hex(""));
+        assert_eq!(Vec::from_slice([0x00u8]), decode_hex("00"));
+        assert_eq!(Vec::from_slice([0xffu8]), decode_hex("ff"));
+        assert_eq!(Vec::from_slice([0xabu8]), decode_hex("AB"));
+        assert_eq!(Vec::from_slice([0xfau8, 0x19]), decode_hex("fa 19"));
     }
 
     #[test]
