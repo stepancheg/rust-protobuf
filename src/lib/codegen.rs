@@ -469,10 +469,6 @@ impl<'a> IndentWriter<'a> {
         self.block(prefix + " {", "};", cb);
     }
 
-    fn unsafe_block(&self, cb: |&mut IndentWriter|) {
-        self.stmt_block("unsafe", cb);
-    }
-
     fn unsafe_expr(&self, cb: |&mut IndentWriter|) {
         self.expr_block("unsafe", cb);
     }
@@ -1101,6 +1097,10 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             w.write_line("// This file is generated. Do not edit");
 
+            w.write_line("");
+            w.write_line("#![allow(dead_code)]");
+
+            w.write_line("");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
             }

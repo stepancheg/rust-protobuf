@@ -1,7 +1,6 @@
 #![crate_type = "bin"]
 #![feature(globs)]
 #![feature(managed_boxes)]
-#![allow(dead_code)]
 #![allow(non_camel_case_types)]
 
 extern crate protobuf;

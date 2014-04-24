@@ -1,5 +1,7 @@
 // hex encoder and decoder used by rust-protobuf unittests
 
+#![allow(dead_code)]
+
 use std::str;
 use std::char;
 

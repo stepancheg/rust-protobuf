@@ -1,4 +1,7 @@
 // This file is generated. Do not edit
+
+#![allow(dead_code)]
+
 use descriptor::*;
 
 static file_descriptor_proto_data: &'static [u8] = &[
