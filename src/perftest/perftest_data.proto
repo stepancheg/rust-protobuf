@@ -1,0 +1,19 @@
+message Test1 {
+    optional int32 value = 1;
+}
+
+message TestRepeatedBool {
+    repeated bool values = 1;
+}
+
+message TestMessagesOfMessages {
+    repeated TestMessagesOfMessages messages1 = 1;
+    repeated TestMessagesOfMessages messages2 = 2;
+    repeated TestMessagesOfMessages messages3 = 3;
+}
+
+message PerftestData {
+    repeated Test1 test1 = 1;
+    repeated TestRepeatedBool test_repeated_bool = 2;
+    repeated TestMessagesOfMessages test_messages_of_messages = 3;
+}
