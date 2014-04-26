@@ -705,7 +705,7 @@ impl<'a> CodedOutputStream<'a> {
 }
 
 
-pub trait Message : Eq + fmt::Show {
+pub trait Message : Eq + Clone + fmt::Show {
     fn new() -> Self;
     fn clear(&mut self);
     // all required fields set
