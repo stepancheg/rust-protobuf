@@ -5,6 +5,7 @@ use std::str::from_utf8;
 use std::io::*;
 use std::num::Bounded;
 use std::fmt;
+use std::default::Default;
 
 use misc::VecWriter;
 use misc::VecReader;
@@ -705,7 +706,7 @@ impl<'a> CodedOutputStream<'a> {
 }
 
 
-pub trait Message : Eq + Clone + fmt::Show {
+pub trait Message : Eq + Clone + Default + fmt::Show {
     fn new() -> Self;
     fn clear(&mut self);
     // all required fields set
