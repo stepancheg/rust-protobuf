@@ -623,7 +623,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.deriving(["Clone,Eq,Default"]);
+    w.deriving(["Clone", "Eq", "Default"]);
     w.pub_struct(msg.type_name, |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
