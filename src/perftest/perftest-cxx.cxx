@@ -78,6 +78,7 @@ void test(const char* name, const RepeatedPtrField<M>& data) {
     // TODO: compare content
     VERIFY(randomData.size() == readData.size());
 
+    auto count = 0;
     measure_and_print(std::string() + name + " read reuse", randomData.size(), [&] () {
         M msg;
         CodedInputStream is((const uint8*) s.data(), s.size());
@@ -90,8 +91,11 @@ void test(const char* name, const RepeatedPtrField<M>& data) {
             bool okReadMsg = msg.MergeFromCodedStream(&is);
             VERIFY(okReadMsg);
             is.PopLimit(oldLimit);
+            count += 1;
         }
     });
+
+    VERIFY(randomData.size() == count);
 }
 
 int main() {
