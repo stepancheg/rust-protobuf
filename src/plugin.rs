@@ -49,7 +49,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct CodeGeneratorRequest {
     file_to_generate: Vec<~str>,
     parameter: Option<~str>,
@@ -260,7 +260,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct CodeGeneratorResponse {
     error: Option<~str>,
     file: Vec<CodeGeneratorResponse_File>,
@@ -435,7 +435,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct CodeGeneratorResponse_File {
     name: Option<~str>,
     insertion_point: Option<~str>,

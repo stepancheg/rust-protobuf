@@ -110,7 +110,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct Test1 {
     a: Option<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -242,7 +242,7 @@ impl ::protobuf::Message for Test1 {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct Test2 {
     b: Option<~str>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -377,7 +377,7 @@ impl ::protobuf::Message for Test2 {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct Test3 {
     c: Option<Test1>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -516,7 +516,7 @@ impl ::protobuf::Message for Test3 {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct Test4 {
     d: Vec<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -653,7 +653,7 @@ impl ::protobuf::Message for Test4 {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestPackedUnpacked {
     unpacked: Vec<i32>,
     packed: Vec<i32>,
@@ -834,7 +834,7 @@ impl ::protobuf::Message for TestPackedUnpacked {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -963,7 +963,7 @@ impl ::protobuf::Message for TestEmpty {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestRequired {
     b: Option<bool>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1095,7 +1095,7 @@ impl ::protobuf::Message for TestRequired {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestUnknownFields {
     a: Option<i32>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -1227,7 +1227,7 @@ impl ::protobuf::Message for TestUnknownFields {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestTypesSingular {
     double_field: Option<f64>,
     float_field: Option<f32>,
@@ -1964,7 +1964,7 @@ impl ::protobuf::Message for TestTypesSingular {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestTypesRepeated {
     double_field: Vec<f64>,
     float_field: Vec<f32>,
@@ -2683,7 +2683,7 @@ impl ::protobuf::Message for TestTypesRepeated {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct TestTypesRepeatedPacked {
     double_field: Vec<f64>,
     float_field: Vec<f32>,

@@ -25,7 +25,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct Root {
     nested: Vec<Root_Nested>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -154,7 +154,7 @@ impl ::protobuf::Message for Root {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct Root_Nested {
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }

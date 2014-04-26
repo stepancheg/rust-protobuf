@@ -279,7 +279,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct FileDescriptorSet {
     file: Vec<FileDescriptorProto>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -408,7 +408,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct FileDescriptorProto {
     name: Option<~str>,
     package: Option<~str>,
@@ -978,7 +978,7 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct DescriptorProto {
     name: Option<~str>,
     field: Vec<FieldDescriptorProto>,
@@ -1368,7 +1368,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct DescriptorProto_ExtensionRange {
     start: Option<i32>,
     end: Option<i32>,
@@ -1540,7 +1540,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct FieldDescriptorProto {
     name: Option<~str>,
     number: Option<i32>,
@@ -1989,7 +1989,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Show)]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
     TYPE_FLOAT = 2,
@@ -2043,7 +2043,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Show)]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
     LABEL_REQUIRED = 2,
@@ -2067,7 +2067,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct EnumDescriptorProto {
     name: Option<~str>,
     value: Vec<EnumValueDescriptorProto>,
@@ -2293,7 +2293,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct EnumValueDescriptorProto {
     name: Option<~str>,
     number: Option<i32>,
@@ -2518,7 +2518,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct ServiceDescriptorProto {
     name: Option<~str>,
     method: Vec<MethodDescriptorProto>,
@@ -2744,7 +2744,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct MethodDescriptorProto {
     name: Option<~str>,
     input_type: Option<~str>,
@@ -3018,7 +3018,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct FileOptions {
     java_package: Option<~str>,
     java_outer_classname: Option<~str>,
@@ -3543,7 +3543,7 @@ impl ::protobuf::Message for FileOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Show)]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
     CODE_SIZE = 2,
@@ -3567,7 +3567,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
@@ -3782,7 +3782,7 @@ impl ::protobuf::Message for MessageOptions {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct FieldOptions {
     ctype: Option<FieldOptions_CType>,
     packed: Option<bool>,
@@ -4172,7 +4172,7 @@ impl ::protobuf::Message for FieldOptions {
     }
 }
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,Eq,Show)]
 pub enum FieldOptions_CType {
     STRING = 0,
     CORD = 1,
@@ -4196,7 +4196,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct EnumOptions {
     allow_alias: Option<bool>,
     uninterpreted_option: Vec<UninterpretedOption>,
@@ -4368,7 +4368,7 @@ impl ::protobuf::Message for EnumOptions {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -4497,7 +4497,7 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -4626,7 +4626,7 @@ impl ::protobuf::Message for ServiceOptions {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct MethodOptions {
     uninterpreted_option: Vec<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -4755,7 +4755,7 @@ impl ::protobuf::Message for MethodOptions {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct UninterpretedOption {
     name: Vec<UninterpretedOption_NamePart>,
     identifier_value: Option<~str>,
@@ -5151,7 +5151,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct UninterpretedOption_NamePart {
     name_part: Option<~str>,
     is_extension: Option<bool>,
@@ -5332,7 +5332,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct SourceCodeInfo {
     location: Vec<SourceCodeInfo_Location>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -5461,7 +5461,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct SourceCodeInfo_Location {
     path: Vec<i32>,
     span: Vec<i32>,

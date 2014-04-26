@@ -623,7 +623,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.deriving(["Clone", "Eq", "Default"]);
+    w.deriving(["Clone", "Eq", "Show", "Default"]);
     w.pub_struct(msg.type_name, |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
@@ -1045,7 +1045,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
 fn write_enum(prefix: &str, w: &mut IndentWriter, enum_type: &EnumDescriptorProto) {
     let enum_type_name = prefix + enum_type.get_name().to_owned();
-    w.deriving(["Clone", "Eq"]);
+    w.deriving(["Clone", "Eq", "Show"]);
     w.write_line(format!("pub enum {:s} \\{", enum_type_name));
     for value in enum_type.get_value().iter() {
         w.write_line(format!("    {:s} = {:d},", value.get_name().to_owned(), value.get_number() as int));

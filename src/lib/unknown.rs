@@ -4,6 +4,7 @@ use std::default::Default;
 use std::slice;
 use core::wire_format;
 
+#[deriving(Show)]
 pub enum UnknownValue {
     UnknownFixed32(u32),
     UnknownFixed64(u64),
@@ -44,7 +45,7 @@ impl<'o> UnknownValueRef<'o> {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
@@ -101,7 +102,7 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,Eq,Show,Default)]
 pub struct UnknownFields {
     // option is needed, so it could be placed in static field
     pub fields: Option<HashMap<u32, UnknownValues>>,
