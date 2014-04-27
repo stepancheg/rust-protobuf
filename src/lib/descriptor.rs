@@ -441,8 +441,8 @@ impl<'a> FileDescriptorProto {
 //             enum_type: ::protobuf::RepeatedField::new(),
 //             service: ::protobuf::RepeatedField::new(),
 //             extension: ::protobuf::RepeatedField::new(),
-//             options: None,
-//             source_code_info: None,
+//             options: ::protobuf::SingularField::none(),
+//             source_code_info: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -542,7 +542,7 @@ impl<'a> FileDescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -571,7 +571,7 @@ impl<'a> FileDescriptorProto {
     pub fn get_package(&'a self) -> &'a str {
         match self.package {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -993,7 +993,7 @@ impl<'a> DescriptorProto {
 //             nested_type: ::protobuf::RepeatedField::new(),
 //             enum_type: ::protobuf::RepeatedField::new(),
 //             extension_range: ::protobuf::RepeatedField::new(),
-//             options: None,
+//             options: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -1075,7 +1075,7 @@ impl<'a> DescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -1553,7 +1553,7 @@ impl<'a> FieldDescriptorProto {
 //             type_name: None,
 //             extendee: None,
 //             default_value: None,
-//             options: None,
+//             options: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -1641,7 +1641,7 @@ impl<'a> FieldDescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -1748,7 +1748,7 @@ impl<'a> FieldDescriptorProto {
     pub fn get_type_name(&'a self) -> &'a str {
         match self.type_name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -1777,7 +1777,7 @@ impl<'a> FieldDescriptorProto {
     pub fn get_extendee(&'a self) -> &'a str {
         match self.extendee {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -1806,7 +1806,7 @@ impl<'a> FieldDescriptorProto {
     pub fn get_default_value(&'a self) -> &'a str {
         match self.default_value {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -2070,7 +2070,7 @@ impl<'a> EnumDescriptorProto {
 //         static instance: EnumDescriptorProto = EnumDescriptorProto {
 //             name: None,
 //             value: ::protobuf::RepeatedField::new(),
-//             options: None,
+//             options: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -2128,7 +2128,7 @@ impl<'a> EnumDescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -2292,7 +2292,7 @@ impl<'a> EnumValueDescriptorProto {
 //         static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
 //             name: None,
 //             number: None,
-//             options: None,
+//             options: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -2350,7 +2350,7 @@ impl<'a> EnumValueDescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -2517,7 +2517,7 @@ impl<'a> ServiceDescriptorProto {
 //         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
 //             name: None,
 //             method: ::protobuf::RepeatedField::new(),
-//             options: None,
+//             options: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -2575,7 +2575,7 @@ impl<'a> ServiceDescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -2741,7 +2741,7 @@ impl<'a> MethodDescriptorProto {
 //             name: None,
 //             input_type: None,
 //             output_type: None,
-//             options: None,
+//             options: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -2805,7 +2805,7 @@ impl<'a> MethodDescriptorProto {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -2834,7 +2834,7 @@ impl<'a> MethodDescriptorProto {
     pub fn get_input_type(&'a self) -> &'a str {
         match self.input_type {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -2863,7 +2863,7 @@ impl<'a> MethodDescriptorProto {
     pub fn get_output_type(&'a self) -> &'a str {
         match self.output_type {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -3124,7 +3124,7 @@ impl<'a> FileOptions {
     pub fn get_java_package(&'a self) -> &'a str {
         match self.java_package {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -3153,7 +3153,7 @@ impl<'a> FileOptions {
     pub fn get_java_outer_classname(&'a self) -> &'a str {
         match self.java_outer_classname {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -3260,7 +3260,7 @@ impl<'a> FileOptions {
     pub fn get_go_package(&'a self) -> &'a str {
         match self.go_package {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -3968,7 +3968,7 @@ impl<'a> FieldOptions {
     pub fn get_experimental_map_key(&'a self) -> &'a str {
         match self.experimental_map_key {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -4859,7 +4859,7 @@ impl<'a> UninterpretedOption {
     pub fn get_identifier_value(&'a self) -> &'a str {
         match self.identifier_value {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -4966,7 +4966,7 @@ impl<'a> UninterpretedOption {
     pub fn get_string_value(&'a self) -> &'a [u8] {
         match self.string_value {
             Some(ref v) => v.as_slice(),
-            None => &'a [],
+            None => &[],
         }
     }
 
@@ -4995,7 +4995,7 @@ impl<'a> UninterpretedOption {
     pub fn get_aggregate_value(&'a self) -> &'a str {
         match self.aggregate_value {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 }
@@ -5194,7 +5194,7 @@ impl<'a> UninterpretedOption_NamePart {
     pub fn get_name_part(&'a self) -> &'a str {
         match self.name_part {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -5570,7 +5570,7 @@ impl<'a> SourceCodeInfo_Location {
     pub fn get_leading_comments(&'a self) -> &'a str {
         match self.leading_comments {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -5599,7 +5599,7 @@ impl<'a> SourceCodeInfo_Location {
     pub fn get_trailing_comments(&'a self) -> &'a str {
         match self.trailing_comments {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 }

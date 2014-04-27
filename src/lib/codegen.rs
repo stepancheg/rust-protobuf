@@ -1,5 +1,6 @@
 use std::io::Writer;
 use std::cast;
+use std::fmt;
 
 use descriptor::*;
 use misc::*;
@@ -8,23 +9,133 @@ use rt;
 use paginate::PaginatableIterator;
 use strx::*;
 
-fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
+#[deriving(Clone,Eq)]
+enum RustType {
+    RustSigned(uint),
+    RustUnsigned(uint),
+    RustFloat(uint),
+    RustBool,
+    RustVec(~RustType),
+    RustStrBuf,
+    RustSlice(~RustType),
+    RustStr,
+    RustOption(~RustType),
+    RustSingularField(~RustType),
+    RustRepeatedField(~RustType),
+    RustUniq(~RustType),
+    RustRef(~RustType),
+    RustMessage(~str),
+    RustEnum(~str),
+}
+
+impl fmt::Show for RustType {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            RustSigned(bits)       => write!(f.buf, "i{}", bits),
+            RustUnsigned(bits)     => write!(f.buf, "u{}", bits),
+            RustFloat(bits)        => write!(f.buf, "f{}", bits),
+            RustBool               => write!(f.buf, "bool"),
+            RustVec(ref param)     => write!(f.buf, "Vec<{}>", *param),
+            RustStrBuf             => write!(f.buf, "StrBuf"),
+            RustSlice(ref param)   => write!(f.buf, "[{}]", *param),
+            RustStr                => write!(f.buf, "str"),
+            RustOption(ref param)        => write!(f.buf, "Option<{}>", param),
+            RustSingularField(ref param) => write!(f.buf, "::protobuf::SingularField<{}>", param),
+            RustRepeatedField(ref param) => write!(f.buf, "::protobuf::RepeatedField<{}>", param),
+            RustUniq(ref param)          => write!(f.buf, "~{}", *param),
+            RustRef(ref param)           => write!(f.buf, "&{}", *param),
+            RustMessage(ref param) | RustEnum(ref param) => write!(f.buf, "{}", param),
+        }
+    }
+}
+
+impl RustType {
+    fn ref_str(&self, lt: &str) -> ~str {
+        match *self {
+            RustRef(ref param) => format!("&'{} {}", lt, *param),
+            _ => fail!("not a slice: {}", *self),
+        }
+    }
+
+    fn mut_ref_str(&self, lt: &str) -> ~str {
+        match *self {
+            RustRef(ref param) => format!("&'{} mut {}", lt, *param),
+            _ => fail!("not a slice: {}", *self),
+        }
+    }
+
+    fn default_value(&self) -> ~str {
+        match *self {
+            RustRef(~RustStr)                 => "&\"\"".to_owned(),
+            RustRef(~RustSlice(..))           => "&[]".to_owned(),
+            RustSigned(..) | RustUnsigned(..) => "0".to_owned(),
+            RustFloat(..)                     => "0.".to_owned(),
+            RustBool(..)                      => "false".to_owned(),
+            RustVec(..)                       => "Vec::new()".to_owned(),
+            RustStrBuf                        => "StrBuf::new()".to_owned(),
+            RustOption(..)                    => "None".to_owned(),
+            RustSingularField(..)             => "::protobuf::SingularField::none()".to_owned(),
+            RustRepeatedField(..)             => "::protobuf::RepeatedField::new()".to_owned(),
+            RustMessage(ref name)             => format!("{}::new()", name),
+            RustRef(~RustMessage(ref name))   => format!("{}::default_instance()", name),
+            // TODO: use proper constant
+            RustEnum(ref name)                => format!("{}::new(0)", name),
+            _ => fail!("cannot create default value for: {}", *self),
+        }
+    }
+
+    fn wrap_value(&self, value: &str) -> ~str {
+        match *self {
+            RustOption(..)        => format!("Some({})", value),
+            RustSingularField(..) => format!("::protobuf::SingularField::some({})", value),
+            _ => fail!("not a wrapper type: {}", *self),
+        }
+    }
+
+    fn view_as(&self, target: &RustType, v: &str) -> ~str {
+        match (self, target) {
+            (&RustStrBuf,  &RustRef(~RustStr)) => format!("{}.as_slice()", v),
+            (&RustVec(..), &RustRef(~RustSlice(..))) => format!("{}.as_slice()", v),
+            _ => v.to_owned(),
+        }
+    }
+
+    fn into(&self, target: &RustType, v: &str) -> ~str {
+        match (self, target) {
+            (&RustUniq(~RustStr), &RustStrBuf) => format!("StrBuf::from_owned_str({})", v),
+            _ => v.to_owned(),
+        }
+    }
+
+    fn ref_type(&self) -> RustType {
+        RustRef(match self {
+            &RustStrBuf               => ~RustStr,
+            &RustVec(ref p)           => ~RustSlice(p.clone()),
+            &RustRepeatedField(ref p) => ~RustSlice(p.clone()),
+            &RustMessage(ref p)       => ~RustMessage(p.clone()),
+            x => fail!("no ref type for {}", x),
+        })
+    }
+}
+
+fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
-        TYPE_DOUBLE   => "f64",
-        TYPE_FLOAT    => "f32",
-        TYPE_INT32    => "i32",
-        TYPE_INT64    => "i64",
-        TYPE_UINT32   => "u32",
-        TYPE_UINT64   => "u64",
-        TYPE_SINT32   => "i32",
-        TYPE_SINT64   => "i64",
-        TYPE_FIXED32  => "u32",
-        TYPE_FIXED64  => "u64",
-        TYPE_SFIXED32 => "i32",
-        TYPE_SFIXED64 => "i64",
-        TYPE_BOOL     => "bool",
-        TYPE_STRING   => "StrBuf",
-        TYPE_BYTES    => "Vec<u8>",
+        TYPE_DOUBLE   => RustFloat(64),
+        TYPE_FLOAT    => RustFloat(32),
+        TYPE_INT32    => RustSigned(32),
+        TYPE_INT64    => RustSigned(64),
+        TYPE_UINT32   => RustUnsigned(32),
+        TYPE_UINT64   => RustUnsigned(64),
+        TYPE_SINT32   => RustSigned(32),
+        TYPE_SINT64   => RustSigned(64),
+        TYPE_FIXED32  => RustUnsigned(32),
+        TYPE_FIXED64  => RustUnsigned(64),
+        TYPE_SFIXED32 => RustSigned(32),
+        TYPE_SFIXED64 => RustSigned(64),
+        TYPE_BOOL     => RustBool,
+        TYPE_STRING   => RustStrBuf,
+        TYPE_BYTES    => RustVec(~RustUnsigned(8)),
         TYPE_ENUM | TYPE_GROUP | TYPE_MESSAGE => fail!()
     }
 }
@@ -83,16 +194,21 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     }
 }
 
-fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> ~str {
+fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
     if field.has_type_name() {
         let current_pkg_prefix = if pkg.is_empty() { ~"." } else { "." + pkg + "." };
-        if field.get_type_name().starts_with(current_pkg_prefix) {
+        let name = (if field.get_type_name().starts_with(current_pkg_prefix) {
             remove_prefix(field.get_type_name(), current_pkg_prefix).to_owned()
         } else {
             remove_to(field.get_type_name(), '.').to_owned()
+        }).replace(".", "_");
+        match field.get_field_type() {
+            TYPE_MESSAGE => RustMessage(name),
+            TYPE_ENUM    => RustEnum(name),
+            _ => fail!("unknown named type: {}", field.get_field_type()),
         }
     } else if field.has_field_type() {
-        rust_name(field.get_field_type()).to_owned()
+        rust_name(field.get_field_type())
     } else {
         fail!("neither type_name, nor field_type specified for field: {}", field.get_name());
     }
@@ -111,7 +227,7 @@ struct Field {
     name: ~str,
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
-    type_name: ~str,
+    type_name: RustType,
     number: u32,
     repeated: bool,
     packed: bool,
@@ -120,7 +236,7 @@ struct Field {
 
 impl Field {
     fn parse(field: &FieldDescriptorProto, pkg: &str) -> Option<Field> {
-        let type_name = field_type_name(field, pkg).replace(".", "_");
+        let type_name = field_type_name(field, pkg);
         let repeated = match field.get_label() {
             LABEL_REPEATED => true,
             LABEL_OPTIONAL | LABEL_REQUIRED => false,
@@ -154,24 +270,13 @@ impl Field {
         })
     }
 
-    fn vec_name(&self) -> &'static str {
-        match self.field_type {
-            TYPE_MESSAGE => "::protobuf::RepeatedField",
-            _ => "Vec",
-        }
-    }
-
-    fn option_name(&self) -> &'static str {
-        match self.field_type {
-            TYPE_MESSAGE => "::protobuf::SingularField",
-            _ => "Option",
-        }
-    }
-
-    fn full_type(&self) -> ~str {
-        match self.repeated {
-            true  => format!("{:s}<{:s}>", self.vec_name(), self.type_name),
-            false => format!("{:s}<{:s}>", self.option_name(), self.type_name),
+    fn full_storage_type(&self) -> RustType {
+        let c = ~self.type_name.clone();
+        match (self.repeated, self.field_type == TYPE_MESSAGE) {
+            (true, true)   => RustRepeatedField(c),
+            (false, true)  => RustSingularField(c),
+            (true, false)  => RustVec(c),
+            (false, false) => RustOption(c),
         }
     }
 
@@ -351,18 +456,14 @@ impl<'a> IndentWriter<'a> {
         if self.field().field_type == TYPE_MESSAGE {
             self.write_line(format!("{:s}.set_default();", self.self_field()));
         } else {
-            self.self_field_assign_some(self.field_type_default());
+            self.self_field_assign_some(self.field().type_name.default_value());
         }
     }
 
-    fn self_field_assign_value(&self, value: &str) {
+    fn self_field_assign_value(&self, value: &str, ty: &RustType) {
         assert!(!self.field().repeated);
-        let wrapped =
-            if self.field().field_type == TYPE_MESSAGE {
-                format!("::protobuf::SingularField::some({})", value)
-            } else {
-                format!("Some({})", value)
-            };
+        let converted = ty.into(&self.field().type_name, value);
+        let wrapped = self.field().full_storage_type().wrap_value(converted);
         self.self_field_assign(wrapped);
     }
 
@@ -424,26 +525,8 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn field_default(&self) {
-        let init =
-            if self.field().repeated {
-                self.field().vec_name() + "::new()"
-            } else {
-                "None".to_owned()
-            };
+        let init = self.field().full_storage_type().default_value();
         self.field_entry(self.field().name, init);
-    }
-
-    fn field_type_default(&self) -> ~str {
-        match self.field().field_type {
-            TYPE_MESSAGE => format!("{:s}::new()", self.field().type_name),
-            // TODO: use hardcoded constant
-            TYPE_ENUM    => format!("{:s}::new(0)", self.field().type_name),
-            TYPE_STRING  => ~"StrBuf::new()",
-            TYPE_BYTES   => ~"Vec::new()",
-            TYPE_BOOL    => ~"false",
-            TYPE_FLOAT | TYPE_DOUBLE => ~"0.",
-            _            => ~"0",
-        }
     }
 
     fn write_line(&self, line: &str) {
@@ -529,6 +612,10 @@ impl<'a> IndentWriter<'a> {
     fn deriving(&mut self, deriving: &[&str]) {
         let v: ~[~str] = deriving.iter().map(|&s| s.to_owned()).collect();
         self.write_line(format!("\\#[deriving({})]", v.connect(",")));
+    }
+
+    fn allow(&mut self, what: &str) {
+        self.write_line(format!("\\#[allow({})]", what));
     }
 
     fn comment(&self, comment: &str) {
@@ -618,9 +705,9 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             };
 
         let read_proc = match field.field_type {
-            TYPE_ENUM => format!("{:s}::new(is.read_int32())", field.type_name),
+            TYPE_ENUM => format!("{}::new(is.read_int32())", field.type_name),
             TYPE_STRING => "is.read_strbuf()".to_owned(),
-            t => format!("is.read_{:s}()", protobuf_name(t)),
+            t => format!("is.read_{}()", protobuf_name(t)),
         };
 
         match repeat_mode {
@@ -660,8 +747,8 @@ fn write_message_struct(w: &mut IndentWriter) {
     w.pub_struct(msg.type_name, |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
-            if !field.type_name.contains_char('.') {
-                w.field_entry(field.name, field.full_type());
+            if !format!("{}", field.type_name).contains_char('.') {
+                w.field_entry(field.name, format!("{}", field.full_storage_type()));
             }
         });
         w.field_entry("unknown_fields", "Option<~::protobuf::UnknownFields>");
@@ -811,7 +898,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     if !msg.has_any_message_field() {
         // `sizes` and `sizes_pos` are unused
-        w.write_line("#[allow(unused_variable)]");
+        w.allow("unused_variable");
     }
     w.pub_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
         // To have access to its methods but not polute the name space.
@@ -860,33 +947,25 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         }
 
         let set_param_type = if w.field().repeated {
-            w.field().full_type()
+            w.field().full_storage_type()
         } else if w.field().field_type == TYPE_STRING {
-            ~"~str"
+            RustUniq(~RustStr)
         } else {
-            w.field().type_name.to_owned()
+            w.field().type_name.clone()
         };
-        let mut_return_type = if w.field().field_type == TYPE_STRING {
-            if w.field().repeated {
-                ~"Vec<StrBuf>"
-            } else {
-                ~"StrBuf"
-            }
+        let mut_return_type = RustRef(~if w.field().repeated {
+            w.field().full_storage_type()
         } else {
-            set_param_type.to_owned()
-        };
+            w.field().type_name.clone()
+        });
 
         w.write_line("");
         w.comment("Param is passed by value, moved");
-        w.pub_fn(format!("set_{:s}(&mut self, v: {:s})", w.field().name, set_param_type), |w| {
+        w.pub_fn(format!("set_{:s}(&mut self, v: {})", w.field().name, set_param_type), |w| {
             if w.field().repeated {
                 w.self_field_assign("v");
             } else {
-                if w.field().field_type == TYPE_STRING {
-                    w.self_field_assign_value("StrBuf::from_owned_str(v)");
-                } else {
-                    w.self_field_assign_value("v");
-                }
+                w.self_field_assign_value("v", &set_param_type);
             }
         });
 
@@ -895,7 +974,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         if !w.field().repeated {
             w.comment("If field is not initialized, it is initialized with default value first.");
         }
-        w.pub_fn(format!("mut_{:s}(&'a mut self) -> &'a mut {:s}", w.field().name, mut_return_type),
+        w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_return_type.mut_ref_str("a")),
         |w| {
             if !w.field().repeated {
                 w.if_self_field_is_none(|w| {
@@ -913,51 +992,42 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
             _ => false,
         };
         let get_xxx_return_type = match w.field().repeated {
-            true => format!("&'a [{:s}]", w.field().type_name),
+            true => RustRef(~RustSlice(~w.field().type_name.clone())),
             false => match return_reference {
-                true => {
-                    format!("&'a {:s}", match w.field().field_type {
-                        TYPE_BYTES  => ~"[u8]",
-                        TYPE_STRING => ~"str",
-                        _ => set_param_type,
-                    })
-                }
-                false => set_param_type.to_owned(),
+                true => w.field().type_name.ref_type(),
+                false => w.field().type_name.clone(),
             }
         };
         let self_param = match return_reference {
             true  => "&'a self",
             false => "&self",
         };
-        w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type),
+        let get_xxx_return_type_str = match return_reference {
+            true  => get_xxx_return_type.ref_str("a"),
+            false => format!("{}", get_xxx_return_type),
+        };
+        w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type_str),
         |w| {
             if !w.field().repeated {
                 if w.field().field_type == TYPE_MESSAGE {
-                    w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {:s}::default_instance())",
+                    w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {}::default_instance())",
                             w.self_field(), w.field().type_name));
                 } else {
                     if return_reference {
                         w.match_expr(w.self_field(), |w| {
                             w.case_expr(
                                 "Some(ref v)",
-                                match w.field().field_type {
-                                    TYPE_STRING | TYPE_BYTES => "v.as_slice()",
-                                    _ => "v",
-                                }
+                                w.field().type_name.view_as(&get_xxx_return_type, "v")
                             );
                             w.case_expr(
                                 "None",
-                                match w.field().field_type {
-                                    TYPE_BYTES   => ~"&'a []",
-                                    TYPE_STRING  => ~"&'a \"\"",
-                                    _            => fail!(),
-                                }
+                                get_xxx_return_type.default_value()
                             );
                         });
                     } else {
                         w.write_line(format!(
                                 "{:s}.unwrap_or_else(|| {:s})",
-                                w.self_field(), w.field_type_default()));
+                                w.self_field(), get_xxx_return_type.default_value()));
                     }
                 }
             } else {
@@ -967,7 +1037,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
 
         if w.field().repeated {
             w.write_line("");
-            w.pub_fn(format!("add_{:s}(&mut self, v: {:s})",
+            w.pub_fn(format!("add_{:s}(&mut self, v: {})",
                     w.field().name, w.field().type_name),
             |w| {
                 w.self_field_push("v");

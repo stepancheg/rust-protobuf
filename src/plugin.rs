@@ -141,7 +141,7 @@ impl<'a> CodeGeneratorRequest {
     pub fn get_parameter(&'a self) -> &'a str {
         match self.parameter {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -325,7 +325,7 @@ impl<'a> CodeGeneratorResponse {
     pub fn get_error(&'a self) -> &'a str {
         match self.error {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -509,7 +509,7 @@ impl<'a> CodeGeneratorResponse_File {
     pub fn get_name(&'a self) -> &'a str {
         match self.name {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -538,7 +538,7 @@ impl<'a> CodeGeneratorResponse_File {
     pub fn get_insertion_point(&'a self) -> &'a str {
         match self.insertion_point {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -567,7 +567,7 @@ impl<'a> CodeGeneratorResponse_File {
     pub fn get_content(&'a self) -> &'a str {
         match self.content {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 }

@@ -310,7 +310,7 @@ impl<'a> Test2 {
     pub fn get_b(&'a self) -> &'a str {
         match self.b {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 }
@@ -405,7 +405,7 @@ impl<'a> Test3 {
     pub fn default_instance() -> &'static Test3 {
 //         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: Test3 = Test3 {
-//             c: None,
+//             c: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -1270,8 +1270,8 @@ impl<'a> TestSelfReference {
     pub fn default_instance() -> &'static TestSelfReference {
 //         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: TestSelfReference = TestSelfReference {
-//             r1: None,
-//             r2: None,
+//             r1: ::protobuf::SingularField::none(),
+//             r2: ::protobuf::SingularField::none(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -1949,7 +1949,7 @@ impl<'a> TestTypesSingular {
     pub fn get_string_field(&'a self) -> &'a str {
         match self.string_field {
             Some(ref v) => v.as_slice(),
-            None => &'a "",
+            None => &"",
         }
     }
 
@@ -1978,7 +1978,7 @@ impl<'a> TestTypesSingular {
     pub fn get_bytes_field(&'a self) -> &'a [u8] {
         match self.bytes_field {
             Some(ref v) => v.as_slice(),
-            None => &'a [],
+            None => &[],
         }
     }
 }
