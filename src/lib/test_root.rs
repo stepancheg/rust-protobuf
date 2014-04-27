@@ -37,8 +37,7 @@ impl<'a> Root {
     }
 
     pub fn default_instance() -> &'static Root {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: Root = Root {
 //             nested: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
@@ -166,10 +165,12 @@ impl<'a> Root_Nested {
     }
 
     pub fn default_instance() -> &'static Root_Nested {
-        static instance: Root_Nested = Root_Nested {
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: Root_Nested = Root_Nested {
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]

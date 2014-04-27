@@ -106,6 +106,6 @@ int main() {
     test("test1", perftestData.test1());
     test("test_repeated_bool", perftestData.test_repeated_bool());
     test("test_repeated_messages", perftestData.test_repeated_messages());
-    //test("test_optional_messages", perftestData.test_optional_messages());
+    test("test_optional_messages", perftestData.test_optional_messages());
     return 0;
 }

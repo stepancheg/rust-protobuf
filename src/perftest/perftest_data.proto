@@ -13,12 +13,9 @@ message TestRepeatedMessages {
 }
 
 message TestOptionalMessages {
-// TODO: recursive structs
-/*
     optional TestOptionalMessages message1 = 1;
     optional TestOptionalMessages message2 = 2;
     optional TestOptionalMessages message3 = 3;
-*/
 }
 
 message PerftestData {

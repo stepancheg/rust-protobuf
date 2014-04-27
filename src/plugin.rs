@@ -63,8 +63,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorRequest {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
 //             file_to_generate: Vec::new(),
 //             parameter: None,
@@ -274,8 +273,7 @@ impl<'a> CodeGeneratorResponse {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
 //             error: None,
 //             file: ::protobuf::RepeatedField::new(),
@@ -451,13 +449,15 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
-            name: None,
-            insertion_point: None,
-            content: None,
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
+//             name: None,
+//             insertion_point: None,
+//             content: None,
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]

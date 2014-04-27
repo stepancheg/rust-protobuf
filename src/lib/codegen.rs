@@ -161,10 +161,17 @@ impl Field {
         }
     }
 
+    fn option_name(&self) -> &'static str {
+        match self.field_type {
+            TYPE_MESSAGE => "::protobuf::SingularField",
+            _ => "Option",
+        }
+    }
+
     fn full_type(&self) -> ~str {
         match self.repeated {
             true  => format!("{:s}<{:s}>", self.vec_name(), self.type_name),
-            false => format!("Option<{:s}>", self.type_name),
+            false => format!("{:s}<{:s}>", self.option_name(), self.type_name),
         }
     }
 
@@ -205,15 +212,6 @@ impl<'a> Message {
     fn has_any_message_field(&self) -> bool {
         for field in self.fields.iter() {
             if field.field_type == TYPE_MESSAGE {
-                return true;
-            }
-        }
-        false
-    }
-
-    fn has_any_repeated_field(&self) -> bool {
-        for field in self.fields.iter() {
-            if field.repeated {
                 return true;
             }
         }
@@ -346,6 +344,26 @@ impl<'a> IndentWriter<'a> {
     fn self_field_assign_some(&self, value: &str) {
         assert!(!self.field().repeated);
         self.self_field_assign(format!("Some({:s})", value));
+    }
+
+    fn self_field_assign_default(&self) {
+        assert!(!self.field().repeated);
+        if self.field().field_type == TYPE_MESSAGE {
+            self.write_line(format!("{:s}.set_default();", self.self_field()));
+        } else {
+            self.self_field_assign_some(self.field_type_default());
+        }
+    }
+
+    fn self_field_assign_value(&self, value: &str) {
+        assert!(!self.field().repeated);
+        let wrapped =
+            if self.field().field_type == TYPE_MESSAGE {
+                format!("::protobuf::SingularField::some({})", value)
+            } else {
+                format!("Some({})", value)
+            };
+        self.self_field_assign(wrapped);
     }
 
     fn self_field_push(&self, value: &str) {
@@ -562,7 +580,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn clear_field(&self) {
-        if self.field().repeated {
+        if self.field().repeated || self.field().field_type == TYPE_MESSAGE {
             self.write_line(format!("{:s}.clear();", self.self_field()));
         } else {
             self.self_field_assign_none();
@@ -571,15 +589,20 @@ impl<'a> IndentWriter<'a> {
 }
 
 fn write_merge_from_field_repeated_message(w: &mut IndentWriter) {
+    let field = w.field();
     w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);",
             wire_format::WireTypeLengthDelimited));
-    w.write_line(format!("let tmp = {}.push_default();", w.self_field()));
+    if field.repeated {
+        w.write_line(format!("let tmp = {}.push_default();", w.self_field()));
+    } else {
+        w.write_line(format!("let tmp = {}.set_default();", w.self_field()));
+    }
     w.write_line(format!("is.merge_message(tmp)"));
 }
 
 fn write_merge_from_field(w: &mut IndentWriter) {
     let field = w.field();
-    if field.field_type == TYPE_MESSAGE && field.repeated {
+    if field.field_type == TYPE_MESSAGE {
         write_merge_from_field_repeated_message(w);
     } else {
         let wire_type = field_type_wire_type(field.field_type);
@@ -595,7 +618,6 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             };
 
         let read_proc = match field.field_type {
-            TYPE_MESSAGE => None,
             TYPE_ENUM => Some(format!("{:s}::new(is.read_int32())", field.type_name)),
             t => Some(format!("is.read_{:s}()", protobuf_name(t))),
         };
@@ -603,15 +625,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
         match repeat_mode {
             Single | RepeatRegular => {
                 w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
-                match field.field_type {
-                    TYPE_MESSAGE => {
-                        w.write_line(format!("let mut tmp = {:s}::new();", field.type_name));
-                        w.write_line(format!("is.merge_message(&mut tmp);"));
-                    },
-                    _ => {
-                        w.write_line(format!("let tmp = {:s};", *read_proc.get_ref()));
-                    },
-                };
+                w.write_line(format!("let tmp = {:s};", *read_proc.get_ref()));
                 match repeat_mode {
                     Single => w.self_field_assign_some("tmp"),
                     RepeatRegular => w.self_field_push("tmp"),
@@ -732,6 +746,66 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
     });
 }
 
+fn write_message_write_field(w: &mut IndentWriter) {
+    let field = w.field();
+    let field_type = field.field_type;
+    let write_method_suffix = match field_type {
+        TYPE_MESSAGE => "message",
+        TYPE_ENUM => "enum",
+        t => protobuf_name(t),
+    };
+    let field_number = field.proto_field.get_number();
+    let vv = match field.field_type {
+        TYPE_MESSAGE => "v", // TODO: as &Message
+        TYPE_ENUM => "*v as i32",
+        TYPE_BYTES => "v.as_slice()",
+        _ => "*v",
+    };
+    let write_value_lines = match field.field_type {
+        TYPE_MESSAGE => ~[
+            format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});",
+                    field_number as int, wire_format::WireTypeLengthDelimited),
+            format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
+            format!("*sizes_pos += 1;"),
+            format!("v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);"),
+        ],
+        _ => ~[
+            format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
+        ],
+    };
+    match field.repeat_mode {
+        Single => {
+            let match_what =
+                if field.field_type == TYPE_MESSAGE {
+                    format!("{}.as_ref()", w.self_field())
+                } else {
+                    w.self_field()
+                };
+            w.match_block(match_what, |w| {
+                w.case_block("Some(ref v)", |w| {
+                    w.write_lines(write_value_lines);
+                });
+                w.case_expr("None", "{}");
+            });
+        },
+        RepeatPacked => {
+            w.if_self_field_is_not_empty(|w| {
+                w.write_line(format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
+                let data_size_expr = w.self_field_vec_packed_data_size();
+                w.write_line(format!("os.write_raw_varint32({});", data_size_expr));
+                w.for_self_field("v", |w| {
+                    w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
+                });
+            });
+        },
+        RepeatRegular => {
+            w.for_self_field("v", |w| {
+                w.write_lines(write_value_lines);
+            });
+        },
+    };
+}
+
 fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     if !msg.has_any_message_field() {
@@ -742,57 +816,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
         w.fields(|w| {
-            let field = w.field();
-            let field_type = field.field_type;
-            let write_method_suffix = match field_type {
-                TYPE_MESSAGE => "message",
-                TYPE_ENUM => "enum",
-                t => protobuf_name(t),
-            };
-            let field_number = field.proto_field.get_number();
-            let vv = match field.field_type {
-                TYPE_MESSAGE => "v", // TODO: as &Message
-                TYPE_ENUM => "*v as i32",
-                TYPE_BYTES => "v.as_slice()",
-                _ => "*v",
-            };
-            let write_value_lines = match field.field_type {
-                TYPE_MESSAGE => ~[
-                    format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});",
-                            field_number as int, wire_format::WireTypeLengthDelimited),
-                    format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
-                    format!("*sizes_pos += 1;"),
-                    format!("v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);"),
-                ],
-                _ => ~[
-                    format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
-                ],
-            };
-            match field.repeat_mode {
-                Single => {
-                    w.match_block(w.self_field(), |w| {
-                        w.case_block("Some(ref v)", |w| {
-                            w.write_lines(write_value_lines);
-                        });
-                        w.case_expr("None", "{}");
-                    });
-                },
-                RepeatPacked => {
-                    w.if_self_field_is_not_empty(|w| {
-                        w.write_line(format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
-                        let data_size_expr = w.self_field_vec_packed_data_size();
-                        w.write_line(format!("os.write_raw_varint32({});", data_size_expr));
-                        w.for_self_field("v", |w| {
-                            w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
-                        });
-                    });
-                },
-                RepeatRegular => {
-                    w.for_self_field("v", |w| {
-                        w.write_lines(write_value_lines);
-                    });
-                },
-            };
+            write_message_write_field(w);
         });
         w.write_line("os.write_unknown_fields(self.get_unknown_fields());");
     });
@@ -811,17 +835,12 @@ fn write_message_default_instance(w: &mut IndentWriter) {
             });
             w.write_line("&'static instance");
         }
-        if msg.has_any_repeated_field() {
-            w.commented(|w| {
-                w.comment("doesn't work, because rust doen't implement \
-                        static constants of types like ~str");
-                w.comment("https://github.com/mozilla/rust/issues/8406");
-                write_body(w);
-            });
-            w.todo();
-        } else {
-            write_body(w)
-        }
+        w.commented(|w| {
+            w.comment("static constants in Rust are very limited, \
+                    should generate this value lazily");
+            write_body(w);
+        });
+        w.todo();
     });
 }
 
@@ -851,7 +870,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
             if w.field().repeated {
                 w.self_field_assign("v");
             } else {
-                w.self_field_assign_some("v");
+                w.self_field_assign_value("v");
             }
         });
 
@@ -864,7 +883,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         |w| {
             if !w.field().repeated {
                 w.if_self_field_is_none(|w| {
-                    w.self_field_assign_some(w.field_type_default());
+                    w.self_field_assign_default();
                 });
                 w.write_line(format!("{:s}.get_mut_ref()", w.self_field()));
             } else {
@@ -897,29 +916,33 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type),
         |w| {
             if !w.field().repeated {
-                if return_reference {
-                    w.match_expr(w.self_field(), |w| {
-                        w.case_expr(
-                            "Some(ref v)",
-                            match w.field().field_type {
-                                TYPE_STRING | TYPE_BYTES => "v.as_slice()",
-                                _ => "v",
-                            }
-                        );
-                        w.case_expr(
-                            "None",
-                            match w.field().field_type {
-                                TYPE_MESSAGE => format!("{:s}::default_instance()", w.field().type_name),
-                                TYPE_BYTES   => ~"&'a []",
-                                TYPE_STRING  => ~"&'a \"\"",
-                                _            => fail!(),
-                            }
-                        );
-                    });
+                if w.field().field_type == TYPE_MESSAGE {
+                    w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {:s}::default_instance())",
+                            w.self_field(), w.field().type_name));
                 } else {
-                    w.write_line(format!(
-                            "{:s}.unwrap_or_else(|| {:s})",
-                            w.self_field(), w.field_type_default()));
+                    if return_reference {
+                        w.match_expr(w.self_field(), |w| {
+                            w.case_expr(
+                                "Some(ref v)",
+                                match w.field().field_type {
+                                    TYPE_STRING | TYPE_BYTES => "v.as_slice()",
+                                    _ => "v",
+                                }
+                            );
+                            w.case_expr(
+                                "None",
+                                match w.field().field_type {
+                                    TYPE_BYTES   => ~"&'a []",
+                                    TYPE_STRING  => ~"&'a \"\"",
+                                    _            => fail!(),
+                                }
+                            );
+                        });
+                    } else {
+                        w.write_line(format!(
+                                "{:s}.unwrap_or_else(|| {:s})",
+                                w.self_field(), w.field_type_default()));
+                    }
                 }
             } else {
                 w.write_line(format!("{:s}.as_slice()", w.self_field()));

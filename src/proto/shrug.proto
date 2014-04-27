@@ -34,6 +34,12 @@ message TestUnknownFields {
     required int32 a = 1;
 }
 
+// just check it compiles
+message TestSelfReference {
+    required TestSelfReference r1 = 1;
+    optional TestSelfReference r2 = 2;
+}
+
 message TestTypesSingular {
     optional double double_field = 1;
     optional float float_field = 2;

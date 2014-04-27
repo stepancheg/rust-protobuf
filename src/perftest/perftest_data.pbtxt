@@ -11,3 +11,8 @@ test_repeated_messages { messages1 { messages2 {} } }
 test_repeated_messages { messages1 { messages2 { messages3 {} } messages1 {} } }
 test_repeated_messages { messages3 { messages2 { messages3 {} } messages1 {} } }
 test_repeated_messages { messages3 { messages2 { messages3 {} messages1 {} messages1 {} } messages1 {} } }
+
+test_optional_messages { message1 { message2 {} } }
+test_optional_messages { message1 { message2 { message3 {} } message1 {} } }
+test_optional_messages { message3 { message2 { message3 {} } message1 {} } }
+test_optional_messages { message3 { message2 { message3 {} message2 {} message1 {} } message1 {} } }

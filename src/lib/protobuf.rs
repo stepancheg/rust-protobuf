@@ -17,6 +17,7 @@ pub use unknown::UnknownValueRef;
 pub use unknown::UnknownValuesIter;
 pub use unknown::UnknownFieldIter;
 pub use repeated::RepeatedField;
+pub use singular::SingularField;
 pub use clear::Clear;
 
 mod core;
@@ -25,6 +26,7 @@ pub mod lazy;
 pub mod descriptor;
 pub mod codegen;
 pub mod repeated;
+pub mod singular;
 pub mod clear;
 mod misc;
 mod zigzag;
@@ -54,5 +56,6 @@ pub mod protobuf {
     pub use unknown::UnknownValuesIter;
     pub use unknown::UnknownFieldIter;
     pub use repeated::RepeatedField;
+    pub use singular::SingularField;
     pub use clear::Clear;
 }

@@ -291,8 +291,7 @@ impl<'a> FileDescriptorSet {
     }
 
     pub fn default_instance() -> &'static FileDescriptorSet {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: FileDescriptorSet = FileDescriptorSet {
 //             file: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
@@ -420,8 +419,8 @@ pub struct FileDescriptorProto {
     enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
     service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    options: Option<FileOptions>,
-    source_code_info: Option<SourceCodeInfo>,
+    options: ::protobuf::SingularField<FileOptions>,
+    source_code_info: ::protobuf::SingularField<SourceCodeInfo>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -431,8 +430,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn default_instance() -> &'static FileDescriptorProto {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: FileDescriptorProto = FileDescriptorProto {
 //             name: None,
 //             package: None,
@@ -498,7 +496,7 @@ impl<'a> FileDescriptorProto {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -507,7 +505,7 @@ impl<'a> FileDescriptorProto {
             },
             None => {},
         };
-        match self.source_code_info {
+        match self.source_code_info.as_ref() {
             Some(ref v) => {
                 os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -732,7 +730,7 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -741,27 +739,24 @@ impl<'a> FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: FileOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut FileOptions {
         if self.options.is_none() {
-            self.options = Some(FileOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a FileOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => FileOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
     }
 
     pub fn clear_source_code_info(&mut self) {
-        self.source_code_info = None;
+        self.source_code_info.clear();
     }
 
     pub fn has_source_code_info(&self) -> bool {
@@ -770,23 +765,20 @@ impl<'a> FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_source_code_info(&mut self, v: SourceCodeInfo) {
-        self.source_code_info = Some(v);
+        self.source_code_info = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_source_code_info(&'a mut self) -> &'a mut SourceCodeInfo {
         if self.source_code_info.is_none() {
-            self.source_code_info = Some(SourceCodeInfo::new());
+            self.source_code_info.set_default();
         };
         self.source_code_info.get_mut_ref()
     }
 
     pub fn get_source_code_info(&'a self) -> &'a SourceCodeInfo {
-        match self.source_code_info {
-            Some(ref v) => v,
-            None => SourceCodeInfo::default_instance(),
-        }
+        self.source_code_info.as_ref().unwrap_or_else(|| SourceCodeInfo::default_instance())
     }
 }
 
@@ -866,15 +858,13 @@ impl ::protobuf::Message for FileDescriptorProto {
                 },
                 8 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FileOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 9 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = SourceCodeInfo::new();
-                    is.merge_message(&mut tmp);
-                    self.source_code_info = Some(tmp);
+                    let tmp = self.source_code_info.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -985,7 +975,7 @@ pub struct DescriptorProto {
     nested_type: ::protobuf::RepeatedField<DescriptorProto>,
     enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
     extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
-    options: Option<MessageOptions>,
+    options: ::protobuf::SingularField<MessageOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -995,8 +985,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn default_instance() -> &'static DescriptorProto {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: DescriptorProto = DescriptorProto {
 //             name: None,
 //             field: ::protobuf::RepeatedField::new(),
@@ -1049,7 +1038,7 @@ impl<'a> DescriptorProto {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -1201,7 +1190,7 @@ impl<'a> DescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -1210,23 +1199,20 @@ impl<'a> DescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: MessageOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut MessageOptions {
         if self.options.is_none() {
-            self.options = Some(MessageOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a MessageOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => MessageOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| MessageOptions::default_instance())
     }
 }
 
@@ -1275,9 +1261,8 @@ impl ::protobuf::Message for DescriptorProto {
                 },
                 7 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = MessageOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -1377,12 +1362,14 @@ impl<'a> DescriptorProto_ExtensionRange {
     }
 
     pub fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-        static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
-            start: None,
-            end: None,
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
+//             start: None,
+//             end: None,
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -1547,7 +1534,7 @@ pub struct FieldDescriptorProto {
     type_name: Option<~str>,
     extendee: Option<~str>,
     default_value: Option<~str>,
-    options: Option<FieldOptions>,
+    options: ::protobuf::SingularField<FieldOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -1557,18 +1544,20 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn default_instance() -> &'static FieldDescriptorProto {
-        static instance: FieldDescriptorProto = FieldDescriptorProto {
-            name: None,
-            number: None,
-            label: None,
-            field_type: None,
-            type_name: None,
-            extendee: None,
-            default_value: None,
-            options: None,
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: FieldDescriptorProto = FieldDescriptorProto {
+//             name: None,
+//             number: None,
+//             label: None,
+//             field_type: None,
+//             type_name: None,
+//             extendee: None,
+//             default_value: None,
+//             options: None,
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -1615,7 +1604,7 @@ impl<'a> FieldDescriptorProto {
             },
             None => {},
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -1822,7 +1811,7 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -1831,23 +1820,20 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: FieldOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut FieldOptions {
         if self.options.is_none() {
-            self.options = Some(FieldOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a FieldOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => FieldOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| FieldOptions::default_instance())
     }
 }
 
@@ -1901,9 +1887,8 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 },
                 8 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FieldOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -2071,7 +2056,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 pub struct EnumDescriptorProto {
     name: Option<~str>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
-    options: Option<EnumOptions>,
+    options: ::protobuf::SingularField<EnumOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -2081,8 +2066,7 @@ impl<'a> EnumDescriptorProto {
     }
 
     pub fn default_instance() -> &'static EnumDescriptorProto {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: EnumDescriptorProto = EnumDescriptorProto {
 //             name: None,
 //             value: ::protobuf::RepeatedField::new(),
@@ -2107,7 +2091,7 @@ impl<'a> EnumDescriptorProto {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -2171,7 +2155,7 @@ impl<'a> EnumDescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -2180,23 +2164,20 @@ impl<'a> EnumDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: EnumOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut EnumOptions {
         if self.options.is_none() {
-            self.options = Some(EnumOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a EnumOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => EnumOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| EnumOptions::default_instance())
     }
 }
 
@@ -2225,9 +2206,8 @@ impl ::protobuf::Message for EnumDescriptorProto {
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = EnumOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -2298,7 +2278,7 @@ impl ::protobuf::Clear for EnumDescriptorProto {
 pub struct EnumValueDescriptorProto {
     name: Option<~str>,
     number: Option<i32>,
-    options: Option<EnumValueOptions>,
+    options: ::protobuf::SingularField<EnumValueOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -2308,13 +2288,15 @@ impl<'a> EnumValueDescriptorProto {
     }
 
     pub fn default_instance() -> &'static EnumValueDescriptorProto {
-        static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
-            name: None,
-            number: None,
-            options: None,
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
+//             name: None,
+//             number: None,
+//             options: None,
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2331,7 +2313,7 @@ impl<'a> EnumValueDescriptorProto {
             },
             None => {},
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -2399,7 +2381,7 @@ impl<'a> EnumValueDescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -2408,23 +2390,20 @@ impl<'a> EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: EnumValueOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut EnumValueOptions {
         if self.options.is_none() {
-            self.options = Some(EnumValueOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a EnumValueOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => EnumValueOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| EnumValueOptions::default_instance())
     }
 }
 
@@ -2453,9 +2432,8 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = EnumValueOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -2525,7 +2503,7 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
 pub struct ServiceDescriptorProto {
     name: Option<~str>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
-    options: Option<ServiceOptions>,
+    options: ::protobuf::SingularField<ServiceOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -2535,8 +2513,7 @@ impl<'a> ServiceDescriptorProto {
     }
 
     pub fn default_instance() -> &'static ServiceDescriptorProto {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
 //             name: None,
 //             method: ::protobuf::RepeatedField::new(),
@@ -2561,7 +2538,7 @@ impl<'a> ServiceDescriptorProto {
             *sizes_pos += 1;
             v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -2625,7 +2602,7 @@ impl<'a> ServiceDescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -2634,23 +2611,20 @@ impl<'a> ServiceDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: ServiceOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut ServiceOptions {
         if self.options.is_none() {
-            self.options = Some(ServiceOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a ServiceOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => ServiceOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| ServiceOptions::default_instance())
     }
 }
 
@@ -2679,9 +2653,8 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = ServiceOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -2753,7 +2726,7 @@ pub struct MethodDescriptorProto {
     name: Option<~str>,
     input_type: Option<~str>,
     output_type: Option<~str>,
-    options: Option<MethodOptions>,
+    options: ::protobuf::SingularField<MethodOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -2763,14 +2736,16 @@ impl<'a> MethodDescriptorProto {
     }
 
     pub fn default_instance() -> &'static MethodDescriptorProto {
-        static instance: MethodDescriptorProto = MethodDescriptorProto {
-            name: None,
-            input_type: None,
-            output_type: None,
-            options: None,
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: MethodDescriptorProto = MethodDescriptorProto {
+//             name: None,
+//             input_type: None,
+//             output_type: None,
+//             options: None,
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2793,7 +2768,7 @@ impl<'a> MethodDescriptorProto {
             },
             None => {},
         };
-        match self.options {
+        match self.options.as_ref() {
             Some(ref v) => {
                 os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
                 os.write_raw_varint32(sizes[*sizes_pos]);
@@ -2893,7 +2868,7 @@ impl<'a> MethodDescriptorProto {
     }
 
     pub fn clear_options(&mut self) {
-        self.options = None;
+        self.options.clear();
     }
 
     pub fn has_options(&self) -> bool {
@@ -2902,23 +2877,20 @@ impl<'a> MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: MethodOptions) {
-        self.options = Some(v);
+        self.options = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_options(&'a mut self) -> &'a mut MethodOptions {
         if self.options.is_none() {
-            self.options = Some(MethodOptions::new());
+            self.options.set_default();
         };
         self.options.get_mut_ref()
     }
 
     pub fn get_options(&'a self) -> &'a MethodOptions {
-        match self.options {
-            Some(ref v) => v,
-            None => MethodOptions::default_instance(),
-        }
+        self.options.as_ref().unwrap_or_else(|| MethodOptions::default_instance())
     }
 }
 
@@ -2952,9 +2924,8 @@ impl ::protobuf::Message for MethodDescriptorProto {
                 },
                 4 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = MethodOptions::new();
-                    is.merge_message(&mut tmp);
-                    self.options = Some(tmp);
+                    let tmp = self.options.set_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -3045,8 +3016,7 @@ impl<'a> FileOptions {
     }
 
     pub fn default_instance() -> &'static FileOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: FileOptions = FileOptions {
 //             java_package: None,
 //             java_outer_classname: None,
@@ -3588,8 +3558,7 @@ impl<'a> MessageOptions {
     }
 
     pub fn default_instance() -> &'static MessageOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: MessageOptions = MessageOptions {
 //             message_set_wire_format: None,
 //             no_standard_descriptor_accessor: None,
@@ -3808,8 +3777,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn default_instance() -> &'static FieldOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: FieldOptions = FieldOptions {
 //             ctype: None,
 //             packed: None,
@@ -4218,8 +4186,7 @@ impl<'a> EnumOptions {
     }
 
     pub fn default_instance() -> &'static EnumOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: EnumOptions = EnumOptions {
 //             allow_alias: None,
 //             uninterpreted_option: ::protobuf::RepeatedField::new(),
@@ -4390,8 +4357,7 @@ impl<'a> EnumValueOptions {
     }
 
     pub fn default_instance() -> &'static EnumValueOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: EnumValueOptions = EnumValueOptions {
 //             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
@@ -4520,8 +4486,7 @@ impl<'a> ServiceOptions {
     }
 
     pub fn default_instance() -> &'static ServiceOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: ServiceOptions = ServiceOptions {
 //             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
@@ -4650,8 +4615,7 @@ impl<'a> MethodOptions {
     }
 
     pub fn default_instance() -> &'static MethodOptions {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: MethodOptions = MethodOptions {
 //             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
@@ -4786,8 +4750,7 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn default_instance() -> &'static UninterpretedOption {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: UninterpretedOption = UninterpretedOption {
 //             name: ::protobuf::RepeatedField::new(),
 //             identifier_value: None,
@@ -5178,12 +5141,14 @@ impl<'a> UninterpretedOption_NamePart {
     }
 
     pub fn default_instance() -> &'static UninterpretedOption_NamePart {
-        static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
-            name_part: None,
-            is_extension: None,
-            unknown_fields: None,
-        };
-        &'static instance
+//         // static constants in Rust are very limited, should generate this value lazily
+//         static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
+//             name_part: None,
+//             is_extension: None,
+//             unknown_fields: None,
+//         };
+//         &'static instance
+        fail!("TODO");
     }
 
     #[allow(unused_variable)]
@@ -5360,8 +5325,7 @@ impl<'a> SourceCodeInfo {
     }
 
     pub fn default_instance() -> &'static SourceCodeInfo {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: SourceCodeInfo = SourceCodeInfo {
 //             location: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
@@ -5493,8 +5457,7 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     pub fn default_instance() -> &'static SourceCodeInfo_Location {
-//         // doesn't work, because rust doen't implement static constants of types like ~str
-//         // https://github.com/mozilla/rust/issues/8406
+//         // static constants in Rust are very limited, should generate this value lazily
 //         static instance: SourceCodeInfo_Location = SourceCodeInfo_Location {
 //             path: Vec::new(),
 //             span: Vec::new(),

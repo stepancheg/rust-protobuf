@@ -83,5 +83,5 @@ fn main() {
     test("test1", perftest_data.get_test1());
     test("test_repeated_bool", perftest_data.get_test_repeated_bool());
     test("test_repeated_messages", perftest_data.get_test_repeated_messages());
-    //test("test_optional_messages", perftest_data.get_test_optional_messages());
+    test("test_optional_messages", perftest_data.get_test_optional_messages());
 }
