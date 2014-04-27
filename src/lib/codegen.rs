@@ -23,7 +23,7 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         TYPE_SFIXED32 => "i32",
         TYPE_SFIXED64 => "i64",
         TYPE_BOOL     => "bool",
-        TYPE_STRING   => "~str",
+        TYPE_STRING   => "StrBuf",
         TYPE_BYTES    => "Vec<u8>",
         TYPE_ENUM | TYPE_GROUP | TYPE_MESSAGE => fail!()
     }
@@ -438,7 +438,7 @@ impl<'a> IndentWriter<'a> {
             TYPE_MESSAGE => format!("{:s}::new()", self.field().type_name),
             // TODO: use hardcoded constant
             TYPE_ENUM    => format!("{:s}::new(0)", self.field().type_name),
-            TYPE_STRING  => ~"~\"\"",
+            TYPE_STRING  => ~"StrBuf::new()",
             TYPE_BYTES   => ~"Vec::new()",
             TYPE_BOOL    => ~"false",
             TYPE_FLOAT | TYPE_DOUBLE => ~"0.",
@@ -618,14 +618,15 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             };
 
         let read_proc = match field.field_type {
-            TYPE_ENUM => Some(format!("{:s}::new(is.read_int32())", field.type_name)),
-            t => Some(format!("is.read_{:s}()", protobuf_name(t))),
+            TYPE_ENUM => format!("{:s}::new(is.read_int32())", field.type_name),
+            TYPE_STRING => "is.read_strbuf()".to_owned(),
+            t => format!("is.read_{:s}()", protobuf_name(t)),
         };
 
         match repeat_mode {
             Single | RepeatRegular => {
                 w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
-                w.write_line(format!("let tmp = {:s};", *read_proc.get_ref()));
+                w.write_line(format!("let tmp = {:s};", read_proc));
                 match repeat_mode {
                     Single => w.self_field_assign_some("tmp"),
                     RepeatRegular => w.self_field_push("tmp"),
@@ -638,14 +639,14 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                     w.write_line("let len = is.read_raw_varint32();");
                     w.write_line("let old_limit = is.push_limit(len);");
                     w.while_block("!is.eof()", |w| {
-                        w.self_field_push(*read_proc.get_ref());
+                        w.self_field_push(read_proc);
                     });
                     w.write_line("is.pop_limit(old_limit);");
                 });
                 w.write_line("} else {");
                 w.indented(|w| {
                     w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
-                    w.self_field_push(*read_proc.get_ref());
+                    w.self_field_push(read_proc);
                 });
                 w.write_line("}");
             },
@@ -713,7 +714,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                                     },
                                     TYPE_STRING => {
                                         w.write_line(format!(
-                                                "my_size += ::protobuf::rt::string_size({:d}, *value);",
+                                                "my_size += ::protobuf::rt::string_size({:d}, value.as_slice());",
                                                 field.number as int));
                                     },
                                     TYPE_ENUM => {
@@ -758,7 +759,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
     let vv = match field.field_type {
         TYPE_MESSAGE => "v", // TODO: as &Message
         TYPE_ENUM => "*v as i32",
-        TYPE_BYTES => "v.as_slice()",
+        TYPE_BYTES|TYPE_STRING => "v.as_slice()",
         _ => "*v",
     };
     let write_value_lines = match field.field_type {
@@ -860,8 +861,19 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
 
         let set_param_type = if w.field().repeated {
             w.field().full_type()
+        } else if w.field().field_type == TYPE_STRING {
+            ~"~str"
         } else {
             w.field().type_name.to_owned()
+        };
+        let mut_return_type = if w.field().field_type == TYPE_STRING {
+            if w.field().repeated {
+                ~"Vec<StrBuf>"
+            } else {
+                ~"StrBuf"
+            }
+        } else {
+            set_param_type.to_owned()
         };
 
         w.write_line("");
@@ -870,7 +882,11 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
             if w.field().repeated {
                 w.self_field_assign("v");
             } else {
-                w.self_field_assign_value("v");
+                if w.field().field_type == TYPE_STRING {
+                    w.self_field_assign_value("StrBuf::from_owned_str(v)");
+                } else {
+                    w.self_field_assign_value("v");
+                }
             }
         });
 
@@ -879,7 +895,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         if !w.field().repeated {
             w.comment("If field is not initialized, it is initialized with default value first.");
         }
-        w.pub_fn(format!("mut_{:s}(&'a mut self) -> &'a mut {:s}", w.field().name, set_param_type),
+        w.pub_fn(format!("mut_{:s}(&'a mut self) -> &'a mut {:s}", w.field().name, mut_return_type),
         |w| {
             if !w.field().repeated {
                 w.if_self_field_is_none(|w| {
@@ -1146,7 +1162,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             w.write_line("");
             for dep in file.get_dependency().iter() {
-                w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(*dep)));
+                w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(dep.as_slice())));
             }
 
             {

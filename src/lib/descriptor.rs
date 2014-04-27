@@ -410,9 +410,9 @@ impl ::protobuf::Clear for FileDescriptorSet {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FileDescriptorProto {
-    name: Option<~str>,
-    package: Option<~str>,
-    dependency: Vec<~str>,
+    name: Option<StrBuf>,
+    package: Option<StrBuf>,
+    dependency: Vec<StrBuf>,
     public_dependency: Vec<i32>,
     weak_dependency: Vec<i32>,
     message_type: ::protobuf::RepeatedField<DescriptorProto>,
@@ -453,18 +453,18 @@ impl<'a> FileDescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
         match self.package {
             Some(ref v) => {
-                os.write_string(2, *v);
+                os.write_string(2, v.as_slice());
             },
             None => {},
         };
         for v in self.dependency.iter() {
-            os.write_string(3, *v);
+            os.write_string(3, v.as_slice());
         };
         for v in self.public_dependency.iter() {
             os.write_int32(10, *v);
@@ -527,14 +527,14 @@ impl<'a> FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -556,14 +556,14 @@ impl<'a> FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_package(&mut self, v: ~str) {
-        self.package = Some(v);
+        self.package = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_package(&'a mut self) -> &'a mut ~str {
+    pub fn mut_package(&'a mut self) -> &'a mut StrBuf {
         if self.package.is_none() {
-            self.package = Some(~"");
+            self.package = Some(StrBuf::new());
         };
         self.package.get_mut_ref()
     }
@@ -580,20 +580,20 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_dependency(&mut self, v: Vec<~str>) {
+    pub fn set_dependency(&mut self, v: Vec<StrBuf>) {
         self.dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency(&'a mut self) -> &'a mut Vec<~str> {
+    pub fn mut_dependency(&'a mut self) -> &'a mut Vec<StrBuf> {
         &mut self.dependency
     }
 
-    pub fn get_dependency(&'a self) -> &'a [~str] {
+    pub fn get_dependency(&'a self) -> &'a [StrBuf] {
         self.dependency.as_slice()
     }
 
-    pub fn add_dependency(&mut self, v: ~str) {
+    pub fn add_dependency(&mut self, v: StrBuf) {
         self.dependency.push(v);
     }
 
@@ -797,17 +797,17 @@ impl ::protobuf::Message for FileDescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.package = Some(tmp);
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.dependency.push(tmp);
                 },
                 10 => {
@@ -881,13 +881,13 @@ impl ::protobuf::Message for FileDescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.package.iter() {
-            my_size += ::protobuf::rt::string_size(2, *value);
+            my_size += ::protobuf::rt::string_size(2, value.as_slice());
         };
         for value in self.dependency.iter() {
-            my_size += ::protobuf::rt::string_size(3, *value);
+            my_size += ::protobuf::rt::string_size(3, value.as_slice());
         };
         for value in self.public_dependency.iter() {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -969,7 +969,7 @@ impl ::protobuf::Clear for FileDescriptorProto {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct DescriptorProto {
-    name: Option<~str>,
+    name: Option<StrBuf>,
     field: ::protobuf::RepeatedField<FieldDescriptorProto>,
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
     nested_type: ::protobuf::RepeatedField<DescriptorProto>,
@@ -1004,7 +1004,7 @@ impl<'a> DescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
@@ -1060,14 +1060,14 @@ impl<'a> DescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -1231,7 +1231,7 @@ impl ::protobuf::Message for DescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 2 => {
@@ -1279,7 +1279,7 @@ impl ::protobuf::Message for DescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.field.iter() {
             let len = value.compute_sizes(sizes);
@@ -1527,13 +1527,13 @@ impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FieldDescriptorProto {
-    name: Option<~str>,
+    name: Option<StrBuf>,
     number: Option<i32>,
     label: Option<FieldDescriptorProto_Label>,
     field_type: Option<FieldDescriptorProto_Type>,
-    type_name: Option<~str>,
-    extendee: Option<~str>,
-    default_value: Option<~str>,
+    type_name: Option<StrBuf>,
+    extendee: Option<StrBuf>,
+    default_value: Option<StrBuf>,
     options: ::protobuf::SingularField<FieldOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -1564,7 +1564,7 @@ impl<'a> FieldDescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
@@ -1588,19 +1588,19 @@ impl<'a> FieldDescriptorProto {
         };
         match self.type_name {
             Some(ref v) => {
-                os.write_string(6, *v);
+                os.write_string(6, v.as_slice());
             },
             None => {},
         };
         match self.extendee {
             Some(ref v) => {
-                os.write_string(2, *v);
+                os.write_string(2, v.as_slice());
             },
             None => {},
         };
         match self.default_value {
             Some(ref v) => {
-                os.write_string(7, *v);
+                os.write_string(7, v.as_slice());
             },
             None => {},
         };
@@ -1626,14 +1626,14 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -1733,14 +1733,14 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_type_name(&mut self, v: ~str) {
-        self.type_name = Some(v);
+        self.type_name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_type_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_type_name(&'a mut self) -> &'a mut StrBuf {
         if self.type_name.is_none() {
-            self.type_name = Some(~"");
+            self.type_name = Some(StrBuf::new());
         };
         self.type_name.get_mut_ref()
     }
@@ -1762,14 +1762,14 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_extendee(&mut self, v: ~str) {
-        self.extendee = Some(v);
+        self.extendee = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_extendee(&'a mut self) -> &'a mut ~str {
+    pub fn mut_extendee(&'a mut self) -> &'a mut StrBuf {
         if self.extendee.is_none() {
-            self.extendee = Some(~"");
+            self.extendee = Some(StrBuf::new());
         };
         self.extendee.get_mut_ref()
     }
@@ -1791,14 +1791,14 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_default_value(&mut self, v: ~str) {
-        self.default_value = Some(v);
+        self.default_value = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_default_value(&'a mut self) -> &'a mut ~str {
+    pub fn mut_default_value(&'a mut self) -> &'a mut StrBuf {
         if self.default_value.is_none() {
-            self.default_value = Some(~"");
+            self.default_value = Some(StrBuf::new());
         };
         self.default_value.get_mut_ref()
     }
@@ -1852,7 +1852,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 3 => {
@@ -1872,17 +1872,17 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 },
                 6 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.type_name = Some(tmp);
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.extendee = Some(tmp);
                 },
                 7 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.default_value = Some(tmp);
                 },
                 8 => {
@@ -1905,7 +1905,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.number.iter() {
             my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -1917,13 +1917,13 @@ impl ::protobuf::Message for FieldDescriptorProto {
             my_size += ::protobuf::rt::enum_size(5, *value);
         };
         for value in self.type_name.iter() {
-            my_size += ::protobuf::rt::string_size(6, *value);
+            my_size += ::protobuf::rt::string_size(6, value.as_slice());
         };
         for value in self.extendee.iter() {
-            my_size += ::protobuf::rt::string_size(2, *value);
+            my_size += ::protobuf::rt::string_size(2, value.as_slice());
         };
         for value in self.default_value.iter() {
-            my_size += ::protobuf::rt::string_size(7, *value);
+            my_size += ::protobuf::rt::string_size(7, value.as_slice());
         };
         for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
@@ -2054,7 +2054,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct EnumDescriptorProto {
-    name: Option<~str>,
+    name: Option<StrBuf>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: ::protobuf::SingularField<EnumOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -2081,7 +2081,7 @@ impl<'a> EnumDescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
@@ -2113,14 +2113,14 @@ impl<'a> EnumDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -2196,7 +2196,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 2 => {
@@ -2224,7 +2224,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.value.iter() {
             let len = value.compute_sizes(sizes);
@@ -2276,7 +2276,7 @@ impl ::protobuf::Clear for EnumDescriptorProto {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct EnumValueDescriptorProto {
-    name: Option<~str>,
+    name: Option<StrBuf>,
     number: Option<i32>,
     options: ::protobuf::SingularField<EnumValueOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -2303,7 +2303,7 @@ impl<'a> EnumValueDescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
@@ -2335,14 +2335,14 @@ impl<'a> EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -2422,7 +2422,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 2 => {
@@ -2450,7 +2450,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.number.iter() {
             my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -2501,7 +2501,7 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct ServiceDescriptorProto {
-    name: Option<~str>,
+    name: Option<StrBuf>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: ::protobuf::SingularField<ServiceOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -2528,7 +2528,7 @@ impl<'a> ServiceDescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
@@ -2560,14 +2560,14 @@ impl<'a> ServiceDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -2643,7 +2643,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 2 => {
@@ -2671,7 +2671,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.method.iter() {
             let len = value.compute_sizes(sizes);
@@ -2723,9 +2723,9 @@ impl ::protobuf::Clear for ServiceDescriptorProto {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct MethodDescriptorProto {
-    name: Option<~str>,
-    input_type: Option<~str>,
-    output_type: Option<~str>,
+    name: Option<StrBuf>,
+    input_type: Option<StrBuf>,
+    output_type: Option<StrBuf>,
     options: ::protobuf::SingularField<MethodOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -2752,19 +2752,19 @@ impl<'a> MethodDescriptorProto {
         use protobuf::{Message};
         match self.name {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
         match self.input_type {
             Some(ref v) => {
-                os.write_string(2, *v);
+                os.write_string(2, v.as_slice());
             },
             None => {},
         };
         match self.output_type {
             Some(ref v) => {
-                os.write_string(3, *v);
+                os.write_string(3, v.as_slice());
             },
             None => {},
         };
@@ -2790,14 +2790,14 @@ impl<'a> MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ~str) {
-        self.name = Some(v);
+        self.name = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name(&'a mut self) -> &'a mut StrBuf {
         if self.name.is_none() {
-            self.name = Some(~"");
+            self.name = Some(StrBuf::new());
         };
         self.name.get_mut_ref()
     }
@@ -2819,14 +2819,14 @@ impl<'a> MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_input_type(&mut self, v: ~str) {
-        self.input_type = Some(v);
+        self.input_type = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_input_type(&'a mut self) -> &'a mut ~str {
+    pub fn mut_input_type(&'a mut self) -> &'a mut StrBuf {
         if self.input_type.is_none() {
-            self.input_type = Some(~"");
+            self.input_type = Some(StrBuf::new());
         };
         self.input_type.get_mut_ref()
     }
@@ -2848,14 +2848,14 @@ impl<'a> MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_output_type(&mut self, v: ~str) {
-        self.output_type = Some(v);
+        self.output_type = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_output_type(&'a mut self) -> &'a mut ~str {
+    pub fn mut_output_type(&'a mut self) -> &'a mut StrBuf {
         if self.output_type.is_none() {
-            self.output_type = Some(~"");
+            self.output_type = Some(StrBuf::new());
         };
         self.output_type.get_mut_ref()
     }
@@ -2909,17 +2909,17 @@ impl ::protobuf::Message for MethodDescriptorProto {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name = Some(tmp);
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.input_type = Some(tmp);
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.output_type = Some(tmp);
                 },
                 4 => {
@@ -2942,13 +2942,13 @@ impl ::protobuf::Message for MethodDescriptorProto {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.input_type.iter() {
-            my_size += ::protobuf::rt::string_size(2, *value);
+            my_size += ::protobuf::rt::string_size(2, value.as_slice());
         };
         for value in self.output_type.iter() {
-            my_size += ::protobuf::rt::string_size(3, *value);
+            my_size += ::protobuf::rt::string_size(3, value.as_slice());
         };
         for value in self.options.iter() {
             let len = value.compute_sizes(sizes);
@@ -2997,12 +2997,12 @@ impl ::protobuf::Clear for MethodDescriptorProto {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FileOptions {
-    java_package: Option<~str>,
-    java_outer_classname: Option<~str>,
+    java_package: Option<StrBuf>,
+    java_outer_classname: Option<StrBuf>,
     java_multiple_files: Option<bool>,
     java_generate_equals_and_hash: Option<bool>,
     optimize_for: Option<FileOptions_OptimizeMode>,
-    go_package: Option<~str>,
+    go_package: Option<StrBuf>,
     cc_generic_services: Option<bool>,
     java_generic_services: Option<bool>,
     py_generic_services: Option<bool>,
@@ -3038,13 +3038,13 @@ impl<'a> FileOptions {
         use protobuf::{Message};
         match self.java_package {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
         match self.java_outer_classname {
             Some(ref v) => {
-                os.write_string(8, *v);
+                os.write_string(8, v.as_slice());
             },
             None => {},
         };
@@ -3068,7 +3068,7 @@ impl<'a> FileOptions {
         };
         match self.go_package {
             Some(ref v) => {
-                os.write_string(11, *v);
+                os.write_string(11, v.as_slice());
             },
             None => {},
         };
@@ -3109,14 +3109,14 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_package(&mut self, v: ~str) {
-        self.java_package = Some(v);
+        self.java_package = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_package(&'a mut self) -> &'a mut ~str {
+    pub fn mut_java_package(&'a mut self) -> &'a mut StrBuf {
         if self.java_package.is_none() {
-            self.java_package = Some(~"");
+            self.java_package = Some(StrBuf::new());
         };
         self.java_package.get_mut_ref()
     }
@@ -3138,14 +3138,14 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_outer_classname(&mut self, v: ~str) {
-        self.java_outer_classname = Some(v);
+        self.java_outer_classname = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_outer_classname(&'a mut self) -> &'a mut ~str {
+    pub fn mut_java_outer_classname(&'a mut self) -> &'a mut StrBuf {
         if self.java_outer_classname.is_none() {
-            self.java_outer_classname = Some(~"");
+            self.java_outer_classname = Some(StrBuf::new());
         };
         self.java_outer_classname.get_mut_ref()
     }
@@ -3245,14 +3245,14 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_go_package(&mut self, v: ~str) {
-        self.go_package = Some(v);
+        self.go_package = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_go_package(&'a mut self) -> &'a mut ~str {
+    pub fn mut_go_package(&'a mut self) -> &'a mut StrBuf {
         if self.go_package.is_none() {
-            self.go_package = Some(~"");
+            self.go_package = Some(StrBuf::new());
         };
         self.go_package.get_mut_ref()
     }
@@ -3380,12 +3380,12 @@ impl ::protobuf::Message for FileOptions {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.java_package = Some(tmp);
                 },
                 8 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.java_outer_classname = Some(tmp);
                 },
                 10 => {
@@ -3405,7 +3405,7 @@ impl ::protobuf::Message for FileOptions {
                 },
                 11 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.go_package = Some(tmp);
                 },
                 16 => {
@@ -3443,10 +3443,10 @@ impl ::protobuf::Message for FileOptions {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.java_package.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.java_outer_classname.iter() {
-            my_size += ::protobuf::rt::string_size(8, *value);
+            my_size += ::protobuf::rt::string_size(8, value.as_slice());
         };
         if self.java_multiple_files.is_some() {
             my_size += 2;
@@ -3458,7 +3458,7 @@ impl ::protobuf::Message for FileOptions {
             my_size += ::protobuf::rt::enum_size(9, *value);
         };
         for value in self.go_package.iter() {
-            my_size += ::protobuf::rt::string_size(11, *value);
+            my_size += ::protobuf::rt::string_size(11, value.as_slice());
         };
         if self.cc_generic_services.is_some() {
             my_size += 3;
@@ -3765,7 +3765,7 @@ pub struct FieldOptions {
     packed: Option<bool>,
     lazy: Option<bool>,
     deprecated: Option<bool>,
-    experimental_map_key: Option<~str>,
+    experimental_map_key: Option<StrBuf>,
     weak: Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -3820,7 +3820,7 @@ impl<'a> FieldOptions {
         };
         match self.experimental_map_key {
             Some(ref v) => {
-                os.write_string(9, *v);
+                os.write_string(9, v.as_slice());
             },
             None => {},
         };
@@ -3953,14 +3953,14 @@ impl<'a> FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_experimental_map_key(&mut self, v: ~str) {
-        self.experimental_map_key = Some(v);
+        self.experimental_map_key = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_experimental_map_key(&'a mut self) -> &'a mut ~str {
+    pub fn mut_experimental_map_key(&'a mut self) -> &'a mut StrBuf {
         if self.experimental_map_key.is_none() {
-            self.experimental_map_key = Some(~"");
+            self.experimental_map_key = Some(StrBuf::new());
         };
         self.experimental_map_key.get_mut_ref()
     }
@@ -4056,7 +4056,7 @@ impl ::protobuf::Message for FieldOptions {
                 },
                 9 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.experimental_map_key = Some(tmp);
                 },
                 10 => {
@@ -4096,7 +4096,7 @@ impl ::protobuf::Message for FieldOptions {
             my_size += 2;
         };
         for value in self.experimental_map_key.iter() {
-            my_size += ::protobuf::rt::string_size(9, *value);
+            my_size += ::protobuf::rt::string_size(9, value.as_slice());
         };
         if self.weak.is_some() {
             my_size += 2;
@@ -4735,12 +4735,12 @@ impl ::protobuf::Clear for MethodOptions {
 #[deriving(Clone,Eq,Show,Default)]
 pub struct UninterpretedOption {
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
-    identifier_value: Option<~str>,
+    identifier_value: Option<StrBuf>,
     positive_int_value: Option<u64>,
     negative_int_value: Option<i64>,
     double_value: Option<f64>,
     string_value: Option<Vec<u8>>,
-    aggregate_value: Option<~str>,
+    aggregate_value: Option<StrBuf>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -4775,7 +4775,7 @@ impl<'a> UninterpretedOption {
         };
         match self.identifier_value {
             Some(ref v) => {
-                os.write_string(3, *v);
+                os.write_string(3, v.as_slice());
             },
             None => {},
         };
@@ -4805,7 +4805,7 @@ impl<'a> UninterpretedOption {
         };
         match self.aggregate_value {
             Some(ref v) => {
-                os.write_string(8, *v);
+                os.write_string(8, v.as_slice());
             },
             None => {},
         };
@@ -4844,14 +4844,14 @@ impl<'a> UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_identifier_value(&mut self, v: ~str) {
-        self.identifier_value = Some(v);
+        self.identifier_value = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_identifier_value(&'a mut self) -> &'a mut ~str {
+    pub fn mut_identifier_value(&'a mut self) -> &'a mut StrBuf {
         if self.identifier_value.is_none() {
-            self.identifier_value = Some(~"");
+            self.identifier_value = Some(StrBuf::new());
         };
         self.identifier_value.get_mut_ref()
     }
@@ -4980,14 +4980,14 @@ impl<'a> UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_aggregate_value(&mut self, v: ~str) {
-        self.aggregate_value = Some(v);
+        self.aggregate_value = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_aggregate_value(&'a mut self) -> &'a mut ~str {
+    pub fn mut_aggregate_value(&'a mut self) -> &'a mut StrBuf {
         if self.aggregate_value.is_none() {
-            self.aggregate_value = Some(~"");
+            self.aggregate_value = Some(StrBuf::new());
         };
         self.aggregate_value.get_mut_ref()
     }
@@ -5020,7 +5020,7 @@ impl ::protobuf::Message for UninterpretedOption {
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.identifier_value = Some(tmp);
                 },
                 4 => {
@@ -5045,7 +5045,7 @@ impl ::protobuf::Message for UninterpretedOption {
                 },
                 8 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.aggregate_value = Some(tmp);
                 },
                 _ => {
@@ -5067,7 +5067,7 @@ impl ::protobuf::Message for UninterpretedOption {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.identifier_value.iter() {
-            my_size += ::protobuf::rt::string_size(3, *value);
+            my_size += ::protobuf::rt::string_size(3, value.as_slice());
         };
         for value in self.positive_int_value.iter() {
             my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -5082,7 +5082,7 @@ impl ::protobuf::Message for UninterpretedOption {
             my_size += ::protobuf::rt::bytes_size(7, value.as_slice());
         };
         for value in self.aggregate_value.iter() {
-            my_size += ::protobuf::rt::string_size(8, *value);
+            my_size += ::protobuf::rt::string_size(8, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         *sizes.get_mut(pos) = my_size;
@@ -5130,7 +5130,7 @@ impl ::protobuf::Clear for UninterpretedOption {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct UninterpretedOption_NamePart {
-    name_part: Option<~str>,
+    name_part: Option<StrBuf>,
     is_extension: Option<bool>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -5156,7 +5156,7 @@ impl<'a> UninterpretedOption_NamePart {
         use protobuf::{Message};
         match self.name_part {
             Some(ref v) => {
-                os.write_string(1, *v);
+                os.write_string(1, v.as_slice());
             },
             None => {},
         };
@@ -5179,14 +5179,14 @@ impl<'a> UninterpretedOption_NamePart {
 
     // Param is passed by value, moved
     pub fn set_name_part(&mut self, v: ~str) {
-        self.name_part = Some(v);
+        self.name_part = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name_part(&'a mut self) -> &'a mut ~str {
+    pub fn mut_name_part(&'a mut self) -> &'a mut StrBuf {
         if self.name_part.is_none() {
-            self.name_part = Some(~"");
+            self.name_part = Some(StrBuf::new());
         };
         self.name_part.get_mut_ref()
     }
@@ -5246,7 +5246,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.name_part = Some(tmp);
                 },
                 2 => {
@@ -5269,7 +5269,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.name_part.iter() {
-            my_size += ::protobuf::rt::string_size(1, *value);
+            my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         if self.is_extension.is_some() {
             my_size += 2;
@@ -5446,8 +5446,8 @@ impl ::protobuf::Clear for SourceCodeInfo {
 pub struct SourceCodeInfo_Location {
     path: Vec<i32>,
     span: Vec<i32>,
-    leading_comments: Option<~str>,
-    trailing_comments: Option<~str>,
+    leading_comments: Option<StrBuf>,
+    trailing_comments: Option<StrBuf>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -5488,13 +5488,13 @@ impl<'a> SourceCodeInfo_Location {
         };
         match self.leading_comments {
             Some(ref v) => {
-                os.write_string(3, *v);
+                os.write_string(3, v.as_slice());
             },
             None => {},
         };
         match self.trailing_comments {
             Some(ref v) => {
-                os.write_string(4, *v);
+                os.write_string(4, v.as_slice());
             },
             None => {},
         };
@@ -5555,14 +5555,14 @@ impl<'a> SourceCodeInfo_Location {
 
     // Param is passed by value, moved
     pub fn set_leading_comments(&mut self, v: ~str) {
-        self.leading_comments = Some(v);
+        self.leading_comments = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_leading_comments(&'a mut self) -> &'a mut ~str {
+    pub fn mut_leading_comments(&'a mut self) -> &'a mut StrBuf {
         if self.leading_comments.is_none() {
-            self.leading_comments = Some(~"");
+            self.leading_comments = Some(StrBuf::new());
         };
         self.leading_comments.get_mut_ref()
     }
@@ -5584,14 +5584,14 @@ impl<'a> SourceCodeInfo_Location {
 
     // Param is passed by value, moved
     pub fn set_trailing_comments(&mut self, v: ~str) {
-        self.trailing_comments = Some(v);
+        self.trailing_comments = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_trailing_comments(&'a mut self) -> &'a mut ~str {
+    pub fn mut_trailing_comments(&'a mut self) -> &'a mut StrBuf {
         if self.trailing_comments.is_none() {
-            self.trailing_comments = Some(~"");
+            self.trailing_comments = Some(StrBuf::new());
         };
         self.trailing_comments.get_mut_ref()
     }
@@ -5645,12 +5645,12 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.leading_comments = Some(tmp);
                 },
                 4 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.trailing_comments = Some(tmp);
                 },
                 _ => {
@@ -5674,10 +5674,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             my_size += ::protobuf::rt::vec_packed_varint_size(2, self.span.as_slice());
         };
         for value in self.leading_comments.iter() {
-            my_size += ::protobuf::rt::string_size(3, *value);
+            my_size += ::protobuf::rt::string_size(3, value.as_slice());
         };
         for value in self.trailing_comments.iter() {
-            my_size += ::protobuf::rt::string_size(4, *value);
+            my_size += ::protobuf::rt::string_size(4, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         *sizes.get_mut(pos) = my_size;

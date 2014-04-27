@@ -370,8 +370,12 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_bytes(len)
     }
 
+    pub fn read_strbuf(&mut self) -> StrBuf {
+        StrBuf::from_utf8(self.read_bytes()).unwrap()
+    }
+
     pub fn read_string(&mut self) -> ~str {
-        from_utf8(self.read_bytes().as_slice()).unwrap().to_owned()
+        self.read_strbuf().into_owned()
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) {

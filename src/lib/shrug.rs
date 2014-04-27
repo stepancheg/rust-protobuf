@@ -254,7 +254,7 @@ impl ::protobuf::Clear for Test1 {
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct Test2 {
-    b: Option<~str>,
+    b: Option<StrBuf>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -278,7 +278,7 @@ impl<'a> Test2 {
         use protobuf::{Message};
         match self.b {
             Some(ref v) => {
-                os.write_string(2, *v);
+                os.write_string(2, v.as_slice());
             },
             None => {},
         };
@@ -295,14 +295,14 @@ impl<'a> Test2 {
 
     // Param is passed by value, moved
     pub fn set_b(&mut self, v: ~str) {
-        self.b = Some(v);
+        self.b = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_b(&'a mut self) -> &'a mut ~str {
+    pub fn mut_b(&'a mut self) -> &'a mut StrBuf {
         if self.b.is_none() {
-            self.b = Some(~"");
+            self.b = Some(StrBuf::new());
         };
         self.b.get_mut_ref()
     }
@@ -333,7 +333,7 @@ impl ::protobuf::Message for Test2 {
             match field_number {
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.b = Some(tmp);
                 },
                 _ => {
@@ -351,7 +351,7 @@ impl ::protobuf::Message for Test2 {
         sizes.push(0);
         let mut my_size = 0;
         for value in self.b.iter() {
-            my_size += ::protobuf::rt::string_size(2, *value);
+            my_size += ::protobuf::rt::string_size(2, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         *sizes.get_mut(pos) = my_size;
@@ -1456,7 +1456,7 @@ pub struct TestTypesSingular {
     sfixed32_field: Option<i32>,
     sfixed64_field: Option<i64>,
     bool_field: Option<bool>,
-    string_field: Option<~str>,
+    string_field: Option<StrBuf>,
     bytes_field: Option<Vec<u8>>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -1573,7 +1573,7 @@ impl<'a> TestTypesSingular {
         };
         match self.string_field {
             Some(ref v) => {
-                os.write_string(14, *v);
+                os.write_string(14, v.as_slice());
             },
             None => {},
         };
@@ -1934,14 +1934,14 @@ impl<'a> TestTypesSingular {
 
     // Param is passed by value, moved
     pub fn set_string_field(&mut self, v: ~str) {
-        self.string_field = Some(v);
+        self.string_field = Some(StrBuf::from_owned_str(v));
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_field(&'a mut self) -> &'a mut ~str {
+    pub fn mut_string_field(&'a mut self) -> &'a mut StrBuf {
         if self.string_field.is_none() {
-            self.string_field = Some(~"");
+            self.string_field = Some(StrBuf::new());
         };
         self.string_field.get_mut_ref()
     }
@@ -2063,7 +2063,7 @@ impl ::protobuf::Message for TestTypesSingular {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.string_field = Some(tmp);
                 },
                 15 => {
@@ -2125,7 +2125,7 @@ impl ::protobuf::Message for TestTypesSingular {
             my_size += 2;
         };
         for value in self.string_field.iter() {
-            my_size += ::protobuf::rt::string_size(14, *value);
+            my_size += ::protobuf::rt::string_size(14, value.as_slice());
         };
         for value in self.bytes_field.iter() {
             my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
@@ -2197,7 +2197,7 @@ pub struct TestTypesRepeated {
     sfixed32_field: Vec<i32>,
     sfixed64_field: Vec<i64>,
     bool_field: Vec<bool>,
-    string_field: Vec<~str>,
+    string_field: Vec<StrBuf>,
     bytes_field: Vec<Vec<u8>>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -2274,7 +2274,7 @@ impl<'a> TestTypesRepeated {
             os.write_bool(13, *v);
         };
         for v in self.string_field.iter() {
-            os.write_string(14, *v);
+            os.write_string(14, v.as_slice());
         };
         for v in self.bytes_field.iter() {
             os.write_bytes(15, v.as_slice());
@@ -2573,20 +2573,20 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: Vec<~str>) {
+    pub fn set_string_field(&mut self, v: Vec<StrBuf>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<~str> {
+    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<StrBuf> {
         &mut self.string_field
     }
 
-    pub fn get_string_field(&'a self) -> &'a [~str] {
+    pub fn get_string_field(&'a self) -> &'a [StrBuf] {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: ~str) {
+    pub fn add_string_field(&mut self, v: StrBuf) {
         self.string_field.push(v);
     }
 
@@ -2797,7 +2797,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.string_field.push(tmp);
                 },
                 15 => {
@@ -2845,7 +2845,7 @@ impl ::protobuf::Message for TestTypesRepeated {
         my_size += 9 * self.sfixed64_field.len() as u32;
         my_size += 2 * self.bool_field.len() as u32;
         for value in self.string_field.iter() {
-            my_size += ::protobuf::rt::string_size(14, *value);
+            my_size += ::protobuf::rt::string_size(14, value.as_slice());
         };
         for value in self.bytes_field.iter() {
             my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
@@ -2917,7 +2917,7 @@ pub struct TestTypesRepeatedPacked {
     sfixed32_field: Vec<i32>,
     sfixed64_field: Vec<i64>,
     bool_field: Vec<bool>,
-    string_field: Vec<~str>,
+    string_field: Vec<StrBuf>,
     bytes_field: Vec<Vec<u8>>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -3046,7 +3046,7 @@ impl<'a> TestTypesRepeatedPacked {
             };
         };
         for v in self.string_field.iter() {
-            os.write_string(14, *v);
+            os.write_string(14, v.as_slice());
         };
         for v in self.bytes_field.iter() {
             os.write_bytes(15, v.as_slice());
@@ -3345,20 +3345,20 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: Vec<~str>) {
+    pub fn set_string_field(&mut self, v: Vec<StrBuf>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<~str> {
+    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<StrBuf> {
         &mut self.string_field
     }
 
-    pub fn get_string_field(&'a self) -> &'a [~str] {
+    pub fn get_string_field(&'a self) -> &'a [StrBuf] {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: ~str) {
+    pub fn add_string_field(&mut self, v: StrBuf) {
         self.string_field.push(v);
     }
 
@@ -3569,7 +3569,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
+                    let tmp = is.read_strbuf();
                     self.string_field.push(tmp);
                 },
                 15 => {
@@ -3631,7 +3631,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.bool_field.len() as u32) + (self.bool_field.len() * 1) as u32;
         };
         for value in self.string_field.iter() {
-            my_size += ::protobuf::rt::string_size(14, *value);
+            my_size += ::protobuf::rt::string_size(14, value.as_slice());
         };
         for value in self.bytes_field.iter() {
             my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
