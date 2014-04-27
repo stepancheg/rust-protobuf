@@ -21,6 +21,7 @@ use unknown::UnknownFixed64Ref;
 use unknown::UnknownFixed32Ref;
 use unknown::UnknownLengthDelimitedRef;
 use unknown::UnknownFields;
+use clear::Clear;
 
 pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
@@ -706,9 +707,8 @@ impl<'a> CodedOutputStream<'a> {
 }
 
 
-pub trait Message : Eq + Clone + Default + fmt::Show {
+pub trait Message : Eq + Clone + Default + fmt::Show + Clear {
     fn new() -> Self;
-    fn clear(&mut self);
     // all required fields set
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream);

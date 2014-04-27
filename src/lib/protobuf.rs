@@ -16,12 +16,16 @@ pub use unknown::UnknownValue;
 pub use unknown::UnknownValueRef;
 pub use unknown::UnknownValuesIter;
 pub use unknown::UnknownFieldIter;
+pub use repeated::RepeatedField;
+pub use clear::Clear;
 
 mod core;
 pub mod rt;
 pub mod lazy;
 pub mod descriptor;
 pub mod codegen;
+pub mod repeated;
+pub mod clear;
 mod misc;
 mod zigzag;
 mod hex;
@@ -49,4 +53,6 @@ pub mod protobuf {
     pub use unknown::UnknownValueRef;
     pub use unknown::UnknownValuesIter;
     pub use unknown::UnknownFieldIter;
+    pub use repeated::RepeatedField;
+    pub use clear::Clear;
 }

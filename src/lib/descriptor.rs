@@ -281,7 +281,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FileDescriptorSet {
-    file: Vec<FileDescriptorProto>,
+    file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -294,7 +294,7 @@ impl<'a> FileDescriptorSet {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: FileDescriptorSet = FileDescriptorSet {
-//             file: Vec::new(),
+//             file: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -317,12 +317,12 @@ impl<'a> FileDescriptorSet {
     }
 
     // Param is passed by value, moved
-    pub fn set_file(&mut self, v: Vec<FileDescriptorProto>) {
+    pub fn set_file(&mut self, v: ::protobuf::RepeatedField<FileDescriptorProto>) {
         self.file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'a mut self) -> &'a mut Vec<FileDescriptorProto> {
+    pub fn mut_file(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
         &mut self.file
     }
 
@@ -340,10 +340,6 @@ impl ::protobuf::Message for FileDescriptorSet {
         FileDescriptorSet::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_file();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -354,9 +350,8 @@ impl ::protobuf::Message for FileDescriptorSet {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FileDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.file.push(tmp);
+                    let tmp = self.file.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -408,6 +403,12 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 }
 
+impl ::protobuf::Clear for FileDescriptorSet {
+    fn clear(&mut self) {
+        self.clear_file();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FileDescriptorProto {
     name: Option<~str>,
@@ -415,10 +416,10 @@ pub struct FileDescriptorProto {
     dependency: Vec<~str>,
     public_dependency: Vec<i32>,
     weak_dependency: Vec<i32>,
-    message_type: Vec<DescriptorProto>,
-    enum_type: Vec<EnumDescriptorProto>,
-    service: Vec<ServiceDescriptorProto>,
-    extension: Vec<FieldDescriptorProto>,
+    message_type: ::protobuf::RepeatedField<DescriptorProto>,
+    enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
+    service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
+    extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
     options: Option<FileOptions>,
     source_code_info: Option<SourceCodeInfo>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -438,10 +439,10 @@ impl<'a> FileDescriptorProto {
 //             dependency: Vec::new(),
 //             public_dependency: Vec::new(),
 //             weak_dependency: Vec::new(),
-//             message_type: Vec::new(),
-//             enum_type: Vec::new(),
-//             service: Vec::new(),
-//             extension: Vec::new(),
+//             message_type: ::protobuf::RepeatedField::new(),
+//             enum_type: ::protobuf::RepeatedField::new(),
+//             service: ::protobuf::RepeatedField::new(),
+//             extension: ::protobuf::RepeatedField::new(),
 //             options: None,
 //             source_code_info: None,
 //             unknown_fields: None,
@@ -647,12 +648,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_message_type(&mut self, v: Vec<DescriptorProto>) {
+    pub fn set_message_type(&mut self, v: ::protobuf::RepeatedField<DescriptorProto>) {
         self.message_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_message_type(&'a mut self) -> &'a mut Vec<DescriptorProto> {
+    pub fn mut_message_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.message_type
     }
 
@@ -669,12 +670,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_enum_type(&mut self, v: Vec<EnumDescriptorProto>) {
+    pub fn set_enum_type(&mut self, v: ::protobuf::RepeatedField<EnumDescriptorProto>) {
         self.enum_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'a mut self) -> &'a mut Vec<EnumDescriptorProto> {
+    pub fn mut_enum_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -691,12 +692,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_service(&mut self, v: Vec<ServiceDescriptorProto>) {
+    pub fn set_service(&mut self, v: ::protobuf::RepeatedField<ServiceDescriptorProto>) {
         self.service = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_service(&'a mut self) -> &'a mut Vec<ServiceDescriptorProto> {
+    pub fn mut_service(&'a mut self) -> &'a mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
         &mut self.service
     }
 
@@ -713,12 +714,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension(&mut self, v: Vec<FieldDescriptorProto>) {
+    pub fn set_extension(&mut self, v: ::protobuf::RepeatedField<FieldDescriptorProto>) {
         self.extension = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'a mut self) -> &'a mut Vec<FieldDescriptorProto> {
+    pub fn mut_extension(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -794,20 +795,6 @@ impl ::protobuf::Message for FileDescriptorProto {
         FileDescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_package();
-        self.clear_dependency();
-        self.clear_public_dependency();
-        self.clear_weak_dependency();
-        self.clear_message_type();
-        self.clear_enum_type();
-        self.clear_service();
-        self.clear_extension();
-        self.clear_options();
-        self.clear_source_code_info();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -859,27 +846,23 @@ impl ::protobuf::Message for FileDescriptorProto {
                 },
                 4 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = DescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.message_type.push(tmp);
+                    let tmp = self.message_type.push_default();
+                    is.merge_message(tmp)
                 },
                 5 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = EnumDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.enum_type.push(tmp);
+                    let tmp = self.enum_type.push_default();
+                    is.merge_message(tmp)
                 },
                 6 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = ServiceDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.service.push(tmp);
+                    let tmp = self.service.push_default();
+                    is.merge_message(tmp)
                 },
                 7 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FieldDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.extension.push(tmp);
+                    let tmp = self.extension.push_default();
+                    is.merge_message(tmp)
                 },
                 8 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -978,14 +961,30 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 }
 
+impl ::protobuf::Clear for FileDescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_package();
+        self.clear_dependency();
+        self.clear_public_dependency();
+        self.clear_weak_dependency();
+        self.clear_message_type();
+        self.clear_enum_type();
+        self.clear_service();
+        self.clear_extension();
+        self.clear_options();
+        self.clear_source_code_info();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct DescriptorProto {
     name: Option<~str>,
-    field: Vec<FieldDescriptorProto>,
-    extension: Vec<FieldDescriptorProto>,
-    nested_type: Vec<DescriptorProto>,
-    enum_type: Vec<EnumDescriptorProto>,
-    extension_range: Vec<DescriptorProto_ExtensionRange>,
+    field: ::protobuf::RepeatedField<FieldDescriptorProto>,
+    extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
+    nested_type: ::protobuf::RepeatedField<DescriptorProto>,
+    enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
+    extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
     options: Option<MessageOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -1000,11 +999,11 @@ impl<'a> DescriptorProto {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: DescriptorProto = DescriptorProto {
 //             name: None,
-//             field: Vec::new(),
-//             extension: Vec::new(),
-//             nested_type: Vec::new(),
-//             enum_type: Vec::new(),
-//             extension_range: Vec::new(),
+//             field: ::protobuf::RepeatedField::new(),
+//             extension: ::protobuf::RepeatedField::new(),
+//             nested_type: ::protobuf::RepeatedField::new(),
+//             enum_type: ::protobuf::RepeatedField::new(),
+//             extension_range: ::protobuf::RepeatedField::new(),
 //             options: None,
 //             unknown_fields: None,
 //         };
@@ -1096,12 +1095,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_field(&mut self, v: Vec<FieldDescriptorProto>) {
+    pub fn set_field(&mut self, v: ::protobuf::RepeatedField<FieldDescriptorProto>) {
         self.field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_field(&'a mut self) -> &'a mut Vec<FieldDescriptorProto> {
+    pub fn mut_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.field
     }
 
@@ -1118,12 +1117,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension(&mut self, v: Vec<FieldDescriptorProto>) {
+    pub fn set_extension(&mut self, v: ::protobuf::RepeatedField<FieldDescriptorProto>) {
         self.extension = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'a mut self) -> &'a mut Vec<FieldDescriptorProto> {
+    pub fn mut_extension(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -1140,12 +1139,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_nested_type(&mut self, v: Vec<DescriptorProto>) {
+    pub fn set_nested_type(&mut self, v: ::protobuf::RepeatedField<DescriptorProto>) {
         self.nested_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested_type(&'a mut self) -> &'a mut Vec<DescriptorProto> {
+    pub fn mut_nested_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.nested_type
     }
 
@@ -1162,12 +1161,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_enum_type(&mut self, v: Vec<EnumDescriptorProto>) {
+    pub fn set_enum_type(&mut self, v: ::protobuf::RepeatedField<EnumDescriptorProto>) {
         self.enum_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'a mut self) -> &'a mut Vec<EnumDescriptorProto> {
+    pub fn mut_enum_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -1184,12 +1183,12 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension_range(&mut self, v: Vec<DescriptorProto_ExtensionRange>) {
+    pub fn set_extension_range(&mut self, v: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>) {
         self.extension_range = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension_range(&'a mut self) -> &'a mut Vec<DescriptorProto_ExtensionRange> {
+    pub fn mut_extension_range(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
         &mut self.extension_range
     }
 
@@ -1236,16 +1235,6 @@ impl ::protobuf::Message for DescriptorProto {
         DescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_field();
-        self.clear_extension();
-        self.clear_nested_type();
-        self.clear_enum_type();
-        self.clear_extension_range();
-        self.clear_options();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1261,33 +1250,28 @@ impl ::protobuf::Message for DescriptorProto {
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FieldDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.field.push(tmp);
+                    let tmp = self.field.push_default();
+                    is.merge_message(tmp)
                 },
                 6 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FieldDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.extension.push(tmp);
+                    let tmp = self.extension.push_default();
+                    is.merge_message(tmp)
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = DescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.nested_type.push(tmp);
+                    let tmp = self.nested_type.push_default();
+                    is.merge_message(tmp)
                 },
                 4 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = EnumDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.enum_type.push(tmp);
+                    let tmp = self.enum_type.push_default();
+                    is.merge_message(tmp)
                 },
                 5 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = DescriptorProto_ExtensionRange::new();
-                    is.merge_message(&mut tmp);
-                    self.extension_range.push(tmp);
+                    let tmp = self.extension_range.push_default();
+                    is.merge_message(tmp)
                 },
                 7 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -1365,6 +1349,18 @@ impl ::protobuf::Message for DescriptorProto {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for DescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_field();
+        self.clear_extension();
+        self.clear_nested_type();
+        self.clear_enum_type();
+        self.clear_extension_range();
+        self.clear_options();
     }
 }
 
@@ -1465,11 +1461,6 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         DescriptorProto_ExtensionRange::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_start();
-        self.clear_end();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1537,6 +1528,13 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
+    fn clear(&mut self) {
+        self.clear_start();
+        self.clear_end();
     }
 }
 
@@ -1858,17 +1856,6 @@ impl ::protobuf::Message for FieldDescriptorProto {
         FieldDescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_number();
-        self.clear_label();
-        self.clear_field_type();
-        self.clear_type_name();
-        self.clear_extendee();
-        self.clear_default_value();
-        self.clear_options();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1989,6 +1976,19 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 }
 
+impl ::protobuf::Clear for FieldDescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_number();
+        self.clear_label();
+        self.clear_field_type();
+        self.clear_type_name();
+        self.clear_extendee();
+        self.clear_default_value();
+        self.clear_options();
+    }
+}
+
 #[deriving(Clone,Eq,Show)]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
@@ -2070,7 +2070,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 #[deriving(Clone,Eq,Show,Default)]
 pub struct EnumDescriptorProto {
     name: Option<~str>,
-    value: Vec<EnumValueDescriptorProto>,
+    value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: Option<EnumOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -2085,7 +2085,7 @@ impl<'a> EnumDescriptorProto {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumDescriptorProto = EnumDescriptorProto {
 //             name: None,
-//             value: Vec::new(),
+//             value: ::protobuf::RepeatedField::new(),
 //             options: None,
 //             unknown_fields: None,
 //         };
@@ -2153,12 +2153,12 @@ impl<'a> EnumDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: Vec<EnumValueDescriptorProto>) {
+    pub fn set_value(&mut self, v: ::protobuf::RepeatedField<EnumValueDescriptorProto>) {
         self.value = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_value(&'a mut self) -> &'a mut Vec<EnumValueDescriptorProto> {
+    pub fn mut_value(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
         &mut self.value
     }
 
@@ -2205,12 +2205,6 @@ impl ::protobuf::Message for EnumDescriptorProto {
         EnumDescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_value();
-        self.clear_options();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2226,9 +2220,8 @@ impl ::protobuf::Message for EnumDescriptorProto {
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = EnumValueDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.value.push(tmp);
+                    let tmp = self.value.push_default();
+                    is.merge_message(tmp)
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -2290,6 +2283,14 @@ impl ::protobuf::Message for EnumDescriptorProto {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for EnumDescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_value();
+        self.clear_options();
     }
 }
 
@@ -2432,12 +2433,6 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         EnumValueDescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_number();
-        self.clear_options();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2518,10 +2513,18 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 }
 
+impl ::protobuf::Clear for EnumValueDescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_number();
+        self.clear_options();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct ServiceDescriptorProto {
     name: Option<~str>,
-    method: Vec<MethodDescriptorProto>,
+    method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: Option<ServiceOptions>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
@@ -2536,7 +2539,7 @@ impl<'a> ServiceDescriptorProto {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
 //             name: None,
-//             method: Vec::new(),
+//             method: ::protobuf::RepeatedField::new(),
 //             options: None,
 //             unknown_fields: None,
 //         };
@@ -2604,12 +2607,12 @@ impl<'a> ServiceDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_method(&mut self, v: Vec<MethodDescriptorProto>) {
+    pub fn set_method(&mut self, v: ::protobuf::RepeatedField<MethodDescriptorProto>) {
         self.method = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_method(&'a mut self) -> &'a mut Vec<MethodDescriptorProto> {
+    pub fn mut_method(&'a mut self) -> &'a mut ::protobuf::RepeatedField<MethodDescriptorProto> {
         &mut self.method
     }
 
@@ -2656,12 +2659,6 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         ServiceDescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_method();
-        self.clear_options();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2677,9 +2674,8 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = MethodDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.method.push(tmp);
+                    let tmp = self.method.push_default();
+                    is.merge_message(tmp)
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -2741,6 +2737,14 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for ServiceDescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_method();
+        self.clear_options();
     }
 }
 
@@ -2923,13 +2927,6 @@ impl ::protobuf::Message for MethodDescriptorProto {
         MethodDescriptorProto::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_input_type();
-        self.clear_output_type();
-        self.clear_options();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -3018,6 +3015,15 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 }
 
+impl ::protobuf::Clear for MethodDescriptorProto {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_input_type();
+        self.clear_output_type();
+        self.clear_options();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FileOptions {
     java_package: Option<~str>,
@@ -3029,7 +3035,7 @@ pub struct FileOptions {
     cc_generic_services: Option<bool>,
     java_generic_services: Option<bool>,
     py_generic_services: Option<bool>,
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -3051,7 +3057,7 @@ impl<'a> FileOptions {
 //             cc_generic_services: None,
 //             java_generic_services: None,
 //             py_generic_services: None,
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -3371,12 +3377,12 @@ impl<'a> FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -3392,19 +3398,6 @@ impl<'a> FileOptions {
 impl ::protobuf::Message for FileOptions {
     fn new() -> FileOptions {
         FileOptions::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_java_package();
-        self.clear_java_outer_classname();
-        self.clear_java_multiple_files();
-        self.clear_java_generate_equals_and_hash();
-        self.clear_optimize_for();
-        self.clear_go_package();
-        self.clear_cc_generic_services();
-        self.clear_java_generic_services();
-        self.clear_py_generic_services();
-        self.clear_uninterpreted_option();
     }
 
     fn is_initialized(&self) -> bool {
@@ -3462,9 +3455,8 @@ impl ::protobuf::Message for FileOptions {
                 },
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -3543,6 +3535,21 @@ impl ::protobuf::Message for FileOptions {
     }
 }
 
+impl ::protobuf::Clear for FileOptions {
+    fn clear(&mut self) {
+        self.clear_java_package();
+        self.clear_java_outer_classname();
+        self.clear_java_multiple_files();
+        self.clear_java_generate_equals_and_hash();
+        self.clear_optimize_for();
+        self.clear_go_package();
+        self.clear_cc_generic_services();
+        self.clear_java_generic_services();
+        self.clear_py_generic_services();
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show)]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
@@ -3571,7 +3578,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
 pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -3586,7 +3593,7 @@ impl<'a> MessageOptions {
 //         static instance: MessageOptions = MessageOptions {
 //             message_set_wire_format: None,
 //             no_standard_descriptor_accessor: None,
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -3673,12 +3680,12 @@ impl<'a> MessageOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -3694,12 +3701,6 @@ impl<'a> MessageOptions {
 impl ::protobuf::Message for MessageOptions {
     fn new() -> MessageOptions {
         MessageOptions::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_message_set_wire_format();
-        self.clear_no_standard_descriptor_accessor();
-        self.clear_uninterpreted_option();
     }
 
     fn is_initialized(&self) -> bool {
@@ -3722,9 +3723,8 @@ impl ::protobuf::Message for MessageOptions {
                 },
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -3782,6 +3782,14 @@ impl ::protobuf::Message for MessageOptions {
     }
 }
 
+impl ::protobuf::Clear for MessageOptions {
+    fn clear(&mut self) {
+        self.clear_message_set_wire_format();
+        self.clear_no_standard_descriptor_accessor();
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct FieldOptions {
     ctype: Option<FieldOptions_CType>,
@@ -3790,7 +3798,7 @@ pub struct FieldOptions {
     deprecated: Option<bool>,
     experimental_map_key: Option<~str>,
     weak: Option<bool>,
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -3809,7 +3817,7 @@ impl<'a> FieldOptions {
 //             deprecated: None,
 //             experimental_map_key: None,
 //             weak: None,
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -4027,12 +4035,12 @@ impl<'a> FieldOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4048,16 +4056,6 @@ impl<'a> FieldOptions {
 impl ::protobuf::Message for FieldOptions {
     fn new() -> FieldOptions {
         FieldOptions::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_ctype();
-        self.clear_packed();
-        self.clear_lazy();
-        self.clear_deprecated();
-        self.clear_experimental_map_key();
-        self.clear_weak();
-        self.clear_uninterpreted_option();
     }
 
     fn is_initialized(&self) -> bool {
@@ -4100,9 +4098,8 @@ impl ::protobuf::Message for FieldOptions {
                 },
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -4172,6 +4169,18 @@ impl ::protobuf::Message for FieldOptions {
     }
 }
 
+impl ::protobuf::Clear for FieldOptions {
+    fn clear(&mut self) {
+        self.clear_ctype();
+        self.clear_packed();
+        self.clear_lazy();
+        self.clear_deprecated();
+        self.clear_experimental_map_key();
+        self.clear_weak();
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show)]
 pub enum FieldOptions_CType {
     STRING = 0,
@@ -4199,7 +4208,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 #[deriving(Clone,Eq,Show,Default)]
 pub struct EnumOptions {
     allow_alias: Option<bool>,
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -4213,7 +4222,7 @@ impl<'a> EnumOptions {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumOptions = EnumOptions {
 //             allow_alias: None,
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -4268,12 +4277,12 @@ impl<'a> EnumOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4291,11 +4300,6 @@ impl ::protobuf::Message for EnumOptions {
         EnumOptions::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_allow_alias();
-        self.clear_uninterpreted_option();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4311,9 +4315,8 @@ impl ::protobuf::Message for EnumOptions {
                 },
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -4368,9 +4371,16 @@ impl ::protobuf::Message for EnumOptions {
     }
 }
 
+impl ::protobuf::Clear for EnumOptions {
+    fn clear(&mut self) {
+        self.clear_allow_alias();
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct EnumValueOptions {
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -4383,7 +4393,7 @@ impl<'a> EnumValueOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: EnumValueOptions = EnumValueOptions {
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -4406,12 +4416,12 @@ impl<'a> EnumValueOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4429,10 +4439,6 @@ impl ::protobuf::Message for EnumValueOptions {
         EnumValueOptions::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_uninterpreted_option();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4443,9 +4449,8 @@ impl ::protobuf::Message for EnumValueOptions {
             match field_number {
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -4497,9 +4502,15 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 }
 
+impl ::protobuf::Clear for EnumValueOptions {
+    fn clear(&mut self) {
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct ServiceOptions {
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -4512,7 +4523,7 @@ impl<'a> ServiceOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: ServiceOptions = ServiceOptions {
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -4535,12 +4546,12 @@ impl<'a> ServiceOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4558,10 +4569,6 @@ impl ::protobuf::Message for ServiceOptions {
         ServiceOptions::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_uninterpreted_option();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4572,9 +4579,8 @@ impl ::protobuf::Message for ServiceOptions {
             match field_number {
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -4626,9 +4632,15 @@ impl ::protobuf::Message for ServiceOptions {
     }
 }
 
+impl ::protobuf::Clear for ServiceOptions {
+    fn clear(&mut self) {
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct MethodOptions {
-    uninterpreted_option: Vec<UninterpretedOption>,
+    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -4641,7 +4653,7 @@ impl<'a> MethodOptions {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: MethodOptions = MethodOptions {
-//             uninterpreted_option: Vec::new(),
+//             uninterpreted_option: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -4664,12 +4676,12 @@ impl<'a> MethodOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: Vec<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut Vec<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4687,10 +4699,6 @@ impl ::protobuf::Message for MethodOptions {
         MethodOptions::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_uninterpreted_option();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4701,9 +4709,8 @@ impl ::protobuf::Message for MethodOptions {
             match field_number {
                 999 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption::new();
-                    is.merge_message(&mut tmp);
-                    self.uninterpreted_option.push(tmp);
+                    let tmp = self.uninterpreted_option.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -4755,9 +4762,15 @@ impl ::protobuf::Message for MethodOptions {
     }
 }
 
+impl ::protobuf::Clear for MethodOptions {
+    fn clear(&mut self) {
+        self.clear_uninterpreted_option();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct UninterpretedOption {
-    name: Vec<UninterpretedOption_NamePart>,
+    name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: Option<~str>,
     positive_int_value: Option<u64>,
     negative_int_value: Option<i64>,
@@ -4776,7 +4789,7 @@ impl<'a> UninterpretedOption {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: UninterpretedOption = UninterpretedOption {
-//             name: Vec::new(),
+//             name: ::protobuf::RepeatedField::new(),
 //             identifier_value: None,
 //             positive_int_value: None,
 //             negative_int_value: None,
@@ -4841,12 +4854,12 @@ impl<'a> UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: Vec<UninterpretedOption_NamePart>) {
+    pub fn set_name(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption_NamePart>) {
         self.name = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_name(&'a mut self) -> &'a mut Vec<UninterpretedOption_NamePart> {
+    pub fn mut_name(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
         &mut self.name
     }
 
@@ -5029,16 +5042,6 @@ impl ::protobuf::Message for UninterpretedOption {
         UninterpretedOption::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_identifier_value();
-        self.clear_positive_int_value();
-        self.clear_negative_int_value();
-        self.clear_double_value();
-        self.clear_string_value();
-        self.clear_aggregate_value();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -5049,9 +5052,8 @@ impl ::protobuf::Message for UninterpretedOption {
             match field_number {
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = UninterpretedOption_NamePart::new();
-                    is.merge_message(&mut tmp);
-                    self.name.push(tmp);
+                    let tmp = self.name.push_default();
+                    is.merge_message(tmp)
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -5148,6 +5150,18 @@ impl ::protobuf::Message for UninterpretedOption {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for UninterpretedOption {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_identifier_value();
+        self.clear_positive_int_value();
+        self.clear_negative_int_value();
+        self.clear_double_value();
+        self.clear_string_value();
+        self.clear_aggregate_value();
     }
 }
 
@@ -5251,11 +5265,6 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         UninterpretedOption_NamePart::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name_part();
-        self.clear_is_extension();
-    }
-
     fn is_initialized(&self) -> bool {
         if self.name_part.is_none() {
             return false;
@@ -5332,9 +5341,16 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 }
 
+impl ::protobuf::Clear for UninterpretedOption_NamePart {
+    fn clear(&mut self) {
+        self.clear_name_part();
+        self.clear_is_extension();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct SourceCodeInfo {
-    location: Vec<SourceCodeInfo_Location>,
+    location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -5347,7 +5363,7 @@ impl<'a> SourceCodeInfo {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: SourceCodeInfo = SourceCodeInfo {
-//             location: Vec::new(),
+//             location: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -5370,12 +5386,12 @@ impl<'a> SourceCodeInfo {
     }
 
     // Param is passed by value, moved
-    pub fn set_location(&mut self, v: Vec<SourceCodeInfo_Location>) {
+    pub fn set_location(&mut self, v: ::protobuf::RepeatedField<SourceCodeInfo_Location>) {
         self.location = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_location(&'a mut self) -> &'a mut Vec<SourceCodeInfo_Location> {
+    pub fn mut_location(&'a mut self) -> &'a mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
         &mut self.location
     }
 
@@ -5393,10 +5409,6 @@ impl ::protobuf::Message for SourceCodeInfo {
         SourceCodeInfo::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_location();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -5407,9 +5419,8 @@ impl ::protobuf::Message for SourceCodeInfo {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = SourceCodeInfo_Location::new();
-                    is.merge_message(&mut tmp);
-                    self.location.push(tmp);
+                    let tmp = self.location.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -5458,6 +5469,12 @@ impl ::protobuf::Message for SourceCodeInfo {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for SourceCodeInfo {
+    fn clear(&mut self) {
+        self.clear_location();
     }
 }
 
@@ -5629,13 +5646,6 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         SourceCodeInfo_Location::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_path();
-        self.clear_span();
-        self.clear_leading_comments();
-        self.clear_trailing_comments();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -5735,5 +5745,14 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for SourceCodeInfo_Location {
+    fn clear(&mut self) {
+        self.clear_path();
+        self.clear_span();
+        self.clear_leading_comments();
+        self.clear_trailing_comments();
     }
 }

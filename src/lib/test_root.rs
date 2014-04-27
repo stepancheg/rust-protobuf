@@ -27,7 +27,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 
 #[deriving(Clone,Eq,Show,Default)]
 pub struct Root {
-    nested: Vec<Root_Nested>,
+    nested: ::protobuf::RepeatedField<Root_Nested>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -40,7 +40,7 @@ impl<'a> Root {
 //         // doesn't work, because rust doen't implement static constants of types like ~str
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: Root = Root {
-//             nested: Vec::new(),
+//             nested: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -63,12 +63,12 @@ impl<'a> Root {
     }
 
     // Param is passed by value, moved
-    pub fn set_nested(&mut self, v: Vec<Root_Nested>) {
+    pub fn set_nested(&mut self, v: ::protobuf::RepeatedField<Root_Nested>) {
         self.nested = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested(&'a mut self) -> &'a mut Vec<Root_Nested> {
+    pub fn mut_nested(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Root_Nested> {
         &mut self.nested
     }
 
@@ -86,10 +86,6 @@ impl ::protobuf::Message for Root {
         Root::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_nested();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -100,9 +96,8 @@ impl ::protobuf::Message for Root {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = Root_Nested::new();
-                    is.merge_message(&mut tmp);
-                    self.nested.push(tmp);
+                    let tmp = self.nested.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -154,6 +149,12 @@ impl ::protobuf::Message for Root {
     }
 }
 
+impl ::protobuf::Clear for Root {
+    fn clear(&mut self) {
+        self.clear_nested();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct Root_Nested {
     unknown_fields: Option<~::protobuf::UnknownFields>,
@@ -181,9 +182,6 @@ impl<'a> Root_Nested {
 impl ::protobuf::Message for Root_Nested {
     fn new() -> Root_Nested {
         Root_Nested::new()
-    }
-
-    fn clear(&mut self) {
     }
 
     fn is_initialized(&self) -> bool {
@@ -237,5 +235,10 @@ impl ::protobuf::Message for Root_Nested {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for Root_Nested {
+    fn clear(&mut self) {
     }
 }

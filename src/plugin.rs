@@ -53,7 +53,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 pub struct CodeGeneratorRequest {
     file_to_generate: Vec<~str>,
     parameter: Option<~str>,
-    proto_file: Vec<FileDescriptorProto>,
+    proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -68,7 +68,7 @@ impl<'a> CodeGeneratorRequest {
 //         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
 //             file_to_generate: Vec::new(),
 //             parameter: None,
-//             proto_file: Vec::new(),
+//             proto_file: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -151,12 +151,12 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_proto_file(&mut self, v: Vec<FileDescriptorProto>) {
+    pub fn set_proto_file(&mut self, v: ::protobuf::RepeatedField<FileDescriptorProto>) {
         self.proto_file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&'a mut self) -> &'a mut Vec<FileDescriptorProto> {
+    pub fn mut_proto_file(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
         &mut self.proto_file
     }
 
@@ -172,12 +172,6 @@ impl<'a> CodeGeneratorRequest {
 impl ::protobuf::Message for CodeGeneratorRequest {
     fn new() -> CodeGeneratorRequest {
         CodeGeneratorRequest::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_file_to_generate();
-        self.clear_parameter();
-        self.clear_proto_file();
     }
 
     fn is_initialized(&self) -> bool {
@@ -200,9 +194,8 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = FileDescriptorProto::new();
-                    is.merge_message(&mut tmp);
-                    self.proto_file.push(tmp);
+                    let tmp = self.proto_file.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -260,10 +253,18 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 }
 
+impl ::protobuf::Clear for CodeGeneratorRequest {
+    fn clear(&mut self) {
+        self.clear_file_to_generate();
+        self.clear_parameter();
+        self.clear_proto_file();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct CodeGeneratorResponse {
     error: Option<~str>,
-    file: Vec<CodeGeneratorResponse_File>,
+    file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     unknown_fields: Option<~::protobuf::UnknownFields>,
 }
 
@@ -277,7 +278,7 @@ impl<'a> CodeGeneratorResponse {
 //         // https://github.com/mozilla/rust/issues/8406
 //         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
 //             error: None,
-//             file: Vec::new(),
+//             file: ::protobuf::RepeatedField::new(),
 //             unknown_fields: None,
 //         };
 //         &'static instance
@@ -335,12 +336,12 @@ impl<'a> CodeGeneratorResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_file(&mut self, v: Vec<CodeGeneratorResponse_File>) {
+    pub fn set_file(&mut self, v: ::protobuf::RepeatedField<CodeGeneratorResponse_File>) {
         self.file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'a mut self) -> &'a mut Vec<CodeGeneratorResponse_File> {
+    pub fn mut_file(&'a mut self) -> &'a mut ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
         &mut self.file
     }
 
@@ -358,11 +359,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         CodeGeneratorResponse::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_error();
-        self.clear_file();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -378,9 +374,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let mut tmp = CodeGeneratorResponse_File::new();
-                    is.merge_message(&mut tmp);
-                    self.file.push(tmp);
+                    let tmp = self.file.push_default();
+                    is.merge_message(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
@@ -432,6 +427,13 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for CodeGeneratorResponse {
+    fn clear(&mut self) {
+        self.clear_error();
+        self.clear_file();
     }
 }
 
@@ -575,12 +577,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         CodeGeneratorResponse_File::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_name();
-        self.clear_insertion_point();
-        self.clear_content();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -656,5 +652,13 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for CodeGeneratorResponse_File {
+    fn clear(&mut self) {
+        self.clear_name();
+        self.clear_insertion_point();
+        self.clear_content();
     }
 }

@@ -173,10 +173,6 @@ impl ::protobuf::Message for Test1 {
         Test1::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_a();
-    }
-
     fn is_initialized(&self) -> bool {
         if self.a.is_none() {
             return false;
@@ -239,6 +235,12 @@ impl ::protobuf::Message for Test1 {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for Test1 {
+    fn clear(&mut self) {
+        self.clear_a();
     }
 }
 
@@ -308,10 +310,6 @@ impl ::protobuf::Message for Test2 {
         Test2::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_b();
-    }
-
     fn is_initialized(&self) -> bool {
         if self.b.is_none() {
             return false;
@@ -374,6 +372,12 @@ impl ::protobuf::Message for Test2 {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for Test2 {
+    fn clear(&mut self) {
+        self.clear_b();
     }
 }
 
@@ -445,10 +449,6 @@ impl ::protobuf::Message for Test3 {
         Test3::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_c();
-    }
-
     fn is_initialized(&self) -> bool {
         if self.c.is_none() {
             return false;
@@ -516,6 +516,12 @@ impl ::protobuf::Message for Test3 {
     }
 }
 
+impl ::protobuf::Clear for Test3 {
+    fn clear(&mut self) {
+        self.clear_c();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct Test4 {
     d: Vec<i32>,
@@ -577,10 +583,6 @@ impl<'a> Test4 {
 impl ::protobuf::Message for Test4 {
     fn new() -> Test4 {
         Test4::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_d();
     }
 
     fn is_initialized(&self) -> bool {
@@ -650,6 +652,12 @@ impl ::protobuf::Message for Test4 {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for Test4 {
+    fn clear(&mut self) {
+        self.clear_d();
     }
 }
 
@@ -743,11 +751,6 @@ impl ::protobuf::Message for TestPackedUnpacked {
         TestPackedUnpacked::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_unpacked();
-        self.clear_packed();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -834,6 +837,13 @@ impl ::protobuf::Message for TestPackedUnpacked {
     }
 }
 
+impl ::protobuf::Clear for TestPackedUnpacked {
+    fn clear(&mut self) {
+        self.clear_unpacked();
+        self.clear_packed();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
@@ -895,10 +905,6 @@ impl<'a> TestEmpty {
 impl ::protobuf::Message for TestEmpty {
     fn new() -> TestEmpty {
         TestEmpty::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_foo();
     }
 
     fn is_initialized(&self) -> bool {
@@ -963,6 +969,12 @@ impl ::protobuf::Message for TestEmpty {
     }
 }
 
+impl ::protobuf::Clear for TestEmpty {
+    fn clear(&mut self) {
+        self.clear_foo();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct TestRequired {
     b: Option<bool>,
@@ -1024,10 +1036,6 @@ impl<'a> TestRequired {
 impl ::protobuf::Message for TestRequired {
     fn new() -> TestRequired {
         TestRequired::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_b();
     }
 
     fn is_initialized(&self) -> bool {
@@ -1095,6 +1103,12 @@ impl ::protobuf::Message for TestRequired {
     }
 }
 
+impl ::protobuf::Clear for TestRequired {
+    fn clear(&mut self) {
+        self.clear_b();
+    }
+}
+
 #[deriving(Clone,Eq,Show,Default)]
 pub struct TestUnknownFields {
     a: Option<i32>,
@@ -1156,10 +1170,6 @@ impl<'a> TestUnknownFields {
 impl ::protobuf::Message for TestUnknownFields {
     fn new() -> TestUnknownFields {
         TestUnknownFields::new()
-    }
-
-    fn clear(&mut self) {
-        self.clear_a();
     }
 
     fn is_initialized(&self) -> bool {
@@ -1224,6 +1234,12 @@ impl ::protobuf::Message for TestUnknownFields {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for TestUnknownFields {
+    fn clear(&mut self) {
+        self.clear_a();
     }
 }
 
@@ -1772,24 +1788,6 @@ impl ::protobuf::Message for TestTypesSingular {
         TestTypesSingular::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_double_field();
-        self.clear_float_field();
-        self.clear_int32_field();
-        self.clear_int64_field();
-        self.clear_uint32_field();
-        self.clear_uint64_field();
-        self.clear_sint32_field();
-        self.clear_sint64_field();
-        self.clear_fixed32_field();
-        self.clear_fixed64_field();
-        self.clear_sfixed32_field();
-        self.clear_sfixed64_field();
-        self.clear_bool_field();
-        self.clear_string_field();
-        self.clear_bytes_field();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1961,6 +1959,26 @@ impl ::protobuf::Message for TestTypesSingular {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for TestTypesSingular {
+    fn clear(&mut self) {
+        self.clear_double_field();
+        self.clear_float_field();
+        self.clear_int32_field();
+        self.clear_int64_field();
+        self.clear_uint32_field();
+        self.clear_uint64_field();
+        self.clear_sint32_field();
+        self.clear_sint64_field();
+        self.clear_fixed32_field();
+        self.clear_fixed64_field();
+        self.clear_sfixed32_field();
+        self.clear_sfixed64_field();
+        self.clear_bool_field();
+        self.clear_string_field();
+        self.clear_bytes_field();
     }
 }
 
@@ -2401,24 +2419,6 @@ impl ::protobuf::Message for TestTypesRepeated {
         TestTypesRepeated::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_double_field();
-        self.clear_float_field();
-        self.clear_int32_field();
-        self.clear_int64_field();
-        self.clear_uint32_field();
-        self.clear_uint64_field();
-        self.clear_sint32_field();
-        self.clear_sint64_field();
-        self.clear_fixed32_field();
-        self.clear_fixed64_field();
-        self.clear_sfixed32_field();
-        self.clear_sfixed64_field();
-        self.clear_bool_field();
-        self.clear_string_field();
-        self.clear_bytes_field();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2680,6 +2680,26 @@ impl ::protobuf::Message for TestTypesRepeated {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for TestTypesRepeated {
+    fn clear(&mut self) {
+        self.clear_double_field();
+        self.clear_float_field();
+        self.clear_int32_field();
+        self.clear_int64_field();
+        self.clear_uint32_field();
+        self.clear_uint64_field();
+        self.clear_sint32_field();
+        self.clear_sint64_field();
+        self.clear_fixed32_field();
+        self.clear_fixed64_field();
+        self.clear_sfixed32_field();
+        self.clear_sfixed64_field();
+        self.clear_bool_field();
+        self.clear_string_field();
+        self.clear_bytes_field();
     }
 }
 
@@ -3172,24 +3192,6 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
         TestTypesRepeatedPacked::new()
     }
 
-    fn clear(&mut self) {
-        self.clear_double_field();
-        self.clear_float_field();
-        self.clear_int32_field();
-        self.clear_int64_field();
-        self.clear_uint32_field();
-        self.clear_uint64_field();
-        self.clear_sint32_field();
-        self.clear_sint64_field();
-        self.clear_fixed32_field();
-        self.clear_fixed64_field();
-        self.clear_sfixed32_field();
-        self.clear_sfixed64_field();
-        self.clear_bool_field();
-        self.clear_string_field();
-        self.clear_bytes_field();
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -3465,5 +3467,25 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
             self.unknown_fields = Some(::std::default::Default::default())
         }
         &mut **self.unknown_fields.get_mut_ref()
+    }
+}
+
+impl ::protobuf::Clear for TestTypesRepeatedPacked {
+    fn clear(&mut self) {
+        self.clear_double_field();
+        self.clear_float_field();
+        self.clear_int32_field();
+        self.clear_int64_field();
+        self.clear_uint32_field();
+        self.clear_uint64_field();
+        self.clear_sint32_field();
+        self.clear_sint64_field();
+        self.clear_fixed32_field();
+        self.clear_fixed64_field();
+        self.clear_sfixed32_field();
+        self.clear_sfixed64_field();
+        self.clear_bool_field();
+        self.clear_string_field();
+        self.clear_bytes_field();
     }
 }

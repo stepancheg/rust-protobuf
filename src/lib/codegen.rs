@@ -154,9 +154,16 @@ impl Field {
         })
     }
 
+    fn vec_name(&self) -> &'static str {
+        match self.field_type {
+            TYPE_MESSAGE => "::protobuf::RepeatedField",
+            _ => "Vec",
+        }
+    }
+
     fn full_type(&self) -> ~str {
         match self.repeated {
-            true  => format!("Vec<{:s}>", self.type_name),
+            true  => format!("{:s}<{:s}>", self.vec_name(), self.type_name),
             false => format!("Option<{:s}>", self.type_name),
         }
     }
@@ -401,9 +408,9 @@ impl<'a> IndentWriter<'a> {
     fn field_default(&self) {
         let init =
             if self.field().repeated {
-                "Vec::new()"
+                self.field().vec_name() + "::new()"
             } else {
-                "None"
+                "None".to_owned()
             };
         self.field_entry(self.field().name, init);
     }
@@ -563,62 +570,73 @@ impl<'a> IndentWriter<'a> {
     }
 }
 
+fn write_merge_from_field_repeated_message(w: &mut IndentWriter) {
+    w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);",
+            wire_format::WireTypeLengthDelimited));
+    w.write_line(format!("let tmp = {}.push_default();", w.self_field()));
+    w.write_line(format!("is.merge_message(tmp)"));
+}
+
 fn write_merge_from_field(w: &mut IndentWriter) {
     let field = w.field();
-    let wire_type = field_type_wire_type(field.field_type);
-    let repeat_mode =
-        if field.repeated {
-            if wire_type == wire_format::WireTypeLengthDelimited {
-                RepeatRegular
+    if field.field_type == TYPE_MESSAGE && field.repeated {
+        write_merge_from_field_repeated_message(w);
+    } else {
+        let wire_type = field_type_wire_type(field.field_type);
+        let repeat_mode =
+            if field.repeated {
+                if wire_type == wire_format::WireTypeLengthDelimited {
+                    RepeatRegular
+                } else {
+                    RepeatPacked // may be both regular or packed
+                }
             } else {
-                RepeatPacked // may be both regular or packed
-            }
-        } else {
-            Single
+                Single
+            };
+
+        let read_proc = match field.field_type {
+            TYPE_MESSAGE => None,
+            TYPE_ENUM => Some(format!("{:s}::new(is.read_int32())", field.type_name)),
+            t => Some(format!("is.read_{:s}()", protobuf_name(t))),
         };
 
-    let read_proc = match field.field_type {
-        TYPE_MESSAGE => None,
-        TYPE_ENUM => Some(format!("{:s}::new(is.read_int32())", field.type_name)),
-        t => Some(format!("is.read_{:s}()", protobuf_name(t))),
-    };
-
-    match repeat_mode {
-        Single | RepeatRegular => {
-            w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
-            match field.field_type {
-                TYPE_MESSAGE => {
-                    w.write_line(format!("let mut tmp = {:s}::new();", field.type_name));
-                    w.write_line(format!("is.merge_message(&mut tmp);"));
-                },
-                _ => {
-                    w.write_line(format!("let tmp = {:s};", *read_proc.get_ref()));
-                },
-            };
-            match repeat_mode {
-                Single => w.self_field_assign_some("tmp"),
-                RepeatRegular => w.self_field_push("tmp"),
-                _ => fail!()
-            }
-        },
-        RepeatPacked => {
-            w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} \\{", wire_format::WireTypeLengthDelimited));
-            w.indented(|w| {
-                w.write_line("let len = is.read_raw_varint32();");
-                w.write_line("let old_limit = is.push_limit(len);");
-                w.while_block("!is.eof()", |w| {
+        match repeat_mode {
+            Single | RepeatRegular => {
+                w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
+                match field.field_type {
+                    TYPE_MESSAGE => {
+                        w.write_line(format!("let mut tmp = {:s}::new();", field.type_name));
+                        w.write_line(format!("is.merge_message(&mut tmp);"));
+                    },
+                    _ => {
+                        w.write_line(format!("let tmp = {:s};", *read_proc.get_ref()));
+                    },
+                };
+                match repeat_mode {
+                    Single => w.self_field_assign_some("tmp"),
+                    RepeatRegular => w.self_field_push("tmp"),
+                    _ => fail!()
+                }
+            },
+            RepeatPacked => {
+                w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} \\{", wire_format::WireTypeLengthDelimited));
+                w.indented(|w| {
+                    w.write_line("let len = is.read_raw_varint32();");
+                    w.write_line("let old_limit = is.push_limit(len);");
+                    w.while_block("!is.eof()", |w| {
+                        w.self_field_push(*read_proc.get_ref());
+                    });
+                    w.write_line("is.pop_limit(old_limit);");
+                });
+                w.write_line("} else {");
+                w.indented(|w| {
+                    w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
                     w.self_field_push(*read_proc.get_ref());
                 });
-                w.write_line("is.pop_limit(old_limit);");
-            });
-            w.write_line("} else {");
-            w.indented(|w| {
-                w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
-                w.self_field_push(*read_proc.get_ref());
-            });
-            w.write_line("}");
-        },
-    };
+                w.write_line("}");
+            },
+        };
+    }
 }
 
 fn write_message_struct(w: &mut IndentWriter) {
@@ -934,14 +952,6 @@ fn write_message_impl_self(w: &mut IndentWriter) {
     });
 }
 
-fn write_message_clear(w: &mut IndentWriter) {
-    w.def_fn("clear(&mut self)", |w| {
-        w.fields(|w| {
-            w.write_line(format!("self.{:s}();", w.clear_field_func()));
-        });
-    });
-}
-
 fn write_message_unknown_fields(w: &mut IndentWriter) {
     w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields", |w| {
         w.write_line("if self.unknown_fields.is_some() {");
@@ -991,8 +1001,6 @@ fn write_message_impl_message(w: &mut IndentWriter) {
             w.write_line(format!("{:s}::new()", msg.type_name));
         });
         w.write_line("");
-        write_message_clear(w);
-        w.write_line("");
         w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
             w.required_fields(|w| {
                 w.if_self_field_is_none(|w| {
@@ -1020,6 +1028,17 @@ fn write_message_impl_message(w: &mut IndentWriter) {
     });
 }
 
+fn write_message_impl_clear(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.impl_for_block("::protobuf::Clear", msg.type_name, |w| {
+        w.def_fn("clear(&mut self)", |w| {
+            w.fields(|w| {
+                w.write_line(format!("self.{:s}();", w.clear_field_func()));
+            });
+        });
+    });
+}
+
 fn write_message(msg: &Message, w: &mut IndentWriter) {
     let pkg = msg.pkg.as_slice();
     let message_type = &msg.proto_message;
@@ -1030,6 +1049,8 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
         write_message_impl_self(w);
         w.write_line("");
         write_message_impl_message(w);
+        w.write_line("");
+        write_message_impl_clear(w);
 
         for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
