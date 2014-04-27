@@ -6,6 +6,7 @@ use std::io::File;
 use std::io::MemWriter;
 use std::io::BufReader;
 use std::default::Default;
+use std::os;
 
 use rand::Rng;
 use rand::StdRng;
@@ -29,7 +30,7 @@ fn measure_and_print<R>(title: &str, iter: u64, f: || -> R) -> R {
     r
 }
 
-fn test<M : Message>(name: &str, data: &[M]) {
+fn run_test<M : Message>(name: &str, data: &[M]) {
     let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40]);
     let mut random_data: Vec<M> = Vec::new();
 
@@ -77,12 +78,44 @@ fn test<M : Message>(name: &str, data: &[M]) {
     assert_eq!(random_data.len(), merged);
 }
 
+struct TestRunner {
+    selected: Option<~str>,
+    any_matched: bool,
+}
+
+impl TestRunner {
+    fn test<M : Message>(&mut self, name: &str, data: &[M]) {
+        if self.selected.is_none() || name == *self.selected.get_ref() {
+            run_test(name, data);
+            self.any_matched = true;
+        }
+    }
+
+    fn check(&self) {
+        if !self.any_matched {
+            let name = self.selected.as_ref().map(|s| s.as_slice()).unwrap_or("bug");
+            fail!("no tests found with name {}", name);
+        }
+    }
+}
+
 fn main() {
+    let selected = match os::args().as_slice() {
+        [_] => None,
+        [_, ref test] => Some(test.to_owned()),
+        [ref argv0, ..] => fail!("usage: {} <test>", argv0),
+        _ => fail!()
+    };
+
+    let mut runner = TestRunner { selected: selected, any_matched: false };
+
     let mut is = File::open(&Path::new("perftest_data.pbbin"));
-    let perftest_data = protobuf::parse_from_reader::<PerftestData>(&mut is);
-    test("test1", perftest_data.get_test1());
-    test("test_repeated_bool", perftest_data.get_test_repeated_bool());
-    test("test_repeated_messages", perftest_data.get_test_repeated_messages());
-    test("test_optional_messages", perftest_data.get_test_optional_messages());
-    test("test_strings", perftest_data.get_test_strings());
+    let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is);
+
+    runner.test("test1", test_data.get_test1());
+    runner.test("test_repeated_bool", test_data.get_test_repeated_bool());
+    runner.test("test_repeated_messages", test_data.get_test_repeated_messages());
+    runner.test("test_optional_messages", test_data.get_test_optional_messages());
+    runner.test("test_strings", test_data.get_test_strings());
+    runner.check();
 }
