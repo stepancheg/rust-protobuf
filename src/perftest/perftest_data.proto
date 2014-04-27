@@ -6,14 +6,24 @@ message TestRepeatedBool {
     repeated bool values = 1;
 }
 
-message TestMessagesOfMessages {
-    repeated TestMessagesOfMessages messages1 = 1;
-    repeated TestMessagesOfMessages messages2 = 2;
-    repeated TestMessagesOfMessages messages3 = 3;
+message TestRepeatedMessages {
+    repeated TestRepeatedMessages messages1 = 1;
+    repeated TestRepeatedMessages messages2 = 2;
+    repeated TestRepeatedMessages messages3 = 3;
+}
+
+message TestOptionalMessages {
+// TODO: recursive structs
+/*
+    optional TestOptionalMessages message1 = 1;
+    optional TestOptionalMessages message2 = 2;
+    optional TestOptionalMessages message3 = 3;
+*/
 }
 
 message PerftestData {
     repeated Test1 test1 = 1;
     repeated TestRepeatedBool test_repeated_bool = 2;
-    repeated TestMessagesOfMessages test_messages_of_messages = 3;
+    repeated TestRepeatedMessages test_repeated_messages = 3;
+    repeated TestOptionalMessages test_optional_messages = 4;
 }

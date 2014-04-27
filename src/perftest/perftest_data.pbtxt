@@ -7,7 +7,7 @@ test_repeated_bool { values: true }
 test_repeated_bool { values: true values: false }
 test_repeated_bool { values: true values: false values: false values: true }
 
-test_messages_of_messages { messages1 { messages2 {} } }
-test_messages_of_messages { messages1 { messages2 { messages3 {} } messages1 {} } }
-test_messages_of_messages { messages3 { messages2 { messages3 {} } messages1 {} } }
-test_messages_of_messages { messages3 { messages2 { messages3 {} messages1 {} messages1 {} } messages1 {} } }
+test_repeated_messages { messages1 { messages2 {} } }
+test_repeated_messages { messages1 { messages2 { messages3 {} } messages1 {} } }
+test_repeated_messages { messages3 { messages2 { messages3 {} } messages1 {} } }
+test_repeated_messages { messages3 { messages2 { messages3 {} messages1 {} messages1 {} } messages1 {} } }

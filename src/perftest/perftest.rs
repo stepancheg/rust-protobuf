@@ -82,5 +82,6 @@ fn main() {
     let perftest_data = protobuf::parse_from_reader::<PerftestData>(&mut is);
     test("test1", perftest_data.get_test1());
     test("test_repeated_bool", perftest_data.get_test_repeated_bool());
-    test("test_messages_of_messages", perftest_data.get_test_messages_of_messages());
+    test("test_repeated_messages", perftest_data.get_test_repeated_messages());
+    //test("test_optional_messages", perftest_data.get_test_optional_messages());
 }
