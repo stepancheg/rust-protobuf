@@ -16,3 +16,7 @@ test_optional_messages { message1 { message2 {} } }
 test_optional_messages { message1 { message2 { message3 {} } message1 {} } }
 test_optional_messages { message3 { message2 { message3 {} } message1 {} } }
 test_optional_messages { message3 { message2 { message3 {} message2 {} message1 {} } message1 {} } }
+
+test_strings { s1: "aaaaa" }
+test_strings { s2: "hi there" s3: "long long long long long long long string" }
+test_strings { s1: "first" s2: "second" s3: "third" }

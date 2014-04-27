@@ -18,9 +18,16 @@ message TestOptionalMessages {
     optional TestOptionalMessages message3 = 3;
 }
 
+message TestStrings {
+    optional string s1 = 1;
+    optional string s2 = 2;
+    optional string s3 = 3;
+}
+
 message PerftestData {
     repeated Test1 test1 = 1;
     repeated TestRepeatedBool test_repeated_bool = 2;
     repeated TestRepeatedMessages test_repeated_messages = 3;
     repeated TestOptionalMessages test_optional_messages = 4;
+    repeated TestStrings test_strings = 5;
 }
