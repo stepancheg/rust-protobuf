@@ -37,13 +37,15 @@ impl<'a> Root {
     }
 
     pub fn default_instance() -> &'static Root {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: Root = Root {
-//             nested: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<Root> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *Root };
+        unsafe {
+            instance.get(|| {
+                Root {
+                    nested: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -165,12 +167,14 @@ impl<'a> Root_Nested {
     }
 
     pub fn default_instance() -> &'static Root_Nested {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: Root_Nested = Root_Nested {
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<Root_Nested> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *Root_Nested };
+        unsafe {
+            instance.get(|| {
+                Root_Nested {
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     #[allow(unused_variable)]

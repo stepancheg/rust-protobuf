@@ -40,6 +40,14 @@ message TestSelfReference {
     optional TestSelfReference r2 = 2;
 }
 
+message TestDefaultInstanceField {
+    optional string s = 1;
+}
+
+message TestDefaultInstance {
+    optional TestDefaultInstanceField field = 1;
+}
+
 message TestTypesSingular {
     optional double double_field = 1;
     optional float float_field = 2;

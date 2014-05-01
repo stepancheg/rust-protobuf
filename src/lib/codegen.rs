@@ -554,6 +554,7 @@ impl<'a> IndentWriter<'a> {
         });
     }
 
+    #[allow(dead_code)]
     fn commented(&self, cb: |&mut IndentWriter|) {
         cb(&mut IndentWriter {
             writer: self.writer,
@@ -561,6 +562,10 @@ impl<'a> IndentWriter<'a> {
             msg: self.msg,
             field: self.field.clone(),
         });
+    }
+
+    fn lazy_static(&self, name: &str, ty: &str) {
+        self.write_line(format!("static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy \\{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{} \\};", name, ty, ty));
     }
 
     fn block(&self, first_line: &str, last_line: &str, cb: |&mut IndentWriter|) {
@@ -601,10 +606,12 @@ impl<'a> IndentWriter<'a> {
         self.write_line(format!("{:s}: {:s},", name, value));
     }
 
+    #[allow(dead_code)]
     fn fail(&self, reason: &str) {
         self.write_line(format!("fail!({:?});", reason));
     }
 
+    #[allow(dead_code)]
     fn todo(&self) {
         self.fail("TODO");
     }
@@ -913,22 +920,20 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
 fn write_message_default_instance(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
-        fn write_body(w: &mut IndentWriter) {
-            let msg = w.msg.get_ref();
-            w.stmt_block(format!("static instance: {:s} = {:s}", msg.type_name, msg.type_name), |w| {
-                w.fields(|w| {
-                    w.field_default();
+        let msg = w.msg.get_ref();
+        w.lazy_static("instance", msg.type_name);
+        w.unsafe_expr(|w| {
+            w.write_line("instance.get(|| {");
+            w.indented(|w| {
+                w.expr_block(format!("{:s}", msg.type_name), |w| {
+                    w.fields(|w| {
+                        w.field_default();
+                    });
+                    w.field_entry("unknown_fields", "None");
                 });
-                w.field_entry("unknown_fields", "None");
             });
-            w.write_line("&'static instance");
-        }
-        w.commented(|w| {
-            w.comment("static constants in Rust are very limited, \
-                    should generate this value lazily");
-            write_body(w);
+            w.write_line("})");
         });
-        w.todo();
     });
 }
 
@@ -1248,7 +1253,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 }
                 w.write_line("];");
                 w.write_line("");
-                w.write_line("static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };");
+                w.lazy_static("file_descriptor_proto_lazy", "::protobuf::descriptor::FileDescriptorProto");
                 w.write_line("");
                 w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
                     w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data)");

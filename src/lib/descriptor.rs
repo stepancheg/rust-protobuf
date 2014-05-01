@@ -291,13 +291,15 @@ impl<'a> FileDescriptorSet {
     }
 
     pub fn default_instance() -> &'static FileDescriptorSet {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: FileDescriptorSet = FileDescriptorSet {
-//             file: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<FileDescriptorSet> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *FileDescriptorSet };
+        unsafe {
+            instance.get(|| {
+                FileDescriptorSet {
+                    file: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -430,23 +432,25 @@ impl<'a> FileDescriptorProto {
     }
 
     pub fn default_instance() -> &'static FileDescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: FileDescriptorProto = FileDescriptorProto {
-//             name: None,
-//             package: None,
-//             dependency: Vec::new(),
-//             public_dependency: Vec::new(),
-//             weak_dependency: Vec::new(),
-//             message_type: ::protobuf::RepeatedField::new(),
-//             enum_type: ::protobuf::RepeatedField::new(),
-//             service: ::protobuf::RepeatedField::new(),
-//             extension: ::protobuf::RepeatedField::new(),
-//             options: ::protobuf::SingularField::none(),
-//             source_code_info: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *FileDescriptorProto };
+        unsafe {
+            instance.get(|| {
+                FileDescriptorProto {
+                    name: None,
+                    package: None,
+                    dependency: Vec::new(),
+                    public_dependency: Vec::new(),
+                    weak_dependency: Vec::new(),
+                    message_type: ::protobuf::RepeatedField::new(),
+                    enum_type: ::protobuf::RepeatedField::new(),
+                    service: ::protobuf::RepeatedField::new(),
+                    extension: ::protobuf::RepeatedField::new(),
+                    options: ::protobuf::SingularField::none(),
+                    source_code_info: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -985,19 +989,21 @@ impl<'a> DescriptorProto {
     }
 
     pub fn default_instance() -> &'static DescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: DescriptorProto = DescriptorProto {
-//             name: None,
-//             field: ::protobuf::RepeatedField::new(),
-//             extension: ::protobuf::RepeatedField::new(),
-//             nested_type: ::protobuf::RepeatedField::new(),
-//             enum_type: ::protobuf::RepeatedField::new(),
-//             extension_range: ::protobuf::RepeatedField::new(),
-//             options: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *DescriptorProto };
+        unsafe {
+            instance.get(|| {
+                DescriptorProto {
+                    name: None,
+                    field: ::protobuf::RepeatedField::new(),
+                    extension: ::protobuf::RepeatedField::new(),
+                    nested_type: ::protobuf::RepeatedField::new(),
+                    enum_type: ::protobuf::RepeatedField::new(),
+                    extension_range: ::protobuf::RepeatedField::new(),
+                    options: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -1362,14 +1368,16 @@ impl<'a> DescriptorProto_ExtensionRange {
     }
 
     pub fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: DescriptorProto_ExtensionRange = DescriptorProto_ExtensionRange {
-//             start: None,
-//             end: None,
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *DescriptorProto_ExtensionRange };
+        unsafe {
+            instance.get(|| {
+                DescriptorProto_ExtensionRange {
+                    start: None,
+                    end: None,
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     #[allow(unused_variable)]
@@ -1544,20 +1552,22 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn default_instance() -> &'static FieldDescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: FieldDescriptorProto = FieldDescriptorProto {
-//             name: None,
-//             number: None,
-//             label: None,
-//             field_type: None,
-//             type_name: None,
-//             extendee: None,
-//             default_value: None,
-//             options: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<FieldDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *FieldDescriptorProto };
+        unsafe {
+            instance.get(|| {
+                FieldDescriptorProto {
+                    name: None,
+                    number: None,
+                    label: None,
+                    field_type: None,
+                    type_name: None,
+                    extendee: None,
+                    default_value: None,
+                    options: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2066,15 +2076,17 @@ impl<'a> EnumDescriptorProto {
     }
 
     pub fn default_instance() -> &'static EnumDescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: EnumDescriptorProto = EnumDescriptorProto {
-//             name: None,
-//             value: ::protobuf::RepeatedField::new(),
-//             options: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<EnumDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *EnumDescriptorProto };
+        unsafe {
+            instance.get(|| {
+                EnumDescriptorProto {
+                    name: None,
+                    value: ::protobuf::RepeatedField::new(),
+                    options: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2288,15 +2300,17 @@ impl<'a> EnumValueDescriptorProto {
     }
 
     pub fn default_instance() -> &'static EnumValueDescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
-//             name: None,
-//             number: None,
-//             options: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<EnumValueDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *EnumValueDescriptorProto };
+        unsafe {
+            instance.get(|| {
+                EnumValueDescriptorProto {
+                    name: None,
+                    number: None,
+                    options: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2513,15 +2527,17 @@ impl<'a> ServiceDescriptorProto {
     }
 
     pub fn default_instance() -> &'static ServiceDescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
-//             name: None,
-//             method: ::protobuf::RepeatedField::new(),
-//             options: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<ServiceDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *ServiceDescriptorProto };
+        unsafe {
+            instance.get(|| {
+                ServiceDescriptorProto {
+                    name: None,
+                    method: ::protobuf::RepeatedField::new(),
+                    options: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -2736,16 +2752,18 @@ impl<'a> MethodDescriptorProto {
     }
 
     pub fn default_instance() -> &'static MethodDescriptorProto {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: MethodDescriptorProto = MethodDescriptorProto {
-//             name: None,
-//             input_type: None,
-//             output_type: None,
-//             options: ::protobuf::SingularField::none(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<MethodDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *MethodDescriptorProto };
+        unsafe {
+            instance.get(|| {
+                MethodDescriptorProto {
+                    name: None,
+                    input_type: None,
+                    output_type: None,
+                    options: ::protobuf::SingularField::none(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -3016,22 +3034,24 @@ impl<'a> FileOptions {
     }
 
     pub fn default_instance() -> &'static FileOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: FileOptions = FileOptions {
-//             java_package: None,
-//             java_outer_classname: None,
-//             java_multiple_files: None,
-//             java_generate_equals_and_hash: None,
-//             optimize_for: None,
-//             go_package: None,
-//             cc_generic_services: None,
-//             java_generic_services: None,
-//             py_generic_services: None,
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<FileOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *FileOptions };
+        unsafe {
+            instance.get(|| {
+                FileOptions {
+                    java_package: None,
+                    java_outer_classname: None,
+                    java_multiple_files: None,
+                    java_generate_equals_and_hash: None,
+                    optimize_for: None,
+                    go_package: None,
+                    cc_generic_services: None,
+                    java_generic_services: None,
+                    py_generic_services: None,
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -3558,15 +3578,17 @@ impl<'a> MessageOptions {
     }
 
     pub fn default_instance() -> &'static MessageOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: MessageOptions = MessageOptions {
-//             message_set_wire_format: None,
-//             no_standard_descriptor_accessor: None,
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<MessageOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *MessageOptions };
+        unsafe {
+            instance.get(|| {
+                MessageOptions {
+                    message_set_wire_format: None,
+                    no_standard_descriptor_accessor: None,
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -3777,19 +3799,21 @@ impl<'a> FieldOptions {
     }
 
     pub fn default_instance() -> &'static FieldOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: FieldOptions = FieldOptions {
-//             ctype: None,
-//             packed: None,
-//             lazy: None,
-//             deprecated: None,
-//             experimental_map_key: None,
-//             weak: None,
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<FieldOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *FieldOptions };
+        unsafe {
+            instance.get(|| {
+                FieldOptions {
+                    ctype: None,
+                    packed: None,
+                    lazy: None,
+                    deprecated: None,
+                    experimental_map_key: None,
+                    weak: None,
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -4186,14 +4210,16 @@ impl<'a> EnumOptions {
     }
 
     pub fn default_instance() -> &'static EnumOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: EnumOptions = EnumOptions {
-//             allow_alias: None,
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<EnumOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *EnumOptions };
+        unsafe {
+            instance.get(|| {
+                EnumOptions {
+                    allow_alias: None,
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -4357,13 +4383,15 @@ impl<'a> EnumValueOptions {
     }
 
     pub fn default_instance() -> &'static EnumValueOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: EnumValueOptions = EnumValueOptions {
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<EnumValueOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *EnumValueOptions };
+        unsafe {
+            instance.get(|| {
+                EnumValueOptions {
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -4486,13 +4514,15 @@ impl<'a> ServiceOptions {
     }
 
     pub fn default_instance() -> &'static ServiceOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: ServiceOptions = ServiceOptions {
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<ServiceOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *ServiceOptions };
+        unsafe {
+            instance.get(|| {
+                ServiceOptions {
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -4615,13 +4645,15 @@ impl<'a> MethodOptions {
     }
 
     pub fn default_instance() -> &'static MethodOptions {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: MethodOptions = MethodOptions {
-//             uninterpreted_option: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<MethodOptions> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *MethodOptions };
+        unsafe {
+            instance.get(|| {
+                MethodOptions {
+                    uninterpreted_option: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -4750,19 +4782,21 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn default_instance() -> &'static UninterpretedOption {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: UninterpretedOption = UninterpretedOption {
-//             name: ::protobuf::RepeatedField::new(),
-//             identifier_value: None,
-//             positive_int_value: None,
-//             negative_int_value: None,
-//             double_value: None,
-//             string_value: None,
-//             aggregate_value: None,
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<UninterpretedOption> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *UninterpretedOption };
+        unsafe {
+            instance.get(|| {
+                UninterpretedOption {
+                    name: ::protobuf::RepeatedField::new(),
+                    identifier_value: None,
+                    positive_int_value: None,
+                    negative_int_value: None,
+                    double_value: None,
+                    string_value: None,
+                    aggregate_value: None,
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -5141,14 +5175,16 @@ impl<'a> UninterpretedOption_NamePart {
     }
 
     pub fn default_instance() -> &'static UninterpretedOption_NamePart {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: UninterpretedOption_NamePart = UninterpretedOption_NamePart {
-//             name_part: None,
-//             is_extension: None,
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<UninterpretedOption_NamePart> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *UninterpretedOption_NamePart };
+        unsafe {
+            instance.get(|| {
+                UninterpretedOption_NamePart {
+                    name_part: None,
+                    is_extension: None,
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     #[allow(unused_variable)]
@@ -5325,13 +5361,15 @@ impl<'a> SourceCodeInfo {
     }
 
     pub fn default_instance() -> &'static SourceCodeInfo {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: SourceCodeInfo = SourceCodeInfo {
-//             location: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<SourceCodeInfo> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *SourceCodeInfo };
+        unsafe {
+            instance.get(|| {
+                SourceCodeInfo {
+                    location: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -5457,16 +5495,18 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     pub fn default_instance() -> &'static SourceCodeInfo_Location {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: SourceCodeInfo_Location = SourceCodeInfo_Location {
-//             path: Vec::new(),
-//             span: Vec::new(),
-//             leading_comments: None,
-//             trailing_comments: None,
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<SourceCodeInfo_Location> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *SourceCodeInfo_Location };
+        unsafe {
+            instance.get(|| {
+                SourceCodeInfo_Location {
+                    path: Vec::new(),
+                    span: Vec::new(),
+                    leading_comments: None,
+                    trailing_comments: None,
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     #[allow(unused_variable)]

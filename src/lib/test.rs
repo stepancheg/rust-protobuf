@@ -191,3 +191,9 @@ fn test_file_descriptor_proto() {
     assert!(p.has_name());
     assert_eq!("proto/shrug.proto", p.get_name());
 }
+
+#[test]
+fn test_default_instance() {
+    let d = TestDefaultInstance::new();
+    assert_eq!("", d.get_field().get_s());
+}

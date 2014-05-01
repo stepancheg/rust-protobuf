@@ -63,15 +63,17 @@ impl<'a> CodeGeneratorRequest {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorRequest {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
-//             file_to_generate: Vec::new(),
-//             parameter: None,
-//             proto_file: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorRequest> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *CodeGeneratorRequest };
+        unsafe {
+            instance.get(|| {
+                CodeGeneratorRequest {
+                    file_to_generate: Vec::new(),
+                    parameter: None,
+                    proto_file: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -273,14 +275,16 @@ impl<'a> CodeGeneratorResponse {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
-//             error: None,
-//             file: ::protobuf::RepeatedField::new(),
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *CodeGeneratorResponse };
+        unsafe {
+            instance.get(|| {
+                CodeGeneratorResponse {
+                    error: None,
+                    file: ::protobuf::RepeatedField::new(),
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
@@ -449,15 +453,17 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse_File {
-//         // static constants in Rust are very limited, should generate this value lazily
-//         static instance: CodeGeneratorResponse_File = CodeGeneratorResponse_File {
-//             name: None,
-//             insertion_point: None,
-//             content: None,
-//             unknown_fields: None,
-//         };
-//         &'static instance
-        fail!("TODO");
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse_File> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *CodeGeneratorResponse_File };
+        unsafe {
+            instance.get(|| {
+                CodeGeneratorResponse_File {
+                    name: None,
+                    insertion_point: None,
+                    content: None,
+                    unknown_fields: None,
+                }
+            })
+        }
     }
 
     #[allow(unused_variable)]
