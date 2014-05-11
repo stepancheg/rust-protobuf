@@ -7,7 +7,7 @@ use descriptor::DescriptorProto;
 use descriptor::FieldDescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
-use descriptor::LABEL_REPEATED;
+use descriptor::FieldDescriptorProto_LABEL_REPEATED;
 use descriptorx::find_enum_by_rust_name;
 use descriptorx::find_message_by_rust_name;
 use collections::HashMap;
@@ -279,7 +279,7 @@ impl FieldDescriptor {
     }
 
     pub fn is_repeated(&self) -> bool {
-        self.proto.get_label() == LABEL_REPEATED
+        self.proto.get_label() == FieldDescriptorProto_LABEL_REPEATED
     }
 
     pub fn has_field(&self, m: &Message) -> bool {

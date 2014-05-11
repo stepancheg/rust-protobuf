@@ -2645,47 +2645,47 @@ impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescripto
 
 #[deriving(Clone,Eq,Show)]
 pub enum FieldDescriptorProto_Type {
-    TYPE_DOUBLE = 1,
-    TYPE_FLOAT = 2,
-    TYPE_INT64 = 3,
-    TYPE_UINT64 = 4,
-    TYPE_INT32 = 5,
-    TYPE_FIXED64 = 6,
-    TYPE_FIXED32 = 7,
-    TYPE_BOOL = 8,
-    TYPE_STRING = 9,
-    TYPE_GROUP = 10,
-    TYPE_MESSAGE = 11,
-    TYPE_BYTES = 12,
-    TYPE_UINT32 = 13,
-    TYPE_ENUM = 14,
-    TYPE_SFIXED32 = 15,
-    TYPE_SFIXED64 = 16,
-    TYPE_SINT32 = 17,
-    TYPE_SINT64 = 18,
+    FieldDescriptorProto_TYPE_DOUBLE = 1,
+    FieldDescriptorProto_TYPE_FLOAT = 2,
+    FieldDescriptorProto_TYPE_INT64 = 3,
+    FieldDescriptorProto_TYPE_UINT64 = 4,
+    FieldDescriptorProto_TYPE_INT32 = 5,
+    FieldDescriptorProto_TYPE_FIXED64 = 6,
+    FieldDescriptorProto_TYPE_FIXED32 = 7,
+    FieldDescriptorProto_TYPE_BOOL = 8,
+    FieldDescriptorProto_TYPE_STRING = 9,
+    FieldDescriptorProto_TYPE_GROUP = 10,
+    FieldDescriptorProto_TYPE_MESSAGE = 11,
+    FieldDescriptorProto_TYPE_BYTES = 12,
+    FieldDescriptorProto_TYPE_UINT32 = 13,
+    FieldDescriptorProto_TYPE_ENUM = 14,
+    FieldDescriptorProto_TYPE_SFIXED32 = 15,
+    FieldDescriptorProto_TYPE_SFIXED64 = 16,
+    FieldDescriptorProto_TYPE_SINT32 = 17,
+    FieldDescriptorProto_TYPE_SINT64 = 18,
 }
 
 impl FieldDescriptorProto_Type {
     pub fn new(value: i32) -> FieldDescriptorProto_Type {
         match value {
-            1 => TYPE_DOUBLE,
-            2 => TYPE_FLOAT,
-            3 => TYPE_INT64,
-            4 => TYPE_UINT64,
-            5 => TYPE_INT32,
-            6 => TYPE_FIXED64,
-            7 => TYPE_FIXED32,
-            8 => TYPE_BOOL,
-            9 => TYPE_STRING,
-            10 => TYPE_GROUP,
-            11 => TYPE_MESSAGE,
-            12 => TYPE_BYTES,
-            13 => TYPE_UINT32,
-            14 => TYPE_ENUM,
-            15 => TYPE_SFIXED32,
-            16 => TYPE_SFIXED64,
-            17 => TYPE_SINT32,
-            18 => TYPE_SINT64,
+            1 => FieldDescriptorProto_TYPE_DOUBLE,
+            2 => FieldDescriptorProto_TYPE_FLOAT,
+            3 => FieldDescriptorProto_TYPE_INT64,
+            4 => FieldDescriptorProto_TYPE_UINT64,
+            5 => FieldDescriptorProto_TYPE_INT32,
+            6 => FieldDescriptorProto_TYPE_FIXED64,
+            7 => FieldDescriptorProto_TYPE_FIXED32,
+            8 => FieldDescriptorProto_TYPE_BOOL,
+            9 => FieldDescriptorProto_TYPE_STRING,
+            10 => FieldDescriptorProto_TYPE_GROUP,
+            11 => FieldDescriptorProto_TYPE_MESSAGE,
+            12 => FieldDescriptorProto_TYPE_BYTES,
+            13 => FieldDescriptorProto_TYPE_UINT32,
+            14 => FieldDescriptorProto_TYPE_ENUM,
+            15 => FieldDescriptorProto_TYPE_SFIXED32,
+            16 => FieldDescriptorProto_TYPE_SFIXED64,
+            17 => FieldDescriptorProto_TYPE_SINT32,
+            18 => FieldDescriptorProto_TYPE_SINT64,
             _ => fail!()
         }
     }
@@ -2708,17 +2708,17 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 
 #[deriving(Clone,Eq,Show)]
 pub enum FieldDescriptorProto_Label {
-    LABEL_OPTIONAL = 1,
-    LABEL_REQUIRED = 2,
-    LABEL_REPEATED = 3,
+    FieldDescriptorProto_LABEL_OPTIONAL = 1,
+    FieldDescriptorProto_LABEL_REQUIRED = 2,
+    FieldDescriptorProto_LABEL_REPEATED = 3,
 }
 
 impl FieldDescriptorProto_Label {
     pub fn new(value: i32) -> FieldDescriptorProto_Label {
         match value {
-            1 => LABEL_OPTIONAL,
-            2 => LABEL_REQUIRED,
-            3 => LABEL_REPEATED,
+            1 => FieldDescriptorProto_LABEL_OPTIONAL,
+            2 => FieldDescriptorProto_LABEL_REQUIRED,
+            3 => FieldDescriptorProto_LABEL_REPEATED,
             _ => fail!()
         }
     }
@@ -4769,17 +4769,17 @@ impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_uninterpret
 
 #[deriving(Clone,Eq,Show)]
 pub enum FileOptions_OptimizeMode {
-    SPEED = 1,
-    CODE_SIZE = 2,
-    LITE_RUNTIME = 3,
+    FileOptions_SPEED = 1,
+    FileOptions_CODE_SIZE = 2,
+    FileOptions_LITE_RUNTIME = 3,
 }
 
 impl FileOptions_OptimizeMode {
     pub fn new(value: i32) -> FileOptions_OptimizeMode {
         match value {
-            1 => SPEED,
-            2 => CODE_SIZE,
-            3 => LITE_RUNTIME,
+            1 => FileOptions_SPEED,
+            2 => FileOptions_CODE_SIZE,
+            3 => FileOptions_LITE_RUNTIME,
             _ => fail!()
         }
     }
@@ -5646,17 +5646,17 @@ impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_uninterpr
 
 #[deriving(Clone,Eq,Show)]
 pub enum FieldOptions_CType {
-    STRING = 0,
-    CORD = 1,
-    STRING_PIECE = 2,
+    FieldOptions_STRING = 0,
+    FieldOptions_CORD = 1,
+    FieldOptions_STRING_PIECE = 2,
 }
 
 impl FieldOptions_CType {
     pub fn new(value: i32) -> FieldOptions_CType {
         match value {
-            0 => STRING,
-            1 => CORD,
-            2 => STRING_PIECE,
+            0 => FieldOptions_STRING,
+            1 => FieldOptions_CORD,
+            2 => FieldOptions_STRING_PIECE,
             _ => fail!()
         }
     }
