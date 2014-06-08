@@ -7,4 +7,4 @@ PATH="$root:$PATH"
 
 protoc --rust_out . perftest_data.proto
 
-rustc -O -L $root perftest.rs
+rustc --opt-level=3 -L $root perftest.rs
