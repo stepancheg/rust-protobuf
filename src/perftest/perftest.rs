@@ -8,9 +8,9 @@ use std::io::BufReader;
 use std::default::Default;
 use std::os;
 
-use rand::Rng;
-use rand::StdRng;
-use rand::SeedableRng;
+use std::rand::Rng;
+use std::rand::StdRng;
+use std::rand::SeedableRng;
 
 use protobuf::Message;
 use perftest_data::PerftestData;
@@ -42,7 +42,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
     }
 
     let mut writer = MemWriter::new();
-    measure_and_print(format!("{}: write", name), random_data.len() as u64, || {
+    measure_and_print(format!("{}: write", name).as_slice(), random_data.len() as u64, || {
         for m in random_data.iter() {
             m.write_length_delimited_to_writer(&mut writer);
         }
@@ -50,7 +50,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
 
     let buf = writer.unwrap();
 
-    let read_data = measure_and_print(format!("{}: read", name), random_data.len() as u64, || {
+    let read_data = measure_and_print(format!("{}: read", name).as_slice(), random_data.len() as u64, || {
         let mut r = Vec::new();
         let mut reader = BufReader::new(buf.as_slice());
         let mut coded_input_stream = protobuf::CodedInputStream::new(&mut reader);
@@ -62,7 +62,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
 
     assert_eq!(random_data, read_data);
 
-    let merged = measure_and_print(format!("{}: read reuse", name), random_data.len() as u64, || {
+    let merged = measure_and_print(format!("{}: read reuse", name).as_slice(), random_data.len() as u64, || {
         let mut reader = BufReader::new(buf.as_slice());
         let mut coded_input_stream = protobuf::CodedInputStream::new(&mut reader);
         let mut msg: M = Default::default();
@@ -79,13 +79,13 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
 }
 
 struct TestRunner {
-    selected: Option<~str>,
+    selected: Option<String>,
     any_matched: bool,
 }
 
 impl TestRunner {
     fn test<M : Message>(&mut self, name: &str, data: &[M]) {
-        if self.selected.is_none() || name == *self.selected.get_ref() {
+        if self.selected.is_none() || name == self.selected.get_ref().as_slice() {
             run_test(name, data);
             self.any_matched = true;
         }
@@ -102,7 +102,7 @@ impl TestRunner {
 fn main() {
     let selected = match os::args().as_slice() {
         [_] => None,
-        [_, ref test] => Some(test.to_owned()),
+        [_, ref test] => Some(test.to_string()),
         [ref argv0, ..] => fail!("usage: {} <test>", argv0),
         _ => fail!()
     };

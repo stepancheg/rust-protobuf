@@ -10,7 +10,7 @@ use descriptor::EnumValueDescriptorProto;
 use descriptor::FieldDescriptorProto_LABEL_REPEATED;
 use descriptorx::find_enum_by_rust_name;
 use descriptorx::find_message_by_rust_name;
-use collections::HashMap;
+use std::collections::HashMap;
 
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
@@ -47,7 +47,7 @@ pub trait FieldAccessor<M : Message> {
         fail!();
     }
 
-    fn get_rep_str<'a>(&self, _m: &'a M) -> &'a [StrBuf] {
+    fn get_rep_str<'a>(&self, _m: &'a M) -> &'a [String] {
         fail!();
     }
 
@@ -125,7 +125,7 @@ trait FieldAccessorGeneric {
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
     fn get_rep_enum_item_generic(&self, m: &Message, index: uint) -> &'static EnumValueDescriptor;
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
-    fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [StrBuf];
+    fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [String];
     fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8];
     fn get_rep_bytes_generic<'a>(&self, m: &'a Message) -> &'a [Vec<u8>];
     fn get_u32_generic(&self, m: &Message) -> u32;
@@ -185,7 +185,7 @@ impl<M : 'static + Message> FieldAccessorGeneric for FieldAccessorGenericImpl<M>
         self.accessor.get_str(message_down_cast(m))
     }
 
-    fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [StrBuf] {
+    fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [String] {
         self.accessor.get_rep_str(message_down_cast(m))
     }
 
@@ -256,7 +256,7 @@ impl<M : 'static + Message> FieldAccessorGeneric for FieldAccessorGenericImpl<M>
 
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
-    accessor: ~FieldAccessorGeneric,
+    accessor: Box<FieldAccessorGeneric>,
 }
 
 impl FieldDescriptor {
@@ -266,7 +266,7 @@ impl FieldDescriptor {
         assert_eq!(proto.get_name(), a.name());
         FieldDescriptor {
             proto: proto,
-            accessor: ~FieldAccessorGenericImpl::new(a) as ~FieldAccessorGeneric,
+            accessor: box FieldAccessorGenericImpl::new(a) as Box<FieldAccessorGeneric>,
         }
     }
 
@@ -310,7 +310,7 @@ impl FieldDescriptor {
         self.accessor.get_str_generic(m)
     }
 
-    pub fn get_rep_str<'a>(&self, m: &'a Message) -> &'a [StrBuf] {
+    pub fn get_rep_str<'a>(&self, m: &'a Message) -> &'a [String] {
         self.accessor.get_rep_str_generic(m)
     }
 
@@ -389,7 +389,7 @@ impl FieldDescriptor {
 
 
 trait MessageFactory {
-    fn new_instance() -> ~Message;
+    fn new_instance() -> Box<Message>;
 }
 
 struct MessageFactoryTyped<M> {
@@ -405,18 +405,18 @@ impl<M> MessageFactoryTyped<M> {
 }
 
 impl<M : 'static + Message> MessageFactory for MessageFactoryTyped<M> {
-    fn new_instance() -> ~Message {
+    fn new_instance() -> Box<Message> {
         let m: M = Default::default();
-        ~m as ~Message
+        box m as Box<Message>
     }
 }
 
 pub struct MessageDescriptor {
     proto: &'static DescriptorProto,
-    factory: ~MessageFactory,
+    factory: Box<MessageFactory>,
     fields: Vec<FieldDescriptor>,
 
-    index_by_name: HashMap<~str, uint>,
+    index_by_name: HashMap<String, uint>,
     index_by_number: HashMap<u32, uint>,
 }
 
@@ -442,12 +442,12 @@ impl MessageDescriptor {
         let mut index_by_number = HashMap::new();
         for (i, f) in proto.get_field().iter().enumerate() {
             index_by_number.insert(f.get_number() as u32, i);
-            index_by_name.insert(f.get_name().to_owned(), i);
+            index_by_name.insert(f.get_name().to_string(), i);
         }
 
         MessageDescriptor {
             proto: proto,
-            factory: ~MessageFactoryTyped::<M>::new() as ~MessageFactory,
+            factory: box MessageFactoryTyped::<M>::new() as Box<MessageFactory>,
             fields: fields.iter()
                     .map(|f| FieldDescriptor::new(*f, *field_proto_by_name.find(&f.name()).unwrap()))
                     .collect(),
@@ -466,7 +466,7 @@ impl MessageDescriptor {
 
     pub fn field_by_name<'a>(&'a self, name: &str) -> &'a FieldDescriptor {
         // TODO: clone is weird
-        let &index = self.index_by_name.find(&name.to_owned()).unwrap();
+        let &index = self.index_by_name.find(&name.to_string()).unwrap();
         self.fields.get(index)
     }
 
@@ -494,7 +494,7 @@ pub struct EnumDescriptor {
     proto: &'static EnumDescriptorProto,
     values: Vec<EnumValueDescriptor>,
 
-    index_by_name: HashMap<~str, uint>,
+    index_by_name: HashMap<String, uint>,
     index_by_number: HashMap<i32, uint>,
 }
 
@@ -513,7 +513,7 @@ impl EnumDescriptor {
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.get_value().iter().enumerate() {
             index_by_number.insert(v.get_number(), i);
-            index_by_name.insert(v.get_name().to_owned(), i);
+            index_by_name.insert(v.get_name().to_string(), i);
         }
         EnumDescriptor {
             proto: proto,
@@ -525,7 +525,7 @@ impl EnumDescriptor {
 
     pub fn value_by_name<'a>(&'a self, name: &str) -> &'a EnumValueDescriptor {
         // TODO: clone is weird
-        let &index = self.index_by_name.find(&name.to_owned()).unwrap();
+        let &index = self.index_by_name.find(&name.to_string()).unwrap();
         self.values.get(index)
     }
 

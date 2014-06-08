@@ -7,7 +7,7 @@ use clear::Clear;
 
 
 pub struct SingularField<T> {
-    value: Option<~T>,
+    value: Option<Box<T>>,
     set: bool,
 }
 
@@ -15,7 +15,7 @@ impl<T> SingularField<T> {
     #[inline]
     pub fn some(value: T) -> SingularField<T> {
         SingularField {
-            value: Some(~value),
+            value: Some(box value),
             set: true,
         }
     }
@@ -179,7 +179,7 @@ impl<T : Default+Clear> SingularField<T> {
         if self.value.is_some() {
             self.value.get_mut_ref().clear();
         } else {
-            self.value = Some(~Default::default());
+            self.value = Some(box Default::default());
         }
         self.get_mut_ref()
     }
@@ -207,28 +207,28 @@ impl<T : fmt::Show> fmt::Show for SingularField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
-            write!(f.buf, "Some({})", *self.get_ref())
+            write!(f, "Some({})", *self.get_ref())
         } else {
-            write!(f.buf, "None")
+            write!(f, "None")
         }
     }
 }
 
-impl<T : Eq> Eq for SingularField<T> {
+impl<T : PartialEq> PartialEq for SingularField<T> {
     #[inline]
     fn eq(&self, other: &SingularField<T>) -> bool {
         self.as_ref() == other.as_ref()
     }
 }
 
-impl<T : Ord> Ord for SingularField<T> {
+impl<T : Eq> Eq for SingularField<T> {}
+
+impl<T : PartialOrd> PartialOrd for SingularField<T> {
     #[inline]
     fn lt(&self, other: &SingularField<T>) -> bool {
         self.as_ref() < other.as_ref()
     }
 }
-
-impl<T : TotalEq> TotalEq for SingularField<T> {}
 
 
 #[cfg(test)]

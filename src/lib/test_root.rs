@@ -25,10 +25,10 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct Root {
     nested: ::protobuf::RepeatedField<Root_Nested>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> Root {
@@ -149,13 +149,13 @@ impl ::protobuf::Message for Root {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<Root>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Root>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static Root_nested_acc as &::protobuf::reflect::FieldAccessor<Root>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static Root_nested_acc as &::protobuf::reflect::FieldAccessor<Root>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Root>(
                     "Root",
                     fields,
@@ -201,9 +201,9 @@ impl ::protobuf::reflect::FieldAccessor<Root> for Root_nested_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct Root_Nested {
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> Root_Nested {
@@ -287,7 +287,7 @@ impl ::protobuf::Message for Root_Nested {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<Root_Nested>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {

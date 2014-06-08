@@ -29,8 +29,8 @@ fn main() {
     let mut resp = CodeGeneratorResponse::new();
     resp.set_file(result.iter().map(|file| {
         let mut r = CodeGeneratorResponse_File::new();
-        r.set_name(file.name.to_owned());
-        r.set_content(str::from_utf8(file.content.as_slice()).unwrap().to_owned());
+        r.set_name(file.name.to_string());
+        r.set_content(str::from_utf8(file.content.as_slice()).unwrap().to_string());
         r
     }).collect());
     resp.write_to_writer(&mut io::stdout() as &mut Writer);

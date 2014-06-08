@@ -1,6 +1,6 @@
 // TODO: drop all fail!
 
-use std::cast;
+use std::mem;
 use std::raw;
 use std::str::from_utf8;
 use std::io::*;
@@ -32,7 +32,7 @@ pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
     pub static TAG_TYPE_MASK: u32 = (1 << TAG_TYPE_BITS) - 1;
 
-    #[deriving(Eq, Clone, Show)]
+    #[deriving(PartialEq, Eq, Clone, Show)]
     pub enum WireType {
         WireTypeVarint          = 0,
         WireTypeFixed64         = 1,
@@ -278,14 +278,14 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_double(&mut self) -> f64 {
         let bits = self.read_raw_little_endian64();
         unsafe {
-            cast::transmute::<u64, f64>(bits)
+            mem::transmute::<u64, f64>(bits)
         }
     }
 
     pub fn read_float(&mut self) -> f32 {
         let bits = self.read_raw_little_endian32();
         unsafe {
-            cast::transmute::<u32, f32>(bits)
+            mem::transmute::<u32, f32>(bits)
         }
     }
 
@@ -375,12 +375,13 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_bytes(len)
     }
 
-    pub fn read_strbuf(&mut self) -> StrBuf {
-        StrBuf::from_utf8(self.read_bytes()).unwrap()
+    #[deprecated = "use read_string"]
+    pub fn read_strbuf(&mut self) -> String {
+        self.read_string()
     }
 
-    pub fn read_string(&mut self) -> ~str {
-        self.read_strbuf().into_owned()
+    pub fn read_string(&mut self) -> String {
+        String::from_utf8(self.read_bytes()).unwrap()
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) {
@@ -534,14 +535,14 @@ impl<'a> CodedOutputStream<'a> {
 
     pub fn write_float_no_tag(&mut self, value: f32) {
         let bits = unsafe {
-            cast::transmute::<f32, u32>(value)
+            mem::transmute::<f32, u32>(value)
         };
         self.write_raw_little_endian32(bits);
     }
 
     pub fn write_double_no_tag(&mut self, value: f64) {
         let bits = unsafe {
-            cast::transmute::<f64, u64>(value)
+            mem::transmute::<f64, u64>(value)
         };
         self.write_raw_little_endian64(bits);
     }
@@ -716,7 +717,7 @@ impl<'a> CodedOutputStream<'a> {
 }
 
 
-pub trait Message : Eq + Clone + Default + fmt::Show + Clear {
+pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
     fn new() -> Self;
     // all required fields set
     fn is_initialized(&self) -> bool;
@@ -796,8 +797,8 @@ pub fn message_down_cast<'a, M : 'static + Message>(m: &'a Message) -> &'a M {
     assert!(message_is::<M>(m));
     unsafe {
         // TODO: really weird
-        let r: raw::TraitObject = cast::transmute(m);
-        cast::transmute(r.data)
+        let r: raw::TraitObject = mem::transmute(m);
+        mem::transmute(r.data)
     }
 }
 

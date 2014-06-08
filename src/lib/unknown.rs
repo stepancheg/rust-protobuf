@@ -1,5 +1,5 @@
-use collections::HashMap;
-use collections::hashmap;
+use std::collections::HashMap;
+use std::collections::hashmap;
 use std::default::Default;
 use std::slice;
 use core::wire_format;
@@ -45,7 +45,7 @@ impl<'o> UnknownValueRef<'o> {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,PartialEq,Eq,Show,Default)]
 pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
@@ -102,7 +102,7 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
     }
 }
 
-#[deriving(Clone,Eq,Show,Default)]
+#[deriving(Clone,PartialEq,Eq,Show,Default)]
 pub struct UnknownFields {
     // option is needed, so it could be placed in static field
     pub fields: Option<HashMap<u32, UnknownValues>>,

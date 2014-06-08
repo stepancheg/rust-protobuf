@@ -1,5 +1,5 @@
 use std::io::Writer;
-use std::cast;
+use std::mem;
 use std::fmt;
 
 use descriptor::*;
@@ -9,83 +9,83 @@ use rt;
 use paginate::PaginatableIterator;
 use strx::*;
 
-#[deriving(Clone,Eq)]
+#[deriving(Clone,PartialEq,Eq)]
 enum RustType {
     RustSigned(uint),
     RustUnsigned(uint),
     RustFloat(uint),
     RustBool,
-    RustVec(~RustType),
-    RustStrBuf,
-    RustSlice(~RustType),
+    RustVec(Box<RustType>),
+    RustString,
+    RustSlice(Box<RustType>),
     RustStr,
-    RustOption(~RustType),
-    RustSingularField(~RustType),
-    RustRepeatedField(~RustType),
-    RustUniq(~RustType),
-    RustRef(~RustType),
-    RustMessage(~str),
-    RustEnum(~str),
+    RustOption(Box<RustType>),
+    RustSingularField(Box<RustType>),
+    RustRepeatedField(Box<RustType>),
+    RustUniq(Box<RustType>),
+    RustRef(Box<RustType>),
+    RustMessage(String),
+    RustEnum(String),
 }
 
 impl fmt::Show for RustType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            RustSigned(bits)       => write!(f.buf, "i{}", bits),
-            RustUnsigned(bits)     => write!(f.buf, "u{}", bits),
-            RustFloat(bits)        => write!(f.buf, "f{}", bits),
-            RustBool               => write!(f.buf, "bool"),
-            RustVec(ref param)     => write!(f.buf, "Vec<{}>", *param),
-            RustStrBuf             => write!(f.buf, "StrBuf"),
-            RustSlice(ref param)   => write!(f.buf, "[{}]", *param),
-            RustStr                => write!(f.buf, "str"),
-            RustOption(ref param)        => write!(f.buf, "Option<{}>", param),
-            RustSingularField(ref param) => write!(f.buf, "::protobuf::SingularField<{}>", param),
-            RustRepeatedField(ref param) => write!(f.buf, "::protobuf::RepeatedField<{}>", param),
-            RustUniq(ref param)          => write!(f.buf, "~{}", *param),
-            RustRef(ref param)           => write!(f.buf, "&{}", *param),
-            RustMessage(ref param) | RustEnum(ref param) => write!(f.buf, "{}", param),
+            RustSigned(bits)       => write!(f, "i{}", bits),
+            RustUnsigned(bits)     => write!(f, "u{}", bits),
+            RustFloat(bits)        => write!(f, "f{}", bits),
+            RustBool               => write!(f, "bool"),
+            RustVec(ref param)     => write!(f, "Vec<{}>", *param),
+            RustString             => write!(f, "String"),
+            RustSlice(ref param)   => write!(f, "[{}]", *param),
+            RustStr                => write!(f, "str"),
+            RustOption(ref param)        => write!(f, "Option<{}>", param),
+            RustSingularField(ref param) => write!(f, "::protobuf::SingularField<{}>", param),
+            RustRepeatedField(ref param) => write!(f, "::protobuf::RepeatedField<{}>", param),
+            RustUniq(ref param)          => write!(f, "Box<{}>", *param),
+            RustRef(ref param)           => write!(f, "&{}", *param),
+            RustMessage(ref param) | RustEnum(ref param) => write!(f, "{}", param),
         }
     }
 }
 
 impl RustType {
-    fn ref_str(&self, lt: &str) -> ~str {
+    fn ref_str(&self, lt: &str) -> String {
         match *self {
             RustRef(ref param) => format!("&'{} {}", lt, *param),
             _ => fail!("not a slice: {}", *self),
         }
     }
 
-    fn mut_ref_str(&self, lt: &str) -> ~str {
+    fn mut_ref_str(&self, lt: &str) -> String {
         match *self {
             RustRef(ref param) => format!("&'{} mut {}", lt, *param),
             _ => fail!("not a slice: {}", *self),
         }
     }
 
-    fn default_value(&self) -> ~str {
+    fn default_value(&self) -> String {
         match *self {
-            RustRef(~RustStr)                 => "&\"\"".to_owned(),
-            RustRef(~RustSlice(..))           => "&[]".to_owned(),
-            RustSigned(..) | RustUnsigned(..) => "0".to_owned(),
-            RustFloat(..)                     => "0.".to_owned(),
-            RustBool(..)                      => "false".to_owned(),
-            RustVec(..)                       => "Vec::new()".to_owned(),
-            RustStrBuf                        => "StrBuf::new()".to_owned(),
-            RustOption(..)                    => "None".to_owned(),
-            RustSingularField(..)             => "::protobuf::SingularField::none()".to_owned(),
-            RustRepeatedField(..)             => "::protobuf::RepeatedField::new()".to_owned(),
-            RustMessage(ref name)             => format!("{}::new()", name),
-            RustRef(~RustMessage(ref name))   => format!("{}::default_instance()", name),
+            RustRef(box RustStr)               => "\"\"".to_string(),
+            RustRef(box RustSlice(..))         => "&[]".to_string(),
+            RustSigned(..) | RustUnsigned(..)  => "0".to_string(),
+            RustFloat(..)                      => "0.".to_string(),
+            RustBool(..)                       => "false".to_string(),
+            RustVec(..)                        => "Vec::new()".to_string(),
+            RustString                         => "String::new()".to_string(),
+            RustOption(..)                     => "None".to_string(),
+            RustSingularField(..)              => "::protobuf::SingularField::none()".to_string(),
+            RustRepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
+            RustMessage(ref name)              => format!("{}::new()", name),
+            RustRef(box RustMessage(ref name)) => format!("{}::default_instance()", name),
             // TODO: use proper constant
-            RustEnum(ref name)                => format!("{}::new(0)", name),
+            RustEnum(ref name)                 => format!("{}::new(0)", name),
             _ => fail!("cannot create default value for: {}", *self),
         }
     }
 
-    fn wrap_value(&self, value: &str) -> ~str {
+    fn wrap_value(&self, value: &str) -> String {
         match *self {
             RustOption(..)        => format!("Some({})", value),
             RustSingularField(..) => format!("::protobuf::SingularField::some({})", value),
@@ -93,27 +93,26 @@ impl RustType {
         }
     }
 
-    fn view_as(&self, target: &RustType, v: &str) -> ~str {
+    fn view_as(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
-            (&RustStrBuf,  &RustRef(~RustStr)) => format!("{}.as_slice()", v),
-            (&RustVec(..), &RustRef(~RustSlice(..))) => format!("{}.as_slice()", v),
-            _ => v.to_owned(),
+            (&RustString,  &RustRef(box RustStr)) => format!("{}.as_slice()", v),
+            (&RustVec(..), &RustRef(box RustSlice(..))) => format!("{}.as_slice()", v),
+            _ => v.to_string(),
         }
     }
 
-    fn into(&self, target: &RustType, v: &str) -> ~str {
+    fn into(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
-            (&RustUniq(~RustStr), &RustStrBuf) => format!("StrBuf::from_owned_str({})", v),
-            _ => v.to_owned(),
+            _ => v.to_string(),
         }
     }
 
     fn ref_type(&self) -> RustType {
         RustRef(match self {
-            &RustStrBuf               => ~RustStr,
-            &RustVec(ref p)           => ~RustSlice(p.clone()),
-            &RustRepeatedField(ref p) => ~RustSlice(p.clone()),
-            &RustMessage(ref p)       => ~RustMessage(p.clone()),
+            &RustString               => box RustStr,
+            &RustVec(ref p)           => box RustSlice(p.clone()),
+            &RustRepeatedField(ref p) => box RustSlice(p.clone()),
+            &RustMessage(ref p)       => box RustMessage(p.clone()),
             x => fail!("no ref type for {}", x),
         })
     }
@@ -134,8 +133,8 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
         FieldDescriptorProto_TYPE_SFIXED32 => RustSigned(32),
         FieldDescriptorProto_TYPE_SFIXED64 => RustSigned(64),
         FieldDescriptorProto_TYPE_BOOL     => RustBool,
-        FieldDescriptorProto_TYPE_STRING   => RustStrBuf,
-        FieldDescriptorProto_TYPE_BYTES    => RustVec(~RustUnsigned(8)),
+        FieldDescriptorProto_TYPE_STRING   => RustString,
+        FieldDescriptorProto_TYPE_BYTES    => RustVec(box RustUnsigned(8)),
         FieldDescriptorProto_TYPE_ENUM |
         FieldDescriptorProto_TYPE_GROUP |
         FieldDescriptorProto_TYPE_MESSAGE => fail!()
@@ -200,11 +199,15 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
 
 fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
     if field.has_type_name() {
-        let current_pkg_prefix = if pkg.is_empty() { ~"." } else { "." + pkg + "." };
-        let name = (if field.get_type_name().starts_with(current_pkg_prefix) {
-            remove_prefix(field.get_type_name(), current_pkg_prefix).to_owned()
+        let current_pkg_prefix = if pkg.is_empty() {
+            ".".to_string()
         } else {
-            remove_to(field.get_type_name(), '.').to_owned()
+            format!(".{}.", pkg)
+        };
+        let name = (if field.get_type_name().starts_with(current_pkg_prefix.as_slice()) {
+            remove_prefix(field.get_type_name(), current_pkg_prefix.as_slice()).to_string()
+        } else {
+            remove_to(field.get_type_name(), '.').to_string()
         }).replace(".", "_");
         match field.get_field_type() {
             FieldDescriptorProto_TYPE_MESSAGE => RustMessage(name),
@@ -228,7 +231,7 @@ enum RepeatMode {
 #[deriving(Clone)]
 struct Field {
     proto_field: FieldDescriptorProto,
-    name: ~str,
+    name: String,
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     type_name: RustType,
@@ -247,8 +250,8 @@ impl Field {
             FieldDescriptorProto_LABEL_REQUIRED => false,
         };
         let name = match field.get_name() {
-            "type" => ~"field_type",
-            x => x.to_owned(),
+            "type" => "field_type".to_string(),
+            x => x.to_string(),
         };
         let packed =
             if field.has_options() {
@@ -276,7 +279,7 @@ impl Field {
     }
 
     fn full_storage_type(&self) -> RustType {
-        let c = ~self.type_name.clone();
+        let c = box self.type_name.clone();
         match (self.repeated, self.field_type == FieldDescriptorProto_TYPE_MESSAGE) {
             (true, true)   => RustRepeatedField(c),
             (false, true)  => RustSingularField(c),
@@ -296,7 +299,7 @@ impl Field {
 
     fn get_xxx_return_type(&self) -> RustType {
         match self.repeated {
-            true => RustRef(~RustSlice(~self.type_name.clone())),
+            true => RustRef(box RustSlice(box self.type_name.clone())),
             false => match self.get_xxx_return_ref() {
                 true => self.type_name.ref_type(),
                 false => self.type_name.clone(),
@@ -320,9 +323,9 @@ impl Field {
 #[deriving(Clone)]
 struct Message {
     proto_message: DescriptorProto,
-    pkg: ~str,
-    prefix: ~str,
-    type_name: ~str,
+    pkg: String,
+    prefix: String,
+    type_name: String,
     fields: Vec<Field>,
 }
 
@@ -330,9 +333,9 @@ impl<'a> Message {
     fn parse(proto_message: &DescriptorProto, pkg: &str, prefix: &str) -> Message {
         Message {
             proto_message: proto_message.clone(),
-            pkg: pkg.to_owned(),
-            prefix: prefix.to_owned(),
-            type_name: prefix + proto_message.get_name().to_owned(),
+            pkg: pkg.to_string(),
+            prefix: prefix.to_string(),
+            type_name: prefix.to_string().append(proto_message.get_name()),
             fields: proto_message.get_field().iter().flat_map(|field| {
                 Field::parse(field, pkg).move_iter()
             }).collect(),
@@ -361,24 +364,24 @@ impl<'a> Message {
 
 struct Enum {
     proto: EnumDescriptorProto,
-    pkg: ~str,
-    prefix: ~str,
-    type_name: ~str,
+    pkg: String,
+    prefix: String,
+    type_name: String,
     values: Vec<EnumValue>,
 }
 
 struct EnumValue {
     proto: EnumValueDescriptorProto,
-    prefix: ~str,
+    prefix: String,
 }
 
 impl Enum {
     fn parse(proto: &EnumDescriptorProto, pkg: &str, prefix: &str) -> Enum {
         Enum {
             proto: proto.clone(),
-            pkg: pkg.to_owned(),
-            prefix: prefix.to_owned(),
-            type_name: prefix + proto.get_name(),
+            pkg: pkg.to_string(),
+            prefix: prefix.to_string(),
+            type_name: prefix.to_string().append(proto.get_name()),
             values: proto.get_value().iter().map(|p| EnumValue::parse(p, prefix)).collect(),
         }
     }
@@ -388,7 +391,7 @@ impl EnumValue {
     fn parse(proto: &EnumValueDescriptorProto, prefix: &str) -> EnumValue {
         EnumValue {
             proto: proto.clone(),
-            prefix: prefix.to_owned(),
+            prefix: prefix.to_string(),
         }
     }
 
@@ -400,8 +403,8 @@ impl EnumValue {
         self.proto.get_number()
     }
 
-    fn rust_name(&self) -> ~str {
-        self.prefix + self.name()
+    fn rust_name(&self) -> String {
+        self.prefix.to_string().append(self.name())
     }
 }
 
@@ -409,7 +412,7 @@ impl EnumValue {
 struct IndentWriter<'a> {
     // TODO: add mut
     writer: &'a Writer,
-    indent: ~str,
+    indent: String,
     msg: Option<&'a Message>,
     field: Option<&'a Field>,
     en: Option<&'a Enum>,
@@ -419,7 +422,7 @@ impl<'a> IndentWriter<'a> {
     fn new(writer: &'a mut Writer) -> IndentWriter<'a> {
         IndentWriter {
             writer: writer,
-            indent: ~"",
+            indent: "".to_string(),
             msg: None,
             field: None,
             en: None,
@@ -428,8 +431,8 @@ impl<'a> IndentWriter<'a> {
 
     fn bind_message<T>(&self, msg: &Message, cb: |&mut IndentWriter| -> T) -> T {
         cb(&mut IndentWriter {
-            writer: unsafe { cast::transmute(self.writer) },
-            indent: self.indent.to_owned(),
+            writer: unsafe { mem::transmute(self.writer) },
+            indent: self.indent.to_string(),
             msg: Some(msg),
             field: None,
             en: None,
@@ -440,7 +443,7 @@ impl<'a> IndentWriter<'a> {
         assert!(self.msg.is_some());
         cb(&mut IndentWriter {
             writer: self.writer,
-            indent: self.indent.to_owned(),
+            indent: self.indent.to_string(),
             msg: self.msg,
             field: Some(field),
             en: None,
@@ -450,7 +453,7 @@ impl<'a> IndentWriter<'a> {
     fn bind_enum<T>(&self, en: &'a Enum, cb: |&mut IndentWriter| -> T) -> T {
         cb(&mut IndentWriter {
             writer: self.writer,
-            indent: self.indent.to_owned(),
+            indent: self.indent.to_string(),
             msg: None,
             field: None,
             en: Some(en),
@@ -491,21 +494,21 @@ impl<'a> IndentWriter<'a> {
         self.en.unwrap()
     }
 
-    fn self_field(&self) -> ~str {
+    fn self_field(&self) -> String {
         format!("self.{:s}", self.field().name)
     }
 
-    fn self_field_is_some(&self) -> ~str {
+    fn self_field_is_some(&self) -> String {
         assert!(!self.field().repeated);
         format!("{:s}.is_some()", self.self_field())
     }
 
-    fn self_field_is_not_empty(&self) -> ~str {
+    fn self_field_is_not_empty(&self) -> String {
         assert!(self.field().repeated);
         format!("!{:s}.is_empty()", self.self_field())
     }
 
-    fn self_field_is_none(&self) -> ~str {
+    fn self_field_is_none(&self) -> String {
         assert!(!self.field().repeated);
         format!("{:s}.is_none()", self.self_field())
     }
@@ -526,7 +529,7 @@ impl<'a> IndentWriter<'a> {
         self.for_stmt(format!("{}.iter()", self.self_field()), varn, cb);
     }
 
-    fn self_field_assign(&self, value: &str) {
+    fn self_field_assign<S : Str>(&self, value: S) {
         self.write_line(format!("{:s} = {:s};", self.self_field(), value));
     }
 
@@ -535,7 +538,7 @@ impl<'a> IndentWriter<'a> {
         self.self_field_assign("None");
     }
 
-    fn self_field_assign_some(&self, value: &str) {
+    fn self_field_assign_some<S : Str>(&self, value: S) {
         assert!(!self.field().repeated);
         self.self_field_assign(format!("Some({:s})", value));
     }
@@ -549,14 +552,14 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn self_field_assign_value(&self, value: &str, ty: &RustType) {
+    fn self_field_assign_value<S : Str>(&self, value: S, ty: &RustType) {
         assert!(!self.field().repeated);
-        let converted = ty.into(&self.field().type_name, value);
-        let wrapped = self.field().full_storage_type().wrap_value(converted);
+        let converted = ty.into(&self.field().type_name, value.as_slice());
+        let wrapped = self.field().full_storage_type().wrap_value(converted.as_slice());
         self.self_field_assign(wrapped);
     }
 
-    fn self_field_push(&self, value: &str) {
+    fn self_field_push<S : Str>(&self, value: S) {
         assert!(self.field().repeated);
         self.write_line(format!("{:s}.push({:s});", self.self_field(), value));
     }
@@ -565,20 +568,20 @@ impl<'a> IndentWriter<'a> {
         rt::tag_size(self.field().number)
     }
 
-    fn self_field_vec_packed_fixed_data_size(&self) -> ~str {
+    fn self_field_vec_packed_fixed_data_size(&self) -> String {
         assert!(self.field().is_fixed());
         format!("({}.len() * {}) as u32",
             self.self_field(), field_type_size(self.field().field_type).unwrap())
     }
 
-    fn self_field_vec_packed_varint_data_size(&self) -> ~str {
+    fn self_field_vec_packed_varint_data_size(&self) -> String {
         assert!(!self.field().is_fixed());
         let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
         format!("::protobuf::rt::vec_packed_varint{}_data_size({:s}.as_slice())",
             zigzag_suffix, self.self_field())
     }
 
-    fn self_field_vec_packed_data_size(&self) -> ~str {
+    fn self_field_vec_packed_data_size(&self) -> String {
         assert!(self.field().repeated);
         if self.field().is_fixed() {
             self.self_field_vec_packed_fixed_data_size()
@@ -587,7 +590,7 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn self_field_vec_packed_fixed_size(&self) -> ~str {
+    fn self_field_vec_packed_fixed_size(&self) -> String {
         // zero is filtered outside
         format!("{} + ::protobuf::rt::compute_raw_varint32_size({}.len() as u32) + {}",
             self.self_field_tag_size(),
@@ -595,7 +598,7 @@ impl<'a> IndentWriter<'a> {
             self.self_field_vec_packed_fixed_data_size())
     }
 
-    fn self_field_vec_packed_varint_size(&self) -> ~str {
+    fn self_field_vec_packed_varint_size(&self) -> String {
         // zero is filtered outside
         assert!(!self.field().is_fixed());
         let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
@@ -603,7 +606,7 @@ impl<'a> IndentWriter<'a> {
             zigzag_suffix, self.field().number, self.self_field())
     }
 
-    fn self_field_vec_packed_size(&mut self) -> ~str {
+    fn self_field_vec_packed_size(&mut self) -> String {
         assert!(self.field.unwrap().packed);
         // zero is filtered outside
         if self.field.unwrap().is_fixed() {
@@ -615,29 +618,29 @@ impl<'a> IndentWriter<'a> {
 
     fn field_default(&self) {
         let init = self.field().full_storage_type().default_value();
-        self.field_entry(self.field().name, init);
+        self.field_entry(self.field().name.to_string(), init);
     }
 
-    fn write_line(&self, line: &str) {
-        let mut_writer: &mut Writer = unsafe { cast::transmute(self.writer) };
-        (if line.is_empty() {
+    fn write_line<S : Str>(&self, line: S) {
+        let mut_writer: &mut Writer = unsafe { mem::transmute(self.writer) };
+        (if line.as_slice().is_empty() {
             mut_writer.write("\n".as_bytes())
         } else {
-            let s = self.indent + line + "\n";
+            let s = [self.indent.as_slice(), line.as_slice(), "\n"].concat();
             mut_writer.write(s.as_bytes())
         }).unwrap();
     }
 
-    fn write_lines(&self, lines: &[~str]) {
+    fn write_lines(&self, lines: &[String]) {
         for line in lines.iter() {
-            self.write_line(*line);
+            self.write_line(line.to_string());
         }
     }
 
     fn indented(&self, cb: |&mut IndentWriter|) {
         cb(&mut IndentWriter {
             writer: self.writer,
-            indent: self.indent + "    ",
+            indent: format!("{:s}    ", self.indent),
             msg: self.msg,
             field: self.field,
             en: self.en,
@@ -648,66 +651,66 @@ impl<'a> IndentWriter<'a> {
     fn commented(&self, cb: |&mut IndentWriter|) {
         cb(&mut IndentWriter {
             writer: self.writer,
-            indent: "// " + self.indent,
+            indent: format!("// {:s}", self.indent),
             msg: self.msg,
             field: self.field,
             en: self.en,
         });
     }
 
-    fn lazy_static(&mut self, name: &str, ty: &str) {
-        self.write_line(format!("static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy \\{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{} \\};", name, ty, ty));
+    fn lazy_static<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2) {
+        self.write_line(format!("static mut {:s}: ::protobuf::lazy::Lazy<{:s}> = ::protobuf::lazy::Lazy \\{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{:s} \\};", name, ty, ty));
     }
 
-    fn lazy_static_decl_get(&mut self, name: &str, ty: &str, init: |&mut IndentWriter|) {
-        self.lazy_static(name, ty);
+    fn lazy_static_decl_get<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2, init: |&mut IndentWriter|) {
+        self.lazy_static(name.as_slice(), ty);
         self.unsafe_expr(|w| {
-            w.write_line(format!("{}.get(|| \\{", name));
+            w.write_line(format!("{:s}.get(|| \\{", name));
             w.indented(|w| init(w));
             w.write_line(format!("\\})"));
         });
     }
 
-    fn block(&self, first_line: &str, last_line: &str, cb: |&mut IndentWriter|) {
+    fn block<S1 : Str, S2 : Str>(&self, first_line: S1, last_line: S2, cb: |&mut IndentWriter|) {
         self.write_line(first_line);
         self.indented(cb);
         self.write_line(last_line);
     }
 
-    fn expr_block(&self, prefix: &str, cb: |&mut IndentWriter|) {
-        self.block(prefix + " {", "}", cb);
+    fn expr_block<S : Str>(&self, prefix: S, cb: |&mut IndentWriter|) {
+        self.block(format!("{:s} \\{", prefix), "}", cb);
     }
 
-    fn stmt_block(&self, prefix: &str, cb: |&mut IndentWriter|) {
-        self.block(prefix + " {", "};", cb);
+    fn stmt_block<S : Str>(&self, prefix: S, cb: |&mut IndentWriter|) {
+        self.block(format!("{:s} \\{", prefix), "};", cb);
     }
 
     fn unsafe_expr(&self, cb: |&mut IndentWriter|) {
         self.expr_block("unsafe", cb);
     }
 
-    fn impl_block(&self, name: &str, cb: |&mut IndentWriter|) {
+    fn impl_block<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl {:s}", name), cb);
     }
 
-    fn impl_self_block(&self, name: &str, cb: |&mut IndentWriter|) {
+    fn impl_self_block<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl<'a> {:s}", name), cb);
     }
 
-    fn impl_for_block(&self, tr: &str, ty: &str, cb: |&mut IndentWriter|) {
+    fn impl_for_block<S1 : Str, S2 : Str>(&self, tr: S1, ty: S2, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl {:s} for {:s}", tr, ty), cb);
     }
 
-    fn pub_struct(&self, name: &str, cb: |&mut IndentWriter|) {
-        self.expr_block("pub struct " + name, cb);
+    fn pub_struct<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
+        self.expr_block(format!("pub struct {:s}", name), cb);
     }
 
-    fn field_entry(&self, name: &str, value: &str) {
+    fn field_entry<S1 : Str, S2 : Str>(&self, name: S1, value: S2) {
         self.write_line(format!("{:s}: {:s},", name, value));
     }
 
     #[allow(dead_code)]
-    fn fail(&self, reason: &str) {
+    fn fail<S : Str>(&self, reason: S) {
         self.write_line(format!("fail!({:?});", reason));
     }
 
@@ -717,60 +720,61 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn deriving(&mut self, deriving: &[&str]) {
-        let v: ~[~str] = deriving.iter().map(|&s| s.to_owned()).collect();
+        let v: Vec<String> = deriving.iter().map(|&s| s.to_string()).collect();
         self.write_line(format!("\\#[deriving({})]", v.connect(",")));
     }
 
-    fn allow(&mut self, what: &str) {
-        self.write_line(format!("\\#[allow({})]", what));
+    fn allow(&mut self, what: &[&str]) {
+        let v: Vec<String> = what.iter().map(|&s| s.to_string()).collect();
+        self.write_line(format!("\\#[allow({})]", v.connect(",")));
     }
 
     fn comment(&self, comment: &str) {
         if comment.is_empty() {
             self.write_line("//");
         } else {
-            self.write_line("// " + comment);
+            self.write_line(format!("// {}", comment));
         }
     }
 
-    fn pub_fn(&self, sig: &str, cb: |&mut IndentWriter|) {
+    fn pub_fn<S : Str>(&self, sig: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("pub fn {:s}", sig), cb);
     }
 
-    fn def_fn(&self, sig: &str, cb: |&mut IndentWriter|) {
+    fn def_fn<S : Str>(&self, sig: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("fn {:s}", sig), cb);
     }
 
-    fn while_block(&self, cond: &str, cb: |&mut IndentWriter|) {
+    fn while_block<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("while {:s}", cond), cb);
     }
 
-    fn if_stmt(&self, cond: &str, cb: |&mut IndentWriter|) {
+    fn if_stmt<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
         self.stmt_block(format!("if {:s}", cond), cb);
     }
 
-    fn for_stmt(&self, over: &str, varn: &str, cb: |&mut IndentWriter|) {
+    fn for_stmt<S1 : Str, S2 : Str>(&self, over: S1, varn: S2, cb: |&mut IndentWriter|) {
         self.stmt_block(format!("for {:s} in {:s}", varn, over), cb)
     }
 
-    fn match_block(&self, value: &str, cb: |&mut IndentWriter|) {
+    fn match_block<S : Str>(&self, value: S, cb: |&mut IndentWriter|) {
         self.stmt_block(format!("match {:s}", value), cb);
     }
 
-    fn match_expr(&self, value: &str, cb: |&mut IndentWriter|) {
+    fn match_expr<S : Str>(&self, value: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("match {:s}", value), cb);
     }
 
-    fn case_block(&self, cond: &str, cb: |&mut IndentWriter|) {
+    fn case_block<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
         self.block(format!("{:s} => \\{", cond), "},", cb);
     }
 
-    fn case_expr(&self, cond: &str, body: &str) {
+    fn case_expr<S1 : Str, S2 : Str>(&self, cond: S1, body: S2) {
         self.write_line(format!("{:s} => {:s},", cond, body));
     }
 
-    fn clear_field_func(&self) -> ~str {
-        "clear_" + self.field.get_ref().name
+    fn clear_field_func(&self) -> String {
+        "clear_".to_string().append(self.field.get_ref().name.as_slice())
     }
 
     fn clear_field(&self) {
@@ -811,11 +815,12 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 Single
             };
 
-        let read_proc = match field.field_type {
+        let read_proc0 = match field.field_type {
             FieldDescriptorProto_TYPE_ENUM => format!("{}::new(is.read_int32())", field.type_name),
-            FieldDescriptorProto_TYPE_STRING => "is.read_strbuf()".to_owned(),
+            FieldDescriptorProto_TYPE_STRING => "is.read_string()".to_string(),
             t => format!("is.read_{}()", protobuf_name(t)),
         };
+        let read_proc = read_proc0.as_slice();
 
         match repeat_mode {
             Single | RepeatRegular => {
@@ -850,15 +855,15 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.deriving(["Clone", "Eq", "Default"]);
-    w.pub_struct(msg.type_name, |w| {
+    w.deriving(["Clone", "PartialEq", "Default"]);
+    w.pub_struct(msg.type_name.as_slice(), |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
-            if !format!("{}", field.type_name).contains_char('.') {
-                w.field_entry(field.name, format!("{}", field.full_storage_type()));
+            if !format!("{}", field.type_name).as_slice().contains_char('.') {
+                w.field_entry(field.name.as_slice(), format!("{}", field.full_storage_type()));
             }
         });
-        w.field_entry("unknown_fields", "Option<~::protobuf::UnknownFields>");
+        w.field_entry("unknown_fields", "Option<Box<::protobuf::UnknownFields>>");
     });
 }
 
@@ -1006,7 +1011,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     if !msg.has_any_message_field() {
         // `sizes` and `sizes_pos` are unused
-        w.allow("unused_variable");
+        w.allow(["unused_variable"]);
     }
     w.pub_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
         // To have access to its methods but not polute the name space.
@@ -1022,7 +1027,7 @@ fn write_message_default_instance(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.pub_fn(format!("default_instance() -> &'static {:s}", msg.type_name), |w| {
         let msg = w.msg.unwrap();
-        w.lazy_static_decl_get("instance", msg.type_name, |w| {
+        w.lazy_static_decl_get("instance", msg.type_name.as_slice(), |w| {
             w.expr_block(format!("{:s}", msg.type_name), |w| {
                 w.fields(|w| {
                     w.field_default();
@@ -1050,11 +1055,11 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         let set_param_type = if w.field().repeated {
             w.field().full_storage_type()
         } else if w.field().field_type == FieldDescriptorProto_TYPE_STRING {
-            RustUniq(~RustStr)
+            RustString
         } else {
             w.field().type_name.clone()
         };
-        let mut_return_type = RustRef(~if w.field().repeated {
+        let mut_return_type = RustRef(box if w.field().repeated {
             w.field().full_storage_type()
         } else {
             w.field().type_name.clone()
@@ -1138,7 +1143,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
 
 fn write_message_impl_self(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_self_block(msg.type_name, |w| {
+    w.impl_self_block(msg.type_name.as_slice(), |w| {
         w.pub_fn(format!("new() -> {:s}", msg.type_name), |w| {
             w.write_line("::std::default::Default::default()");
         });
@@ -1195,7 +1200,7 @@ fn write_message_merge_from(w: &mut IndentWriter) {
 
 fn write_message_impl_message(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_for_block("::protobuf::Message", msg.type_name, |w| {
+    w.impl_for_block("::protobuf::Message", msg.type_name.as_slice(), |w| {
         w.def_fn(format!("new() -> {:s}", msg.type_name), |w| {
             w.write_line(format!("{:s}::new()", msg.type_name));
         });
@@ -1225,7 +1230,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         w.write_line("");
         write_message_unknown_fields(w);
         w.write_line("");
-        w.allow("unused_unsafe");
+        w.allow(["unused_unsafe", "unused_mut"]);
         w.def_fn(format!("descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
                 let vec_type_param = format!(
@@ -1235,7 +1240,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
                 for field in msg.fields.iter() {
                     let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
                     // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
-                    w.write_line(format!("fields.push(unsafe \\{ ::std::cast::transmute(&'static {} as &::protobuf::reflect::FieldAccessor<{}>) \\});",
+                    w.write_line(format!("fields.push(unsafe \\{ ::std::mem::transmute(&'static {} as &::protobuf::reflect::FieldAccessor<{}>) \\});",
                             acc_name, msg.type_name));
                 }
                 w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
@@ -1256,7 +1261,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
 
 fn write_message_impl_show(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_for_block("::std::fmt::Show", msg.type_name, |w| {
+    w.impl_for_block("::std::fmt::Show", msg.type_name.as_slice(), |w| {
         w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
             w.write_line("use protobuf::{Message};");
             w.write_line("self.fmt_impl(f)");
@@ -1267,7 +1272,7 @@ fn write_message_impl_show(w: &mut IndentWriter) {
 fn write_message_descriptor_field(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     let field = w.field.unwrap();
-    w.allow("non_camel_case_types");
+    w.allow(["non_camel_case_types"]);
     let accessor_name = format!("{}_{}_acc", msg.type_name, field.name);
     w.write_line(format!("struct {};", accessor_name));
     w.write_line("");
@@ -1290,10 +1295,10 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
         }
 
         let name_suffix = match field.field_type {
-            FieldDescriptorProto_TYPE_MESSAGE => "message".to_owned(),
-            FieldDescriptorProto_TYPE_ENUM    => "enum".to_owned(),
-            FieldDescriptorProto_TYPE_STRING  => "str".to_owned(),
-            FieldDescriptorProto_TYPE_BYTES   => "bytes".to_owned(),
+            FieldDescriptorProto_TYPE_MESSAGE => "message".to_string(),
+            FieldDescriptorProto_TYPE_ENUM    => "enum".to_string(),
+            FieldDescriptorProto_TYPE_STRING  => "str".to_string(),
+            FieldDescriptorProto_TYPE_BYTES   => "bytes".to_string(),
             _ => field.type_name.to_str(),
         };
 
@@ -1378,7 +1383,7 @@ fn write_message_descriptor(w: &mut IndentWriter) {
 
 fn write_message_impl_clear(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_for_block("::protobuf::Clear", msg.type_name, |w| {
+    w.impl_for_block("::protobuf::Clear", msg.type_name.as_slice(), |w| {
         w.def_fn("clear(&mut self)", |w| {
             w.fields(|w| {
                 w.write_line(format!("self.{:s}();", w.clear_field_func()));
@@ -1406,18 +1411,18 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
         for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
-            write_message(&Message::parse(nested_type, pkg, msg.type_name + "_"), w);
+            write_message(&Message::parse(nested_type, pkg.as_slice(), msg.type_name.to_string().append("_").as_slice()), w);
         }
 
         for enum_type in message_type.get_enum_type().iter() {
             w.write_line("");
-            write_enum(&Enum::parse(enum_type, pkg, msg.type_name + "_"), w);
+            write_enum(&Enum::parse(enum_type, pkg, msg.type_name.to_string().append("_").as_slice()), w);
         }
     });
 }
 
 fn write_enum_struct(w: &mut IndentWriter) {
-    w.deriving(["Clone", "Eq", "Show"]);
+    w.deriving(["Clone", "PartialEq", "Eq", "Show"]);
     w.write_line(format!("pub enum {:s} \\{", w.en().type_name));
     for value in w.en().values.iter() {
         w.write_line(format!("    {:s} = {:i},", value.rust_name(), value.number()));
@@ -1426,7 +1431,7 @@ fn write_enum_struct(w: &mut IndentWriter) {
 }
 
 fn write_enum_impl(w: &mut IndentWriter) {
-    w.impl_block(w.en().type_name, |w| {
+    w.impl_block(w.en().type_name.as_slice(), |w| {
         w.pub_fn(format!("new(value: i32) -> {:s}", w.en().type_name), |w| {
             w.match_expr("value", |w| {
                 for value in w.en().values.iter() {
@@ -1439,7 +1444,7 @@ fn write_enum_impl(w: &mut IndentWriter) {
 }
 
 fn write_enum_impl_enum(w: &mut IndentWriter) {
-    w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name, |w| {
+    w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name.as_slice(), |w| {
         w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
         });
@@ -1467,7 +1472,7 @@ fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
 }
 
 pub struct GenResult {
-    pub name: ~str,
+    pub name: String,
     pub content: Vec<u8>,
 }
 
@@ -1502,7 +1507,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 for groups in fdp_bytes.iter().paginate(16) {
                     let fdp_bytes_str = groups.iter()
                             .map(|&b| format!("0x{:02x}", *b))
-                            .collect::<~[~str]>()
+                            .collect::<Vec<String>>()
                             .connect(", ");
                     w.write_line(format!("    {},", fdp_bytes_str));
                 }
@@ -1534,7 +1539,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
         }
 
         results.push(GenResult {
-            name: base + ".rs",
+            name: base.to_string().append(".rs"),
             content: os.vec,
         });
     }

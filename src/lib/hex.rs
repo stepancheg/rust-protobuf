@@ -43,8 +43,8 @@ fn encode_hex_byte(byte: u8) -> [char, ..2] {
     [encode_hex_digit(byte >> 4), encode_hex_digit(byte & 0x0Fu8)]
 }
 
-pub fn encode_hex(bytes: &[u8]) -> ~str {
-    let strs: ~[~str] = bytes.iter().map(|byte| {
+pub fn encode_hex(bytes: &[u8]) -> String {
+    let strs: Vec<String> = bytes.iter().map(|byte| {
         str::from_chars(encode_hex_byte(*byte).as_slice())
     }).collect();
     strs.connect(" ")
@@ -65,9 +65,9 @@ mod test {
 
     #[test]
     fn test_encode_hex() {
-        assert_eq!(~"", encode_hex([]));
-        assert_eq!(~"00", encode_hex([0x00]));
-        assert_eq!(~"ab", encode_hex([0xab]));
-        assert_eq!(~"01 a2 1a fe", encode_hex([0x01, 0xa2, 0x1a, 0xfe]));
+        assert_eq!("".to_string(), encode_hex([]));
+        assert_eq!("00".to_string(), encode_hex([0x00]));
+        assert_eq!("ab".to_string(), encode_hex([0xab]));
+        assert_eq!("01 a2 1a fe".to_string(), encode_hex([0x01, 0xa2, 0x1a, 0xfe]));
     }
 }

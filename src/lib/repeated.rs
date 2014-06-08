@@ -270,23 +270,23 @@ impl<T> FromIterator<T> for RepeatedField<T> {
     }
 }
 
-impl<T : Eq> Eq for RepeatedField<T> {
+impl<T : PartialEq> PartialEq for RepeatedField<T> {
     #[inline]
     fn eq(&self, other: &RepeatedField<T>) -> bool {
         self.as_slice() == other.as_slice()
     }
 }
 
-impl<T : Ord> Ord for RepeatedField<T> {
+impl<T : PartialOrd> PartialOrd for RepeatedField<T> {
     #[inline]
     fn lt(&self, other: &RepeatedField<T>) -> bool {
         self.as_slice() < other.as_slice()
     }
 }
 
-impl<T : TotalEq> TotalEq for RepeatedField<T> {}
+impl<T : Eq> Eq for RepeatedField<T> {}
 
-impl<T : Eq> RepeatedField<T> {
+impl<T : PartialEq> RepeatedField<T> {
     #[inline]
     pub fn contains(&self, value: &T) -> bool {
         self.as_slice().contains(value)

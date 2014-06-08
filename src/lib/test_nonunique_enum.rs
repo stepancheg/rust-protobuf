@@ -26,9 +26,9 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct MessageA {
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> MessageA {
@@ -112,7 +112,7 @@ impl ::protobuf::Message for MessageA {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<MessageA>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
@@ -145,7 +145,7 @@ impl ::std::fmt::Show for MessageA {
 }
 
 
-#[deriving(Clone,Eq,Show)]
+#[deriving(Clone,PartialEq,Eq,Show)]
 pub enum MessageA_EnumA {
     MessageA_FOO = 0,
 }
@@ -174,9 +174,9 @@ impl ::protobuf::ProtobufEnum for MessageA_EnumA {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct MessageB {
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> MessageB {
@@ -260,7 +260,7 @@ impl ::protobuf::Message for MessageB {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<MessageB>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
@@ -293,7 +293,7 @@ impl ::std::fmt::Show for MessageB {
 }
 
 
-#[deriving(Clone,Eq,Show)]
+#[deriving(Clone,PartialEq,Eq,Show)]
 pub enum MessageB_EnumB {
     MessageB_FOO = 0,
 }

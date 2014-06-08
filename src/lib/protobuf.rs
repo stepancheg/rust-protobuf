@@ -9,6 +9,7 @@
 extern crate collections;
 extern crate sync;
 extern crate collections;
+extern crate debug;
 
 pub use core::*;
 pub use unknown::UnknownFields;

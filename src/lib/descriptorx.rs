@@ -10,12 +10,12 @@ struct MessagePath<'a> {
 }
 
 impl<'a> MessagePath<'a> {
-    fn rust_prefix(&self) -> ~str {
+    fn rust_prefix(&self) -> String {
         if self.path.is_empty() {
-            ~""
+            "".to_string()
         } else {
             let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
-            v.connect("_") + "_"
+            v.connect("_").append("_")
         }
     }
 }
@@ -43,7 +43,7 @@ impl<'a> MessageWithPath<'a> {
         *self.path.last().unwrap()
     }
 
-    fn rust_name(&self) -> ~str {
+    fn rust_name(&self) -> String {
         let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
         v.connect("_")
     }
@@ -55,8 +55,8 @@ struct EnumWithPath<'a> {
 }
 
 impl<'a> EnumWithPath<'a> {
-    fn rust_name(&self) -> ~str {
-        self.path.rust_prefix() + self.en.get_name()
+    fn rust_name(&self) -> String {
+        self.path.rust_prefix().append(self.en.get_name())
     }
 }
 

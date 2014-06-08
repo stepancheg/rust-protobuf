@@ -2,7 +2,7 @@ use std::fmt;
 use core::Message;
 use descriptor::*;
 
-fn print_bytes_to(bytes: &[u8], buf: &mut StrBuf) {
+fn print_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push_char('"');
     for &b in bytes.iter() {
         if b < 0x20 || b >= 0x80 {
@@ -17,12 +17,12 @@ fn print_bytes_to(bytes: &[u8], buf: &mut StrBuf) {
     buf.push_char('"');
 }
 
-fn print_str_to(s: &str, buf: &mut StrBuf) {
+fn print_str_to(s: &str, buf: &mut String) {
     // TODO: keep printable Unicode
     print_bytes_to(s.as_bytes(), buf);
 }
 
-pub fn print_to(m: &Message, buf: &mut StrBuf) {
+pub fn print_to(m: &Message, buf: &mut String) {
     let d = m.descriptor();
     let mut first = true;
     for f in d.fields().iter() {
@@ -55,35 +55,35 @@ pub fn print_to(m: &Message, buf: &mut StrBuf) {
                     FieldDescriptorProto_TYPE_SINT32 |
                     FieldDescriptorProto_TYPE_SFIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_i32(m)[i].to_str());
+                        buf.push_str(f.get_rep_i32(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_INT64 |
                     FieldDescriptorProto_TYPE_SINT64 |
                     FieldDescriptorProto_TYPE_SFIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_i64(m)[i].to_str());
+                        buf.push_str(f.get_rep_i64(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_UINT32 |
                     FieldDescriptorProto_TYPE_FIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_u32(m)[i].to_str());
+                        buf.push_str(f.get_rep_u32(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_UINT64 |
                     FieldDescriptorProto_TYPE_FIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_u64(m)[i].to_str());
+                        buf.push_str(f.get_rep_u64(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_BOOL => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_bool(m)[i].to_str());
+                        buf.push_str(f.get_rep_bool(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_FLOAT => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_f32(m)[i].to_str());
+                        buf.push_str(f.get_rep_f32(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_DOUBLE => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_f64(m)[i].to_str());
+                        buf.push_str(f.get_rep_f64(m)[i].to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_GROUP => {
                         buf.push_str(": <TYPE_GROUP>");
@@ -119,35 +119,35 @@ pub fn print_to(m: &Message, buf: &mut StrBuf) {
                     FieldDescriptorProto_TYPE_SINT32 |
                     FieldDescriptorProto_TYPE_SFIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_i32(m).to_str());
+                        buf.push_str(f.get_i32(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_INT64 |
                     FieldDescriptorProto_TYPE_SINT64 |
                     FieldDescriptorProto_TYPE_SFIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_i64(m).to_str());
+                        buf.push_str(f.get_i64(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_UINT32 |
                     FieldDescriptorProto_TYPE_FIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_u32(m).to_str());
+                        buf.push_str(f.get_u32(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_UINT64 |
                     FieldDescriptorProto_TYPE_FIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_u64(m).to_str());
+                        buf.push_str(f.get_u64(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_BOOL => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_bool(m).to_str());
+                        buf.push_str(f.get_bool(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_FLOAT => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_f32(m).to_str());
+                        buf.push_str(f.get_f32(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_DOUBLE => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_f64(m).to_str());
+                        buf.push_str(f.get_f64(m).to_str().as_slice());
                     },
                     FieldDescriptorProto_TYPE_GROUP => {
                         buf.push_str(": <TYPE_GROUP>");
@@ -160,14 +160,14 @@ pub fn print_to(m: &Message, buf: &mut StrBuf) {
     // TODO: unknown fields
 }
 
-pub fn print_to_str(m: &Message) -> ~str {
-    let mut r = StrBuf::new();
+pub fn print_to_str(m: &Message) -> String {
+    let mut r = String::new();
     print_to(m, &mut r);
     r.to_str()
 }
 
 pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
-    f.buf.write(print_to_str(m).as_bytes())
+    f.write(print_to_str(m).as_bytes())
 }
 
 #[cfg(test)]
@@ -200,7 +200,7 @@ mod test {
         t("sfixed32_singular: 99",    |m| m.set_sfixed32_singular(99));
         t("sfixed64_singular: 99",    |m| m.set_sfixed64_singular(99));
         t("bool_singular: false",     |m| m.set_bool_singular(false));
-        t("string_singular: \"abc\"", |m| m.set_string_singular(~"abc"));
+        t("string_singular: \"abc\"", |m| m.set_string_singular("abc".to_string()));
         t("bytes_singular: \"def\"",  |m| m.set_bytes_singular(Vec::from_slice("def".as_bytes())));
         t("test_enum_singular: DARK", |m| m.set_test_enum_singular(DARK));
         t("test_message_singular {}", |m| { m.mut_test_message_singular(); });
@@ -222,7 +222,7 @@ mod test {
         t("sfixed32_repeated: 99",    |m| m.add_sfixed32_repeated(99));
         t("sfixed64_repeated: 99",    |m| m.add_sfixed64_repeated(99));
         t("bool_repeated: false",     |m| m.add_bool_repeated(false));
-        t("string_repeated: \"abc\"", |m| m.add_string_repeated(StrBuf::from_str("abc")));
+        t("string_repeated: \"abc\"", |m| m.add_string_repeated(String::from_str("abc")));
         t("bytes_repeated: \"def\"",  |m| m.add_bytes_repeated(Vec::from_slice("def".as_bytes())));
         t("test_enum_repeated: DARK", |m| m.add_test_enum_repeated(DARK));
         t("test_message_repeated {}", |m| { m.add_test_message_repeated(Default::default()); });

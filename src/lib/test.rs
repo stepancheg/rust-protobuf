@@ -47,7 +47,7 @@ fn test1() {
 #[test]
 fn test2() {
     let mut test2 = Test2::new();
-    test2.set_b(~"testing");
+    test2.set_b("testing".to_string());
     test_serialize_deserialize("12 07 74 65 73 74 69 6e 67", &test2);
 }
 
@@ -139,7 +139,7 @@ fn test_types_singular() {
     message.set_sfixed32_field(-29);
     message.set_sfixed64_field(30);
     message.set_bool_field(true);
-    message.set_string_field(~"thirty two");
+    message.set_string_field("thirty two".to_string());
     message.set_bytes_field(Vec::from_slice([33u8, 34]));
     test_serialize_deserialize_no_hex(&message);
 }
@@ -160,7 +160,7 @@ fn test_types_repeated() {
     message.set_sfixed32_field(Vec::from_slice([29i32, -30]));
     message.set_sfixed64_field(Vec::from_slice([30i64]));
     message.set_bool_field(Vec::from_slice([true, true]));
-    message.set_string_field(Vec::from_slice([StrBuf::from_str("thirty two"), StrBuf::from_str("thirty three")]));
+    message.set_string_field(Vec::from_slice([String::from_str("thirty two"), String::from_str("thirty three")]));
     message.set_bytes_field(Vec::from_slice([Vec::from_slice([33u8, 34]), Vec::from_slice([35u8])]));
     test_serialize_deserialize_no_hex(&message);
 }
@@ -181,7 +181,7 @@ fn test_types_repeated_packed() {
     message.set_sfixed32_field(Vec::from_slice([29i32, -30]));
     message.set_sfixed64_field(Vec::from_slice([30i64]));
     message.set_bool_field(Vec::from_slice([true, true]));
-    message.set_string_field(Vec::from_slice([StrBuf::from_str("thirty two"), StrBuf::from_str("thirty three")]));
+    message.set_string_field(Vec::from_slice([String::from_str("thirty two"), String::from_str("thirty three")]));
     message.set_bytes_field(Vec::from_slice([Vec::from_slice([33u8, 34]), Vec::from_slice([35u8])]));
     test_serialize_deserialize_no_hex(&message);
 }

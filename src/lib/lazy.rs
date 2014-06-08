@@ -1,4 +1,4 @@
-use std::cast;
+use std::mem;
 use sync::one;
 
 pub struct Lazy<T> {
@@ -10,9 +10,9 @@ impl<T> Lazy<T> {
     pub fn get(&self, init: || -> T) -> &'static T {
         unsafe {
             self.lock.doit(|| {
-                cast::transmute_mut(self).ptr = cast::transmute(~init())
+                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = mem::transmute(box init())
             });
-            cast::transmute(self.ptr)
+            mem::transmute(self.ptr)
         }
     }
 }

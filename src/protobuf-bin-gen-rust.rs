@@ -33,11 +33,11 @@ fn main() {
     ];
     let matches = getopts::getopts(args.tail(), opts).unwrap();
     let pb_bin = match matches.free.as_slice() {
-        [ref pb_bin] => pb_bin.to_owned(),
+        [ref pb_bin] => pb_bin.to_string(),
         _ => fail!("must have exactly one argument")
     };
     let gen_options = GenOptions {
         dummy: false,
     };
-    write_file(pb_bin, &gen_options);
+    write_file(pb_bin.as_slice(), &gen_options);
 }

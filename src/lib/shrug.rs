@@ -128,10 +128,10 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct Test1 {
     a: Option<i32>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> Test1 {
@@ -259,13 +259,13 @@ impl ::protobuf::Message for Test1 {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<Test1>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test1>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static Test1_a_acc as &::protobuf::reflect::FieldAccessor<Test1>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static Test1_a_acc as &::protobuf::reflect::FieldAccessor<Test1>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test1>(
                     "Test1",
                     fields,
@@ -311,10 +311,10 @@ impl ::protobuf::reflect::FieldAccessor<Test1> for Test1_a_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct Test2 {
-    b: Option<StrBuf>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    b: Option<String>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> Test2 {
@@ -355,15 +355,15 @@ impl<'a> Test2 {
     }
 
     // Param is passed by value, moved
-    pub fn set_b(&mut self, v: ~str) {
-        self.b = Some(StrBuf::from_owned_str(v));
+    pub fn set_b(&mut self, v: String) {
+        self.b = Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_b(&'a mut self) -> &'a mut StrBuf {
+    pub fn mut_b(&'a mut self) -> &'a mut String {
         if self.b.is_none() {
-            self.b = Some(StrBuf::new());
+            self.b = Some(String::new());
         };
         self.b.get_mut_ref()
     }
@@ -371,7 +371,7 @@ impl<'a> Test2 {
     pub fn get_b(&'a self) -> &'a str {
         match self.b {
             Some(ref v) => v.as_slice(),
-            None => &"",
+            None => "",
         }
     }
 }
@@ -394,7 +394,7 @@ impl ::protobuf::Message for Test2 {
             match field_number {
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_strbuf();
+                    let tmp = is.read_string();
                     self.b = Some(tmp);
                 },
                 _ => {
@@ -445,13 +445,13 @@ impl ::protobuf::Message for Test2 {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<Test2>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test2>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static Test2_b_acc as &::protobuf::reflect::FieldAccessor<Test2>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static Test2_b_acc as &::protobuf::reflect::FieldAccessor<Test2>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test2>(
                     "Test2",
                     fields,
@@ -497,10 +497,10 @@ impl ::protobuf::reflect::FieldAccessor<Test2> for Test2_b_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct Test3 {
     c: ::protobuf::SingularField<Test1>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> Test3 {
@@ -631,13 +631,13 @@ impl ::protobuf::Message for Test3 {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<Test3>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test3>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static Test3_c_acc as &::protobuf::reflect::FieldAccessor<Test3>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static Test3_c_acc as &::protobuf::reflect::FieldAccessor<Test3>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test3>(
                     "Test3",
                     fields,
@@ -683,10 +683,10 @@ impl ::protobuf::reflect::FieldAccessor<Test3> for Test3_c_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct Test4 {
     d: Vec<i32>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> Test4 {
@@ -816,13 +816,13 @@ impl ::protobuf::Message for Test4 {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<Test4>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test4>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static Test4_d_acc as &::protobuf::reflect::FieldAccessor<Test4>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static Test4_d_acc as &::protobuf::reflect::FieldAccessor<Test4>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test4>(
                     "Test4",
                     fields,
@@ -868,11 +868,11 @@ impl ::protobuf::reflect::FieldAccessor<Test4> for Test4_d_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestPackedUnpacked {
     unpacked: Vec<i32>,
     packed: Vec<i32>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestPackedUnpacked {
@@ -1044,14 +1044,14 @@ impl ::protobuf::Message for TestPackedUnpacked {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestPackedUnpacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestPackedUnpacked>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestPackedUnpacked_unpacked_acc as &::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestPackedUnpacked_packed_acc as &::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestPackedUnpacked_unpacked_acc as &::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestPackedUnpacked_packed_acc as &::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestPackedUnpacked>(
                     "TestPackedUnpacked",
                     fields,
@@ -1115,10 +1115,10 @@ impl ::protobuf::reflect::FieldAccessor<TestPackedUnpacked> for TestPackedUnpack
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestEmpty {
     foo: Option<i32>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestEmpty {
@@ -1243,13 +1243,13 @@ impl ::protobuf::Message for TestEmpty {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestEmpty>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestEmpty>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestEmpty_foo_acc as &::protobuf::reflect::FieldAccessor<TestEmpty>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestEmpty_foo_acc as &::protobuf::reflect::FieldAccessor<TestEmpty>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestEmpty>(
                     "TestEmpty",
                     fields,
@@ -1295,10 +1295,10 @@ impl ::protobuf::reflect::FieldAccessor<TestEmpty> for TestEmpty_foo_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestRequired {
     b: Option<bool>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestRequired {
@@ -1426,13 +1426,13 @@ impl ::protobuf::Message for TestRequired {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestRequired>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestRequired>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestRequired_b_acc as &::protobuf::reflect::FieldAccessor<TestRequired>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestRequired_b_acc as &::protobuf::reflect::FieldAccessor<TestRequired>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestRequired>(
                     "TestRequired",
                     fields,
@@ -1478,10 +1478,10 @@ impl ::protobuf::reflect::FieldAccessor<TestRequired> for TestRequired_b_acc {
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestUnknownFields {
     a: Option<i32>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestUnknownFields {
@@ -1609,13 +1609,13 @@ impl ::protobuf::Message for TestUnknownFields {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestUnknownFields>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestUnknownFields>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestUnknownFields_a_acc as &::protobuf::reflect::FieldAccessor<TestUnknownFields>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestUnknownFields_a_acc as &::protobuf::reflect::FieldAccessor<TestUnknownFields>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestUnknownFields>(
                     "TestUnknownFields",
                     fields,
@@ -1661,11 +1661,11 @@ impl ::protobuf::reflect::FieldAccessor<TestUnknownFields> for TestUnknownFields
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestSelfReference {
     r1: ::protobuf::SingularField<TestSelfReference>,
     r2: ::protobuf::SingularField<TestSelfReference>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestSelfReference {
@@ -1841,14 +1841,14 @@ impl ::protobuf::Message for TestSelfReference {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestSelfReference>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestSelfReference>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestSelfReference_r1_acc as &::protobuf::reflect::FieldAccessor<TestSelfReference>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestSelfReference_r2_acc as &::protobuf::reflect::FieldAccessor<TestSelfReference>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestSelfReference_r1_acc as &::protobuf::reflect::FieldAccessor<TestSelfReference>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestSelfReference_r2_acc as &::protobuf::reflect::FieldAccessor<TestSelfReference>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestSelfReference>(
                     "TestSelfReference",
                     fields,
@@ -1912,10 +1912,10 @@ impl ::protobuf::reflect::FieldAccessor<TestSelfReference> for TestSelfReference
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestDefaultInstanceField {
-    s: Option<StrBuf>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    s: Option<String>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestDefaultInstanceField {
@@ -1956,15 +1956,15 @@ impl<'a> TestDefaultInstanceField {
     }
 
     // Param is passed by value, moved
-    pub fn set_s(&mut self, v: ~str) {
-        self.s = Some(StrBuf::from_owned_str(v));
+    pub fn set_s(&mut self, v: String) {
+        self.s = Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_s(&'a mut self) -> &'a mut StrBuf {
+    pub fn mut_s(&'a mut self) -> &'a mut String {
         if self.s.is_none() {
-            self.s = Some(StrBuf::new());
+            self.s = Some(String::new());
         };
         self.s.get_mut_ref()
     }
@@ -1972,7 +1972,7 @@ impl<'a> TestDefaultInstanceField {
     pub fn get_s(&'a self) -> &'a str {
         match self.s {
             Some(ref v) => v.as_slice(),
-            None => &"",
+            None => "",
         }
     }
 }
@@ -1992,7 +1992,7 @@ impl ::protobuf::Message for TestDefaultInstanceField {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_strbuf();
+                    let tmp = is.read_string();
                     self.s = Some(tmp);
                 },
                 _ => {
@@ -2043,13 +2043,13 @@ impl ::protobuf::Message for TestDefaultInstanceField {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestDefaultInstanceField>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestDefaultInstanceField_s_acc as &::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestDefaultInstanceField_s_acc as &::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDefaultInstanceField>(
                     "TestDefaultInstanceField",
                     fields,
@@ -2095,10 +2095,10 @@ impl ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField> for TestDefaul
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestDefaultInstance {
     field: ::protobuf::SingularField<TestDefaultInstanceField>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestDefaultInstance {
@@ -2226,13 +2226,13 @@ impl ::protobuf::Message for TestDefaultInstance {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestDefaultInstance>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstance>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestDefaultInstance_field_acc as &::protobuf::reflect::FieldAccessor<TestDefaultInstance>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestDefaultInstance_field_acc as &::protobuf::reflect::FieldAccessor<TestDefaultInstance>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDefaultInstance>(
                     "TestDefaultInstance",
                     fields,
@@ -2278,10 +2278,10 @@ impl ::protobuf::reflect::FieldAccessor<TestDefaultInstance> for TestDefaultInst
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestDescriptor {
     stuff: Option<i32>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestDescriptor {
@@ -2406,13 +2406,13 @@ impl ::protobuf::Message for TestDescriptor {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestDescriptor>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDescriptor>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestDescriptor_stuff_acc as &::protobuf::reflect::FieldAccessor<TestDescriptor>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestDescriptor_stuff_acc as &::protobuf::reflect::FieldAccessor<TestDescriptor>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDescriptor>(
                     "TestDescriptor",
                     fields,
@@ -2458,7 +2458,7 @@ impl ::protobuf::reflect::FieldAccessor<TestDescriptor> for TestDescriptor_stuff
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestTypesSingular {
     double_field: Option<f64>,
     float_field: Option<f32>,
@@ -2473,9 +2473,9 @@ pub struct TestTypesSingular {
     sfixed32_field: Option<i32>,
     sfixed64_field: Option<i64>,
     bool_field: Option<bool>,
-    string_field: Option<StrBuf>,
+    string_field: Option<String>,
     bytes_field: Option<Vec<u8>>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestTypesSingular {
@@ -2952,15 +2952,15 @@ impl<'a> TestTypesSingular {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: ~str) {
-        self.string_field = Some(StrBuf::from_owned_str(v));
+    pub fn set_string_field(&mut self, v: String) {
+        self.string_field = Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_field(&'a mut self) -> &'a mut StrBuf {
+    pub fn mut_string_field(&'a mut self) -> &'a mut String {
         if self.string_field.is_none() {
-            self.string_field = Some(StrBuf::new());
+            self.string_field = Some(String::new());
         };
         self.string_field.get_mut_ref()
     }
@@ -2968,7 +2968,7 @@ impl<'a> TestTypesSingular {
     pub fn get_string_field(&'a self) -> &'a str {
         match self.string_field {
             Some(ref v) => v.as_slice(),
-            None => &"",
+            None => "",
         }
     }
 
@@ -3082,7 +3082,7 @@ impl ::protobuf::Message for TestTypesSingular {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_strbuf();
+                    let tmp = is.read_string();
                     self.string_field = Some(tmp);
                 },
                 15 => {
@@ -3180,27 +3180,27 @@ impl ::protobuf::Message for TestTypesSingular {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestTypesSingular>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesSingular_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesSingular_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestTypesSingular>(
                     "TestTypesSingular",
                     fields,
@@ -3498,7 +3498,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestTypesRepeated {
     double_field: Vec<f64>,
     float_field: Vec<f32>,
@@ -3513,9 +3513,9 @@ pub struct TestTypesRepeated {
     sfixed32_field: Vec<i32>,
     sfixed64_field: Vec<i64>,
     bool_field: Vec<bool>,
-    string_field: Vec<StrBuf>,
+    string_field: Vec<String>,
     bytes_field: Vec<Vec<u8>>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestTypesRepeated {
@@ -3891,20 +3891,20 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: Vec<StrBuf>) {
+    pub fn set_string_field(&mut self, v: Vec<String>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<StrBuf> {
+    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<String> {
         &mut self.string_field
     }
 
-    pub fn get_string_field(&'a self) -> &'a [StrBuf] {
+    pub fn get_string_field(&'a self) -> &'a [String] {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: StrBuf) {
+    pub fn add_string_field(&mut self, v: String) {
         self.string_field.push(v);
     }
 
@@ -4115,7 +4115,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_strbuf();
+                    let tmp = is.read_string();
                     self.string_field.push(tmp);
                 },
                 15 => {
@@ -4199,27 +4199,27 @@ impl ::protobuf::Message for TestTypesRepeated {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestTypesRepeated>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeated_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeated_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestTypesRepeated>(
                     "TestTypesRepeated",
                     fields,
@@ -4495,7 +4495,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated
         m.get_string_field().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeated) -> &'a [StrBuf] {
+    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeated) -> &'a [String] {
         m.get_string_field()
     }
 }
@@ -4517,7 +4517,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated
     }
 }
 
-#[deriving(Clone,Eq,Default)]
+#[deriving(Clone,PartialEq,Default)]
 pub struct TestTypesRepeatedPacked {
     double_field: Vec<f64>,
     float_field: Vec<f32>,
@@ -4532,9 +4532,9 @@ pub struct TestTypesRepeatedPacked {
     sfixed32_field: Vec<i32>,
     sfixed64_field: Vec<i64>,
     bool_field: Vec<bool>,
-    string_field: Vec<StrBuf>,
+    string_field: Vec<String>,
     bytes_field: Vec<Vec<u8>>,
-    unknown_fields: Option<~::protobuf::UnknownFields>,
+    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
 impl<'a> TestTypesRepeatedPacked {
@@ -4962,20 +4962,20 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: Vec<StrBuf>) {
+    pub fn set_string_field(&mut self, v: Vec<String>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<StrBuf> {
+    pub fn mut_string_field(&'a mut self) -> &'a mut Vec<String> {
         &mut self.string_field
     }
 
-    pub fn get_string_field(&'a self) -> &'a [StrBuf] {
+    pub fn get_string_field(&'a self) -> &'a [String] {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: StrBuf) {
+    pub fn add_string_field(&mut self, v: String) {
         self.string_field.push(v);
     }
 
@@ -5186,7 +5186,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_strbuf();
+                    let tmp = is.read_string();
                     self.string_field.push(tmp);
                 },
                 15 => {
@@ -5284,27 +5284,27 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
         &mut **self.unknown_fields.get_mut_ref()
     }
 
-    #[allow(unused_unsafe)]
+    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestTypesRepeatedPacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>> = Vec::new();
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
-                fields.push(unsafe { ::std::cast::transmute(&'static TestTypesRepeatedPacked_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_double_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_float_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_int32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_int64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_uint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_uint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_sint32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_sint64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_fixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_fixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_sfixed32_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_sfixed64_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_bool_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_string_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
+                fields.push(unsafe { ::std::mem::transmute(&'static TestTypesRepeatedPacked_bytes_field_acc as &::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestTypesRepeatedPacked>(
                     "TestTypesRepeatedPacked",
                     fields,
@@ -5580,7 +5580,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRe
         m.get_string_field().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [StrBuf] {
+    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [String] {
         m.get_string_field()
     }
 }
@@ -5602,7 +5602,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRe
     }
 }
 
-#[deriving(Clone,Eq,Show)]
+#[deriving(Clone,PartialEq,Eq,Show)]
 pub enum TestEnumDescriptor {
     RED = 1,
     BLUE = 2,

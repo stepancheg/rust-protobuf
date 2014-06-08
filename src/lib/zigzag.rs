@@ -2,11 +2,11 @@
 // https://developers.google.com/protocol-buffers/docs/encoding#types
 
 pub fn decode_zig_zag_32(n: u32) -> i32 {
-    ((n >> 1) ^ -(n & 1)) as i32
+    ((n >> 1) as i32) ^ (-((n & 1) as i32))
 }
 
 pub fn decode_zig_zag_64(n: u64) -> i64 {
-    ((n >> 1) ^ -(n & 1)) as i64
+    ((n >> 1) as i64) ^ (-((n & 1) as i64))
 }
 
 pub fn encode_zig_zag_32(n: i32) -> u32 {
