@@ -6,7 +6,10 @@
 #  - sudo apt-get install rust-nightly protobuf-compiler
 
 # http://bettong.net/2014/05/09/how-to-test-rust-on-travis-ci/
+before_install:
+  - sudo apt-get update
 install:
+  - sudo apt-get install protobuf-compiler
   - curl -O http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
   - tar xf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
   - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh)
