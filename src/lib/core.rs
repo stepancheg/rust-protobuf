@@ -220,20 +220,19 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_raw_varint64(&mut self) -> u64 {
-        let mut bytes = Vec::<u8>::new();
+        let mut r: u64 = 0;
+        let mut i = 0;
         loop {
             let b = self.read_raw_byte();
-            bytes.push(b & 0x7F);
+            // Stop undefined behaviour
+            if i <= 9 {
+                r = r | (((b & 0x7f) as u64) << (i * 7));
+                i += 1;
+            }
             if b < 0x80 {
-                break;
+                return r;
             }
         }
-        let mut r = 0u64;
-        let l = bytes.len();
-        for i in range(0, bytes.len()) {
-            r = (r << 7) | *bytes.get(l - i - 1) as u64;
-        }
-        r
     }
 
     pub fn read_raw_varint32(&mut self) -> u32 {
