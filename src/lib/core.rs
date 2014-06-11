@@ -91,7 +91,7 @@ pub mod wire_format {
 }
 
 pub struct CodedInputStream<'a> {
-    buffer: ~[u8],
+    buffer: Box<[u8, ..4096]>,
     buffer_size: u32,
     buffer_pos: u32,
     reader: Option<&'a mut Reader>,
@@ -103,11 +103,7 @@ pub struct CodedInputStream<'a> {
 impl<'a> CodedInputStream<'a> {
     pub fn new(reader: &'a mut Reader) -> CodedInputStream {
         CodedInputStream {
-            // TODO: buffer of size 1 is used, because
-            // impl Reader for FILE* (that is io::stdin()) does not not stop
-            // reading until buffer is full of EOF reached
-            // This makes reading from pipe practically impossible.
-            buffer: ~[0, ..1],
+            buffer: box unsafe { mem::uninitialized() },
             buffer_size: 0,
             buffer_pos: 0,
             reader: Some(reader),
@@ -153,7 +149,7 @@ impl<'a> CodedInputStream<'a> {
                     self.buffer_pos = 0;
                     self.buffer_size = 0;
 
-                    let r = reader.read(self.buffer);
+                    let r = reader.read(self.buffer.as_mut_slice());
                     self.buffer_size = match r {
                         Err(ref e) if e.kind == EndOfFile => return false,
                         Err(_) => fail!(),
