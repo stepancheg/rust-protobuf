@@ -10,7 +10,7 @@ pub struct RepeatedField<T> {
     len: uint,
 }
 
-impl<T> Container for RepeatedField<T> {
+impl<T> Collection for RepeatedField<T> {
     #[inline]
     fn len(&self) -> uint {
         self.len
