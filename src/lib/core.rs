@@ -91,7 +91,7 @@ pub mod wire_format {
 }
 
 pub struct CodedInputStream<'a> {
-    buffer: Box<[u8, ..4096]>,
+    buffer: Vec<u8>,
     buffer_size: u32,
     buffer_pos: u32,
     reader: Option<&'a mut Reader>,
@@ -102,8 +102,11 @@ pub struct CodedInputStream<'a> {
 
 impl<'a> CodedInputStream<'a> {
     pub fn new(reader: &'a mut Reader) -> CodedInputStream {
+        let buffer_len = 4096;
+        let mut buffer = Vec::with_capacity(buffer_len);
+        unsafe { buffer.set_len(buffer_len); }
         CodedInputStream {
-            buffer: box unsafe { mem::uninitialized() },
+            buffer: buffer,
             buffer_size: 0,
             buffer_pos: 0,
             reader: Some(reader),
@@ -210,7 +213,7 @@ impl<'a> CodedInputStream<'a> {
             self.refill_buffer_really();
         }
         assert!(self.buffer_pos < self.buffer_size);
-        let r = self.buffer[self.buffer_pos as uint];
+        let &r = self.buffer.get(self.buffer_pos as uint);
         self.buffer_pos += 1;
         r
     }
@@ -442,7 +445,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 
 pub struct CodedOutputStream<'a> {
-    buffer: Box<[u8, ..4096]>,
+    buffer: Vec<u8>,
     // within buffer
     position: u32,
     writer: Option<&'a mut Writer>,
@@ -450,8 +453,11 @@ pub struct CodedOutputStream<'a> {
 
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Writer) -> CodedOutputStream<'a> {
+        let buffer_len = 4096;
+        let mut buffer = Vec::with_capacity(buffer_len);
+        unsafe { buffer.set_len(buffer_len); }
         CodedOutputStream {
-            buffer: box unsafe { mem::uninitialized() },
+            buffer: buffer,
             position: 0,
             writer: Some(writer),
         }
@@ -477,7 +483,7 @@ impl<'a> CodedOutputStream<'a> {
         if self.position as uint == self.buffer.len() {
             self.refresh_buffer()
         }
-        self.buffer[self.position as uint] = byte;
+        self.buffer.as_mut_slice()[self.position as uint] = byte;
         self.position += 1;
     }
 
