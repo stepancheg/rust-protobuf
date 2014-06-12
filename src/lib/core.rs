@@ -446,7 +446,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 
 pub struct CodedOutputStream<'a> {
-    buffer: ~[u8],
+    buffer: Box<[u8, ..4096]>,
     // within buffer
     position: u32,
     writer: Option<&'a mut Writer>,
@@ -455,7 +455,7 @@ pub struct CodedOutputStream<'a> {
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Writer) -> CodedOutputStream<'a> {
         CodedOutputStream {
-            buffer: ~[0, ..4096],
+            buffer: box unsafe { mem::uninitialized() },
             position: 0,
             writer: Some(writer),
         }
