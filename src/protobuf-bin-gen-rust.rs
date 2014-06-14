@@ -29,9 +29,8 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
 
 fn main() {
     let args = os::args();
-    let opts = ~[
-    ];
-    let matches = getopts::getopts(args.tail(), opts).unwrap();
+    let opts = vec!();
+    let matches = getopts::getopts(args.tail(), opts.as_slice()).unwrap();
     let pb_bin = match matches.free.as_slice() {
         [ref pb_bin] => pb_bin.to_string(),
         _ => fail!("must have exactly one argument")

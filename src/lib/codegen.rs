@@ -984,7 +984,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
                 };
             w.match_block(match_what, |w| {
                 w.case_block("Some(ref v)", |w| {
-                    w.write_lines(write_value_lines);
+                    w.write_lines(write_value_lines.as_slice());
                 });
                 w.case_expr("None", "{}");
             });
@@ -1001,7 +1001,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
         },
         RepeatRegular => {
             w.for_self_field("v", |w| {
-                w.write_lines(write_value_lines);
+                w.write_lines(write_value_lines.as_slice());
             });
         },
     };
