@@ -963,16 +963,16 @@ fn write_message_write_field(w: &mut IndentWriter) {
         _ => "*v",
     };
     let write_value_lines = match field.field_type {
-        FieldDescriptorProto_TYPE_MESSAGE => ~[
+        FieldDescriptorProto_TYPE_MESSAGE => vec!(
             format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});",
                     field_number as int, wire_format::WireTypeLengthDelimited),
             format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
             format!("*sizes_pos += 1;"),
             format!("v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);"),
-        ],
-        _ => ~[
+        ),
+        _ => vec!(
             format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
-        ],
+        ),
     };
     match field.repeat_mode {
         Single => {
