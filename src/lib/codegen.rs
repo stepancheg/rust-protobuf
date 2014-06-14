@@ -659,15 +659,15 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn lazy_static<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2) {
-        self.write_line(format!("static mut {:s}: ::protobuf::lazy::Lazy<{:s}> = ::protobuf::lazy::Lazy \\{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{:s} \\};", name, ty, ty));
+        self.write_line(format!("static mut {:s}: ::protobuf::lazy::Lazy<{:s}> = ::protobuf::lazy::Lazy {{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{:s} }};", name, ty, ty));
     }
 
     fn lazy_static_decl_get<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2, init: |&mut IndentWriter|) {
         self.lazy_static(name.as_slice(), ty);
         self.unsafe_expr(|w| {
-            w.write_line(format!("{:s}.get(|| \\{", name));
+            w.write_line(format!("{:s}.get(|| {{", name));
             w.indented(|w| init(w));
-            w.write_line(format!("\\})"));
+            w.write_line(format!("}})"));
         });
     }
 
@@ -678,11 +678,11 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn expr_block<S : Str>(&self, prefix: S, cb: |&mut IndentWriter|) {
-        self.block(format!("{:s} \\{", prefix), "}", cb);
+        self.block(format!("{:s} {{", prefix), "}", cb);
     }
 
     fn stmt_block<S : Str>(&self, prefix: S, cb: |&mut IndentWriter|) {
-        self.block(format!("{:s} \\{", prefix), "};", cb);
+        self.block(format!("{:s} {{", prefix), "};", cb);
     }
 
     fn unsafe_expr(&self, cb: |&mut IndentWriter|) {
@@ -766,7 +766,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn case_block<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
-        self.block(format!("{:s} => \\{", cond), "},", cb);
+        self.block(format!("{:s} => {{", cond), "},", cb);
     }
 
     fn case_expr<S1 : Str, S2 : Str>(&self, cond: S1, body: S2) {
@@ -833,7 +833,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 }
             },
             RepeatPacked => {
-                w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} \\{", wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} {{", wire_format::WireTypeLengthDelimited));
                 w.indented(|w| {
                     w.write_line("let len = is.read_raw_varint32();");
                     w.write_line("let old_limit = is.push_limit(len);");
@@ -1240,7 +1240,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
                 for field in msg.fields.iter() {
                     let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
                     // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
-                    w.write_line(format!("fields.push(unsafe \\{ ::std::mem::transmute(&'static {} as &::protobuf::reflect::FieldAccessor<{}>) \\});",
+                    w.write_line(format!("fields.push(unsafe {{ ::std::mem::transmute(&'static {} as &::protobuf::reflect::FieldAccessor<{}>) }});",
                             acc_name, msg.type_name));
                 }
                 w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
@@ -1423,11 +1423,11 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
 fn write_enum_struct(w: &mut IndentWriter) {
     w.deriving(["Clone", "PartialEq", "Eq", "Show"]);
-    w.write_line(format!("pub enum {:s} \\{", w.en().type_name));
+    w.write_line(format!("pub enum {:s} {{", w.en().type_name));
     for value in w.en().values.iter() {
         w.write_line(format!("    {:s} = {:i},", value.rust_name(), value.number()));
     }
-    w.write_line(format!("\\}"));
+    w.write_line(format!("}}"));
 }
 
 fn write_enum_impl(w: &mut IndentWriter) {
