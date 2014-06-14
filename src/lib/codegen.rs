@@ -721,12 +721,12 @@ impl<'a> IndentWriter<'a> {
 
     fn deriving(&mut self, deriving: &[&str]) {
         let v: Vec<String> = deriving.iter().map(|&s| s.to_string()).collect();
-        self.write_line(format!("\\#[deriving({})]", v.connect(",")));
+        self.write_line(format!("#[deriving({})]", v.connect(",")));
     }
 
     fn allow(&mut self, what: &[&str]) {
         let v: Vec<String> = what.iter().map(|&s| s.to_string()).collect();
-        self.write_line(format!("\\#[allow({})]", v.connect(",")));
+        self.write_line(format!("#[allow({})]", v.connect(",")));
     }
 
     fn comment(&self, comment: &str) {
