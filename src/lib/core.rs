@@ -101,7 +101,7 @@ pub struct CodedInputStream<'a> {
 }
 
 impl<'a> CodedInputStream<'a> {
-    pub fn new(reader: &'a mut Reader) -> CodedInputStream {
+    pub fn new(reader: &'a mut Reader) -> CodedInputStream<'a> {
         let buffer_len = 4096;
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
@@ -941,9 +941,11 @@ mod test {
 
     fn test_write(expected: &str, gen: |&mut CodedOutputStream|) {
         let mut writer = VecWriter::new();
-        let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
-        gen(&mut os);
-        os.flush();
+        {
+            let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
+            gen(&mut os);
+            os.flush();
+        }
         let r = writer.vec;
         assert_eq!(encode_hex(decode_hex(expected).as_slice()), encode_hex(r.as_slice()));
     }

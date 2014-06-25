@@ -103,8 +103,7 @@ fn main() {
     let selected = match os::args().as_slice() {
         [_] => None,
         [_, ref test] => Some(test.to_string()),
-        [ref argv0, ..] => fail!("usage: {} <test>", argv0),
-        _ => fail!()
+        v => fail!("usage: {} <test>", v[0]),
     };
 
     let mut runner = TestRunner { selected: selected, any_matched: false };
