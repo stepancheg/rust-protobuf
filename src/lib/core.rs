@@ -30,7 +30,7 @@ use reflect::EnumValueDescriptor;
 
 pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
-    pub static TAG_TYPE_MASK: u32 = (1 << TAG_TYPE_BITS) - 1;
+    pub static TAG_TYPE_MASK: u32 = (1 << TAG_TYPE_BITS as uint) as u32 - 1;
 
     #[deriving(PartialEq, Eq, Clone, Show)]
     pub enum WireType {
@@ -66,7 +66,7 @@ pub mod wire_format {
         }
 
         pub fn make(field_number: u32, wire_type: WireType) -> Tag {
-            Tag((field_number << TAG_TYPE_BITS) | (wire_type as u32))
+            Tag((field_number << TAG_TYPE_BITS as uint) as u32 | (wire_type as u32))
         }
 
         pub fn unpack(self) -> (u32, WireType) {
@@ -78,7 +78,7 @@ pub mod wire_format {
         }
 
         pub fn field_number(self) -> u32 {
-            let r = self.value() >> TAG_TYPE_BITS;
+            let r = (self.value() >> (TAG_TYPE_BITS as uint)) as u32;
             assert!(r > 0, "field number must be positive");
             r
         }
