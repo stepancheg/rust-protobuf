@@ -499,7 +499,7 @@ impl ::protobuf::reflect::FieldAccessor<Test2> for Test2_b_acc {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct Test3 {
-    c: ::protobuf::SingularField<Test1>,
+    c: ::protobuf::SingularPtrField<Test1>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -513,7 +513,7 @@ impl<'a> Test3 {
         unsafe {
             instance.get(|| {
                 Test3 {
-                    c: ::protobuf::SingularField::none(),
+                    c: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -544,7 +544,7 @@ impl<'a> Test3 {
 
     // Param is passed by value, moved
     pub fn set_c(&mut self, v: Test1) {
-        self.c = ::protobuf::SingularField::some(v);
+        self.c = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -1663,8 +1663,8 @@ impl ::protobuf::reflect::FieldAccessor<TestUnknownFields> for TestUnknownFields
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestSelfReference {
-    r1: ::protobuf::SingularField<TestSelfReference>,
-    r2: ::protobuf::SingularField<TestSelfReference>,
+    r1: ::protobuf::SingularPtrField<TestSelfReference>,
+    r2: ::protobuf::SingularPtrField<TestSelfReference>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -1678,8 +1678,8 @@ impl<'a> TestSelfReference {
         unsafe {
             instance.get(|| {
                 TestSelfReference {
-                    r1: ::protobuf::SingularField::none(),
-                    r2: ::protobuf::SingularField::none(),
+                    r1: ::protobuf::SingularPtrField::none(),
+                    r2: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -1719,7 +1719,7 @@ impl<'a> TestSelfReference {
 
     // Param is passed by value, moved
     pub fn set_r1(&mut self, v: TestSelfReference) {
-        self.r1 = ::protobuf::SingularField::some(v);
+        self.r1 = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -1745,7 +1745,7 @@ impl<'a> TestSelfReference {
 
     // Param is passed by value, moved
     pub fn set_r2(&mut self, v: TestSelfReference) {
-        self.r2 = ::protobuf::SingularField::some(v);
+        self.r2 = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -2097,7 +2097,7 @@ impl ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField> for TestDefaul
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestDefaultInstance {
-    field: ::protobuf::SingularField<TestDefaultInstanceField>,
+    field: ::protobuf::SingularPtrField<TestDefaultInstanceField>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -2111,7 +2111,7 @@ impl<'a> TestDefaultInstance {
         unsafe {
             instance.get(|| {
                 TestDefaultInstance {
-                    field: ::protobuf::SingularField::none(),
+                    field: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -2142,7 +2142,7 @@ impl<'a> TestDefaultInstance {
 
     // Param is passed by value, moved
     pub fn set_field(&mut self, v: TestDefaultInstanceField) {
-        self.field = ::protobuf::SingularField::some(v);
+        self.field = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.

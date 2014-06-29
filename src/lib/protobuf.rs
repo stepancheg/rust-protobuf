@@ -20,6 +20,7 @@ pub use unknown::UnknownValuesIter;
 pub use unknown::UnknownFieldIter;
 pub use repeated::RepeatedField;
 pub use singular::SingularField;
+pub use singular::SingularPtrField;
 pub use clear::Clear;
 
 mod core;
@@ -67,5 +68,6 @@ pub mod protobuf {
     pub use unknown::UnknownFieldIter;
     pub use repeated::RepeatedField;
     pub use singular::SingularField;
+    pub use singular::SingularPtrField;
     pub use clear::Clear;
 }

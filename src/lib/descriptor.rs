@@ -466,8 +466,8 @@ pub struct FileDescriptorProto {
     enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
     service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    options: ::protobuf::SingularField<FileOptions>,
-    source_code_info: ::protobuf::SingularField<SourceCodeInfo>,
+    options: ::protobuf::SingularPtrField<FileOptions>,
+    source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -490,8 +490,8 @@ impl<'a> FileDescriptorProto {
                     enum_type: ::protobuf::RepeatedField::new(),
                     service: ::protobuf::RepeatedField::new(),
                     extension: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularField::none(),
-                    source_code_info: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
+                    source_code_info: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -788,7 +788,7 @@ impl<'a> FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: FileOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -814,7 +814,7 @@ impl<'a> FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_source_code_info(&mut self, v: SourceCodeInfo) {
-        self.source_code_info = ::protobuf::SingularField::some(v);
+        self.source_code_info = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -1249,7 +1249,7 @@ pub struct DescriptorProto {
     nested_type: ::protobuf::RepeatedField<DescriptorProto>,
     enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
     extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
-    options: ::protobuf::SingularField<MessageOptions>,
+    options: ::protobuf::SingularPtrField<MessageOptions>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -1269,7 +1269,7 @@ impl<'a> DescriptorProto {
                     nested_type: ::protobuf::RepeatedField::new(),
                     enum_type: ::protobuf::RepeatedField::new(),
                     extension_range: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -1475,7 +1475,7 @@ impl<'a> DescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: MessageOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -2028,7 +2028,7 @@ pub struct FieldDescriptorProto {
     type_name: Option<String>,
     extendee: Option<String>,
     default_value: Option<String>,
-    options: ::protobuf::SingularField<FieldOptions>,
+    options: ::protobuf::SingularPtrField<FieldOptions>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -2049,7 +2049,7 @@ impl<'a> FieldDescriptorProto {
                     type_name: None,
                     extendee: None,
                     default_value: None,
-                    options: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -2316,7 +2316,7 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: FieldOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -2743,7 +2743,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 pub struct EnumDescriptorProto {
     name: Option<String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
-    options: ::protobuf::SingularField<EnumOptions>,
+    options: ::protobuf::SingularPtrField<EnumOptions>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -2759,7 +2759,7 @@ impl<'a> EnumDescriptorProto {
                 EnumDescriptorProto {
                     name: None,
                     value: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -2853,7 +2853,7 @@ impl<'a> EnumDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: EnumOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -3048,7 +3048,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumDescriptorProto> for EnumDescriptorP
 pub struct EnumValueDescriptorProto {
     name: Option<String>,
     number: Option<i32>,
-    options: ::protobuf::SingularField<EnumValueOptions>,
+    options: ::protobuf::SingularPtrField<EnumValueOptions>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -3064,7 +3064,7 @@ impl<'a> EnumValueDescriptorProto {
                 EnumValueDescriptorProto {
                     name: None,
                     number: None,
-                    options: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -3162,7 +3162,7 @@ impl<'a> EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: EnumValueOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -3356,7 +3356,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto> for EnumValueD
 pub struct ServiceDescriptorProto {
     name: Option<String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
-    options: ::protobuf::SingularField<ServiceOptions>,
+    options: ::protobuf::SingularPtrField<ServiceOptions>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -3372,7 +3372,7 @@ impl<'a> ServiceDescriptorProto {
                 ServiceDescriptorProto {
                     name: None,
                     method: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -3466,7 +3466,7 @@ impl<'a> ServiceDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: ServiceOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -3662,7 +3662,7 @@ pub struct MethodDescriptorProto {
     name: Option<String>,
     input_type: Option<String>,
     output_type: Option<String>,
-    options: ::protobuf::SingularField<MethodOptions>,
+    options: ::protobuf::SingularPtrField<MethodOptions>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -3679,7 +3679,7 @@ impl<'a> MethodDescriptorProto {
                     name: None,
                     input_type: None,
                     output_type: None,
-                    options: ::protobuf::SingularField::none(),
+                    options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: None,
                 }
             })
@@ -3815,7 +3815,7 @@ impl<'a> MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_options(&mut self, v: MethodOptions) {
-        self.options = ::protobuf::SingularField::some(v);
+        self.options = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.

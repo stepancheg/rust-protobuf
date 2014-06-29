@@ -283,7 +283,7 @@ pub struct TestTypes {
     string_singular: Option<String>,
     bytes_singular: Option<Vec<u8>>,
     test_enum_singular: Option<TestEnum>,
-    test_message_singular: ::protobuf::SingularField<TestMessage>,
+    test_message_singular: ::protobuf::SingularPtrField<TestMessage>,
     double_repeated: Vec<f64>,
     float_repeated: Vec<f32>,
     int32_repeated: Vec<i32>,
@@ -330,7 +330,7 @@ impl<'a> TestTypes {
                     string_singular: None,
                     bytes_singular: None,
                     test_enum_singular: None,
-                    test_message_singular: ::protobuf::SingularField::none(),
+                    test_message_singular: ::protobuf::SingularPtrField::none(),
                     double_repeated: Vec::new(),
                     float_repeated: Vec::new(),
                     int32_repeated: Vec::new(),
@@ -950,7 +950,7 @@ impl<'a> TestTypes {
 
     // Param is passed by value, moved
     pub fn set_test_message_singular(&mut self, v: TestMessage) {
-        self.test_message_singular = ::protobuf::SingularField::some(v);
+        self.test_message_singular = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.

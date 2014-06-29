@@ -20,7 +20,7 @@ enum RustType {
     RustSlice(Box<RustType>),
     RustStr,
     RustOption(Box<RustType>),
-    RustSingularField(Box<RustType>),
+    RustSingularPtrField(Box<RustType>),
     RustRepeatedField(Box<RustType>),
     RustUniq(Box<RustType>),
     RustRef(Box<RustType>),
@@ -40,11 +40,11 @@ impl fmt::Show for RustType {
             RustString             => write!(f, "String"),
             RustSlice(ref param)   => write!(f, "[{}]", *param),
             RustStr                => write!(f, "str"),
-            RustOption(ref param)        => write!(f, "Option<{}>", param),
-            RustSingularField(ref param) => write!(f, "::protobuf::SingularField<{}>", param),
-            RustRepeatedField(ref param) => write!(f, "::protobuf::RepeatedField<{}>", param),
-            RustUniq(ref param)          => write!(f, "Box<{}>", *param),
-            RustRef(ref param)           => write!(f, "&{}", *param),
+            RustOption(ref param)           => write!(f, "Option<{}>", param),
+            RustSingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", param),
+            RustRepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", param),
+            RustUniq(ref param)             => write!(f, "Box<{}>", *param),
+            RustRef(ref param)              => write!(f, "&{}", *param),
             RustMessage(ref param) | RustEnum(ref param) => write!(f, "{}", param),
         }
     }
@@ -75,7 +75,7 @@ impl RustType {
             RustVec(..)                        => "Vec::new()".to_string(),
             RustString                         => "String::new()".to_string(),
             RustOption(..)                     => "None".to_string(),
-            RustSingularField(..)              => "::protobuf::SingularField::none()".to_string(),
+            RustSingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_string(),
             RustRepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
             RustMessage(ref name)              => format!("{}::new()", name),
             RustRef(box RustMessage(ref name)) => format!("{}::default_instance()", name),
@@ -87,8 +87,8 @@ impl RustType {
 
     fn wrap_value(&self, value: &str) -> String {
         match *self {
-            RustOption(..)        => format!("Some({})", value),
-            RustSingularField(..) => format!("::protobuf::SingularField::some({})", value),
+            RustOption(..)           => format!("Some({})", value),
+            RustSingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
             _ => fail!("not a wrapper type: {}", *self),
         }
     }
@@ -282,7 +282,7 @@ impl Field {
         let c = box self.type_name.clone();
         match (self.repeated, self.field_type == FieldDescriptorProto_TYPE_MESSAGE) {
             (true, true)   => RustRepeatedField(c),
-            (false, true)  => RustSingularField(c),
+            (false, true)  => RustSingularPtrField(c),
             (true, false)  => RustVec(c),
             (false, false) => RustOption(c),
         }
