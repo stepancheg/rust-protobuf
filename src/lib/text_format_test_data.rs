@@ -280,8 +280,8 @@ pub struct TestTypes {
     sfixed32_singular: Option<i32>,
     sfixed64_singular: Option<i64>,
     bool_singular: Option<bool>,
-    string_singular: Option<String>,
-    bytes_singular: Option<Vec<u8>>,
+    string_singular: ::protobuf::SingularField<String>,
+    bytes_singular: ::protobuf::SingularField<Vec<u8>>,
     test_enum_singular: Option<TestEnum>,
     test_message_singular: ::protobuf::SingularPtrField<TestMessage>,
     double_repeated: Vec<f64>,
@@ -297,8 +297,8 @@ pub struct TestTypes {
     sfixed32_repeated: Vec<i32>,
     sfixed64_repeated: Vec<i64>,
     bool_repeated: Vec<bool>,
-    string_repeated: Vec<String>,
-    bytes_repeated: Vec<Vec<u8>>,
+    string_repeated: ::protobuf::RepeatedField<String>,
+    bytes_repeated: ::protobuf::RepeatedField<Vec<u8>>,
     test_enum_repeated: Vec<TestEnum>,
     test_message_repeated: ::protobuf::RepeatedField<TestMessage>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
@@ -327,8 +327,8 @@ impl<'a> TestTypes {
                     sfixed32_singular: None,
                     sfixed64_singular: None,
                     bool_singular: None,
-                    string_singular: None,
-                    bytes_singular: None,
+                    string_singular: ::protobuf::SingularField::none(),
+                    bytes_singular: ::protobuf::SingularField::none(),
                     test_enum_singular: None,
                     test_message_singular: ::protobuf::SingularPtrField::none(),
                     double_repeated: Vec::new(),
@@ -344,8 +344,8 @@ impl<'a> TestTypes {
                     sfixed32_repeated: Vec::new(),
                     sfixed64_repeated: Vec::new(),
                     bool_repeated: Vec::new(),
-                    string_repeated: Vec::new(),
-                    bytes_repeated: Vec::new(),
+                    string_repeated: ::protobuf::RepeatedField::new(),
+                    bytes_repeated: ::protobuf::RepeatedField::new(),
                     test_enum_repeated: Vec::new(),
                     test_message_repeated: ::protobuf::RepeatedField::new(),
                     unknown_fields: None,
@@ -434,13 +434,13 @@ impl<'a> TestTypes {
             },
             None => {},
         };
-        match self.string_singular {
+        match self.string_singular.as_ref() {
             Some(ref v) => {
                 os.write_string(14, v.as_slice());
             },
             None => {},
         };
-        match self.bytes_singular {
+        match self.bytes_singular.as_ref() {
             Some(ref v) => {
                 os.write_bytes(15, v.as_slice());
             },
@@ -857,7 +857,7 @@ impl<'a> TestTypes {
     }
 
     pub fn clear_string_singular(&mut self) {
-        self.string_singular = None;
+        self.string_singular.clear();
     }
 
     pub fn has_string_singular(&self) -> bool {
@@ -866,27 +866,27 @@ impl<'a> TestTypes {
 
     // Param is passed by value, moved
     pub fn set_string_singular(&mut self, v: String) {
-        self.string_singular = Some(v);
+        self.string_singular = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_string_singular(&'a mut self) -> &'a mut String {
         if self.string_singular.is_none() {
-            self.string_singular = Some(String::new());
+            self.string_singular.set_default();
         };
         self.string_singular.get_mut_ref()
     }
 
     pub fn get_string_singular(&'a self) -> &'a str {
-        match self.string_singular {
+        match self.string_singular.as_ref() {
             Some(ref v) => v.as_slice(),
             None => "",
         }
     }
 
     pub fn clear_bytes_singular(&mut self) {
-        self.bytes_singular = None;
+        self.bytes_singular.clear();
     }
 
     pub fn has_bytes_singular(&self) -> bool {
@@ -895,20 +895,20 @@ impl<'a> TestTypes {
 
     // Param is passed by value, moved
     pub fn set_bytes_singular(&mut self, v: Vec<u8>) {
-        self.bytes_singular = Some(v);
+        self.bytes_singular = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_bytes_singular(&'a mut self) -> &'a mut Vec<u8> {
         if self.bytes_singular.is_none() {
-            self.bytes_singular = Some(Vec::new());
+            self.bytes_singular.set_default();
         };
         self.bytes_singular.get_mut_ref()
     }
 
     pub fn get_bytes_singular(&'a self) -> &'a [u8] {
-        match self.bytes_singular {
+        match self.bytes_singular.as_ref() {
             Some(ref v) => v.as_slice(),
             None => &[],
         }
@@ -1257,12 +1257,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_repeated(&mut self, v: Vec<String>) {
+    pub fn set_string_repeated(&mut self, v: ::protobuf::RepeatedField<String>) {
         self.string_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_repeated(&'a mut self) -> &'a mut Vec<String> {
+    pub fn mut_string_repeated(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
         &mut self.string_repeated
     }
 
@@ -1279,12 +1279,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_repeated(&mut self, v: Vec<Vec<u8>>) {
+    pub fn set_bytes_repeated(&mut self, v: ::protobuf::RepeatedField<Vec<u8>>) {
         self.bytes_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bytes_repeated(&'a mut self) -> &'a mut Vec<Vec<u8>> {
+    pub fn mut_bytes_repeated(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Vec<u8>> {
         &mut self.bytes_repeated
     }
 
@@ -1421,13 +1421,13 @@ impl ::protobuf::Message for TestTypes {
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.string_singular = Some(tmp);
+                    let tmp = self.string_singular.set_default();
+                    is.read_string_into(tmp)
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_bytes();
-                    self.bytes_singular = Some(tmp);
+                    let tmp = self.bytes_singular.set_default();
+                    is.read_bytes_into(tmp)
                 },
                 16 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
@@ -1610,13 +1610,13 @@ impl ::protobuf::Message for TestTypes {
                 },
                 44 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.string_repeated.push(tmp);
+                    let tmp = self.string_repeated.push_default();
+                    is.read_string_into(tmp)
                 },
                 45 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_bytes();
-                    self.bytes_repeated.push(tmp);
+                    let tmp = self.bytes_repeated.push_default();
+                    is.read_bytes_into(tmp)
                 },
                 46 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {

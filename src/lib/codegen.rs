@@ -20,6 +20,7 @@ enum RustType {
     RustSlice(Box<RustType>),
     RustStr,
     RustOption(Box<RustType>),
+    RustSingularField(Box<RustType>),
     RustSingularPtrField(Box<RustType>),
     RustRepeatedField(Box<RustType>),
     RustUniq(Box<RustType>),
@@ -41,6 +42,7 @@ impl fmt::Show for RustType {
             RustSlice(ref param)   => write!(f, "[{}]", *param),
             RustStr                => write!(f, "str"),
             RustOption(ref param)           => write!(f, "Option<{}>", param),
+            RustSingularField(ref param)    => write!(f, "::protobuf::SingularField<{}>", param),
             RustSingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", param),
             RustRepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", param),
             RustUniq(ref param)             => write!(f, "Box<{}>", *param),
@@ -75,6 +77,7 @@ impl RustType {
             RustVec(..)                        => "Vec::new()".to_string(),
             RustString                         => "String::new()".to_string(),
             RustOption(..)                     => "None".to_string(),
+            RustSingularField(..)              => "::protobuf::SingularField::none()".to_string(),
             RustSingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_string(),
             RustRepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
             RustMessage(ref name)              => format!("{}::new()", name),
@@ -88,6 +91,7 @@ impl RustType {
     fn wrap_value(&self, value: &str) -> String {
         match *self {
             RustOption(..)           => format!("Some({})", value),
+            RustSingularField(..)    => format!("::protobuf::SingularField::some({})", value),
             RustSingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
             _ => fail!("not a wrapper type: {}", *self),
         }
@@ -280,11 +284,22 @@ impl Field {
 
     fn full_storage_type(&self) -> RustType {
         let c = box self.type_name.clone();
-        match (self.repeated, self.field_type == FieldDescriptorProto_TYPE_MESSAGE) {
-            (true, true)   => RustRepeatedField(c),
-            (false, true)  => RustSingularPtrField(c),
-            (true, false)  => RustVec(c),
-            (false, false) => RustOption(c),
+        if self.repeated {
+            if self.type_is_not_trivial() {
+                RustRepeatedField(c)
+            } else {
+                RustVec(c)
+            }
+        } else {
+            if self.field_type == FieldDescriptorProto_TYPE_MESSAGE {
+                RustSingularPtrField(c)
+            } else if self.field_type == FieldDescriptorProto_TYPE_STRING ||
+                    self.field_type == FieldDescriptorProto_TYPE_BYTES
+            {
+                RustSingularField(c)
+            } else {
+                RustOption(c)
+            }
         }
     }
 
@@ -315,6 +330,16 @@ impl Field {
         match self.field_type {
             FieldDescriptorProto_TYPE_SINT32 |
             FieldDescriptorProto_TYPE_SINT64 => true,
+            _ => false,
+        }
+    }
+
+    // data is stored in heap
+    fn type_is_not_trivial(&self) -> bool {
+        match self.field_type {
+            FieldDescriptorProto_TYPE_MESSAGE |
+            FieldDescriptorProto_TYPE_STRING |
+            FieldDescriptorProto_TYPE_BYTES => true,
             _ => false,
         }
     }
@@ -513,6 +538,18 @@ impl<'a> IndentWriter<'a> {
         format!("{:s}.is_none()", self.self_field())
     }
 
+    // field data viewed as Option
+    fn self_field_as_option(&self) -> String {
+        assert!(!self.field().repeated);
+        // TODO: make it RustType function
+        if self.field().type_is_not_trivial() {
+            // Singular*Field.as_ref()
+            format!("{}.as_ref()", self.self_field())
+        } else {
+            self.self_field()
+        }
+    }
+
     fn if_self_field_is_some(&self, cb: |&mut IndentWriter|) {
         self.if_stmt(self.self_field_is_some(), cb);
     }
@@ -545,7 +582,7 @@ impl<'a> IndentWriter<'a> {
 
     fn self_field_assign_default(&self) {
         assert!(!self.field().repeated);
-        if self.field().field_type == FieldDescriptorProto_TYPE_MESSAGE {
+        if self.field().type_is_not_trivial() {
             self.write_line(format!("{:s}.set_default();", self.self_field()));
         } else {
             self.self_field_assign_some(self.field().type_name.default_value());
@@ -778,7 +815,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn clear_field(&self) {
-        if self.field().repeated || self.field().field_type == FieldDescriptorProto_TYPE_MESSAGE {
+        if self.field().repeated || self.field().type_is_not_trivial() {
             self.write_line(format!("{:s}.clear();", self.self_field()));
         } else {
             self.self_field_assign_none();
@@ -786,7 +823,7 @@ impl<'a> IndentWriter<'a> {
     }
 }
 
-fn write_merge_from_field_repeated_message(w: &mut IndentWriter) {
+fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
     let field = w.field();
     w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);",
             wire_format::WireTypeLengthDelimited));
@@ -795,13 +832,22 @@ fn write_merge_from_field_repeated_message(w: &mut IndentWriter) {
     } else {
         w.write_line(format!("let tmp = {}.set_default();", w.self_field()));
     }
-    w.write_line(format!("is.merge_message(tmp)"));
+    match field.field_type {
+        FieldDescriptorProto_TYPE_MESSAGE =>
+            w.write_line(format!("is.merge_message(tmp)")),
+        FieldDescriptorProto_TYPE_STRING =>
+            w.write_line(format!("is.read_string_into(tmp)")),
+        FieldDescriptorProto_TYPE_BYTES =>
+            w.write_line(format!("is.read_bytes_into(tmp)")),
+        _ =>
+            fail!(),
+    }
 }
 
 fn write_merge_from_field(w: &mut IndentWriter) {
     let field = w.field();
-    if field.field_type == FieldDescriptorProto_TYPE_MESSAGE {
-        write_merge_from_field_repeated_message(w);
+    if field.type_is_not_trivial() {
+        write_merge_from_field_message_string_bytes(w);
     } else {
         let wire_type = field_type_wire_type(field.field_type);
         let repeat_mode =
@@ -817,7 +863,6 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
         let read_proc0 = match field.field_type {
             FieldDescriptorProto_TYPE_ENUM => format!("{}::new(is.read_int32())", field.type_name),
-            FieldDescriptorProto_TYPE_STRING => "is.read_string()".to_string(),
             t => format!("is.read_{}()", protobuf_name(t)),
         };
         let read_proc = read_proc0.as_slice();
@@ -976,13 +1021,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
     };
     match field.repeat_mode {
         Single => {
-            let match_what =
-                if field.field_type == FieldDescriptorProto_TYPE_MESSAGE {
-                    format!("{}.as_ref()", w.self_field())
-                } else {
-                    w.self_field()
-                };
-            w.match_block(match_what, |w| {
+            w.match_block(w.self_field_as_option(), |w| {
                 w.case_block("Some(ref v)", |w| {
                     w.write_lines(write_value_lines.as_slice());
                 });
@@ -1109,7 +1148,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
                             w.self_field(), w.field().type_name));
                 } else {
                     if w.field().get_xxx_return_ref() {
-                        w.match_expr(w.self_field(), |w| {
+                        w.match_expr(w.self_field_as_option(), |w| {
                             w.case_expr(
                                 "Some(ref v)",
                                 w.field().type_name.view_as(&w.field().get_xxx_return_type(), "v")

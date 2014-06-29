@@ -348,38 +348,60 @@ impl<'a> CodedInputStream<'a> {
         self.read_unknown(wire_type);
     }
 
-    pub fn read_raw_bytes(&mut self, count: u32) -> Vec<u8> {
-        let mut r = Vec::with_capacity(count as uint);
-        while r.len() < count as uint {
-            let rem = count - r.len() as u32;
+    /// Read raw bytes into supplied vector. Vector must be empty.
+    pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) {
+        assert!(target.is_empty());
+        target.reserve_additional(count as uint);
+        while target.len() < count as uint {
+            let rem = count - target.len() as u32;
             if rem <= self.remaining_in_buffer() {
-                r.push_all(self.buffer.slice(self.buffer_pos as uint, (self.buffer_pos + rem) as uint));
+                target.push_all(self.buffer.slice(self.buffer_pos as uint, (self.buffer_pos + rem) as uint));
                 self.buffer_pos += rem;
             } else {
-                r.push_all(self.remaining_in_buffer_slice());
+                target.push_all(self.remaining_in_buffer_slice());
                 self.buffer_pos = self.buffer_size;
                 self.refill_buffer_really();
             }
         }
+    }
+
+    /// Read exact number of bytes
+    pub fn read_raw_bytes(&mut self, count: u32) -> Vec<u8> {
+        let mut r = Vec::new();
+        self.read_raw_bytes_into(count, &mut r);
         r
     }
 
     pub fn skip_raw_bytes(&mut self, count: u32) {
+        // TODO: make it more efficient
         self.read_raw_bytes(count);
     }
 
     pub fn read_bytes(&mut self) -> Vec<u8> {
-        let len = self.read_raw_varint32();
-        self.read_raw_bytes(len)
+        let mut r = Vec::new();
+        self.read_bytes_into(&mut r);
+        r
     }
 
-    #[deprecated = "use read_string"]
-    pub fn read_strbuf(&mut self) -> String {
-        self.read_string()
+    pub fn read_bytes_into(&mut self, target: &mut Vec<u8>) {
+        let len = self.read_raw_varint32();
+        self.read_raw_bytes_into(len, target);
     }
 
     pub fn read_string(&mut self) -> String {
-        String::from_utf8(self.read_bytes()).unwrap()
+        let mut r = String::new();
+        self.read_string_into(&mut r);
+        r
+    }
+
+    pub fn read_string_into(&mut self, target: &mut String) {
+        // assert string is empty, otherwize UTF-8 validation is too expensive
+        assert!(target.is_empty());
+        // take target's buffer
+        let mut vec = mem::replace(target, String::new()).into_bytes();
+        self.read_bytes_into(&mut vec);
+        // crash if bytes are not valid UTF-8
+        mem::replace(target, String::from_utf8(vec).unwrap());
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) {

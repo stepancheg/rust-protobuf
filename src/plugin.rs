@@ -51,8 +51,8 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorRequest {
-    file_to_generate: Vec<String>,
-    parameter: Option<String>,
+    file_to_generate: ::protobuf::RepeatedField<String>,
+    parameter: ::protobuf::SingularField<String>,
     proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
@@ -67,8 +67,8 @@ impl<'a> CodeGeneratorRequest {
         unsafe {
             instance.get(|| {
                 CodeGeneratorRequest {
-                    file_to_generate: Vec::new(),
-                    parameter: None,
+                    file_to_generate: ::protobuf::RepeatedField::new(),
+                    parameter: ::protobuf::SingularField::none(),
                     proto_file: ::protobuf::RepeatedField::new(),
                     unknown_fields: None,
                 }
@@ -81,7 +81,7 @@ impl<'a> CodeGeneratorRequest {
         for v in self.file_to_generate.iter() {
             os.write_string(1, v.as_slice());
         };
-        match self.parameter {
+        match self.parameter.as_ref() {
             Some(ref v) => {
                 os.write_string(2, v.as_slice());
             },
@@ -101,12 +101,12 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_file_to_generate(&mut self, v: Vec<String>) {
+    pub fn set_file_to_generate(&mut self, v: ::protobuf::RepeatedField<String>) {
         self.file_to_generate = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file_to_generate(&'a mut self) -> &'a mut Vec<String> {
+    pub fn mut_file_to_generate(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
         &mut self.file_to_generate
     }
 
@@ -119,7 +119,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     pub fn clear_parameter(&mut self) {
-        self.parameter = None;
+        self.parameter.clear();
     }
 
     pub fn has_parameter(&self) -> bool {
@@ -128,20 +128,20 @@ impl<'a> CodeGeneratorRequest {
 
     // Param is passed by value, moved
     pub fn set_parameter(&mut self, v: String) {
-        self.parameter = Some(v);
+        self.parameter = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_parameter(&'a mut self) -> &'a mut String {
         if self.parameter.is_none() {
-            self.parameter = Some(String::new());
+            self.parameter.set_default();
         };
         self.parameter.get_mut_ref()
     }
 
     pub fn get_parameter(&'a self) -> &'a str {
-        match self.parameter {
+        match self.parameter.as_ref() {
             Some(ref v) => v.as_slice(),
             None => "",
         }
@@ -185,13 +185,13 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.file_to_generate.push(tmp);
+                    let tmp = self.file_to_generate.push_default();
+                    is.read_string_into(tmp)
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.parameter = Some(tmp);
+                    let tmp = self.parameter.set_default();
+                    is.read_string_into(tmp)
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -345,7 +345,7 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorR
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorResponse {
-    error: Option<String>,
+    error: ::protobuf::SingularField<String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
@@ -360,7 +360,7 @@ impl<'a> CodeGeneratorResponse {
         unsafe {
             instance.get(|| {
                 CodeGeneratorResponse {
-                    error: None,
+                    error: ::protobuf::SingularField::none(),
                     file: ::protobuf::RepeatedField::new(),
                     unknown_fields: None,
                 }
@@ -370,7 +370,7 @@ impl<'a> CodeGeneratorResponse {
 
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
         use protobuf::{Message};
-        match self.error {
+        match self.error.as_ref() {
             Some(ref v) => {
                 os.write_string(1, v.as_slice());
             },
@@ -386,7 +386,7 @@ impl<'a> CodeGeneratorResponse {
     }
 
     pub fn clear_error(&mut self) {
-        self.error = None;
+        self.error.clear();
     }
 
     pub fn has_error(&self) -> bool {
@@ -395,20 +395,20 @@ impl<'a> CodeGeneratorResponse {
 
     // Param is passed by value, moved
     pub fn set_error(&mut self, v: String) {
-        self.error = Some(v);
+        self.error = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_error(&'a mut self) -> &'a mut String {
         if self.error.is_none() {
-            self.error = Some(String::new());
+            self.error.set_default();
         };
         self.error.get_mut_ref()
     }
 
     pub fn get_error(&'a self) -> &'a str {
-        match self.error {
+        match self.error.as_ref() {
             Some(ref v) => v.as_slice(),
             None => "",
         }
@@ -452,8 +452,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.error = Some(tmp);
+                    let tmp = self.error.set_default();
+                    is.read_string_into(tmp)
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
@@ -585,9 +585,9 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGenerator
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorResponse_File {
-    name: Option<String>,
-    insertion_point: Option<String>,
-    content: Option<String>,
+    name: ::protobuf::SingularField<String>,
+    insertion_point: ::protobuf::SingularField<String>,
+    content: ::protobuf::SingularField<String>,
     unknown_fields: Option<Box<::protobuf::UnknownFields>>,
 }
 
@@ -601,9 +601,9 @@ impl<'a> CodeGeneratorResponse_File {
         unsafe {
             instance.get(|| {
                 CodeGeneratorResponse_File {
-                    name: None,
-                    insertion_point: None,
-                    content: None,
+                    name: ::protobuf::SingularField::none(),
+                    insertion_point: ::protobuf::SingularField::none(),
+                    content: ::protobuf::SingularField::none(),
                     unknown_fields: None,
                 }
             })
@@ -613,19 +613,19 @@ impl<'a> CodeGeneratorResponse_File {
     #[allow(unused_variable)]
     pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
         use protobuf::{Message};
-        match self.name {
+        match self.name.as_ref() {
             Some(ref v) => {
                 os.write_string(1, v.as_slice());
             },
             None => {},
         };
-        match self.insertion_point {
+        match self.insertion_point.as_ref() {
             Some(ref v) => {
                 os.write_string(2, v.as_slice());
             },
             None => {},
         };
-        match self.content {
+        match self.content.as_ref() {
             Some(ref v) => {
                 os.write_string(15, v.as_slice());
             },
@@ -635,7 +635,7 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     pub fn clear_name(&mut self) {
-        self.name = None;
+        self.name.clear();
     }
 
     pub fn has_name(&self) -> bool {
@@ -644,27 +644,27 @@ impl<'a> CodeGeneratorResponse_File {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: String) {
-        self.name = Some(v);
+        self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&'a mut self) -> &'a mut String {
         if self.name.is_none() {
-            self.name = Some(String::new());
+            self.name.set_default();
         };
         self.name.get_mut_ref()
     }
 
     pub fn get_name(&'a self) -> &'a str {
-        match self.name {
+        match self.name.as_ref() {
             Some(ref v) => v.as_slice(),
             None => "",
         }
     }
 
     pub fn clear_insertion_point(&mut self) {
-        self.insertion_point = None;
+        self.insertion_point.clear();
     }
 
     pub fn has_insertion_point(&self) -> bool {
@@ -673,27 +673,27 @@ impl<'a> CodeGeneratorResponse_File {
 
     // Param is passed by value, moved
     pub fn set_insertion_point(&mut self, v: String) {
-        self.insertion_point = Some(v);
+        self.insertion_point = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_insertion_point(&'a mut self) -> &'a mut String {
         if self.insertion_point.is_none() {
-            self.insertion_point = Some(String::new());
+            self.insertion_point.set_default();
         };
         self.insertion_point.get_mut_ref()
     }
 
     pub fn get_insertion_point(&'a self) -> &'a str {
-        match self.insertion_point {
+        match self.insertion_point.as_ref() {
             Some(ref v) => v.as_slice(),
             None => "",
         }
     }
 
     pub fn clear_content(&mut self) {
-        self.content = None;
+        self.content.clear();
     }
 
     pub fn has_content(&self) -> bool {
@@ -702,20 +702,20 @@ impl<'a> CodeGeneratorResponse_File {
 
     // Param is passed by value, moved
     pub fn set_content(&mut self, v: String) {
-        self.content = Some(v);
+        self.content = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_content(&'a mut self) -> &'a mut String {
         if self.content.is_none() {
-            self.content = Some(String::new());
+            self.content.set_default();
         };
         self.content.get_mut_ref()
     }
 
     pub fn get_content(&'a self) -> &'a str {
-        match self.content {
+        match self.content.as_ref() {
             Some(ref v) => v.as_slice(),
             None => "",
         }
@@ -737,18 +737,18 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.name = Some(tmp);
+                    let tmp = self.name.set_default();
+                    is.read_string_into(tmp)
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.insertion_point = Some(tmp);
+                    let tmp = self.insertion_point.set_default();
+                    is.read_string_into(tmp)
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
-                    let tmp = is.read_string();
-                    self.content = Some(tmp);
+                    let tmp = self.content.set_default();
+                    is.read_string_into(tmp)
                 },
                 _ => {
                     let unknown = is.read_unknown(wire_type);
