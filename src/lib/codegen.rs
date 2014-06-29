@@ -659,7 +659,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn lazy_static<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2) {
-        self.write_line(format!("static mut {:s}: ::protobuf::lazy::Lazy<{:s}> = ::protobuf::lazy::Lazy {{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *{:s} }};", name, ty, ty));
+        self.write_line(format!("static mut {:s}: ::protobuf::lazy::Lazy<{:s}> = ::protobuf::lazy::Lazy {{ lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const {:s} }};", name, ty, ty));
     }
 
     fn lazy_static_decl_get<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2, init: |&mut IndentWriter|) {

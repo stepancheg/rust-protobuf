@@ -12,7 +12,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x6e, 0x75, 0x6d, 0x42, 0x12, 0x07, 0x0a, 0x03, 0x46, 0x4f, 0x4f, 0x10, 0x00,
 ];
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };
+static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data)
@@ -37,7 +37,7 @@ impl<'a> MessageA {
     }
 
     pub fn default_instance() -> &'static MessageA {
-        static mut instance: ::protobuf::lazy::Lazy<MessageA> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *MessageA };
+        static mut instance: ::protobuf::lazy::Lazy<MessageA> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const MessageA };
         unsafe {
             instance.get(|| {
                 MessageA {
@@ -114,7 +114,7 @@ impl ::protobuf::Message for MessageA {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<MessageA>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MessageA>> = Vec::new();
@@ -165,7 +165,7 @@ impl ::protobuf::ProtobufEnum for MessageA_EnumA {
     }
 
     fn enum_descriptor_static(_: Option<MessageA_EnumA>) -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::EnumDescriptor };
         unsafe {
             descriptor.get(|| {
                 ::protobuf::reflect::EnumDescriptor::new("MessageA_EnumA", file_descriptor_proto())
@@ -185,7 +185,7 @@ impl<'a> MessageB {
     }
 
     pub fn default_instance() -> &'static MessageB {
-        static mut instance: ::protobuf::lazy::Lazy<MessageB> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *MessageB };
+        static mut instance: ::protobuf::lazy::Lazy<MessageB> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const MessageB };
         unsafe {
             instance.get(|| {
                 MessageB {
@@ -262,7 +262,7 @@ impl ::protobuf::Message for MessageB {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<MessageB>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MessageB>> = Vec::new();
@@ -313,7 +313,7 @@ impl ::protobuf::ProtobufEnum for MessageB_EnumB {
     }
 
     fn enum_descriptor_static(_: Option<MessageB_EnumB>) -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::EnumDescriptor };
         unsafe {
             descriptor.get(|| {
                 ::protobuf::reflect::EnumDescriptor::new("MessageB_EnumB", file_descriptor_proto())

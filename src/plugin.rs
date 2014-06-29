@@ -35,7 +35,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x6f, 0x74, 0x6f, 0x73,
 ];
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };
+static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data)
@@ -63,7 +63,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorRequest {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorRequest> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *CodeGeneratorRequest };
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorRequest> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const CodeGeneratorRequest };
         unsafe {
             instance.get(|| {
                 CodeGeneratorRequest {
@@ -255,7 +255,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>> = Vec::new();
@@ -356,7 +356,7 @@ impl<'a> CodeGeneratorResponse {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *CodeGeneratorResponse };
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const CodeGeneratorResponse };
         unsafe {
             instance.get(|| {
                 CodeGeneratorResponse {
@@ -514,7 +514,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>> = Vec::new();
@@ -597,7 +597,7 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     pub fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse_File> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *CodeGeneratorResponse_File };
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse_File> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const CodeGeneratorResponse_File };
         unsafe {
             instance.get(|| {
                 CodeGeneratorResponse_File {
@@ -806,7 +806,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>> = Vec::new();

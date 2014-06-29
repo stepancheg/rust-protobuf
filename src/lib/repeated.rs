@@ -224,7 +224,7 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn as_ptr(&self) -> *T {
+    pub fn as_ptr(&self) -> *const T {
         self.vec.as_ptr()
     }
 

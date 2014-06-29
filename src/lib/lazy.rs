@@ -3,7 +3,7 @@ use sync::one;
 
 pub struct Lazy<T> {
     pub lock: one::Once,
-    pub ptr: *T,
+    pub ptr: *const T,
 }
 
 impl<T> Lazy<T> {

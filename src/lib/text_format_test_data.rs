@@ -71,7 +71,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x49, 0x47, 0x48, 0x54, 0x10, 0x02,
 ];
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::descriptor::FileDescriptorProto };
+static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data)
@@ -97,7 +97,7 @@ impl<'a> TestMessage {
     }
 
     pub fn default_instance() -> &'static TestMessage {
-        static mut instance: ::protobuf::lazy::Lazy<TestMessage> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *TestMessage };
+        static mut instance: ::protobuf::lazy::Lazy<TestMessage> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const TestMessage };
         unsafe {
             instance.get(|| {
                 TestMessage {
@@ -215,7 +215,7 @@ impl ::protobuf::Message for TestMessage {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestMessage>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestMessage>> = Vec::new();
@@ -310,7 +310,7 @@ impl<'a> TestTypes {
     }
 
     pub fn default_instance() -> &'static TestTypes {
-        static mut instance: ::protobuf::lazy::Lazy<TestTypes> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *TestTypes };
+        static mut instance: ::protobuf::lazy::Lazy<TestTypes> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const TestTypes };
         unsafe {
             instance.get(|| {
                 TestTypes {
@@ -1773,7 +1773,7 @@ impl ::protobuf::Message for TestTypes {
 
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: Option<TestTypes>) -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::MessageDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
                 let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypes>> = Vec::new();
@@ -2474,7 +2474,7 @@ impl ::protobuf::ProtobufEnum for TestEnum {
     }
 
     fn enum_descriptor_static(_: Option<TestEnum>) -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *::protobuf::reflect::EnumDescriptor };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::EnumDescriptor };
         unsafe {
             descriptor.get(|| {
                 ::protobuf::reflect::EnumDescriptor::new("TestEnum", file_descriptor_proto())
