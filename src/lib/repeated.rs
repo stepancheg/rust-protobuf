@@ -277,13 +277,6 @@ impl<T : PartialEq> PartialEq for RepeatedField<T> {
     }
 }
 
-impl<T : PartialOrd> PartialOrd for RepeatedField<T> {
-    #[inline]
-    fn lt(&self, other: &RepeatedField<T>) -> bool {
-        self.as_slice() < other.as_slice()
-    }
-}
-
 impl<T : Eq> Eq for RepeatedField<T> {}
 
 impl<T : PartialEq> RepeatedField<T> {

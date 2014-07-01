@@ -30,7 +30,7 @@ use reflect::EnumValueDescriptor;
 
 pub mod wire_format {
     pub static TAG_TYPE_BITS: u32 = 3;
-    pub static TAG_TYPE_MASK: u32 = (1 << TAG_TYPE_BITS as uint) as u32 - 1;
+    pub static TAG_TYPE_MASK: u32 = (1u << TAG_TYPE_BITS as uint) as u32 - 1;
 
     #[deriving(PartialEq, Eq, Clone, Show)]
     pub enum WireType {

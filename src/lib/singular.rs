@@ -417,13 +417,6 @@ impl<T : PartialEq> PartialEq for SingularField<T> {
 
 impl<T : Eq> Eq for SingularField<T> {}
 
-impl<T : PartialOrd> PartialOrd for SingularField<T> {
-    #[inline]
-    fn lt(&self, other: &SingularField<T>) -> bool {
-        self.as_ref() < other.as_ref()
-    }
-}
-
 impl<T : PartialEq> PartialEq for SingularPtrField<T> {
     #[inline]
     fn eq(&self, other: &SingularPtrField<T>) -> bool {
@@ -432,13 +425,6 @@ impl<T : PartialEq> PartialEq for SingularPtrField<T> {
 }
 
 impl<T : Eq> Eq for SingularPtrField<T> {}
-
-impl<T : PartialOrd> PartialOrd for SingularPtrField<T> {
-    #[inline]
-    fn lt(&self, other: &SingularPtrField<T>) -> bool {
-        self.as_ref() < other.as_ref()
-    }
-}
 
 
 #[cfg(test)]
