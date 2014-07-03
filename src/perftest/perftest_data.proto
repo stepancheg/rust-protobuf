@@ -6,6 +6,10 @@ message TestRepeatedBool {
     repeated bool values = 1;
 }
 
+message TestRepeatedPackedInt32 {
+    repeated int32 values = 1 [ packed = true ];
+}
+
 message TestRepeatedMessages {
     repeated TestRepeatedMessages messages1 = 1;
     repeated TestRepeatedMessages messages2 = 2;
@@ -30,4 +34,5 @@ message PerftestData {
     repeated TestRepeatedMessages test_repeated_messages = 3;
     repeated TestOptionalMessages test_optional_messages = 4;
     repeated TestStrings test_strings = 5;
+    repeated TestRepeatedPackedInt32 test_repeated_packed_int32 = 6;
 }

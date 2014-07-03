@@ -113,6 +113,7 @@ fn main() {
 
     runner.test("test1", test_data.get_test1());
     runner.test("test_repeated_bool", test_data.get_test_repeated_bool());
+    runner.test("test_repeated_packed_int32", test_data.get_test_repeated_packed_int32());
     runner.test("test_repeated_messages", test_data.get_test_repeated_messages());
     runner.test("test_optional_messages", test_data.get_test_optional_messages());
     runner.test("test_strings", test_data.get_test_strings());

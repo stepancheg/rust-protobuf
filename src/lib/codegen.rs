@@ -1031,6 +1031,8 @@ fn write_message_write_field(w: &mut IndentWriter) {
         RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
                 w.write_line(format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
+                // Data size is computed again here,
+                // probably it should be cached in `sizes` vec
                 let data_size_expr = w.self_field_vec_packed_data_size();
                 w.write_line(format!("os.write_raw_varint32({});", data_size_expr));
                 w.for_self_field("v", |w| {

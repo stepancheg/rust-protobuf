@@ -106,6 +106,7 @@ int main() {
     VERIFY(ok);
     test("test1", perftestData.test1());
     test("test_repeated_bool", perftestData.test_repeated_bool());
+    test("test_repeated_packed_int32", perftestData.test_repeated_packed_int32());
     test("test_repeated_messages", perftestData.test_repeated_messages());
     test("test_optional_messages", perftestData.test_optional_messages());
     test("test_strings", perftestData.test_strings());

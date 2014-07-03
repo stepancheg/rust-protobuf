@@ -20,3 +20,8 @@ test_optional_messages { message3 { message2 { message3 {} message2 {} message1 
 test_strings { s1: "aaaaa" }
 test_strings { s2: "hi there" s3: "long long long long long long long string" }
 test_strings { s1: "first" s2: "second" s3: "third" }
+
+test_repeated_packed_int32 { }
+test_repeated_packed_int32 { values: 10 }
+test_repeated_packed_int32 { values: 10 values: 10203040 values: 20 values: 40 values: 3040 }
+test_repeated_packed_int32 { values: 10 values: 10203040 values: 20 values: 40 values: 3040 values: 70 }
