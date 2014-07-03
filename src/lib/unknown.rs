@@ -107,7 +107,7 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
 pub struct UnknownFields {
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive
-    pub fields: Option<HashMap<u32, UnknownValues>>,
+    pub fields: Option<Box<HashMap<u32, UnknownValues>>>,
 }
 
 impl UnknownFields {
@@ -117,7 +117,7 @@ impl UnknownFields {
 
     fn init_map(&mut self) {
         if self.fields.is_none() {
-            self.fields = Some(Default::default());
+            self.fields = Some(box Default::default());
         }
     }
 
