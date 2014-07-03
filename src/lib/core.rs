@@ -758,6 +758,16 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
         // TODO: assert we've written same number of bytes as computed
     }
 
+    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) {
+        let mut sizes = Vec::new();
+        let size = self.compute_sizes(&mut sizes);
+        os.write_raw_varint32(size);
+        let mut sizes_pos = 1; // first element is self
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
+        assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
+    }
+
     fn serialized_size(&self) -> u32 {
         let mut sizes = Vec::new();
         self.compute_sizes(&mut sizes)
@@ -778,11 +788,6 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
         with_coded_output_stream_to_bytes(|os| {
             self.write_to(os)
         })
-    }
-
-    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) {
-        os.write_raw_varint32(self.serialized_size());
-        self.write_to(os);
     }
 
     fn write_length_delimited_to_writer(&self, w: &mut Writer) {
