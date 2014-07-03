@@ -745,8 +745,18 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
     // all required fields set
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream);
-    fn write_to(&self, os: &mut CodedOutputStream);
+    fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint);
     fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32;
+
+    fn write_to(&self, os: &mut CodedOutputStream) {
+        self.check_initialized();
+        let mut sizes: Vec<u32> = Vec::new();
+        self.compute_sizes(&mut sizes);
+        let mut sizes_pos = 1; // first element is self
+        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
+        assert_eq!(sizes_pos, sizes.len());
+        // TODO: assert we've written same number of bytes as computed
+    }
 
     fn serialized_size(&self) -> u32 {
         let mut sizes = Vec::new();

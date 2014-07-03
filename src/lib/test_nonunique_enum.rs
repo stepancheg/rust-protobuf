@@ -46,12 +46,6 @@ impl<'a> MessageA {
             })
         }
     }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
 }
 
 impl ::protobuf::Message for MessageA {
@@ -87,14 +81,10 @@ impl ::protobuf::Message for MessageA {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -188,12 +178,6 @@ impl<'a> MessageB {
             })
         }
     }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
 }
 
 impl ::protobuf::Message for MessageB {
@@ -229,14 +213,10 @@ impl ::protobuf::Message for MessageB {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

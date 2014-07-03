@@ -108,18 +108,6 @@ impl<'a> TestMessage {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.value {
-            Some(ref v) => {
-                os.write_int32(10, *v);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_value(&mut self) {
         self.value = None;
     }
@@ -188,14 +176,16 @@ impl ::protobuf::Message for TestMessage {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.value {
+            Some(ref v) => {
+                os.write_int32(10, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -346,170 +336,6 @@ impl<'a> TestTypes {
                 }
             })
         }
-    }
-
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.double_singular {
-            Some(ref v) => {
-                os.write_double(1, *v);
-            },
-            None => {},
-        };
-        match self.float_singular {
-            Some(ref v) => {
-                os.write_float(2, *v);
-            },
-            None => {},
-        };
-        match self.int32_singular {
-            Some(ref v) => {
-                os.write_int32(3, *v);
-            },
-            None => {},
-        };
-        match self.int64_singular {
-            Some(ref v) => {
-                os.write_int64(4, *v);
-            },
-            None => {},
-        };
-        match self.uint32_singular {
-            Some(ref v) => {
-                os.write_uint32(5, *v);
-            },
-            None => {},
-        };
-        match self.uint64_singular {
-            Some(ref v) => {
-                os.write_uint64(6, *v);
-            },
-            None => {},
-        };
-        match self.sint32_singular {
-            Some(ref v) => {
-                os.write_sint32(7, *v);
-            },
-            None => {},
-        };
-        match self.sint64_singular {
-            Some(ref v) => {
-                os.write_sint64(8, *v);
-            },
-            None => {},
-        };
-        match self.fixed32_singular {
-            Some(ref v) => {
-                os.write_fixed32(9, *v);
-            },
-            None => {},
-        };
-        match self.fixed64_singular {
-            Some(ref v) => {
-                os.write_fixed64(10, *v);
-            },
-            None => {},
-        };
-        match self.sfixed32_singular {
-            Some(ref v) => {
-                os.write_sfixed32(11, *v);
-            },
-            None => {},
-        };
-        match self.sfixed64_singular {
-            Some(ref v) => {
-                os.write_sfixed64(12, *v);
-            },
-            None => {},
-        };
-        match self.bool_singular {
-            Some(ref v) => {
-                os.write_bool(13, *v);
-            },
-            None => {},
-        };
-        match self.string_singular.as_ref() {
-            Some(ref v) => {
-                os.write_string(14, v.as_slice());
-            },
-            None => {},
-        };
-        match self.bytes_singular.as_ref() {
-            Some(ref v) => {
-                os.write_bytes(15, v.as_slice());
-            },
-            None => {},
-        };
-        match self.test_enum_singular {
-            Some(ref v) => {
-                os.write_enum(16, *v as i32);
-            },
-            None => {},
-        };
-        match self.test_message_singular.as_ref() {
-            Some(ref v) => {
-                os.write_tag(17, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
-                *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-            },
-            None => {},
-        };
-        for v in self.double_repeated.iter() {
-            os.write_double(31, *v);
-        };
-        for v in self.float_repeated.iter() {
-            os.write_float(32, *v);
-        };
-        for v in self.int32_repeated.iter() {
-            os.write_int32(33, *v);
-        };
-        for v in self.int64_repeated.iter() {
-            os.write_int64(34, *v);
-        };
-        for v in self.uint32_repeated.iter() {
-            os.write_uint32(35, *v);
-        };
-        for v in self.uint64_repeated.iter() {
-            os.write_uint64(36, *v);
-        };
-        for v in self.sint32_repeated.iter() {
-            os.write_sint32(37, *v);
-        };
-        for v in self.sint64_repeated.iter() {
-            os.write_sint64(38, *v);
-        };
-        for v in self.fixed32_repeated.iter() {
-            os.write_fixed32(39, *v);
-        };
-        for v in self.fixed64_repeated.iter() {
-            os.write_fixed64(40, *v);
-        };
-        for v in self.sfixed32_repeated.iter() {
-            os.write_sfixed32(41, *v);
-        };
-        for v in self.sfixed64_repeated.iter() {
-            os.write_sfixed64(42, *v);
-        };
-        for v in self.bool_repeated.iter() {
-            os.write_bool(43, *v);
-        };
-        for v in self.string_repeated.iter() {
-            os.write_string(44, v.as_slice());
-        };
-        for v in self.bytes_repeated.iter() {
-            os.write_bytes(45, v.as_slice());
-        };
-        for v in self.test_enum_repeated.iter() {
-            os.write_enum(46, *v as i32);
-        };
-        for v in self.test_message_repeated.iter() {
-            os.write_tag(47, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
-            *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_double_singular(&mut self) {
@@ -1740,14 +1566,168 @@ impl ::protobuf::Message for TestTypes {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.double_singular {
+            Some(ref v) => {
+                os.write_double(1, *v);
+            },
+            None => {},
+        };
+        match self.float_singular {
+            Some(ref v) => {
+                os.write_float(2, *v);
+            },
+            None => {},
+        };
+        match self.int32_singular {
+            Some(ref v) => {
+                os.write_int32(3, *v);
+            },
+            None => {},
+        };
+        match self.int64_singular {
+            Some(ref v) => {
+                os.write_int64(4, *v);
+            },
+            None => {},
+        };
+        match self.uint32_singular {
+            Some(ref v) => {
+                os.write_uint32(5, *v);
+            },
+            None => {},
+        };
+        match self.uint64_singular {
+            Some(ref v) => {
+                os.write_uint64(6, *v);
+            },
+            None => {},
+        };
+        match self.sint32_singular {
+            Some(ref v) => {
+                os.write_sint32(7, *v);
+            },
+            None => {},
+        };
+        match self.sint64_singular {
+            Some(ref v) => {
+                os.write_sint64(8, *v);
+            },
+            None => {},
+        };
+        match self.fixed32_singular {
+            Some(ref v) => {
+                os.write_fixed32(9, *v);
+            },
+            None => {},
+        };
+        match self.fixed64_singular {
+            Some(ref v) => {
+                os.write_fixed64(10, *v);
+            },
+            None => {},
+        };
+        match self.sfixed32_singular {
+            Some(ref v) => {
+                os.write_sfixed32(11, *v);
+            },
+            None => {},
+        };
+        match self.sfixed64_singular {
+            Some(ref v) => {
+                os.write_sfixed64(12, *v);
+            },
+            None => {},
+        };
+        match self.bool_singular {
+            Some(ref v) => {
+                os.write_bool(13, *v);
+            },
+            None => {},
+        };
+        match self.string_singular.as_ref() {
+            Some(ref v) => {
+                os.write_string(14, v.as_slice());
+            },
+            None => {},
+        };
+        match self.bytes_singular.as_ref() {
+            Some(ref v) => {
+                os.write_bytes(15, v.as_slice());
+            },
+            None => {},
+        };
+        match self.test_enum_singular {
+            Some(ref v) => {
+                os.write_enum(16, *v as i32);
+            },
+            None => {},
+        };
+        match self.test_message_singular.as_ref() {
+            Some(ref v) => {
+                os.write_tag(17, ::protobuf::wire_format::WireTypeLengthDelimited);
+                os.write_raw_varint32(sizes[*sizes_pos]);
+                *sizes_pos += 1;
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            },
+            None => {},
+        };
+        for v in self.double_repeated.iter() {
+            os.write_double(31, *v);
+        };
+        for v in self.float_repeated.iter() {
+            os.write_float(32, *v);
+        };
+        for v in self.int32_repeated.iter() {
+            os.write_int32(33, *v);
+        };
+        for v in self.int64_repeated.iter() {
+            os.write_int64(34, *v);
+        };
+        for v in self.uint32_repeated.iter() {
+            os.write_uint32(35, *v);
+        };
+        for v in self.uint64_repeated.iter() {
+            os.write_uint64(36, *v);
+        };
+        for v in self.sint32_repeated.iter() {
+            os.write_sint32(37, *v);
+        };
+        for v in self.sint64_repeated.iter() {
+            os.write_sint64(38, *v);
+        };
+        for v in self.fixed32_repeated.iter() {
+            os.write_fixed32(39, *v);
+        };
+        for v in self.fixed64_repeated.iter() {
+            os.write_fixed64(40, *v);
+        };
+        for v in self.sfixed32_repeated.iter() {
+            os.write_sfixed32(41, *v);
+        };
+        for v in self.sfixed64_repeated.iter() {
+            os.write_sfixed64(42, *v);
+        };
+        for v in self.bool_repeated.iter() {
+            os.write_bool(43, *v);
+        };
+        for v in self.string_repeated.iter() {
+            os.write_string(44, v.as_slice());
+        };
+        for v in self.bytes_repeated.iter() {
+            os.write_bytes(45, v.as_slice());
+        };
+        for v in self.test_enum_repeated.iter() {
+            os.write_enum(46, *v as i32);
+        };
+        for v in self.test_message_repeated.iter() {
+            os.write_tag(47, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(sizes[*sizes_pos]);
+            *sizes_pos += 1;
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

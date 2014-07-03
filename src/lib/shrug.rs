@@ -151,18 +151,6 @@ impl<'a> Test1 {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.a {
-            Some(ref v) => {
-                os.write_int32(1, *v);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_a(&mut self) {
         self.a = None;
     }
@@ -234,14 +222,16 @@ impl ::protobuf::Message for Test1 {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.a {
+            Some(ref v) => {
+                os.write_int32(1, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -328,18 +318,6 @@ impl<'a> Test2 {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.b.as_ref() {
-            Some(ref v) => {
-                os.write_string(2, v.as_slice());
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_b(&mut self) {
         self.b.clear();
     }
@@ -414,14 +392,16 @@ impl ::protobuf::Message for Test2 {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.b.as_ref() {
+            Some(ref v) => {
+                os.write_string(2, v.as_slice());
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -508,20 +488,6 @@ impl<'a> Test3 {
         }
     }
 
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.c.as_ref() {
-            Some(ref v) => {
-                os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
-                *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_c(&mut self) {
         self.c.clear();
     }
@@ -594,14 +560,18 @@ impl ::protobuf::Message for Test3 {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.c.as_ref() {
+            Some(ref v) => {
+                os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
+                os.write_raw_varint32(sizes[*sizes_pos]);
+                *sizes_pos += 1;
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -688,19 +658,6 @@ impl<'a> Test4 {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        if !self.d.is_empty() {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d.as_slice()));
-            for v in self.d.iter() {
-                os.write_int32_no_tag(*v);
-            };
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_d(&mut self) {
         self.d.clear();
     }
@@ -773,14 +730,17 @@ impl ::protobuf::Message for Test4 {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        if !self.d.is_empty() {
+            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d.as_slice()));
+            for v in self.d.iter() {
+                os.write_int32_no_tag(*v);
+            };
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -867,22 +827,6 @@ impl<'a> TestPackedUnpacked {
                 }
             })
         }
-    }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        for v in self.unpacked.iter() {
-            os.write_int32(4, *v);
-        };
-        if !self.packed.is_empty() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed.as_slice()));
-            for v in self.packed.iter() {
-                os.write_int32_no_tag(*v);
-            };
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_unpacked(&mut self) {
@@ -995,14 +939,20 @@ impl ::protobuf::Message for TestPackedUnpacked {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        for v in self.unpacked.iter() {
+            os.write_int32(4, *v);
+        };
+        if !self.packed.is_empty() {
+            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed.as_slice()));
+            for v in self.packed.iter() {
+                os.write_int32_no_tag(*v);
+            };
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1108,18 +1058,6 @@ impl<'a> TestEmpty {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.foo {
-            Some(ref v) => {
-                os.write_int32(10, *v);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_foo(&mut self) {
         self.foo = None;
     }
@@ -1188,14 +1126,16 @@ impl ::protobuf::Message for TestEmpty {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.foo {
+            Some(ref v) => {
+                os.write_int32(10, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1282,18 +1222,6 @@ impl<'a> TestRequired {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.b {
-            Some(ref v) => {
-                os.write_bool(5, *v);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_b(&mut self) {
         self.b = None;
     }
@@ -1365,14 +1293,16 @@ impl ::protobuf::Message for TestRequired {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.b {
+            Some(ref v) => {
+                os.write_bool(5, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1459,18 +1389,6 @@ impl<'a> TestUnknownFields {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.a {
-            Some(ref v) => {
-                os.write_int32(1, *v);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_a(&mut self) {
         self.a = None;
     }
@@ -1542,14 +1460,16 @@ impl ::protobuf::Message for TestUnknownFields {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.a {
+            Some(ref v) => {
+                os.write_int32(1, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1636,29 +1556,6 @@ impl<'a> TestSelfReference {
                 }
             })
         }
-    }
-
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.r1.as_ref() {
-            Some(ref v) => {
-                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
-                *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-            },
-            None => {},
-        };
-        match self.r2.as_ref() {
-            Some(ref v) => {
-                os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
-                *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_r1(&mut self) {
@@ -1768,14 +1665,27 @@ impl ::protobuf::Message for TestSelfReference {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.r1.as_ref() {
+            Some(ref v) => {
+                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
+                os.write_raw_varint32(sizes[*sizes_pos]);
+                *sizes_pos += 1;
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            },
+            None => {},
+        };
+        match self.r2.as_ref() {
+            Some(ref v) => {
+                os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
+                os.write_raw_varint32(sizes[*sizes_pos]);
+                *sizes_pos += 1;
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1881,18 +1791,6 @@ impl<'a> TestDefaultInstanceField {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.s.as_ref() {
-            Some(ref v) => {
-                os.write_string(1, v.as_slice());
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_s(&mut self) {
         self.s.clear();
     }
@@ -1964,14 +1862,16 @@ impl ::protobuf::Message for TestDefaultInstanceField {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.s.as_ref() {
+            Some(ref v) => {
+                os.write_string(1, v.as_slice());
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -2058,20 +1958,6 @@ impl<'a> TestDefaultInstance {
         }
     }
 
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.field.as_ref() {
-            Some(ref v) => {
-                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
-                *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_field(&mut self) {
         self.field.clear();
     }
@@ -2141,14 +2027,18 @@ impl ::protobuf::Message for TestDefaultInstance {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.field.as_ref() {
+            Some(ref v) => {
+                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
+                os.write_raw_varint32(sizes[*sizes_pos]);
+                *sizes_pos += 1;
+                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -2235,18 +2125,6 @@ impl<'a> TestDescriptor {
         }
     }
 
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.stuff {
-            Some(ref v) => {
-                os.write_int32(10, *v);
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_stuff(&mut self) {
         self.stuff = None;
     }
@@ -2315,14 +2193,16 @@ impl ::protobuf::Message for TestDescriptor {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.stuff {
+            Some(ref v) => {
+                os.write_int32(10, *v);
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -2435,102 +2315,6 @@ impl<'a> TestTypesSingular {
                 }
             })
         }
-    }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.double_field {
-            Some(ref v) => {
-                os.write_double(1, *v);
-            },
-            None => {},
-        };
-        match self.float_field {
-            Some(ref v) => {
-                os.write_float(2, *v);
-            },
-            None => {},
-        };
-        match self.int32_field {
-            Some(ref v) => {
-                os.write_int32(3, *v);
-            },
-            None => {},
-        };
-        match self.int64_field {
-            Some(ref v) => {
-                os.write_int64(4, *v);
-            },
-            None => {},
-        };
-        match self.uint32_field {
-            Some(ref v) => {
-                os.write_uint32(5, *v);
-            },
-            None => {},
-        };
-        match self.uint64_field {
-            Some(ref v) => {
-                os.write_uint64(6, *v);
-            },
-            None => {},
-        };
-        match self.sint32_field {
-            Some(ref v) => {
-                os.write_sint32(7, *v);
-            },
-            None => {},
-        };
-        match self.sint64_field {
-            Some(ref v) => {
-                os.write_sint64(8, *v);
-            },
-            None => {},
-        };
-        match self.fixed32_field {
-            Some(ref v) => {
-                os.write_fixed32(9, *v);
-            },
-            None => {},
-        };
-        match self.fixed64_field {
-            Some(ref v) => {
-                os.write_fixed64(10, *v);
-            },
-            None => {},
-        };
-        match self.sfixed32_field {
-            Some(ref v) => {
-                os.write_sfixed32(11, *v);
-            },
-            None => {},
-        };
-        match self.sfixed64_field {
-            Some(ref v) => {
-                os.write_sfixed64(12, *v);
-            },
-            None => {},
-        };
-        match self.bool_field {
-            Some(ref v) => {
-                os.write_bool(13, *v);
-            },
-            None => {},
-        };
-        match self.string_field.as_ref() {
-            Some(ref v) => {
-                os.write_string(14, v.as_slice());
-            },
-            None => {},
-        };
-        match self.bytes_field.as_ref() {
-            Some(ref v) => {
-                os.write_bytes(15, v.as_slice());
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_double_field(&mut self) {
@@ -3083,14 +2867,100 @@ impl ::protobuf::Message for TestTypesSingular {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.double_field {
+            Some(ref v) => {
+                os.write_double(1, *v);
+            },
+            None => {},
+        };
+        match self.float_field {
+            Some(ref v) => {
+                os.write_float(2, *v);
+            },
+            None => {},
+        };
+        match self.int32_field {
+            Some(ref v) => {
+                os.write_int32(3, *v);
+            },
+            None => {},
+        };
+        match self.int64_field {
+            Some(ref v) => {
+                os.write_int64(4, *v);
+            },
+            None => {},
+        };
+        match self.uint32_field {
+            Some(ref v) => {
+                os.write_uint32(5, *v);
+            },
+            None => {},
+        };
+        match self.uint64_field {
+            Some(ref v) => {
+                os.write_uint64(6, *v);
+            },
+            None => {},
+        };
+        match self.sint32_field {
+            Some(ref v) => {
+                os.write_sint32(7, *v);
+            },
+            None => {},
+        };
+        match self.sint64_field {
+            Some(ref v) => {
+                os.write_sint64(8, *v);
+            },
+            None => {},
+        };
+        match self.fixed32_field {
+            Some(ref v) => {
+                os.write_fixed32(9, *v);
+            },
+            None => {},
+        };
+        match self.fixed64_field {
+            Some(ref v) => {
+                os.write_fixed64(10, *v);
+            },
+            None => {},
+        };
+        match self.sfixed32_field {
+            Some(ref v) => {
+                os.write_sfixed32(11, *v);
+            },
+            None => {},
+        };
+        match self.sfixed64_field {
+            Some(ref v) => {
+                os.write_sfixed64(12, *v);
+            },
+            None => {},
+        };
+        match self.bool_field {
+            Some(ref v) => {
+                os.write_bool(13, *v);
+            },
+            None => {},
+        };
+        match self.string_field.as_ref() {
+            Some(ref v) => {
+                os.write_string(14, v.as_slice());
+            },
+            None => {},
+        };
+        match self.bytes_field.as_ref() {
+            Some(ref v) => {
+                os.write_bytes(15, v.as_slice());
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -3469,57 +3339,6 @@ impl<'a> TestTypesRepeated {
                 }
             })
         }
-    }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        for v in self.double_field.iter() {
-            os.write_double(1, *v);
-        };
-        for v in self.float_field.iter() {
-            os.write_float(2, *v);
-        };
-        for v in self.int32_field.iter() {
-            os.write_int32(3, *v);
-        };
-        for v in self.int64_field.iter() {
-            os.write_int64(4, *v);
-        };
-        for v in self.uint32_field.iter() {
-            os.write_uint32(5, *v);
-        };
-        for v in self.uint64_field.iter() {
-            os.write_uint64(6, *v);
-        };
-        for v in self.sint32_field.iter() {
-            os.write_sint32(7, *v);
-        };
-        for v in self.sint64_field.iter() {
-            os.write_sint64(8, *v);
-        };
-        for v in self.fixed32_field.iter() {
-            os.write_fixed32(9, *v);
-        };
-        for v in self.fixed64_field.iter() {
-            os.write_fixed64(10, *v);
-        };
-        for v in self.sfixed32_field.iter() {
-            os.write_sfixed32(11, *v);
-        };
-        for v in self.sfixed64_field.iter() {
-            os.write_sfixed64(12, *v);
-        };
-        for v in self.bool_field.iter() {
-            os.write_bool(13, *v);
-        };
-        for v in self.string_field.iter() {
-            os.write_string(14, v.as_slice());
-        };
-        for v in self.bytes_field.iter() {
-            os.write_bytes(15, v.as_slice());
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_double_field(&mut self) {
@@ -4096,14 +3915,55 @@ impl ::protobuf::Message for TestTypesRepeated {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        for v in self.double_field.iter() {
+            os.write_double(1, *v);
+        };
+        for v in self.float_field.iter() {
+            os.write_float(2, *v);
+        };
+        for v in self.int32_field.iter() {
+            os.write_int32(3, *v);
+        };
+        for v in self.int64_field.iter() {
+            os.write_int64(4, *v);
+        };
+        for v in self.uint32_field.iter() {
+            os.write_uint32(5, *v);
+        };
+        for v in self.uint64_field.iter() {
+            os.write_uint64(6, *v);
+        };
+        for v in self.sint32_field.iter() {
+            os.write_sint32(7, *v);
+        };
+        for v in self.sint64_field.iter() {
+            os.write_sint64(8, *v);
+        };
+        for v in self.fixed32_field.iter() {
+            os.write_fixed32(9, *v);
+        };
+        for v in self.fixed64_field.iter() {
+            os.write_fixed64(10, *v);
+        };
+        for v in self.sfixed32_field.iter() {
+            os.write_sfixed32(11, *v);
+        };
+        for v in self.sfixed64_field.iter() {
+            os.write_sfixed64(12, *v);
+        };
+        for v in self.bool_field.iter() {
+            os.write_bool(13, *v);
+        };
+        for v in self.string_field.iter() {
+            os.write_string(14, v.as_slice());
+        };
+        for v in self.bytes_field.iter() {
+            os.write_bytes(15, v.as_slice());
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -4482,109 +4342,6 @@ impl<'a> TestTypesRepeatedPacked {
                 }
             })
         }
-    }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        if !self.double_field.is_empty() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.double_field.len() * 8) as u32);
-            for v in self.double_field.iter() {
-                os.write_double_no_tag(*v);
-            };
-        };
-        if !self.float_field.is_empty() {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.float_field.len() * 4) as u32);
-            for v in self.float_field.iter() {
-                os.write_float_no_tag(*v);
-            };
-        };
-        if !self.int32_field.is_empty() {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field.as_slice()));
-            for v in self.int32_field.iter() {
-                os.write_int32_no_tag(*v);
-            };
-        };
-        if !self.int64_field.is_empty() {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field.as_slice()));
-            for v in self.int64_field.iter() {
-                os.write_int64_no_tag(*v);
-            };
-        };
-        if !self.uint32_field.is_empty() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field.as_slice()));
-            for v in self.uint32_field.iter() {
-                os.write_uint32_no_tag(*v);
-            };
-        };
-        if !self.uint64_field.is_empty() {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field.as_slice()));
-            for v in self.uint64_field.iter() {
-                os.write_uint64_no_tag(*v);
-            };
-        };
-        if !self.sint32_field.is_empty() {
-            os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field.as_slice()));
-            for v in self.sint32_field.iter() {
-                os.write_sint32_no_tag(*v);
-            };
-        };
-        if !self.sint64_field.is_empty() {
-            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field.as_slice()));
-            for v in self.sint64_field.iter() {
-                os.write_sint64_no_tag(*v);
-            };
-        };
-        if !self.fixed32_field.is_empty() {
-            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.fixed32_field.len() * 4) as u32);
-            for v in self.fixed32_field.iter() {
-                os.write_fixed32_no_tag(*v);
-            };
-        };
-        if !self.fixed64_field.is_empty() {
-            os.write_tag(10, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.fixed64_field.len() * 8) as u32);
-            for v in self.fixed64_field.iter() {
-                os.write_fixed64_no_tag(*v);
-            };
-        };
-        if !self.sfixed32_field.is_empty() {
-            os.write_tag(11, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.sfixed32_field.len() * 4) as u32);
-            for v in self.sfixed32_field.iter() {
-                os.write_sfixed32_no_tag(*v);
-            };
-        };
-        if !self.sfixed64_field.is_empty() {
-            os.write_tag(12, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.sfixed64_field.len() * 8) as u32);
-            for v in self.sfixed64_field.iter() {
-                os.write_sfixed64_no_tag(*v);
-            };
-        };
-        if !self.bool_field.is_empty() {
-            os.write_tag(13, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.bool_field.len() * 1) as u32);
-            for v in self.bool_field.iter() {
-                os.write_bool_no_tag(*v);
-            };
-        };
-        for v in self.string_field.iter() {
-            os.write_string(14, v.as_slice());
-        };
-        for v in self.bytes_field.iter() {
-            os.write_bytes(15, v.as_slice());
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_double_field(&mut self) {
@@ -5175,14 +4932,107 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        if !self.double_field.is_empty() {
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.double_field.len() * 8) as u32);
+            for v in self.double_field.iter() {
+                os.write_double_no_tag(*v);
+            };
+        };
+        if !self.float_field.is_empty() {
+            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.float_field.len() * 4) as u32);
+            for v in self.float_field.iter() {
+                os.write_float_no_tag(*v);
+            };
+        };
+        if !self.int32_field.is_empty() {
+            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field.as_slice()));
+            for v in self.int32_field.iter() {
+                os.write_int32_no_tag(*v);
+            };
+        };
+        if !self.int64_field.is_empty() {
+            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field.as_slice()));
+            for v in self.int64_field.iter() {
+                os.write_int64_no_tag(*v);
+            };
+        };
+        if !self.uint32_field.is_empty() {
+            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field.as_slice()));
+            for v in self.uint32_field.iter() {
+                os.write_uint32_no_tag(*v);
+            };
+        };
+        if !self.uint64_field.is_empty() {
+            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field.as_slice()));
+            for v in self.uint64_field.iter() {
+                os.write_uint64_no_tag(*v);
+            };
+        };
+        if !self.sint32_field.is_empty() {
+            os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field.as_slice()));
+            for v in self.sint32_field.iter() {
+                os.write_sint32_no_tag(*v);
+            };
+        };
+        if !self.sint64_field.is_empty() {
+            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field.as_slice()));
+            for v in self.sint64_field.iter() {
+                os.write_sint64_no_tag(*v);
+            };
+        };
+        if !self.fixed32_field.is_empty() {
+            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.fixed32_field.len() * 4) as u32);
+            for v in self.fixed32_field.iter() {
+                os.write_fixed32_no_tag(*v);
+            };
+        };
+        if !self.fixed64_field.is_empty() {
+            os.write_tag(10, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.fixed64_field.len() * 8) as u32);
+            for v in self.fixed64_field.iter() {
+                os.write_fixed64_no_tag(*v);
+            };
+        };
+        if !self.sfixed32_field.is_empty() {
+            os.write_tag(11, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.sfixed32_field.len() * 4) as u32);
+            for v in self.sfixed32_field.iter() {
+                os.write_sfixed32_no_tag(*v);
+            };
+        };
+        if !self.sfixed64_field.is_empty() {
+            os.write_tag(12, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.sfixed64_field.len() * 8) as u32);
+            for v in self.sfixed64_field.iter() {
+                os.write_sfixed64_no_tag(*v);
+            };
+        };
+        if !self.bool_field.is_empty() {
+            os.write_tag(13, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32((self.bool_field.len() * 1) as u32);
+            for v in self.bool_field.iter() {
+                os.write_bool_no_tag(*v);
+            };
+        };
+        for v in self.string_field.iter() {
+            os.write_string(14, v.as_slice());
+        };
+        for v in self.bytes_field.iter() {
+            os.write_bytes(15, v.as_slice());
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

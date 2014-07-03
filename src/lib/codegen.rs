@@ -1054,7 +1054,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
         // `sizes` and `sizes_pos` are unused
         w.allow(["unused_variable"]);
     }
-    w.pub_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
+    w.def_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
         w.fields(|w| {
@@ -1191,8 +1191,6 @@ fn write_message_impl_self(w: &mut IndentWriter) {
 
         w.write_line("");
         write_message_default_instance(w);
-        w.write_line("");
-        write_message_write_to_with_computed_sizes(w);
         write_message_field_accessors(w);
     });
 }
@@ -1246,15 +1244,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         w.write_line("");
         write_message_compute_sizes(w);
         w.write_line("");
-        w.def_fn("write_to(&self, os: &mut ::protobuf::CodedOutputStream)", |w| {
-            w.write_line("self.check_initialized();");
-            w.write_line("let mut sizes: Vec<u32> = Vec::new();");
-            w.write_line("self.compute_sizes(&mut sizes);");
-            w.write_line("let mut sizes_pos = 1; // first element is self");
-            w.write_line("self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);");
-            w.write_line("assert_eq!(sizes_pos, sizes.len());");
-            w.comment("TODO: assert we've written same number of bytes as computed");
-        });
+        write_message_write_to_with_computed_sizes(w);
         w.write_line("");
         write_message_unknown_fields(w);
         w.write_line("");

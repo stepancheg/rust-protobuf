@@ -48,17 +48,6 @@ impl<'a> Root {
         }
     }
 
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        for v in self.nested.iter() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
-            *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_nested(&mut self) {
         self.nested.clear();
     }
@@ -124,14 +113,15 @@ impl ::protobuf::Message for Root {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        for v in self.nested.iter() {
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(sizes[*sizes_pos]);
+            *sizes_pos += 1;
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -215,12 +205,6 @@ impl<'a> Root_Nested {
             })
         }
     }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
 }
 
 impl ::protobuf::Message for Root_Nested {
@@ -256,14 +240,10 @@ impl ::protobuf::Message for Root_Nested {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

@@ -76,26 +76,6 @@ impl<'a> CodeGeneratorRequest {
         }
     }
 
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        for v in self.file_to_generate.iter() {
-            os.write_string(1, v.as_slice());
-        };
-        match self.parameter.as_ref() {
-            Some(ref v) => {
-                os.write_string(2, v.as_slice());
-            },
-            None => {},
-        };
-        for v in self.proto_file.iter() {
-            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
-            *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_file_to_generate(&mut self) {
         self.file_to_generate.clear();
     }
@@ -228,14 +208,24 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        for v in self.file_to_generate.iter() {
+            os.write_string(1, v.as_slice());
+        };
+        match self.parameter.as_ref() {
+            Some(ref v) => {
+                os.write_string(2, v.as_slice());
+            },
+            None => {},
+        };
+        for v in self.proto_file.iter() {
+            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(sizes[*sizes_pos]);
+            *sizes_pos += 1;
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -362,23 +352,6 @@ impl<'a> CodeGeneratorResponse {
         }
     }
 
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.error.as_ref() {
-            Some(ref v) => {
-                os.write_string(1, v.as_slice());
-            },
-            None => {},
-        };
-        for v in self.file.iter() {
-            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
-            *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
-    }
-
     pub fn clear_error(&mut self) {
         self.error.clear();
     }
@@ -481,14 +454,21 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.error.as_ref() {
+            Some(ref v) => {
+                os.write_string(1, v.as_slice());
+            },
+            None => {},
+        };
+        for v in self.file.iter() {
+            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
+            os.write_raw_varint32(sizes[*sizes_pos]);
+            *sizes_pos += 1;
+            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -596,30 +576,6 @@ impl<'a> CodeGeneratorResponse_File {
                 }
             })
         }
-    }
-
-    #[allow(unused_variable)]
-    pub fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
-        use protobuf::{Message};
-        match self.name.as_ref() {
-            Some(ref v) => {
-                os.write_string(1, v.as_slice());
-            },
-            None => {},
-        };
-        match self.insertion_point.as_ref() {
-            Some(ref v) => {
-                os.write_string(2, v.as_slice());
-            },
-            None => {},
-        };
-        match self.content.as_ref() {
-            Some(ref v) => {
-                os.write_string(15, v.as_slice());
-            },
-            None => {},
-        };
-        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     pub fn clear_name(&mut self) {
@@ -767,14 +723,28 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         my_size
     }
 
-    fn write_to(&self, os: &mut ::protobuf::CodedOutputStream) {
-        self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
+    #[allow(unused_variable)]
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+        use protobuf::{Message};
+        match self.name.as_ref() {
+            Some(ref v) => {
+                os.write_string(1, v.as_slice());
+            },
+            None => {},
+        };
+        match self.insertion_point.as_ref() {
+            Some(ref v) => {
+                os.write_string(2, v.as_slice());
+            },
+            None => {},
+        };
+        match self.content.as_ref() {
+            Some(ref v) => {
+                os.write_string(15, v.as_slice());
+            },
+            None => {},
+        };
+        os.write_unknown_fields(self.get_unknown_fields());
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
