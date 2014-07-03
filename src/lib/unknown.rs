@@ -104,20 +104,14 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
 
 #[deriving(Clone,PartialEq,Eq,Show,Default)]
 pub struct UnknownFields {
-    // option is needed, so it could be placed in static field
+    // option is needed, because HashMap constructor performs allocation,
+    // and very expensive
     pub fields: Option<HashMap<u32, UnknownValues>>,
 }
 
 impl UnknownFields {
     pub fn new() -> UnknownFields {
         Default::default()
-    }
-
-    pub fn default_instance() -> &'static UnknownFields {
-        static instance: UnknownFields = UnknownFields {
-            fields: None,
-        };
-        &'static instance
     }
 
     fn init_map(&mut self) {
