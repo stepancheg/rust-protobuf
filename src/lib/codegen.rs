@@ -908,7 +908,7 @@ fn write_message_struct(w: &mut IndentWriter) {
                 w.field_entry(field.name.as_slice(), format!("{}", field.full_storage_type()));
             }
         });
-        w.field_entry("unknown_fields", "Option<Box<::protobuf::UnknownFields>>");
+        w.field_entry("unknown_fields", "::protobuf::UnknownFields");
     });
 }
 
@@ -1071,7 +1071,7 @@ fn write_message_default_instance(w: &mut IndentWriter) {
                 w.fields(|w| {
                     w.field_default();
                 });
-                w.field_entry("unknown_fields", "None");
+                w.field_entry("unknown_fields", "::protobuf::UnknownFields::new()");
             });
         });
     });
@@ -1197,24 +1197,11 @@ fn write_message_impl_self(w: &mut IndentWriter) {
 
 fn write_message_unknown_fields(w: &mut IndentWriter) {
     w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields", |w| {
-        w.write_line("if self.unknown_fields.is_some() {");
-        w.indented(|w| {
-            w.write_line("&**self.unknown_fields.get_ref()");
-        });
-        w.write_line("} else {");
-        w.indented(|w| {
-            w.write_line("::protobuf::UnknownFields::default_instance()");
-        });
-        w.write_line("}");
+        w.write_line("&self.unknown_fields");
     });
     w.write_line("");
     w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields", |w| {
-        w.write_line("if self.unknown_fields.is_none() {");
-        w.indented(|w| {
-            w.write_line("self.unknown_fields = Some(::std::default::Default::default())");
-        });
-        w.write_line("}");
-        w.write_line("&mut **self.unknown_fields.get_mut_ref()");
+        w.write_line("&mut self.unknown_fields");
     });
 }
 

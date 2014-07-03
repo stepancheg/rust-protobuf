@@ -54,7 +54,7 @@ pub struct CodeGeneratorRequest {
     file_to_generate: ::protobuf::RepeatedField<String>,
     parameter: ::protobuf::SingularField<String>,
     proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> CodeGeneratorRequest {
@@ -70,7 +70,7 @@ impl<'a> CodeGeneratorRequest {
                     file_to_generate: ::protobuf::RepeatedField::new(),
                     parameter: ::protobuf::SingularField::none(),
                     proto_file: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -239,18 +239,11 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -347,7 +340,7 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorR
 pub struct CodeGeneratorResponse {
     error: ::protobuf::SingularField<String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> CodeGeneratorResponse {
@@ -362,7 +355,7 @@ impl<'a> CodeGeneratorResponse {
                 CodeGeneratorResponse {
                     error: ::protobuf::SingularField::none(),
                     file: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -498,18 +491,11 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -588,7 +574,7 @@ pub struct CodeGeneratorResponse_File {
     name: ::protobuf::SingularField<String>,
     insertion_point: ::protobuf::SingularField<String>,
     content: ::protobuf::SingularField<String>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> CodeGeneratorResponse_File {
@@ -604,7 +590,7 @@ impl<'a> CodeGeneratorResponse_File {
                     name: ::protobuf::SingularField::none(),
                     insertion_point: ::protobuf::SingularField::none(),
                     content: ::protobuf::SingularField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -790,18 +776,11 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]

@@ -282,7 +282,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 #[deriving(Clone,PartialEq,Default)]
 pub struct FileDescriptorSet {
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> FileDescriptorSet {
@@ -296,7 +296,7 @@ impl<'a> FileDescriptorSet {
             instance.get(|| {
                 FileDescriptorSet {
                     file: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -389,18 +389,11 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -468,7 +461,7 @@ pub struct FileDescriptorProto {
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
     options: ::protobuf::SingularPtrField<FileOptions>,
     source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> FileDescriptorProto {
@@ -492,7 +485,7 @@ impl<'a> FileDescriptorProto {
                     extension: ::protobuf::RepeatedField::new(),
                     options: ::protobuf::SingularPtrField::none(),
                     source_code_info: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -985,18 +978,11 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -1250,7 +1236,7 @@ pub struct DescriptorProto {
     enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
     extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
     options: ::protobuf::SingularPtrField<MessageOptions>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> DescriptorProto {
@@ -1270,7 +1256,7 @@ impl<'a> DescriptorProto {
                     enum_type: ::protobuf::RepeatedField::new(),
                     extension_range: ::protobuf::RepeatedField::new(),
                     options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -1598,18 +1584,11 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -1782,7 +1761,7 @@ impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_opt
 pub struct DescriptorProto_ExtensionRange {
     start: Option<i32>,
     end: Option<i32>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> DescriptorProto_ExtensionRange {
@@ -1797,7 +1776,7 @@ impl<'a> DescriptorProto_ExtensionRange {
                 DescriptorProto_ExtensionRange {
                     start: None,
                     end: None,
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -1934,18 +1913,11 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -2029,7 +2001,7 @@ pub struct FieldDescriptorProto {
     extendee: ::protobuf::SingularField<String>,
     default_value: ::protobuf::SingularField<String>,
     options: ::protobuf::SingularPtrField<FieldOptions>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> FieldDescriptorProto {
@@ -2050,7 +2022,7 @@ impl<'a> FieldDescriptorProto {
                     extendee: ::protobuf::SingularField::none(),
                     default_value: ::protobuf::SingularField::none(),
                     options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -2442,18 +2414,11 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -2744,7 +2709,7 @@ pub struct EnumDescriptorProto {
     name: ::protobuf::SingularField<String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: ::protobuf::SingularPtrField<EnumOptions>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> EnumDescriptorProto {
@@ -2760,7 +2725,7 @@ impl<'a> EnumDescriptorProto {
                     name: ::protobuf::SingularField::none(),
                     value: ::protobuf::RepeatedField::new(),
                     options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -2940,18 +2905,11 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -3049,7 +3007,7 @@ pub struct EnumValueDescriptorProto {
     name: ::protobuf::SingularField<String>,
     number: Option<i32>,
     options: ::protobuf::SingularPtrField<EnumValueOptions>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> EnumValueDescriptorProto {
@@ -3065,7 +3023,7 @@ impl<'a> EnumValueDescriptorProto {
                     name: ::protobuf::SingularField::none(),
                     number: None,
                     options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -3248,18 +3206,11 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -3357,7 +3308,7 @@ pub struct ServiceDescriptorProto {
     name: ::protobuf::SingularField<String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: ::protobuf::SingularPtrField<ServiceOptions>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> ServiceDescriptorProto {
@@ -3373,7 +3324,7 @@ impl<'a> ServiceDescriptorProto {
                     name: ::protobuf::SingularField::none(),
                     method: ::protobuf::RepeatedField::new(),
                     options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -3553,18 +3504,11 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -3663,7 +3607,7 @@ pub struct MethodDescriptorProto {
     input_type: ::protobuf::SingularField<String>,
     output_type: ::protobuf::SingularField<String>,
     options: ::protobuf::SingularPtrField<MethodOptions>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> MethodDescriptorProto {
@@ -3680,7 +3624,7 @@ impl<'a> MethodDescriptorProto {
                     input_type: ::protobuf::SingularField::none(),
                     output_type: ::protobuf::SingularField::none(),
                     options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -3909,18 +3853,11 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -4044,7 +3981,7 @@ pub struct FileOptions {
     java_generic_services: Option<bool>,
     py_generic_services: Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> FileOptions {
@@ -4067,7 +4004,7 @@ impl<'a> FileOptions {
                     java_generic_services: None,
                     py_generic_services: None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -4529,18 +4466,11 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -4805,7 +4735,7 @@ pub struct MessageOptions {
     message_set_wire_format: Option<bool>,
     no_standard_descriptor_accessor: Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> MessageOptions {
@@ -4821,7 +4751,7 @@ impl<'a> MessageOptions {
                     message_set_wire_format: None,
                     no_standard_descriptor_accessor: None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -4994,18 +4924,11 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -5107,7 +5030,7 @@ pub struct FieldOptions {
     experimental_map_key: ::protobuf::SingularField<String>,
     weak: Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> FieldOptions {
@@ -5127,7 +5050,7 @@ impl<'a> FieldOptions {
                     experimental_map_key: ::protobuf::SingularField::none(),
                     weak: None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -5463,18 +5386,11 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -5681,7 +5597,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 pub struct EnumOptions {
     allow_alias: Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> EnumOptions {
@@ -5696,7 +5612,7 @@ impl<'a> EnumOptions {
                 EnumOptions {
                     allow_alias: None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -5829,18 +5745,11 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -5917,7 +5826,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumOptions> for EnumOptions_uninterpret
 #[deriving(Clone,PartialEq,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> EnumValueOptions {
@@ -5931,7 +5840,7 @@ impl<'a> EnumValueOptions {
             instance.get(|| {
                 EnumValueOptions {
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -6024,18 +5933,11 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -6093,7 +5995,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumValueOptions> for EnumValueOptions_u
 #[deriving(Clone,PartialEq,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> ServiceOptions {
@@ -6107,7 +6009,7 @@ impl<'a> ServiceOptions {
             instance.get(|| {
                 ServiceOptions {
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -6200,18 +6102,11 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -6269,7 +6164,7 @@ impl ::protobuf::reflect::FieldAccessor<ServiceOptions> for ServiceOptions_unint
 #[deriving(Clone,PartialEq,Default)]
 pub struct MethodOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> MethodOptions {
@@ -6283,7 +6178,7 @@ impl<'a> MethodOptions {
             instance.get(|| {
                 MethodOptions {
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -6376,18 +6271,11 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -6451,7 +6339,7 @@ pub struct UninterpretedOption {
     double_value: Option<f64>,
     string_value: ::protobuf::SingularField<Vec<u8>>,
     aggregate_value: ::protobuf::SingularField<String>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> UninterpretedOption {
@@ -6471,7 +6359,7 @@ impl<'a> UninterpretedOption {
                     double_value: None,
                     string_value: ::protobuf::SingularField::none(),
                     aggregate_value: ::protobuf::SingularField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -6813,18 +6701,11 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -6997,7 +6878,7 @@ impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOp
 pub struct UninterpretedOption_NamePart {
     name_part: ::protobuf::SingularField<String>,
     is_extension: Option<bool>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> UninterpretedOption_NamePart {
@@ -7012,7 +6893,7 @@ impl<'a> UninterpretedOption_NamePart {
                 UninterpretedOption_NamePart {
                     name_part: ::protobuf::SingularField::none(),
                     is_extension: None,
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -7158,18 +7039,11 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -7246,7 +7120,7 @@ impl ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart> for Uninte
 #[deriving(Clone,PartialEq,Default)]
 pub struct SourceCodeInfo {
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> SourceCodeInfo {
@@ -7260,7 +7134,7 @@ impl<'a> SourceCodeInfo {
             instance.get(|| {
                 SourceCodeInfo {
                     location: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -7353,18 +7227,11 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -7425,7 +7292,7 @@ pub struct SourceCodeInfo_Location {
     span: Vec<i32>,
     leading_comments: ::protobuf::SingularField<String>,
     trailing_comments: ::protobuf::SingularField<String>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> SourceCodeInfo_Location {
@@ -7442,7 +7309,7 @@ impl<'a> SourceCodeInfo_Location {
                     span: Vec::new(),
                     leading_comments: ::protobuf::SingularField::none(),
                     trailing_comments: ::protobuf::SingularField::none(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -7675,18 +7542,11 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]

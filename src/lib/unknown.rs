@@ -109,6 +109,10 @@ pub struct UnknownFields {
 }
 
 impl UnknownFields {
+    pub fn new() -> UnknownFields {
+        Default::default()
+    }
+
     pub fn default_instance() -> &'static UnknownFields {
         static instance: UnknownFields = UnknownFields {
             fields: None,

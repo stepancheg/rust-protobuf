@@ -88,7 +88,7 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestMessage {
     value: Option<i32>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> TestMessage {
@@ -102,7 +102,7 @@ impl<'a> TestMessage {
             instance.get(|| {
                 TestMessage {
                     value: None,
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -199,18 +199,11 @@ impl ::protobuf::Message for TestMessage {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
@@ -301,7 +294,7 @@ pub struct TestTypes {
     bytes_repeated: ::protobuf::RepeatedField<Vec<u8>>,
     test_enum_repeated: Vec<TestEnum>,
     test_message_repeated: ::protobuf::RepeatedField<TestMessage>,
-    unknown_fields: Option<Box<::protobuf::UnknownFields>>,
+    unknown_fields: ::protobuf::UnknownFields,
 }
 
 impl<'a> TestTypes {
@@ -348,7 +341,7 @@ impl<'a> TestTypes {
                     bytes_repeated: ::protobuf::RepeatedField::new(),
                     test_enum_repeated: Vec::new(),
                     test_message_repeated: ::protobuf::RepeatedField::new(),
-                    unknown_fields: None,
+                    unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
         }
@@ -1757,18 +1750,11 @@ impl ::protobuf::Message for TestTypes {
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
-        if self.unknown_fields.is_some() {
-            &**self.unknown_fields.get_ref()
-        } else {
-            ::protobuf::UnknownFields::default_instance()
-        }
+        &self.unknown_fields
     }
 
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields {
-        if self.unknown_fields.is_none() {
-            self.unknown_fields = Some(::std::default::Default::default())
-        }
-        &mut **self.unknown_fields.get_mut_ref()
+        &mut self.unknown_fields
     }
 
     #[allow(unused_unsafe,unused_mut)]
