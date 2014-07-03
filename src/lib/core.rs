@@ -471,6 +471,7 @@ pub struct CodedOutputStream<'a> {
     // within buffer
     position: u32,
     writer: Option<&'a mut Writer>,
+    sizes: Vec<u32>, // used by Message::write_to
 }
 
 impl<'a> CodedOutputStream<'a> {
@@ -482,6 +483,7 @@ impl<'a> CodedOutputStream<'a> {
             buffer: buffer,
             position: 0,
             writer: Some(writer),
+            sizes: Vec::new(),
         }
     }
 
@@ -750,22 +752,28 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
 
     fn write_to(&self, os: &mut CodedOutputStream) {
         self.check_initialized();
-        let mut sizes: Vec<u32> = Vec::new();
+        let mut sizes = mem::replace(&mut os.sizes, Vec::new());
+        assert!(sizes.is_empty());
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
+        sizes.truncate(0);
+        mem::replace(&mut os.sizes, sizes);
     }
 
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream) {
-        let mut sizes = Vec::new();
+        let mut sizes = mem::replace(&mut os.sizes, Vec::new());
+        assert!(sizes.is_empty());
         let size = self.compute_sizes(&mut sizes);
         os.write_raw_varint32(size);
         let mut sizes_pos = 1; // first element is self
         self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
+        sizes.truncate(0);
+        mem::replace(&mut os.sizes, sizes);
     }
 
     fn serialized_size(&self) -> u32 {
