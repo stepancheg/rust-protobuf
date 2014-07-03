@@ -230,6 +230,7 @@ impl ::protobuf::Message for TestMessage {
 impl ::protobuf::Clear for TestMessage {
     fn clear(&mut self) {
         self.clear_value();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1847,6 +1848,7 @@ impl ::protobuf::Clear for TestTypes {
         self.clear_bytes_repeated();
         self.clear_test_enum_repeated();
         self.clear_test_message_repeated();
+        self.unknown_fields.clear();
     }
 }
 

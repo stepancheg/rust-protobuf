@@ -166,6 +166,7 @@ impl ::protobuf::Message for Root {
 impl ::protobuf::Clear for Root {
     fn clear(&mut self) {
         self.clear_nested();
+        self.unknown_fields.clear();
     }
 }
 
@@ -295,6 +296,7 @@ impl ::protobuf::Message for Root_Nested {
 
 impl ::protobuf::Clear for Root_Nested {
     fn clear(&mut self) {
+        self.unknown_fields.clear();
     }
 }
 

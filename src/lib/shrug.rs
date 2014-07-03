@@ -276,6 +276,7 @@ impl ::protobuf::Message for Test1 {
 impl ::protobuf::Clear for Test1 {
     fn clear(&mut self) {
         self.clear_a();
+        self.unknown_fields.clear();
     }
 }
 
@@ -455,6 +456,7 @@ impl ::protobuf::Message for Test2 {
 impl ::protobuf::Clear for Test2 {
     fn clear(&mut self) {
         self.clear_b();
+        self.unknown_fields.clear();
     }
 }
 
@@ -634,6 +636,7 @@ impl ::protobuf::Message for Test3 {
 impl ::protobuf::Clear for Test3 {
     fn clear(&mut self) {
         self.clear_c();
+        self.unknown_fields.clear();
     }
 }
 
@@ -812,6 +815,7 @@ impl ::protobuf::Message for Test4 {
 impl ::protobuf::Clear for Test4 {
     fn clear(&mut self) {
         self.clear_d();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1035,6 +1039,7 @@ impl ::protobuf::Clear for TestPackedUnpacked {
     fn clear(&mut self) {
         self.clear_unpacked();
         self.clear_packed();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1225,6 +1230,7 @@ impl ::protobuf::Message for TestEmpty {
 impl ::protobuf::Clear for TestEmpty {
     fn clear(&mut self) {
         self.clear_foo();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1401,6 +1407,7 @@ impl ::protobuf::Message for TestRequired {
 impl ::protobuf::Clear for TestRequired {
     fn clear(&mut self) {
         self.clear_b();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1577,6 +1584,7 @@ impl ::protobuf::Message for TestUnknownFields {
 impl ::protobuf::Clear for TestUnknownFields {
     fn clear(&mut self) {
         self.clear_a();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1804,6 +1812,7 @@ impl ::protobuf::Clear for TestSelfReference {
     fn clear(&mut self) {
         self.clear_r1();
         self.clear_r2();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1997,6 +2006,7 @@ impl ::protobuf::Message for TestDefaultInstanceField {
 impl ::protobuf::Clear for TestDefaultInstanceField {
     fn clear(&mut self) {
         self.clear_s();
+        self.unknown_fields.clear();
     }
 }
 
@@ -2173,6 +2183,7 @@ impl ::protobuf::Message for TestDefaultInstance {
 impl ::protobuf::Clear for TestDefaultInstance {
     fn clear(&mut self) {
         self.clear_field();
+        self.unknown_fields.clear();
     }
 }
 
@@ -2346,6 +2357,7 @@ impl ::protobuf::Message for TestDescriptor {
 impl ::protobuf::Clear for TestDescriptor {
     fn clear(&mut self) {
         self.clear_stuff();
+        self.unknown_fields.clear();
     }
 }
 
@@ -3141,6 +3153,7 @@ impl ::protobuf::Clear for TestTypesSingular {
         self.clear_bool_field();
         self.clear_string_field();
         self.clear_bytes_field();
+        self.unknown_fields.clear();
     }
 }
 
@@ -4153,6 +4166,7 @@ impl ::protobuf::Clear for TestTypesRepeated {
         self.clear_bool_field();
         self.clear_string_field();
         self.clear_bytes_field();
+        self.unknown_fields.clear();
     }
 }
 
@@ -5231,6 +5245,7 @@ impl ::protobuf::Clear for TestTypesRepeatedPacked {
         self.clear_bool_field();
         self.clear_string_field();
         self.clear_bytes_field();
+        self.unknown_fields.clear();
     }
 }
 

@@ -3,6 +3,7 @@ use std::collections::hashmap;
 use std::default::Default;
 use std::slice;
 use core::wire_format;
+use clear::Clear;
 
 #[deriving(Show)]
 pub enum UnknownValue {
@@ -150,6 +151,14 @@ impl UnknownFields {
     pub fn iter<'s>(&'s self) -> UnknownFieldIter<'s> {
         UnknownFieldIter {
             entries: self.fields.as_ref().map(|m| m.iter())
+        }
+    }
+}
+
+impl Clear for UnknownFields {
+    fn clear(&mut self) {
+        if self.fields.is_some() {
+            self.fields.get_mut_ref().clear();
         }
     }
 }

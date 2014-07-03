@@ -127,6 +127,7 @@ impl ::protobuf::Message for MessageA {
 
 impl ::protobuf::Clear for MessageA {
     fn clear(&mut self) {
+        self.unknown_fields.clear();
     }
 }
 
@@ -268,6 +269,7 @@ impl ::protobuf::Message for MessageB {
 
 impl ::protobuf::Clear for MessageB {
     fn clear(&mut self) {
+        self.unknown_fields.clear();
     }
 }
 

@@ -274,6 +274,7 @@ impl ::protobuf::Clear for CodeGeneratorRequest {
         self.clear_file_to_generate();
         self.clear_parameter();
         self.clear_proto_file();
+        self.unknown_fields.clear();
     }
 }
 
@@ -524,6 +525,7 @@ impl ::protobuf::Clear for CodeGeneratorResponse {
     fn clear(&mut self) {
         self.clear_error();
         self.clear_file();
+        self.unknown_fields.clear();
     }
 }
 
@@ -811,6 +813,7 @@ impl ::protobuf::Clear for CodeGeneratorResponse_File {
         self.clear_name();
         self.clear_insertion_point();
         self.clear_content();
+        self.unknown_fields.clear();
     }
 }
 

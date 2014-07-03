@@ -1414,6 +1414,7 @@ fn write_message_impl_clear(w: &mut IndentWriter) {
             w.fields(|w| {
                 w.write_line(format!("self.{:s}();", w.clear_field_func()));
             });
+            w.write_line("self.unknown_fields.clear();");
         });
     });
 }

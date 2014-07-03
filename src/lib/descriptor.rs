@@ -420,6 +420,7 @@ impl ::protobuf::Message for FileDescriptorSet {
 impl ::protobuf::Clear for FileDescriptorSet {
     fn clear(&mut self) {
         self.clear_file();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1029,6 +1030,7 @@ impl ::protobuf::Clear for FileDescriptorProto {
         self.clear_extension();
         self.clear_options();
         self.clear_source_code_info();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1627,6 +1629,7 @@ impl ::protobuf::Clear for DescriptorProto {
         self.clear_enum_type();
         self.clear_extension_range();
         self.clear_options();
+        self.unknown_fields.clear();
     }
 }
 
@@ -1946,6 +1949,7 @@ impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
     fn clear(&mut self) {
         self.clear_start();
         self.clear_end();
+        self.unknown_fields.clear();
     }
 }
 
@@ -2459,6 +2463,7 @@ impl ::protobuf::Clear for FieldDescriptorProto {
         self.clear_extendee();
         self.clear_default_value();
         self.clear_options();
+        self.unknown_fields.clear();
     }
 }
 
@@ -2940,6 +2945,7 @@ impl ::protobuf::Clear for EnumDescriptorProto {
         self.clear_name();
         self.clear_value();
         self.clear_options();
+        self.unknown_fields.clear();
     }
 }
 
@@ -3241,6 +3247,7 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
         self.clear_name();
         self.clear_number();
         self.clear_options();
+        self.unknown_fields.clear();
     }
 }
 
@@ -3539,6 +3546,7 @@ impl ::protobuf::Clear for ServiceDescriptorProto {
         self.clear_name();
         self.clear_method();
         self.clear_options();
+        self.unknown_fields.clear();
     }
 }
 
@@ -3890,6 +3898,7 @@ impl ::protobuf::Clear for MethodDescriptorProto {
         self.clear_input_type();
         self.clear_output_type();
         self.clear_options();
+        self.unknown_fields.clear();
     }
 }
 
@@ -4515,6 +4524,7 @@ impl ::protobuf::Clear for FileOptions {
         self.clear_java_generic_services();
         self.clear_py_generic_services();
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -4959,6 +4969,7 @@ impl ::protobuf::Clear for MessageOptions {
         self.clear_message_set_wire_format();
         self.clear_no_standard_descriptor_accessor();
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -5429,6 +5440,7 @@ impl ::protobuf::Clear for FieldOptions {
         self.clear_experimental_map_key();
         self.clear_weak();
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -5778,6 +5790,7 @@ impl ::protobuf::Clear for EnumOptions {
     fn clear(&mut self) {
         self.clear_allow_alias();
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -5964,6 +5977,7 @@ impl ::protobuf::Message for EnumValueOptions {
 impl ::protobuf::Clear for EnumValueOptions {
     fn clear(&mut self) {
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -6133,6 +6147,7 @@ impl ::protobuf::Message for ServiceOptions {
 impl ::protobuf::Clear for ServiceOptions {
     fn clear(&mut self) {
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -6302,6 +6317,7 @@ impl ::protobuf::Message for MethodOptions {
 impl ::protobuf::Clear for MethodOptions {
     fn clear(&mut self) {
         self.clear_uninterpreted_option();
+        self.unknown_fields.clear();
     }
 }
 
@@ -6744,6 +6760,7 @@ impl ::protobuf::Clear for UninterpretedOption {
         self.clear_double_value();
         self.clear_string_value();
         self.clear_aggregate_value();
+        self.unknown_fields.clear();
     }
 }
 
@@ -7072,6 +7089,7 @@ impl ::protobuf::Clear for UninterpretedOption_NamePart {
     fn clear(&mut self) {
         self.clear_name_part();
         self.clear_is_extension();
+        self.unknown_fields.clear();
     }
 }
 
@@ -7258,6 +7276,7 @@ impl ::protobuf::Message for SourceCodeInfo {
 impl ::protobuf::Clear for SourceCodeInfo {
     fn clear(&mut self) {
         self.clear_location();
+        self.unknown_fields.clear();
     }
 }
 
@@ -7579,6 +7598,7 @@ impl ::protobuf::Clear for SourceCodeInfo_Location {
         self.clear_span();
         self.clear_leading_comments();
         self.clear_trailing_comments();
+        self.unknown_fields.clear();
     }
 }
 
