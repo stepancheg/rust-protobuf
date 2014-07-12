@@ -389,7 +389,7 @@ impl FieldDescriptor {
 
 
 trait MessageFactory {
-    fn new_instance() -> Box<Message>;
+    fn new_instance(&self) -> Box<Message>;
 }
 
 struct MessageFactoryTyped<M> {
@@ -405,7 +405,7 @@ impl<M> MessageFactoryTyped<M> {
 }
 
 impl<M : 'static + Message> MessageFactory for MessageFactoryTyped<M> {
-    fn new_instance() -> Box<Message> {
+    fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
         box m as Box<Message>
     }
@@ -454,6 +454,10 @@ impl MessageDescriptor {
             index_by_name: index_by_name,
             index_by_number: index_by_number,
         }
+    }
+
+    pub fn new_instance(&self) -> Box<Message> {
+        self.factory.new_instance()
     }
 
     pub fn name(&self) -> &'static str {

@@ -53,17 +53,40 @@ impl fmt::Show for RustType {
 }
 
 impl RustType {
+    fn is_ref(&self) -> bool {
+        match *self {
+            RustRef(..) => true,
+            _           => false,
+        }
+    }
+
     fn ref_str(&self, lt: &str) -> String {
         match *self {
             RustRef(ref param) => format!("&'{} {}", lt, *param),
-            _ => fail!("not a slice: {}", *self),
+            _ => fail!("not a ref: {}", *self),
         }
     }
 
     fn mut_ref_str(&self, lt: &str) -> String {
         match *self {
             RustRef(ref param) => format!("&'{} mut {}", lt, *param),
-            _ => fail!("not a slice: {}", *self),
+            _ => fail!("not a ref: {}", *self),
+        }
+    }
+
+    fn ref_str_safe(&self, lt: &str) -> String {
+        if self.is_ref() {
+            self.ref_str(lt)
+        } else {
+            format!("{}", self)
+        }
+    }
+
+    fn mut_ref_str_safe(&self, lt: &str) -> String {
+        if self.is_ref() {
+            self.mut_ref_str(lt)
+        } else {
+            format!("{}", self)
         }
     }
 
@@ -107,7 +130,8 @@ impl RustType {
 
     fn into(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
-            _ => v.to_string(),
+            (x, y) if x == y => v.to_string(),
+            _ => fail!("internal error: cannot convert {} to {}", self, target),
         }
     }
 
@@ -282,6 +306,7 @@ impl Field {
         })
     }
 
+    // type of field in struct
     fn full_storage_type(&self) -> RustType {
         let c = box self.type_name.clone();
         if self.repeated {
@@ -303,19 +328,31 @@ impl Field {
         }
     }
 
-    fn get_xxx_return_ref(&self) -> bool {
-        self.repeated || match self.field_type {
-            FieldDescriptorProto_TYPE_MESSAGE |
-            FieldDescriptorProto_TYPE_STRING |
-            FieldDescriptorProto_TYPE_BYTES => true,
-            _ => false,
+    // for field `foo`, type of param of `fn set_foo(..)`
+    fn set_xxx_param_type(&self) -> RustType {
+        if self.repeated {
+            self.full_storage_type()
+        } else if self.field_type == FieldDescriptorProto_TYPE_STRING {
+            RustString
+        } else {
+            self.type_name.clone()
         }
     }
 
+    // for field `foo`, return type of `fn mut_foo(..)`
+    fn mut_xxx_return_type(&self) -> RustType {
+        RustRef(box if self.repeated {
+            self.full_storage_type()
+        } else {
+            self.type_name.clone()
+        })
+    }
+
+    // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
         match self.repeated {
             true => RustRef(box RustSlice(box self.type_name.clone())),
-            false => match self.get_xxx_return_ref() {
+            false => match self.type_is_not_trivial() {
                 true => self.type_name.ref_type(),
                 false => self.type_name.clone(),
             }
@@ -590,10 +627,14 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn self_field_assign_value<S : Str>(&self, value: S, ty: &RustType) {
-        assert!(!self.field().repeated);
-        let converted = ty.into(&self.field().type_name, value.as_slice());
-        let wrapped = self.field().full_storage_type().wrap_value(converted.as_slice());
-        self.self_field_assign(wrapped);
+        if self.field().repeated {
+            let converted = ty.into(&self.field().full_storage_type(), value.as_slice());
+            self.self_field_assign(converted);
+        } else {
+            let converted = ty.into(&self.field().type_name, value.as_slice());
+            let wrapped = self.field().full_storage_type().wrap_value(converted.as_slice());
+            self.self_field_assign(wrapped);
+        }
     }
 
     fn self_field_push<S : Str>(&self, value: S) {
@@ -1093,35 +1134,20 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
             });
         }
 
-        let set_param_type = if w.field().repeated {
-            w.field().full_storage_type()
-        } else if w.field().field_type == FieldDescriptorProto_TYPE_STRING {
-            RustString
-        } else {
-            w.field().type_name.clone()
-        };
-        let mut_return_type = RustRef(box if w.field().repeated {
-            w.field().full_storage_type()
-        } else {
-            w.field().type_name.clone()
-        });
-
+        let set_xxx_param_type = w.field().set_xxx_param_type();
         w.write_line("");
         w.comment("Param is passed by value, moved");
-        w.pub_fn(format!("set_{:s}(&mut self, v: {})", w.field().name, set_param_type), |w| {
-            if w.field().repeated {
-                w.self_field_assign("v");
-            } else {
-                w.self_field_assign_value("v", &set_param_type);
-            }
+        w.pub_fn(format!("set_{:s}(&mut self, v: {})", w.field().name, set_xxx_param_type), |w| {
+            w.self_field_assign_value("v", &set_xxx_param_type);
         });
 
+        let mut_xxx_return_type = w.field().mut_xxx_return_type();
         w.write_line("");
         w.comment("Mutable pointer to the field.");
         if !w.field().repeated {
             w.comment("If field is not initialized, it is initialized with default value first.");
         }
-        w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_return_type.mut_ref_str("a")),
+        w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
         |w| {
             if !w.field().repeated {
                 w.if_self_field_is_none(|w| {
@@ -1134,14 +1160,12 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
         });
 
         w.write_line("");
-        let self_param = match w.field().get_xxx_return_ref() {
+        let get_xxx_return_type = w.field().get_xxx_return_type();
+        let self_param = match get_xxx_return_type.is_ref() {
             true  => "&'a self",
             false => "&self",
         };
-        let get_xxx_return_type_str = match w.field().get_xxx_return_ref() {
-            true  => w.field().get_xxx_return_type().ref_str("a"),
-            false => format!("{}", w.field().get_xxx_return_type()),
-        };
+        let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
         w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type_str),
         |w| {
             if !w.field().repeated {
@@ -1149,7 +1173,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
                     w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {}::default_instance())",
                             w.self_field(), w.field().type_name));
                 } else {
-                    if w.field().get_xxx_return_ref() {
+                    if get_xxx_return_type.is_ref() {
                         w.match_expr(w.self_field_as_option(), |w| {
                             w.case_expr(
                                 "Some(ref v)",
@@ -1351,14 +1375,12 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
                 },
             };
         } else {
-            let (lt_decl, lt_param) = match w.field().get_xxx_return_ref() {
+            let get_xxx_return_type = w.field().get_xxx_return_type();
+            let (lt_decl, lt_param) = match get_xxx_return_type.is_ref() {
                 true  => ("<'a>", "'a "),
                 false => ("", ""),
             };
-            let return_type_str = match w.field().get_xxx_return_ref() {
-                true  => w.field().get_xxx_return_type().ref_str("a"),
-                false => format!("{}", w.field().get_xxx_return_type()),
-            };
+            let return_type_str = get_xxx_return_type.ref_str_safe("a");
             match field.field_type {
                 FieldDescriptorProto_TYPE_MESSAGE => {
                     w.def_fn(format!("get_message<'a>(&self, m: &'a {}) -> &'a ::protobuf::Message",

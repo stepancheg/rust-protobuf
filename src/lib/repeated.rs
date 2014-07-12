@@ -57,6 +57,13 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
+    pub fn into_vec(self) -> Vec<T> {
+        let mut vec = self.vec;
+        vec.truncate(self.len);
+        vec
+    }
+
+    #[inline]
     pub fn capacity(&self) -> uint {
         self.vec.capacity()
     }
