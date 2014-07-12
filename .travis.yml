@@ -14,6 +14,7 @@ install:
   - tar xf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
   - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh)
 
+# LD_LIBRARY_PATH is needed because rust no longer uses rpath
 script:
-  - rustc --version
-  - cd src/ && ./full-rebuild.sh
+  - LIB_LIBRARY_PATH=/usr/local/lib rustc --version
+  - cd src/ && LIB_LIBRARY_PATH=/usr/local/lib ./full-rebuild.sh
