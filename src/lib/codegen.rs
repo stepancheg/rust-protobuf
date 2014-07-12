@@ -47,7 +47,8 @@ impl fmt::Show for RustType {
             RustRepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", param),
             RustUniq(ref param)             => write!(f, "Box<{}>", *param),
             RustRef(ref param)              => write!(f, "&{}", *param),
-            RustMessage(ref param) | RustEnum(ref param) => write!(f, "{}", param),
+            RustMessage(ref param) |
+            RustEnum(ref param)    => write!(f, "{}", param),
         }
     }
 }
@@ -90,6 +91,7 @@ impl RustType {
         }
     }
 
+    // default value for type
     fn default_value(&self) -> String {
         match *self {
             RustRef(box RustStr)               => "\"\"".to_string(),
@@ -111,6 +113,7 @@ impl RustType {
         }
     }
 
+    // wrap value in storage type
     fn wrap_value(&self, value: &str) -> String {
         match *self {
             RustOption(..)           => format!("Some({})", value),
@@ -138,7 +141,7 @@ impl RustType {
     fn ref_type(&self) -> RustType {
         RustRef(match self {
             &RustString               => box RustStr,
-            &RustVec(ref p)           => box RustSlice(p.clone()),
+            &RustVec(ref p)           |
             &RustRepeatedField(ref p) => box RustSlice(p.clone()),
             &RustMessage(ref p)       => box RustMessage(p.clone()),
             x => fail!("no ref type for {}", x),
@@ -146,6 +149,7 @@ impl RustType {
     }
 }
 
+// rust type for protobuf base type
 fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
         FieldDescriptorProto_TYPE_DOUBLE   => RustFloat(64),
@@ -169,6 +173,7 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     }
 }
 
+// protobuf type name for protobuf base type
 fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
     match field_type {
         FieldDescriptorProto_TYPE_DOUBLE   => "double",
@@ -186,9 +191,9 @@ fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         FieldDescriptorProto_TYPE_BOOL     => "bool",
         FieldDescriptorProto_TYPE_STRING   => "string",
         FieldDescriptorProto_TYPE_BYTES    => "bytes",
-        FieldDescriptorProto_TYPE_ENUM |
-        FieldDescriptorProto_TYPE_GROUP |
-        FieldDescriptorProto_TYPE_MESSAGE => fail!()
+        FieldDescriptorProto_TYPE_ENUM     |
+        FieldDescriptorProto_TYPE_GROUP    |
+        FieldDescriptorProto_TYPE_MESSAGE  => fail!()
     }
 }
 
@@ -216,6 +221,7 @@ fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::W
     }
 }
 
+// size of value for type, None if variable
 fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     match field_type {
         FieldDescriptorProto_TYPE_BOOL => Some(1),
@@ -306,6 +312,10 @@ impl Field {
         })
     }
 
+    fn tag_size(&self) -> u32 {
+        rt::tag_size(self.number)
+    }
+
     // type of field in struct
     fn full_storage_type(&self) -> RustType {
         let c = box self.type_name.clone();
@@ -359,10 +369,12 @@ impl Field {
         }
     }
 
+    // fixed size type?
     fn is_fixed(&self) -> bool {
         field_type_size(self.field_type).is_some()
     }
 
+    // must use zigzag encoding?
     fn is_zigzag(&self) -> bool {
         match self.field_type {
             FieldDescriptorProto_TYPE_SINT32 |
@@ -457,10 +469,12 @@ impl EnumValue {
         }
     }
 
+    // value name
     fn name<'a>(&'a self) -> &'a str {
         self.proto.get_name()
     }
 
+    // enum value
     fn number(&self) -> i32 {
         self.proto.get_number()
     }
@@ -642,10 +656,6 @@ impl<'a> IndentWriter<'a> {
         self.write_line(format!("{:s}.push({:s});", self.self_field(), value));
     }
 
-    fn self_field_tag_size(&self) -> u32 {
-        rt::tag_size(self.field().number)
-    }
-
     fn self_field_vec_packed_fixed_data_size(&self) -> String {
         assert!(self.field().is_fixed());
         format!("({}.len() * {}) as u32",
@@ -671,7 +681,7 @@ impl<'a> IndentWriter<'a> {
     fn self_field_vec_packed_fixed_size(&self) -> String {
         // zero is filtered outside
         format!("{} + ::protobuf::rt::compute_raw_varint32_size({}.len() as u32) + {}",
-            self.self_field_tag_size(),
+            self.field().tag_size(),
             self.self_field(),
             self.self_field_vec_packed_fixed_data_size())
     }
@@ -973,13 +983,13 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                             if field.repeated {
                                 w.write_line(format!(
                                         "my_size += {:d} * {:s}.len() as u32;",
-                                        (s + w.self_field_tag_size()) as int,
+                                        (s + w.field().tag_size()) as int,
                                         w.self_field()));
                             } else {
                                 w.if_self_field_is_some(|w| {
                                     w.write_line(format!(
                                             "my_size += {:d};",
-                                            (s + w.self_field_tag_size()) as int));
+                                            (s + w.field().tag_size()) as int));
                                 });
                             }
                         },
@@ -990,7 +1000,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                                         w.write_line("let len = value.compute_sizes(sizes);");
                                         w.write_line(format!(
                                                 "my_size += {:u} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                                                w.self_field_tag_size() as uint));
+                                                w.field().tag_size() as uint));
                                     },
                                     FieldDescriptorProto_TYPE_BYTES => {
                                         w.write_line(format!(
