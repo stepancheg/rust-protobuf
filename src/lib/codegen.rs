@@ -1211,7 +1211,7 @@ fn write_message_merge_from(w: &mut IndentWriter) {
             w.write_line(format!("let (field_number, wire_type) = is.read_tag_unpack();"));
             w.match_block("field_number", |w| {
                 w.fields(|w| {
-                    w.case_block(w.field().number.to_str(), |w| {
+                    w.case_block(w.field().number.to_string(), |w| {
                         write_merge_from_field(w);
                     });
                 });
@@ -1258,7 +1258,7 @@ fn write_message_impl_message(w: &mut IndentWriter) {
                 for field in msg.fields.iter() {
                     let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
                     // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
-                    w.write_line(format!("fields.push(unsafe {{ ::std::mem::transmute(&'static {} as &::protobuf::reflect::FieldAccessor<{}>) }});",
+                    w.write_line(format!("fields.push(unsafe {{ ::std::mem::transmute(&{} as &'static ::protobuf::reflect::FieldAccessor<{}>) }});",
                             acc_name, msg.type_name));
                 }
                 w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
@@ -1292,10 +1292,12 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
     let field = w.field.unwrap();
     w.allow(["non_camel_case_types"]);
     let accessor_name = format!("{}_{}_acc", msg.type_name, field.name);
-    w.write_line(format!("struct {};", accessor_name));
+    let accessor_type_name = accessor_name + "_type";
+    w.write_line(format!("struct {};", accessor_type_name));
+    w.write_line(format!("static {}: {} = {};", accessor_name, accessor_type_name, accessor_type_name));
     w.write_line("");
     w.impl_for_block(
-            format!("::protobuf::reflect::FieldAccessor<{}>", msg.type_name), accessor_name,
+            format!("::protobuf::reflect::FieldAccessor<{}>", msg.type_name), accessor_type_name,
     |w| {
         w.def_fn("name(&self) -> &'static str", |w| {
             w.write_line(format!("\"{}\"", field.name));
@@ -1317,7 +1319,7 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
             FieldDescriptorProto_TYPE_ENUM    => "enum".to_string(),
             FieldDescriptorProto_TYPE_STRING  => "str".to_string(),
             FieldDescriptorProto_TYPE_BYTES   => "bytes".to_string(),
-            _ => field.type_name.to_str(),
+            _ => field.type_name.to_string(),
         };
 
         w.write_line("");
@@ -1327,7 +1329,7 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
                     w.def_fn(format!("get_rep_message_item<'a>(&self, m: &'a {}, index: uint) -> &'a ::protobuf::Message",
                             msg.type_name),
                     |w| {
-                        w.write_line(format!("&'a m.get_{}()[index] as &'a ::protobuf::Message", field.name));
+                        w.write_line(format!("&m.get_{}()[index] as &'a ::protobuf::Message", field.name));
                     });
                 },
                 FieldDescriptorProto_TYPE_ENUM => {
