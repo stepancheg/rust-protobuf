@@ -16,5 +16,5 @@ install:
 
 # LD_LIBRARY_PATH is needed because rust no longer uses rpath
 script:
-  - LIB_LIBRARY_PATH=/usr/local/lib rustc --version
-  - cd src/ && LIB_LIBRARY_PATH=/usr/local/lib ./full-rebuild.sh
+  - LD_LIBRARY_PATH=/usr/local/lib rustc --version
+  - cd src/ && LD_LIBRARY_PATH=/usr/local/lib ./full-rebuild.sh
