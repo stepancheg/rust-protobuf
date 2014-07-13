@@ -67,9 +67,9 @@ mod test {
     fn test_vec_writer() {
         let mut w = VecWriter::new();
         fn foo(writer: &mut Writer) {
-            writer.write("hi".as_bytes()).unwrap();
+            writer.write(b"hi").unwrap();
         }
         foo(&mut w as &mut Writer);
-        assert_eq!(Vec::from_slice(['h' as u8, 'i' as u8]), w.vec);
+        assert_eq!(Vec::from_slice(b"hi"), w.vec);
     }
 }

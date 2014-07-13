@@ -7,9 +7,9 @@ fn print_bytes_to(bytes: &[u8], buf: &mut String) {
     for &b in bytes.iter() {
         if b < 0x20 || b >= 0x80 {
             buf.push_char('\\');
-            buf.push_char(('0' as u8 + ((b >> 6) & 3)) as char);
-            buf.push_char(('0' as u8 + ((b >> 3) & 7)) as char);
-            buf.push_char(('0' as u8 + (b & 7)) as char);
+            buf.push_char((b'0' + ((b >> 6) & 3)) as char);
+            buf.push_char((b'0' + ((b >> 3) & 7)) as char);
+            buf.push_char((b'0' + (b & 7)) as char);
         } else {
             buf.push_char(b as char);
         }
