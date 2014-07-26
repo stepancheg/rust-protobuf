@@ -393,13 +393,13 @@ trait MessageFactory {
 }
 
 struct MessageFactoryTyped<M> {
-    dummy: ()
+    _dummy: ()
 }
 
 impl<M> MessageFactoryTyped<M> {
     fn new() -> MessageFactoryTyped<M> {
         MessageFactoryTyped {
-            dummy: ()
+            _dummy: ()
         }
     }
 }
@@ -471,12 +471,12 @@ impl MessageDescriptor {
     pub fn field_by_name<'a>(&'a self, name: &str) -> &'a FieldDescriptor {
         // TODO: clone is weird
         let &index = self.index_by_name.find(&name.to_string()).unwrap();
-        self.fields.get(index)
+        &self.fields[index]
     }
 
     pub fn field_by_number<'a>(&'a self, number: u32) -> &'a FieldDescriptor {
         let &index = self.index_by_number.find(&number).unwrap();
-        self.fields.get(index)
+        &self.fields[index]
     }
 }
 
@@ -530,11 +530,11 @@ impl EnumDescriptor {
     pub fn value_by_name<'a>(&'a self, name: &str) -> &'a EnumValueDescriptor {
         // TODO: clone is weird
         let &index = self.index_by_name.find(&name.to_string()).unwrap();
-        self.values.get(index)
+        &self.values[index]
     }
 
     pub fn value_by_number<'a>(&'a self, number: i32) -> &'a EnumValueDescriptor {
         let &index = self.index_by_number.find(&number).unwrap();
-        self.values.get(index)
+        &self.values[index]
     }
 }

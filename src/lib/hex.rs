@@ -2,7 +2,6 @@
 
 #![allow(dead_code)]
 
-use std::str;
 use std::char;
 
 fn decode_hex_digit(digit: char) -> u8 {
@@ -45,7 +44,7 @@ fn encode_hex_byte(byte: u8) -> [char, ..2] {
 
 pub fn encode_hex(bytes: &[u8]) -> String {
     let strs: Vec<String> = bytes.iter().map(|byte| {
-        str::from_chars(encode_hex_byte(*byte).as_slice())
+        String::from_chars(encode_hex_byte(*byte).as_slice())
     }).collect();
     strs.connect(" ")
 }

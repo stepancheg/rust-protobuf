@@ -83,14 +83,6 @@ impl RustType {
         }
     }
 
-    fn mut_ref_str_safe(&self, lt: &str) -> String {
-        if self.is_ref() {
-            self.mut_ref_str(lt)
-        } else {
-            format!("{}", self)
-        }
-    }
-
     // default value for type
     fn default_value(&self) -> String {
         match *self {
@@ -437,9 +429,8 @@ impl<'a> Message {
 }
 
 struct Enum {
-    proto: EnumDescriptorProto,
-    pkg: String,
-    prefix: String,
+    //pkg: String,
+    //prefix: String,
     type_name: String,
     values: Vec<EnumValue>,
 }
@@ -450,11 +441,10 @@ struct EnumValue {
 }
 
 impl Enum {
-    fn parse(proto: &EnumDescriptorProto, pkg: &str, prefix: &str) -> Enum {
+    fn parse(proto: &EnumDescriptorProto, _pkg: &str, prefix: &str) -> Enum {
         Enum {
-            proto: proto.clone(),
-            pkg: pkg.to_string(),
-            prefix: prefix.to_string(),
+            //pkg: pkg.to_string(),
+            //prefix: prefix.to_string(),
             type_name: prefix.to_string().append(proto.get_name()),
             values: proto.get_value().iter().map(|p| EnumValue::parse(p, prefix)).collect(),
         }

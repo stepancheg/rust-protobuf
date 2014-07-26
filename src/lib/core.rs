@@ -213,7 +213,7 @@ impl<'a> CodedInputStream<'a> {
             self.refill_buffer_really();
         }
         assert!(self.buffer_pos < self.buffer_size);
-        let &r = self.buffer.get(self.buffer_pos as uint);
+        let r = self.buffer[self.buffer_pos as uint];
         self.buffer_pos += 1;
         r
     }

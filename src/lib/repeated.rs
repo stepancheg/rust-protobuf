@@ -144,12 +144,6 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn unshift(&mut self, value: T) {
-        self.vec.unshift(value);
-        self.len += 1;
-    }
-
-    #[inline]
     pub fn pop(&mut self) -> Option<T> {
         if self.len == 0 {
             None
@@ -157,16 +151,6 @@ impl<T> RepeatedField<T> {
             self.vec.truncate(self.len);
             self.len -= 1;
             self.vec.pop()
-        }
-    }
-
-    #[inline]
-    pub fn shift(&mut self) -> Option<T> {
-        if self.len == 0 {
-            None
-        } else {
-            self.len -= 1;
-            self.vec.shift()
         }
     }
 

@@ -313,7 +313,7 @@ impl<T> SingularPtrField<T> {
 
 impl<T : Default+Clear> SingularField<T> {
     #[inline]
-    pub fn unwrap_or_default(mut self) -> T {
+    pub fn unwrap_or_default(self) -> T {
         self.unwrap_or_else(|| Default::default())
     }
 
