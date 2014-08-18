@@ -114,11 +114,6 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn tailn<'a>(&'a self, n: uint) -> &'a [T] {
-        self.as_slice().tailn(n)
-    }
-
-    #[inline]
     pub fn last<'a>(&'a self) -> Option<&'a T> {
         self.as_slice().last()
     }

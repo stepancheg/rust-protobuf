@@ -10,7 +10,7 @@ use std::io::Writer;
 use std::path::Path;
 use std::os;
 
-use protobuf::*;
+use protobuf::parse_from_reader;
 use protobuf::descriptor::*;
 use protobuf::codegen::*;
 

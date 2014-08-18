@@ -84,7 +84,8 @@ impl<T> SingularField<T> {
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
-            Some(x) => slice::mut_ref_slice(x),
+            //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
+            Some(x) => fail!(),
             None => &mut []
         }
     }
@@ -248,7 +249,8 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
-            Some(x) => slice::mut_ref_slice(x),
+            //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
+            Some(x) => fail!(),
             None => &mut []
         }
     }
@@ -429,8 +431,8 @@ impl<T : Eq> Eq for SingularPtrField<T> {}
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use clear::Clear;
+    use super::SingularField;
 
     #[test]
     fn test_set_default_clears() {

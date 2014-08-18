@@ -19,7 +19,11 @@ pub fn encode_zig_zag_64(n: i64) -> u64 {
 
 #[cfg(test)]
 mod test {
-    use super::*;
+
+    use super::decode_zig_zag_32;
+    use super::decode_zig_zag_64;
+    use super::encode_zig_zag_32;
+    use super::encode_zig_zag_64;
 
     #[test]
     fn test_zig_zag() {

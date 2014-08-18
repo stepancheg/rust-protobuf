@@ -176,7 +176,7 @@ mod test {
 
     use text_format_test_data::*;
 
-    use super::*;
+    use super::print_to_string;
 
     fn t(expected: &str, setter: |&mut TestTypes|) {
         let mut m = TestTypes::new();

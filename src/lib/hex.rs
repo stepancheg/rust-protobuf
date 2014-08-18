@@ -51,7 +51,9 @@ pub fn encode_hex(bytes: &[u8]) -> String {
 
 #[cfg(test)]
 mod test {
-    use super::*;
+
+    use super::decode_hex;
+    use super::encode_hex;
 
     #[test]
     fn test_decode_hex() {

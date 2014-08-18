@@ -3,15 +3,18 @@
 use std::mem;
 use std::raw;
 use std::str::from_utf8;
-use std::io::*;
 use std::num::Bounded;
 use std::fmt;
 use std::default::Default;
 use std::intrinsics::TypeId;
+use std::io::EndOfFile;
 
 use misc::VecWriter;
 use misc::VecReader;
-use zigzag::*;
+use zigzag::decode_zig_zag_32;
+use zigzag::decode_zig_zag_64;
+use zigzag::encode_zig_zag_32;
+use zigzag::encode_zig_zag_64;
 use unknown::UnknownValue;
 use unknown::UnknownVarint;
 use unknown::UnknownFixed64;
@@ -907,10 +910,13 @@ pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> M {
 #[cfg(test)]
 mod test {
 
-    use super::*;
-    use std::io::*;
-    use misc::*;
-    use hex::*;
+    use std::io::MemReader;
+    use hex::encode_hex;
+    use hex::decode_hex;
+    use misc::VecWriter;
+    use core::wire_format;
+    use super::CodedInputStream;
+    use super::CodedOutputStream;
 
     fn test_read(hex: &str, callback: |&mut CodedInputStream|) {
         let d = decode_hex(hex);

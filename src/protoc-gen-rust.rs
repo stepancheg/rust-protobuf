@@ -11,7 +11,8 @@ use std::io::Reader;
 use std::io::Writer;
 use std::str;
 use plugin::*;
-use protobuf::*;
+use protobuf::parse_from_reader;
+use protobuf::Message;
 use protobuf::codegen::*;
 
 mod descriptor {

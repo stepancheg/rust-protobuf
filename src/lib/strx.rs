@@ -21,7 +21,10 @@ pub fn remove_prefix<'s>(s: &'s str, prefix: &str) -> &'s str {
 
 #[cfg(test)]
 mod test {
-    use super::*;
+
+    use super::remove_to;
+    use super::remove_prefix;
+    use super::remove_suffix;
 
     #[test]
     fn test_remove_to() {

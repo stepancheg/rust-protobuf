@@ -59,9 +59,9 @@ impl Reader for VecReader {
 
 #[cfg(test)]
 mod test {
-    use super::*;
 
     use std::io::Writer;
+    use misc::VecWriter;
 
     #[test]
     fn test_vec_writer() {

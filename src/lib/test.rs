@@ -1,8 +1,12 @@
-use core::*;
-use hex::*;
+use hex::encode_hex;
+use hex::decode_hex;
 use descriptor;
 use reflect;
 use repeated::RepeatedField;
+use core::Message;
+use core::ProtobufEnum;
+use core::parse_length_delimited_from_bytes;
+use core::parse_from_bytes;
 
 use shrug::*;
 

@@ -4,7 +4,8 @@ use std::fmt;
 
 use descriptor::*;
 use misc::*;
-use core::*;
+use core::wire_format;
+use core::Message;
 use rt;
 use paginate::PaginatableIterator;
 use strx::*;
@@ -387,7 +388,7 @@ impl Field {
 }
 
 #[deriving(Clone)]
-struct Message {
+struct MessageInfo {
     proto_message: DescriptorProto,
     pkg: String,
     prefix: String,
@@ -395,9 +396,9 @@ struct Message {
     fields: Vec<Field>,
 }
 
-impl<'a> Message {
-    fn parse(proto_message: &DescriptorProto, pkg: &str, prefix: &str) -> Message {
-        Message {
+impl<'a> MessageInfo {
+    fn parse(proto_message: &DescriptorProto, pkg: &str, prefix: &str) -> MessageInfo {
+        MessageInfo {
             proto_message: proto_message.clone(),
             pkg: pkg.to_string(),
             prefix: prefix.to_string(),
@@ -479,7 +480,7 @@ struct IndentWriter<'a> {
     // TODO: add mut
     writer: &'a Writer,
     indent: String,
-    msg: Option<&'a Message>,
+    msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
     en: Option<&'a Enum>,
 }
@@ -495,7 +496,7 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn bind_message<T>(&self, msg: &Message, cb: |&mut IndentWriter| -> T) -> T {
+    fn bind_message<T>(&self, msg: &MessageInfo, cb: |&mut IndentWriter| -> T) -> T {
         cb(&mut IndentWriter {
             writer: unsafe { mem::transmute(self.writer) },
             indent: self.indent.to_string(),
@@ -1435,7 +1436,7 @@ fn write_message_impl_clear(w: &mut IndentWriter) {
     });
 }
 
-fn write_message(msg: &Message, w: &mut IndentWriter) {
+fn write_message(msg: &MessageInfo, w: &mut IndentWriter) {
     let pkg = msg.pkg.as_slice();
     let message_type = &msg.proto_message;
 
@@ -1454,7 +1455,7 @@ fn write_message(msg: &Message, w: &mut IndentWriter) {
 
         for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
-            write_message(&Message::parse(nested_type, pkg.as_slice(), msg.type_name.to_string().append("_").as_slice()), w);
+            write_message(&MessageInfo::parse(nested_type, pkg.as_slice(), msg.type_name.to_string().append("_").as_slice()), w);
         }
 
         for enum_type in message_type.get_enum_type().iter() {
@@ -1573,7 +1574,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             for message_type in file.get_message_type().iter() {
                 w.write_line("");
-                write_message(&Message::parse(message_type, file.get_package(), ""), &mut w);
+                write_message(&MessageInfo::parse(message_type, file.get_package(), ""), &mut w);
             }
             for enum_type in file.get_enum_type().iter() {
                 w.write_line("");

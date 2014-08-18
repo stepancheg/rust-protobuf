@@ -6,12 +6,10 @@
 #![desc = "protobuf implementation for rust"]
 #![license = "BSD"]
 
-extern crate collections;
 extern crate sync;
 extern crate collections;
 extern crate debug;
 
-pub use core::*;
 pub use unknown::UnknownFields;
 pub use unknown::UnknownValues;
 pub use unknown::UnknownValue;
@@ -22,8 +20,15 @@ pub use repeated::RepeatedField;
 pub use singular::SingularField;
 pub use singular::SingularPtrField;
 pub use clear::Clear;
+pub use core::CodedInputStream;
+pub use core::CodedOutputStream;
+pub use core::Message;
+pub use core::parse_from_bytes;
+pub use core::parse_from_reader;
+pub use core::parse_length_delimited_from;
+pub use core::wire_format;
 
-mod core;
+pub mod core;
 pub mod rt;
 pub mod lazy;
 pub mod descriptor;
@@ -33,6 +38,7 @@ pub mod singular;
 pub mod clear;
 pub mod reflect;
 pub mod text_format;
+
 mod misc;
 mod zigzag;
 mod hex;
