@@ -1,0 +1,13 @@
+[package]
+
+name = "protobuf"
+version = "0.0.1"
+# TODO: check if there are more authors to add
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+
+[lib]
+
+name = "protobuf"
+path = "src/lib/protobuf.rs"
+
+# TODO: add [[bin]] sections
