@@ -1541,7 +1541,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             w.write_line("");
             for dep in file.get_dependency().iter() {
-                w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(dep.as_slice())));
+                w.write_line(format!("use super::{:s}::*;", proto_path_to_rust_base(dep.as_slice())));
             }
 
             {
