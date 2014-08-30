@@ -75,9 +75,11 @@ impl<T> SingularField<T> {
 
     #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T] {
+        // XXX: workaround since returning &[] doesn't seem to work
+        let tmp: &[T] = &[];
         match self.as_ref() {
             Some(x) => slice::ref_slice(x),
-            None => &[]
+            None => tmp,
         }
     }
 
@@ -240,9 +242,11 @@ impl<T> SingularPtrField<T> {
 
     #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T] {
+        // XXX: workaround since returning &[] doesn't seem to work
+        let tmp: &[T] = &[];
         match self.as_ref() {
             Some(x) => slice::ref_slice(x),
-            None => &[]
+            None => tmp,
         }
     }
 

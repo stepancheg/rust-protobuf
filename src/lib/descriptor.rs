@@ -6440,9 +6440,11 @@ impl<'a> UninterpretedOption {
     }
 
     pub fn get_string_value(&'a self) -> &'a [u8] {
+        // XXX: workaround since returning &[] doesn't seem to work
+        let tmp: &[u8] = &[];
         match self.string_value.as_ref() {
             Some(ref v) => v.as_slice(),
-            None => &[],
+            None => tmp,
         }
     }
 
