@@ -1,5 +1,7 @@
 ## How to develop rust-protobuf itself
 
+__XXX__: These steps are outdated, project uses Cargo and a Makefile.
+
 ### ./rebuild.sh
 
 Compile the project.

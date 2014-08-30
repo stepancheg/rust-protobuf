@@ -10,4 +10,14 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 name = "protobuf"
 path = "src/lib/protobuf.rs"
 
-# TODO: add [[bin]] sections
+[[bin]]
+
+name = "protobuf-bin-gen-rust"
+path = "src/protobuf-bin-gen-rust.rs"
+#rustc -O -L . ./protobuf-bin-gen-rust.rs
+
+[[bin]]
+
+name = "protoc-gen-rust"
+path = "src/protoc-gen-rust.rs"
+#rustc -O -L . ./protoc-gen-rust.rs
