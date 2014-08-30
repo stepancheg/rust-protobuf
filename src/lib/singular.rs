@@ -86,8 +86,8 @@ impl<T> SingularField<T> {
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
-            //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(x) => fail!(),
+            //Some(x) => slice::mut_ref_slice(x), // XXX: doesn't work I have no idea why
+            Some(_) => fail!(),
             None => &mut []
         }
     }
@@ -253,8 +253,8 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
-            //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(x) => fail!(),
+            //Some(x) => slice::mut_ref_slice(x), // XXX: doesn't work I have no idea why
+            Some(_) => fail!(),
             None => &mut []
         }
     }
