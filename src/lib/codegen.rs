@@ -1567,12 +1567,13 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 w.write_line("");
                 // XXX: this broke due to the glob import and recent rust changes
                 //w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-                //    w.unsafe_expr(|w| {
-                //        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                //            w.write_line("parse_descriptor_proto()");
-                //        });
-                //    });
-                //});
+                w.def_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
+                    w.unsafe_expr(|w| {
+                        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+                            w.write_line("parse_descriptor_proto()");
+                        });
+                    });
+                });
             }
 
             for message_type in file.get_message_type().iter() {
