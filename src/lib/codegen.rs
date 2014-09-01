@@ -1538,7 +1538,9 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
+            w.write_line("#![allow(non_camel_case_types)]");
 
+            // TODO: get rid of generation with glob imports, it forces users to use that feature
             w.write_line("");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use super::{:s}::*;", proto_path_to_rust_base(dep.as_slice())));
@@ -1563,13 +1565,14 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                     w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data)");
                 });
                 w.write_line("");
-                w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-                    w.unsafe_expr(|w| {
-                        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                            w.write_line("parse_descriptor_proto()");
-                        });
-                    });
-                });
+                // XXX: this broke due to the glob import and recent rust changes
+                //w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
+                //    w.unsafe_expr(|w| {
+                //        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+                //            w.write_line("parse_descriptor_proto()");
+                //        });
+                //    });
+                //});
             }
 
             for message_type in file.get_message_type().iter() {
