@@ -528,7 +528,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn fields(&self, cb: |&mut IndentWriter|) {
-        let fields = &self.msg.get_ref().fields;
+        let fields = &self.msg.as_ref().unwrap().fields;
         let mut iter = fields.iter();
         for field in iter {
             self.bind_field(field, |w| cb(w));
@@ -536,7 +536,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn required_fields(&self, cb: |&mut IndentWriter|) {
-        let fields = &self.msg.get_ref().required_fields();
+        let fields = &self.msg.as_ref().unwrap().required_fields();
         let mut iter = fields.iter();
         for field in iter {
             self.bind_field(*field, |w| cb(w));
@@ -853,7 +853,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn clear_field_func(&self) -> String {
-        "clear_".to_string().append(self.field.get_ref().name.as_slice())
+        "clear_".to_string().append(self.field.as_ref().unwrap().name.as_slice())
     }
 
     fn clear_field(&self) {

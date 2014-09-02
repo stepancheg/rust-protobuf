@@ -502,7 +502,7 @@ impl<'a> FileDescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -531,7 +531,7 @@ impl<'a> FileDescriptorProto {
         if self.package.is_none() {
             self.package.set_default();
         };
-        self.package.get_mut_ref()
+        self.package.as_mut().unwrap()
     }
 
     pub fn get_package(&'a self) -> &'a str {
@@ -714,7 +714,7 @@ impl<'a> FileDescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a FileOptions {
@@ -740,7 +740,7 @@ impl<'a> FileDescriptorProto {
         if self.source_code_info.is_none() {
             self.source_code_info.set_default();
         };
-        self.source_code_info.get_mut_ref()
+        self.source_code_info.as_mut().unwrap()
     }
 
     pub fn get_source_code_info(&'a self) -> &'a SourceCodeInfo {
@@ -1275,7 +1275,7 @@ impl<'a> DescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -1414,7 +1414,7 @@ impl<'a> DescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a MessageOptions {
@@ -1793,7 +1793,7 @@ impl<'a> DescriptorProto_ExtensionRange {
         if self.start.is_none() {
             self.start = Some(0);
         };
-        self.start.get_mut_ref()
+        self.start.as_mut().unwrap()
     }
 
     pub fn get_start(&self) -> i32 {
@@ -1819,7 +1819,7 @@ impl<'a> DescriptorProto_ExtensionRange {
         if self.end.is_none() {
             self.end = Some(0);
         };
-        self.end.get_mut_ref()
+        self.end.as_mut().unwrap()
     }
 
     pub fn get_end(&self) -> i32 {
@@ -2032,7 +2032,7 @@ impl<'a> FieldDescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -2061,7 +2061,7 @@ impl<'a> FieldDescriptorProto {
         if self.number.is_none() {
             self.number = Some(0);
         };
-        self.number.get_mut_ref()
+        self.number.as_mut().unwrap()
     }
 
     pub fn get_number(&self) -> i32 {
@@ -2087,7 +2087,7 @@ impl<'a> FieldDescriptorProto {
         if self.label.is_none() {
             self.label = Some(FieldDescriptorProto_Label::new(0));
         };
-        self.label.get_mut_ref()
+        self.label.as_mut().unwrap()
     }
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
@@ -2113,7 +2113,7 @@ impl<'a> FieldDescriptorProto {
         if self.field_type.is_none() {
             self.field_type = Some(FieldDescriptorProto_Type::new(0));
         };
-        self.field_type.get_mut_ref()
+        self.field_type.as_mut().unwrap()
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
@@ -2139,7 +2139,7 @@ impl<'a> FieldDescriptorProto {
         if self.type_name.is_none() {
             self.type_name.set_default();
         };
-        self.type_name.get_mut_ref()
+        self.type_name.as_mut().unwrap()
     }
 
     pub fn get_type_name(&'a self) -> &'a str {
@@ -2168,7 +2168,7 @@ impl<'a> FieldDescriptorProto {
         if self.extendee.is_none() {
             self.extendee.set_default();
         };
-        self.extendee.get_mut_ref()
+        self.extendee.as_mut().unwrap()
     }
 
     pub fn get_extendee(&'a self) -> &'a str {
@@ -2197,7 +2197,7 @@ impl<'a> FieldDescriptorProto {
         if self.default_value.is_none() {
             self.default_value.set_default();
         };
-        self.default_value.get_mut_ref()
+        self.default_value.as_mut().unwrap()
     }
 
     pub fn get_default_value(&'a self) -> &'a str {
@@ -2226,7 +2226,7 @@ impl<'a> FieldDescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a FieldOptions {
@@ -2734,7 +2734,7 @@ impl<'a> EnumDescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -2785,7 +2785,7 @@ impl<'a> EnumDescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a EnumOptions {
@@ -3026,7 +3026,7 @@ impl<'a> EnumValueDescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -3055,7 +3055,7 @@ impl<'a> EnumValueDescriptorProto {
         if self.number.is_none() {
             self.number = Some(0);
         };
-        self.number.get_mut_ref()
+        self.number.as_mut().unwrap()
     }
 
     pub fn get_number(&self) -> i32 {
@@ -3081,7 +3081,7 @@ impl<'a> EnumValueDescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a EnumValueOptions {
@@ -3321,7 +3321,7 @@ impl<'a> ServiceDescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -3372,7 +3372,7 @@ impl<'a> ServiceDescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a ServiceOptions {
@@ -3615,7 +3615,7 @@ impl<'a> MethodDescriptorProto {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -3644,7 +3644,7 @@ impl<'a> MethodDescriptorProto {
         if self.input_type.is_none() {
             self.input_type.set_default();
         };
-        self.input_type.get_mut_ref()
+        self.input_type.as_mut().unwrap()
     }
 
     pub fn get_input_type(&'a self) -> &'a str {
@@ -3673,7 +3673,7 @@ impl<'a> MethodDescriptorProto {
         if self.output_type.is_none() {
             self.output_type.set_default();
         };
-        self.output_type.get_mut_ref()
+        self.output_type.as_mut().unwrap()
     }
 
     pub fn get_output_type(&'a self) -> &'a str {
@@ -3702,7 +3702,7 @@ impl<'a> MethodDescriptorProto {
         if self.options.is_none() {
             self.options.set_default();
         };
-        self.options.get_mut_ref()
+        self.options.as_mut().unwrap()
     }
 
     pub fn get_options(&'a self) -> &'a MethodOptions {
@@ -3990,7 +3990,7 @@ impl<'a> FileOptions {
         if self.java_package.is_none() {
             self.java_package.set_default();
         };
-        self.java_package.get_mut_ref()
+        self.java_package.as_mut().unwrap()
     }
 
     pub fn get_java_package(&'a self) -> &'a str {
@@ -4019,7 +4019,7 @@ impl<'a> FileOptions {
         if self.java_outer_classname.is_none() {
             self.java_outer_classname.set_default();
         };
-        self.java_outer_classname.get_mut_ref()
+        self.java_outer_classname.as_mut().unwrap()
     }
 
     pub fn get_java_outer_classname(&'a self) -> &'a str {
@@ -4048,7 +4048,7 @@ impl<'a> FileOptions {
         if self.java_multiple_files.is_none() {
             self.java_multiple_files = Some(false);
         };
-        self.java_multiple_files.get_mut_ref()
+        self.java_multiple_files.as_mut().unwrap()
     }
 
     pub fn get_java_multiple_files(&self) -> bool {
@@ -4074,7 +4074,7 @@ impl<'a> FileOptions {
         if self.java_generate_equals_and_hash.is_none() {
             self.java_generate_equals_and_hash = Some(false);
         };
-        self.java_generate_equals_and_hash.get_mut_ref()
+        self.java_generate_equals_and_hash.as_mut().unwrap()
     }
 
     pub fn get_java_generate_equals_and_hash(&self) -> bool {
@@ -4100,7 +4100,7 @@ impl<'a> FileOptions {
         if self.optimize_for.is_none() {
             self.optimize_for = Some(FileOptions_OptimizeMode::new(0));
         };
-        self.optimize_for.get_mut_ref()
+        self.optimize_for.as_mut().unwrap()
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
@@ -4126,7 +4126,7 @@ impl<'a> FileOptions {
         if self.go_package.is_none() {
             self.go_package.set_default();
         };
-        self.go_package.get_mut_ref()
+        self.go_package.as_mut().unwrap()
     }
 
     pub fn get_go_package(&'a self) -> &'a str {
@@ -4155,7 +4155,7 @@ impl<'a> FileOptions {
         if self.cc_generic_services.is_none() {
             self.cc_generic_services = Some(false);
         };
-        self.cc_generic_services.get_mut_ref()
+        self.cc_generic_services.as_mut().unwrap()
     }
 
     pub fn get_cc_generic_services(&self) -> bool {
@@ -4181,7 +4181,7 @@ impl<'a> FileOptions {
         if self.java_generic_services.is_none() {
             self.java_generic_services = Some(false);
         };
-        self.java_generic_services.get_mut_ref()
+        self.java_generic_services.as_mut().unwrap()
     }
 
     pub fn get_java_generic_services(&self) -> bool {
@@ -4207,7 +4207,7 @@ impl<'a> FileOptions {
         if self.py_generic_services.is_none() {
             self.py_generic_services = Some(false);
         };
-        self.py_generic_services.get_mut_ref()
+        self.py_generic_services.as_mut().unwrap()
     }
 
     pub fn get_py_generic_services(&self) -> bool {
@@ -4738,7 +4738,7 @@ impl<'a> MessageOptions {
         if self.message_set_wire_format.is_none() {
             self.message_set_wire_format = Some(false);
         };
-        self.message_set_wire_format.get_mut_ref()
+        self.message_set_wire_format.as_mut().unwrap()
     }
 
     pub fn get_message_set_wire_format(&self) -> bool {
@@ -4764,7 +4764,7 @@ impl<'a> MessageOptions {
         if self.no_standard_descriptor_accessor.is_none() {
             self.no_standard_descriptor_accessor = Some(false);
         };
-        self.no_standard_descriptor_accessor.get_mut_ref()
+        self.no_standard_descriptor_accessor.as_mut().unwrap()
     }
 
     pub fn get_no_standard_descriptor_accessor(&self) -> bool {
@@ -5031,7 +5031,7 @@ impl<'a> FieldOptions {
         if self.ctype.is_none() {
             self.ctype = Some(FieldOptions_CType::new(0));
         };
-        self.ctype.get_mut_ref()
+        self.ctype.as_mut().unwrap()
     }
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
@@ -5057,7 +5057,7 @@ impl<'a> FieldOptions {
         if self.packed.is_none() {
             self.packed = Some(false);
         };
-        self.packed.get_mut_ref()
+        self.packed.as_mut().unwrap()
     }
 
     pub fn get_packed(&self) -> bool {
@@ -5083,7 +5083,7 @@ impl<'a> FieldOptions {
         if self.lazy.is_none() {
             self.lazy = Some(false);
         };
-        self.lazy.get_mut_ref()
+        self.lazy.as_mut().unwrap()
     }
 
     pub fn get_lazy(&self) -> bool {
@@ -5109,7 +5109,7 @@ impl<'a> FieldOptions {
         if self.deprecated.is_none() {
             self.deprecated = Some(false);
         };
-        self.deprecated.get_mut_ref()
+        self.deprecated.as_mut().unwrap()
     }
 
     pub fn get_deprecated(&self) -> bool {
@@ -5135,7 +5135,7 @@ impl<'a> FieldOptions {
         if self.experimental_map_key.is_none() {
             self.experimental_map_key.set_default();
         };
-        self.experimental_map_key.get_mut_ref()
+        self.experimental_map_key.as_mut().unwrap()
     }
 
     pub fn get_experimental_map_key(&'a self) -> &'a str {
@@ -5164,7 +5164,7 @@ impl<'a> FieldOptions {
         if self.weak.is_none() {
             self.weak = Some(false);
         };
-        self.weak.get_mut_ref()
+        self.weak.as_mut().unwrap()
     }
 
     pub fn get_weak(&self) -> bool {
@@ -5591,7 +5591,7 @@ impl<'a> EnumOptions {
         if self.allow_alias.is_none() {
             self.allow_alias = Some(false);
         };
-        self.allow_alias.get_mut_ref()
+        self.allow_alias.as_mut().unwrap()
     }
 
     pub fn get_allow_alias(&self) -> bool {
@@ -6329,7 +6329,7 @@ impl<'a> UninterpretedOption {
         if self.identifier_value.is_none() {
             self.identifier_value.set_default();
         };
-        self.identifier_value.get_mut_ref()
+        self.identifier_value.as_mut().unwrap()
     }
 
     pub fn get_identifier_value(&'a self) -> &'a str {
@@ -6358,7 +6358,7 @@ impl<'a> UninterpretedOption {
         if self.positive_int_value.is_none() {
             self.positive_int_value = Some(0);
         };
-        self.positive_int_value.get_mut_ref()
+        self.positive_int_value.as_mut().unwrap()
     }
 
     pub fn get_positive_int_value(&self) -> u64 {
@@ -6384,7 +6384,7 @@ impl<'a> UninterpretedOption {
         if self.negative_int_value.is_none() {
             self.negative_int_value = Some(0);
         };
-        self.negative_int_value.get_mut_ref()
+        self.negative_int_value.as_mut().unwrap()
     }
 
     pub fn get_negative_int_value(&self) -> i64 {
@@ -6410,7 +6410,7 @@ impl<'a> UninterpretedOption {
         if self.double_value.is_none() {
             self.double_value = Some(0.);
         };
-        self.double_value.get_mut_ref()
+        self.double_value.as_mut().unwrap()
     }
 
     pub fn get_double_value(&self) -> f64 {
@@ -6436,15 +6436,13 @@ impl<'a> UninterpretedOption {
         if self.string_value.is_none() {
             self.string_value.set_default();
         };
-        self.string_value.get_mut_ref()
+        self.string_value.as_mut().unwrap()
     }
 
     pub fn get_string_value(&'a self) -> &'a [u8] {
-        // XXX: workaround since returning &[] doesn't seem to work
-        let tmp: &[u8] = &[];
         match self.string_value.as_ref() {
             Some(ref v) => v.as_slice(),
-            None => tmp,
+            None => {let t: &[u8] = &[]; t}, // XXX: workaround since returning &[] doesn't seem to work
         }
     }
 
@@ -6467,7 +6465,7 @@ impl<'a> UninterpretedOption {
         if self.aggregate_value.is_none() {
             self.aggregate_value.set_default();
         };
-        self.aggregate_value.get_mut_ref()
+        self.aggregate_value.as_mut().unwrap()
     }
 
     pub fn get_aggregate_value(&'a self) -> &'a str {
@@ -6841,7 +6839,7 @@ impl<'a> UninterpretedOption_NamePart {
         if self.name_part.is_none() {
             self.name_part.set_default();
         };
-        self.name_part.get_mut_ref()
+        self.name_part.as_mut().unwrap()
     }
 
     pub fn get_name_part(&'a self) -> &'a str {
@@ -6870,7 +6868,7 @@ impl<'a> UninterpretedOption_NamePart {
         if self.is_extension.is_none() {
             self.is_extension = Some(false);
         };
-        self.is_extension.get_mut_ref()
+        self.is_extension.as_mut().unwrap()
     }
 
     pub fn get_is_extension(&self) -> bool {
@@ -7286,7 +7284,7 @@ impl<'a> SourceCodeInfo_Location {
         if self.leading_comments.is_none() {
             self.leading_comments.set_default();
         };
-        self.leading_comments.get_mut_ref()
+        self.leading_comments.as_mut().unwrap()
     }
 
     pub fn get_leading_comments(&'a self) -> &'a str {
@@ -7315,7 +7313,7 @@ impl<'a> SourceCodeInfo_Location {
         if self.trailing_comments.is_none() {
             self.trailing_comments.set_default();
         };
-        self.trailing_comments.get_mut_ref()
+        self.trailing_comments.as_mut().unwrap()
     }
 
     pub fn get_trailing_comments(&'a self) -> &'a str {
