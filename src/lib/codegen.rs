@@ -88,7 +88,8 @@ impl RustType {
     fn default_value(&self) -> String {
         match *self {
             RustRef(box RustStr)               => "\"\"".to_string(),
-            RustRef(box RustSlice(..))         => "&[]".to_string(),
+            //RustRef(box RustSlice(..))         => "&[]".to_string(),
+            RustRef(box RustSlice(ref rtype))  => format!("{{ let t: &[{}] = &[]; t }}", rtype), // XXX: workaround
             RustSigned(..) | RustUnsigned(..)  => "0".to_string(),
             RustFloat(..)                      => "0.".to_string(),
             RustBool(..)                       => "false".to_string(),
@@ -1154,7 +1155,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
                 w.if_self_field_is_none(|w| {
                     w.self_field_assign_default();
                 });
-                w.write_line(format!("{:s}.get_mut_ref()", w.self_field()));
+                w.write_line(format!("{:s}.as_mut().unwrap()", w.self_field()));
             } else {
                 w.write_line(format!("&mut {:s}", w.self_field()));
             }
