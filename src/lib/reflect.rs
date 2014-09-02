@@ -145,11 +145,11 @@ trait FieldAccessorGeneric {
 }
 
 struct FieldAccessorGenericImpl<M> {
-    accessor: &'static FieldAccessor<M>
+    accessor: &'static FieldAccessor<M> + 'static
 }
 
 impl<M : Message> FieldAccessorGenericImpl<M> {
-    fn new(a: &'static FieldAccessor<M>) -> FieldAccessorGenericImpl<M> {
+    fn new(a: &'static FieldAccessor<M> + 'static) -> FieldAccessorGenericImpl<M> {
         FieldAccessorGenericImpl {
             accessor: a
         }
@@ -256,11 +256,11 @@ impl<M : 'static + Message> FieldAccessorGeneric for FieldAccessorGenericImpl<M>
 
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
-    accessor: Box<FieldAccessorGeneric>,
+    accessor: Box<FieldAccessorGeneric + 'static>,
 }
 
 impl FieldDescriptor {
-    fn new<M : 'static + Message>(a: &'static FieldAccessor<M>, proto: &'static FieldDescriptorProto)
+    fn new<M : 'static + Message>(a: &'static FieldAccessor<M> + 'static, proto: &'static FieldDescriptorProto)
         -> FieldDescriptor
     {
         assert_eq!(proto.get_name(), a.name());
@@ -413,7 +413,7 @@ impl<M : 'static + Message> MessageFactory for MessageFactoryTyped<M> {
 
 pub struct MessageDescriptor {
     proto: &'static DescriptorProto,
-    factory: Box<MessageFactory>,
+    factory: Box<MessageFactory + 'static>,
     fields: Vec<FieldDescriptor>,
 
     index_by_name: HashMap<String, uint>,
@@ -427,7 +427,7 @@ impl MessageDescriptor {
 
     pub fn new<M : 'static + Message>(
             rust_name: &'static str,
-            fields: Vec<&'static FieldAccessor<M>>,
+            fields: Vec<&'static FieldAccessor<M> + 'static>,
             file: &'static FileDescriptorProto
         ) -> MessageDescriptor
     {
