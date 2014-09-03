@@ -984,9 +984,9 @@ mod test {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1);
             assert_eq!(1, is.bytes_until_limit());
-            assert_eq!(&[0xaa], is.read_raw_bytes(1).as_slice());
+            assert_eq!([0xaa].as_slice(), is.read_raw_bytes(1).as_slice());
             is.pop_limit(old_limit);
-            assert_eq!(&[0xbb, 0xcc], is.read_raw_bytes(2).as_slice());
+            assert_eq!([0xbb, 0xcc].as_slice(), is.read_raw_bytes(2).as_slice());
         });
     }
 
