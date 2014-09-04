@@ -5,6 +5,6 @@ install:
   - sudo apt-get install -qq protobuf-compiler
 script:
   - cargo build
-  - export PATH=./target:$(PATH)
+  - export PATH=./target:$PATH
   - make regenerate
   - cargo test
