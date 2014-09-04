@@ -1,11 +1,10 @@
 # http://rust-ci.org/help/
-before_install:
-  - sudo add-apt-repository --yes ppa:hansjorg/rust
-  - sudo add-apt-repository --yes ppa:cmrx64/cargo
-  - sudo apt-get update -qq
+# http://docs.travis-ci.com/user/languages/rust/
+language: rust
 install:
-  - sudo apt-get install -qq rust-nightly cargo protobuf-compiler
+  - sudo apt-get install -qq protobuf-compiler
 script:
   - cargo build
+  - export PATH=./target:$(PATH)
   - make regenerate
   - cargo test
