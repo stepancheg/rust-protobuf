@@ -1571,9 +1571,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                     w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data)");
                 });
                 w.write_line("");
-                // XXX: this broke due to the glob import and recent rust changes
-                //w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-                w.def_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
+                w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
                     w.unsafe_expr(|w| {
                         w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
                             w.write_line("parse_descriptor_proto()");
