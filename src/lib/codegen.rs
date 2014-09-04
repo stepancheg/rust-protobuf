@@ -1,6 +1,7 @@
 use std::io::Writer;
 use std::mem;
 use std::fmt;
+use std::collections::hash_map::HashMap;
 
 use descriptor::*;
 use misc::*;
@@ -1718,6 +1719,8 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
     let root_scope = RootScope { file_descriptors: file_descriptors };
 
     let mut results: Vec<GenResult> = Vec::new();
+    let files_map: HashMap<&str, &FileDescriptorProto> =
+        file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
 
     for file_name in files_to_generate.iter() {
         let file = file_descriptors.iter()
@@ -1736,11 +1739,13 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("#![allow(dead_code)]");
             w.write_line("#![allow(non_camel_case_types)]");
             w.write_line("#![allow(non_upper_case_globals)]");
+            w.write_line("#![allow(unused_imports)]");
 
-            // TODO: get rid of generation with glob imports, it forces users to use that feature
             w.write_line("");
             for dep in file.get_dependency().iter() {
-                w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(dep.as_slice())));
+                for message in files_map[dep.as_slice()].get_message_type().iter() {
+                    w.write_line(format!("use super::{:s}::{:s};", proto_path_to_rust_base(dep.as_slice()), message.get_name()));
+                }
             }
 
             let scope = Scope {
