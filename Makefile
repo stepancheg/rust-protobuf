@@ -1,7 +1,10 @@
-export PATH := target:$(PATH)
+export PATH := $(shell pwd)/target:$(PATH)
 
 .PHONY:
 all:
+
+.PHONY:
+test: test-protoc
 
 .PHONY:
 test-protoc:
