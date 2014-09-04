@@ -1,6 +1,7 @@
 use std::io::Writer;
 use std::mem;
 use std::fmt;
+use std::collections::hashmap::HashMap;
 
 use descriptor::*;
 use misc::*;
@@ -1527,6 +1528,8 @@ pub struct GenOptions {
 
 pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
     let mut results: Vec<GenResult> = Vec::new();
+    let files_map: HashMap<&str, &FileDescriptorProto> = files.iter().map(|f| (f.get_name(), f)).collect();
+
     for file in files.iter() {
         let base = proto_path_to_rust_base(file.get_name());
 
@@ -1540,11 +1543,13 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
             w.write_line("#![allow(non_camel_case_types)]");
+            w.write_line("#![allow(unused_imports)]");
 
-            // TODO: get rid of generation with glob imports, it forces users to use that feature
             w.write_line("");
             for dep in file.get_dependency().iter() {
-                w.write_line(format!("use super::{:s}::*;", proto_path_to_rust_base(dep.as_slice())));
+                for message in files_map[dep.as_slice()].get_message_type().iter() {
+                    w.write_line(format!("use super::{:s}::{:s};", proto_path_to_rust_base(dep.as_slice()), message.get_name()));
+                }
             }
 
             {
