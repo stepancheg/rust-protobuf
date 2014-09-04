@@ -195,7 +195,7 @@ fn test_types_repeated_packed() {
 fn test_file_descriptor_proto() {
     let p: &'static descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());
-    assert_eq!("proto/shrug.proto", p.get_name());
+    assert_eq!("src/proto/shrug.proto", p.get_name());
 }
 
 #[test]

@@ -1,0 +1,23 @@
+[package]
+
+name = "protobuf"
+version = "0.1.1"
+# TODO: check if there are more authors to add
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+
+[lib]
+
+name = "protobuf"
+path = "src/lib/protobuf.rs"
+
+[[bin]]
+
+name = "protobuf-bin-gen-rust"
+path = "src/protobuf-bin-gen-rust.rs"
+#rustc -O -L . ./protobuf-bin-gen-rust.rs
+
+[[bin]]
+
+name = "protoc-gen-rust"
+path = "src/protoc-gen-rust.rs"
+#rustc -O -L . ./protoc-gen-rust.rs

@@ -1,4 +1,3 @@
-#![crate_id(name = "protobuf#0.1.0")]
 #![crate_type = "lib"]
 #![feature(globs)]
 #![allow(non_camel_case_types)]
@@ -23,6 +22,7 @@ pub use clear::Clear;
 pub use core::CodedInputStream;
 pub use core::CodedOutputStream;
 pub use core::Message;
+pub use core::ProtobufEnum;
 pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
 pub use core::parse_length_delimited_from;

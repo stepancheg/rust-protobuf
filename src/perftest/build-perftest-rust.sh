@@ -2,7 +2,7 @@
 
 cd $(dirname $0)
 
-root=$(cd ..; pwd)
+root=$(cd ../../target; pwd)
 PATH="$root:$PATH"
 
 protoc --rust_out . perftest_data.proto

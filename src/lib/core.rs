@@ -97,7 +97,7 @@ pub struct CodedInputStream<'a> {
     buffer: Vec<u8>,
     buffer_size: u32,
     buffer_pos: u32,
-    reader: Option<&'a mut Reader>,
+    reader: Option<&'a mut Reader + 'a>,
     total_bytes_retired: u32,
     current_limit: u32,
     buffer_size_after_limit: u32,
@@ -426,7 +426,7 @@ trait WithCodedOutputStream {
     fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T;
 }
 
-impl<'a> WithCodedOutputStream for &'a mut Writer {
+impl<'a> WithCodedOutputStream for &'a mut Writer + 'a {
     fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T {
         let mut os = CodedOutputStream::new(self);
         let r = cb(&mut os);
@@ -447,7 +447,7 @@ trait WithCodedInputStream {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T;
 }
 
-impl<'a> WithCodedInputStream for &'a mut Reader {
+impl<'a> WithCodedInputStream for &'a mut Reader + 'a {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
         let mut is = CodedInputStream::new(self);
         let r = cb(&mut is);
@@ -473,7 +473,7 @@ pub struct CodedOutputStream<'a> {
     buffer: Vec<u8>,
     // within buffer
     position: u32,
-    writer: Option<&'a mut Writer>,
+    writer: Option<&'a mut Writer + 'a>,
     sizes: Vec<u32>, // used by Message::write_to
 }
 
@@ -984,9 +984,9 @@ mod test {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1);
             assert_eq!(1, is.bytes_until_limit());
-            assert_eq!(&[0xaa], is.read_raw_bytes(1).as_slice());
+            assert_eq!([0xaa].as_slice(), is.read_raw_bytes(1).as_slice());
             is.pop_limit(old_limit);
-            assert_eq!(&[0xbb, 0xcc], is.read_raw_bytes(2).as_slice());
+            assert_eq!([0xbb, 0xcc].as_slice(), is.read_raw_bytes(2).as_slice());
         });
     }
 

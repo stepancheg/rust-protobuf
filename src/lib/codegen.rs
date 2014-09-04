@@ -1,6 +1,7 @@
 use std::io::Writer;
 use std::mem;
 use std::fmt;
+use std::collections::hashmap::HashMap;
 
 use descriptor::*;
 use misc::*;
@@ -88,7 +89,8 @@ impl RustType {
     fn default_value(&self) -> String {
         match *self {
             RustRef(box RustStr)               => "\"\"".to_string(),
-            RustRef(box RustSlice(..))         => "&[]".to_string(),
+            //RustRef(box RustSlice(..))         => "&[]".to_string(),
+            RustRef(box RustSlice(ref rtype))  => format!("{{ let t: &[{}] = &[]; t }}", rtype), // XXX: workaround
             RustSigned(..) | RustUnsigned(..)  => "0".to_string(),
             RustFloat(..)                      => "0.".to_string(),
             RustBool(..)                       => "false".to_string(),
@@ -478,7 +480,7 @@ impl EnumValue {
 
 struct IndentWriter<'a> {
     // TODO: add mut
-    writer: &'a Writer,
+    writer: &'a Writer + 'a,
     indent: String,
     msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
@@ -528,7 +530,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn fields(&self, cb: |&mut IndentWriter|) {
-        let fields = &self.msg.get_ref().fields;
+        let fields = &self.msg.as_ref().unwrap().fields;
         let mut iter = fields.iter();
         for field in iter {
             self.bind_field(field, |w| cb(w));
@@ -536,7 +538,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn required_fields(&self, cb: |&mut IndentWriter|) {
-        let fields = &self.msg.get_ref().required_fields();
+        let fields = &self.msg.as_ref().unwrap().required_fields();
         let mut iter = fields.iter();
         for field in iter {
             self.bind_field(*field, |w| cb(w));
@@ -853,7 +855,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn clear_field_func(&self) -> String {
-        "clear_".to_string().append(self.field.get_ref().name.as_slice())
+        "clear_".to_string().append(self.field.as_ref().unwrap().name.as_slice())
     }
 
     fn clear_field(&self) {
@@ -1154,7 +1156,7 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
                 w.if_self_field_is_none(|w| {
                     w.self_field_assign_default();
                 });
-                w.write_line(format!("{:s}.get_mut_ref()", w.self_field()));
+                w.write_line(format!("{:s}.as_mut().unwrap()", w.self_field()));
             } else {
                 w.write_line(format!("&mut {:s}", w.self_field()));
             }
@@ -1526,6 +1528,8 @@ pub struct GenOptions {
 
 pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
     let mut results: Vec<GenResult> = Vec::new();
+    let files_map: HashMap<&str, &FileDescriptorProto> = files.iter().map(|f| (f.get_name(), f)).collect();
+
     for file in files.iter() {
         let base = proto_path_to_rust_base(file.get_name());
 
@@ -1538,10 +1542,15 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
+            w.write_line("#![allow(non_camel_case_types)]");
+            w.write_line("#![allow(non_snake_case)]");
+            w.write_line("#![allow(unused_imports)]");
 
             w.write_line("");
             for dep in file.get_dependency().iter() {
-                w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(dep.as_slice())));
+                for message in files_map[dep.as_slice()].get_message_type().iter() {
+                    w.write_line(format!("use super::{:s}::{:s};", proto_path_to_rust_base(dep.as_slice()), message.get_name()));
+                }
             }
 
             {
