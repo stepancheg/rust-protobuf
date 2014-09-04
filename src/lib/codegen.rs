@@ -1543,6 +1543,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
             w.write_line("#![allow(non_camel_case_types)]");
+            w.write_line("#![allow(non_snake_case)]");
             w.write_line("#![allow(unused_imports)]");
 
             w.write_line("");
