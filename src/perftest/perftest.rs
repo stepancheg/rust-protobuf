@@ -85,7 +85,7 @@ struct TestRunner {
 
 impl TestRunner {
     fn test<M : Message>(&mut self, name: &str, data: &[M]) {
-        if self.selected.is_none() || name == self.selected.get_ref().as_slice() {
+        if self.selected.is_none() || name == self.selected.as_ref().unwrap().as_slice() {
             run_test(name, data);
             self.any_matched = true;
         }

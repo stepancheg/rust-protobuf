@@ -22,7 +22,8 @@ impl<E, I : Iterator<E>> Iterator<Vec<E>> for Paginate<I> {
         for _ in range(0, self.page) {
             match self.iter.next() {
                 Some(next) => r.push(next),
-                None => return Some(r).filtered(|v| !v.is_empty()),
+                None if r.is_empty() => return None,
+                None                 => return Some(r),
             }
         }
         Some(r)

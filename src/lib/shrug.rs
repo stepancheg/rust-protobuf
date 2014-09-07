@@ -171,7 +171,7 @@ impl<'a> Test1 {
         if self.a.is_none() {
             self.a = Some(0);
         };
-        self.a.get_mut_ref()
+        self.a.as_mut().unwrap()
     }
 
     pub fn get_a(&self) -> i32 {
@@ -339,7 +339,7 @@ impl<'a> Test2 {
         if self.b.is_none() {
             self.b.set_default();
         };
-        self.b.get_mut_ref()
+        self.b.as_mut().unwrap()
     }
 
     pub fn get_b(&'a self) -> &'a str {
@@ -510,7 +510,7 @@ impl<'a> Test3 {
         if self.c.is_none() {
             self.c.set_default();
         };
-        self.c.get_mut_ref()
+        self.c.as_mut().unwrap()
     }
 
     pub fn get_c(&'a self) -> &'a Test1 {
@@ -1084,7 +1084,7 @@ impl<'a> TestEmpty {
         if self.foo.is_none() {
             self.foo = Some(0);
         };
-        self.foo.get_mut_ref()
+        self.foo.as_mut().unwrap()
     }
 
     pub fn get_foo(&self) -> i32 {
@@ -1249,7 +1249,7 @@ impl<'a> TestRequired {
         if self.b.is_none() {
             self.b = Some(false);
         };
-        self.b.get_mut_ref()
+        self.b.as_mut().unwrap()
     }
 
     pub fn get_b(&self) -> bool {
@@ -1417,7 +1417,7 @@ impl<'a> TestUnknownFields {
         if self.a.is_none() {
             self.a = Some(0);
         };
-        self.a.get_mut_ref()
+        self.a.as_mut().unwrap()
     }
 
     pub fn get_a(&self) -> i32 {
@@ -1587,7 +1587,7 @@ impl<'a> TestSelfReference {
         if self.r1.is_none() {
             self.r1.set_default();
         };
-        self.r1.get_mut_ref()
+        self.r1.as_mut().unwrap()
     }
 
     pub fn get_r1(&'a self) -> &'a TestSelfReference {
@@ -1613,7 +1613,7 @@ impl<'a> TestSelfReference {
         if self.r2.is_none() {
             self.r2.set_default();
         };
-        self.r2.get_mut_ref()
+        self.r2.as_mut().unwrap()
     }
 
     pub fn get_r2(&'a self) -> &'a TestSelfReference {
@@ -1822,7 +1822,7 @@ impl<'a> TestDefaultInstanceField {
         if self.s.is_none() {
             self.s.set_default();
         };
-        self.s.get_mut_ref()
+        self.s.as_mut().unwrap()
     }
 
     pub fn get_s(&'a self) -> &'a str {
@@ -1990,7 +1990,7 @@ impl<'a> TestDefaultInstance {
         if self.field.is_none() {
             self.field.set_default();
         };
-        self.field.get_mut_ref()
+        self.field.as_mut().unwrap()
     }
 
     pub fn get_field(&'a self) -> &'a TestDefaultInstanceField {
@@ -2158,7 +2158,7 @@ impl<'a> TestDescriptor {
         if self.stuff.is_none() {
             self.stuff = Some(0);
         };
-        self.stuff.get_mut_ref()
+        self.stuff.as_mut().unwrap()
     }
 
     pub fn get_stuff(&self) -> i32 {
@@ -2351,7 +2351,7 @@ impl<'a> TestTypesSingular {
         if self.double_field.is_none() {
             self.double_field = Some(0.);
         };
-        self.double_field.get_mut_ref()
+        self.double_field.as_mut().unwrap()
     }
 
     pub fn get_double_field(&self) -> f64 {
@@ -2377,7 +2377,7 @@ impl<'a> TestTypesSingular {
         if self.float_field.is_none() {
             self.float_field = Some(0.);
         };
-        self.float_field.get_mut_ref()
+        self.float_field.as_mut().unwrap()
     }
 
     pub fn get_float_field(&self) -> f32 {
@@ -2403,7 +2403,7 @@ impl<'a> TestTypesSingular {
         if self.int32_field.is_none() {
             self.int32_field = Some(0);
         };
-        self.int32_field.get_mut_ref()
+        self.int32_field.as_mut().unwrap()
     }
 
     pub fn get_int32_field(&self) -> i32 {
@@ -2429,7 +2429,7 @@ impl<'a> TestTypesSingular {
         if self.int64_field.is_none() {
             self.int64_field = Some(0);
         };
-        self.int64_field.get_mut_ref()
+        self.int64_field.as_mut().unwrap()
     }
 
     pub fn get_int64_field(&self) -> i64 {
@@ -2455,7 +2455,7 @@ impl<'a> TestTypesSingular {
         if self.uint32_field.is_none() {
             self.uint32_field = Some(0);
         };
-        self.uint32_field.get_mut_ref()
+        self.uint32_field.as_mut().unwrap()
     }
 
     pub fn get_uint32_field(&self) -> u32 {
@@ -2481,7 +2481,7 @@ impl<'a> TestTypesSingular {
         if self.uint64_field.is_none() {
             self.uint64_field = Some(0);
         };
-        self.uint64_field.get_mut_ref()
+        self.uint64_field.as_mut().unwrap()
     }
 
     pub fn get_uint64_field(&self) -> u64 {
@@ -2507,7 +2507,7 @@ impl<'a> TestTypesSingular {
         if self.sint32_field.is_none() {
             self.sint32_field = Some(0);
         };
-        self.sint32_field.get_mut_ref()
+        self.sint32_field.as_mut().unwrap()
     }
 
     pub fn get_sint32_field(&self) -> i32 {
@@ -2533,7 +2533,7 @@ impl<'a> TestTypesSingular {
         if self.sint64_field.is_none() {
             self.sint64_field = Some(0);
         };
-        self.sint64_field.get_mut_ref()
+        self.sint64_field.as_mut().unwrap()
     }
 
     pub fn get_sint64_field(&self) -> i64 {
@@ -2559,7 +2559,7 @@ impl<'a> TestTypesSingular {
         if self.fixed32_field.is_none() {
             self.fixed32_field = Some(0);
         };
-        self.fixed32_field.get_mut_ref()
+        self.fixed32_field.as_mut().unwrap()
     }
 
     pub fn get_fixed32_field(&self) -> u32 {
@@ -2585,7 +2585,7 @@ impl<'a> TestTypesSingular {
         if self.fixed64_field.is_none() {
             self.fixed64_field = Some(0);
         };
-        self.fixed64_field.get_mut_ref()
+        self.fixed64_field.as_mut().unwrap()
     }
 
     pub fn get_fixed64_field(&self) -> u64 {
@@ -2611,7 +2611,7 @@ impl<'a> TestTypesSingular {
         if self.sfixed32_field.is_none() {
             self.sfixed32_field = Some(0);
         };
-        self.sfixed32_field.get_mut_ref()
+        self.sfixed32_field.as_mut().unwrap()
     }
 
     pub fn get_sfixed32_field(&self) -> i32 {
@@ -2637,7 +2637,7 @@ impl<'a> TestTypesSingular {
         if self.sfixed64_field.is_none() {
             self.sfixed64_field = Some(0);
         };
-        self.sfixed64_field.get_mut_ref()
+        self.sfixed64_field.as_mut().unwrap()
     }
 
     pub fn get_sfixed64_field(&self) -> i64 {
@@ -2663,7 +2663,7 @@ impl<'a> TestTypesSingular {
         if self.bool_field.is_none() {
             self.bool_field = Some(false);
         };
-        self.bool_field.get_mut_ref()
+        self.bool_field.as_mut().unwrap()
     }
 
     pub fn get_bool_field(&self) -> bool {
@@ -2689,7 +2689,7 @@ impl<'a> TestTypesSingular {
         if self.string_field.is_none() {
             self.string_field.set_default();
         };
-        self.string_field.get_mut_ref()
+        self.string_field.as_mut().unwrap()
     }
 
     pub fn get_string_field(&'a self) -> &'a str {
@@ -2718,7 +2718,7 @@ impl<'a> TestTypesSingular {
         if self.bytes_field.is_none() {
             self.bytes_field.set_default();
         };
-        self.bytes_field.get_mut_ref()
+        self.bytes_field.as_mut().unwrap()
     }
 
     pub fn get_bytes_field(&'a self) -> &'a [u8] {

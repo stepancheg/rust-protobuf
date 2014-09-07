@@ -118,7 +118,7 @@ impl<'a> CodeGeneratorRequest {
         if self.parameter.is_none() {
             self.parameter.set_default();
         };
-        self.parameter.get_mut_ref()
+        self.parameter.as_mut().unwrap()
     }
 
     pub fn get_parameter(&'a self) -> &'a str {
@@ -375,7 +375,7 @@ impl<'a> CodeGeneratorResponse {
         if self.error.is_none() {
             self.error.set_default();
         };
-        self.error.get_mut_ref()
+        self.error.as_mut().unwrap()
     }
 
     pub fn get_error(&'a self) -> &'a str {
@@ -603,7 +603,7 @@ impl<'a> CodeGeneratorResponse_File {
         if self.name.is_none() {
             self.name.set_default();
         };
-        self.name.get_mut_ref()
+        self.name.as_mut().unwrap()
     }
 
     pub fn get_name(&'a self) -> &'a str {
@@ -632,7 +632,7 @@ impl<'a> CodeGeneratorResponse_File {
         if self.insertion_point.is_none() {
             self.insertion_point.set_default();
         };
-        self.insertion_point.get_mut_ref()
+        self.insertion_point.as_mut().unwrap()
     }
 
     pub fn get_insertion_point(&'a self) -> &'a str {
@@ -661,7 +661,7 @@ impl<'a> CodeGeneratorResponse_File {
         if self.content.is_none() {
             self.content.set_default();
         };
-        self.content.get_mut_ref()
+        self.content.as_mut().unwrap()
     }
 
     pub fn get_content(&'a self) -> &'a str {

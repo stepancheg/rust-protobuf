@@ -128,7 +128,7 @@ impl<'a> TestMessage {
         if self.value.is_none() {
             self.value = Some(0);
         };
-        self.value.get_mut_ref()
+        self.value.as_mut().unwrap()
     }
 
     pub fn get_value(&self) -> i32 {
@@ -359,7 +359,7 @@ impl<'a> TestTypes {
         if self.double_singular.is_none() {
             self.double_singular = Some(0.);
         };
-        self.double_singular.get_mut_ref()
+        self.double_singular.as_mut().unwrap()
     }
 
     pub fn get_double_singular(&self) -> f64 {
@@ -385,7 +385,7 @@ impl<'a> TestTypes {
         if self.float_singular.is_none() {
             self.float_singular = Some(0.);
         };
-        self.float_singular.get_mut_ref()
+        self.float_singular.as_mut().unwrap()
     }
 
     pub fn get_float_singular(&self) -> f32 {
@@ -411,7 +411,7 @@ impl<'a> TestTypes {
         if self.int32_singular.is_none() {
             self.int32_singular = Some(0);
         };
-        self.int32_singular.get_mut_ref()
+        self.int32_singular.as_mut().unwrap()
     }
 
     pub fn get_int32_singular(&self) -> i32 {
@@ -437,7 +437,7 @@ impl<'a> TestTypes {
         if self.int64_singular.is_none() {
             self.int64_singular = Some(0);
         };
-        self.int64_singular.get_mut_ref()
+        self.int64_singular.as_mut().unwrap()
     }
 
     pub fn get_int64_singular(&self) -> i64 {
@@ -463,7 +463,7 @@ impl<'a> TestTypes {
         if self.uint32_singular.is_none() {
             self.uint32_singular = Some(0);
         };
-        self.uint32_singular.get_mut_ref()
+        self.uint32_singular.as_mut().unwrap()
     }
 
     pub fn get_uint32_singular(&self) -> u32 {
@@ -489,7 +489,7 @@ impl<'a> TestTypes {
         if self.uint64_singular.is_none() {
             self.uint64_singular = Some(0);
         };
-        self.uint64_singular.get_mut_ref()
+        self.uint64_singular.as_mut().unwrap()
     }
 
     pub fn get_uint64_singular(&self) -> u64 {
@@ -515,7 +515,7 @@ impl<'a> TestTypes {
         if self.sint32_singular.is_none() {
             self.sint32_singular = Some(0);
         };
-        self.sint32_singular.get_mut_ref()
+        self.sint32_singular.as_mut().unwrap()
     }
 
     pub fn get_sint32_singular(&self) -> i32 {
@@ -541,7 +541,7 @@ impl<'a> TestTypes {
         if self.sint64_singular.is_none() {
             self.sint64_singular = Some(0);
         };
-        self.sint64_singular.get_mut_ref()
+        self.sint64_singular.as_mut().unwrap()
     }
 
     pub fn get_sint64_singular(&self) -> i64 {
@@ -567,7 +567,7 @@ impl<'a> TestTypes {
         if self.fixed32_singular.is_none() {
             self.fixed32_singular = Some(0);
         };
-        self.fixed32_singular.get_mut_ref()
+        self.fixed32_singular.as_mut().unwrap()
     }
 
     pub fn get_fixed32_singular(&self) -> u32 {
@@ -593,7 +593,7 @@ impl<'a> TestTypes {
         if self.fixed64_singular.is_none() {
             self.fixed64_singular = Some(0);
         };
-        self.fixed64_singular.get_mut_ref()
+        self.fixed64_singular.as_mut().unwrap()
     }
 
     pub fn get_fixed64_singular(&self) -> u64 {
@@ -619,7 +619,7 @@ impl<'a> TestTypes {
         if self.sfixed32_singular.is_none() {
             self.sfixed32_singular = Some(0);
         };
-        self.sfixed32_singular.get_mut_ref()
+        self.sfixed32_singular.as_mut().unwrap()
     }
 
     pub fn get_sfixed32_singular(&self) -> i32 {
@@ -645,7 +645,7 @@ impl<'a> TestTypes {
         if self.sfixed64_singular.is_none() {
             self.sfixed64_singular = Some(0);
         };
-        self.sfixed64_singular.get_mut_ref()
+        self.sfixed64_singular.as_mut().unwrap()
     }
 
     pub fn get_sfixed64_singular(&self) -> i64 {
@@ -671,7 +671,7 @@ impl<'a> TestTypes {
         if self.bool_singular.is_none() {
             self.bool_singular = Some(false);
         };
-        self.bool_singular.get_mut_ref()
+        self.bool_singular.as_mut().unwrap()
     }
 
     pub fn get_bool_singular(&self) -> bool {
@@ -697,7 +697,7 @@ impl<'a> TestTypes {
         if self.string_singular.is_none() {
             self.string_singular.set_default();
         };
-        self.string_singular.get_mut_ref()
+        self.string_singular.as_mut().unwrap()
     }
 
     pub fn get_string_singular(&'a self) -> &'a str {
@@ -726,7 +726,7 @@ impl<'a> TestTypes {
         if self.bytes_singular.is_none() {
             self.bytes_singular.set_default();
         };
-        self.bytes_singular.get_mut_ref()
+        self.bytes_singular.as_mut().unwrap()
     }
 
     pub fn get_bytes_singular(&'a self) -> &'a [u8] {
@@ -755,7 +755,7 @@ impl<'a> TestTypes {
         if self.test_enum_singular.is_none() {
             self.test_enum_singular = Some(TestEnum::new(0));
         };
-        self.test_enum_singular.get_mut_ref()
+        self.test_enum_singular.as_mut().unwrap()
     }
 
     pub fn get_test_enum_singular(&self) -> TestEnum {
@@ -781,7 +781,7 @@ impl<'a> TestTypes {
         if self.test_message_singular.is_none() {
             self.test_message_singular.set_default();
         };
-        self.test_message_singular.get_mut_ref()
+        self.test_message_singular.as_mut().unwrap()
     }
 
     pub fn get_test_message_singular(&'a self) -> &'a TestMessage {

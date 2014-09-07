@@ -215,7 +215,7 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn as_ref<'a>(&'a self) -> Option<&'a T> {
         if self.set {
-            Some(&**self.value.get_ref())
+            Some(&**self.value.as_ref().unwrap())
         } else {
             None
         }
@@ -224,7 +224,7 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn as_mut<'a>(&'a mut self) -> Option<&'a mut T> {
         if self.set {
-            Some(&mut **self.value.get_mut_ref())
+            Some(&mut **self.value.as_mut().unwrap())
         } else {
             None
         }
@@ -254,7 +254,7 @@ impl<T> SingularPtrField<T> {
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
             //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(x) => fail!(),
+            Some(_) => fail!(),
             None => &mut []
         }
     }
@@ -327,7 +327,7 @@ impl<T : Default+Clear> SingularField<T> {
     pub fn set_default<'a>(&'a mut self) -> &'a mut T {
         self.set = true;
         self.value.clear();
-        self.get_mut_ref()
+        self.as_mut().unwrap()
     }
 }
 
@@ -348,11 +348,11 @@ impl<T : Default+Clear> SingularPtrField<T> {
     pub fn set_default<'a>(&'a mut self) -> &'a mut T {
         self.set = true;
         if self.value.is_some() {
-            self.value.get_mut_ref().clear();
+            self.value.as_mut().unwrap().clear();
         } else {
             self.value = Some(box Default::default());
         }
-        self.get_mut_ref()
+        self.as_mut().unwrap()
     }
 }
 
@@ -385,7 +385,7 @@ impl<T : Clone> Clone for SingularPtrField<T> {
     #[inline]
     fn clone(&self) -> SingularPtrField<T> {
         if self.set {
-            SingularPtrField::some(self.get_ref().clone())
+            SingularPtrField::some(self.as_ref().unwrap().clone())
         } else {
             SingularPtrField::none()
         }
@@ -396,7 +396,7 @@ impl<T : fmt::Show> fmt::Show for SingularField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
-            write!(f, "Some({})", *self.get_ref())
+            write!(f, "Some({})", *self.as_ref().unwrap())
         } else {
             write!(f, "None")
         }
@@ -407,7 +407,7 @@ impl<T : fmt::Show> fmt::Show for SingularPtrField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
-            write!(f, "Some({})", *self.get_ref())
+            write!(f, "Some({})", *self.as_ref().unwrap())
         } else {
             write!(f, "None")
         }
@@ -454,11 +454,11 @@ mod test {
         let mut x = SingularField::some(Foo { b: 10 });
         x.clear();
         x.set_default();
-        assert_eq!(0, x.get_ref().b);
+        assert_eq!(0, x.as_ref().unwrap().b);
 
-        x.get_mut_ref().b = 11;
+        x.as_mut().unwrap().b = 11;
         // without clear
         x.set_default();
-        assert_eq!(0, x.get_ref().b);
+        assert_eq!(0, x.as_ref().unwrap().b);
     }
 }

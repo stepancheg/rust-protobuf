@@ -97,7 +97,7 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
         }
         let length_delimited = self.length_delimited.next();
         if length_delimited.is_some() {
-            return Some(UnknownLengthDelimitedRef(length_delimited.get_ref().as_slice()))
+            return Some(UnknownLengthDelimitedRef(length_delimited.as_ref().unwrap().as_slice()))
         }
         None
     }
@@ -124,7 +124,7 @@ impl UnknownFields {
     fn find_field<'a>(&'a mut self, number: u32) -> &'a mut UnknownValues {
         self.init_map();
 
-        self.fields.get_mut_ref()
+        self.fields.as_mut().unwrap()
             .find_or_insert_with(number, |_| Default::default())
     }
 
@@ -158,7 +158,7 @@ impl UnknownFields {
 impl Clear for UnknownFields {
     fn clear(&mut self) {
         if self.fields.is_some() {
-            self.fields.get_mut_ref().clear();
+            self.fields.as_mut().unwrap().clear();
         }
     }
 }
@@ -172,7 +172,7 @@ impl<'s> Iterator<(u32, &'s UnknownValues)> for UnknownFieldIter<'s> {
         if self.entries.is_none() {
             None
         } else {
-            self.entries.get_mut_ref().next().map(|(&number, values)| (number, values))
+            self.entries.as_mut().unwrap().next().map(|(&number, values)| (number, values))
         }
     }
 }
