@@ -88,7 +88,7 @@ impl RustType {
     fn default_value(&self) -> String {
         match *self {
             RustRef(box RustStr)               => "\"\"".to_string(),
-            RustRef(box RustSlice(..))         => "&[]".to_string(),
+            RustRef(box RustSlice(..))         => "[].as_slice()".to_string(), // "&[]".to_string(),
             RustSigned(..) | RustUnsigned(..)  => "0".to_string(),
             RustFloat(..)                      => "0.".to_string(),
             RustBool(..)                       => "false".to_string(),
@@ -478,7 +478,7 @@ impl EnumValue {
 
 struct IndentWriter<'a> {
     // TODO: add mut
-    writer: &'a Writer,
+    writer: &'a Writer + 'a,
     indent: String,
     msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
@@ -1538,7 +1538,9 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
+            w.write_line("#![allow(non_camel_case_types)]");
 
+            // TODO: get rid of generation with glob imports, it forces users to use that feature
             w.write_line("");
             for dep in file.get_dependency().iter() {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(dep.as_slice())));

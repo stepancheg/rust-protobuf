@@ -1,6 +1,7 @@
 // This file is generated. Do not edit
 
 #![allow(dead_code)]
+#![allow(non_camel_case_types)]
 
 
 static file_descriptor_proto_data: &'static [u8] = &[
@@ -6442,7 +6443,7 @@ impl<'a> UninterpretedOption {
     pub fn get_string_value(&'a self) -> &'a [u8] {
         match self.string_value.as_ref() {
             Some(ref v) => v.as_slice(),
-            None => &[],
+            None => [].as_slice(),
         }
     }
 

@@ -1,6 +1,7 @@
 // This file is generated. Do not edit
 
 #![allow(dead_code)]
+#![allow(non_camel_case_types)]
 
 
 static file_descriptor_proto_data: &'static [u8] = &[
@@ -2723,7 +2724,7 @@ impl<'a> TestTypesSingular {
     pub fn get_bytes_field(&'a self) -> &'a [u8] {
         match self.bytes_field.as_ref() {
             Some(ref v) => v.as_slice(),
-            None => &[],
+            None => [].as_slice(),
         }
     }
 }

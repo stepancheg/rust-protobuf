@@ -31,7 +31,7 @@ fn measure_and_print<R>(title: &str, iter: u64, f: || -> R) -> R {
 }
 
 fn run_test<M : Message>(name: &str, data: &[M]) {
-    let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40]);
+    let mut rng: StdRng = SeedableRng::from_seed([10, 20, 30, 40].as_slice());
     let mut random_data: Vec<M> = Vec::new();
 
     let mut total_size = 0;
