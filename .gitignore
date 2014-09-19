@@ -18,3 +18,4 @@ src/perftest/perftest_proto.rs
 src/perftest/perftest_data.pbbin
 src/perftest/perftest_data.pb.*
 src/perftest/perftest_data.rs
+target/
