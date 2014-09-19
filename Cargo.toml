@@ -1,0 +1,11 @@
+[package]
+
+name = "rust-protobuf"
+version = "0.0.1"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+
+[lib]
+
+name = "protobuf"
+path = "src/lib/protobuf.rs"
+
