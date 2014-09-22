@@ -404,7 +404,7 @@ impl<'a> MessageInfo {
             prefix: prefix.to_string(),
             type_name: prefix.to_string().append(proto_message.get_name()),
             fields: proto_message.get_field().iter().flat_map(|field| {
-                Field::parse(field, pkg).move_iter()
+                Field::parse(field, pkg).into_iter()
             }).collect(),
         }
     }

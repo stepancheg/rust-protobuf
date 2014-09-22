@@ -72,7 +72,7 @@ fn find_messages<'a>(fd: &'a FileDescriptorProto) -> Vec<MessageWithPath<'a>> {
     fn collect_and_walk<'a>(ms: &[MessageWithPath<'a>]) -> Vec<MessageWithPath<'a>> {
         let mut r = Vec::new();
         r.push_all(ms);
-        r.extend(ms.iter().flat_map(|m| collect(m).move_iter()));
+        r.extend(ms.iter().flat_map(|m| collect(m).into_iter()));
         r
     }
 
@@ -89,7 +89,7 @@ fn find_enums<'a>(fd: &'a FileDescriptorProto) -> Vec<EnumWithPath<'a>> {
     r.extend(fd.get_enum_type().iter()
             .map(|e| EnumWithPath { path: MessagePath { path: Vec::new() }, en: e }));
 
-    for m in find_messages(fd).move_iter() {
+    for m in find_messages(fd).into_iter() {
         r.extend(m.get_message().get_enum_type().iter()
                     .map(|e| EnumWithPath { path: m.to_path(), en: e }));
     }

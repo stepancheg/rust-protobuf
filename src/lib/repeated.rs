@@ -70,7 +70,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
-        self.vec.mut_slice_to(self.len)
+        self.vec.as_mut_slice()
     }
 
     #[inline]
@@ -79,8 +79,8 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn mut_slice<'a>(&'a mut self, start: uint, end: uint) -> &'a mut [T] {
-        self.as_mut_slice().mut_slice(start, end)
+    pub fn slice_mut<'a>(&'a mut self, start: uint, end: uint) -> &'a mut [T] {
+        self.as_mut_slice().slice_mut(start, end)
     }
 
     #[inline]
@@ -89,8 +89,8 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn mut_slice_from<'a>(&'a mut self, start: uint) -> &'a mut [T] {
-        self.as_mut_slice().mut_slice_from(start)
+    pub fn slice_from_mut<'a>(&'a mut self, start: uint) -> &'a mut [T] {
+        self.as_mut_slice().slice_from_mut(start)
     }
 
     #[inline]
@@ -99,13 +99,18 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn mut_slice_to<'a>(&'a mut self, end: uint) -> &'a mut [T] {
-        self.as_mut_slice().mut_slice_to(end)
+    pub fn slice_to_mut<'a>(&'a mut self, end: uint) -> &'a mut [T] {
+        self.as_mut_slice().slice_to_mut(end)
     }
 
     #[inline]
-    pub fn mut_split_at<'a>(&'a mut self, mid: uint) -> (&'a mut [T], &'a mut [T]) {
-        self.as_mut_slice().mut_split_at(mid)
+    pub fn split_at<'a>(&'a self, mid: uint) -> (&'a [T], &'a [T]) {
+        self.as_slice().split_at(mid)
+    }
+
+    #[inline]
+    pub fn split_at_mut<'a>(&'a mut self, mid: uint) -> (&'a mut [T], &'a mut [T]) {
+        self.as_mut_slice().split_at_mut(mid)
     }
 
     #[inline]
@@ -119,8 +124,8 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn mut_last<'a>(&'a mut self) -> Option<&'a mut T> {
-        self.as_mut_slice().mut_last()
+    pub fn last_mut<'a>(&'a mut self) -> Option<&'a mut T> {
+        self.as_mut_slice().last_mut()
     }
 
     #[inline]
@@ -179,9 +184,9 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn move_iter(mut self) -> vec::MoveItems<T> {
+    pub fn into_iter(mut self) -> vec::MoveItems<T> {
         self.vec.truncate(self.len);
-        self.vec.move_iter()
+        self.vec.into_iter()
     }
 
     #[inline]
@@ -200,8 +205,8 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn mut_iter<'a>(&'a mut self) -> slice::MutItems<'a, T> {
-        self.as_mut_slice().mut_iter()
+    pub fn iter_mut<'a>(&'a mut self) -> slice::MutItems<'a, T> {
+        self.as_mut_slice().iter_mut()
     }
 
     #[inline]
@@ -228,7 +233,7 @@ impl<T : Default+Clear> RepeatedField<T> {
             self.vec.get_mut(self.len).clear();
         }
         self.len += 1;
-        self.mut_last().unwrap()
+        self.last_mut().unwrap()
     }
 }
 

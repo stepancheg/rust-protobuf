@@ -87,7 +87,7 @@ impl<T> SingularField<T> {
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
             //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(x) => fail!(),
+            Some(_) => fail!(),
             None => &mut []
         }
     }
@@ -126,12 +126,12 @@ impl<T> SingularField<T> {
 
     #[inline]
     pub fn iter<'a>(&'a self) -> option::Item<&'a T> {
-        self.as_ref().move_iter()
+        self.as_ref().into_iter()
     }
 
     #[inline]
     pub fn mut_iter<'a>(&'a mut self) -> option::Item<&'a mut T> {
-        self.as_mut().move_iter()
+        self.as_mut().into_iter()
     }
 
     #[inline]
@@ -293,12 +293,12 @@ impl<T> SingularPtrField<T> {
 
     #[inline]
     pub fn iter<'a>(&'a self) -> option::Item<&'a T> {
-        self.as_ref().move_iter()
+        self.as_ref().into_iter()
     }
 
     #[inline]
     pub fn mut_iter<'a>(&'a mut self) -> option::Item<&'a mut T> {
-        self.as_mut().move_iter()
+        self.as_mut().into_iter()
     }
 
     #[inline]
