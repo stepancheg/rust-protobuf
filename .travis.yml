@@ -24,5 +24,11 @@ language: rust
 rust:
   - nightly
 
+before_install:
+  - sudo apt-get update
+
+install:
+  - sudo apt-get install protobuf-compiler
+
 script:
   - cd src/ && ./full-rebuild.sh
