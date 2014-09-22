@@ -1,6 +1,6 @@
 [package]
 
-name = "rust-protobuf"
+name = "protobuf"
 version = "0.0.1"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
