@@ -31,4 +31,7 @@ install:
   - sudo apt-get install protobuf-compiler
 
 script:
+  # Full rebuild with regenerate
   - cd src/ && ./full-rebuild.sh
+  # Test cargo configuration
+  - cargo test
