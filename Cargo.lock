@@ -1,0 +1,4 @@
+[root]
+name = "rust-protobuf"
+version = "0.0.1"
+
