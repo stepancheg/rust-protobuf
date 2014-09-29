@@ -26,12 +26,12 @@ pub fn compute_raw_varint32_size(value: u32) -> u32 {
     compute_raw_varint64_size(value as u64)
 }
 
-trait ProtobufVarint {
+pub trait ProtobufVarint {
     // size of self when written as varint
     fn len_varint(&self) -> u32;
 }
 
-trait ProtobufVarintZigzag {
+pub trait ProtobufVarintZigzag {
     fn len_varint_zigzag(&self) -> u32;
 }
 
