@@ -277,7 +277,7 @@ impl<T : PartialEq> RepeatedField<T> {
     }
 }
 
-impl<T> Slice<T> for RepeatedField<T> {
+impl<T> AsSlice<T> for RepeatedField<T> {
     #[inline]
     fn as_slice<'a>(&'a self) -> &'a [T] {
         self.vec.slice_to(self.len)
