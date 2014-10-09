@@ -3,18 +3,18 @@ use core::Message;
 use descriptor::*;
 
 fn print_bytes_to(bytes: &[u8], buf: &mut String) {
-    buf.push_char('"');
+    buf.push('"');
     for &b in bytes.iter() {
         if b < 0x20 || b >= 0x80 {
-            buf.push_char('\\');
-            buf.push_char((b'0' + ((b >> 6) & 3)) as char);
-            buf.push_char((b'0' + ((b >> 3) & 7)) as char);
-            buf.push_char((b'0' + (b & 7)) as char);
+            buf.push('\\');
+            buf.push((b'0' + ((b >> 6) & 3)) as char);
+            buf.push((b'0' + ((b >> 3) & 7)) as char);
+            buf.push((b'0' + (b & 7)) as char);
         } else {
-            buf.push_char(b as char);
+            buf.push(b as char);
         }
     }
-    buf.push_char('"');
+    buf.push('"');
 }
 
 fn print_str_to(s: &str, buf: &mut String) {

@@ -15,7 +15,9 @@ impl<'a> MessagePath<'a> {
             "".to_string()
         } else {
             let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
-            v.connect("_").append("_")
+            let mut r = v.connect("_");
+            r.push_str("_");
+            r
         }
     }
 }
@@ -56,7 +58,9 @@ struct EnumWithPath<'a> {
 
 impl<'a> EnumWithPath<'a> {
     fn rust_name(&self) -> String {
-        self.path.rust_prefix().append(self.en.get_name())
+        let mut r = self.path.rust_prefix();
+        r.push_str(self.en.get_name());
+        r
     }
 }
 
