@@ -17,4 +17,4 @@ impl<T> Lazy<T> {
     }
 }
 
-pub static ONCE_INIT: one::Once = one::ONCE_INIT;
+pub const ONCE_INIT: one::Once = one::ONCE_INIT;
