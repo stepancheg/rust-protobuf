@@ -402,7 +402,11 @@ impl<'a> MessageInfo {
             proto_message: proto_message.clone(),
             pkg: pkg.to_string(),
             prefix: prefix.to_string(),
-            type_name: prefix.to_string().append(proto_message.get_name()),
+            type_name: {
+                let mut r = prefix.to_string();
+                r.push_str(proto_message.get_name());
+                r
+            },
             fields: proto_message.get_field().iter().flat_map(|field| {
                 Field::parse(field, pkg).into_iter()
             }).collect(),
@@ -446,7 +450,11 @@ impl Enum {
         Enum {
             //pkg: pkg.to_string(),
             //prefix: prefix.to_string(),
-            type_name: prefix.to_string().append(proto.get_name()),
+            type_name: {
+                let mut r = prefix.to_string();
+                r.push_str(proto.get_name());
+                r
+            },
             values: proto.get_value().iter().map(|p| EnumValue::parse(p, prefix)).collect(),
         }
     }
@@ -471,7 +479,9 @@ impl EnumValue {
     }
 
     fn rust_name(&self) -> String {
-        self.prefix.to_string().append(self.name())
+        let mut r = self.prefix.to_string();
+        r.push_str(self.name());
+        r
     }
 }
 
@@ -853,7 +863,9 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn clear_field_func(&self) -> String {
-        "clear_".to_string().append(self.field.as_ref().unwrap().name.as_slice())
+        let mut r = "clear_".to_string();
+        r.push_str(self.field.as_ref().unwrap().name.as_slice());
+        r
     }
 
     fn clear_field(&self) {
@@ -1453,14 +1465,17 @@ fn write_message(msg: &MessageInfo, w: &mut IndentWriter) {
         w.write_line("");
         write_message_descriptor(w);
 
+        let mut nested_prefix = msg.type_name.to_string();
+        nested_prefix.push_str("_");
+
         for nested_type in message_type.get_nested_type().iter() {
             w.write_line("");
-            write_message(&MessageInfo::parse(nested_type, pkg.as_slice(), msg.type_name.to_string().append("_").as_slice()), w);
+            write_message(&MessageInfo::parse(nested_type, pkg.as_slice(), nested_prefix.as_slice()), w);
         }
 
         for enum_type in message_type.get_enum_type().iter() {
             w.write_line("");
-            write_enum(&Enum::parse(enum_type, pkg, msg.type_name.to_string().append("_").as_slice()), w);
+            write_enum(&Enum::parse(enum_type, pkg, nested_prefix.as_slice()), w);
         }
     });
 }
@@ -1586,7 +1601,11 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
         }
 
         results.push(GenResult {
-            name: base.to_string().append(".rs"),
+            name: {
+                let mut r = base.to_string();
+                r.push_str(".rs");
+                r
+            },
             content: os.vec,
         });
     }

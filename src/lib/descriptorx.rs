@@ -68,7 +68,13 @@ impl<'a> EnumWithPath<'a> {
 fn find_messages<'a>(fd: &'a FileDescriptorProto) -> Vec<MessageWithPath<'a>> {
     fn collect<'a>(origin: &MessageWithPath<'a>) -> Vec<MessageWithPath<'a>> {
         let this_level: Vec<MessageWithPath<'a>> = origin.get_message().get_nested_type().iter()
-                .map(|m| MessageWithPath { path: origin.path.clone().append(&[m]) })
+                .map(|m| MessageWithPath {
+                    path: {
+                        let mut r = origin.path.clone();
+                        r.push(m);
+                        r
+                    }
+                })
                 .collect();
         collect_and_walk(this_level.as_slice())
     }

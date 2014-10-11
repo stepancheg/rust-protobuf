@@ -461,7 +461,7 @@ impl<'a> WithCodedInputStream for &'a mut Reader + 'a {
 
 impl<'a> WithCodedInputStream for &'a [u8] {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
-        let mut reader = VecReader::new(Vec::from_slice(self));
+        let mut reader = VecReader::new(self.to_vec());
         (&mut reader as &mut Reader).with_coded_input_stream(|is| {
             cb(is)
         })
@@ -921,7 +921,7 @@ mod test {
     fn test_read(hex: &str, callback: |&mut CodedInputStream|) {
         let d = decode_hex(hex);
         let len = d.len();
-        let mut reader = MemReader::new(Vec::from_slice(d.as_slice()));
+        let mut reader = MemReader::new(d);
         let mut is = CodedInputStream::new(&mut reader as &mut Reader);
         assert_eq!(0, is.pos());
         callback(&mut is);

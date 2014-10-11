@@ -68,7 +68,7 @@ fn test3() {
 #[test]
 fn test4() {
     let mut test4 = Test4::new();
-    test4.set_d(Vec::from_slice([3i32, 270, 86942]));
+    test4.set_d([3i32, 270, 86942].to_vec());
     test_serialize_deserialize("22 06 03 8E 02 9E A7 05", &test4);
 }
 
@@ -76,14 +76,14 @@ fn test4() {
 fn test_read_unpacked_expect_packed() {
     let mut test_packed_unpacked = TestPackedUnpacked::new();
     test_packed_unpacked.set_packed(Vec::new());
-    test_packed_unpacked.set_unpacked(Vec::from_slice([17i32, 1000]));
+    test_packed_unpacked.set_unpacked([17i32, 1000].to_vec());
     test_deserialize("20 11 20 e8 07", &test_packed_unpacked);
 }
 
 #[test]
 fn test_read_packed_expect_unpacked() {
     let mut test_packed_unpacked = TestPackedUnpacked::new();
-    test_packed_unpacked.set_packed(Vec::from_slice([17i32, 1000]));
+    test_packed_unpacked.set_packed([17i32, 1000].to_vec());
     test_packed_unpacked.set_unpacked(Vec::new());
     test_deserialize("2a 03 11 e8 07", &test_packed_unpacked);
 }
@@ -115,7 +115,7 @@ fn test_read_junk() {
 fn test_unknown_fields_length_delimited() {
     let mut message = TestUnknownFields::new();
     message.set_a(150);
-    message.mut_unknown_fields().add_length_delimited(4, Vec::from_slice([0x10u8, 0x20, 0x30]));
+    message.mut_unknown_fields().add_length_delimited(4, [0x10u8, 0x20, 0x30].to_vec());
     test_serialize_deserialize("08 96 01 22 03 10 20 30", &message);
 }
 
@@ -145,49 +145,49 @@ fn test_types_singular() {
     message.set_sfixed64_field(30);
     message.set_bool_field(true);
     message.set_string_field("thirty two".to_string());
-    message.set_bytes_field(Vec::from_slice([33u8, 34]));
+    message.set_bytes_field([33u8, 34].to_vec());
     test_serialize_deserialize_no_hex(&message);
 }
 
 #[test]
 fn test_types_repeated() {
     let mut message = TestTypesRepeated::new();
-    message.set_double_field(Vec::from_slice([19f64, 20f64]));
-    message.set_float_field(Vec::from_slice([20f32]));
-    message.set_int32_field(Vec::from_slice([21i32, -22, 23]));
-    message.set_int64_field(Vec::from_slice([22i64]));
-    message.set_uint32_field(Vec::from_slice([23u32, 24]));
-    message.set_uint64_field(Vec::from_slice([24u64]));
-    message.set_sint32_field(Vec::from_slice([25i32]));
-    message.set_sint64_field(Vec::from_slice([26i64, -27]));
-    message.set_fixed32_field(Vec::from_slice([27u32]));
-    message.set_fixed64_field(Vec::from_slice([28u64]));
-    message.set_sfixed32_field(Vec::from_slice([29i32, -30]));
-    message.set_sfixed64_field(Vec::from_slice([30i64]));
-    message.set_bool_field(Vec::from_slice([true, true]));
+    message.set_double_field([19f64, 20f64].to_vec());
+    message.set_float_field([20f32].to_vec());
+    message.set_int32_field([21i32, -22, 23].to_vec());
+    message.set_int64_field([22i64].to_vec());
+    message.set_uint32_field([23u32, 24].to_vec());
+    message.set_uint64_field([24u64].to_vec());
+    message.set_sint32_field([25i32].to_vec());
+    message.set_sint64_field([26i64, -27].to_vec());
+    message.set_fixed32_field([27u32].to_vec());
+    message.set_fixed64_field([28u64].to_vec());
+    message.set_sfixed32_field([29i32, -30].to_vec());
+    message.set_sfixed64_field([30i64].to_vec());
+    message.set_bool_field([true, true].to_vec());
     message.set_string_field(RepeatedField::from_slice([String::from_str("thirty two"), String::from_str("thirty three")]));
-    message.set_bytes_field(RepeatedField::from_slice([Vec::from_slice([33u8, 34]), Vec::from_slice([35u8])]));
+    message.set_bytes_field(RepeatedField::from_slice([[33u8, 34].to_vec(), [35u8].to_vec()]));
     test_serialize_deserialize_no_hex(&message);
 }
 
 #[test]
 fn test_types_repeated_packed() {
     let mut message = TestTypesRepeatedPacked::new();
-    message.set_double_field(Vec::from_slice([19f64, 20f64]));
-    message.set_float_field(Vec::from_slice([20f32]));
-    message.set_int32_field(Vec::from_slice([21i32, -22, 23]));
-    message.set_int64_field(Vec::from_slice([22i64]));
-    message.set_uint32_field(Vec::from_slice([23u32, 24]));
-    message.set_uint64_field(Vec::from_slice([24u64]));
-    message.set_sint32_field(Vec::from_slice([-25i32, 26]));
-    message.set_sint64_field(Vec::from_slice([26i64, -27, 28]));
-    message.set_fixed32_field(Vec::from_slice([27u32]));
-    message.set_fixed64_field(Vec::from_slice([28u64]));
-    message.set_sfixed32_field(Vec::from_slice([29i32, -30]));
-    message.set_sfixed64_field(Vec::from_slice([30i64]));
-    message.set_bool_field(Vec::from_slice([true, true]));
+    message.set_double_field([19f64, 20f64].to_vec());
+    message.set_float_field([20f32].to_vec());
+    message.set_int32_field([21i32, -22, 23].to_vec());
+    message.set_int64_field([22i64].to_vec());
+    message.set_uint32_field([23u32, 24].to_vec());
+    message.set_uint64_field([24u64].to_vec());
+    message.set_sint32_field([-25i32, 26].to_vec());
+    message.set_sint64_field([26i64, -27, 28].to_vec());
+    message.set_fixed32_field([27u32].to_vec());
+    message.set_fixed64_field([28u64].to_vec());
+    message.set_sfixed32_field([29i32, -30].to_vec());
+    message.set_sfixed64_field([30i64].to_vec());
+    message.set_bool_field([true, true].to_vec());
     message.set_string_field(RepeatedField::from_slice([String::from_str("thirty two"), String::from_str("thirty three")]));
-    message.set_bytes_field(RepeatedField::from_slice([Vec::from_slice([33u8, 34]), Vec::from_slice([35u8])]));
+    message.set_bytes_field(RepeatedField::from_slice([[33u8, 34].to_vec(), [35u8].to_vec()]));
     test_serialize_deserialize_no_hex(&message);
 }
 

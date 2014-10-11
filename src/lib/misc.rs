@@ -70,6 +70,6 @@ mod test {
             writer.write(b"hi").unwrap();
         }
         foo(&mut w as &mut Writer);
-        assert_eq!(Vec::from_slice(b"hi"), w.vec);
+        assert_eq!(b"hi".to_vec(), w.vec);
     }
 }

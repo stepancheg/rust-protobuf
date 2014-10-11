@@ -57,11 +57,11 @@ mod test {
 
     #[test]
     fn test_decode_hex() {
-        assert_eq!(Vec::from_slice([]), decode_hex(""));
-        assert_eq!(Vec::from_slice([0x00u8]), decode_hex("00"));
-        assert_eq!(Vec::from_slice([0xffu8]), decode_hex("ff"));
-        assert_eq!(Vec::from_slice([0xabu8]), decode_hex("AB"));
-        assert_eq!(Vec::from_slice([0xfau8, 0x19]), decode_hex("fa 19"));
+        assert_eq!([].to_vec(), decode_hex(""));
+        assert_eq!([0x00u8].to_vec(), decode_hex("00"));
+        assert_eq!([0xffu8].to_vec(), decode_hex("ff"));
+        assert_eq!([0xabu8].to_vec(), decode_hex("AB"));
+        assert_eq!([0xfau8, 0x19].to_vec(), decode_hex("fa 19"));
     }
 
     #[test]
