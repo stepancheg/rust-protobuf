@@ -5,6 +5,7 @@ use std::iter::AdditiveIterator;
 
 use core::*;
 use zigzag::*;
+use stream::wire_format;
 
 use unknown::UnknownFields;
 

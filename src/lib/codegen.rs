@@ -4,7 +4,7 @@ use std::fmt;
 
 use descriptor::*;
 use misc::*;
-use core::wire_format;
+use stream::wire_format;
 use core::Message;
 use rt;
 use paginate::PaginatableIterator;
@@ -191,7 +191,7 @@ fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
 }
 
 fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::WireType {
-    use core::wire_format::*;
+    use stream::wire_format::*;
     match field_type {
         FieldDescriptorProto_TYPE_INT32    => WireTypeVarint,
         FieldDescriptorProto_TYPE_INT64    => WireTypeVarint,

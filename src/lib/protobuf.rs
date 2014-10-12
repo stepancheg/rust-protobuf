@@ -20,14 +20,14 @@ pub use repeated::RepeatedField;
 pub use singular::SingularField;
 pub use singular::SingularPtrField;
 pub use clear::Clear;
-pub use core::CodedInputStream;
-pub use core::CodedOutputStream;
 pub use core::Message;
 pub use core::ProtobufEnum;
 pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
 pub use core::parse_length_delimited_from;
-pub use core::wire_format;
+pub use stream::CodedInputStream;
+pub use stream::CodedOutputStream;
+pub use stream::wire_format;
 
 pub mod core;
 pub mod rt;
@@ -39,6 +39,7 @@ pub mod singular;
 pub mod clear;
 pub mod reflect;
 pub mod text_format;
+pub mod stream;
 
 mod misc;
 mod zigzag;
@@ -65,6 +66,7 @@ pub mod protobuf {
     pub use codegen;
     pub use reflect;
     pub use core::*;
+    pub use stream::*;
     pub use rt;
     pub use lazy;
     pub use unknown::UnknownFields;

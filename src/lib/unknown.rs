@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::collections::hashmap;
 use std::default::Default;
 use std::slice;
-use core::wire_format;
+use stream::wire_format;
 use clear::Clear;
 
 #[deriving(Show)]
