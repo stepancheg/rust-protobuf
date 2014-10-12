@@ -16,13 +16,14 @@ use stream::WithCodedOutputStream;
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
 use stream::with_coded_output_stream_to_bytes;
+use error::ProtobufResult;
 
 
 pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
     fn new() -> Self;
     // all required fields set
     fn is_initialized(&self) -> bool;
-    fn merge_from(&mut self, is: &mut CodedInputStream);
+    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
     fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint);
     fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32;
 
@@ -142,37 +143,37 @@ pub trait ProtobufEnum : Eq {
     }
 }
 
-pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> M {
+pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     let mut r: M = Message::new();
-    r.merge_from(is);
+    try!(r.merge_from(is));
     r.check_initialized();
-    r
+    Ok(r)
 }
 
-pub fn parse_from_reader<M : Message>(reader: &mut Reader) -> M {
+pub fn parse_from_reader<M : Message>(reader: &mut Reader) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })
 }
 
-pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> M {
+pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })
 }
 
-pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> M {
+pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     is.read_message::<M>()
 }
 
-pub fn parse_length_delimited_from_reader<M : Message>(r: &mut Reader) -> M {
+pub fn parse_length_delimited_from_reader<M : Message>(r: &mut Reader) -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| {
         is.read_message::<M>()
     })
 }
 
-pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> M {
+pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| {
         is.read_message::<M>()
     })

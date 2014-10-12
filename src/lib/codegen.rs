@@ -888,11 +888,11 @@ fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
     }
     match field.field_type {
         FieldDescriptorProto_TYPE_MESSAGE =>
-            w.write_line(format!("is.merge_message(tmp)")),
+            w.write_line(format!("try!(is.merge_message(tmp))")),
         FieldDescriptorProto_TYPE_STRING =>
-            w.write_line(format!("is.read_string_into(tmp)")),
+            w.write_line(format!("try!(is.read_string_into(tmp))")),
         FieldDescriptorProto_TYPE_BYTES =>
-            w.write_line(format!("is.read_bytes_into(tmp)")),
+            w.write_line(format!("try!(is.read_bytes_into(tmp))")),
         _ =>
             fail!(),
     }
@@ -916,8 +916,8 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             };
 
         let read_proc0 = match field.field_type {
-            FieldDescriptorProto_TYPE_ENUM => format!("{}::new(is.read_int32())", field.type_name),
-            t => format!("is.read_{}()", protobuf_name(t)),
+            FieldDescriptorProto_TYPE_ENUM => format!("{}::new(try!(is.read_int32()))", field.type_name),
+            t => format!("try!(is.read_{}())", protobuf_name(t)),
         };
         let read_proc = read_proc0.as_slice();
 
@@ -934,9 +934,9 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             RepeatPacked => {
                 w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} {{", wire_format::WireTypeLengthDelimited));
                 w.indented(|w| {
-                    w.write_line("let len = is.read_raw_varint32();");
+                    w.write_line("let len = try!(is.read_raw_varint32());");
                     w.write_line("let old_limit = is.push_limit(len);");
-                    w.while_block("!is.eof()", |w| {
+                    w.while_block("!try!(is.eof())", |w| {
                         w.self_field_push(read_proc);
                     });
                     w.write_line("is.pop_limit(old_limit);");
@@ -1243,9 +1243,9 @@ fn write_message_unknown_fields(w: &mut IndentWriter) {
 }
 
 fn write_message_merge_from(w: &mut IndentWriter) {
-    w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream)"), |w| {
-        w.while_block("!is.eof()", |w| {
-            w.write_line(format!("let (field_number, wire_type) = is.read_tag_unpack();"));
+    w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
+        w.while_block("!try!(is.eof())", |w| {
+            w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
             w.match_block("field_number", |w| {
                 w.fields(|w| {
                     w.case_block(w.field().number.to_string(), |w| {
@@ -1253,11 +1253,12 @@ fn write_message_merge_from(w: &mut IndentWriter) {
                     });
                 });
                 w.case_block("_", |w| {
-                    w.write_line("let unknown = is.read_unknown(wire_type);");
+                    w.write_line("let unknown = try!(is.read_unknown(wire_type));");
                     w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
                 });
             });
         });
+        w.write_line("::std::result::Ok(())");
     });
 }
 
@@ -1578,7 +1579,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 w.lazy_static("file_descriptor_proto_lazy", "::protobuf::descriptor::FileDescriptorProto");
                 w.write_line("");
                 w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
-                    w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data)");
+                    w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
                 });
                 w.write_line("");
                 w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {

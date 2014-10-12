@@ -17,7 +17,7 @@ use protobuf::codegen::*;
 
 fn write_file(bin: &str, gen_options: &GenOptions) {
     let mut is = File::open(&Path::new(bin)).unwrap();
-    let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Reader);
+    let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Reader).unwrap();
 
     let results = gen(fds.get_file(), gen_options);
 

@@ -40,7 +40,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data)
+    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
@@ -161,31 +161,32 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
-        while !is.eof() {
-            let (field_number, wire_type) = is.read_tag_unpack();
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.file_to_generate.push_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.parameter.set_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.proto_file.push_default();
-                    is.merge_message(tmp)
+                    try!(is.merge_message(tmp))
                 },
                 _ => {
-                    let unknown = is.read_unknown(wire_type);
+                    let unknown = try!(is.read_unknown(wire_type));
                     self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
+        ::std::result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -418,26 +419,27 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
-        while !is.eof() {
-            let (field_number, wire_type) = is.read_tag_unpack();
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.error.set_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.file.push_default();
-                    is.merge_message(tmp)
+                    try!(is.merge_message(tmp))
                 },
                 _ => {
-                    let unknown = is.read_unknown(wire_type);
+                    let unknown = try!(is.read_unknown(wire_type));
                     self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
+        ::std::result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -682,31 +684,32 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
-        while !is.eof() {
-            let (field_number, wire_type) = is.read_tag_unpack();
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.name.set_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.insertion_point.set_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.content.set_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 _ => {
-                    let unknown = is.read_unknown(wire_type);
+                    let unknown = try!(is.read_unknown(wire_type));
                     self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
+        ::std::result::Ok(())
     }
 
     // Compute sizes of nested messages

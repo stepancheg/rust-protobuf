@@ -54,8 +54,8 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
         let mut r = Vec::new();
         let mut reader = BufReader::new(buf.as_slice());
         let mut coded_input_stream = protobuf::CodedInputStream::new(&mut reader);
-        while !coded_input_stream.eof() {
-            r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream));
+        while !coded_input_stream.eof().unwrap() {
+            r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream).unwrap());
         }
         r
     });
@@ -67,9 +67,9 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
         let mut coded_input_stream = protobuf::CodedInputStream::new(&mut reader);
         let mut msg: M = Default::default();
         let mut count = 0;
-        while !coded_input_stream.eof() {
+        while !coded_input_stream.eof().unwrap() {
             msg.clear();
-            coded_input_stream.merge_message(&mut msg);
+            coded_input_stream.merge_message(&mut msg).unwrap();
             count += 1;
         }
         count
@@ -109,7 +109,7 @@ fn main() {
     let mut runner = TestRunner { selected: selected, any_matched: false };
 
     let mut is = File::open(&Path::new("perftest_data.pbbin"));
-    let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is);
+    let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is).unwrap();
 
     runner.test("test1", test_data.get_test1());
     runner.test("test_repeated_bool", test_data.get_test_repeated_bool());

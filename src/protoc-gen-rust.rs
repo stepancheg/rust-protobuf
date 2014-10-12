@@ -21,7 +21,7 @@ mod descriptor {
 mod plugin;
 
 fn main() {
-    let req = parse_from_reader::<CodeGeneratorRequest>(&mut io::stdio::stdin() as &mut Reader);
+    let req = parse_from_reader::<CodeGeneratorRequest>(&mut io::stdio::stdin() as &mut Reader).unwrap();
     let gen_options = GenOptions {
         dummy: false,
     };

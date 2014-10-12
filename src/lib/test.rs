@@ -12,13 +12,13 @@ use shrug::*;
 
 fn test_serialize_deserialize_length_delimited<M : Message>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes();
-    let parsed = parse_length_delimited_from_bytes::<M>(serialized_bytes.as_slice());
+    let parsed = parse_length_delimited_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
 
 fn test_serialize_deserialize_no_hex<M : Message>(msg: &M) {
     let serialized_bytes = msg.write_to_bytes();
-    let parsed = parse_from_bytes::<M>(serialized_bytes.as_slice());
+    let parsed = parse_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
 
@@ -28,7 +28,7 @@ fn test_serialize_deserialize<M : Message>(hex: &str, msg: &M) {
     let serialized = msg.write_to_bytes();
     let serialized_hex = encode_hex(serialized.as_slice());
     assert_eq!(expected_hex, serialized_hex);
-    let parsed = parse_from_bytes::<M>(expected_bytes.as_slice());
+    let parsed = parse_from_bytes::<M>(expected_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 
     assert_eq!(expected_bytes.len(), msg.serialized_size() as uint);
@@ -38,7 +38,7 @@ fn test_serialize_deserialize<M : Message>(hex: &str, msg: &M) {
 
 fn test_deserialize<M : Message>(hex: &str, msg: &M) {
     let bytes = decode_hex(hex);
-    let parsed = parse_from_bytes::<M>(bytes.as_slice());
+    let parsed = parse_from_bytes::<M>(bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
 
@@ -102,13 +102,13 @@ fn test_write_missing_required() {
 #[test]
 #[should_fail]
 fn test_read_missing_required() {
-    parse_from_bytes::<TestRequired>([]);
+    parse_from_bytes::<TestRequired>([]).unwrap();
 }
 
 #[test]
 #[should_fail]
 fn test_read_junk() {
-    parse_from_bytes::<Test1>(decode_hex("00").as_slice());
+    parse_from_bytes::<Test1>(decode_hex("00").as_slice()).unwrap();
 }
 
 #[test]

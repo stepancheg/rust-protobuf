@@ -28,6 +28,9 @@ pub use core::parse_length_delimited_from;
 pub use stream::CodedInputStream;
 pub use stream::CodedOutputStream;
 pub use stream::wire_format;
+pub use error::ProtobufResult;
+pub use error::ProtobufError;
+pub use error::ProtobufIoError;
 
 pub mod core;
 pub mod rt;
@@ -40,6 +43,7 @@ pub mod clear;
 pub mod reflect;
 pub mod text_format;
 pub mod stream;
+pub mod error;
 
 mod misc;
 mod zigzag;
@@ -66,6 +70,7 @@ pub mod protobuf {
     pub use codegen;
     pub use reflect;
     pub use core::*;
+    pub use error::*;
     pub use stream::*;
     pub use rt;
     pub use lazy;

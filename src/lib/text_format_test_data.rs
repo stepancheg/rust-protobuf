@@ -76,7 +76,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data)
+    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
@@ -146,21 +146,22 @@ impl ::protobuf::Message for TestMessage {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
-        while !is.eof() {
-            let (field_number, wire_type) = is.read_tag_unpack();
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 10 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_int32();
+                    let tmp = try!(is.read_int32());
                     self.value = Some(tmp);
                 },
                 _ => {
-                    let unknown = is.read_unknown(wire_type);
+                    let unknown = try!(is.read_unknown(wire_type));
                     self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
+        ::std::result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -1173,298 +1174,299 @@ impl ::protobuf::Message for TestTypes {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) {
-        while !is.eof() {
-            let (field_number, wire_type) = is.read_tag_unpack();
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
                     assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
-                    let tmp = is.read_double();
+                    let tmp = try!(is.read_double());
                     self.double_singular = Some(tmp);
                 },
                 2 => {
                     assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
-                    let tmp = is.read_float();
+                    let tmp = try!(is.read_float());
                     self.float_singular = Some(tmp);
                 },
                 3 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_int32();
+                    let tmp = try!(is.read_int32());
                     self.int32_singular = Some(tmp);
                 },
                 4 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_int64();
+                    let tmp = try!(is.read_int64());
                     self.int64_singular = Some(tmp);
                 },
                 5 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_uint32();
+                    let tmp = try!(is.read_uint32());
                     self.uint32_singular = Some(tmp);
                 },
                 6 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_uint64();
+                    let tmp = try!(is.read_uint64());
                     self.uint64_singular = Some(tmp);
                 },
                 7 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_sint32();
+                    let tmp = try!(is.read_sint32());
                     self.sint32_singular = Some(tmp);
                 },
                 8 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_sint64();
+                    let tmp = try!(is.read_sint64());
                     self.sint64_singular = Some(tmp);
                 },
                 9 => {
                     assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
-                    let tmp = is.read_fixed32();
+                    let tmp = try!(is.read_fixed32());
                     self.fixed32_singular = Some(tmp);
                 },
                 10 => {
                     assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
-                    let tmp = is.read_fixed64();
+                    let tmp = try!(is.read_fixed64());
                     self.fixed64_singular = Some(tmp);
                 },
                 11 => {
                     assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
-                    let tmp = is.read_sfixed32();
+                    let tmp = try!(is.read_sfixed32());
                     self.sfixed32_singular = Some(tmp);
                 },
                 12 => {
                     assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
-                    let tmp = is.read_sfixed64();
+                    let tmp = try!(is.read_sfixed64());
                     self.sfixed64_singular = Some(tmp);
                 },
                 13 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = is.read_bool();
+                    let tmp = try!(is.read_bool());
                     self.bool_singular = Some(tmp);
                 },
                 14 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.string_singular.set_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 15 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.bytes_singular.set_default();
-                    is.read_bytes_into(tmp)
+                    try!(is.read_bytes_into(tmp))
                 },
                 16 => {
                     assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                    let tmp = TestEnum::new(is.read_int32());
+                    let tmp = TestEnum::new(try!(is.read_int32()));
                     self.test_enum_singular = Some(tmp);
                 },
                 17 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.test_message_singular.set_default();
-                    is.merge_message(tmp)
+                    try!(is.merge_message(tmp))
                 },
                 31 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.double_repeated.push(is.read_double());
+                        while !try!(is.eof()) {
+                            self.double_repeated.push(try!(is.read_double()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
-                        self.double_repeated.push(is.read_double());
+                        self.double_repeated.push(try!(is.read_double()));
                     }
                 },
                 32 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.float_repeated.push(is.read_float());
+                        while !try!(is.eof()) {
+                            self.float_repeated.push(try!(is.read_float()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
-                        self.float_repeated.push(is.read_float());
+                        self.float_repeated.push(try!(is.read_float()));
                     }
                 },
                 33 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.int32_repeated.push(is.read_int32());
+                        while !try!(is.eof()) {
+                            self.int32_repeated.push(try!(is.read_int32()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.int32_repeated.push(is.read_int32());
+                        self.int32_repeated.push(try!(is.read_int32()));
                     }
                 },
                 34 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.int64_repeated.push(is.read_int64());
+                        while !try!(is.eof()) {
+                            self.int64_repeated.push(try!(is.read_int64()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.int64_repeated.push(is.read_int64());
+                        self.int64_repeated.push(try!(is.read_int64()));
                     }
                 },
                 35 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.uint32_repeated.push(is.read_uint32());
+                        while !try!(is.eof()) {
+                            self.uint32_repeated.push(try!(is.read_uint32()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.uint32_repeated.push(is.read_uint32());
+                        self.uint32_repeated.push(try!(is.read_uint32()));
                     }
                 },
                 36 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.uint64_repeated.push(is.read_uint64());
+                        while !try!(is.eof()) {
+                            self.uint64_repeated.push(try!(is.read_uint64()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.uint64_repeated.push(is.read_uint64());
+                        self.uint64_repeated.push(try!(is.read_uint64()));
                     }
                 },
                 37 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.sint32_repeated.push(is.read_sint32());
+                        while !try!(is.eof()) {
+                            self.sint32_repeated.push(try!(is.read_sint32()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.sint32_repeated.push(is.read_sint32());
+                        self.sint32_repeated.push(try!(is.read_sint32()));
                     }
                 },
                 38 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.sint64_repeated.push(is.read_sint64());
+                        while !try!(is.eof()) {
+                            self.sint64_repeated.push(try!(is.read_sint64()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.sint64_repeated.push(is.read_sint64());
+                        self.sint64_repeated.push(try!(is.read_sint64()));
                     }
                 },
                 39 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.fixed32_repeated.push(is.read_fixed32());
+                        while !try!(is.eof()) {
+                            self.fixed32_repeated.push(try!(is.read_fixed32()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
-                        self.fixed32_repeated.push(is.read_fixed32());
+                        self.fixed32_repeated.push(try!(is.read_fixed32()));
                     }
                 },
                 40 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.fixed64_repeated.push(is.read_fixed64());
+                        while !try!(is.eof()) {
+                            self.fixed64_repeated.push(try!(is.read_fixed64()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
-                        self.fixed64_repeated.push(is.read_fixed64());
+                        self.fixed64_repeated.push(try!(is.read_fixed64()));
                     }
                 },
                 41 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.sfixed32_repeated.push(is.read_sfixed32());
+                        while !try!(is.eof()) {
+                            self.sfixed32_repeated.push(try!(is.read_sfixed32()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
-                        self.sfixed32_repeated.push(is.read_sfixed32());
+                        self.sfixed32_repeated.push(try!(is.read_sfixed32()));
                     }
                 },
                 42 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.sfixed64_repeated.push(is.read_sfixed64());
+                        while !try!(is.eof()) {
+                            self.sfixed64_repeated.push(try!(is.read_sfixed64()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
-                        self.sfixed64_repeated.push(is.read_sfixed64());
+                        self.sfixed64_repeated.push(try!(is.read_sfixed64()));
                     }
                 },
                 43 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.bool_repeated.push(is.read_bool());
+                        while !try!(is.eof()) {
+                            self.bool_repeated.push(try!(is.read_bool()));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.bool_repeated.push(is.read_bool());
+                        self.bool_repeated.push(try!(is.read_bool()));
                     }
                 },
                 44 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.string_repeated.push_default();
-                    is.read_string_into(tmp)
+                    try!(is.read_string_into(tmp))
                 },
                 45 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.bytes_repeated.push_default();
-                    is.read_bytes_into(tmp)
+                    try!(is.read_bytes_into(tmp))
                 },
                 46 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = is.read_raw_varint32();
+                        let len = try!(is.read_raw_varint32());
                         let old_limit = is.push_limit(len);
-                        while !is.eof() {
-                            self.test_enum_repeated.push(TestEnum::new(is.read_int32()));
+                        while !try!(is.eof()) {
+                            self.test_enum_repeated.push(TestEnum::new(try!(is.read_int32())));
                         }
                         is.pop_limit(old_limit);
                     } else {
                         assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
-                        self.test_enum_repeated.push(TestEnum::new(is.read_int32()));
+                        self.test_enum_repeated.push(TestEnum::new(try!(is.read_int32())));
                     }
                 },
                 47 => {
                     assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
                     let tmp = self.test_message_repeated.push_default();
-                    is.merge_message(tmp)
+                    try!(is.merge_message(tmp))
                 },
                 _ => {
-                    let unknown = is.read_unknown(wire_type);
+                    let unknown = try!(is.read_unknown(wire_type));
                     self.mut_unknown_fields().add_value(field_number, unknown);
                 },
             };
         }
+        ::std::result::Ok(())
     }
 
     // Compute sizes of nested messages
