@@ -31,6 +31,7 @@ pub use stream::wire_format;
 pub use error::ProtobufResult;
 pub use error::ProtobufError;
 pub use error::ProtobufIoError;
+pub use error::ProtobufWireError;
 
 pub mod core;
 pub mod rt;

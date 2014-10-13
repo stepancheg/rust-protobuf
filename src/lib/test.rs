@@ -11,13 +11,13 @@ use core::parse_from_bytes;
 use shrug::*;
 
 fn test_serialize_deserialize_length_delimited<M : Message>(msg: &M) {
-    let serialized_bytes = msg.write_length_delimited_to_bytes();
+    let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
     let parsed = parse_length_delimited_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
 
 fn test_serialize_deserialize_no_hex<M : Message>(msg: &M) {
-    let serialized_bytes = msg.write_to_bytes();
+    let serialized_bytes = msg.write_to_bytes().unwrap();
     let parsed = parse_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
@@ -25,7 +25,7 @@ fn test_serialize_deserialize_no_hex<M : Message>(msg: &M) {
 fn test_serialize_deserialize<M : Message>(hex: &str, msg: &M) {
     let expected_bytes = decode_hex(hex);
     let expected_hex = encode_hex(expected_bytes.as_slice());
-    let serialized = msg.write_to_bytes();
+    let serialized = msg.write_to_bytes().unwrap();
     let serialized_hex = encode_hex(serialized.as_slice());
     assert_eq!(expected_hex, serialized_hex);
     let parsed = parse_from_bytes::<M>(expected_bytes.as_slice()).unwrap();
@@ -96,7 +96,7 @@ fn test_empty() {
 #[test]
 #[should_fail]
 fn test_write_missing_required() {
-    TestRequired::new().write_to_bytes();
+    TestRequired::new().write_to_bytes().unwrap();
 }
 
 #[test]

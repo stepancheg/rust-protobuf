@@ -24,33 +24,36 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
     // all required fields set
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
-    fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint);
+    fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)
+            -> ProtobufResult<()>;
     fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32;
 
-    fn write_to(&self, os: &mut CodedOutputStream) {
+    fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         self.check_initialized();
         let mut sizes = mem::replace(&mut os.sizes, Vec::new());
         assert!(sizes.is_empty());
         self.compute_sizes(&mut sizes);
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
+        try!(self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos));
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
         sizes.truncate(0);
         mem::replace(&mut os.sizes, sizes);
+        Ok(())
     }
 
-    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) {
+    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         let mut sizes = mem::replace(&mut os.sizes, Vec::new());
         assert!(sizes.is_empty());
         let size = self.compute_sizes(&mut sizes);
-        os.write_raw_varint32(size);
+        try!(os.write_raw_varint32(size));
         let mut sizes_pos = 1; // first element is self
-        self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos);
+        try!(self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos));
         assert_eq!(sizes_pos, sizes.len());
         // TODO: assert we've written same number of bytes as computed
         sizes.truncate(0);
         mem::replace(&mut os.sizes, sizes);
+        Ok(())
     }
 
     fn serialized_size(&self) -> u32 {
@@ -63,27 +66,27 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
         assert!(self.is_initialized());
     }
 
-    fn write_to_writer(&self, w: &mut Writer) {
+    fn write_to_writer(&self, w: &mut Writer) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| {
-            self.write_to(os);
+            self.write_to(os)
         })
     }
 
-    fn write_to_bytes(&self) -> Vec<u8> {
+    fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
         with_coded_output_stream_to_bytes(|os| {
             self.write_to(os)
         })
     }
 
-    fn write_length_delimited_to_writer(&self, w: &mut Writer) {
+    fn write_length_delimited_to_writer(&self, w: &mut Writer) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| {
-            self.write_length_delimited_to(os);
+            self.write_length_delimited_to(os)
         })
     }
 
-    fn write_length_delimited_to_bytes(&self) -> Vec<u8> {
+    fn write_length_delimited_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
         with_coded_output_stream_to_bytes(|os| {
-            self.write_length_delimited_to(os);
+            self.write_length_delimited_to(os)
         })
     }
 

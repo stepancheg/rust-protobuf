@@ -166,17 +166,23 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.file_to_generate.push_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.parameter.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.proto_file.push_default();
                     try!(is.merge_message(tmp))
                 },
@@ -211,24 +217,25 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.file_to_generate.iter() {
-            os.write_string(1, v.as_slice());
+            try!(os.write_string(1, v.as_slice()));
         };
         match self.parameter.as_ref() {
             Some(ref v) => {
-                os.write_string(2, v.as_slice());
+                try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
         for v in self.proto_file.iter() {
-            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
+            try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(sizes[*sizes_pos]));
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -424,12 +431,16 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.error.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.file.push_default();
                     try!(is.merge_message(tmp))
                 },
@@ -461,21 +472,22 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.error.as_ref() {
             Some(ref v) => {
-                os.write_string(1, v.as_slice());
+                try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         for v in self.file.iter() {
-            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
+            try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(sizes[*sizes_pos]));
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -689,17 +701,23 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.insertion_point.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.content.set_default();
                     try!(is.read_string_into(tmp))
                 },
@@ -734,27 +752,28 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
             Some(ref v) => {
-                os.write_string(1, v.as_slice());
+                try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.insertion_point.as_ref() {
             Some(ref v) => {
-                os.write_string(2, v.as_slice());
+                try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
         match self.content.as_ref() {
             Some(ref v) => {
-                os.write_string(15, v.as_slice());
+                try!(os.write_string(15, v.as_slice()));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

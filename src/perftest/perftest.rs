@@ -44,7 +44,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
     let mut writer = MemWriter::new();
     measure_and_print(format!("{}: write", name).as_slice(), random_data.len() as u64, || {
         for m in random_data.iter() {
-            m.write_length_delimited_to_writer(&mut writer);
+            m.write_length_delimited_to_writer(&mut writer).unwrap();
         }
     });
 

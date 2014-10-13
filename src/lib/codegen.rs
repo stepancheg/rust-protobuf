@@ -875,12 +875,19 @@ impl<'a> IndentWriter<'a> {
             self.self_field_assign_none();
         }
     }
+
+    fn assert_wire_type(&self, wire_type: wire_format::WireType) {
+        self.if_stmt(format!("wire_type != ::protobuf::wire_format::{:?}", wire_type), |w| {
+            // TODO: write wire type
+            let message = "\"unexpected wire type\".to_string()";
+            w.write_line(format!("return ::std::result::Err(::protobuf::ProtobufWireError({}));", message));
+        });
+    }
 }
 
 fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
     let field = w.field();
-    w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);",
-            wire_format::WireTypeLengthDelimited));
+    w.assert_wire_type(wire_format::WireTypeLengthDelimited);
     if field.repeated {
         w.write_line(format!("let tmp = {}.push_default();", w.self_field()));
     } else {
@@ -923,7 +930,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
         match repeat_mode {
             Single | RepeatRegular => {
-                w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
+                w.assert_wire_type(wire_type);
                 w.write_line(format!("let tmp = {:s};", read_proc));
                 match repeat_mode {
                     Single => w.self_field_assign_some("tmp"),
@@ -943,7 +950,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 });
                 w.write_line("} else {");
                 w.indented(|w| {
-                    w.write_line(format!("assert_eq!(::protobuf::wire_format::{:?}, wire_type);", wire_type));
+                    w.assert_wire_type(wire_type);
                     w.self_field_push(read_proc);
                 });
                 w.write_line("}");
@@ -1063,14 +1070,14 @@ fn write_message_write_field(w: &mut IndentWriter) {
     };
     let write_value_lines = match field.field_type {
         FieldDescriptorProto_TYPE_MESSAGE => vec!(
-            format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});",
+            format!("try!(os.write_tag({:d}, ::protobuf::wire_format::{:?}));",
                     field_number as int, wire_format::WireTypeLengthDelimited),
-            format!("os.write_raw_varint32(sizes[*sizes_pos]);"),
+            format!("try!(os.write_raw_varint32(sizes[*sizes_pos]));"),
             format!("*sizes_pos += 1;"),
-            format!("v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);"),
+            format!("try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));"),
         ),
         _ => vec!(
-            format!("os.write_{:s}({:d}, {:s});", write_method_suffix, field_number as int, vv),
+            format!("try!(os.write_{:s}({:d}, {:s}));", write_method_suffix, field_number as int, vv),
         ),
     };
     match field.repeat_mode {
@@ -1084,13 +1091,13 @@ fn write_message_write_field(w: &mut IndentWriter) {
         },
         RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
-                w.write_line(format!("os.write_tag({:d}, ::protobuf::wire_format::{:?});", field_number as int, wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("try!(os.write_tag({:d}, ::protobuf::wire_format::{:?}));", field_number as int, wire_format::WireTypeLengthDelimited));
                 // Data size is computed again here,
                 // probably it should be cached in `sizes` vec
                 let data_size_expr = w.self_field_vec_packed_data_size();
-                w.write_line(format!("os.write_raw_varint32({});", data_size_expr));
+                w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
                 w.for_self_field("v", |w| {
-                    w.write_line(format!("os.write_{:s}_no_tag({:s});", write_method_suffix, vv));
+                    w.write_line(format!("try!(os.write_{:s}_no_tag({:s}));", write_method_suffix, vv));
                 });
             });
         },
@@ -1108,13 +1115,14 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
         // `sizes` and `sizes_pos` are unused
         w.allow(["unused_variable"]);
     }
-    w.def_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)", |w| {
+    w.def_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()>", |w| {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
         w.fields(|w| {
             write_message_write_field(w);
         });
-        w.write_line("os.write_unknown_fields(self.get_unknown_fields());");
+        w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
+        w.write_line("::std::result::Ok(())");
     });
 }
 
@@ -1565,7 +1573,7 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             {
                 w.write_line("");
-                let fdp_bytes = file.write_to_bytes();
+                let fdp_bytes = file.write_to_bytes().unwrap();
                 w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
                 for groups in fdp_bytes.iter().paginate(16) {
                     let fdp_bytes_str = groups.iter()

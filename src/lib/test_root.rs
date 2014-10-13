@@ -87,7 +87,9 @@ impl ::protobuf::Message for Root {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.nested.push_default();
                     try!(is.merge_message(tmp))
                 },
@@ -116,15 +118,16 @@ impl ::protobuf::Message for Root {
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.nested.iter() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(sizes[*sizes_pos]);
+            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(sizes[*sizes_pos]));
             *sizes_pos += 1;
-            v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -246,9 +249,10 @@ impl ::protobuf::Message for Root_Nested {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

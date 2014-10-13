@@ -33,5 +33,5 @@ fn main() {
         r.set_content(str::from_utf8(file.content.as_slice()).unwrap().to_string());
         r
     }).collect());
-    resp.write_to_writer(&mut io::stdout() as &mut Writer);
+    resp.write_to_writer(&mut io::stdout() as &mut Writer).unwrap();
 }

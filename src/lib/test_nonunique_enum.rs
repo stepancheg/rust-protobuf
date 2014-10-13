@@ -85,9 +85,10 @@ impl ::protobuf::Message for MessageA {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -218,9 +219,10 @@ impl ::protobuf::Message for MessageB {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

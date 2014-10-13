@@ -1,6 +1,7 @@
 use std::mem;
 use std::num::Bounded;
 use std::io::EndOfFile;
+use std::io::IoError;
 
 use core::Message;
 use misc::VecWriter;
@@ -22,6 +23,7 @@ use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 use error::ProtobufResult;
 use error::ProtobufIoError;
+use error::ProtobufWireError;
 
 pub mod wire_format {
     pub const TAG_TYPE_BITS: u32 = 3;
@@ -38,20 +40,20 @@ pub mod wire_format {
     }
 
     impl WireType {
-        pub fn new(n: u32) -> WireType {
+        pub fn new(n: u32) -> Option<WireType> {
             match n {
-                0 => WireTypeVarint,
-                1 => WireTypeFixed64,
-                2 => WireTypeLengthDelimited,
-                3 => WireTypeStartGroup,
-                4 => WireTypeEndGroup,
-                5 => WireTypeFixed32,
-                _ => fail!("unknown wire type: {}", n)
+                0 => Some(WireTypeVarint),
+                1 => Some(WireTypeFixed64),
+                2 => Some(WireTypeLengthDelimited),
+                3 => Some(WireTypeStartGroup),
+                4 => Some(WireTypeEndGroup),
+                5 => Some(WireTypeFixed32),
+                _ => None,
             }
         }
     }
 
-    pub struct Tag(pub u32);
+    pub struct Tag(u32);
 
     impl Tag {
         pub fn value(self) -> u32 {
@@ -60,8 +62,15 @@ pub mod wire_format {
             }
         }
 
+        pub fn new(value: u32) -> Option<Tag> {
+            if WireType::new(value & TAG_TYPE_MASK).is_none() {
+                return None;
+            }
+            Some(Tag(value))
+        }
+
         pub fn make(field_number: u32, wire_type: WireType) -> Tag {
-            Tag((field_number << TAG_TYPE_BITS as uint) as u32 | (wire_type as u32))
+            Tag::new((field_number << TAG_TYPE_BITS as uint) as u32 | (wire_type as u32)).unwrap()
         }
 
         pub fn unpack(self) -> (u32, WireType) {
@@ -69,7 +78,7 @@ pub mod wire_format {
         }
 
         fn wire_type(self) -> WireType {
-            WireType::new(self.value() & TAG_TYPE_MASK)
+            WireType::new(self.value() & TAG_TYPE_MASK).expect("unknown wire type")
         }
 
         pub fn field_number(self) -> u32 {
@@ -77,10 +86,6 @@ pub mod wire_format {
             assert!(r > 0, "field number must be positive");
             r
         }
-    }
-
-    pub fn tag_unpack(tag: u32) -> (WireType, u32) {
-        (Tag(tag).wire_type(), Tag(tag).field_number())
     }
 
 }
@@ -165,7 +170,11 @@ impl<'a> CodedInputStream<'a> {
 
     fn refill_buffer_really(&mut self) -> ProtobufResult<()> {
         if !try!(self.refill_buffer()) {
-            fail!("at EOF");
+            return Err(ProtobufIoError(IoError {
+                kind: EndOfFile,
+                desc: "unexpected EOF",
+                detail: None,
+            }));
         }
         Ok(())
     }
@@ -266,7 +275,11 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_tag(&mut self) -> ProtobufResult<wire_format::Tag> {
-        self.read_raw_varint32().map(|v| wire_format::Tag(v))
+        let v = try!(self.read_raw_varint32());
+        match wire_format::Tag::new(v) {
+            Some(tag) => Ok(tag),
+            None => Err(ProtobufWireError(format!("unknown tag: {:u}", v))),
+        }
     }
 
     // Read tag, return it is pair (field number, wire type)
@@ -341,8 +354,7 @@ impl<'a> CodedInputStream<'a> {
                 let len = try!(self.read_raw_varint32());
                 self.read_raw_bytes(len).map(|v| UnknownLengthDelimited(v))
             },
-            // TODO: ProtobufResult
-            _ => fail!("unknown wire type: {:i}", wire_type as int)
+            _ => Err(ProtobufWireError(format!("unknown wire type: {:i}", wire_type as int)))
         }
     }
 
@@ -404,8 +416,12 @@ impl<'a> CodedInputStream<'a> {
         // take target's buffer
         let mut vec = mem::replace(target, String::new()).into_bytes();
         try!(self.read_bytes_into(&mut vec));
-        // crash if bytes are not valid UTF-8
-        mem::replace(target, String::from_utf8(vec).unwrap()); // TODO: unwrap
+
+        let s = match String::from_utf8(vec) {
+            Ok(t) => t,
+            Err(_) => return Err(ProtobufWireError(format!("invalid UTF-8 string on wire"))),
+        };
+        mem::replace(target, s);
         Ok(())
     }
 
@@ -426,24 +442,29 @@ impl<'a> CodedInputStream<'a> {
 }
 
 pub trait WithCodedOutputStream {
-    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T;
+    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
+            -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedOutputStream for &'a mut Writer + 'a {
-    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> T) -> T {
+    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
+            -> ProtobufResult<T>
+    {
         let mut os = CodedOutputStream::new(self);
-        let r = cb(&mut os);
-        os.flush();
-        r
+        let r = try!(cb(&mut os));
+        try!(os.flush());
+        Ok(r)
     }
 }
 
-pub fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream|) -> Vec<u8> {
+pub fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream| -> ProtobufResult<()>)
+        -> ProtobufResult<Vec<u8>>
+{
     let mut w = VecWriter::new();
-    (&mut w as &mut Writer).with_coded_output_stream(|os| {
+    try!((&mut w as &mut Writer).with_coded_output_stream(|os| {
         cb(os)
-    });
-    w.vec
+    }));
+    Ok(w.vec)
 }
 
 pub trait WithCodedInputStream {
@@ -494,150 +515,161 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
-    fn refresh_buffer(&mut self) {
+    fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.writer {
             Some(ref mut writer) => {
-                writer.write(self.buffer.slice(0, self.position as uint)).unwrap(); // TODO: unwrap
+                try!(writer.write(self.buffer.slice(0, self.position as uint))
+                    .map_err(|e| ProtobufIoError(e)));
             },
             None => fail!()
         };
         self.position = 0;
+        Ok(())
     }
 
-    pub fn flush(&mut self) {
+    pub fn flush(&mut self) -> ProtobufResult<()> {
         if self.writer.is_some() {
-            self.refresh_buffer();
+            try!(self.refresh_buffer());
         }
+        Ok(())
     }
 
-    pub fn write_raw_byte(&mut self, byte: u8) {
+    pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
         if self.position as uint == self.buffer.len() {
-            self.refresh_buffer()
+            try!(self.refresh_buffer());
         }
         self.buffer.as_mut_slice()[self.position as uint] = byte;
         self.position += 1;
+        Ok(())
     }
 
-    pub fn write_raw_bytes(&mut self, bytes: &[u8]) {
-        self.refresh_buffer();
+    pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
+        try!(self.refresh_buffer());
+        // TODO: write into buffer if enough capacity
         match self.writer {
-            Some(ref mut writer) => writer.write(bytes).unwrap(), // TODO: unwrap
+            Some(ref mut writer) => try!(writer.write(bytes).map_err(|e| ProtobufIoError(e))),
             None => fail!()
         };
+        Ok(())
     }
 
-    pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) {
-        self.write_raw_varint32(wire_format::Tag::make(field_number, wire_type).value());
+    pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) -> ProtobufResult<()> {
+        self.write_raw_varint32(wire_format::Tag::make(field_number, wire_type).value())
     }
 
-    pub fn write_raw_varint32(&mut self, value: u32) {
-        self.write_raw_varint64(value as u64);
+    pub fn write_raw_varint32(&mut self, value: u32) -> ProtobufResult<()> {
+        self.write_raw_varint64(value as u64)
     }
 
-    pub fn write_raw_varint64(&mut self, value: u64) {
+    pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
         let mut temp = value;
         loop {
             if (temp & !0x7Fu64) == 0 {
-                self.write_raw_byte(temp as u8);
+                try!(self.write_raw_byte(temp as u8));
                 break;
             } else {
-                self.write_raw_byte(((temp & 0x7F) | 0x80) as u8);
+                try!(self.write_raw_byte(((temp & 0x7F) | 0x80) as u8));
                 temp >>= 7;
             }
         }
+        Ok(())
     }
 
-    pub fn write_raw_little_endian32(&mut self, value: u32) {
-        self.write_raw_byte(((value      ) & 0xFF) as u8);
-        self.write_raw_byte(((value >>  8) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 16) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 24) & 0xFF) as u8);
+    pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
+        try!(self.write_raw_byte(((value      ) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >>  8) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 16) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 24) & 0xFF) as u8));
+        Ok(())
     }
 
-    pub fn write_raw_little_endian64(&mut self, value: u64) {
-        self.write_raw_byte(((value      ) & 0xFF) as u8);
-        self.write_raw_byte(((value >>  8) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 16) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 24) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 32) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 40) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 48) & 0xFF) as u8);
-        self.write_raw_byte(((value >> 56) & 0xFF) as u8);
+    pub fn write_raw_little_endian64(&mut self, value: u64) -> ProtobufResult<()> {
+        try!(self.write_raw_byte(((value      ) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >>  8) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 16) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 24) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 32) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 40) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 48) & 0xFF) as u8));
+        try!(self.write_raw_byte(((value >> 56) & 0xFF) as u8));
+        Ok(())
     }
 
-    pub fn write_float_no_tag(&mut self, value: f32) {
+    pub fn write_float_no_tag(&mut self, value: f32) -> ProtobufResult<()> {
         let bits = unsafe {
             mem::transmute::<f32, u32>(value)
         };
-        self.write_raw_little_endian32(bits);
+        self.write_raw_little_endian32(bits)
     }
 
-    pub fn write_double_no_tag(&mut self, value: f64) {
+    pub fn write_double_no_tag(&mut self, value: f64) -> ProtobufResult<()> {
         let bits = unsafe {
             mem::transmute::<f64, u64>(value)
         };
-        self.write_raw_little_endian64(bits);
+        self.write_raw_little_endian64(bits)
     }
 
-    pub fn write_float(&mut self, field_number: u32, value: f32) {
-        self.write_tag(field_number, wire_format::WireTypeFixed32);
-        self.write_float_no_tag(value);
+    pub fn write_float(&mut self, field_number: u32, value: f32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeFixed32));
+        try!(self.write_float_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_double(&mut self, field_number: u32, value: f64) {
-        self.write_tag(field_number, wire_format::WireTypeFixed64);
-        self.write_double_no_tag(value);
+    pub fn write_double(&mut self, field_number: u32, value: f64) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeFixed64));
+        try!(self.write_double_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_uint64_no_tag(&mut self, value: u64) {
-        self.write_raw_varint64(value);
+    pub fn write_uint64_no_tag(&mut self, value: u64) -> ProtobufResult<()> {
+        self.write_raw_varint64(value)
     }
 
-    pub fn write_uint32_no_tag(&mut self, value: u32) {
-        self.write_raw_varint32(value);
+    pub fn write_uint32_no_tag(&mut self, value: u32) -> ProtobufResult<()> {
+        self.write_raw_varint32(value)
     }
 
-    pub fn write_int64_no_tag(&mut self, value: i64) {
-        self.write_raw_varint64(value as u64);
+    pub fn write_int64_no_tag(&mut self, value: i64) -> ProtobufResult<()> {
+        self.write_raw_varint64(value as u64)
     }
 
-    pub fn write_int32_no_tag(&mut self, value: i32) {
-        self.write_raw_varint64(value as u64);
+    pub fn write_int32_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
+        self.write_raw_varint64(value as u64)
     }
 
-    pub fn write_sint64_no_tag(&mut self, value: i64) {
-        self.write_uint64_no_tag(encode_zig_zag_64(value));
+    pub fn write_sint64_no_tag(&mut self, value: i64) -> ProtobufResult<()> {
+        self.write_uint64_no_tag(encode_zig_zag_64(value))
     }
 
-    pub fn write_sint32_no_tag(&mut self, value: i32) {
-        self.write_uint32_no_tag(encode_zig_zag_32(value));
+    pub fn write_sint32_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
+        self.write_uint32_no_tag(encode_zig_zag_32(value))
     }
 
-    pub fn write_fixed64_no_tag(&mut self, value: u64) {
-        self.write_raw_little_endian64(value);
+    pub fn write_fixed64_no_tag(&mut self, value: u64) -> ProtobufResult<()> {
+        self.write_raw_little_endian64(value)
     }
 
-    pub fn write_fixed32_no_tag(&mut self, value: u32) {
-        self.write_raw_little_endian32(value);
+    pub fn write_fixed32_no_tag(&mut self, value: u32) -> ProtobufResult<()> {
+        self.write_raw_little_endian32(value)
     }
 
-    pub fn write_sfixed64_no_tag(&mut self, value: i64) {
-        self.write_raw_little_endian64(value as u64);
+    pub fn write_sfixed64_no_tag(&mut self, value: i64) -> ProtobufResult<()> {
+        self.write_raw_little_endian64(value as u64)
     }
 
-    pub fn write_sfixed32_no_tag(&mut self, value: i32) {
-        self.write_raw_little_endian32(value as u32);
+    pub fn write_sfixed32_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
+        self.write_raw_little_endian32(value as u32)
     }
 
-    pub fn write_bool_no_tag(&mut self, value: bool) {
-        self.write_raw_varint32(if value { 1 } else { 0 });
+    pub fn write_bool_no_tag(&mut self, value: bool) -> ProtobufResult<()> {
+        self.write_raw_varint32(if value { 1 } else { 0 })
     }
 
-    pub fn write_enum_no_tag(&mut self, value: i32) {
-        self.write_int32_no_tag(value);
+    pub fn write_enum_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
+        self.write_int32_no_tag(value)
     }
 
-    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) {
+    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> ProtobufResult<()> {
         match unknown {
             UnknownFixed64Ref(fixed64) => self.write_raw_little_endian64(fixed64),
             UnknownFixed32Ref(fixed32) => self.write_raw_little_endian32(fixed32),
@@ -646,105 +678,123 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
-    pub fn write_uint64(&mut self, field_number: u32, value: u64) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_uint64_no_tag(value);
+    pub fn write_uint64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_uint64_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_uint32(&mut self, field_number: u32, value: u32) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_uint32_no_tag(value);
+    pub fn write_uint32(&mut self, field_number: u32, value: u32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_uint32_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_int64(&mut self, field_number: u32, value: i64) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_int64_no_tag(value);
+    pub fn write_int64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_int64_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_int32(&mut self, field_number: u32, value: i32) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_int32_no_tag(value);
+    pub fn write_int32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_int32_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_sint64(&mut self, field_number: u32, value: i64) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_sint64_no_tag(value);
+    pub fn write_sint64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_sint64_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_sint32(&mut self, field_number: u32, value: i32) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_sint32_no_tag(value);
+    pub fn write_sint32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_sint32_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_fixed64(&mut self, field_number: u32, value: u64) {
-        self.write_tag(field_number, wire_format::WireTypeFixed64);
-        self.write_fixed64_no_tag(value);
+    pub fn write_fixed64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeFixed64));
+        try!(self.write_fixed64_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_fixed32(&mut self, field_number: u32, value: u32) {
-        self.write_tag(field_number, wire_format::WireTypeFixed32);
-        self.write_fixed32_no_tag(value);
+    pub fn write_fixed32(&mut self, field_number: u32, value: u32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeFixed32));
+        try!(self.write_fixed32_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_sfixed64(&mut self, field_number: u32, value: i64) {
-        self.write_tag(field_number, wire_format::WireTypeFixed64);
-        self.write_sfixed64_no_tag(value);
+    pub fn write_sfixed64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeFixed64));
+        try!(self.write_sfixed64_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_sfixed32(&mut self, field_number: u32, value: i32) {
-        self.write_tag(field_number, wire_format::WireTypeFixed32);
-        self.write_sfixed32_no_tag(value);
+    pub fn write_sfixed32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeFixed32));
+        try!(self.write_sfixed32_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_bool(&mut self, field_number: u32, value: bool) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_bool_no_tag(value);
+    pub fn write_bool(&mut self, field_number: u32, value: bool) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_bool_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_enum(&mut self, field_number: u32, value: i32) {
-        self.write_tag(field_number, wire_format::WireTypeVarint);
-        self.write_enum_no_tag(value);
+    pub fn write_enum(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeVarint));
+        try!(self.write_enum_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_unknown(&mut self, field_number: u32, value: UnknownValueRef) {
-        self.write_tag(field_number, value.wire_type());
-        self.write_unknown_no_tag(value);
+    pub fn write_unknown(&mut self, field_number: u32, value: UnknownValueRef) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, value.wire_type()));
+        try!(self.write_unknown_no_tag(value));
+        Ok(())
     }
 
-    pub fn write_unknown_fields(&mut self, fields: &UnknownFields) {
+    pub fn write_unknown_fields(&mut self, fields: &UnknownFields) -> ProtobufResult<()> {
         for (number, values) in fields.iter() {
             for value in values.iter() {
-                self.write_unknown(number, value);
+                try!(self.write_unknown(number, value));
             }
         }
+        Ok(())
     }
 
-    pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) {
-        self.write_raw_varint32(bytes.len() as u32);
-        self.write_raw_bytes(bytes);
+    pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
+        try!(self.write_raw_varint32(bytes.len() as u32));
+        try!(self.write_raw_bytes(bytes));
+        Ok(())
     }
 
-    pub fn write_string_no_tag(&mut self, s: &str) {
-        self.write_bytes_no_tag(s.as_bytes());
+    pub fn write_string_no_tag(&mut self, s: &str) -> ProtobufResult<()> {
+        self.write_bytes_no_tag(s.as_bytes())
     }
 
-    pub fn write_message_no_tag<M : Message>(&mut self, msg: &M) {
-        msg.write_length_delimited_to(self);
+    pub fn write_message_no_tag<M : Message>(&mut self, msg: &M) -> ProtobufResult<()> {
+        msg.write_length_delimited_to(self)
     }
 
-    pub fn write_bytes(&mut self, field_number: u32, bytes: &[u8]) {
-        self.write_tag(field_number, wire_format::WireTypeLengthDelimited);
-        self.write_bytes_no_tag(bytes);
+    pub fn write_bytes(&mut self, field_number: u32, bytes: &[u8]) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeLengthDelimited));
+        try!(self.write_bytes_no_tag(bytes));
+        Ok(())
     }
 
-    pub fn write_string(&mut self, field_number: u32, s: &str) {
-        self.write_tag(field_number, wire_format::WireTypeLengthDelimited);
-        self.write_string_no_tag(s);
+    pub fn write_string(&mut self, field_number: u32, s: &str) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeLengthDelimited));
+        try!(self.write_string_no_tag(s));
+        Ok(())
     }
 
-    pub fn write_message<M : Message>(&mut self, field_number: u32, msg: &M) {
-        self.write_tag(field_number, wire_format::WireTypeLengthDelimited);
-        self.write_message_no_tag(msg);
+    pub fn write_message<M : Message>(&mut self, field_number: u32, msg: &M) -> ProtobufResult<()> {
+        try!(self.write_tag(field_number, wire_format::WireTypeLengthDelimited));
+        try!(self.write_message_no_tag(msg));
+        Ok(())
     }
 }
 
@@ -753,9 +803,12 @@ impl<'a> CodedOutputStream<'a> {
 mod test {
 
     use std::io::MemReader;
+
     use hex::encode_hex;
     use hex::decode_hex;
     use misc::VecWriter;
+    use error::ProtobufResult;
+
     use super::wire_format;
     use super::CodedInputStream;
     use super::CodedOutputStream;
@@ -832,12 +885,12 @@ mod test {
         });
     }
 
-    fn test_write(expected: &str, gen: |&mut CodedOutputStream|) {
+    fn test_write(expected: &str, gen: |&mut CodedOutputStream| -> ProtobufResult<()>) {
         let mut writer = VecWriter::new();
         {
             let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
-            gen(&mut os);
-            os.flush();
+            gen(&mut os).unwrap();
+            os.flush().unwrap();
         }
         let r = writer.vec;
         assert_eq!(encode_hex(decode_hex(expected).as_slice()), encode_hex(r.as_slice()));
@@ -846,63 +899,63 @@ mod test {
     #[test]
     fn test_output_stream_write_raw_byte() {
         test_write("a1", |os| {
-            os.write_raw_byte(0xa1);
+            os.write_raw_byte(0xa1)
         });
     }
 
     #[test]
     fn test_output_stream_write_tag() {
         test_write("08", |os| {
-            os.write_tag(1, wire_format::WireTypeVarint);
+            os.write_tag(1, wire_format::WireTypeVarint)
         });
     }
 
     #[test]
     fn test_output_stream_write_raw_bytes() {
         test_write("00 ab", |os| {
-            os.write_raw_bytes([0x00, 0xab]);
+            os.write_raw_bytes([0x00, 0xab])
         });
     }
 
     #[test]
     fn test_output_stream_write_raw_varint32() {
         test_write("96 01", |os| {
-            os.write_raw_varint32(150);
+            os.write_raw_varint32(150)
         });
     }
 
     #[test]
     fn test_output_stream_write_raw_varint64() {
         test_write("96 01", |os| {
-            os.write_raw_varint64(150);
+            os.write_raw_varint64(150)
         });
     }
 
     #[test]
     fn test_output_stream_write_raw_little_endian32() {
         test_write("f1 e2 d3 c4", |os| {
-            os.write_raw_little_endian32(0xc4d3e2f1);
+            os.write_raw_little_endian32(0xc4d3e2f1)
         });
     }
 
     #[test]
     fn test_output_stream_write_float_no_tag() {
         test_write("95 73 13 61", |os| {
-            os.write_float_no_tag(17e19);
+            os.write_float_no_tag(17e19)
         });
     }
 
     #[test]
     fn test_output_stream_write_double_no_tag() {
         test_write("40 d5 ab 68 b3 07 3d 46", |os| {
-            os.write_double_no_tag(23e29);
+            os.write_double_no_tag(23e29)
         });
     }
 
     #[test]
     fn test_output_stream_write_raw_little_endian64() {
         test_write("f1 e2 d3 c4 b5 a6 07 f8", |os| {
-            os.write_raw_little_endian64(0xf807a6b5c4d3e2f1);
+            os.write_raw_little_endian64(0xf807a6b5c4d3e2f1)
         });
     }
 }

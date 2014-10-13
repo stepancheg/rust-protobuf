@@ -197,7 +197,9 @@ impl ::protobuf::Message for Test1 {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_int32());
                     self.a = Some(tmp);
                 },
@@ -226,15 +228,16 @@ impl ::protobuf::Message for Test1 {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.a {
             Some(ref v) => {
-                os.write_int32(1, *v);
+                try!(os.write_int32(1, *v));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -369,7 +372,9 @@ impl ::protobuf::Message for Test2 {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 2 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.b.set_default();
                     try!(is.read_string_into(tmp))
                 },
@@ -398,15 +403,16 @@ impl ::protobuf::Message for Test2 {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.b.as_ref() {
             Some(ref v) => {
-                os.write_string(2, v.as_slice());
+                try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -538,7 +544,9 @@ impl ::protobuf::Message for Test3 {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 3 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.c.set_default();
                     try!(is.merge_message(tmp))
                 },
@@ -567,18 +575,19 @@ impl ::protobuf::Message for Test3 {
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.c.as_ref() {
             Some(ref v) => {
-                os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
+                try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+                try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -711,7 +720,9 @@ impl ::protobuf::Message for Test4 {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.d.push(try!(is.read_int32()));
                     }
                 },
@@ -740,16 +751,17 @@ impl ::protobuf::Message for Test4 {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         if !self.d.is_empty() {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d.as_slice()));
+            try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.d.as_slice())));
             for v in self.d.iter() {
-                os.write_int32_no_tag(*v);
+                try!(os.write_int32_no_tag(*v));
             };
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -906,7 +918,9 @@ impl ::protobuf::Message for TestPackedUnpacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.unpacked.push(try!(is.read_int32()));
                     }
                 },
@@ -919,7 +933,9 @@ impl ::protobuf::Message for TestPackedUnpacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.packed.push(try!(is.read_int32()));
                     }
                 },
@@ -951,19 +967,20 @@ impl ::protobuf::Message for TestPackedUnpacked {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.unpacked.iter() {
-            os.write_int32(4, *v);
+            try!(os.write_int32(4, *v));
         };
         if !self.packed.is_empty() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed.as_slice()));
+            try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.packed.as_slice())));
             for v in self.packed.iter() {
-                os.write_int32_no_tag(*v);
+                try!(os.write_int32_no_tag(*v));
             };
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1112,7 +1129,9 @@ impl ::protobuf::Message for TestEmpty {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 10 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_int32());
                     self.foo = Some(tmp);
                 },
@@ -1141,15 +1160,16 @@ impl ::protobuf::Message for TestEmpty {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.foo {
             Some(ref v) => {
-                os.write_int32(10, *v);
+                try!(os.write_int32(10, *v));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1281,7 +1301,9 @@ impl ::protobuf::Message for TestRequired {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 5 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_bool());
                     self.b = Some(tmp);
                 },
@@ -1310,15 +1332,16 @@ impl ::protobuf::Message for TestRequired {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.b {
             Some(ref v) => {
-                os.write_bool(5, *v);
+                try!(os.write_bool(5, *v));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1450,7 +1473,9 @@ impl ::protobuf::Message for TestUnknownFields {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_int32());
                     self.a = Some(tmp);
                 },
@@ -1479,15 +1504,16 @@ impl ::protobuf::Message for TestUnknownFields {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.a {
             Some(ref v) => {
-                os.write_int32(1, *v);
+                try!(os.write_int32(1, *v));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1647,12 +1673,16 @@ impl ::protobuf::Message for TestSelfReference {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.r1.set_default();
                     try!(is.merge_message(tmp))
                 },
                 2 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.r2.set_default();
                     try!(is.merge_message(tmp))
                 },
@@ -1685,27 +1715,28 @@ impl ::protobuf::Message for TestSelfReference {
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.r1.as_ref() {
             Some(ref v) => {
-                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
+                try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+                try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
             },
             None => {},
         };
         match self.r2.as_ref() {
             Some(ref v) => {
-                os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
+                try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
+                try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1857,7 +1888,9 @@ impl ::protobuf::Message for TestDefaultInstanceField {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.s.set_default();
                     try!(is.read_string_into(tmp))
                 },
@@ -1886,15 +1919,16 @@ impl ::protobuf::Message for TestDefaultInstanceField {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.s.as_ref() {
             Some(ref v) => {
-                os.write_string(1, v.as_slice());
+                try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -2023,7 +2057,9 @@ impl ::protobuf::Message for TestDefaultInstance {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.field.set_default();
                     try!(is.merge_message(tmp))
                 },
@@ -2052,18 +2088,19 @@ impl ::protobuf::Message for TestDefaultInstance {
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.field.as_ref() {
             Some(ref v) => {
-                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-                os.write_raw_varint32(sizes[*sizes_pos]);
+                try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+                try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
-                v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos);
+                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -2192,7 +2229,9 @@ impl ::protobuf::Message for TestDescriptor {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 10 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_int32());
                     self.stuff = Some(tmp);
                 },
@@ -2221,15 +2260,16 @@ impl ::protobuf::Message for TestDescriptor {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.stuff {
             Some(ref v) => {
-                os.write_int32(10, *v);
+                try!(os.write_int32(10, *v));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -2756,77 +2796,107 @@ impl ::protobuf::Message for TestTypesSingular {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_double());
                     self.double_field = Some(tmp);
                 },
                 2 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_float());
                     self.float_field = Some(tmp);
                 },
                 3 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_int32());
                     self.int32_field = Some(tmp);
                 },
                 4 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_int64());
                     self.int64_field = Some(tmp);
                 },
                 5 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_uint32());
                     self.uint32_field = Some(tmp);
                 },
                 6 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_uint64());
                     self.uint64_field = Some(tmp);
                 },
                 7 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_sint32());
                     self.sint32_field = Some(tmp);
                 },
                 8 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_sint64());
                     self.sint64_field = Some(tmp);
                 },
                 9 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_fixed32());
                     self.fixed32_field = Some(tmp);
                 },
                 10 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_fixed64());
                     self.fixed64_field = Some(tmp);
                 },
                 11 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_sfixed32());
                     self.sfixed32_field = Some(tmp);
                 },
                 12 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_sfixed64());
                     self.sfixed64_field = Some(tmp);
                 },
                 13 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = try!(is.read_bool());
                     self.bool_field = Some(tmp);
                 },
                 14 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.string_field.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.bytes_field.set_default();
                     try!(is.read_bytes_into(tmp))
                 },
@@ -2897,99 +2967,100 @@ impl ::protobuf::Message for TestTypesSingular {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.double_field {
             Some(ref v) => {
-                os.write_double(1, *v);
+                try!(os.write_double(1, *v));
             },
             None => {},
         };
         match self.float_field {
             Some(ref v) => {
-                os.write_float(2, *v);
+                try!(os.write_float(2, *v));
             },
             None => {},
         };
         match self.int32_field {
             Some(ref v) => {
-                os.write_int32(3, *v);
+                try!(os.write_int32(3, *v));
             },
             None => {},
         };
         match self.int64_field {
             Some(ref v) => {
-                os.write_int64(4, *v);
+                try!(os.write_int64(4, *v));
             },
             None => {},
         };
         match self.uint32_field {
             Some(ref v) => {
-                os.write_uint32(5, *v);
+                try!(os.write_uint32(5, *v));
             },
             None => {},
         };
         match self.uint64_field {
             Some(ref v) => {
-                os.write_uint64(6, *v);
+                try!(os.write_uint64(6, *v));
             },
             None => {},
         };
         match self.sint32_field {
             Some(ref v) => {
-                os.write_sint32(7, *v);
+                try!(os.write_sint32(7, *v));
             },
             None => {},
         };
         match self.sint64_field {
             Some(ref v) => {
-                os.write_sint64(8, *v);
+                try!(os.write_sint64(8, *v));
             },
             None => {},
         };
         match self.fixed32_field {
             Some(ref v) => {
-                os.write_fixed32(9, *v);
+                try!(os.write_fixed32(9, *v));
             },
             None => {},
         };
         match self.fixed64_field {
             Some(ref v) => {
-                os.write_fixed64(10, *v);
+                try!(os.write_fixed64(10, *v));
             },
             None => {},
         };
         match self.sfixed32_field {
             Some(ref v) => {
-                os.write_sfixed32(11, *v);
+                try!(os.write_sfixed32(11, *v));
             },
             None => {},
         };
         match self.sfixed64_field {
             Some(ref v) => {
-                os.write_sfixed64(12, *v);
+                try!(os.write_sfixed64(12, *v));
             },
             None => {},
         };
         match self.bool_field {
             Some(ref v) => {
-                os.write_bool(13, *v);
+                try!(os.write_bool(13, *v));
             },
             None => {},
         };
         match self.string_field.as_ref() {
             Some(ref v) => {
-                os.write_string(14, v.as_slice());
+                try!(os.write_string(14, v.as_slice()));
             },
             None => {},
         };
         match self.bytes_field.as_ref() {
             Some(ref v) => {
-                os.write_bytes(15, v.as_slice());
+                try!(os.write_bytes(15, v.as_slice()));
             },
             None => {},
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -3738,7 +3809,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.double_field.push(try!(is.read_double()));
                     }
                 },
@@ -3751,7 +3824,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.float_field.push(try!(is.read_float()));
                     }
                 },
@@ -3764,7 +3839,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.int32_field.push(try!(is.read_int32()));
                     }
                 },
@@ -3777,7 +3854,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.int64_field.push(try!(is.read_int64()));
                     }
                 },
@@ -3790,7 +3869,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.uint32_field.push(try!(is.read_uint32()));
                     }
                 },
@@ -3803,7 +3884,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.uint64_field.push(try!(is.read_uint64()));
                     }
                 },
@@ -3816,7 +3899,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sint32_field.push(try!(is.read_sint32()));
                     }
                 },
@@ -3829,7 +3914,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sint64_field.push(try!(is.read_sint64()));
                     }
                 },
@@ -3842,7 +3929,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.fixed32_field.push(try!(is.read_fixed32()));
                     }
                 },
@@ -3855,7 +3944,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.fixed64_field.push(try!(is.read_fixed64()));
                     }
                 },
@@ -3868,7 +3959,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sfixed32_field.push(try!(is.read_sfixed32()));
                     }
                 },
@@ -3881,7 +3974,9 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sfixed64_field.push(try!(is.read_sfixed64()));
                     }
                 },
@@ -3894,17 +3989,23 @@ impl ::protobuf::Message for TestTypesRepeated {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.bool_field.push(try!(is.read_bool()));
                     }
                 },
                 14 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.string_field.push_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.bytes_field.push_default();
                     try!(is.read_bytes_into(tmp))
                 },
@@ -3961,54 +4062,55 @@ impl ::protobuf::Message for TestTypesRepeated {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.double_field.iter() {
-            os.write_double(1, *v);
+            try!(os.write_double(1, *v));
         };
         for v in self.float_field.iter() {
-            os.write_float(2, *v);
+            try!(os.write_float(2, *v));
         };
         for v in self.int32_field.iter() {
-            os.write_int32(3, *v);
+            try!(os.write_int32(3, *v));
         };
         for v in self.int64_field.iter() {
-            os.write_int64(4, *v);
+            try!(os.write_int64(4, *v));
         };
         for v in self.uint32_field.iter() {
-            os.write_uint32(5, *v);
+            try!(os.write_uint32(5, *v));
         };
         for v in self.uint64_field.iter() {
-            os.write_uint64(6, *v);
+            try!(os.write_uint64(6, *v));
         };
         for v in self.sint32_field.iter() {
-            os.write_sint32(7, *v);
+            try!(os.write_sint32(7, *v));
         };
         for v in self.sint64_field.iter() {
-            os.write_sint64(8, *v);
+            try!(os.write_sint64(8, *v));
         };
         for v in self.fixed32_field.iter() {
-            os.write_fixed32(9, *v);
+            try!(os.write_fixed32(9, *v));
         };
         for v in self.fixed64_field.iter() {
-            os.write_fixed64(10, *v);
+            try!(os.write_fixed64(10, *v));
         };
         for v in self.sfixed32_field.iter() {
-            os.write_sfixed32(11, *v);
+            try!(os.write_sfixed32(11, *v));
         };
         for v in self.sfixed64_field.iter() {
-            os.write_sfixed64(12, *v);
+            try!(os.write_sfixed64(12, *v));
         };
         for v in self.bool_field.iter() {
-            os.write_bool(13, *v);
+            try!(os.write_bool(13, *v));
         };
         for v in self.string_field.iter() {
-            os.write_string(14, v.as_slice());
+            try!(os.write_string(14, v.as_slice()));
         };
         for v in self.bytes_field.iter() {
-            os.write_bytes(15, v.as_slice());
+            try!(os.write_bytes(15, v.as_slice()));
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -4757,7 +4859,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.double_field.push(try!(is.read_double()));
                     }
                 },
@@ -4770,7 +4874,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.float_field.push(try!(is.read_float()));
                     }
                 },
@@ -4783,7 +4889,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.int32_field.push(try!(is.read_int32()));
                     }
                 },
@@ -4796,7 +4904,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.int64_field.push(try!(is.read_int64()));
                     }
                 },
@@ -4809,7 +4919,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.uint32_field.push(try!(is.read_uint32()));
                     }
                 },
@@ -4822,7 +4934,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.uint64_field.push(try!(is.read_uint64()));
                     }
                 },
@@ -4835,7 +4949,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sint32_field.push(try!(is.read_sint32()));
                     }
                 },
@@ -4848,7 +4964,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sint64_field.push(try!(is.read_sint64()));
                     }
                 },
@@ -4861,7 +4979,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.fixed32_field.push(try!(is.read_fixed32()));
                     }
                 },
@@ -4874,7 +4994,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.fixed64_field.push(try!(is.read_fixed64()));
                     }
                 },
@@ -4887,7 +5009,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed32, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sfixed32_field.push(try!(is.read_sfixed32()));
                     }
                 },
@@ -4900,7 +5024,9 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeFixed64, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.sfixed64_field.push(try!(is.read_sfixed64()));
                     }
                 },
@@ -4913,17 +5039,23 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         }
                         is.pop_limit(old_limit);
                     } else {
-                        assert_eq!(::protobuf::wire_format::WireTypeVarint, wire_type);
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        };
                         self.bool_field.push(try!(is.read_bool()));
                     }
                 },
                 14 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.string_field.push_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    assert_eq!(::protobuf::wire_format::WireTypeLengthDelimited, wire_type);
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
                     let tmp = self.bytes_field.push_default();
                     try!(is.read_bytes_into(tmp))
                 },
@@ -4994,106 +5126,107 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
     }
 
     #[allow(unused_variable)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) {
+    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         if !self.double_field.is_empty() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.double_field.len() * 8) as u32);
+            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.double_field.len() * 8) as u32));
             for v in self.double_field.iter() {
-                os.write_double_no_tag(*v);
+                try!(os.write_double_no_tag(*v));
             };
         };
         if !self.float_field.is_empty() {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.float_field.len() * 4) as u32);
+            try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.float_field.len() * 4) as u32));
             for v in self.float_field.iter() {
-                os.write_float_no_tag(*v);
+                try!(os.write_float_no_tag(*v));
             };
         };
         if !self.int32_field.is_empty() {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field.as_slice()));
+            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int32_field.as_slice())));
             for v in self.int32_field.iter() {
-                os.write_int32_no_tag(*v);
+                try!(os.write_int32_no_tag(*v));
             };
         };
         if !self.int64_field.is_empty() {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field.as_slice()));
+            try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.int64_field.as_slice())));
             for v in self.int64_field.iter() {
-                os.write_int64_no_tag(*v);
+                try!(os.write_int64_no_tag(*v));
             };
         };
         if !self.uint32_field.is_empty() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field.as_slice()));
+            try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint32_field.as_slice())));
             for v in self.uint32_field.iter() {
-                os.write_uint32_no_tag(*v);
+                try!(os.write_uint32_no_tag(*v));
             };
         };
         if !self.uint64_field.is_empty() {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field.as_slice()));
+            try!(os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.uint64_field.as_slice())));
             for v in self.uint64_field.iter() {
-                os.write_uint64_no_tag(*v);
+                try!(os.write_uint64_no_tag(*v));
             };
         };
         if !self.sint32_field.is_empty() {
-            os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field.as_slice()));
+            try!(os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint32_field.as_slice())));
             for v in self.sint32_field.iter() {
-                os.write_sint32_no_tag(*v);
+                try!(os.write_sint32_no_tag(*v));
             };
         };
         if !self.sint64_field.is_empty() {
-            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field.as_slice()));
+            try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_zigzag_data_size(self.sint64_field.as_slice())));
             for v in self.sint64_field.iter() {
-                os.write_sint64_no_tag(*v);
+                try!(os.write_sint64_no_tag(*v));
             };
         };
         if !self.fixed32_field.is_empty() {
-            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.fixed32_field.len() * 4) as u32);
+            try!(os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.fixed32_field.len() * 4) as u32));
             for v in self.fixed32_field.iter() {
-                os.write_fixed32_no_tag(*v);
+                try!(os.write_fixed32_no_tag(*v));
             };
         };
         if !self.fixed64_field.is_empty() {
-            os.write_tag(10, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.fixed64_field.len() * 8) as u32);
+            try!(os.write_tag(10, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.fixed64_field.len() * 8) as u32));
             for v in self.fixed64_field.iter() {
-                os.write_fixed64_no_tag(*v);
+                try!(os.write_fixed64_no_tag(*v));
             };
         };
         if !self.sfixed32_field.is_empty() {
-            os.write_tag(11, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.sfixed32_field.len() * 4) as u32);
+            try!(os.write_tag(11, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.sfixed32_field.len() * 4) as u32));
             for v in self.sfixed32_field.iter() {
-                os.write_sfixed32_no_tag(*v);
+                try!(os.write_sfixed32_no_tag(*v));
             };
         };
         if !self.sfixed64_field.is_empty() {
-            os.write_tag(12, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.sfixed64_field.len() * 8) as u32);
+            try!(os.write_tag(12, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.sfixed64_field.len() * 8) as u32));
             for v in self.sfixed64_field.iter() {
-                os.write_sfixed64_no_tag(*v);
+                try!(os.write_sfixed64_no_tag(*v));
             };
         };
         if !self.bool_field.is_empty() {
-            os.write_tag(13, ::protobuf::wire_format::WireTypeLengthDelimited);
-            os.write_raw_varint32((self.bool_field.len() * 1) as u32);
+            try!(os.write_tag(13, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32((self.bool_field.len() * 1) as u32));
             for v in self.bool_field.iter() {
-                os.write_bool_no_tag(*v);
+                try!(os.write_bool_no_tag(*v));
             };
         };
         for v in self.string_field.iter() {
-            os.write_string(14, v.as_slice());
+            try!(os.write_string(14, v.as_slice()));
         };
         for v in self.bytes_field.iter() {
-            os.write_bytes(15, v.as_slice());
+            try!(os.write_bytes(15, v.as_slice()));
         };
-        os.write_unknown_fields(self.get_unknown_fields());
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Ok(())
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
