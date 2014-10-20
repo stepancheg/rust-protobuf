@@ -800,7 +800,7 @@ impl<'a> IndentWriter<'a> {
 
     #[allow(dead_code)]
     fn fail<S : Str>(&self, reason: S) {
-        self.write_line(format!("fail!({:?});", reason));
+        self.write_line(format!("fail!({});", reason.as_slice()));
     }
 
     #[allow(dead_code)]
@@ -877,7 +877,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn assert_wire_type(&self, wire_type: wire_format::WireType) {
-        self.if_stmt(format!("wire_type != ::protobuf::wire_format::{:?}", wire_type), |w| {
+        self.if_stmt(format!("wire_type != ::protobuf::wire_format::{}", wire_type), |w| {
             // TODO: write wire type
             let message = "\"unexpected wire type\".to_string()";
             w.write_line(format!("return ::std::result::Err(::protobuf::ProtobufWireError({}));", message));
@@ -939,7 +939,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 }
             },
             RepeatPacked => {
-                w.write_line(format!("if wire_type == ::protobuf::wire_format::{:?} {{", wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("if wire_type == ::protobuf::wire_format::{} {{", wire_format::WireTypeLengthDelimited));
                 w.indented(|w| {
                     w.write_line("let len = try!(is.read_raw_varint32());");
                     w.write_line("let old_limit = is.push_limit(len);");
@@ -1029,7 +1029,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                                     },
                                     _ => {
                                         w.write_line(format!(
-                                                "my_size += ::protobuf::rt::value_size({:d}, *value, ::protobuf::wire_format::{:?});",
+                                                "my_size += ::protobuf::rt::value_size({:d}, *value, ::protobuf::wire_format::{});",
                                                 field.number as int, field.wire_type));
                                     },
                                 }
@@ -1070,7 +1070,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
     };
     let write_value_lines = match field.field_type {
         FieldDescriptorProto_TYPE_MESSAGE => vec!(
-            format!("try!(os.write_tag({:d}, ::protobuf::wire_format::{:?}));",
+            format!("try!(os.write_tag({:d}, ::protobuf::wire_format::{}));",
                     field_number as int, wire_format::WireTypeLengthDelimited),
             format!("try!(os.write_raw_varint32(sizes[*sizes_pos]));"),
             format!("*sizes_pos += 1;"),
@@ -1091,7 +1091,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
         },
         RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
-                w.write_line(format!("try!(os.write_tag({:d}, ::protobuf::wire_format::{:?}));", field_number as int, wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("try!(os.write_tag({:d}, ::protobuf::wire_format::{}));", field_number as int, wire_format::WireTypeLengthDelimited));
                 // Data size is computed again here,
                 // probably it should be cached in `sizes` vec
                 let data_size_expr = w.self_field_vec_packed_data_size();
