@@ -124,8 +124,10 @@ impl UnknownFields {
     fn find_field<'a>(&'a mut self, number: u32) -> &'a mut UnknownValues {
         self.init_map();
 
-        self.fields.as_mut().unwrap()
-            .find_or_insert_with(number, |_| Default::default())
+        match self.fields.as_mut().unwrap().entry(number) {
+            hashmap::Occupied(e) => e.into_mut(),
+            hashmap::Vacant(e) => e.set(Default::default()),
+        }
     }
 
     pub fn add_fixed32(&mut self, number: u32, fixed32: u32) {
