@@ -1,4 +1,3 @@
-#![crate_id(name = "protobuf#0.1.0")]
 #![crate_type = "lib"]
 #![feature(globs)]
 #![allow(non_camel_case_types)]
