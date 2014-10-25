@@ -225,3 +225,23 @@ fn test_enum_descriptor() {
     assert_eq!("TestEnumDescriptor", reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name());
     assert_eq!("GREEN", d.value_by_name("GREEN").name());
 }
+
+#[test]
+fn test_default_value() {
+    let d = TestDefaultValues::new();
+    assert_eq!(1.0, d.get_double_field());
+    assert_eq!(2.0, d.get_float_field());
+    assert_eq!(3, d.get_int32_field());
+    assert_eq!(4, d.get_int64_field());
+    assert_eq!(5, d.get_uint32_field());
+    assert_eq!(6, d.get_uint64_field());
+    assert_eq!(7, d.get_sint32_field());
+    assert_eq!(8, d.get_sint64_field());
+    assert_eq!(9, d.get_fixed32_field());
+    assert_eq!(10, d.get_fixed64_field());
+    assert_eq!(11, d.get_sfixed32_field());
+    assert_eq!(12, d.get_sfixed64_field());
+    assert_eq!(true, d.get_bool_field());
+    assert_eq!("abc", d.get_string_field());
+    assert_eq!(b"cde", d.get_bytes_field());
+}

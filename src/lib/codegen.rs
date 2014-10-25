@@ -385,6 +385,46 @@ impl Field {
             _ => false,
         }
     }
+
+    fn default_value_from_default(&self) -> Option<String> {
+        // TODO: enable enum
+        if self.proto_field.has_default_value() && self.field_type != FieldDescriptorProto_TYPE_ENUM {
+            let proto_default = self.proto_field.get_default_value();
+            Some(match self.field_type {
+                FieldDescriptorProto_TYPE_DOUBLE   => format!("{}f64", proto_default),
+                FieldDescriptorProto_TYPE_FLOAT    => format!("{}f32", proto_default),
+                FieldDescriptorProto_TYPE_INT32    |
+                FieldDescriptorProto_TYPE_SINT32   |
+                FieldDescriptorProto_TYPE_SFIXED32 => format!("{}i32", proto_default),
+                FieldDescriptorProto_TYPE_UINT32   |
+                FieldDescriptorProto_TYPE_FIXED32  => format!("{}u32", proto_default),
+                FieldDescriptorProto_TYPE_INT64    |
+                FieldDescriptorProto_TYPE_SINT64   |
+                FieldDescriptorProto_TYPE_SFIXED64 => format!("{}i64", proto_default),
+                FieldDescriptorProto_TYPE_UINT64   |
+                FieldDescriptorProto_TYPE_FIXED64  => format!("{}u64", proto_default),
+
+                FieldDescriptorProto_TYPE_BOOL     => format!("{}", proto_default),
+                // TODO: escape
+                FieldDescriptorProto_TYPE_STRING   => format!("\"{}\"", proto_default),
+                // TODO: resolve class prefix
+                FieldDescriptorProto_TYPE_BYTES    => format!("b\"{}\"", proto_default),
+                FieldDescriptorProto_TYPE_ENUM     => format!("{}", proto_default),
+                FieldDescriptorProto_TYPE_GROUP |
+                FieldDescriptorProto_TYPE_MESSAGE =>
+                    fail!("default value is not implemented for type: {}", self.field_type)
+            })
+        } else {
+            None
+        }
+    }
+
+    fn default_value_rust(&self) -> String {
+        match self.default_value_from_default() {
+            Some(v) => v,
+            _ => self.get_xxx_return_type().default_value()
+        }
+    }
 }
 
 #[deriving(Clone)]
@@ -1202,13 +1242,13 @@ fn write_message_field_accessors(w: &mut IndentWriter) {
                             );
                             w.case_expr(
                                 "None",
-                                w.field().get_xxx_return_type().default_value()
+                                w.field().default_value_rust()
                             );
                         });
                     } else {
                         w.write_line(format!(
                                 "{:s}.unwrap_or_else(|| {:s})",
-                                w.self_field(), w.field().get_xxx_return_type().default_value()));
+                                w.self_field(), w.field().default_value_rust()));
                     }
                 }
             } else {

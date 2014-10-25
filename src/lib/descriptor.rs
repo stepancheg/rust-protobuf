@@ -7261,7 +7261,7 @@ impl<'a> EnumOptions {
     }
 
     pub fn get_allow_alias(&self) -> bool {
-        self.allow_alias.unwrap_or_else(|| false)
+        self.allow_alias.unwrap_or_else(|| true)
     }
 
     pub fn clear_uninterpreted_option(&mut self) {
