@@ -84,12 +84,9 @@ Have a look at generated files, used internally in rust-protobuf:
 
 * Implement some rust-specific options
 * Deal better with namespaces
-* Store unknown fields
 * Protobuf reflection
 * Extensions
-* default_instance for messages with repeated fields
 * Generate stubs for services
-* Comprehensive test suite
 * Default value
 
 ## Contact me
