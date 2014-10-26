@@ -242,6 +242,6 @@ fn test_default_value() {
     assert_eq!(11, d.get_sfixed32_field());
     assert_eq!(12, d.get_sfixed64_field());
     assert_eq!(true, d.get_bool_field());
-    assert_eq!("abc", d.get_string_field());
-    assert_eq!(b"cde", d.get_bytes_field());
+    assert_eq!("abc\n22", d.get_string_field());
+    assert_eq!(b"cde\n33", d.get_bytes_field());
 }

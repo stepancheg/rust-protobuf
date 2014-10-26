@@ -391,6 +391,7 @@ impl Field {
         if self.proto_field.has_default_value() && self.field_type != FieldDescriptorProto_TYPE_ENUM {
             let proto_default = self.proto_field.get_default_value();
             Some(match self.field_type {
+                // For numeric types, contains the original text representation of the value
                 FieldDescriptorProto_TYPE_DOUBLE   => format!("{}f64", proto_default),
                 FieldDescriptorProto_TYPE_FLOAT    => format!("{}f32", proto_default),
                 FieldDescriptorProto_TYPE_INT32    |
@@ -404,11 +405,13 @@ impl Field {
                 FieldDescriptorProto_TYPE_UINT64   |
                 FieldDescriptorProto_TYPE_FIXED64  => format!("{}u64", proto_default),
 
+                // For booleans, "true" or "false"
                 FieldDescriptorProto_TYPE_BOOL     => format!("{}", proto_default),
-                // TODO: escape
-                FieldDescriptorProto_TYPE_STRING   => format!("\"{}\"", proto_default),
-                // TODO: resolve class prefix
+                // For strings, contains the default text contents (not escaped in any way)
+                FieldDescriptorProto_TYPE_STRING   => format!("\"{}\"", proto_default.escape_default()),
+                // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
                 FieldDescriptorProto_TYPE_BYTES    => format!("b\"{}\"", proto_default),
+                // TODO: resolve outer message prefix
                 FieldDescriptorProto_TYPE_ENUM     => format!("{}", proto_default),
                 FieldDescriptorProto_TYPE_GROUP |
                 FieldDescriptorProto_TYPE_MESSAGE =>
