@@ -386,6 +386,7 @@ impl Field {
         }
     }
 
+    // default value from protobuf [default = xxx] annotation
     fn default_value_from_default(&self) -> Option<String> {
         // TODO: enable enum
         if self.proto_field.has_default_value() && self.field_type != FieldDescriptorProto_TYPE_ENUM {
@@ -1008,9 +1009,7 @@ fn write_message_struct(w: &mut IndentWriter) {
     w.pub_struct(msg.type_name.as_slice(), |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
-            if !format!("{}", field.type_name).as_slice().contains_char('.') {
-                w.field_entry(field.name.as_slice(), format!("{}", field.full_storage_type()));
-            }
+            w.field_entry(field.name.as_slice(), format!("{}", field.full_storage_type()));
         });
         w.field_entry("unknown_fields", "::protobuf::UnknownFields");
     });
@@ -1184,89 +1183,97 @@ fn write_message_default_instance(w: &mut IndentWriter) {
     });
 }
 
+fn write_message_field_get(w: &mut IndentWriter) {
+    let get_xxx_return_type = w.field().get_xxx_return_type();
+    let self_param = match get_xxx_return_type.is_ref() {
+        true  => "&'a self",
+        false => "&self",
+    };
+    let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
+    w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type_str),
+    |w| {
+        if !w.field().repeated {
+            if w.field().field_type == FieldDescriptorProto_TYPE_MESSAGE {
+                w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {}::default_instance())",
+                        w.self_field(), w.field().type_name));
+            } else {
+                if get_xxx_return_type.is_ref() {
+                    w.match_expr(w.self_field_as_option(), |w| {
+                        w.case_expr(
+                            "Some(ref v)",
+                            w.field().type_name.view_as(&w.field().get_xxx_return_type(), "v")
+                        );
+                        w.case_expr(
+                            "None",
+                            w.field().default_value_rust()
+                        );
+                    });
+                } else {
+                    w.write_line(format!(
+                            "{:s}.unwrap_or_else(|| {:s})",
+                            w.self_field(), w.field().default_value_rust()));
+                }
+            }
+        } else {
+            w.write_line(format!("{:s}.as_slice()", w.self_field()));
+        }
+    });
+}
+
+fn write_message_single_field_accessors(w: &mut IndentWriter) {
+    w.pub_fn(format!("{:s}(&mut self)", w.clear_field_func()), |w| {
+        w.clear_field();
+    });
+
+    if !w.field().repeated {
+        w.write_line("");
+        w.pub_fn(format!("has_{:s}(&self) -> bool", w.field().name), |w| {
+            w.write_line(w.self_field_is_some());
+        });
+    }
+
+    let set_xxx_param_type = w.field().set_xxx_param_type();
+    w.write_line("");
+    w.comment("Param is passed by value, moved");
+    w.pub_fn(format!("set_{:s}(&mut self, v: {})", w.field().name, set_xxx_param_type), |w| {
+        w.self_field_assign_value("v", &set_xxx_param_type);
+    });
+
+    let mut_xxx_return_type = w.field().mut_xxx_return_type();
+    w.write_line("");
+    w.comment("Mutable pointer to the field.");
+    if !w.field().repeated {
+        w.comment("If field is not initialized, it is initialized with default value first.");
+    }
+    w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
+    |w| {
+        if !w.field().repeated {
+            w.if_self_field_is_none(|w| {
+                w.self_field_assign_default();
+            });
+            w.write_line(format!("{:s}.as_mut().unwrap()", w.self_field()));
+        } else {
+            w.write_line(format!("&mut {:s}", w.self_field()));
+        }
+    });
+
+    w.write_line("");
+    write_message_field_get(w);
+
+    if w.field().repeated {
+        w.write_line("");
+        w.pub_fn(format!("add_{:s}(&mut self, v: {})",
+                w.field().name, w.field().type_name),
+        |w| {
+            w.self_field_push("v");
+        });
+    }
+}
+
 fn write_message_field_accessors(w: &mut IndentWriter) {
     w.fields(|w| {
         w.write_line("");
-        w.pub_fn(format!("{:s}(&mut self)", w.clear_field_func()), |w| {
-            w.clear_field();
-        });
-
-        if !w.field().repeated {
-            w.write_line("");
-            w.pub_fn(format!("has_{:s}(&self) -> bool", w.field().name), |w| {
-                w.write_line(w.self_field_is_some());
-            });
-        }
-
-        let set_xxx_param_type = w.field().set_xxx_param_type();
-        w.write_line("");
-        w.comment("Param is passed by value, moved");
-        w.pub_fn(format!("set_{:s}(&mut self, v: {})", w.field().name, set_xxx_param_type), |w| {
-            w.self_field_assign_value("v", &set_xxx_param_type);
-        });
-
-        let mut_xxx_return_type = w.field().mut_xxx_return_type();
-        w.write_line("");
-        w.comment("Mutable pointer to the field.");
-        if !w.field().repeated {
-            w.comment("If field is not initialized, it is initialized with default value first.");
-        }
-        w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
-        |w| {
-            if !w.field().repeated {
-                w.if_self_field_is_none(|w| {
-                    w.self_field_assign_default();
-                });
-                w.write_line(format!("{:s}.as_mut().unwrap()", w.self_field()));
-            } else {
-                w.write_line(format!("&mut {:s}", w.self_field()));
-            }
-        });
-
-        w.write_line("");
-        let get_xxx_return_type = w.field().get_xxx_return_type();
-        let self_param = match get_xxx_return_type.is_ref() {
-            true  => "&'a self",
-            false => "&self",
-        };
-        let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
-        w.pub_fn(format!("get_{:s}({:s}) -> {:s}", w.field().name, self_param, get_xxx_return_type_str),
-        |w| {
-            if !w.field().repeated {
-                if w.field().field_type == FieldDescriptorProto_TYPE_MESSAGE {
-                    w.write_line(format!("{:s}.as_ref().unwrap_or_else(|| {}::default_instance())",
-                            w.self_field(), w.field().type_name));
-                } else {
-                    if get_xxx_return_type.is_ref() {
-                        w.match_expr(w.self_field_as_option(), |w| {
-                            w.case_expr(
-                                "Some(ref v)",
-                                w.field().type_name.view_as(&w.field().get_xxx_return_type(), "v")
-                            );
-                            w.case_expr(
-                                "None",
-                                w.field().default_value_rust()
-                            );
-                        });
-                    } else {
-                        w.write_line(format!(
-                                "{:s}.unwrap_or_else(|| {:s})",
-                                w.self_field(), w.field().default_value_rust()));
-                    }
-                }
-            } else {
-                w.write_line(format!("{:s}.as_slice()", w.self_field()));
-            }
-        });
-
-        if w.field().repeated {
-            w.write_line("");
-            w.pub_fn(format!("add_{:s}(&mut self, v: {})",
-                    w.field().name, w.field().type_name),
-            |w| {
-                w.self_field_push("v");
-            });
-        }
+        write_message_single_field_accessors(w);
     });
 }
 
