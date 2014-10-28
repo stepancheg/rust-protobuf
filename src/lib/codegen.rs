@@ -9,6 +9,10 @@ use core::Message;
 use rt;
 use paginate::PaginatableIterator;
 use strx::*;
+use descriptorx::EnumWithScope;
+use descriptorx::MessageWithScope;
+use descriptorx::Scope;
+use descriptorx::WithScope;
 
 #[deriving(Clone,PartialEq,Eq)]
 enum RustType {
@@ -432,7 +436,7 @@ impl Field {
 }
 
 #[deriving(Clone)]
-struct MessageInfo {
+struct MessageInfo<'a> {
     proto_message: DescriptorProto,
     pkg: String,
     prefix: String,
@@ -440,19 +444,15 @@ struct MessageInfo {
     fields: Vec<Field>,
 }
 
-impl<'a> MessageInfo {
-    fn parse(proto_message: &DescriptorProto, pkg: &str, prefix: &str) -> MessageInfo {
+impl<'a> MessageInfo<'a> {
+    fn parse(message: &MessageWithScope<'a>) -> MessageInfo<'a> {
         MessageInfo {
-            proto_message: proto_message.clone(),
-            pkg: pkg.to_string(),
-            prefix: prefix.to_string(),
-            type_name: {
-                let mut r = prefix.to_string();
-                r.push_str(proto_message.get_name());
-                r
-            },
-            fields: proto_message.get_field().iter().flat_map(|field| {
-                Field::parse(field, pkg).into_iter()
+            proto_message: message.message.clone(),
+            pkg: message.get_package().to_string(),
+            prefix: message.scope.rust_prefix(),
+            type_name: message.rust_name(),
+            fields: message.message.get_field().iter().flat_map(|field| {
+                Field::parse(field, message.get_package()).into_iter()
             }).collect(),
         }
     }
@@ -477,9 +477,8 @@ impl<'a> MessageInfo {
     }
 }
 
-struct Enum {
-    //pkg: String,
-    //prefix: String,
+struct Enum<'a> {
+    //en: EnumWithScope<'a>,
     type_name: String,
     values: Vec<EnumValue>,
 }
@@ -489,17 +488,12 @@ struct EnumValue {
     prefix: String,
 }
 
-impl Enum {
-    fn parse(proto: &EnumDescriptorProto, _pkg: &str, prefix: &str) -> Enum {
+impl<'a> Enum<'a> {
+    fn parse<'a>(en: &EnumWithScope<'a>) -> Enum<'a> {
         Enum {
-            //pkg: pkg.to_string(),
-            //prefix: prefix.to_string(),
-            type_name: {
-                let mut r = prefix.to_string();
-                r.push_str(proto.get_name());
-                r
-            },
-            values: proto.get_value().iter().map(|p| EnumValue::parse(p, prefix)).collect(),
+            //en: en.clone(),
+            type_name: en.rust_name(),
+            values: en.en.get_value().iter().map(|p| EnumValue::parse(p, en.scope.rust_prefix().as_slice())).collect(),
         }
     }
 }
@@ -534,9 +528,9 @@ struct IndentWriter<'a> {
     // TODO: add mut
     writer: &'a Writer + 'a,
     indent: String,
-    msg: Option<&'a MessageInfo>,
+    msg: Option<&'a MessageInfo<'a>>,
     field: Option<&'a Field>,
-    en: Option<&'a Enum>,
+    en: Option<&'a Enum<'a>>,
 }
 
 impl<'a> IndentWriter<'a> {
@@ -571,7 +565,7 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn bind_enum<T>(&self, en: &'a Enum, cb: |&mut IndentWriter| -> T) -> T {
+    fn bind_enum<T>(&self, en: &Enum, cb: |&mut IndentWriter| -> T) -> T {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: self.indent.to_string(),
@@ -611,7 +605,7 @@ impl<'a> IndentWriter<'a> {
         self.field.unwrap()
     }
 
-    fn en(&self) -> &'a Enum {
+    fn en(&self) -> &'a Enum<'a> {
         self.en.unwrap()
     }
 
@@ -1507,11 +1501,10 @@ fn write_message_impl_clear(w: &mut IndentWriter) {
     });
 }
 
-fn write_message(msg: &MessageInfo, w: &mut IndentWriter) {
-    let pkg = msg.pkg.as_slice();
-    let message_type = &msg.proto_message;
+fn write_message(m2: &MessageWithScope, w: &mut IndentWriter) {
+    let msg = MessageInfo::parse(m2);
 
-    w.bind_message(msg, |w| {
+    w.bind_message(&msg, |w| {
         write_message_struct(w);
         w.write_line("");
         write_message_impl_self(w);
@@ -1527,14 +1520,14 @@ fn write_message(msg: &MessageInfo, w: &mut IndentWriter) {
         let mut nested_prefix = msg.type_name.to_string();
         nested_prefix.push_str("_");
 
-        for nested_type in message_type.get_nested_type().iter() {
+        for nested in m2.to_scope().get_messages().iter() {
             w.write_line("");
-            write_message(&MessageInfo::parse(nested_type, pkg.as_slice(), nested_prefix.as_slice()), w);
+            write_message(nested, w);
         }
 
-        for enum_type in message_type.get_enum_type().iter() {
+        for enum_type in m2.to_scope().get_enums().iter() {
             w.write_line("");
-            write_enum(&Enum::parse(enum_type, pkg, nested_prefix.as_slice()), w);
+            write_enum(enum_type, w);
         }
     });
 }
@@ -1575,8 +1568,9 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
     });
 }
 
-fn write_enum(en: &Enum, w: &mut IndentWriter) {
-    w.bind_enum(en, |w| {
+fn write_enum(enum_with_scope: &EnumWithScope, w: &mut IndentWriter) {
+    let en = Enum::parse(enum_with_scope);
+    w.bind_enum(&en, |w| {
         write_enum_struct(w);
         w.write_line("");
         write_enum_impl(w);
@@ -1649,13 +1643,18 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 });
             }
 
-            for message_type in file.get_message_type().iter() {
+            let scope = Scope {
+                file_descriptor: file,
+                path: Vec::new(),
+            };
+
+            for message in scope.get_messages().iter() {
                 w.write_line("");
-                write_message(&MessageInfo::parse(message_type, file.get_package(), ""), &mut w);
+                write_message(message, &mut w);
             }
-            for enum_type in file.get_enum_type().iter() {
+            for enum_type in scope.get_enums().iter() {
                 w.write_line("");
-                write_enum(&Enum::parse(enum_type, file.get_package(), ""), &mut w);
+                write_enum(enum_type, &mut w);
             }
         }
 

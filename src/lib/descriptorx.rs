@@ -4,13 +4,85 @@ use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::EnumDescriptorProto;
 
-#[deriving(Clone)]
-struct MessagePath<'a> {
-    path: Vec<&'a DescriptorProto>,
+//#[deriving(Clone)]
+pub struct Scope<'a> {
+    pub file_descriptor: &'a FileDescriptorProto,
+    pub path: Vec<&'a DescriptorProto>,
 }
 
-impl<'a> MessagePath<'a> {
-    fn rust_prefix(&self) -> String {
+// https://github.com/rust-lang/rust/issues/18405
+impl<'a> Clone for Scope<'a> {
+    fn clone(&self) -> Scope<'a> {
+        Scope {
+            file_descriptor: self.file_descriptor,
+            path: self.path.clone(),
+        }
+    }
+}
+
+impl<'a> Scope<'a> {
+    fn get_package(&self) -> &'a str {
+        self.file_descriptor.get_package()
+    }
+
+    // get message descriptors in this scope
+    fn get_message_descriptors(&self) -> &'a [DescriptorProto] {
+        if self.path.is_empty() {
+            self.file_descriptor.get_message_type()
+        } else {
+            self.path.last().unwrap().get_nested_type()
+        }
+    }
+
+    // get enum descriptors in this scope
+    fn get_enum_descriptors(&self) -> &'a [EnumDescriptorProto] {
+        if self.path.is_empty() {
+            self.file_descriptor.get_enum_type()
+        } else {
+            self.path.last().unwrap().get_enum_type()
+        }
+    }
+
+    // get messages with attached scopes in this scope
+    pub fn get_messages(&self) -> Vec<MessageWithScope<'a>> {
+        self.get_message_descriptors().iter().map(|m| {
+            MessageWithScope {
+                scope: self.clone(),
+                message: m,
+            }
+        }).collect()
+    }
+
+    // get enums with attached scopes in this scope
+    pub fn get_enums(&self) -> Vec<EnumWithScope<'a>> {
+        self.get_enum_descriptors().iter().map(|e| {
+            EnumWithScope {
+                scope: self.clone(),
+                en: e,
+            }
+        }).collect()
+    }
+
+    // nested scopes, i. e. scopes of nested messages
+    fn nested_scopes(&self) -> Vec<Scope<'a>> {
+        self.get_message_descriptors().iter().map(|m| {
+            let mut nested = self.clone();
+            nested.path.push(m);
+            nested
+        }).collect()
+    }
+
+    // apply callback for this scope and all nested scopes
+    fn walk_scopes(&self, callback: |&Scope<'a>|) {
+        callback(self);
+
+        for nested in self.nested_scopes().iter() {
+            nested.walk_scopes(|scope| callback(scope));
+        }
+    }
+
+    // rust type name prefix for this scope
+    pub fn rust_prefix(&self) -> String {
         if self.path.is_empty() {
             "".to_string()
         } else {
@@ -22,105 +94,136 @@ impl<'a> MessagePath<'a> {
     }
 }
 
-#[deriving(Clone)]
-struct MessageWithPath<'a> {
-    path: Vec<&'a DescriptorProto>,
+pub trait WithScope<'a> {
+    fn get_scope(&self) -> &Scope<'a>;
+
+    // message or enum name
+    fn get_name(&self) -> &'a str;
+
+    // package name of this descriptor
+    fn get_package(&self) -> &'a str {
+        self.get_scope().get_package()
+    }
+
+    // rust type name of this descriptor
+    fn rust_name(&self) -> String {
+        let mut r = self.get_scope().rust_prefix();
+        r.push_str(self.get_name());
+        r
+    }
 }
 
-impl<'a> MessageWithPath<'a> {
-    fn into_path(self) -> MessagePath<'a> {
-        MessagePath {
-            path: self.path,
+//#[deriving(Clone)]
+pub struct MessageWithScope<'a> {
+    pub scope: Scope<'a>,
+    pub message: &'a DescriptorProto,
+}
+
+// https://github.com/rust-lang/rust/issues/18405
+impl<'a> Clone for MessageWithScope<'a> {
+    fn clone(&self) -> MessageWithScope<'a> {
+        MessageWithScope {
+            scope: self.scope.clone(),
+            message: self.message,
         }
     }
+}
 
-    fn to_path(&self) -> MessagePath<'a> {
-        self.clone().into_path()
+impl<'a> WithScope<'a> for MessageWithScope<'a> {
+    fn get_scope(&self) -> &Scope<'a> {
+        &self.scope
+    }
+
+    fn get_name(&self) -> &'a str {
+        self.message.get_name()
     }
 }
 
-#[deriving(Clone)]
-impl<'a> MessageWithPath<'a> {
-    fn get_message(&self) -> &'a DescriptorProto {
-        *self.path.last().unwrap()
+impl<'a> MessageWithScope<'a> {
+    pub fn into_scope(mut self) -> Scope<'a> {
+        self.scope.path.push(self.message);
+        self.scope
     }
 
-    fn rust_name(&self) -> String {
-        let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
-        v.connect("_")
-    }
-}
-
-struct EnumWithPath<'a> {
-    path: MessagePath<'a>,
-    en: &'a EnumDescriptorProto,
-}
-
-impl<'a> EnumWithPath<'a> {
-    fn rust_name(&self) -> String {
-        let mut r = self.path.rust_prefix();
-        r.push_str(self.en.get_name());
-        r
+    pub fn to_scope(&self) -> Scope<'a> {
+        self.clone().into_scope()
     }
 }
 
 
-fn find_messages<'a>(fd: &'a FileDescriptorProto) -> Vec<MessageWithPath<'a>> {
-    fn collect<'a>(origin: &MessageWithPath<'a>) -> Vec<MessageWithPath<'a>> {
-        let this_level: Vec<MessageWithPath<'a>> = origin.get_message().get_nested_type().iter()
-                .map(|m| MessageWithPath {
-                    path: {
-                        let mut r = origin.path.clone();
-                        r.push(m);
-                        r
-                    }
-                })
-                .collect();
-        collect_and_walk(this_level.as_slice())
-    }
-
-    fn collect_and_walk<'a>(ms: &[MessageWithPath<'a>]) -> Vec<MessageWithPath<'a>> {
-        let mut r = Vec::new();
-        r.push_all(ms);
-        r.extend(ms.iter().flat_map(|m| collect(m).into_iter()));
-        r
-    }
-
-    let this_level: Vec<MessageWithPath<'a>> = fd.get_message_type().iter()
-            .map(|m| MessageWithPath { path: vec!(m) })
-            .collect();
-
-    collect_and_walk(this_level.as_slice())
+//#[deriving(Clone)]
+pub struct EnumWithScope<'a> {
+    pub scope: Scope<'a>,
+    pub en: &'a EnumDescriptorProto,
 }
 
-fn find_enums<'a>(fd: &'a FileDescriptorProto) -> Vec<EnumWithPath<'a>> {
+// https://github.com/rust-lang/rust/issues/18405
+impl<'a> Clone for EnumWithScope<'a> {
+    fn clone(&self) -> EnumWithScope<'a> {
+        EnumWithScope {
+            scope: self.scope.clone(),
+            en: self.en,
+        }
+    }
+}
+
+impl<'a> WithScope<'a> for EnumWithScope<'a> {
+    fn get_scope(&self) -> &Scope<'a> {
+        &self.scope
+    }
+
+    fn get_name(&self) -> &'a str {
+        self.en.get_name()
+    }
+}
+
+
+// find all messages in given file descriptor
+fn find_messages<'a>(fd: &'a FileDescriptorProto) -> Vec<MessageWithScope<'a>> {
+    let root_scope = Scope {
+        file_descriptor: fd,
+        path: Vec::new(),
+    };
+
     let mut r = Vec::new();
 
-    r.extend(fd.get_enum_type().iter()
-            .map(|e| EnumWithPath { path: MessagePath { path: Vec::new() }, en: e }));
-
-    for m in find_messages(fd).into_iter() {
-        r.extend(m.get_message().get_enum_type().iter()
-                    .map(|e| EnumWithPath { path: m.to_path(), en: e }));
-    }
+    root_scope.walk_scopes(|scope| {
+        r.push_all(scope.get_messages().as_slice());
+    });
 
     r
 }
 
-pub fn find_message_by_rust_name<'a>(fd: &'a FileDescriptorProto, rust_name: &str)
-    -> &'a DescriptorProto
-{
-    find_messages(fd).iter()
-            .find(|m| m.rust_name().as_slice() == rust_name)
-            .unwrap()
-            .get_message()
+// find all enums in given file descriptor
+fn find_enums<'a>(fd: &'a FileDescriptorProto) -> Vec<EnumWithScope<'a>> {
+    let root_scope = Scope {
+        file_descriptor: fd,
+        path: Vec::new(),
+    };
+
+    let mut r = Vec::new();
+
+    root_scope.walk_scopes(|scope| {
+        r.push_all(scope.get_enums().as_slice());
+    });
+
+    r
 }
 
-pub fn find_enum_by_rust_name<'a>(fd: &'a FileDescriptorProto, rust_name: &str)
-    -> &'a EnumDescriptorProto
+// find message by rust type name
+pub fn find_message_by_rust_name<'a>(fd: &'a FileDescriptorProto, rust_name: &str)
+    -> MessageWithScope<'a>
 {
-    find_enums(fd).iter()
+    find_messages(fd).into_iter()
+            .find(|m| m.rust_name().as_slice() == rust_name)
+            .unwrap()
+}
+
+// find enum by rust type name
+pub fn find_enum_by_rust_name<'a>(fd: &'a FileDescriptorProto, rust_name: &str)
+    -> EnumWithScope<'a>
+{
+    find_enums(fd).into_iter()
             .find(|e| e.rust_name().as_slice() == rust_name)
             .unwrap()
-            .en
 }

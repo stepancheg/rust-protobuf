@@ -434,19 +434,19 @@ impl MessageDescriptor {
         let proto = find_message_by_rust_name(file, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
-        for field_proto in proto.get_field().iter() {
+        for field_proto in proto.message.get_field().iter() {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.get_field().iter().enumerate() {
+        for (i, f) in proto.message.get_field().iter().enumerate() {
             index_by_number.insert(f.get_number() as u32, i);
             index_by_name.insert(f.get_name().to_string(), i);
         }
 
         MessageDescriptor {
-            proto: proto,
+            proto: proto.message,
             factory: box MessageFactoryTyped::<M>::new() as Box<MessageFactory>,
             fields: fields.iter()
                     .map(|f| FieldDescriptor::new(*f, *field_proto_by_name.find(&f.name()).unwrap()))
@@ -515,13 +515,13 @@ impl EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, v) in proto.get_value().iter().enumerate() {
+        for (i, v) in proto.en.get_value().iter().enumerate() {
             index_by_number.insert(v.get_number(), i);
             index_by_name.insert(v.get_name().to_string(), i);
         }
         EnumDescriptor {
-            proto: proto,
-            values: proto.get_value().iter().map(|v| EnumValueDescriptor { proto: v }).collect(),
+            proto: proto.en,
+            values: proto.en.get_value().iter().map(|v| EnumValueDescriptor { proto: v }).collect(),
             index_by_name: index_by_name,
             index_by_number: index_by_number,
         }
