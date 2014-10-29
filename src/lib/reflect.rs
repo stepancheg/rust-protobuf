@@ -15,9 +15,7 @@ use std::collections::HashMap;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
 pub trait FieldAccessor<M : Message> {
-    fn name(&self) -> &'static str {
-        fail!("TODO");
-    }
+    fn name(&self) -> &'static str;
 
     fn has_field(&self, _m: &M) -> bool {
         fail!();
