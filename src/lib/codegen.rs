@@ -1592,6 +1592,33 @@ pub struct GenOptions {
     pub dummy: bool,
 }
 
+fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut IndentWriter) {
+    let fdp_bytes = file.write_to_bytes().unwrap();
+    w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
+    for groups in fdp_bytes.iter().paginate(16) {
+        let fdp_bytes_str = groups.iter()
+                .map(|&b| format!("0x{:02x}", *b))
+                .collect::<Vec<String>>()
+                .connect(", ");
+        w.write_line(format!("    {},", fdp_bytes_str));
+    }
+    w.write_line("];");
+    w.write_line("");
+    w.lazy_static("file_descriptor_proto_lazy", "::protobuf::descriptor::FileDescriptorProto");
+    w.write_line("");
+    w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
+        w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
+    });
+    w.write_line("");
+    w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
+        w.unsafe_expr(|w| {
+            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+                w.write_line("parse_descriptor_proto()");
+            });
+        });
+    });
+}
+
 pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
     let mut results: Vec<GenResult> = Vec::new();
     for file in files.iter() {
@@ -1615,34 +1642,6 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 w.write_line(format!("use {:s}::*;", proto_path_to_rust_base(dep.as_slice())));
             }
 
-            {
-                w.write_line("");
-                let fdp_bytes = file.write_to_bytes().unwrap();
-                w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
-                for groups in fdp_bytes.iter().paginate(16) {
-                    let fdp_bytes_str = groups.iter()
-                            .map(|&b| format!("0x{:02x}", *b))
-                            .collect::<Vec<String>>()
-                            .connect(", ");
-                    w.write_line(format!("    {},", fdp_bytes_str));
-                }
-                w.write_line("];");
-                w.write_line("");
-                w.lazy_static("file_descriptor_proto_lazy", "::protobuf::descriptor::FileDescriptorProto");
-                w.write_line("");
-                w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
-                    w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
-                });
-                w.write_line("");
-                w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-                    w.unsafe_expr(|w| {
-                        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                            w.write_line("parse_descriptor_proto()");
-                        });
-                    });
-                });
-            }
-
             let scope = Scope {
                 file_descriptor: file,
                 path: Vec::new(),
@@ -1656,6 +1655,9 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
                 w.write_line("");
                 write_enum(enum_type, &mut w);
             }
+
+            w.write_line("");
+            write_file_descriptor_data(file, &mut w);
         }
 
         results.push(GenResult {
