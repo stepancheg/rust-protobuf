@@ -1246,8 +1246,9 @@ fn write_message_field_get(w: &mut IndentWriter) {
                         );
                     });
                 } else {
+                    assert!(!w.field().type_is_not_trivial());
                     w.write_line(format!(
-                            "{:s}.unwrap_or_else(|| {:s})",
+                            "{:s}.unwrap_or({:s})",
                             w.self_field(), w.field().default_value_rust()));
                 }
             }

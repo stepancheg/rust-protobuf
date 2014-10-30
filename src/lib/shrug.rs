@@ -42,7 +42,7 @@ impl<'a> Test1 {
     }
 
     pub fn get_a(&self) -> i32 {
-        self.a.unwrap_or_else(|| 0)
+        self.a.unwrap_or(0)
     }
 }
 
@@ -968,7 +968,7 @@ impl<'a> TestEmpty {
     }
 
     pub fn get_foo(&self) -> i32 {
-        self.foo.unwrap_or_else(|| 0)
+        self.foo.unwrap_or(0)
     }
 }
 
@@ -1128,7 +1128,7 @@ impl<'a> TestRequired {
     }
 
     pub fn get_b(&self) -> bool {
-        self.b.unwrap_or_else(|| false)
+        self.b.unwrap_or(false)
     }
 }
 
@@ -1291,7 +1291,7 @@ impl<'a> TestUnknownFields {
     }
 
     pub fn get_a(&self) -> i32 {
-        self.a.unwrap_or_else(|| 0)
+        self.a.unwrap_or(0)
     }
 }
 
@@ -2041,7 +2041,7 @@ impl<'a> TestDescriptor {
     }
 
     pub fn get_stuff(&self) -> i32 {
-        self.stuff.unwrap_or_else(|| 0)
+        self.stuff.unwrap_or(0)
     }
 }
 
@@ -2229,7 +2229,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_double_field(&self) -> f64 {
-        self.double_field.unwrap_or_else(|| 0.)
+        self.double_field.unwrap_or(0.)
     }
 
     pub fn clear_float_field(&mut self) {
@@ -2246,7 +2246,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_float_field(&self) -> f32 {
-        self.float_field.unwrap_or_else(|| 0.)
+        self.float_field.unwrap_or(0.)
     }
 
     pub fn clear_int32_field(&mut self) {
@@ -2263,7 +2263,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_int32_field(&self) -> i32 {
-        self.int32_field.unwrap_or_else(|| 0)
+        self.int32_field.unwrap_or(0)
     }
 
     pub fn clear_int64_field(&mut self) {
@@ -2280,7 +2280,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_int64_field(&self) -> i64 {
-        self.int64_field.unwrap_or_else(|| 0)
+        self.int64_field.unwrap_or(0)
     }
 
     pub fn clear_uint32_field(&mut self) {
@@ -2297,7 +2297,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_uint32_field(&self) -> u32 {
-        self.uint32_field.unwrap_or_else(|| 0)
+        self.uint32_field.unwrap_or(0)
     }
 
     pub fn clear_uint64_field(&mut self) {
@@ -2314,7 +2314,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_uint64_field(&self) -> u64 {
-        self.uint64_field.unwrap_or_else(|| 0)
+        self.uint64_field.unwrap_or(0)
     }
 
     pub fn clear_sint32_field(&mut self) {
@@ -2331,7 +2331,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_sint32_field(&self) -> i32 {
-        self.sint32_field.unwrap_or_else(|| 0)
+        self.sint32_field.unwrap_or(0)
     }
 
     pub fn clear_sint64_field(&mut self) {
@@ -2348,7 +2348,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_sint64_field(&self) -> i64 {
-        self.sint64_field.unwrap_or_else(|| 0)
+        self.sint64_field.unwrap_or(0)
     }
 
     pub fn clear_fixed32_field(&mut self) {
@@ -2365,7 +2365,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_fixed32_field(&self) -> u32 {
-        self.fixed32_field.unwrap_or_else(|| 0)
+        self.fixed32_field.unwrap_or(0)
     }
 
     pub fn clear_fixed64_field(&mut self) {
@@ -2382,7 +2382,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_fixed64_field(&self) -> u64 {
-        self.fixed64_field.unwrap_or_else(|| 0)
+        self.fixed64_field.unwrap_or(0)
     }
 
     pub fn clear_sfixed32_field(&mut self) {
@@ -2399,7 +2399,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_sfixed32_field(&self) -> i32 {
-        self.sfixed32_field.unwrap_or_else(|| 0)
+        self.sfixed32_field.unwrap_or(0)
     }
 
     pub fn clear_sfixed64_field(&mut self) {
@@ -2416,7 +2416,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_sfixed64_field(&self) -> i64 {
-        self.sfixed64_field.unwrap_or_else(|| 0)
+        self.sfixed64_field.unwrap_or(0)
     }
 
     pub fn clear_bool_field(&mut self) {
@@ -2433,7 +2433,7 @@ impl<'a> TestTypesSingular {
     }
 
     pub fn get_bool_field(&self) -> bool {
-        self.bool_field.unwrap_or_else(|| false)
+        self.bool_field.unwrap_or(false)
     }
 
     pub fn clear_string_field(&mut self) {
@@ -5353,7 +5353,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_double_field(&self) -> f64 {
-        self.double_field.unwrap_or_else(|| 1f64)
+        self.double_field.unwrap_or(1f64)
     }
 
     pub fn clear_float_field(&mut self) {
@@ -5370,7 +5370,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_float_field(&self) -> f32 {
-        self.float_field.unwrap_or_else(|| 2f32)
+        self.float_field.unwrap_or(2f32)
     }
 
     pub fn clear_int32_field(&mut self) {
@@ -5387,7 +5387,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_int32_field(&self) -> i32 {
-        self.int32_field.unwrap_or_else(|| 3i32)
+        self.int32_field.unwrap_or(3i32)
     }
 
     pub fn clear_int64_field(&mut self) {
@@ -5404,7 +5404,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_int64_field(&self) -> i64 {
-        self.int64_field.unwrap_or_else(|| 4i64)
+        self.int64_field.unwrap_or(4i64)
     }
 
     pub fn clear_uint32_field(&mut self) {
@@ -5421,7 +5421,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_uint32_field(&self) -> u32 {
-        self.uint32_field.unwrap_or_else(|| 5u32)
+        self.uint32_field.unwrap_or(5u32)
     }
 
     pub fn clear_uint64_field(&mut self) {
@@ -5438,7 +5438,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_uint64_field(&self) -> u64 {
-        self.uint64_field.unwrap_or_else(|| 6u64)
+        self.uint64_field.unwrap_or(6u64)
     }
 
     pub fn clear_sint32_field(&mut self) {
@@ -5455,7 +5455,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_sint32_field(&self) -> i32 {
-        self.sint32_field.unwrap_or_else(|| 7i32)
+        self.sint32_field.unwrap_or(7i32)
     }
 
     pub fn clear_sint64_field(&mut self) {
@@ -5472,7 +5472,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_sint64_field(&self) -> i64 {
-        self.sint64_field.unwrap_or_else(|| 8i64)
+        self.sint64_field.unwrap_or(8i64)
     }
 
     pub fn clear_fixed32_field(&mut self) {
@@ -5489,7 +5489,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_fixed32_field(&self) -> u32 {
-        self.fixed32_field.unwrap_or_else(|| 9u32)
+        self.fixed32_field.unwrap_or(9u32)
     }
 
     pub fn clear_fixed64_field(&mut self) {
@@ -5506,7 +5506,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_fixed64_field(&self) -> u64 {
-        self.fixed64_field.unwrap_or_else(|| 10u64)
+        self.fixed64_field.unwrap_or(10u64)
     }
 
     pub fn clear_sfixed32_field(&mut self) {
@@ -5523,7 +5523,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_sfixed32_field(&self) -> i32 {
-        self.sfixed32_field.unwrap_or_else(|| 11i32)
+        self.sfixed32_field.unwrap_or(11i32)
     }
 
     pub fn clear_sfixed64_field(&mut self) {
@@ -5540,7 +5540,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_sfixed64_field(&self) -> i64 {
-        self.sfixed64_field.unwrap_or_else(|| 12i64)
+        self.sfixed64_field.unwrap_or(12i64)
     }
 
     pub fn clear_bool_field(&mut self) {
@@ -5557,7 +5557,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_bool_field(&self) -> bool {
-        self.bool_field.unwrap_or_else(|| true)
+        self.bool_field.unwrap_or(true)
     }
 
     pub fn clear_string_field(&mut self) {
@@ -5632,7 +5632,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_enum_field(&self) -> EnumForDefaultValue {
-        self.enum_field.unwrap_or_else(|| TWO)
+        self.enum_field.unwrap_or(TWO)
     }
 
     pub fn clear_enum_field_without_default(&mut self) {
@@ -5649,7 +5649,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_enum_field_without_default(&self) -> EnumForDefaultValue {
-        self.enum_field_without_default.unwrap_or_else(|| ONE)
+        self.enum_field_without_default.unwrap_or(ONE)
     }
 }
 

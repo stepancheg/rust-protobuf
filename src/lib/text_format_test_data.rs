@@ -42,7 +42,7 @@ impl<'a> TestMessage {
     }
 
     pub fn get_value(&self) -> i32 {
-        self.value.unwrap_or_else(|| 0)
+        self.value.unwrap_or(0)
     }
 }
 
@@ -268,7 +268,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_double_singular(&self) -> f64 {
-        self.double_singular.unwrap_or_else(|| 0.)
+        self.double_singular.unwrap_or(0.)
     }
 
     pub fn clear_float_singular(&mut self) {
@@ -285,7 +285,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_float_singular(&self) -> f32 {
-        self.float_singular.unwrap_or_else(|| 0.)
+        self.float_singular.unwrap_or(0.)
     }
 
     pub fn clear_int32_singular(&mut self) {
@@ -302,7 +302,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_int32_singular(&self) -> i32 {
-        self.int32_singular.unwrap_or_else(|| 0)
+        self.int32_singular.unwrap_or(0)
     }
 
     pub fn clear_int64_singular(&mut self) {
@@ -319,7 +319,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_int64_singular(&self) -> i64 {
-        self.int64_singular.unwrap_or_else(|| 0)
+        self.int64_singular.unwrap_or(0)
     }
 
     pub fn clear_uint32_singular(&mut self) {
@@ -336,7 +336,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_uint32_singular(&self) -> u32 {
-        self.uint32_singular.unwrap_or_else(|| 0)
+        self.uint32_singular.unwrap_or(0)
     }
 
     pub fn clear_uint64_singular(&mut self) {
@@ -353,7 +353,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_uint64_singular(&self) -> u64 {
-        self.uint64_singular.unwrap_or_else(|| 0)
+        self.uint64_singular.unwrap_or(0)
     }
 
     pub fn clear_sint32_singular(&mut self) {
@@ -370,7 +370,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_sint32_singular(&self) -> i32 {
-        self.sint32_singular.unwrap_or_else(|| 0)
+        self.sint32_singular.unwrap_or(0)
     }
 
     pub fn clear_sint64_singular(&mut self) {
@@ -387,7 +387,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_sint64_singular(&self) -> i64 {
-        self.sint64_singular.unwrap_or_else(|| 0)
+        self.sint64_singular.unwrap_or(0)
     }
 
     pub fn clear_fixed32_singular(&mut self) {
@@ -404,7 +404,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_fixed32_singular(&self) -> u32 {
-        self.fixed32_singular.unwrap_or_else(|| 0)
+        self.fixed32_singular.unwrap_or(0)
     }
 
     pub fn clear_fixed64_singular(&mut self) {
@@ -421,7 +421,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_fixed64_singular(&self) -> u64 {
-        self.fixed64_singular.unwrap_or_else(|| 0)
+        self.fixed64_singular.unwrap_or(0)
     }
 
     pub fn clear_sfixed32_singular(&mut self) {
@@ -438,7 +438,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_sfixed32_singular(&self) -> i32 {
-        self.sfixed32_singular.unwrap_or_else(|| 0)
+        self.sfixed32_singular.unwrap_or(0)
     }
 
     pub fn clear_sfixed64_singular(&mut self) {
@@ -455,7 +455,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_sfixed64_singular(&self) -> i64 {
-        self.sfixed64_singular.unwrap_or_else(|| 0)
+        self.sfixed64_singular.unwrap_or(0)
     }
 
     pub fn clear_bool_singular(&mut self) {
@@ -472,7 +472,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_bool_singular(&self) -> bool {
-        self.bool_singular.unwrap_or_else(|| false)
+        self.bool_singular.unwrap_or(false)
     }
 
     pub fn clear_string_singular(&mut self) {
@@ -547,7 +547,7 @@ impl<'a> TestTypes {
     }
 
     pub fn get_test_enum_singular(&self) -> TestEnum {
-        self.test_enum_singular.unwrap_or_else(|| DARK)
+        self.test_enum_singular.unwrap_or(DARK)
     }
 
     pub fn clear_test_message_singular(&mut self) {
