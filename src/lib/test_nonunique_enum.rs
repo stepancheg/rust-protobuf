@@ -50,7 +50,7 @@ impl ::protobuf::Message for MessageA {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -77,11 +77,11 @@ impl ::protobuf::Message for MessageA {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<MessageA>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<MessageA>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MessageA>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<MessageA>> = ::std::vec::Vec::new();
                 ::protobuf::reflect::MessageDescriptor::new::<MessageA>(
                     "MessageA",
                     fields,
@@ -184,7 +184,7 @@ impl ::protobuf::Message for MessageB {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -211,11 +211,11 @@ impl ::protobuf::Message for MessageB {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<MessageB>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<MessageB>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MessageB>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<MessageB>> = ::std::vec::Vec::new();
                 ::protobuf::reflect::MessageDescriptor::new::<MessageB>(
                     "MessageB",
                     fields,

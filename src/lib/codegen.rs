@@ -43,15 +43,15 @@ impl fmt::Show for RustType {
             RustUnsigned(bits)     => write!(f, "u{}", bits),
             RustFloat(bits)        => write!(f, "f{}", bits),
             RustBool               => write!(f, "bool"),
-            RustVec(ref param)     => write!(f, "Vec<{}>", *param),
-            RustString             => write!(f, "String"),
+            RustVec(ref param)     => write!(f, "::std::vec::Vec<{}>", *param),
+            RustString             => write!(f, "::std::string::String"),
             RustSlice(ref param)   => write!(f, "[{}]", *param),
             RustStr                => write!(f, "str"),
-            RustOption(ref param)           => write!(f, "Option<{}>", param),
+            RustOption(ref param)           => write!(f, "::std::option::Option<{}>", param),
             RustSingularField(ref param)    => write!(f, "::protobuf::SingularField<{}>", param),
             RustSingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", param),
             RustRepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", param),
-            RustUniq(ref param)             => write!(f, "Box<{}>", *param),
+            RustUniq(ref param)             => write!(f, "::std::Box<{}>", *param),
             RustRef(ref param)              => write!(f, "&{}", *param),
             RustMessage(ref param) |
             RustEnum(ref param)    => write!(f, "{}", param),
@@ -97,9 +97,9 @@ impl RustType {
             RustSigned(..) | RustUnsigned(..)  => "0".to_string(),
             RustFloat(..)                      => "0.".to_string(),
             RustBool(..)                       => "false".to_string(),
-            RustVec(..)                        => "Vec::new()".to_string(),
-            RustString                         => "String::new()".to_string(),
-            RustOption(..)                     => "None".to_string(),
+            RustVec(..)                        => "::std::vec::Vec::new()".to_string(),
+            RustString                         => "::std::string::String::new()".to_string(),
+            RustOption(..)                     => "::std::option::None".to_string(),
             RustSingularField(..)              => "::protobuf::SingularField::none()".to_string(),
             RustSingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_string(),
             RustRepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
@@ -1101,7 +1101,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
     // First appended element is size of self, and then nested message sizes.
     // in serialization order are appended recursively.");
     w.comment("Compute sizes of nested messages");
-    w.def_fn("compute_sizes(&self, sizes: &mut Vec<u32>) -> u32", |w| {
+    w.def_fn("compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32", |w| {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
         w.write_line("let pos = sizes.len();");
@@ -1432,12 +1432,12 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         write_message_unknown_fields(w);
         w.write_line("");
         w.allow(["unused_unsafe", "unused_mut"]);
-        w.def_fn(format!("descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
+        w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
                 let vec_type_param = format!(
                         "&'static ::protobuf::reflect::FieldAccessor<{}>",
                         msg.type_name);
-                w.write_line(format!("let mut fields: Vec<{}> = Vec::new();", vec_type_param));
+                w.write_line(format!("let mut fields: ::std::vec::Vec<{}> = ::std::vec::Vec::new();", vec_type_param));
                 for field in msg.fields.iter() {
                     let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
                     // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887

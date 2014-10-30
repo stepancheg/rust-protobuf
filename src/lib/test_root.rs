@@ -83,7 +83,7 @@ impl ::protobuf::Message for Root {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -119,11 +119,11 @@ impl ::protobuf::Message for Root {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<Root>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<Root>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Root>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Root>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&Root_nested_acc as &'static ::protobuf::reflect::FieldAccessor<Root>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Root>(
                     "Root",
@@ -217,7 +217,7 @@ impl ::protobuf::Message for Root_Nested {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -244,11 +244,11 @@ impl ::protobuf::Message for Root_Nested {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<Root_Nested>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<Root_Nested>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Root_Nested>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Root_Nested>> = ::std::vec::Vec::new();
                 ::protobuf::reflect::MessageDescriptor::new::<Root_Nested>(
                     "Root_Nested",
                     fields,

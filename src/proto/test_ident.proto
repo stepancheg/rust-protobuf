@@ -1,0 +1,9 @@
+message Vec { }
+
+message String { }
+
+message Option { }
+message None { }
+message Some { }
+
+message Message { }

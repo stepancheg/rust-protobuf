@@ -83,7 +83,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -119,11 +119,11 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<FileDescriptorSet>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<FileDescriptorSet>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FileDescriptorSet>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<FileDescriptorSet>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&FileDescriptorSet_file_acc as &'static ::protobuf::reflect::FieldAccessor<FileDescriptorSet>) });
                 ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorSet>(
                     "FileDescriptorSet",
@@ -174,11 +174,11 @@ impl ::protobuf::reflect::FieldAccessor<FileDescriptorSet> for FileDescriptorSet
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct FileDescriptorProto {
-    name: ::protobuf::SingularField<String>,
-    package: ::protobuf::SingularField<String>,
-    dependency: ::protobuf::RepeatedField<String>,
-    public_dependency: Vec<i32>,
-    weak_dependency: Vec<i32>,
+    name: ::protobuf::SingularField<::std::string::String>,
+    package: ::protobuf::SingularField<::std::string::String>,
+    dependency: ::protobuf::RepeatedField<::std::string::String>,
+    public_dependency: ::std::vec::Vec<i32>,
+    weak_dependency: ::std::vec::Vec<i32>,
     message_type: ::protobuf::RepeatedField<DescriptorProto>,
     enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
     service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
@@ -201,8 +201,8 @@ impl<'a> FileDescriptorProto {
                     name: ::protobuf::SingularField::none(),
                     package: ::protobuf::SingularField::none(),
                     dependency: ::protobuf::RepeatedField::new(),
-                    public_dependency: Vec::new(),
-                    weak_dependency: Vec::new(),
+                    public_dependency: ::std::vec::Vec::new(),
+                    weak_dependency: ::std::vec::Vec::new(),
                     message_type: ::protobuf::RepeatedField::new(),
                     enum_type: ::protobuf::RepeatedField::new(),
                     service: ::protobuf::RepeatedField::new(),
@@ -226,13 +226,13 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -257,13 +257,13 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_package(&mut self, v: String) {
+    pub fn set_package(&mut self, v: ::std::string::String) {
         self.package = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_package(&'a mut self) -> &'a mut String {
+    pub fn mut_package(&'a mut self) -> &'a mut ::std::string::String {
         if self.package.is_none() {
             self.package.set_default();
         };
@@ -284,20 +284,20 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_dependency(&mut self, v: ::protobuf::RepeatedField<String>) {
+    pub fn set_dependency(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
         self.dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
+    pub fn mut_dependency(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.dependency
     }
 
-    pub fn get_dependency(&'a self) -> &'a [String] {
+    pub fn get_dependency(&'a self) -> &'a [::std::string::String] {
         self.dependency.as_slice()
     }
 
-    pub fn add_dependency(&mut self, v: String) {
+    pub fn add_dependency(&mut self, v: ::std::string::String) {
         self.dependency.push(v);
     }
 
@@ -308,12 +308,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_public_dependency(&mut self, v: Vec<i32>) {
+    pub fn set_public_dependency(&mut self, v: ::std::vec::Vec<i32>) {
         self.public_dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_public_dependency(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_public_dependency(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.public_dependency
     }
 
@@ -332,12 +332,12 @@ impl<'a> FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_weak_dependency(&mut self, v: Vec<i32>) {
+    pub fn set_weak_dependency(&mut self, v: ::std::vec::Vec<i32>) {
         self.weak_dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_weak_dependency(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_weak_dependency(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.weak_dependency
     }
 
@@ -618,7 +618,7 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -746,11 +746,11 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<FileDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<FileDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FileDescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<FileDescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&FileDescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&FileDescriptorProto_package_acc as &'static ::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&FileDescriptorProto_dependency_acc as &'static ::protobuf::reflect::FieldAccessor<FileDescriptorProto>) });
@@ -850,7 +850,7 @@ impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorP
         m.get_dependency().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a FileDescriptorProto) -> &'a [String] {
+    fn get_rep_str<'a>(&self, m: &'a FileDescriptorProto) -> &'a [::std::string::String] {
         m.get_dependency()
     }
 }
@@ -1001,7 +1001,7 @@ impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorP
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct DescriptorProto {
-    name: ::protobuf::SingularField<String>,
+    name: ::protobuf::SingularField<::std::string::String>,
     field: ::protobuf::RepeatedField<FieldDescriptorProto>,
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
     nested_type: ::protobuf::RepeatedField<DescriptorProto>,
@@ -1045,13 +1045,13 @@ impl<'a> DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -1286,7 +1286,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1384,11 +1384,11 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<DescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<DescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<DescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<DescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&DescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<DescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&DescriptorProto_field_acc as &'static ::protobuf::reflect::FieldAccessor<DescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&DescriptorProto_extension_acc as &'static ::protobuf::reflect::FieldAccessor<DescriptorProto>) });
@@ -1559,8 +1559,8 @@ impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_opt
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct DescriptorProto_ExtensionRange {
-    start: Option<i32>,
-    end: Option<i32>,
+    start: ::std::option::Option<i32>,
+    end: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -1574,8 +1574,8 @@ impl<'a> DescriptorProto_ExtensionRange {
         unsafe {
             instance.get(|| {
                 DescriptorProto_ExtensionRange {
-                    start: None,
-                    end: None,
+                    start: ::std::option::None,
+                    end: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -1658,7 +1658,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1703,11 +1703,11 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<DescriptorProto_ExtensionRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<DescriptorProto_ExtensionRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&DescriptorProto_ExtensionRange_start_acc as &'static ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>) });
                 fields.push(unsafe { ::std::mem::transmute(&DescriptorProto_ExtensionRange_end_acc as &'static ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange>) });
                 ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ExtensionRange>(
@@ -1778,13 +1778,13 @@ impl ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange> for Desc
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct FieldDescriptorProto {
-    name: ::protobuf::SingularField<String>,
-    number: Option<i32>,
-    label: Option<FieldDescriptorProto_Label>,
-    field_type: Option<FieldDescriptorProto_Type>,
-    type_name: ::protobuf::SingularField<String>,
-    extendee: ::protobuf::SingularField<String>,
-    default_value: ::protobuf::SingularField<String>,
+    name: ::protobuf::SingularField<::std::string::String>,
+    number: ::std::option::Option<i32>,
+    label: ::std::option::Option<FieldDescriptorProto_Label>,
+    field_type: ::std::option::Option<FieldDescriptorProto_Type>,
+    type_name: ::protobuf::SingularField<::std::string::String>,
+    extendee: ::protobuf::SingularField<::std::string::String>,
+    default_value: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<FieldOptions>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -1800,9 +1800,9 @@ impl<'a> FieldDescriptorProto {
             instance.get(|| {
                 FieldDescriptorProto {
                     name: ::protobuf::SingularField::none(),
-                    number: None,
-                    label: None,
-                    field_type: None,
+                    number: ::std::option::None,
+                    label: ::std::option::None,
+                    field_type: ::std::option::None,
                     type_name: ::protobuf::SingularField::none(),
                     extendee: ::protobuf::SingularField::none(),
                     default_value: ::protobuf::SingularField::none(),
@@ -1824,13 +1824,13 @@ impl<'a> FieldDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -1912,13 +1912,13 @@ impl<'a> FieldDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_type_name(&mut self, v: String) {
+    pub fn set_type_name(&mut self, v: ::std::string::String) {
         self.type_name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_type_name(&'a mut self) -> &'a mut String {
+    pub fn mut_type_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.type_name.is_none() {
             self.type_name.set_default();
         };
@@ -1943,13 +1943,13 @@ impl<'a> FieldDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extendee(&mut self, v: String) {
+    pub fn set_extendee(&mut self, v: ::std::string::String) {
         self.extendee = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_extendee(&'a mut self) -> &'a mut String {
+    pub fn mut_extendee(&'a mut self) -> &'a mut ::std::string::String {
         if self.extendee.is_none() {
             self.extendee.set_default();
         };
@@ -1974,13 +1974,13 @@ impl<'a> FieldDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_value(&mut self, v: String) {
+    pub fn set_default_value(&mut self, v: ::std::string::String) {
         self.default_value = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_default_value(&'a mut self) -> &'a mut String {
+    pub fn mut_default_value(&'a mut self) -> &'a mut ::std::string::String {
         if self.default_value.is_none() {
             self.default_value.set_default();
         };
@@ -2102,7 +2102,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2204,11 +2204,11 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<FieldDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<FieldDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FieldDescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<FieldDescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&FieldDescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&FieldDescriptorProto_number_acc as &'static ::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&FieldDescriptorProto_label_acc as &'static ::protobuf::reflect::FieldAccessor<FieldDescriptorProto>) });
@@ -2497,7 +2497,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct EnumDescriptorProto {
-    name: ::protobuf::SingularField<String>,
+    name: ::protobuf::SingularField<::std::string::String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: ::protobuf::SingularPtrField<EnumOptions>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -2533,13 +2533,13 @@ impl<'a> EnumDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2650,7 +2650,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2708,11 +2708,11 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<EnumDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<EnumDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumDescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<EnumDescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&EnumDescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<EnumDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&EnumDescriptorProto_value_acc as &'static ::protobuf::reflect::FieldAccessor<EnumDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&EnumDescriptorProto_options_acc as &'static ::protobuf::reflect::FieldAccessor<EnumDescriptorProto>) });
@@ -2803,8 +2803,8 @@ impl ::protobuf::reflect::FieldAccessor<EnumDescriptorProto> for EnumDescriptorP
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct EnumValueDescriptorProto {
-    name: ::protobuf::SingularField<String>,
-    number: Option<i32>,
+    name: ::protobuf::SingularField<::std::string::String>,
+    number: ::std::option::Option<i32>,
     options: ::protobuf::SingularPtrField<EnumValueOptions>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -2820,7 +2820,7 @@ impl<'a> EnumValueDescriptorProto {
             instance.get(|| {
                 EnumValueDescriptorProto {
                     name: ::protobuf::SingularField::none(),
-                    number: None,
+                    number: ::std::option::None,
                     options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
@@ -2839,13 +2839,13 @@ impl<'a> EnumValueDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2951,7 +2951,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3008,11 +3008,11 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<EnumValueDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<EnumValueDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&EnumValueDescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&EnumValueDescriptorProto_number_acc as &'static ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&EnumValueDescriptorProto_options_acc as &'static ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto>) });
@@ -3103,7 +3103,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto> for EnumValueD
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct ServiceDescriptorProto {
-    name: ::protobuf::SingularField<String>,
+    name: ::protobuf::SingularField<::std::string::String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: ::protobuf::SingularPtrField<ServiceOptions>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -3139,13 +3139,13 @@ impl<'a> ServiceDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -3256,7 +3256,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3314,11 +3314,11 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<ServiceDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<ServiceDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&ServiceDescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&ServiceDescriptorProto_method_acc as &'static ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&ServiceDescriptorProto_options_acc as &'static ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto>) });
@@ -3409,9 +3409,9 @@ impl ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto> for ServiceDescr
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct MethodDescriptorProto {
-    name: ::protobuf::SingularField<String>,
-    input_type: ::protobuf::SingularField<String>,
-    output_type: ::protobuf::SingularField<String>,
+    name: ::protobuf::SingularField<::std::string::String>,
+    input_type: ::protobuf::SingularField<::std::string::String>,
+    output_type: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<MethodOptions>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -3447,13 +3447,13 @@ impl<'a> MethodDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -3478,13 +3478,13 @@ impl<'a> MethodDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_input_type(&mut self, v: String) {
+    pub fn set_input_type(&mut self, v: ::std::string::String) {
         self.input_type = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_input_type(&'a mut self) -> &'a mut String {
+    pub fn mut_input_type(&'a mut self) -> &'a mut ::std::string::String {
         if self.input_type.is_none() {
             self.input_type.set_default();
         };
@@ -3509,13 +3509,13 @@ impl<'a> MethodDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_output_type(&mut self, v: String) {
+    pub fn set_output_type(&mut self, v: ::std::string::String) {
         self.output_type = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_output_type(&'a mut self) -> &'a mut String {
+    pub fn mut_output_type(&'a mut self) -> &'a mut ::std::string::String {
         if self.output_type.is_none() {
             self.output_type.set_default();
         };
@@ -3609,7 +3609,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3675,11 +3675,11 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<MethodDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<MethodDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MethodDescriptorProto>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<MethodDescriptorProto>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&MethodDescriptorProto_name_acc as &'static ::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&MethodDescriptorProto_input_type_acc as &'static ::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
                 fields.push(unsafe { ::std::mem::transmute(&MethodDescriptorProto_output_type_acc as &'static ::protobuf::reflect::FieldAccessor<MethodDescriptorProto>) });
@@ -3790,15 +3790,15 @@ impl ::protobuf::reflect::FieldAccessor<MethodDescriptorProto> for MethodDescrip
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct FileOptions {
-    java_package: ::protobuf::SingularField<String>,
-    java_outer_classname: ::protobuf::SingularField<String>,
-    java_multiple_files: Option<bool>,
-    java_generate_equals_and_hash: Option<bool>,
-    optimize_for: Option<FileOptions_OptimizeMode>,
-    go_package: ::protobuf::SingularField<String>,
-    cc_generic_services: Option<bool>,
-    java_generic_services: Option<bool>,
-    py_generic_services: Option<bool>,
+    java_package: ::protobuf::SingularField<::std::string::String>,
+    java_outer_classname: ::protobuf::SingularField<::std::string::String>,
+    java_multiple_files: ::std::option::Option<bool>,
+    java_generate_equals_and_hash: ::std::option::Option<bool>,
+    optimize_for: ::std::option::Option<FileOptions_OptimizeMode>,
+    go_package: ::protobuf::SingularField<::std::string::String>,
+    cc_generic_services: ::std::option::Option<bool>,
+    java_generic_services: ::std::option::Option<bool>,
+    py_generic_services: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -3815,13 +3815,13 @@ impl<'a> FileOptions {
                 FileOptions {
                     java_package: ::protobuf::SingularField::none(),
                     java_outer_classname: ::protobuf::SingularField::none(),
-                    java_multiple_files: None,
-                    java_generate_equals_and_hash: None,
-                    optimize_for: None,
+                    java_multiple_files: ::std::option::None,
+                    java_generate_equals_and_hash: ::std::option::None,
+                    optimize_for: ::std::option::None,
                     go_package: ::protobuf::SingularField::none(),
-                    cc_generic_services: None,
-                    java_generic_services: None,
-                    py_generic_services: None,
+                    cc_generic_services: ::std::option::None,
+                    java_generic_services: ::std::option::None,
+                    py_generic_services: ::std::option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
@@ -3840,13 +3840,13 @@ impl<'a> FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_java_package(&mut self, v: String) {
+    pub fn set_java_package(&mut self, v: ::std::string::String) {
         self.java_package = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_package(&'a mut self) -> &'a mut String {
+    pub fn mut_java_package(&'a mut self) -> &'a mut ::std::string::String {
         if self.java_package.is_none() {
             self.java_package.set_default();
         };
@@ -3871,13 +3871,13 @@ impl<'a> FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_java_outer_classname(&mut self, v: String) {
+    pub fn set_java_outer_classname(&mut self, v: ::std::string::String) {
         self.java_outer_classname = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_outer_classname(&'a mut self) -> &'a mut String {
+    pub fn mut_java_outer_classname(&'a mut self) -> &'a mut ::std::string::String {
         if self.java_outer_classname.is_none() {
             self.java_outer_classname.set_default();
         };
@@ -3959,13 +3959,13 @@ impl<'a> FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_go_package(&mut self, v: String) {
+    pub fn set_go_package(&mut self, v: ::std::string::String) {
         self.go_package = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_go_package(&'a mut self) -> &'a mut String {
+    pub fn mut_go_package(&'a mut self) -> &'a mut ::std::string::String {
         if self.go_package.is_none() {
             self.go_package.set_default();
         };
@@ -4154,7 +4154,7 @@ impl ::protobuf::Message for FileOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -4271,11 +4271,11 @@ impl ::protobuf::Message for FileOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<FileOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<FileOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FileOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<FileOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&FileOptions_java_package_acc as &'static ::protobuf::reflect::FieldAccessor<FileOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&FileOptions_java_outer_classname_acc as &'static ::protobuf::reflect::FieldAccessor<FileOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&FileOptions_java_multiple_files_acc as &'static ::protobuf::reflect::FieldAccessor<FileOptions>) });
@@ -4540,8 +4540,8 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct MessageOptions {
-    message_set_wire_format: Option<bool>,
-    no_standard_descriptor_accessor: Option<bool>,
+    message_set_wire_format: ::std::option::Option<bool>,
+    no_standard_descriptor_accessor: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -4556,8 +4556,8 @@ impl<'a> MessageOptions {
         unsafe {
             instance.get(|| {
                 MessageOptions {
-                    message_set_wire_format: None,
-                    no_standard_descriptor_accessor: None,
+                    message_set_wire_format: ::std::option::None,
+                    no_standard_descriptor_accessor: ::std::option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
@@ -4672,7 +4672,7 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -4726,11 +4726,11 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<MessageOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<MessageOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MessageOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<MessageOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&MessageOptions_message_set_wire_format_acc as &'static ::protobuf::reflect::FieldAccessor<MessageOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&MessageOptions_no_standard_descriptor_accessor_acc as &'static ::protobuf::reflect::FieldAccessor<MessageOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&MessageOptions_uninterpreted_option_acc as &'static ::protobuf::reflect::FieldAccessor<MessageOptions>) });
@@ -4821,12 +4821,12 @@ impl ::protobuf::reflect::FieldAccessor<MessageOptions> for MessageOptions_unint
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct FieldOptions {
-    ctype: Option<FieldOptions_CType>,
-    packed: Option<bool>,
-    lazy: Option<bool>,
-    deprecated: Option<bool>,
-    experimental_map_key: ::protobuf::SingularField<String>,
-    weak: Option<bool>,
+    ctype: ::std::option::Option<FieldOptions_CType>,
+    packed: ::std::option::Option<bool>,
+    lazy: ::std::option::Option<bool>,
+    deprecated: ::std::option::Option<bool>,
+    experimental_map_key: ::protobuf::SingularField<::std::string::String>,
+    weak: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -4841,12 +4841,12 @@ impl<'a> FieldOptions {
         unsafe {
             instance.get(|| {
                 FieldOptions {
-                    ctype: None,
-                    packed: None,
-                    lazy: None,
-                    deprecated: None,
+                    ctype: ::std::option::None,
+                    packed: ::std::option::None,
+                    lazy: ::std::option::None,
+                    deprecated: ::std::option::None,
                     experimental_map_key: ::protobuf::SingularField::none(),
-                    weak: None,
+                    weak: ::std::option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
@@ -4941,13 +4941,13 @@ impl<'a> FieldOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_experimental_map_key(&mut self, v: String) {
+    pub fn set_experimental_map_key(&mut self, v: ::std::string::String) {
         self.experimental_map_key = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_experimental_map_key(&'a mut self) -> &'a mut String {
+    pub fn mut_experimental_map_key(&'a mut self) -> &'a mut ::std::string::String {
         if self.experimental_map_key.is_none() {
             self.experimental_map_key.set_default();
         };
@@ -5077,7 +5077,7 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5167,11 +5167,11 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<FieldOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<FieldOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<FieldOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<FieldOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&FieldOptions_ctype_acc as &'static ::protobuf::reflect::FieldAccessor<FieldOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&FieldOptions_packed_acc as &'static ::protobuf::reflect::FieldAccessor<FieldOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&FieldOptions_lazy_acc as &'static ::protobuf::reflect::FieldAccessor<FieldOptions>) });
@@ -5376,7 +5376,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct EnumOptions {
-    allow_alias: Option<bool>,
+    allow_alias: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -5391,7 +5391,7 @@ impl<'a> EnumOptions {
         unsafe {
             instance.get(|| {
                 EnumOptions {
-                    allow_alias: None,
+                    allow_alias: ::std::option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
@@ -5480,7 +5480,7 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5525,11 +5525,11 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<EnumOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<EnumOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<EnumOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&EnumOptions_allow_alias_acc as &'static ::protobuf::reflect::FieldAccessor<EnumOptions>) });
                 fields.push(unsafe { ::std::mem::transmute(&EnumOptions_uninterpreted_option_acc as &'static ::protobuf::reflect::FieldAccessor<EnumOptions>) });
                 ::protobuf::reflect::MessageDescriptor::new::<EnumOptions>(
@@ -5676,7 +5676,7 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5712,11 +5712,11 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<EnumValueOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<EnumValueOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<EnumValueOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<EnumValueOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&EnumValueOptions_uninterpreted_option_acc as &'static ::protobuf::reflect::FieldAccessor<EnumValueOptions>) });
                 ::protobuf::reflect::MessageDescriptor::new::<EnumValueOptions>(
                     "EnumValueOptions",
@@ -5843,7 +5843,7 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5879,11 +5879,11 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<ServiceOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<ServiceOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<ServiceOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<ServiceOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&ServiceOptions_uninterpreted_option_acc as &'static ::protobuf::reflect::FieldAccessor<ServiceOptions>) });
                 ::protobuf::reflect::MessageDescriptor::new::<ServiceOptions>(
                     "ServiceOptions",
@@ -6010,7 +6010,7 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6046,11 +6046,11 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<MethodOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<MethodOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<MethodOptions>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<MethodOptions>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&MethodOptions_uninterpreted_option_acc as &'static ::protobuf::reflect::FieldAccessor<MethodOptions>) });
                 ::protobuf::reflect::MessageDescriptor::new::<MethodOptions>(
                     "MethodOptions",
@@ -6102,12 +6102,12 @@ impl ::protobuf::reflect::FieldAccessor<MethodOptions> for MethodOptions_uninter
 #[deriving(Clone,PartialEq,Default)]
 pub struct UninterpretedOption {
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
-    identifier_value: ::protobuf::SingularField<String>,
-    positive_int_value: Option<u64>,
-    negative_int_value: Option<i64>,
-    double_value: Option<f64>,
-    string_value: ::protobuf::SingularField<Vec<u8>>,
-    aggregate_value: ::protobuf::SingularField<String>,
+    identifier_value: ::protobuf::SingularField<::std::string::String>,
+    positive_int_value: ::std::option::Option<u64>,
+    negative_int_value: ::std::option::Option<i64>,
+    double_value: ::std::option::Option<f64>,
+    string_value: ::protobuf::SingularField<::std::vec::Vec<u8>>,
+    aggregate_value: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -6123,9 +6123,9 @@ impl<'a> UninterpretedOption {
                 UninterpretedOption {
                     name: ::protobuf::RepeatedField::new(),
                     identifier_value: ::protobuf::SingularField::none(),
-                    positive_int_value: None,
-                    negative_int_value: None,
-                    double_value: None,
+                    positive_int_value: ::std::option::None,
+                    negative_int_value: ::std::option::None,
+                    double_value: ::std::option::None,
                     string_value: ::protobuf::SingularField::none(),
                     aggregate_value: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
@@ -6169,13 +6169,13 @@ impl<'a> UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_identifier_value(&mut self, v: String) {
+    pub fn set_identifier_value(&mut self, v: ::std::string::String) {
         self.identifier_value = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_identifier_value(&'a mut self) -> &'a mut String {
+    pub fn mut_identifier_value(&'a mut self) -> &'a mut ::std::string::String {
         if self.identifier_value.is_none() {
             self.identifier_value.set_default();
         };
@@ -6257,13 +6257,13 @@ impl<'a> UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_value(&mut self, v: Vec<u8>) {
+    pub fn set_string_value(&mut self, v: ::std::vec::Vec<u8>) {
         self.string_value = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_value(&'a mut self) -> &'a mut Vec<u8> {
+    pub fn mut_string_value(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
         if self.string_value.is_none() {
             self.string_value.set_default();
         };
@@ -6288,13 +6288,13 @@ impl<'a> UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_aggregate_value(&mut self, v: String) {
+    pub fn set_aggregate_value(&mut self, v: ::std::string::String) {
         self.aggregate_value = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_aggregate_value(&'a mut self) -> &'a mut String {
+    pub fn mut_aggregate_value(&'a mut self) -> &'a mut ::std::string::String {
         if self.aggregate_value.is_none() {
             self.aggregate_value.set_default();
         };
@@ -6381,7 +6381,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6471,11 +6471,11 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<UninterpretedOption>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<UninterpretedOption>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<UninterpretedOption>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<UninterpretedOption>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&UninterpretedOption_name_acc as &'static ::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
                 fields.push(unsafe { ::std::mem::transmute(&UninterpretedOption_identifier_value_acc as &'static ::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
                 fields.push(unsafe { ::std::mem::transmute(&UninterpretedOption_positive_int_value_acc as &'static ::protobuf::reflect::FieldAccessor<UninterpretedOption>) });
@@ -6646,8 +6646,8 @@ impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOp
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct UninterpretedOption_NamePart {
-    name_part: ::protobuf::SingularField<String>,
-    is_extension: Option<bool>,
+    name_part: ::protobuf::SingularField<::std::string::String>,
+    is_extension: ::std::option::Option<bool>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -6662,7 +6662,7 @@ impl<'a> UninterpretedOption_NamePart {
             instance.get(|| {
                 UninterpretedOption_NamePart {
                     name_part: ::protobuf::SingularField::none(),
-                    is_extension: None,
+                    is_extension: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -6680,13 +6680,13 @@ impl<'a> UninterpretedOption_NamePart {
     }
 
     // Param is passed by value, moved
-    pub fn set_name_part(&mut self, v: String) {
+    pub fn set_name_part(&mut self, v: ::std::string::String) {
         self.name_part = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name_part(&'a mut self) -> &'a mut String {
+    pub fn mut_name_part(&'a mut self) -> &'a mut ::std::string::String {
         if self.name_part.is_none() {
             self.name_part.set_default();
         };
@@ -6763,7 +6763,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6808,11 +6808,11 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<UninterpretedOption_NamePart>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<UninterpretedOption_NamePart>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&UninterpretedOption_NamePart_name_part_acc as &'static ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>) });
                 fields.push(unsafe { ::std::mem::transmute(&UninterpretedOption_NamePart_is_extension_acc as &'static ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart>) });
                 ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption_NamePart>(
@@ -6959,7 +6959,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6995,11 +6995,11 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<SourceCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<SourceCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&SourceCodeInfo_location_acc as &'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo>) });
                 ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo>(
                     "SourceCodeInfo",
@@ -7050,10 +7050,10 @@ impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo> for SourceCodeInfo_locat
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct SourceCodeInfo_Location {
-    path: Vec<i32>,
-    span: Vec<i32>,
-    leading_comments: ::protobuf::SingularField<String>,
-    trailing_comments: ::protobuf::SingularField<String>,
+    path: ::std::vec::Vec<i32>,
+    span: ::std::vec::Vec<i32>,
+    leading_comments: ::protobuf::SingularField<::std::string::String>,
+    trailing_comments: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -7067,8 +7067,8 @@ impl<'a> SourceCodeInfo_Location {
         unsafe {
             instance.get(|| {
                 SourceCodeInfo_Location {
-                    path: Vec::new(),
-                    span: Vec::new(),
+                    path: ::std::vec::Vec::new(),
+                    span: ::std::vec::Vec::new(),
                     leading_comments: ::protobuf::SingularField::none(),
                     trailing_comments: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
@@ -7084,12 +7084,12 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Vec<i32>) {
+    pub fn set_path(&mut self, v: ::std::vec::Vec<i32>) {
         self.path = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_path(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_path(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.path
     }
 
@@ -7108,12 +7108,12 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_span(&mut self, v: Vec<i32>) {
+    pub fn set_span(&mut self, v: ::std::vec::Vec<i32>) {
         self.span = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_span(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_span(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.span
     }
 
@@ -7136,13 +7136,13 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_leading_comments(&mut self, v: String) {
+    pub fn set_leading_comments(&mut self, v: ::std::string::String) {
         self.leading_comments = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_leading_comments(&'a mut self) -> &'a mut String {
+    pub fn mut_leading_comments(&'a mut self) -> &'a mut ::std::string::String {
         if self.leading_comments.is_none() {
             self.leading_comments.set_default();
         };
@@ -7167,13 +7167,13 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_trailing_comments(&mut self, v: String) {
+    pub fn set_trailing_comments(&mut self, v: ::std::string::String) {
         self.trailing_comments = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_trailing_comments(&'a mut self) -> &'a mut String {
+    pub fn mut_trailing_comments(&'a mut self) -> &'a mut ::std::string::String {
         if self.trailing_comments.is_none() {
             self.trailing_comments.set_default();
         };
@@ -7255,7 +7255,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -7320,11 +7320,11 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<SourceCodeInfo_Location>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<SourceCodeInfo_Location>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&SourceCodeInfo_Location_path_acc as &'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });
                 fields.push(unsafe { ::std::mem::transmute(&SourceCodeInfo_Location_span_acc as &'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });
                 fields.push(unsafe { ::std::mem::transmute(&SourceCodeInfo_Location_leading_comments_acc as &'static ::protobuf::reflect::FieldAccessor<SourceCodeInfo_Location>) });

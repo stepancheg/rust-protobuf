@@ -7,7 +7,7 @@
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestMessage {
-    value: Option<i32>,
+    value: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -21,7 +21,7 @@ impl<'a> TestMessage {
         unsafe {
             instance.get(|| {
                 TestMessage {
-                    value: None,
+                    value: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -78,7 +78,7 @@ impl ::protobuf::Message for TestMessage {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -114,11 +114,11 @@ impl ::protobuf::Message for TestMessage {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestMessage>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestMessage>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestMessage>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestMessage>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestMessage_value_acc as &'static ::protobuf::reflect::FieldAccessor<TestMessage>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestMessage>(
                     "TestMessage",
@@ -169,39 +169,39 @@ impl ::protobuf::reflect::FieldAccessor<TestMessage> for TestMessage_value_acc_t
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestTypes {
-    double_singular: Option<f64>,
-    float_singular: Option<f32>,
-    int32_singular: Option<i32>,
-    int64_singular: Option<i64>,
-    uint32_singular: Option<u32>,
-    uint64_singular: Option<u64>,
-    sint32_singular: Option<i32>,
-    sint64_singular: Option<i64>,
-    fixed32_singular: Option<u32>,
-    fixed64_singular: Option<u64>,
-    sfixed32_singular: Option<i32>,
-    sfixed64_singular: Option<i64>,
-    bool_singular: Option<bool>,
-    string_singular: ::protobuf::SingularField<String>,
-    bytes_singular: ::protobuf::SingularField<Vec<u8>>,
-    test_enum_singular: Option<TestEnum>,
+    double_singular: ::std::option::Option<f64>,
+    float_singular: ::std::option::Option<f32>,
+    int32_singular: ::std::option::Option<i32>,
+    int64_singular: ::std::option::Option<i64>,
+    uint32_singular: ::std::option::Option<u32>,
+    uint64_singular: ::std::option::Option<u64>,
+    sint32_singular: ::std::option::Option<i32>,
+    sint64_singular: ::std::option::Option<i64>,
+    fixed32_singular: ::std::option::Option<u32>,
+    fixed64_singular: ::std::option::Option<u64>,
+    sfixed32_singular: ::std::option::Option<i32>,
+    sfixed64_singular: ::std::option::Option<i64>,
+    bool_singular: ::std::option::Option<bool>,
+    string_singular: ::protobuf::SingularField<::std::string::String>,
+    bytes_singular: ::protobuf::SingularField<::std::vec::Vec<u8>>,
+    test_enum_singular: ::std::option::Option<TestEnum>,
     test_message_singular: ::protobuf::SingularPtrField<TestMessage>,
-    double_repeated: Vec<f64>,
-    float_repeated: Vec<f32>,
-    int32_repeated: Vec<i32>,
-    int64_repeated: Vec<i64>,
-    uint32_repeated: Vec<u32>,
-    uint64_repeated: Vec<u64>,
-    sint32_repeated: Vec<i32>,
-    sint64_repeated: Vec<i64>,
-    fixed32_repeated: Vec<u32>,
-    fixed64_repeated: Vec<u64>,
-    sfixed32_repeated: Vec<i32>,
-    sfixed64_repeated: Vec<i64>,
-    bool_repeated: Vec<bool>,
-    string_repeated: ::protobuf::RepeatedField<String>,
-    bytes_repeated: ::protobuf::RepeatedField<Vec<u8>>,
-    test_enum_repeated: Vec<TestEnum>,
+    double_repeated: ::std::vec::Vec<f64>,
+    float_repeated: ::std::vec::Vec<f32>,
+    int32_repeated: ::std::vec::Vec<i32>,
+    int64_repeated: ::std::vec::Vec<i64>,
+    uint32_repeated: ::std::vec::Vec<u32>,
+    uint64_repeated: ::std::vec::Vec<u64>,
+    sint32_repeated: ::std::vec::Vec<i32>,
+    sint64_repeated: ::std::vec::Vec<i64>,
+    fixed32_repeated: ::std::vec::Vec<u32>,
+    fixed64_repeated: ::std::vec::Vec<u64>,
+    sfixed32_repeated: ::std::vec::Vec<i32>,
+    sfixed64_repeated: ::std::vec::Vec<i64>,
+    bool_repeated: ::std::vec::Vec<bool>,
+    string_repeated: ::protobuf::RepeatedField<::std::string::String>,
+    bytes_repeated: ::protobuf::RepeatedField<::std::vec::Vec<u8>>,
+    test_enum_repeated: ::std::vec::Vec<TestEnum>,
     test_message_repeated: ::protobuf::RepeatedField<TestMessage>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -216,39 +216,39 @@ impl<'a> TestTypes {
         unsafe {
             instance.get(|| {
                 TestTypes {
-                    double_singular: None,
-                    float_singular: None,
-                    int32_singular: None,
-                    int64_singular: None,
-                    uint32_singular: None,
-                    uint64_singular: None,
-                    sint32_singular: None,
-                    sint64_singular: None,
-                    fixed32_singular: None,
-                    fixed64_singular: None,
-                    sfixed32_singular: None,
-                    sfixed64_singular: None,
-                    bool_singular: None,
+                    double_singular: ::std::option::None,
+                    float_singular: ::std::option::None,
+                    int32_singular: ::std::option::None,
+                    int64_singular: ::std::option::None,
+                    uint32_singular: ::std::option::None,
+                    uint64_singular: ::std::option::None,
+                    sint32_singular: ::std::option::None,
+                    sint64_singular: ::std::option::None,
+                    fixed32_singular: ::std::option::None,
+                    fixed64_singular: ::std::option::None,
+                    sfixed32_singular: ::std::option::None,
+                    sfixed64_singular: ::std::option::None,
+                    bool_singular: ::std::option::None,
                     string_singular: ::protobuf::SingularField::none(),
                     bytes_singular: ::protobuf::SingularField::none(),
-                    test_enum_singular: None,
+                    test_enum_singular: ::std::option::None,
                     test_message_singular: ::protobuf::SingularPtrField::none(),
-                    double_repeated: Vec::new(),
-                    float_repeated: Vec::new(),
-                    int32_repeated: Vec::new(),
-                    int64_repeated: Vec::new(),
-                    uint32_repeated: Vec::new(),
-                    uint64_repeated: Vec::new(),
-                    sint32_repeated: Vec::new(),
-                    sint64_repeated: Vec::new(),
-                    fixed32_repeated: Vec::new(),
-                    fixed64_repeated: Vec::new(),
-                    sfixed32_repeated: Vec::new(),
-                    sfixed64_repeated: Vec::new(),
-                    bool_repeated: Vec::new(),
+                    double_repeated: ::std::vec::Vec::new(),
+                    float_repeated: ::std::vec::Vec::new(),
+                    int32_repeated: ::std::vec::Vec::new(),
+                    int64_repeated: ::std::vec::Vec::new(),
+                    uint32_repeated: ::std::vec::Vec::new(),
+                    uint64_repeated: ::std::vec::Vec::new(),
+                    sint32_repeated: ::std::vec::Vec::new(),
+                    sint64_repeated: ::std::vec::Vec::new(),
+                    fixed32_repeated: ::std::vec::Vec::new(),
+                    fixed64_repeated: ::std::vec::Vec::new(),
+                    sfixed32_repeated: ::std::vec::Vec::new(),
+                    sfixed64_repeated: ::std::vec::Vec::new(),
+                    bool_repeated: ::std::vec::Vec::new(),
                     string_repeated: ::protobuf::RepeatedField::new(),
                     bytes_repeated: ::protobuf::RepeatedField::new(),
-                    test_enum_repeated: Vec::new(),
+                    test_enum_repeated: ::std::vec::Vec::new(),
                     test_message_repeated: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
@@ -514,13 +514,13 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_singular(&mut self, v: String) {
+    pub fn set_string_singular(&mut self, v: ::std::string::String) {
         self.string_singular = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_singular(&'a mut self) -> &'a mut String {
+    pub fn mut_string_singular(&'a mut self) -> &'a mut ::std::string::String {
         if self.string_singular.is_none() {
             self.string_singular.set_default();
         };
@@ -545,13 +545,13 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_singular(&mut self, v: Vec<u8>) {
+    pub fn set_bytes_singular(&mut self, v: ::std::vec::Vec<u8>) {
         self.bytes_singular = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bytes_singular(&'a mut self) -> &'a mut Vec<u8> {
+    pub fn mut_bytes_singular(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
         if self.bytes_singular.is_none() {
             self.bytes_singular.set_default();
         };
@@ -619,12 +619,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_double_repeated(&mut self, v: Vec<f64>) {
+    pub fn set_double_repeated(&mut self, v: ::std::vec::Vec<f64>) {
         self.double_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_double_repeated(&'a mut self) -> &'a mut Vec<f64> {
+    pub fn mut_double_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<f64> {
         &mut self.double_repeated
     }
 
@@ -643,12 +643,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_float_repeated(&mut self, v: Vec<f32>) {
+    pub fn set_float_repeated(&mut self, v: ::std::vec::Vec<f32>) {
         self.float_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_float_repeated(&'a mut self) -> &'a mut Vec<f32> {
+    pub fn mut_float_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<f32> {
         &mut self.float_repeated
     }
 
@@ -667,12 +667,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_int32_repeated(&mut self, v: Vec<i32>) {
+    pub fn set_int32_repeated(&mut self, v: ::std::vec::Vec<i32>) {
         self.int32_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int32_repeated(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_int32_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.int32_repeated
     }
 
@@ -691,12 +691,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_int64_repeated(&mut self, v: Vec<i64>) {
+    pub fn set_int64_repeated(&mut self, v: ::std::vec::Vec<i64>) {
         self.int64_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int64_repeated(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_int64_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.int64_repeated
     }
 
@@ -715,12 +715,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint32_repeated(&mut self, v: Vec<u32>) {
+    pub fn set_uint32_repeated(&mut self, v: ::std::vec::Vec<u32>) {
         self.uint32_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint32_repeated(&'a mut self) -> &'a mut Vec<u32> {
+    pub fn mut_uint32_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<u32> {
         &mut self.uint32_repeated
     }
 
@@ -739,12 +739,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint64_repeated(&mut self, v: Vec<u64>) {
+    pub fn set_uint64_repeated(&mut self, v: ::std::vec::Vec<u64>) {
         self.uint64_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint64_repeated(&'a mut self) -> &'a mut Vec<u64> {
+    pub fn mut_uint64_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<u64> {
         &mut self.uint64_repeated
     }
 
@@ -763,12 +763,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint32_repeated(&mut self, v: Vec<i32>) {
+    pub fn set_sint32_repeated(&mut self, v: ::std::vec::Vec<i32>) {
         self.sint32_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint32_repeated(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_sint32_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.sint32_repeated
     }
 
@@ -787,12 +787,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint64_repeated(&mut self, v: Vec<i64>) {
+    pub fn set_sint64_repeated(&mut self, v: ::std::vec::Vec<i64>) {
         self.sint64_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint64_repeated(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_sint64_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.sint64_repeated
     }
 
@@ -811,12 +811,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed32_repeated(&mut self, v: Vec<u32>) {
+    pub fn set_fixed32_repeated(&mut self, v: ::std::vec::Vec<u32>) {
         self.fixed32_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed32_repeated(&'a mut self) -> &'a mut Vec<u32> {
+    pub fn mut_fixed32_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<u32> {
         &mut self.fixed32_repeated
     }
 
@@ -835,12 +835,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed64_repeated(&mut self, v: Vec<u64>) {
+    pub fn set_fixed64_repeated(&mut self, v: ::std::vec::Vec<u64>) {
         self.fixed64_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed64_repeated(&'a mut self) -> &'a mut Vec<u64> {
+    pub fn mut_fixed64_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<u64> {
         &mut self.fixed64_repeated
     }
 
@@ -859,12 +859,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed32_repeated(&mut self, v: Vec<i32>) {
+    pub fn set_sfixed32_repeated(&mut self, v: ::std::vec::Vec<i32>) {
         self.sfixed32_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed32_repeated(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_sfixed32_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.sfixed32_repeated
     }
 
@@ -883,12 +883,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed64_repeated(&mut self, v: Vec<i64>) {
+    pub fn set_sfixed64_repeated(&mut self, v: ::std::vec::Vec<i64>) {
         self.sfixed64_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed64_repeated(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_sfixed64_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.sfixed64_repeated
     }
 
@@ -907,12 +907,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_bool_repeated(&mut self, v: Vec<bool>) {
+    pub fn set_bool_repeated(&mut self, v: ::std::vec::Vec<bool>) {
         self.bool_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bool_repeated(&'a mut self) -> &'a mut Vec<bool> {
+    pub fn mut_bool_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<bool> {
         &mut self.bool_repeated
     }
 
@@ -931,20 +931,20 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_repeated(&mut self, v: ::protobuf::RepeatedField<String>) {
+    pub fn set_string_repeated(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
         self.string_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_repeated(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
+    pub fn mut_string_repeated(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.string_repeated
     }
 
-    pub fn get_string_repeated(&'a self) -> &'a [String] {
+    pub fn get_string_repeated(&'a self) -> &'a [::std::string::String] {
         self.string_repeated.as_slice()
     }
 
-    pub fn add_string_repeated(&mut self, v: String) {
+    pub fn add_string_repeated(&mut self, v: ::std::string::String) {
         self.string_repeated.push(v);
     }
 
@@ -955,20 +955,20 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_repeated(&mut self, v: ::protobuf::RepeatedField<Vec<u8>>) {
+    pub fn set_bytes_repeated(&mut self, v: ::protobuf::RepeatedField<::std::vec::Vec<u8>>) {
         self.bytes_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bytes_repeated(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Vec<u8>> {
+    pub fn mut_bytes_repeated(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::vec::Vec<u8>> {
         &mut self.bytes_repeated
     }
 
-    pub fn get_bytes_repeated(&'a self) -> &'a [Vec<u8>] {
+    pub fn get_bytes_repeated(&'a self) -> &'a [::std::vec::Vec<u8>] {
         self.bytes_repeated.as_slice()
     }
 
-    pub fn add_bytes_repeated(&mut self, v: Vec<u8>) {
+    pub fn add_bytes_repeated(&mut self, v: ::std::vec::Vec<u8>) {
         self.bytes_repeated.push(v);
     }
 
@@ -979,12 +979,12 @@ impl<'a> TestTypes {
     }
 
     // Param is passed by value, moved
-    pub fn set_test_enum_repeated(&mut self, v: Vec<TestEnum>) {
+    pub fn set_test_enum_repeated(&mut self, v: ::std::vec::Vec<TestEnum>) {
         self.test_enum_repeated = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test_enum_repeated(&'a mut self) -> &'a mut Vec<TestEnum> {
+    pub fn mut_test_enum_repeated(&'a mut self) -> &'a mut ::std::vec::Vec<TestEnum> {
         &mut self.test_enum_repeated
     }
 
@@ -1394,7 +1394,7 @@ impl ::protobuf::Message for TestTypes {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1669,11 +1669,11 @@ impl ::protobuf::Message for TestTypes {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestTypes>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestTypes>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypes>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypes>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestTypes_double_singular_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypes>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypes_float_singular_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypes>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypes_int32_singular_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypes>) });
@@ -2324,7 +2324,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypes> for TestTypes_string_repeated
         m.get_string_repeated().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a TestTypes) -> &'a [String] {
+    fn get_rep_str<'a>(&self, m: &'a TestTypes) -> &'a [::std::string::String] {
         m.get_string_repeated()
     }
 }
@@ -2342,7 +2342,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypes> for TestTypes_bytes_repeated_
         m.get_bytes_repeated().len()
     }
 
-    fn get_rep_bytes<'a>(&self, m: &'a TestTypes) -> &'a [Vec<u8>] {
+    fn get_rep_bytes<'a>(&self, m: &'a TestTypes) -> &'a [::std::vec::Vec<u8>] {
         m.get_bytes_repeated()
     }
 }

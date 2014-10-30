@@ -7,7 +7,7 @@
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct Test1 {
-    a: Option<i32>,
+    a: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -21,7 +21,7 @@ impl<'a> Test1 {
         unsafe {
             instance.get(|| {
                 Test1 {
-                    a: None,
+                    a: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -81,7 +81,7 @@ impl ::protobuf::Message for Test1 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -117,11 +117,11 @@ impl ::protobuf::Message for Test1 {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<Test1>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<Test1>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test1>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Test1>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&Test1_a_acc as &'static ::protobuf::reflect::FieldAccessor<Test1>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test1>(
                     "Test1",
@@ -172,7 +172,7 @@ impl ::protobuf::reflect::FieldAccessor<Test1> for Test1_a_acc_type {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct Test2 {
-    b: ::protobuf::SingularField<String>,
+    b: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -204,13 +204,13 @@ impl<'a> Test2 {
     }
 
     // Param is passed by value, moved
-    pub fn set_b(&mut self, v: String) {
+    pub fn set_b(&mut self, v: ::std::string::String) {
         self.b = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_b(&'a mut self) -> &'a mut String {
+    pub fn mut_b(&'a mut self) -> &'a mut ::std::string::String {
         if self.b.is_none() {
             self.b.set_default();
         };
@@ -258,7 +258,7 @@ impl ::protobuf::Message for Test2 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -294,11 +294,11 @@ impl ::protobuf::Message for Test2 {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<Test2>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<Test2>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test2>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Test2>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&Test2_b_acc as &'static ::protobuf::reflect::FieldAccessor<Test2>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test2>(
                     "Test2",
@@ -432,7 +432,7 @@ impl ::protobuf::Message for Test3 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -471,11 +471,11 @@ impl ::protobuf::Message for Test3 {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<Test3>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<Test3>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test3>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Test3>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&Test3_c_acc as &'static ::protobuf::reflect::FieldAccessor<Test3>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test3>(
                     "Test3",
@@ -526,7 +526,7 @@ impl ::protobuf::reflect::FieldAccessor<Test3> for Test3_c_acc_type {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct Test4 {
-    d: Vec<i32>,
+    d: ::std::vec::Vec<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -540,7 +540,7 @@ impl<'a> Test4 {
         unsafe {
             instance.get(|| {
                 Test4 {
-                    d: Vec::new(),
+                    d: ::std::vec::Vec::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -554,12 +554,12 @@ impl<'a> Test4 {
     }
 
     // Param is passed by value, moved
-    pub fn set_d(&mut self, v: Vec<i32>) {
+    pub fn set_d(&mut self, v: ::std::vec::Vec<i32>) {
         self.d = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_d(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_d(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.d
     }
 
@@ -610,7 +610,7 @@ impl ::protobuf::Message for Test4 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -647,11 +647,11 @@ impl ::protobuf::Message for Test4 {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<Test4>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<Test4>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<Test4>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Test4>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&Test4_d_acc as &'static ::protobuf::reflect::FieldAccessor<Test4>) });
                 ::protobuf::reflect::MessageDescriptor::new::<Test4>(
                     "Test4",
@@ -702,8 +702,8 @@ impl ::protobuf::reflect::FieldAccessor<Test4> for Test4_d_acc_type {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestPackedUnpacked {
-    unpacked: Vec<i32>,
-    packed: Vec<i32>,
+    unpacked: ::std::vec::Vec<i32>,
+    packed: ::std::vec::Vec<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -717,8 +717,8 @@ impl<'a> TestPackedUnpacked {
         unsafe {
             instance.get(|| {
                 TestPackedUnpacked {
-                    unpacked: Vec::new(),
-                    packed: Vec::new(),
+                    unpacked: ::std::vec::Vec::new(),
+                    packed: ::std::vec::Vec::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -732,12 +732,12 @@ impl<'a> TestPackedUnpacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_unpacked(&mut self, v: Vec<i32>) {
+    pub fn set_unpacked(&mut self, v: ::std::vec::Vec<i32>) {
         self.unpacked = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_unpacked(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_unpacked(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.unpacked
     }
 
@@ -756,12 +756,12 @@ impl<'a> TestPackedUnpacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_packed(&mut self, v: Vec<i32>) {
+    pub fn set_packed(&mut self, v: ::std::vec::Vec<i32>) {
         self.packed = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_packed(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_packed(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.packed
     }
 
@@ -827,7 +827,7 @@ impl ::protobuf::Message for TestPackedUnpacked {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -870,11 +870,11 @@ impl ::protobuf::Message for TestPackedUnpacked {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestPackedUnpacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestPackedUnpacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestPackedUnpacked>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestPackedUnpacked>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestPackedUnpacked_unpacked_acc as &'static ::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestPackedUnpacked_packed_acc as &'static ::protobuf::reflect::FieldAccessor<TestPackedUnpacked>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestPackedUnpacked>(
@@ -945,7 +945,7 @@ impl ::protobuf::reflect::FieldAccessor<TestPackedUnpacked> for TestPackedUnpack
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestEmpty {
-    foo: Option<i32>,
+    foo: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -959,7 +959,7 @@ impl<'a> TestEmpty {
         unsafe {
             instance.get(|| {
                 TestEmpty {
-                    foo: None,
+                    foo: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -1016,7 +1016,7 @@ impl ::protobuf::Message for TestEmpty {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1052,11 +1052,11 @@ impl ::protobuf::Message for TestEmpty {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestEmpty>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestEmpty>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestEmpty>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestEmpty>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestEmpty_foo_acc as &'static ::protobuf::reflect::FieldAccessor<TestEmpty>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestEmpty>(
                     "TestEmpty",
@@ -1107,7 +1107,7 @@ impl ::protobuf::reflect::FieldAccessor<TestEmpty> for TestEmpty_foo_acc_type {
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestRequired {
-    b: Option<bool>,
+    b: ::std::option::Option<bool>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -1121,7 +1121,7 @@ impl<'a> TestRequired {
         unsafe {
             instance.get(|| {
                 TestRequired {
-                    b: None,
+                    b: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -1181,7 +1181,7 @@ impl ::protobuf::Message for TestRequired {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1217,11 +1217,11 @@ impl ::protobuf::Message for TestRequired {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestRequired>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestRequired>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestRequired>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestRequired>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestRequired_b_acc as &'static ::protobuf::reflect::FieldAccessor<TestRequired>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestRequired>(
                     "TestRequired",
@@ -1272,7 +1272,7 @@ impl ::protobuf::reflect::FieldAccessor<TestRequired> for TestRequired_b_acc_typ
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestUnknownFields {
-    a: Option<i32>,
+    a: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -1286,7 +1286,7 @@ impl<'a> TestUnknownFields {
         unsafe {
             instance.get(|| {
                 TestUnknownFields {
-                    a: None,
+                    a: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -1346,7 +1346,7 @@ impl ::protobuf::Message for TestUnknownFields {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1382,11 +1382,11 @@ impl ::protobuf::Message for TestUnknownFields {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestUnknownFields>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestUnknownFields>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestUnknownFields>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestUnknownFields>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestUnknownFields_a_acc as &'static ::protobuf::reflect::FieldAccessor<TestUnknownFields>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestUnknownFields>(
                     "TestUnknownFields",
@@ -1557,7 +1557,7 @@ impl ::protobuf::Message for TestSelfReference {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1609,11 +1609,11 @@ impl ::protobuf::Message for TestSelfReference {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestSelfReference>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestSelfReference>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestSelfReference>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestSelfReference>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestSelfReference_r1_acc as &'static ::protobuf::reflect::FieldAccessor<TestSelfReference>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestSelfReference_r2_acc as &'static ::protobuf::reflect::FieldAccessor<TestSelfReference>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestSelfReference>(
@@ -1684,7 +1684,7 @@ impl ::protobuf::reflect::FieldAccessor<TestSelfReference> for TestSelfReference
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestDefaultInstanceField {
-    s: ::protobuf::SingularField<String>,
+    s: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -1716,13 +1716,13 @@ impl<'a> TestDefaultInstanceField {
     }
 
     // Param is passed by value, moved
-    pub fn set_s(&mut self, v: String) {
+    pub fn set_s(&mut self, v: ::std::string::String) {
         self.s = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_s(&'a mut self) -> &'a mut String {
+    pub fn mut_s(&'a mut self) -> &'a mut ::std::string::String {
         if self.s.is_none() {
             self.s.set_default();
         };
@@ -1767,7 +1767,7 @@ impl ::protobuf::Message for TestDefaultInstanceField {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1803,11 +1803,11 @@ impl ::protobuf::Message for TestDefaultInstanceField {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestDefaultInstanceField>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestDefaultInstanceField>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultInstanceField_s_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultInstanceField>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDefaultInstanceField>(
                     "TestDefaultInstanceField",
@@ -1938,7 +1938,7 @@ impl ::protobuf::Message for TestDefaultInstance {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -1977,11 +1977,11 @@ impl ::protobuf::Message for TestDefaultInstance {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestDefaultInstance>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestDefaultInstance>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstance>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultInstance>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultInstance_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultInstance>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDefaultInstance>(
                     "TestDefaultInstance",
@@ -2032,7 +2032,7 @@ impl ::protobuf::reflect::FieldAccessor<TestDefaultInstance> for TestDefaultInst
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestDescriptor {
-    stuff: Option<i32>,
+    stuff: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -2046,7 +2046,7 @@ impl<'a> TestDescriptor {
         unsafe {
             instance.get(|| {
                 TestDescriptor {
-                    stuff: None,
+                    stuff: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -2103,7 +2103,7 @@ impl ::protobuf::Message for TestDescriptor {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2139,11 +2139,11 @@ impl ::protobuf::Message for TestDescriptor {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestDescriptor>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestDescriptor>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDescriptor>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestDescriptor>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestDescriptor_stuff_acc as &'static ::protobuf::reflect::FieldAccessor<TestDescriptor>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDescriptor>(
                     "TestDescriptor",
@@ -2194,21 +2194,21 @@ impl ::protobuf::reflect::FieldAccessor<TestDescriptor> for TestDescriptor_stuff
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestTypesSingular {
-    double_field: Option<f64>,
-    float_field: Option<f32>,
-    int32_field: Option<i32>,
-    int64_field: Option<i64>,
-    uint32_field: Option<u32>,
-    uint64_field: Option<u64>,
-    sint32_field: Option<i32>,
-    sint64_field: Option<i64>,
-    fixed32_field: Option<u32>,
-    fixed64_field: Option<u64>,
-    sfixed32_field: Option<i32>,
-    sfixed64_field: Option<i64>,
-    bool_field: Option<bool>,
-    string_field: ::protobuf::SingularField<String>,
-    bytes_field: ::protobuf::SingularField<Vec<u8>>,
+    double_field: ::std::option::Option<f64>,
+    float_field: ::std::option::Option<f32>,
+    int32_field: ::std::option::Option<i32>,
+    int64_field: ::std::option::Option<i64>,
+    uint32_field: ::std::option::Option<u32>,
+    uint64_field: ::std::option::Option<u64>,
+    sint32_field: ::std::option::Option<i32>,
+    sint64_field: ::std::option::Option<i64>,
+    fixed32_field: ::std::option::Option<u32>,
+    fixed64_field: ::std::option::Option<u64>,
+    sfixed32_field: ::std::option::Option<i32>,
+    sfixed64_field: ::std::option::Option<i64>,
+    bool_field: ::std::option::Option<bool>,
+    string_field: ::protobuf::SingularField<::std::string::String>,
+    bytes_field: ::protobuf::SingularField<::std::vec::Vec<u8>>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -2222,19 +2222,19 @@ impl<'a> TestTypesSingular {
         unsafe {
             instance.get(|| {
                 TestTypesSingular {
-                    double_field: None,
-                    float_field: None,
-                    int32_field: None,
-                    int64_field: None,
-                    uint32_field: None,
-                    uint64_field: None,
-                    sint32_field: None,
-                    sint64_field: None,
-                    fixed32_field: None,
-                    fixed64_field: None,
-                    sfixed32_field: None,
-                    sfixed64_field: None,
-                    bool_field: None,
+                    double_field: ::std::option::None,
+                    float_field: ::std::option::None,
+                    int32_field: ::std::option::None,
+                    int64_field: ::std::option::None,
+                    uint32_field: ::std::option::None,
+                    uint64_field: ::std::option::None,
+                    sint32_field: ::std::option::None,
+                    sint64_field: ::std::option::None,
+                    fixed32_field: ::std::option::None,
+                    fixed64_field: ::std::option::None,
+                    sfixed32_field: ::std::option::None,
+                    sfixed64_field: ::std::option::None,
+                    bool_field: ::std::option::None,
                     string_field: ::protobuf::SingularField::none(),
                     bytes_field: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
@@ -2501,13 +2501,13 @@ impl<'a> TestTypesSingular {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: String) {
+    pub fn set_string_field(&mut self, v: ::std::string::String) {
         self.string_field = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_field(&'a mut self) -> &'a mut String {
+    pub fn mut_string_field(&'a mut self) -> &'a mut ::std::string::String {
         if self.string_field.is_none() {
             self.string_field.set_default();
         };
@@ -2532,13 +2532,13 @@ impl<'a> TestTypesSingular {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: Vec<u8>) {
+    pub fn set_bytes_field(&mut self, v: ::std::vec::Vec<u8>) {
         self.bytes_field = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut Vec<u8> {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
         if self.bytes_field.is_none() {
             self.bytes_field.set_default();
         };
@@ -2681,7 +2681,7 @@ impl ::protobuf::Message for TestTypesSingular {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -2843,11 +2843,11 @@ impl ::protobuf::Message for TestTypesSingular {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestTypesSingular>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestTypesSingular>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesSingular_double_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesSingular_float_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesSingular_int32_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesSingular>) });
@@ -3178,21 +3178,21 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesSingular> for TestTypesSingular
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestTypesRepeated {
-    double_field: Vec<f64>,
-    float_field: Vec<f32>,
-    int32_field: Vec<i32>,
-    int64_field: Vec<i64>,
-    uint32_field: Vec<u32>,
-    uint64_field: Vec<u64>,
-    sint32_field: Vec<i32>,
-    sint64_field: Vec<i64>,
-    fixed32_field: Vec<u32>,
-    fixed64_field: Vec<u64>,
-    sfixed32_field: Vec<i32>,
-    sfixed64_field: Vec<i64>,
-    bool_field: Vec<bool>,
-    string_field: ::protobuf::RepeatedField<String>,
-    bytes_field: ::protobuf::RepeatedField<Vec<u8>>,
+    double_field: ::std::vec::Vec<f64>,
+    float_field: ::std::vec::Vec<f32>,
+    int32_field: ::std::vec::Vec<i32>,
+    int64_field: ::std::vec::Vec<i64>,
+    uint32_field: ::std::vec::Vec<u32>,
+    uint64_field: ::std::vec::Vec<u64>,
+    sint32_field: ::std::vec::Vec<i32>,
+    sint64_field: ::std::vec::Vec<i64>,
+    fixed32_field: ::std::vec::Vec<u32>,
+    fixed64_field: ::std::vec::Vec<u64>,
+    sfixed32_field: ::std::vec::Vec<i32>,
+    sfixed64_field: ::std::vec::Vec<i64>,
+    bool_field: ::std::vec::Vec<bool>,
+    string_field: ::protobuf::RepeatedField<::std::string::String>,
+    bytes_field: ::protobuf::RepeatedField<::std::vec::Vec<u8>>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -3206,19 +3206,19 @@ impl<'a> TestTypesRepeated {
         unsafe {
             instance.get(|| {
                 TestTypesRepeated {
-                    double_field: Vec::new(),
-                    float_field: Vec::new(),
-                    int32_field: Vec::new(),
-                    int64_field: Vec::new(),
-                    uint32_field: Vec::new(),
-                    uint64_field: Vec::new(),
-                    sint32_field: Vec::new(),
-                    sint64_field: Vec::new(),
-                    fixed32_field: Vec::new(),
-                    fixed64_field: Vec::new(),
-                    sfixed32_field: Vec::new(),
-                    sfixed64_field: Vec::new(),
-                    bool_field: Vec::new(),
+                    double_field: ::std::vec::Vec::new(),
+                    float_field: ::std::vec::Vec::new(),
+                    int32_field: ::std::vec::Vec::new(),
+                    int64_field: ::std::vec::Vec::new(),
+                    uint32_field: ::std::vec::Vec::new(),
+                    uint64_field: ::std::vec::Vec::new(),
+                    sint32_field: ::std::vec::Vec::new(),
+                    sint64_field: ::std::vec::Vec::new(),
+                    fixed32_field: ::std::vec::Vec::new(),
+                    fixed64_field: ::std::vec::Vec::new(),
+                    sfixed32_field: ::std::vec::Vec::new(),
+                    sfixed64_field: ::std::vec::Vec::new(),
+                    bool_field: ::std::vec::Vec::new(),
                     string_field: ::protobuf::RepeatedField::new(),
                     bytes_field: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
@@ -3234,12 +3234,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_double_field(&mut self, v: Vec<f64>) {
+    pub fn set_double_field(&mut self, v: ::std::vec::Vec<f64>) {
         self.double_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_double_field(&'a mut self) -> &'a mut Vec<f64> {
+    pub fn mut_double_field(&'a mut self) -> &'a mut ::std::vec::Vec<f64> {
         &mut self.double_field
     }
 
@@ -3258,12 +3258,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_float_field(&mut self, v: Vec<f32>) {
+    pub fn set_float_field(&mut self, v: ::std::vec::Vec<f32>) {
         self.float_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_float_field(&'a mut self) -> &'a mut Vec<f32> {
+    pub fn mut_float_field(&'a mut self) -> &'a mut ::std::vec::Vec<f32> {
         &mut self.float_field
     }
 
@@ -3282,12 +3282,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_int32_field(&mut self, v: Vec<i32>) {
+    pub fn set_int32_field(&mut self, v: ::std::vec::Vec<i32>) {
         self.int32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int32_field(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_int32_field(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.int32_field
     }
 
@@ -3306,12 +3306,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_int64_field(&mut self, v: Vec<i64>) {
+    pub fn set_int64_field(&mut self, v: ::std::vec::Vec<i64>) {
         self.int64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int64_field(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_int64_field(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.int64_field
     }
 
@@ -3330,12 +3330,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint32_field(&mut self, v: Vec<u32>) {
+    pub fn set_uint32_field(&mut self, v: ::std::vec::Vec<u32>) {
         self.uint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint32_field(&'a mut self) -> &'a mut Vec<u32> {
+    pub fn mut_uint32_field(&'a mut self) -> &'a mut ::std::vec::Vec<u32> {
         &mut self.uint32_field
     }
 
@@ -3354,12 +3354,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint64_field(&mut self, v: Vec<u64>) {
+    pub fn set_uint64_field(&mut self, v: ::std::vec::Vec<u64>) {
         self.uint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint64_field(&'a mut self) -> &'a mut Vec<u64> {
+    pub fn mut_uint64_field(&'a mut self) -> &'a mut ::std::vec::Vec<u64> {
         &mut self.uint64_field
     }
 
@@ -3378,12 +3378,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint32_field(&mut self, v: Vec<i32>) {
+    pub fn set_sint32_field(&mut self, v: ::std::vec::Vec<i32>) {
         self.sint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint32_field(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_sint32_field(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.sint32_field
     }
 
@@ -3402,12 +3402,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint64_field(&mut self, v: Vec<i64>) {
+    pub fn set_sint64_field(&mut self, v: ::std::vec::Vec<i64>) {
         self.sint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint64_field(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_sint64_field(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.sint64_field
     }
 
@@ -3426,12 +3426,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed32_field(&mut self, v: Vec<u32>) {
+    pub fn set_fixed32_field(&mut self, v: ::std::vec::Vec<u32>) {
         self.fixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed32_field(&'a mut self) -> &'a mut Vec<u32> {
+    pub fn mut_fixed32_field(&'a mut self) -> &'a mut ::std::vec::Vec<u32> {
         &mut self.fixed32_field
     }
 
@@ -3450,12 +3450,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed64_field(&mut self, v: Vec<u64>) {
+    pub fn set_fixed64_field(&mut self, v: ::std::vec::Vec<u64>) {
         self.fixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed64_field(&'a mut self) -> &'a mut Vec<u64> {
+    pub fn mut_fixed64_field(&'a mut self) -> &'a mut ::std::vec::Vec<u64> {
         &mut self.fixed64_field
     }
 
@@ -3474,12 +3474,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed32_field(&mut self, v: Vec<i32>) {
+    pub fn set_sfixed32_field(&mut self, v: ::std::vec::Vec<i32>) {
         self.sfixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.sfixed32_field
     }
 
@@ -3498,12 +3498,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed64_field(&mut self, v: Vec<i64>) {
+    pub fn set_sfixed64_field(&mut self, v: ::std::vec::Vec<i64>) {
         self.sfixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.sfixed64_field
     }
 
@@ -3522,12 +3522,12 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_bool_field(&mut self, v: Vec<bool>) {
+    pub fn set_bool_field(&mut self, v: ::std::vec::Vec<bool>) {
         self.bool_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bool_field(&'a mut self) -> &'a mut Vec<bool> {
+    pub fn mut_bool_field(&'a mut self) -> &'a mut ::std::vec::Vec<bool> {
         &mut self.bool_field
     }
 
@@ -3546,20 +3546,20 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: ::protobuf::RepeatedField<String>) {
+    pub fn set_string_field(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
+    pub fn mut_string_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.string_field
     }
 
-    pub fn get_string_field(&'a self) -> &'a [String] {
+    pub fn get_string_field(&'a self) -> &'a [::std::string::String] {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: String) {
+    pub fn add_string_field(&mut self, v: ::std::string::String) {
         self.string_field.push(v);
     }
 
@@ -3570,20 +3570,20 @@ impl<'a> TestTypesRepeated {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: ::protobuf::RepeatedField<Vec<u8>>) {
+    pub fn set_bytes_field(&mut self, v: ::protobuf::RepeatedField<::std::vec::Vec<u8>>) {
         self.bytes_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Vec<u8>> {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::vec::Vec<u8>> {
         &mut self.bytes_field
     }
 
-    pub fn get_bytes_field(&'a self) -> &'a [Vec<u8>] {
+    pub fn get_bytes_field(&'a self) -> &'a [::std::vec::Vec<u8>] {
         self.bytes_field.as_slice()
     }
 
-    pub fn add_bytes_field(&mut self, v: Vec<u8>) {
+    pub fn add_bytes_field(&mut self, v: ::std::vec::Vec<u8>) {
         self.bytes_field.push(v);
     }
 }
@@ -3820,7 +3820,7 @@ impl ::protobuf::Message for TestTypesRepeated {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -3923,11 +3923,11 @@ impl ::protobuf::Message for TestTypesRepeated {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestTypesRepeated>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestTypesRepeated>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesRepeated_double_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesRepeated_float_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesRepeated_int32_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesRepeated>) });
@@ -4233,7 +4233,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated
         m.get_string_field().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeated) -> &'a [String] {
+    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeated) -> &'a [::std::string::String] {
         m.get_string_field()
     }
 }
@@ -4251,28 +4251,28 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeated> for TestTypesRepeated
         m.get_bytes_field().len()
     }
 
-    fn get_rep_bytes<'a>(&self, m: &'a TestTypesRepeated) -> &'a [Vec<u8>] {
+    fn get_rep_bytes<'a>(&self, m: &'a TestTypesRepeated) -> &'a [::std::vec::Vec<u8>] {
         m.get_bytes_field()
     }
 }
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestTypesRepeatedPacked {
-    double_field: Vec<f64>,
-    float_field: Vec<f32>,
-    int32_field: Vec<i32>,
-    int64_field: Vec<i64>,
-    uint32_field: Vec<u32>,
-    uint64_field: Vec<u64>,
-    sint32_field: Vec<i32>,
-    sint64_field: Vec<i64>,
-    fixed32_field: Vec<u32>,
-    fixed64_field: Vec<u64>,
-    sfixed32_field: Vec<i32>,
-    sfixed64_field: Vec<i64>,
-    bool_field: Vec<bool>,
-    string_field: ::protobuf::RepeatedField<String>,
-    bytes_field: ::protobuf::RepeatedField<Vec<u8>>,
+    double_field: ::std::vec::Vec<f64>,
+    float_field: ::std::vec::Vec<f32>,
+    int32_field: ::std::vec::Vec<i32>,
+    int64_field: ::std::vec::Vec<i64>,
+    uint32_field: ::std::vec::Vec<u32>,
+    uint64_field: ::std::vec::Vec<u64>,
+    sint32_field: ::std::vec::Vec<i32>,
+    sint64_field: ::std::vec::Vec<i64>,
+    fixed32_field: ::std::vec::Vec<u32>,
+    fixed64_field: ::std::vec::Vec<u64>,
+    sfixed32_field: ::std::vec::Vec<i32>,
+    sfixed64_field: ::std::vec::Vec<i64>,
+    bool_field: ::std::vec::Vec<bool>,
+    string_field: ::protobuf::RepeatedField<::std::string::String>,
+    bytes_field: ::protobuf::RepeatedField<::std::vec::Vec<u8>>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -4286,19 +4286,19 @@ impl<'a> TestTypesRepeatedPacked {
         unsafe {
             instance.get(|| {
                 TestTypesRepeatedPacked {
-                    double_field: Vec::new(),
-                    float_field: Vec::new(),
-                    int32_field: Vec::new(),
-                    int64_field: Vec::new(),
-                    uint32_field: Vec::new(),
-                    uint64_field: Vec::new(),
-                    sint32_field: Vec::new(),
-                    sint64_field: Vec::new(),
-                    fixed32_field: Vec::new(),
-                    fixed64_field: Vec::new(),
-                    sfixed32_field: Vec::new(),
-                    sfixed64_field: Vec::new(),
-                    bool_field: Vec::new(),
+                    double_field: ::std::vec::Vec::new(),
+                    float_field: ::std::vec::Vec::new(),
+                    int32_field: ::std::vec::Vec::new(),
+                    int64_field: ::std::vec::Vec::new(),
+                    uint32_field: ::std::vec::Vec::new(),
+                    uint64_field: ::std::vec::Vec::new(),
+                    sint32_field: ::std::vec::Vec::new(),
+                    sint64_field: ::std::vec::Vec::new(),
+                    fixed32_field: ::std::vec::Vec::new(),
+                    fixed64_field: ::std::vec::Vec::new(),
+                    sfixed32_field: ::std::vec::Vec::new(),
+                    sfixed64_field: ::std::vec::Vec::new(),
+                    bool_field: ::std::vec::Vec::new(),
                     string_field: ::protobuf::RepeatedField::new(),
                     bytes_field: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
@@ -4314,12 +4314,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_double_field(&mut self, v: Vec<f64>) {
+    pub fn set_double_field(&mut self, v: ::std::vec::Vec<f64>) {
         self.double_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_double_field(&'a mut self) -> &'a mut Vec<f64> {
+    pub fn mut_double_field(&'a mut self) -> &'a mut ::std::vec::Vec<f64> {
         &mut self.double_field
     }
 
@@ -4338,12 +4338,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_float_field(&mut self, v: Vec<f32>) {
+    pub fn set_float_field(&mut self, v: ::std::vec::Vec<f32>) {
         self.float_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_float_field(&'a mut self) -> &'a mut Vec<f32> {
+    pub fn mut_float_field(&'a mut self) -> &'a mut ::std::vec::Vec<f32> {
         &mut self.float_field
     }
 
@@ -4362,12 +4362,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_int32_field(&mut self, v: Vec<i32>) {
+    pub fn set_int32_field(&mut self, v: ::std::vec::Vec<i32>) {
         self.int32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int32_field(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_int32_field(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.int32_field
     }
 
@@ -4386,12 +4386,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_int64_field(&mut self, v: Vec<i64>) {
+    pub fn set_int64_field(&mut self, v: ::std::vec::Vec<i64>) {
         self.int64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_int64_field(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_int64_field(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.int64_field
     }
 
@@ -4410,12 +4410,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint32_field(&mut self, v: Vec<u32>) {
+    pub fn set_uint32_field(&mut self, v: ::std::vec::Vec<u32>) {
         self.uint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint32_field(&'a mut self) -> &'a mut Vec<u32> {
+    pub fn mut_uint32_field(&'a mut self) -> &'a mut ::std::vec::Vec<u32> {
         &mut self.uint32_field
     }
 
@@ -4434,12 +4434,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_uint64_field(&mut self, v: Vec<u64>) {
+    pub fn set_uint64_field(&mut self, v: ::std::vec::Vec<u64>) {
         self.uint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uint64_field(&'a mut self) -> &'a mut Vec<u64> {
+    pub fn mut_uint64_field(&'a mut self) -> &'a mut ::std::vec::Vec<u64> {
         &mut self.uint64_field
     }
 
@@ -4458,12 +4458,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint32_field(&mut self, v: Vec<i32>) {
+    pub fn set_sint32_field(&mut self, v: ::std::vec::Vec<i32>) {
         self.sint32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint32_field(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_sint32_field(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.sint32_field
     }
 
@@ -4482,12 +4482,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sint64_field(&mut self, v: Vec<i64>) {
+    pub fn set_sint64_field(&mut self, v: ::std::vec::Vec<i64>) {
         self.sint64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sint64_field(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_sint64_field(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.sint64_field
     }
 
@@ -4506,12 +4506,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed32_field(&mut self, v: Vec<u32>) {
+    pub fn set_fixed32_field(&mut self, v: ::std::vec::Vec<u32>) {
         self.fixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed32_field(&'a mut self) -> &'a mut Vec<u32> {
+    pub fn mut_fixed32_field(&'a mut self) -> &'a mut ::std::vec::Vec<u32> {
         &mut self.fixed32_field
     }
 
@@ -4530,12 +4530,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_fixed64_field(&mut self, v: Vec<u64>) {
+    pub fn set_fixed64_field(&mut self, v: ::std::vec::Vec<u64>) {
         self.fixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_fixed64_field(&'a mut self) -> &'a mut Vec<u64> {
+    pub fn mut_fixed64_field(&'a mut self) -> &'a mut ::std::vec::Vec<u64> {
         &mut self.fixed64_field
     }
 
@@ -4554,12 +4554,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed32_field(&mut self, v: Vec<i32>) {
+    pub fn set_sfixed32_field(&mut self, v: ::std::vec::Vec<i32>) {
         self.sfixed32_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut Vec<i32> {
+    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.sfixed32_field
     }
 
@@ -4578,12 +4578,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_sfixed64_field(&mut self, v: Vec<i64>) {
+    pub fn set_sfixed64_field(&mut self, v: ::std::vec::Vec<i64>) {
         self.sfixed64_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut Vec<i64> {
+    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut ::std::vec::Vec<i64> {
         &mut self.sfixed64_field
     }
 
@@ -4602,12 +4602,12 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_bool_field(&mut self, v: Vec<bool>) {
+    pub fn set_bool_field(&mut self, v: ::std::vec::Vec<bool>) {
         self.bool_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bool_field(&'a mut self) -> &'a mut Vec<bool> {
+    pub fn mut_bool_field(&'a mut self) -> &'a mut ::std::vec::Vec<bool> {
         &mut self.bool_field
     }
 
@@ -4626,20 +4626,20 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: ::protobuf::RepeatedField<String>) {
+    pub fn set_string_field(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
         self.string_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_string_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
+    pub fn mut_string_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.string_field
     }
 
-    pub fn get_string_field(&'a self) -> &'a [String] {
+    pub fn get_string_field(&'a self) -> &'a [::std::string::String] {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: String) {
+    pub fn add_string_field(&mut self, v: ::std::string::String) {
         self.string_field.push(v);
     }
 
@@ -4650,20 +4650,20 @@ impl<'a> TestTypesRepeatedPacked {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: ::protobuf::RepeatedField<Vec<u8>>) {
+    pub fn set_bytes_field(&mut self, v: ::protobuf::RepeatedField<::std::vec::Vec<u8>>) {
         self.bytes_field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Vec<u8>> {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::vec::Vec<u8>> {
         &mut self.bytes_field
     }
 
-    pub fn get_bytes_field(&'a self) -> &'a [Vec<u8>] {
+    pub fn get_bytes_field(&'a self) -> &'a [::std::vec::Vec<u8>] {
         self.bytes_field.as_slice()
     }
 
-    pub fn add_bytes_field(&mut self, v: Vec<u8>) {
+    pub fn add_bytes_field(&mut self, v: ::std::vec::Vec<u8>) {
         self.bytes_field.push(v);
     }
 }
@@ -4900,7 +4900,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -5069,11 +5069,11 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestTypesRepeatedPacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestTypesRepeatedPacked>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesRepeatedPacked_double_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesRepeatedPacked_float_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestTypesRepeatedPacked_int32_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked>) });
@@ -5379,7 +5379,7 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRe
         m.get_string_field().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [String] {
+    fn get_rep_str<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [::std::string::String] {
         m.get_string_field()
     }
 }
@@ -5397,30 +5397,30 @@ impl ::protobuf::reflect::FieldAccessor<TestTypesRepeatedPacked> for TestTypesRe
         m.get_bytes_field().len()
     }
 
-    fn get_rep_bytes<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [Vec<u8>] {
+    fn get_rep_bytes<'a>(&self, m: &'a TestTypesRepeatedPacked) -> &'a [::std::vec::Vec<u8>] {
         m.get_bytes_field()
     }
 }
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct TestDefaultValues {
-    double_field: Option<f64>,
-    float_field: Option<f32>,
-    int32_field: Option<i32>,
-    int64_field: Option<i64>,
-    uint32_field: Option<u32>,
-    uint64_field: Option<u64>,
-    sint32_field: Option<i32>,
-    sint64_field: Option<i64>,
-    fixed32_field: Option<u32>,
-    fixed64_field: Option<u64>,
-    sfixed32_field: Option<i32>,
-    sfixed64_field: Option<i64>,
-    bool_field: Option<bool>,
-    string_field: ::protobuf::SingularField<String>,
-    bytes_field: ::protobuf::SingularField<Vec<u8>>,
-    enum_field: Option<EnumForDefaultValue>,
-    enum_field_without_default: Option<EnumForDefaultValue>,
+    double_field: ::std::option::Option<f64>,
+    float_field: ::std::option::Option<f32>,
+    int32_field: ::std::option::Option<i32>,
+    int64_field: ::std::option::Option<i64>,
+    uint32_field: ::std::option::Option<u32>,
+    uint64_field: ::std::option::Option<u64>,
+    sint32_field: ::std::option::Option<i32>,
+    sint64_field: ::std::option::Option<i64>,
+    fixed32_field: ::std::option::Option<u32>,
+    fixed64_field: ::std::option::Option<u64>,
+    sfixed32_field: ::std::option::Option<i32>,
+    sfixed64_field: ::std::option::Option<i64>,
+    bool_field: ::std::option::Option<bool>,
+    string_field: ::protobuf::SingularField<::std::string::String>,
+    bytes_field: ::protobuf::SingularField<::std::vec::Vec<u8>>,
+    enum_field: ::std::option::Option<EnumForDefaultValue>,
+    enum_field_without_default: ::std::option::Option<EnumForDefaultValue>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -5434,23 +5434,23 @@ impl<'a> TestDefaultValues {
         unsafe {
             instance.get(|| {
                 TestDefaultValues {
-                    double_field: None,
-                    float_field: None,
-                    int32_field: None,
-                    int64_field: None,
-                    uint32_field: None,
-                    uint64_field: None,
-                    sint32_field: None,
-                    sint64_field: None,
-                    fixed32_field: None,
-                    fixed64_field: None,
-                    sfixed32_field: None,
-                    sfixed64_field: None,
-                    bool_field: None,
+                    double_field: ::std::option::None,
+                    float_field: ::std::option::None,
+                    int32_field: ::std::option::None,
+                    int64_field: ::std::option::None,
+                    uint32_field: ::std::option::None,
+                    uint64_field: ::std::option::None,
+                    sint32_field: ::std::option::None,
+                    sint64_field: ::std::option::None,
+                    fixed32_field: ::std::option::None,
+                    fixed64_field: ::std::option::None,
+                    sfixed32_field: ::std::option::None,
+                    sfixed64_field: ::std::option::None,
+                    bool_field: ::std::option::None,
                     string_field: ::protobuf::SingularField::none(),
                     bytes_field: ::protobuf::SingularField::none(),
-                    enum_field: None,
-                    enum_field_without_default: None,
+                    enum_field: ::std::option::None,
+                    enum_field_without_default: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -5715,13 +5715,13 @@ impl<'a> TestDefaultValues {
     }
 
     // Param is passed by value, moved
-    pub fn set_string_field(&mut self, v: String) {
+    pub fn set_string_field(&mut self, v: ::std::string::String) {
         self.string_field = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_field(&'a mut self) -> &'a mut String {
+    pub fn mut_string_field(&'a mut self) -> &'a mut ::std::string::String {
         if self.string_field.is_none() {
             self.string_field.set_default();
         };
@@ -5746,13 +5746,13 @@ impl<'a> TestDefaultValues {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_field(&mut self, v: Vec<u8>) {
+    pub fn set_bytes_field(&mut self, v: ::std::vec::Vec<u8>) {
         self.bytes_field = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bytes_field(&'a mut self) -> &'a mut Vec<u8> {
+    pub fn mut_bytes_field(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
         if self.bytes_field.is_none() {
             self.bytes_field.set_default();
         };
@@ -5947,7 +5947,7 @@ impl ::protobuf::Message for TestDefaultValues {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -6127,11 +6127,11 @@ impl ::protobuf::Message for TestDefaultValues {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<TestDefaultValues>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<TestDefaultValues>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_double_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_float_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_int32_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });

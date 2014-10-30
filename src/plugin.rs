@@ -8,8 +8,8 @@ use descriptor::*;
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorRequest {
-    file_to_generate: ::protobuf::RepeatedField<String>,
-    parameter: ::protobuf::SingularField<String>,
+    file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
+    parameter: ::protobuf::SingularField<::std::string::String>,
     proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -40,20 +40,20 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_file_to_generate(&mut self, v: ::protobuf::RepeatedField<String>) {
+    pub fn set_file_to_generate(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
         self.file_to_generate = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file_to_generate(&'a mut self) -> &'a mut ::protobuf::RepeatedField<String> {
+    pub fn mut_file_to_generate(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.file_to_generate
     }
 
-    pub fn get_file_to_generate(&'a self) -> &'a [String] {
+    pub fn get_file_to_generate(&'a self) -> &'a [::std::string::String] {
         self.file_to_generate.as_slice()
     }
 
-    pub fn add_file_to_generate(&mut self, v: String) {
+    pub fn add_file_to_generate(&mut self, v: ::std::string::String) {
         self.file_to_generate.push(v);
     }
 
@@ -68,13 +68,13 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_parameter(&mut self, v: String) {
+    pub fn set_parameter(&mut self, v: ::std::string::String) {
         self.parameter = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_parameter(&'a mut self) -> &'a mut String {
+    pub fn mut_parameter(&'a mut self) -> &'a mut ::std::string::String {
         if self.parameter.is_none() {
             self.parameter.set_default();
         };
@@ -157,7 +157,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -208,11 +208,11 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorRequest_file_to_generate_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorRequest_parameter_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorRequest_proto_file_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
@@ -260,7 +260,7 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorR
         m.get_file_to_generate().len()
     }
 
-    fn get_rep_str<'a>(&self, m: &'a CodeGeneratorRequest) -> &'a [String] {
+    fn get_rep_str<'a>(&self, m: &'a CodeGeneratorRequest) -> &'a [::std::string::String] {
         m.get_file_to_generate()
     }
 }
@@ -303,7 +303,7 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorR
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorResponse {
-    error: ::protobuf::SingularField<String>,
+    error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     unknown_fields: ::protobuf::UnknownFields,
 }
@@ -337,13 +337,13 @@ impl<'a> CodeGeneratorResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_error(&mut self, v: String) {
+    pub fn set_error(&mut self, v: ::std::string::String) {
         self.error = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_error(&'a mut self) -> &'a mut String {
+    pub fn mut_error(&'a mut self) -> &'a mut ::std::string::String {
         if self.error.is_none() {
             self.error.set_default();
         };
@@ -419,7 +419,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -464,11 +464,11 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_error_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>) });
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_file_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>) });
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
@@ -539,9 +539,9 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGenerator
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorResponse_File {
-    name: ::protobuf::SingularField<String>,
-    insertion_point: ::protobuf::SingularField<String>,
-    content: ::protobuf::SingularField<String>,
+    name: ::protobuf::SingularField<::std::string::String>,
+    insertion_point: ::protobuf::SingularField<::std::string::String>,
+    content: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -575,13 +575,13 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: String) {
+    pub fn set_name(&mut self, v: ::std::string::String) {
         self.name = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut String {
+    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -606,13 +606,13 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     // Param is passed by value, moved
-    pub fn set_insertion_point(&mut self, v: String) {
+    pub fn set_insertion_point(&mut self, v: ::std::string::String) {
         self.insertion_point = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_insertion_point(&'a mut self) -> &'a mut String {
+    pub fn mut_insertion_point(&'a mut self) -> &'a mut ::std::string::String {
         if self.insertion_point.is_none() {
             self.insertion_point.set_default();
         };
@@ -637,13 +637,13 @@ impl<'a> CodeGeneratorResponse_File {
     }
 
     // Param is passed by value, moved
-    pub fn set_content(&mut self, v: String) {
+    pub fn set_content(&mut self, v: ::std::string::String) {
         self.content = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_content(&'a mut self) -> &'a mut String {
+    pub fn mut_content(&'a mut self) -> &'a mut ::std::string::String {
         if self.content.is_none() {
             self.content.set_default();
         };
@@ -702,7 +702,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32 {
+    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
         use protobuf::{Message};
         let pos = sizes.len();
         sizes.push(0);
@@ -756,11 +756,11 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     #[allow(unused_unsafe,unused_mut)]
-    fn descriptor_static(_: Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::reflect::MessageDescriptor };
         unsafe {
             descriptor.get(|| {
-                let mut fields: Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>> = Vec::new();
+                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>> = ::std::vec::Vec::new();
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_File_name_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_File_insertion_point_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
                 fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_File_content_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
