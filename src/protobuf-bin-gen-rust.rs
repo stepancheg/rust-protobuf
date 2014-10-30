@@ -19,7 +19,10 @@ fn write_file(bin: &str, gen_options: &GenOptions) {
     let mut is = File::open(&Path::new(bin)).unwrap();
     let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Reader).unwrap();
 
-    let results = gen(fds.get_file(), gen_options);
+    let file_names: Vec<String> = fds.get_file().iter()
+        .map(|f| f.get_name().to_string())
+        .collect();
+    let results = gen(fds.get_file(), file_names.as_slice(), gen_options);
 
     for r in results.iter() {
         let mut file_writer = File::create(&Path::new(r.name.as_slice())).unwrap();

@@ -1712,12 +1712,17 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut IndentWriter) 
     });
 }
 
-pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
-    let root_scope = RootScope { file_descriptors: files };
+pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String], _: &GenOptions)
+        -> Vec<GenResult>
+{
+    let root_scope = RootScope { file_descriptors: file_descriptors };
 
-    // TODO: emit only requested file
     let mut results: Vec<GenResult> = Vec::new();
-    for file in files.iter() {
+
+    for file_name in files_to_generate.iter() {
+        let file = file_descriptors.iter()
+            .find(|fd| fd.get_name() == file_name.as_slice())
+            .expect("no descriptor for file");
         let base = proto_path_to_rust_base(file.get_name());
 
         let mut os = VecWriter::new();

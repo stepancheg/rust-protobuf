@@ -25,7 +25,7 @@ fn main() {
     let gen_options = GenOptions {
         dummy: false,
     };
-    let result = gen(req.get_proto_file(), &gen_options);
+    let result = gen(req.get_proto_file(), req.get_file_to_generate(), &gen_options);
     let mut resp = CodeGeneratorResponse::new();
     resp.set_file(result.iter().map(|file| {
         let mut r = CodeGeneratorResponse_File::new();
