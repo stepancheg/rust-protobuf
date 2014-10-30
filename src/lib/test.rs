@@ -244,4 +244,6 @@ fn test_default_value() {
     assert_eq!(true, d.get_bool_field());
     assert_eq!("abc\n22", d.get_string_field());
     assert_eq!(b"cde\n33", d.get_bytes_field());
+    assert_eq!(TWO, d.get_enum_field());
+    assert_eq!(ONE, d.get_enum_field_without_default());
 }

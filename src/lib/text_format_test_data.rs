@@ -676,13 +676,13 @@ impl<'a> TestTypes {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_test_enum_singular(&'a mut self) -> &'a mut TestEnum {
         if self.test_enum_singular.is_none() {
-            self.test_enum_singular = Some(TestEnum::new(0));
+            self.test_enum_singular = Some(DARK);
         };
         self.test_enum_singular.as_mut().unwrap()
     }
 
     pub fn get_test_enum_singular(&self) -> TestEnum {
-        self.test_enum_singular.unwrap_or_else(|| TestEnum::new(0))
+        self.test_enum_singular.unwrap_or_else(|| DARK)
     }
 
     pub fn clear_test_message_singular(&mut self) {

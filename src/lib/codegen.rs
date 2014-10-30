@@ -11,6 +11,7 @@ use paginate::PaginatableIterator;
 use strx::*;
 use descriptorx::EnumWithScope;
 use descriptorx::MessageWithScope;
+use descriptorx::RootScope;
 use descriptorx::Scope;
 use descriptorx::WithScope;
 
@@ -228,6 +229,27 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     }
 }
 
+fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> String {
+    if !field.has_type_name() {
+        return "".to_string();
+    }
+    let current_pkg_prefix = if pkg.is_empty() {
+        ".".to_string()
+    } else {
+        format!(".{}.", pkg)
+    };
+    if field.get_type_name().starts_with(current_pkg_prefix.as_slice()) {
+        let mut tn = remove_prefix(field.get_type_name(), current_pkg_prefix.as_slice()).to_string();
+        match tn.as_slice().rfind('.') {
+            Some(pos) => { tn.truncate(pos + 1); tn }.replace(".", "_"),
+            None => "".to_string(),
+        }
+    } else {
+        // TODO: package prefix
+        "".to_string()
+    }
+}
+
 fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
     if field.has_type_name() {
         let current_pkg_prefix = if pkg.is_empty() {
@@ -238,6 +260,7 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
         let name = (if field.get_type_name().starts_with(current_pkg_prefix.as_slice()) {
             remove_prefix(field.get_type_name(), current_pkg_prefix.as_slice()).to_string()
         } else {
+            // TODO: package prefix
             remove_to(field.get_type_name(), '.').to_string()
         }).replace(".", "_");
         match field.get_field_type() {
@@ -265,7 +288,9 @@ struct Field {
     name: String,
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
+    type_scope_prefix: String,
     type_name: RustType,
+    enum_first_value: Option<String>,
     number: u32,
     repeated: bool,
     packed: bool,
@@ -273,7 +298,7 @@ struct Field {
 }
 
 impl Field {
-    fn parse(field: &FieldDescriptorProto, pkg: &str) -> Option<Field> {
+    fn parse(field: &FieldDescriptorProto, root_scope: &RootScope, pkg: &str) -> Option<Field> {
         let type_name = field_type_name(field, pkg);
         let repeated = match field.get_label() {
             FieldDescriptorProto_LABEL_REPEATED => true,
@@ -296,12 +321,25 @@ impl Field {
             } else {
                 Single
             };
+        let enum_first_value = match field.get_field_type() {
+            FieldDescriptorProto_TYPE_ENUM =>
+                Some(
+                    root_scope
+                        .find_enum(field.get_type_name())
+                        .default_value()
+                        .get_name()
+                        .to_string()
+                ),
+            _ => None,
+        };
         Some(Field {
             proto_field: field.clone(),
             name: name,
             field_type: field.get_field_type(),
             wire_type: field_type_wire_type(field.get_field_type()),
             type_name: type_name,
+            type_scope_prefix: field_type_name_scope_prefix(field, pkg),
+            enum_first_value: enum_first_value,
             number: field.get_number() as u32,
             repeated: repeated,
             packed: packed,
@@ -393,7 +431,7 @@ impl Field {
     // default value from protobuf [default = xxx] annotation
     fn default_value_from_default(&self) -> Option<String> {
         // TODO: enable enum
-        if self.proto_field.has_default_value() && self.field_type != FieldDescriptorProto_TYPE_ENUM {
+        if self.proto_field.has_default_value() {
             let proto_default = self.proto_field.get_default_value();
             Some(match self.field_type {
                 // For numeric types, contains the original text representation of the value
@@ -417,8 +455,8 @@ impl Field {
                 // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
                 FieldDescriptorProto_TYPE_BYTES    => format!("b\"{}\"", proto_default),
                 // TODO: resolve outer message prefix
-                FieldDescriptorProto_TYPE_ENUM     => format!("{}", proto_default),
-                FieldDescriptorProto_TYPE_GROUP |
+                FieldDescriptorProto_TYPE_ENUM     => format!("{}{}", self.type_scope_prefix, proto_default),
+                FieldDescriptorProto_TYPE_GROUP    |
                 FieldDescriptorProto_TYPE_MESSAGE =>
                     panic!("default value is not implemented for type: {}", self.field_type)
             })
@@ -430,6 +468,11 @@ impl Field {
     fn default_value_rust(&self) -> String {
         match self.default_value_from_default() {
             Some(v) => v,
+            _ if self.field_type == FieldDescriptorProto_TYPE_ENUM =>
+                    format!("{:s}{:s}",
+                        self.type_scope_prefix,
+                        self.enum_first_value.as_ref().unwrap().as_slice()
+                    ),
             _ => self.get_xxx_return_type().default_value()
         }
     }
@@ -445,14 +488,14 @@ struct MessageInfo<'a> {
 }
 
 impl<'a> MessageInfo<'a> {
-    fn parse(message: &MessageWithScope<'a>) -> MessageInfo<'a> {
+    fn parse(message: &MessageWithScope<'a>, root_scope: &RootScope) -> MessageInfo<'a> {
         MessageInfo {
             proto_message: message.message.clone(),
             pkg: message.get_package().to_string(),
             prefix: message.scope.rust_prefix(),
             type_name: message.rust_name(),
             fields: message.message.get_field().iter().flat_map(|field| {
-                Field::parse(field, message.get_package()).into_iter()
+                Field::parse(field, root_scope, message.get_package()).into_iter()
             }).collect(),
         }
     }
@@ -675,7 +718,7 @@ impl<'a> IndentWriter<'a> {
         if self.field().type_is_not_trivial() {
             self.write_line(format!("{:s}.set_default();", self.self_field()));
         } else {
-            self.self_field_assign_some(self.field().type_name.default_value());
+            self.self_field_assign_some(self.field().default_value_rust());
         }
     }
 
@@ -1501,8 +1544,8 @@ fn write_message_impl_clear(w: &mut IndentWriter) {
     });
 }
 
-fn write_message(m2: &MessageWithScope, w: &mut IndentWriter) {
-    let msg = MessageInfo::parse(m2);
+fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWriter) {
+    let msg = MessageInfo::parse(m2, root_scope);
 
     w.bind_message(&msg, |w| {
         write_message_struct(w);
@@ -1522,12 +1565,12 @@ fn write_message(m2: &MessageWithScope, w: &mut IndentWriter) {
 
         for nested in m2.to_scope().get_messages().iter() {
             w.write_line("");
-            write_message(nested, w);
+            write_message(nested, root_scope, w);
         }
 
         for enum_type in m2.to_scope().get_enums().iter() {
             w.write_line("");
-            write_enum(enum_type, w);
+            write_enum(enum_type, root_scope, w);
         }
     });
 }
@@ -1568,7 +1611,7 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
     });
 }
 
-fn write_enum(enum_with_scope: &EnumWithScope, w: &mut IndentWriter) {
+fn write_enum(enum_with_scope: &EnumWithScope, _root_scope: &RootScope, w: &mut IndentWriter) {
     let en = Enum::parse(enum_with_scope);
     w.bind_enum(&en, |w| {
         write_enum_struct(w);
@@ -1620,6 +1663,9 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut IndentWriter) 
 }
 
 pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
+    let root_scope = RootScope { file_descriptors: files };
+
+    // TODO: emit only requested file
     let mut results: Vec<GenResult> = Vec::new();
     for file in files.iter() {
         let base = proto_path_to_rust_base(file.get_name());
@@ -1649,11 +1695,11 @@ pub fn gen(files: &[FileDescriptorProto], _: &GenOptions) -> Vec<GenResult> {
 
             for message in scope.get_messages().iter() {
                 w.write_line("");
-                write_message(message, &mut w);
+                write_message(message, &root_scope, &mut w);
             }
             for enum_type in scope.get_enums().iter() {
                 w.write_line("");
-                write_enum(enum_type, &mut w);
+                write_enum(enum_type, &root_scope, &mut w);
             }
 
             w.write_line("");

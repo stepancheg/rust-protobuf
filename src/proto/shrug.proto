@@ -135,4 +135,5 @@ message TestDefaultValues {
     optional string string_field = 14            [default = "abc\n22"];
     optional bytes bytes_field = 15              [default = "cde\n33"];
     optional EnumForDefaultValue enum_field = 16 [default = TWO];
+    optional EnumForDefaultValue enum_field_without_default = 17;
 }

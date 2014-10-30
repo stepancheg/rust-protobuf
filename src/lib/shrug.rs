@@ -5464,6 +5464,7 @@ pub struct TestDefaultValues {
     string_field: ::protobuf::SingularField<String>,
     bytes_field: ::protobuf::SingularField<Vec<u8>>,
     enum_field: Option<EnumForDefaultValue>,
+    enum_field_without_default: Option<EnumForDefaultValue>,
     unknown_fields: ::protobuf::UnknownFields,
 }
 
@@ -5493,6 +5494,7 @@ impl<'a> TestDefaultValues {
                     string_field: ::protobuf::SingularField::none(),
                     bytes_field: ::protobuf::SingularField::none(),
                     enum_field: None,
+                    enum_field_without_default: None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                 }
             })
@@ -5516,7 +5518,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_double_field(&'a mut self) -> &'a mut f64 {
         if self.double_field.is_none() {
-            self.double_field = Some(0.);
+            self.double_field = Some(1f64);
         };
         self.double_field.as_mut().unwrap()
     }
@@ -5542,7 +5544,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_float_field(&'a mut self) -> &'a mut f32 {
         if self.float_field.is_none() {
-            self.float_field = Some(0.);
+            self.float_field = Some(2f32);
         };
         self.float_field.as_mut().unwrap()
     }
@@ -5568,7 +5570,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_int32_field(&'a mut self) -> &'a mut i32 {
         if self.int32_field.is_none() {
-            self.int32_field = Some(0);
+            self.int32_field = Some(3i32);
         };
         self.int32_field.as_mut().unwrap()
     }
@@ -5594,7 +5596,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_int64_field(&'a mut self) -> &'a mut i64 {
         if self.int64_field.is_none() {
-            self.int64_field = Some(0);
+            self.int64_field = Some(4i64);
         };
         self.int64_field.as_mut().unwrap()
     }
@@ -5620,7 +5622,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_uint32_field(&'a mut self) -> &'a mut u32 {
         if self.uint32_field.is_none() {
-            self.uint32_field = Some(0);
+            self.uint32_field = Some(5u32);
         };
         self.uint32_field.as_mut().unwrap()
     }
@@ -5646,7 +5648,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_uint64_field(&'a mut self) -> &'a mut u64 {
         if self.uint64_field.is_none() {
-            self.uint64_field = Some(0);
+            self.uint64_field = Some(6u64);
         };
         self.uint64_field.as_mut().unwrap()
     }
@@ -5672,7 +5674,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_sint32_field(&'a mut self) -> &'a mut i32 {
         if self.sint32_field.is_none() {
-            self.sint32_field = Some(0);
+            self.sint32_field = Some(7i32);
         };
         self.sint32_field.as_mut().unwrap()
     }
@@ -5698,7 +5700,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_sint64_field(&'a mut self) -> &'a mut i64 {
         if self.sint64_field.is_none() {
-            self.sint64_field = Some(0);
+            self.sint64_field = Some(8i64);
         };
         self.sint64_field.as_mut().unwrap()
     }
@@ -5724,7 +5726,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_fixed32_field(&'a mut self) -> &'a mut u32 {
         if self.fixed32_field.is_none() {
-            self.fixed32_field = Some(0);
+            self.fixed32_field = Some(9u32);
         };
         self.fixed32_field.as_mut().unwrap()
     }
@@ -5750,7 +5752,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_fixed64_field(&'a mut self) -> &'a mut u64 {
         if self.fixed64_field.is_none() {
-            self.fixed64_field = Some(0);
+            self.fixed64_field = Some(10u64);
         };
         self.fixed64_field.as_mut().unwrap()
     }
@@ -5776,7 +5778,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_sfixed32_field(&'a mut self) -> &'a mut i32 {
         if self.sfixed32_field.is_none() {
-            self.sfixed32_field = Some(0);
+            self.sfixed32_field = Some(11i32);
         };
         self.sfixed32_field.as_mut().unwrap()
     }
@@ -5802,7 +5804,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_sfixed64_field(&'a mut self) -> &'a mut i64 {
         if self.sfixed64_field.is_none() {
-            self.sfixed64_field = Some(0);
+            self.sfixed64_field = Some(12i64);
         };
         self.sfixed64_field.as_mut().unwrap()
     }
@@ -5828,7 +5830,7 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_bool_field(&'a mut self) -> &'a mut bool {
         if self.bool_field.is_none() {
-            self.bool_field = Some(false);
+            self.bool_field = Some(true);
         };
         self.bool_field.as_mut().unwrap()
     }
@@ -5912,13 +5914,39 @@ impl<'a> TestDefaultValues {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_enum_field(&'a mut self) -> &'a mut EnumForDefaultValue {
         if self.enum_field.is_none() {
-            self.enum_field = Some(EnumForDefaultValue::new(0));
+            self.enum_field = Some(TWO);
         };
         self.enum_field.as_mut().unwrap()
     }
 
     pub fn get_enum_field(&self) -> EnumForDefaultValue {
-        self.enum_field.unwrap_or_else(|| EnumForDefaultValue::new(0))
+        self.enum_field.unwrap_or_else(|| TWO)
+    }
+
+    pub fn clear_enum_field_without_default(&mut self) {
+        self.enum_field_without_default = None;
+    }
+
+    pub fn has_enum_field_without_default(&self) -> bool {
+        self.enum_field_without_default.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_enum_field_without_default(&mut self, v: EnumForDefaultValue) {
+        self.enum_field_without_default = Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_enum_field_without_default(&'a mut self) -> &'a mut EnumForDefaultValue {
+        if self.enum_field_without_default.is_none() {
+            self.enum_field_without_default = Some(ONE);
+        };
+        self.enum_field_without_default.as_mut().unwrap()
+    }
+
+    pub fn get_enum_field_without_default(&self) -> EnumForDefaultValue {
+        self.enum_field_without_default.unwrap_or_else(|| ONE)
     }
 }
 
@@ -6047,6 +6075,13 @@ impl ::protobuf::Message for TestDefaultValues {
                     let tmp = EnumForDefaultValue::new(try!(is.read_int32()));
                     self.enum_field = Some(tmp);
                 },
+                17 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                    };
+                    let tmp = EnumForDefaultValue::new(try!(is.read_int32()));
+                    self.enum_field_without_default = Some(tmp);
+                },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
                     self.mut_unknown_fields().add_value(field_number, unknown);
@@ -6109,6 +6144,9 @@ impl ::protobuf::Message for TestDefaultValues {
         };
         for value in self.enum_field.iter() {
             my_size += ::protobuf::rt::enum_size(16, *value);
+        };
+        for value in self.enum_field_without_default.iter() {
+            my_size += ::protobuf::rt::enum_size(17, *value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         *sizes.get_mut(pos) = my_size;
@@ -6215,6 +6253,12 @@ impl ::protobuf::Message for TestDefaultValues {
             },
             None => {},
         };
+        match self.enum_field_without_default {
+            Some(ref v) => {
+                try!(os.write_enum(17, *v as i32));
+            },
+            None => {},
+        };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
     }
@@ -6249,6 +6293,7 @@ impl ::protobuf::Message for TestDefaultValues {
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_string_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_bytes_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });
                 fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_enum_field_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });
+                fields.push(unsafe { ::std::mem::transmute(&TestDefaultValues_enum_field_without_default_acc as &'static ::protobuf::reflect::FieldAccessor<TestDefaultValues>) });
                 ::protobuf::reflect::MessageDescriptor::new::<TestDefaultValues>(
                     "TestDefaultValues",
                     fields,
@@ -6281,6 +6326,7 @@ impl ::protobuf::Clear for TestDefaultValues {
         self.clear_string_field();
         self.clear_bytes_field();
         self.clear_enum_field();
+        self.clear_enum_field_without_default();
         self.unknown_fields.clear();
     }
 }
@@ -6582,6 +6628,25 @@ impl ::protobuf::reflect::FieldAccessor<TestDefaultValues> for TestDefaultValues
     }
 }
 
+#[allow(non_camel_case_types)]
+struct TestDefaultValues_enum_field_without_default_acc_type;
+static TestDefaultValues_enum_field_without_default_acc: TestDefaultValues_enum_field_without_default_acc_type = TestDefaultValues_enum_field_without_default_acc_type;
+
+impl ::protobuf::reflect::FieldAccessor<TestDefaultValues> for TestDefaultValues_enum_field_without_default_acc_type {
+    fn name(&self) -> &'static str {
+        "enum_field_without_default"
+    }
+
+    fn has_field(&self, m: &TestDefaultValues) -> bool {
+        m.has_enum_field_without_default()
+    }
+
+    fn get_enum<'a>(&self, m: &TestDefaultValues) -> &'static ::protobuf::reflect::EnumValueDescriptor {
+        use protobuf::{ProtobufEnum};
+        m.get_enum_field_without_default().descriptor()
+    }
+}
+
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum TestEnumDescriptor {
     RED = 1,
@@ -6753,7 +6818,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0d, 0x20, 0x03, 0x28, 0x08, 0x42, 0x02, 0x10, 0x01,
     0x12, 0x14, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64,
     0x18, 0x0e, 0x20, 0x03, 0x28, 0x09, 0x12, 0x13, 0x0a, 0x0b, 0x62, 0x79, 0x74, 0x65, 0x73, 0x5f,
-    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0c, 0x22, 0xd0, 0x03, 0x0a, 0x11,
+    0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0c, 0x22, 0x90, 0x04, 0x0a, 0x11,
     0x54, 0x65, 0x73, 0x74, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65,
     0x73, 0x12, 0x17, 0x0a, 0x0c, 0x64, 0x6f, 0x75, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x69, 0x65, 0x6c,
     0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x3a, 0x01, 0x31, 0x12, 0x16, 0x0a, 0x0b, 0x66, 0x6c,
@@ -6782,14 +6847,18 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x3a, 0x07, 0x63, 0x64, 0x65, 0x5c, 0x6e, 0x33, 0x33, 0x12, 0x33, 0x0a, 0x0a, 0x65, 0x6e, 0x75,
     0x6d, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x10, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e,
     0x73, 0x68, 0x72, 0x75, 0x67, 0x2e, 0x45, 0x6e, 0x75, 0x6d, 0x46, 0x6f, 0x72, 0x44, 0x65, 0x66,
-    0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x03, 0x54, 0x57, 0x4f, 0x2a, 0x32,
+    0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x03, 0x54, 0x57, 0x4f, 0x12, 0x3e,
+    0x0a, 0x1a, 0x65, 0x6e, 0x75, 0x6d, 0x5f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x5f, 0x77, 0x69, 0x74,
+    0x68, 0x6f, 0x75, 0x74, 0x5f, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x18, 0x11, 0x20, 0x01,
+    0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x73, 0x68, 0x72, 0x75, 0x67, 0x2e, 0x45, 0x6e, 0x75, 0x6d, 0x46,
+    0x6f, 0x72, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x2a, 0x32,
     0x0a, 0x12, 0x54, 0x65, 0x73, 0x74, 0x45, 0x6e, 0x75, 0x6d, 0x44, 0x65, 0x73, 0x63, 0x72, 0x69,
     0x70, 0x74, 0x6f, 0x72, 0x12, 0x07, 0x0a, 0x03, 0x52, 0x45, 0x44, 0x10, 0x01, 0x12, 0x08, 0x0a,
     0x04, 0x42, 0x4c, 0x55, 0x45, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x47, 0x52, 0x45, 0x45, 0x4e,
     0x10, 0x03, 0x2a, 0x32, 0x0a, 0x13, 0x45, 0x6e, 0x75, 0x6d, 0x46, 0x6f, 0x72, 0x44, 0x65, 0x66,
     0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x07, 0x0a, 0x03, 0x4f, 0x4e, 0x45,
     0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x54, 0x57, 0x4f, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x54,
-    0x48, 0x52, 0x45, 0x45, 0x10, 0x03, 0x4a, 0xa2, 0x49, 0x0a, 0x07, 0x12, 0x05, 0x00, 0x00, 0x89,
+    0x48, 0x52, 0x45, 0x45, 0x10, 0x03, 0x4a, 0xec, 0x49, 0x0a, 0x07, 0x12, 0x05, 0x00, 0x00, 0x8a,
     0x01, 0x01, 0x0a, 0x08, 0x0a, 0x01, 0x02, 0x12, 0x03, 0x00, 0x08, 0x0d, 0x0a, 0x0a, 0x0a, 0x02,
     0x04, 0x00, 0x12, 0x04, 0x02, 0x00, 0x04, 0x01, 0x0a, 0x0a, 0x0a, 0x03, 0x04, 0x00, 0x01, 0x12,
     0x03, 0x02, 0x08, 0x0d, 0x0a, 0x0b, 0x0a, 0x04, 0x04, 0x00, 0x02, 0x00, 0x12, 0x03, 0x03, 0x04,
@@ -7273,7 +7342,7 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x05, 0x01, 0x02, 0x01, 0x02, 0x12, 0x03, 0x74, 0x0a, 0x0b, 0x0a, 0x0b, 0x0a, 0x04, 0x05, 0x01,
     0x02, 0x02, 0x12, 0x03, 0x75, 0x04, 0x0e, 0x0a, 0x0c, 0x0a, 0x05, 0x05, 0x01, 0x02, 0x02, 0x01,
     0x12, 0x03, 0x75, 0x04, 0x09, 0x0a, 0x0c, 0x0a, 0x05, 0x05, 0x01, 0x02, 0x02, 0x02, 0x12, 0x03,
-    0x75, 0x0c, 0x0d, 0x0a, 0x0b, 0x0a, 0x02, 0x04, 0x0f, 0x12, 0x05, 0x78, 0x00, 0x89, 0x01, 0x01,
+    0x75, 0x0c, 0x0d, 0x0a, 0x0b, 0x0a, 0x02, 0x04, 0x0f, 0x12, 0x05, 0x78, 0x00, 0x8a, 0x01, 0x01,
     0x0a, 0x0a, 0x0a, 0x03, 0x04, 0x0f, 0x01, 0x12, 0x03, 0x78, 0x08, 0x19, 0x0a, 0x0b, 0x0a, 0x04,
     0x04, 0x0f, 0x02, 0x00, 0x12, 0x03, 0x79, 0x04, 0x40, 0x0a, 0x0c, 0x0a, 0x05, 0x04, 0x0f, 0x02,
     0x00, 0x04, 0x12, 0x03, 0x79, 0x04, 0x0c, 0x0a, 0x0c, 0x0a, 0x05, 0x04, 0x0f, 0x02, 0x00, 0x05,
@@ -7375,7 +7444,12 @@ static file_descriptor_proto_data: &'static [u8] = &[
     0x0d, 0x0a, 0x05, 0x04, 0x0f, 0x02, 0x0f, 0x01, 0x12, 0x04, 0x88, 0x01, 0x21, 0x2b, 0x0a, 0x0d,
     0x0a, 0x05, 0x04, 0x0f, 0x02, 0x0f, 0x03, 0x12, 0x04, 0x88, 0x01, 0x2e, 0x30, 0x0a, 0x0d, 0x0a,
     0x05, 0x04, 0x0f, 0x02, 0x0f, 0x08, 0x12, 0x04, 0x88, 0x01, 0x31, 0x40, 0x0a, 0x0d, 0x0a, 0x05,
-    0x04, 0x0f, 0x02, 0x0f, 0x07, 0x12, 0x04, 0x88, 0x01, 0x3c, 0x3f,
+    0x04, 0x0f, 0x02, 0x0f, 0x07, 0x12, 0x04, 0x88, 0x01, 0x3c, 0x3f, 0x0a, 0x0c, 0x0a, 0x04, 0x04,
+    0x0f, 0x02, 0x10, 0x12, 0x04, 0x89, 0x01, 0x04, 0x41, 0x0a, 0x0d, 0x0a, 0x05, 0x04, 0x0f, 0x02,
+    0x10, 0x04, 0x12, 0x04, 0x89, 0x01, 0x04, 0x0c, 0x0a, 0x0d, 0x0a, 0x05, 0x04, 0x0f, 0x02, 0x10,
+    0x06, 0x12, 0x04, 0x89, 0x01, 0x0d, 0x20, 0x0a, 0x0d, 0x0a, 0x05, 0x04, 0x0f, 0x02, 0x10, 0x01,
+    0x12, 0x04, 0x89, 0x01, 0x21, 0x3b, 0x0a, 0x0d, 0x0a, 0x05, 0x04, 0x0f, 0x02, 0x10, 0x03, 0x12,
+    0x04, 0x89, 0x01, 0x3e, 0x40,
 ];
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy { lock: ::protobuf::lazy::ONCE_INIT, ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto };

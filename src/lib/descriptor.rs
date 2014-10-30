@@ -1861,13 +1861,13 @@ impl<'a> FieldDescriptorProto {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_label(&'a mut self) -> &'a mut FieldDescriptorProto_Label {
         if self.label.is_none() {
-            self.label = Some(FieldDescriptorProto_Label::new(0));
+            self.label = Some(FieldDescriptorProto_LABEL_OPTIONAL);
         };
         self.label.as_mut().unwrap()
     }
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
-        self.label.unwrap_or_else(|| FieldDescriptorProto_Label::new(0))
+        self.label.unwrap_or_else(|| FieldDescriptorProto_LABEL_OPTIONAL)
     }
 
     pub fn clear_field_type(&mut self) {
@@ -1887,13 +1887,13 @@ impl<'a> FieldDescriptorProto {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_field_type(&'a mut self) -> &'a mut FieldDescriptorProto_Type {
         if self.field_type.is_none() {
-            self.field_type = Some(FieldDescriptorProto_Type::new(0));
+            self.field_type = Some(FieldDescriptorProto_TYPE_DOUBLE);
         };
         self.field_type.as_mut().unwrap()
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
-        self.field_type.unwrap_or_else(|| FieldDescriptorProto_Type::new(0))
+        self.field_type.unwrap_or_else(|| FieldDescriptorProto_TYPE_DOUBLE)
     }
 
     pub fn clear_type_name(&mut self) {
@@ -3926,13 +3926,13 @@ impl<'a> FileOptions {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_optimize_for(&'a mut self) -> &'a mut FileOptions_OptimizeMode {
         if self.optimize_for.is_none() {
-            self.optimize_for = Some(FileOptions_OptimizeMode::new(0));
+            self.optimize_for = Some(FileOptions_SPEED);
         };
         self.optimize_for.as_mut().unwrap()
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
-        self.optimize_for.unwrap_or_else(|| FileOptions_OptimizeMode::new(0))
+        self.optimize_for.unwrap_or_else(|| FileOptions_SPEED)
     }
 
     pub fn clear_go_package(&mut self) {
@@ -4887,13 +4887,13 @@ impl<'a> FieldOptions {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_ctype(&'a mut self) -> &'a mut FieldOptions_CType {
         if self.ctype.is_none() {
-            self.ctype = Some(FieldOptions_CType::new(0));
+            self.ctype = Some(FieldOptions_STRING);
         };
         self.ctype.as_mut().unwrap()
     }
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
-        self.ctype.unwrap_or_else(|| FieldOptions_CType::new(0))
+        self.ctype.unwrap_or_else(|| FieldOptions_STRING)
     }
 
     pub fn clear_packed(&mut self) {
@@ -5463,7 +5463,7 @@ impl<'a> EnumOptions {
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_allow_alias(&'a mut self) -> &'a mut bool {
         if self.allow_alias.is_none() {
-            self.allow_alias = Some(false);
+            self.allow_alias = Some(true);
         };
         self.allow_alias.as_mut().unwrap()
     }
