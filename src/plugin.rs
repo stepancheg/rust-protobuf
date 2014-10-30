@@ -33,6 +33,8 @@ impl<'a> CodeGeneratorRequest {
         }
     }
 
+    // repeated string file_to_generate = 1;
+
     pub fn clear_file_to_generate(&mut self) {
         self.file_to_generate.clear();
     }
@@ -54,6 +56,8 @@ impl<'a> CodeGeneratorRequest {
     pub fn add_file_to_generate(&mut self, v: String) {
         self.file_to_generate.push(v);
     }
+
+    // optional string parameter = 2;
 
     pub fn clear_parameter(&mut self) {
         self.parameter.clear();
@@ -83,6 +87,8 @@ impl<'a> CodeGeneratorRequest {
             None => "",
         }
     }
+
+    // repeated .google.protobuf.FileDescriptorProto proto_file = 15;
 
     pub fn clear_proto_file(&mut self) {
         self.proto_file.clear();
@@ -320,6 +326,8 @@ impl<'a> CodeGeneratorResponse {
         }
     }
 
+    // optional string error = 1;
+
     pub fn clear_error(&mut self) {
         self.error.clear();
     }
@@ -348,6 +356,8 @@ impl<'a> CodeGeneratorResponse {
             None => "",
         }
     }
+
+    // repeated .google.protobuf.compiler.CodeGeneratorResponse.File file = 15;
 
     pub fn clear_file(&mut self) {
         self.file.clear();
@@ -554,6 +564,8 @@ impl<'a> CodeGeneratorResponse_File {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -583,6 +595,8 @@ impl<'a> CodeGeneratorResponse_File {
         }
     }
 
+    // optional string insertion_point = 2;
+
     pub fn clear_insertion_point(&mut self) {
         self.insertion_point.clear();
     }
@@ -611,6 +625,8 @@ impl<'a> CodeGeneratorResponse_File {
             None => "",
         }
     }
+
+    // optional string content = 15;
 
     pub fn clear_content(&mut self) {
         self.content.clear();

@@ -219,6 +219,37 @@ fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::W
     }
 }
 
+fn type_protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
+    match field_type {
+        FieldDescriptorProto_TYPE_INT32    => "int32",
+        FieldDescriptorProto_TYPE_INT64    => "int64",
+        FieldDescriptorProto_TYPE_UINT32   => "uint32",
+        FieldDescriptorProto_TYPE_UINT64   => "uint64",
+        FieldDescriptorProto_TYPE_SINT32   => "sint32",
+        FieldDescriptorProto_TYPE_SINT64   => "sint64",
+        FieldDescriptorProto_TYPE_BOOL     => "bool",
+        FieldDescriptorProto_TYPE_FIXED32  => "fixed32",
+        FieldDescriptorProto_TYPE_FIXED64  => "fixed64",
+        FieldDescriptorProto_TYPE_SFIXED32 => "sfixed32",
+        FieldDescriptorProto_TYPE_SFIXED64 => "sfixed64",
+        FieldDescriptorProto_TYPE_FLOAT    => "float",
+        FieldDescriptorProto_TYPE_DOUBLE   => "double",
+        FieldDescriptorProto_TYPE_STRING   => "string",
+        FieldDescriptorProto_TYPE_BYTES    => "bytes",
+        FieldDescriptorProto_TYPE_ENUM     |
+        FieldDescriptorProto_TYPE_MESSAGE  |
+        FieldDescriptorProto_TYPE_GROUP    => panic!()
+    }
+}
+
+fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
+    if field.has_type_name() {
+        field.get_type_name()
+    } else {
+        type_protobuf_name(field.get_field_type())
+    }
+}
+
 // size of value for type, None if variable
 fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     match field_type {
@@ -475,6 +506,19 @@ impl Field {
                     ),
             _ => self.get_xxx_return_type().default_value()
         }
+    }
+
+    fn reconstruct_def(&self) -> String {
+        let prefix = match self.proto_field.get_label() {
+            FieldDescriptorProto_LABEL_OPTIONAL => "optional",
+            FieldDescriptorProto_LABEL_REQUIRED => "required",
+            FieldDescriptorProto_LABEL_REPEATED => "repeated",
+        };
+        format!("{} {} {} = {}",
+            prefix,
+            field_type_protobuf_name(&self.proto_field),
+            self.proto_field.get_name(),
+            self.proto_field.get_number())
     }
 }
 
@@ -1313,6 +1357,8 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
 
 fn write_message_field_accessors(w: &mut IndentWriter) {
     w.fields(|w| {
+        w.write_line("");
+        w.comment((w.field().reconstruct_def() + ";").as_slice());
         w.write_line("");
         write_message_single_field_accessors(w);
     });

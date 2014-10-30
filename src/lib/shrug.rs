@@ -28,6 +28,8 @@ impl<'a> Test1 {
         }
     }
 
+    // required int32 a = 1;
+
     pub fn clear_a(&mut self) {
         self.a = None;
     }
@@ -190,6 +192,8 @@ impl<'a> Test2 {
             })
         }
     }
+
+    // required string b = 2;
 
     pub fn clear_b(&mut self) {
         self.b.clear();
@@ -366,6 +370,8 @@ impl<'a> Test3 {
         }
     }
 
+    // required .shrug.Test1 c = 3;
+
     pub fn clear_c(&mut self) {
         self.c.clear();
     }
@@ -540,6 +546,8 @@ impl<'a> Test4 {
             })
         }
     }
+
+    // repeated int32 d = 4;
 
     pub fn clear_d(&mut self) {
         self.d.clear();
@@ -717,6 +725,8 @@ impl<'a> TestPackedUnpacked {
         }
     }
 
+    // repeated int32 unpacked = 4;
+
     pub fn clear_unpacked(&mut self) {
         self.unpacked.clear();
     }
@@ -738,6 +748,8 @@ impl<'a> TestPackedUnpacked {
     pub fn add_unpacked(&mut self, v: i32) {
         self.unpacked.push(v);
     }
+
+    // repeated int32 packed = 5;
 
     pub fn clear_packed(&mut self) {
         self.packed.clear();
@@ -954,6 +966,8 @@ impl<'a> TestEmpty {
         }
     }
 
+    // optional int32 foo = 10;
+
     pub fn clear_foo(&mut self) {
         self.foo = None;
     }
@@ -1113,6 +1127,8 @@ impl<'a> TestRequired {
             })
         }
     }
+
+    // required bool b = 5;
 
     pub fn clear_b(&mut self) {
         self.b = None;
@@ -1276,6 +1292,8 @@ impl<'a> TestUnknownFields {
             })
         }
     }
+
+    // required int32 a = 1;
 
     pub fn clear_a(&mut self) {
         self.a = None;
@@ -1442,6 +1460,8 @@ impl<'a> TestSelfReference {
         }
     }
 
+    // required .shrug.TestSelfReference r1 = 1;
+
     pub fn clear_r1(&mut self) {
         self.r1.clear();
     }
@@ -1467,6 +1487,8 @@ impl<'a> TestSelfReference {
     pub fn get_r1(&'a self) -> &'a TestSelfReference {
         self.r1.as_ref().unwrap_or_else(|| TestSelfReference::default_instance())
     }
+
+    // optional .shrug.TestSelfReference r2 = 2;
 
     pub fn clear_r2(&mut self) {
         self.r2.clear();
@@ -1683,6 +1705,8 @@ impl<'a> TestDefaultInstanceField {
         }
     }
 
+    // optional string s = 1;
+
     pub fn clear_s(&mut self) {
         self.s.clear();
     }
@@ -1855,6 +1879,8 @@ impl<'a> TestDefaultInstance {
         }
     }
 
+    // optional .shrug.TestDefaultInstanceField field = 1;
+
     pub fn clear_field(&mut self) {
         self.field.clear();
     }
@@ -2026,6 +2052,8 @@ impl<'a> TestDescriptor {
             })
         }
     }
+
+    // optional int32 stuff = 10;
 
     pub fn clear_stuff(&mut self) {
         self.stuff = None;
@@ -2215,6 +2243,8 @@ impl<'a> TestTypesSingular {
         }
     }
 
+    // optional double double_field = 1;
+
     pub fn clear_double_field(&mut self) {
         self.double_field = None;
     }
@@ -2231,6 +2261,8 @@ impl<'a> TestTypesSingular {
     pub fn get_double_field(&self) -> f64 {
         self.double_field.unwrap_or(0.)
     }
+
+    // optional float float_field = 2;
 
     pub fn clear_float_field(&mut self) {
         self.float_field = None;
@@ -2249,6 +2281,8 @@ impl<'a> TestTypesSingular {
         self.float_field.unwrap_or(0.)
     }
 
+    // optional int32 int32_field = 3;
+
     pub fn clear_int32_field(&mut self) {
         self.int32_field = None;
     }
@@ -2265,6 +2299,8 @@ impl<'a> TestTypesSingular {
     pub fn get_int32_field(&self) -> i32 {
         self.int32_field.unwrap_or(0)
     }
+
+    // optional int64 int64_field = 4;
 
     pub fn clear_int64_field(&mut self) {
         self.int64_field = None;
@@ -2283,6 +2319,8 @@ impl<'a> TestTypesSingular {
         self.int64_field.unwrap_or(0)
     }
 
+    // optional uint32 uint32_field = 5;
+
     pub fn clear_uint32_field(&mut self) {
         self.uint32_field = None;
     }
@@ -2299,6 +2337,8 @@ impl<'a> TestTypesSingular {
     pub fn get_uint32_field(&self) -> u32 {
         self.uint32_field.unwrap_or(0)
     }
+
+    // optional uint64 uint64_field = 6;
 
     pub fn clear_uint64_field(&mut self) {
         self.uint64_field = None;
@@ -2317,6 +2357,8 @@ impl<'a> TestTypesSingular {
         self.uint64_field.unwrap_or(0)
     }
 
+    // optional sint32 sint32_field = 7;
+
     pub fn clear_sint32_field(&mut self) {
         self.sint32_field = None;
     }
@@ -2333,6 +2375,8 @@ impl<'a> TestTypesSingular {
     pub fn get_sint32_field(&self) -> i32 {
         self.sint32_field.unwrap_or(0)
     }
+
+    // optional sint64 sint64_field = 8;
 
     pub fn clear_sint64_field(&mut self) {
         self.sint64_field = None;
@@ -2351,6 +2395,8 @@ impl<'a> TestTypesSingular {
         self.sint64_field.unwrap_or(0)
     }
 
+    // optional fixed32 fixed32_field = 9;
+
     pub fn clear_fixed32_field(&mut self) {
         self.fixed32_field = None;
     }
@@ -2367,6 +2413,8 @@ impl<'a> TestTypesSingular {
     pub fn get_fixed32_field(&self) -> u32 {
         self.fixed32_field.unwrap_or(0)
     }
+
+    // optional fixed64 fixed64_field = 10;
 
     pub fn clear_fixed64_field(&mut self) {
         self.fixed64_field = None;
@@ -2385,6 +2433,8 @@ impl<'a> TestTypesSingular {
         self.fixed64_field.unwrap_or(0)
     }
 
+    // optional sfixed32 sfixed32_field = 11;
+
     pub fn clear_sfixed32_field(&mut self) {
         self.sfixed32_field = None;
     }
@@ -2401,6 +2451,8 @@ impl<'a> TestTypesSingular {
     pub fn get_sfixed32_field(&self) -> i32 {
         self.sfixed32_field.unwrap_or(0)
     }
+
+    // optional sfixed64 sfixed64_field = 12;
 
     pub fn clear_sfixed64_field(&mut self) {
         self.sfixed64_field = None;
@@ -2419,6 +2471,8 @@ impl<'a> TestTypesSingular {
         self.sfixed64_field.unwrap_or(0)
     }
 
+    // optional bool bool_field = 13;
+
     pub fn clear_bool_field(&mut self) {
         self.bool_field = None;
     }
@@ -2435,6 +2489,8 @@ impl<'a> TestTypesSingular {
     pub fn get_bool_field(&self) -> bool {
         self.bool_field.unwrap_or(false)
     }
+
+    // optional string string_field = 14;
 
     pub fn clear_string_field(&mut self) {
         self.string_field.clear();
@@ -2464,6 +2520,8 @@ impl<'a> TestTypesSingular {
             None => "",
         }
     }
+
+    // optional bytes bytes_field = 15;
 
     pub fn clear_bytes_field(&mut self) {
         self.bytes_field.clear();
@@ -3169,6 +3227,8 @@ impl<'a> TestTypesRepeated {
         }
     }
 
+    // repeated double double_field = 1;
+
     pub fn clear_double_field(&mut self) {
         self.double_field.clear();
     }
@@ -3190,6 +3250,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_double_field(&mut self, v: f64) {
         self.double_field.push(v);
     }
+
+    // repeated float float_field = 2;
 
     pub fn clear_float_field(&mut self) {
         self.float_field.clear();
@@ -3213,6 +3275,8 @@ impl<'a> TestTypesRepeated {
         self.float_field.push(v);
     }
 
+    // repeated int32 int32_field = 3;
+
     pub fn clear_int32_field(&mut self) {
         self.int32_field.clear();
     }
@@ -3234,6 +3298,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_int32_field(&mut self, v: i32) {
         self.int32_field.push(v);
     }
+
+    // repeated int64 int64_field = 4;
 
     pub fn clear_int64_field(&mut self) {
         self.int64_field.clear();
@@ -3257,6 +3323,8 @@ impl<'a> TestTypesRepeated {
         self.int64_field.push(v);
     }
 
+    // repeated uint32 uint32_field = 5;
+
     pub fn clear_uint32_field(&mut self) {
         self.uint32_field.clear();
     }
@@ -3278,6 +3346,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_uint32_field(&mut self, v: u32) {
         self.uint32_field.push(v);
     }
+
+    // repeated uint64 uint64_field = 6;
 
     pub fn clear_uint64_field(&mut self) {
         self.uint64_field.clear();
@@ -3301,6 +3371,8 @@ impl<'a> TestTypesRepeated {
         self.uint64_field.push(v);
     }
 
+    // repeated sint32 sint32_field = 7;
+
     pub fn clear_sint32_field(&mut self) {
         self.sint32_field.clear();
     }
@@ -3322,6 +3394,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_sint32_field(&mut self, v: i32) {
         self.sint32_field.push(v);
     }
+
+    // repeated sint64 sint64_field = 8;
 
     pub fn clear_sint64_field(&mut self) {
         self.sint64_field.clear();
@@ -3345,6 +3419,8 @@ impl<'a> TestTypesRepeated {
         self.sint64_field.push(v);
     }
 
+    // repeated fixed32 fixed32_field = 9;
+
     pub fn clear_fixed32_field(&mut self) {
         self.fixed32_field.clear();
     }
@@ -3366,6 +3442,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_fixed32_field(&mut self, v: u32) {
         self.fixed32_field.push(v);
     }
+
+    // repeated fixed64 fixed64_field = 10;
 
     pub fn clear_fixed64_field(&mut self) {
         self.fixed64_field.clear();
@@ -3389,6 +3467,8 @@ impl<'a> TestTypesRepeated {
         self.fixed64_field.push(v);
     }
 
+    // repeated sfixed32 sfixed32_field = 11;
+
     pub fn clear_sfixed32_field(&mut self) {
         self.sfixed32_field.clear();
     }
@@ -3410,6 +3490,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_sfixed32_field(&mut self, v: i32) {
         self.sfixed32_field.push(v);
     }
+
+    // repeated sfixed64 sfixed64_field = 12;
 
     pub fn clear_sfixed64_field(&mut self) {
         self.sfixed64_field.clear();
@@ -3433,6 +3515,8 @@ impl<'a> TestTypesRepeated {
         self.sfixed64_field.push(v);
     }
 
+    // repeated bool bool_field = 13;
+
     pub fn clear_bool_field(&mut self) {
         self.bool_field.clear();
     }
@@ -3455,6 +3539,8 @@ impl<'a> TestTypesRepeated {
         self.bool_field.push(v);
     }
 
+    // repeated string string_field = 14;
+
     pub fn clear_string_field(&mut self) {
         self.string_field.clear();
     }
@@ -3476,6 +3562,8 @@ impl<'a> TestTypesRepeated {
     pub fn add_string_field(&mut self, v: String) {
         self.string_field.push(v);
     }
+
+    // repeated bytes bytes_field = 15;
 
     pub fn clear_bytes_field(&mut self) {
         self.bytes_field.clear();
@@ -4219,6 +4307,8 @@ impl<'a> TestTypesRepeatedPacked {
         }
     }
 
+    // repeated double double_field = 1;
+
     pub fn clear_double_field(&mut self) {
         self.double_field.clear();
     }
@@ -4240,6 +4330,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_double_field(&mut self, v: f64) {
         self.double_field.push(v);
     }
+
+    // repeated float float_field = 2;
 
     pub fn clear_float_field(&mut self) {
         self.float_field.clear();
@@ -4263,6 +4355,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.float_field.push(v);
     }
 
+    // repeated int32 int32_field = 3;
+
     pub fn clear_int32_field(&mut self) {
         self.int32_field.clear();
     }
@@ -4284,6 +4378,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_int32_field(&mut self, v: i32) {
         self.int32_field.push(v);
     }
+
+    // repeated int64 int64_field = 4;
 
     pub fn clear_int64_field(&mut self) {
         self.int64_field.clear();
@@ -4307,6 +4403,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.int64_field.push(v);
     }
 
+    // repeated uint32 uint32_field = 5;
+
     pub fn clear_uint32_field(&mut self) {
         self.uint32_field.clear();
     }
@@ -4328,6 +4426,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_uint32_field(&mut self, v: u32) {
         self.uint32_field.push(v);
     }
+
+    // repeated uint64 uint64_field = 6;
 
     pub fn clear_uint64_field(&mut self) {
         self.uint64_field.clear();
@@ -4351,6 +4451,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.uint64_field.push(v);
     }
 
+    // repeated sint32 sint32_field = 7;
+
     pub fn clear_sint32_field(&mut self) {
         self.sint32_field.clear();
     }
@@ -4372,6 +4474,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_sint32_field(&mut self, v: i32) {
         self.sint32_field.push(v);
     }
+
+    // repeated sint64 sint64_field = 8;
 
     pub fn clear_sint64_field(&mut self) {
         self.sint64_field.clear();
@@ -4395,6 +4499,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.sint64_field.push(v);
     }
 
+    // repeated fixed32 fixed32_field = 9;
+
     pub fn clear_fixed32_field(&mut self) {
         self.fixed32_field.clear();
     }
@@ -4416,6 +4522,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_fixed32_field(&mut self, v: u32) {
         self.fixed32_field.push(v);
     }
+
+    // repeated fixed64 fixed64_field = 10;
 
     pub fn clear_fixed64_field(&mut self) {
         self.fixed64_field.clear();
@@ -4439,6 +4547,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.fixed64_field.push(v);
     }
 
+    // repeated sfixed32 sfixed32_field = 11;
+
     pub fn clear_sfixed32_field(&mut self) {
         self.sfixed32_field.clear();
     }
@@ -4460,6 +4570,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_sfixed32_field(&mut self, v: i32) {
         self.sfixed32_field.push(v);
     }
+
+    // repeated sfixed64 sfixed64_field = 12;
 
     pub fn clear_sfixed64_field(&mut self) {
         self.sfixed64_field.clear();
@@ -4483,6 +4595,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.sfixed64_field.push(v);
     }
 
+    // repeated bool bool_field = 13;
+
     pub fn clear_bool_field(&mut self) {
         self.bool_field.clear();
     }
@@ -4505,6 +4619,8 @@ impl<'a> TestTypesRepeatedPacked {
         self.bool_field.push(v);
     }
 
+    // repeated string string_field = 14;
+
     pub fn clear_string_field(&mut self) {
         self.string_field.clear();
     }
@@ -4526,6 +4642,8 @@ impl<'a> TestTypesRepeatedPacked {
     pub fn add_string_field(&mut self, v: String) {
         self.string_field.push(v);
     }
+
+    // repeated bytes bytes_field = 15;
 
     pub fn clear_bytes_field(&mut self) {
         self.bytes_field.clear();
@@ -5339,6 +5457,8 @@ impl<'a> TestDefaultValues {
         }
     }
 
+    // optional double double_field = 1;
+
     pub fn clear_double_field(&mut self) {
         self.double_field = None;
     }
@@ -5355,6 +5475,8 @@ impl<'a> TestDefaultValues {
     pub fn get_double_field(&self) -> f64 {
         self.double_field.unwrap_or(1f64)
     }
+
+    // optional float float_field = 2;
 
     pub fn clear_float_field(&mut self) {
         self.float_field = None;
@@ -5373,6 +5495,8 @@ impl<'a> TestDefaultValues {
         self.float_field.unwrap_or(2f32)
     }
 
+    // optional int32 int32_field = 3;
+
     pub fn clear_int32_field(&mut self) {
         self.int32_field = None;
     }
@@ -5389,6 +5513,8 @@ impl<'a> TestDefaultValues {
     pub fn get_int32_field(&self) -> i32 {
         self.int32_field.unwrap_or(3i32)
     }
+
+    // optional int64 int64_field = 4;
 
     pub fn clear_int64_field(&mut self) {
         self.int64_field = None;
@@ -5407,6 +5533,8 @@ impl<'a> TestDefaultValues {
         self.int64_field.unwrap_or(4i64)
     }
 
+    // optional uint32 uint32_field = 5;
+
     pub fn clear_uint32_field(&mut self) {
         self.uint32_field = None;
     }
@@ -5423,6 +5551,8 @@ impl<'a> TestDefaultValues {
     pub fn get_uint32_field(&self) -> u32 {
         self.uint32_field.unwrap_or(5u32)
     }
+
+    // optional uint64 uint64_field = 6;
 
     pub fn clear_uint64_field(&mut self) {
         self.uint64_field = None;
@@ -5441,6 +5571,8 @@ impl<'a> TestDefaultValues {
         self.uint64_field.unwrap_or(6u64)
     }
 
+    // optional sint32 sint32_field = 7;
+
     pub fn clear_sint32_field(&mut self) {
         self.sint32_field = None;
     }
@@ -5457,6 +5589,8 @@ impl<'a> TestDefaultValues {
     pub fn get_sint32_field(&self) -> i32 {
         self.sint32_field.unwrap_or(7i32)
     }
+
+    // optional sint64 sint64_field = 8;
 
     pub fn clear_sint64_field(&mut self) {
         self.sint64_field = None;
@@ -5475,6 +5609,8 @@ impl<'a> TestDefaultValues {
         self.sint64_field.unwrap_or(8i64)
     }
 
+    // optional fixed32 fixed32_field = 9;
+
     pub fn clear_fixed32_field(&mut self) {
         self.fixed32_field = None;
     }
@@ -5491,6 +5627,8 @@ impl<'a> TestDefaultValues {
     pub fn get_fixed32_field(&self) -> u32 {
         self.fixed32_field.unwrap_or(9u32)
     }
+
+    // optional fixed64 fixed64_field = 10;
 
     pub fn clear_fixed64_field(&mut self) {
         self.fixed64_field = None;
@@ -5509,6 +5647,8 @@ impl<'a> TestDefaultValues {
         self.fixed64_field.unwrap_or(10u64)
     }
 
+    // optional sfixed32 sfixed32_field = 11;
+
     pub fn clear_sfixed32_field(&mut self) {
         self.sfixed32_field = None;
     }
@@ -5525,6 +5665,8 @@ impl<'a> TestDefaultValues {
     pub fn get_sfixed32_field(&self) -> i32 {
         self.sfixed32_field.unwrap_or(11i32)
     }
+
+    // optional sfixed64 sfixed64_field = 12;
 
     pub fn clear_sfixed64_field(&mut self) {
         self.sfixed64_field = None;
@@ -5543,6 +5685,8 @@ impl<'a> TestDefaultValues {
         self.sfixed64_field.unwrap_or(12i64)
     }
 
+    // optional bool bool_field = 13;
+
     pub fn clear_bool_field(&mut self) {
         self.bool_field = None;
     }
@@ -5559,6 +5703,8 @@ impl<'a> TestDefaultValues {
     pub fn get_bool_field(&self) -> bool {
         self.bool_field.unwrap_or(true)
     }
+
+    // optional string string_field = 14;
 
     pub fn clear_string_field(&mut self) {
         self.string_field.clear();
@@ -5589,6 +5735,8 @@ impl<'a> TestDefaultValues {
         }
     }
 
+    // optional bytes bytes_field = 15;
+
     pub fn clear_bytes_field(&mut self) {
         self.bytes_field.clear();
     }
@@ -5618,6 +5766,8 @@ impl<'a> TestDefaultValues {
         }
     }
 
+    // optional .shrug.EnumForDefaultValue enum_field = 16;
+
     pub fn clear_enum_field(&mut self) {
         self.enum_field = None;
     }
@@ -5634,6 +5784,8 @@ impl<'a> TestDefaultValues {
     pub fn get_enum_field(&self) -> EnumForDefaultValue {
         self.enum_field.unwrap_or(TWO)
     }
+
+    // optional .shrug.EnumForDefaultValue enum_field_without_default = 17;
 
     pub fn clear_enum_field_without_default(&mut self) {
         self.enum_field_without_default = None;

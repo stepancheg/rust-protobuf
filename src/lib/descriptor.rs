@@ -28,6 +28,8 @@ impl<'a> FileDescriptorSet {
         }
     }
 
+    // repeated .google.protobuf.FileDescriptorProto file = 1;
+
     pub fn clear_file(&mut self) {
         self.file.clear();
     }
@@ -213,6 +215,8 @@ impl<'a> FileDescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -241,6 +245,8 @@ impl<'a> FileDescriptorProto {
             None => "",
         }
     }
+
+    // optional string package = 2;
 
     pub fn clear_package(&mut self) {
         self.package.clear();
@@ -271,6 +277,8 @@ impl<'a> FileDescriptorProto {
         }
     }
 
+    // repeated string dependency = 3;
+
     pub fn clear_dependency(&mut self) {
         self.dependency.clear();
     }
@@ -292,6 +300,8 @@ impl<'a> FileDescriptorProto {
     pub fn add_dependency(&mut self, v: String) {
         self.dependency.push(v);
     }
+
+    // repeated int32 public_dependency = 10;
 
     pub fn clear_public_dependency(&mut self) {
         self.public_dependency.clear();
@@ -315,6 +325,8 @@ impl<'a> FileDescriptorProto {
         self.public_dependency.push(v);
     }
 
+    // repeated int32 weak_dependency = 11;
+
     pub fn clear_weak_dependency(&mut self) {
         self.weak_dependency.clear();
     }
@@ -336,6 +348,8 @@ impl<'a> FileDescriptorProto {
     pub fn add_weak_dependency(&mut self, v: i32) {
         self.weak_dependency.push(v);
     }
+
+    // repeated .google.protobuf.DescriptorProto message_type = 4;
 
     pub fn clear_message_type(&mut self) {
         self.message_type.clear();
@@ -359,6 +373,8 @@ impl<'a> FileDescriptorProto {
         self.message_type.push(v);
     }
 
+    // repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
+
     pub fn clear_enum_type(&mut self) {
         self.enum_type.clear();
     }
@@ -380,6 +396,8 @@ impl<'a> FileDescriptorProto {
     pub fn add_enum_type(&mut self, v: EnumDescriptorProto) {
         self.enum_type.push(v);
     }
+
+    // repeated .google.protobuf.ServiceDescriptorProto service = 6;
 
     pub fn clear_service(&mut self) {
         self.service.clear();
@@ -403,6 +421,8 @@ impl<'a> FileDescriptorProto {
         self.service.push(v);
     }
 
+    // repeated .google.protobuf.FieldDescriptorProto extension = 7;
+
     pub fn clear_extension(&mut self) {
         self.extension.clear();
     }
@@ -424,6 +444,8 @@ impl<'a> FileDescriptorProto {
     pub fn add_extension(&mut self, v: FieldDescriptorProto) {
         self.extension.push(v);
     }
+
+    // optional .google.protobuf.FileOptions options = 8;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -450,6 +472,8 @@ impl<'a> FileDescriptorProto {
     pub fn get_options(&'a self) -> &'a FileOptions {
         self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
     }
+
+    // optional .google.protobuf.SourceCodeInfo source_code_info = 9;
 
     pub fn clear_source_code_info(&mut self) {
         self.source_code_info.clear();
@@ -1010,6 +1034,8 @@ impl<'a> DescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -1039,6 +1065,8 @@ impl<'a> DescriptorProto {
         }
     }
 
+    // repeated .google.protobuf.FieldDescriptorProto field = 2;
+
     pub fn clear_field(&mut self) {
         self.field.clear();
     }
@@ -1060,6 +1088,8 @@ impl<'a> DescriptorProto {
     pub fn add_field(&mut self, v: FieldDescriptorProto) {
         self.field.push(v);
     }
+
+    // repeated .google.protobuf.FieldDescriptorProto extension = 6;
 
     pub fn clear_extension(&mut self) {
         self.extension.clear();
@@ -1083,6 +1113,8 @@ impl<'a> DescriptorProto {
         self.extension.push(v);
     }
 
+    // repeated .google.protobuf.DescriptorProto nested_type = 3;
+
     pub fn clear_nested_type(&mut self) {
         self.nested_type.clear();
     }
@@ -1104,6 +1136,8 @@ impl<'a> DescriptorProto {
     pub fn add_nested_type(&mut self, v: DescriptorProto) {
         self.nested_type.push(v);
     }
+
+    // repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
 
     pub fn clear_enum_type(&mut self) {
         self.enum_type.clear();
@@ -1127,6 +1161,8 @@ impl<'a> DescriptorProto {
         self.enum_type.push(v);
     }
 
+    // repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
+
     pub fn clear_extension_range(&mut self) {
         self.extension_range.clear();
     }
@@ -1148,6 +1184,8 @@ impl<'a> DescriptorProto {
     pub fn add_extension_range(&mut self, v: DescriptorProto_ExtensionRange) {
         self.extension_range.push(v);
     }
+
+    // optional .google.protobuf.MessageOptions options = 7;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -1544,6 +1582,8 @@ impl<'a> DescriptorProto_ExtensionRange {
         }
     }
 
+    // optional int32 start = 1;
+
     pub fn clear_start(&mut self) {
         self.start = None;
     }
@@ -1560,6 +1600,8 @@ impl<'a> DescriptorProto_ExtensionRange {
     pub fn get_start(&self) -> i32 {
         self.start.unwrap_or(0)
     }
+
+    // optional int32 end = 2;
 
     pub fn clear_end(&mut self) {
         self.end = None;
@@ -1771,6 +1813,8 @@ impl<'a> FieldDescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -1800,6 +1844,8 @@ impl<'a> FieldDescriptorProto {
         }
     }
 
+    // optional int32 number = 3;
+
     pub fn clear_number(&mut self) {
         self.number = None;
     }
@@ -1816,6 +1862,8 @@ impl<'a> FieldDescriptorProto {
     pub fn get_number(&self) -> i32 {
         self.number.unwrap_or(0)
     }
+
+    // optional .google.protobuf.FieldDescriptorProto.Label label = 4;
 
     pub fn clear_label(&mut self) {
         self.label = None;
@@ -1834,6 +1882,8 @@ impl<'a> FieldDescriptorProto {
         self.label.unwrap_or(FieldDescriptorProto_LABEL_OPTIONAL)
     }
 
+    // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
+
     pub fn clear_field_type(&mut self) {
         self.field_type = None;
     }
@@ -1850,6 +1900,8 @@ impl<'a> FieldDescriptorProto {
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
         self.field_type.unwrap_or(FieldDescriptorProto_TYPE_DOUBLE)
     }
+
+    // optional string type_name = 6;
 
     pub fn clear_type_name(&mut self) {
         self.type_name.clear();
@@ -1880,6 +1932,8 @@ impl<'a> FieldDescriptorProto {
         }
     }
 
+    // optional string extendee = 2;
+
     pub fn clear_extendee(&mut self) {
         self.extendee.clear();
     }
@@ -1909,6 +1963,8 @@ impl<'a> FieldDescriptorProto {
         }
     }
 
+    // optional string default_value = 7;
+
     pub fn clear_default_value(&mut self) {
         self.default_value.clear();
     }
@@ -1937,6 +1993,8 @@ impl<'a> FieldDescriptorProto {
             None => "",
         }
     }
+
+    // optional .google.protobuf.FieldOptions options = 8;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2464,6 +2522,8 @@ impl<'a> EnumDescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -2493,6 +2553,8 @@ impl<'a> EnumDescriptorProto {
         }
     }
 
+    // repeated .google.protobuf.EnumValueDescriptorProto value = 2;
+
     pub fn clear_value(&mut self) {
         self.value.clear();
     }
@@ -2514,6 +2576,8 @@ impl<'a> EnumDescriptorProto {
     pub fn add_value(&mut self, v: EnumValueDescriptorProto) {
         self.value.push(v);
     }
+
+    // optional .google.protobuf.EnumOptions options = 3;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2764,6 +2828,8 @@ impl<'a> EnumValueDescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -2793,6 +2859,8 @@ impl<'a> EnumValueDescriptorProto {
         }
     }
 
+    // optional int32 number = 2;
+
     pub fn clear_number(&mut self) {
         self.number = None;
     }
@@ -2809,6 +2877,8 @@ impl<'a> EnumValueDescriptorProto {
     pub fn get_number(&self) -> i32 {
         self.number.unwrap_or(0)
     }
+
+    // optional .google.protobuf.EnumValueOptions options = 3;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3058,6 +3128,8 @@ impl<'a> ServiceDescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -3087,6 +3159,8 @@ impl<'a> ServiceDescriptorProto {
         }
     }
 
+    // repeated .google.protobuf.MethodDescriptorProto method = 2;
+
     pub fn clear_method(&mut self) {
         self.method.clear();
     }
@@ -3108,6 +3182,8 @@ impl<'a> ServiceDescriptorProto {
     pub fn add_method(&mut self, v: MethodDescriptorProto) {
         self.method.push(v);
     }
+
+    // optional .google.protobuf.ServiceOptions options = 3;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3360,6 +3436,8 @@ impl<'a> MethodDescriptorProto {
         }
     }
 
+    // optional string name = 1;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -3388,6 +3466,8 @@ impl<'a> MethodDescriptorProto {
             None => "",
         }
     }
+
+    // optional string input_type = 2;
 
     pub fn clear_input_type(&mut self) {
         self.input_type.clear();
@@ -3418,6 +3498,8 @@ impl<'a> MethodDescriptorProto {
         }
     }
 
+    // optional string output_type = 3;
+
     pub fn clear_output_type(&mut self) {
         self.output_type.clear();
     }
@@ -3446,6 +3528,8 @@ impl<'a> MethodDescriptorProto {
             None => "",
         }
     }
+
+    // optional .google.protobuf.MethodOptions options = 4;
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3745,6 +3829,8 @@ impl<'a> FileOptions {
         }
     }
 
+    // optional string java_package = 1;
+
     pub fn clear_java_package(&mut self) {
         self.java_package.clear();
     }
@@ -3773,6 +3859,8 @@ impl<'a> FileOptions {
             None => "",
         }
     }
+
+    // optional string java_outer_classname = 8;
 
     pub fn clear_java_outer_classname(&mut self) {
         self.java_outer_classname.clear();
@@ -3803,6 +3891,8 @@ impl<'a> FileOptions {
         }
     }
 
+    // optional bool java_multiple_files = 10;
+
     pub fn clear_java_multiple_files(&mut self) {
         self.java_multiple_files = None;
     }
@@ -3819,6 +3909,8 @@ impl<'a> FileOptions {
     pub fn get_java_multiple_files(&self) -> bool {
         self.java_multiple_files.unwrap_or(false)
     }
+
+    // optional bool java_generate_equals_and_hash = 20;
 
     pub fn clear_java_generate_equals_and_hash(&mut self) {
         self.java_generate_equals_and_hash = None;
@@ -3837,6 +3929,8 @@ impl<'a> FileOptions {
         self.java_generate_equals_and_hash.unwrap_or(false)
     }
 
+    // optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
+
     pub fn clear_optimize_for(&mut self) {
         self.optimize_for = None;
     }
@@ -3853,6 +3947,8 @@ impl<'a> FileOptions {
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
         self.optimize_for.unwrap_or(FileOptions_SPEED)
     }
+
+    // optional string go_package = 11;
 
     pub fn clear_go_package(&mut self) {
         self.go_package.clear();
@@ -3883,6 +3979,8 @@ impl<'a> FileOptions {
         }
     }
 
+    // optional bool cc_generic_services = 16;
+
     pub fn clear_cc_generic_services(&mut self) {
         self.cc_generic_services = None;
     }
@@ -3899,6 +3997,8 @@ impl<'a> FileOptions {
     pub fn get_cc_generic_services(&self) -> bool {
         self.cc_generic_services.unwrap_or(false)
     }
+
+    // optional bool java_generic_services = 17;
 
     pub fn clear_java_generic_services(&mut self) {
         self.java_generic_services = None;
@@ -3917,6 +4017,8 @@ impl<'a> FileOptions {
         self.java_generic_services.unwrap_or(false)
     }
 
+    // optional bool py_generic_services = 18;
+
     pub fn clear_py_generic_services(&mut self) {
         self.py_generic_services = None;
     }
@@ -3933,6 +4035,8 @@ impl<'a> FileOptions {
     pub fn get_py_generic_services(&self) -> bool {
         self.py_generic_services.unwrap_or(false)
     }
+
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -4461,6 +4565,8 @@ impl<'a> MessageOptions {
         }
     }
 
+    // optional bool message_set_wire_format = 1;
+
     pub fn clear_message_set_wire_format(&mut self) {
         self.message_set_wire_format = None;
     }
@@ -4478,6 +4584,8 @@ impl<'a> MessageOptions {
         self.message_set_wire_format.unwrap_or(false)
     }
 
+    // optional bool no_standard_descriptor_accessor = 2;
+
     pub fn clear_no_standard_descriptor_accessor(&mut self) {
         self.no_standard_descriptor_accessor = None;
     }
@@ -4494,6 +4602,8 @@ impl<'a> MessageOptions {
     pub fn get_no_standard_descriptor_accessor(&self) -> bool {
         self.no_standard_descriptor_accessor.unwrap_or(false)
     }
+
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -4744,6 +4854,8 @@ impl<'a> FieldOptions {
         }
     }
 
+    // optional .google.protobuf.FieldOptions.CType ctype = 1;
+
     pub fn clear_ctype(&mut self) {
         self.ctype = None;
     }
@@ -4760,6 +4872,8 @@ impl<'a> FieldOptions {
     pub fn get_ctype(&self) -> FieldOptions_CType {
         self.ctype.unwrap_or(FieldOptions_STRING)
     }
+
+    // optional bool packed = 2;
 
     pub fn clear_packed(&mut self) {
         self.packed = None;
@@ -4778,6 +4892,8 @@ impl<'a> FieldOptions {
         self.packed.unwrap_or(false)
     }
 
+    // optional bool lazy = 5;
+
     pub fn clear_lazy(&mut self) {
         self.lazy = None;
     }
@@ -4795,6 +4911,8 @@ impl<'a> FieldOptions {
         self.lazy.unwrap_or(false)
     }
 
+    // optional bool deprecated = 3;
+
     pub fn clear_deprecated(&mut self) {
         self.deprecated = None;
     }
@@ -4811,6 +4929,8 @@ impl<'a> FieldOptions {
     pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
+
+    // optional string experimental_map_key = 9;
 
     pub fn clear_experimental_map_key(&mut self) {
         self.experimental_map_key.clear();
@@ -4841,6 +4961,8 @@ impl<'a> FieldOptions {
         }
     }
 
+    // optional bool weak = 10;
+
     pub fn clear_weak(&mut self) {
         self.weak = None;
     }
@@ -4857,6 +4979,8 @@ impl<'a> FieldOptions {
     pub fn get_weak(&self) -> bool {
         self.weak.unwrap_or(false)
     }
+
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -5275,6 +5399,8 @@ impl<'a> EnumOptions {
         }
     }
 
+    // optional bool allow_alias = 2;
+
     pub fn clear_allow_alias(&mut self) {
         self.allow_alias = None;
     }
@@ -5291,6 +5417,8 @@ impl<'a> EnumOptions {
     pub fn get_allow_alias(&self) -> bool {
         self.allow_alias.unwrap_or(true)
     }
+
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -5493,6 +5621,8 @@ impl<'a> EnumValueOptions {
         }
     }
 
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
     }
@@ -5658,6 +5788,8 @@ impl<'a> ServiceOptions {
         }
     }
 
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
     }
@@ -5822,6 +5954,8 @@ impl<'a> MethodOptions {
             })
         }
     }
+
+    // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -6000,6 +6134,8 @@ impl<'a> UninterpretedOption {
         }
     }
 
+    // repeated .google.protobuf.UninterpretedOption.NamePart name = 2;
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -6021,6 +6157,8 @@ impl<'a> UninterpretedOption {
     pub fn add_name(&mut self, v: UninterpretedOption_NamePart) {
         self.name.push(v);
     }
+
+    // optional string identifier_value = 3;
 
     pub fn clear_identifier_value(&mut self) {
         self.identifier_value.clear();
@@ -6051,6 +6189,8 @@ impl<'a> UninterpretedOption {
         }
     }
 
+    // optional uint64 positive_int_value = 4;
+
     pub fn clear_positive_int_value(&mut self) {
         self.positive_int_value = None;
     }
@@ -6067,6 +6207,8 @@ impl<'a> UninterpretedOption {
     pub fn get_positive_int_value(&self) -> u64 {
         self.positive_int_value.unwrap_or(0)
     }
+
+    // optional int64 negative_int_value = 5;
 
     pub fn clear_negative_int_value(&mut self) {
         self.negative_int_value = None;
@@ -6085,6 +6227,8 @@ impl<'a> UninterpretedOption {
         self.negative_int_value.unwrap_or(0)
     }
 
+    // optional double double_value = 6;
+
     pub fn clear_double_value(&mut self) {
         self.double_value = None;
     }
@@ -6101,6 +6245,8 @@ impl<'a> UninterpretedOption {
     pub fn get_double_value(&self) -> f64 {
         self.double_value.unwrap_or(0.)
     }
+
+    // optional bytes string_value = 7;
 
     pub fn clear_string_value(&mut self) {
         self.string_value.clear();
@@ -6130,6 +6276,8 @@ impl<'a> UninterpretedOption {
             None => [].as_slice(),
         }
     }
+
+    // optional string aggregate_value = 8;
 
     pub fn clear_aggregate_value(&mut self) {
         self.aggregate_value.clear();
@@ -6521,6 +6669,8 @@ impl<'a> UninterpretedOption_NamePart {
         }
     }
 
+    // required string name_part = 1;
+
     pub fn clear_name_part(&mut self) {
         self.name_part.clear();
     }
@@ -6549,6 +6699,8 @@ impl<'a> UninterpretedOption_NamePart {
             None => "",
         }
     }
+
+    // required bool is_extension = 2;
 
     pub fn clear_is_extension(&mut self) {
         self.is_extension = None;
@@ -6752,6 +6904,8 @@ impl<'a> SourceCodeInfo {
         }
     }
 
+    // repeated .google.protobuf.SourceCodeInfo.Location location = 1;
+
     pub fn clear_location(&mut self) {
         self.location.clear();
     }
@@ -6923,6 +7077,8 @@ impl<'a> SourceCodeInfo_Location {
         }
     }
 
+    // repeated int32 path = 1;
+
     pub fn clear_path(&mut self) {
         self.path.clear();
     }
@@ -6945,6 +7101,8 @@ impl<'a> SourceCodeInfo_Location {
         self.path.push(v);
     }
 
+    // repeated int32 span = 2;
+
     pub fn clear_span(&mut self) {
         self.span.clear();
     }
@@ -6966,6 +7124,8 @@ impl<'a> SourceCodeInfo_Location {
     pub fn add_span(&mut self, v: i32) {
         self.span.push(v);
     }
+
+    // optional string leading_comments = 3;
 
     pub fn clear_leading_comments(&mut self) {
         self.leading_comments.clear();
@@ -6995,6 +7155,8 @@ impl<'a> SourceCodeInfo_Location {
             None => "",
         }
     }
+
+    // optional string trailing_comments = 4;
 
     pub fn clear_trailing_comments(&mut self) {
         self.trailing_comments.clear();

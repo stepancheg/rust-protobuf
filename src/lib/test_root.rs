@@ -28,6 +28,8 @@ impl<'a> Root {
         }
     }
 
+    // repeated .Root.Nested nested = 1;
+
     pub fn clear_nested(&mut self) {
         self.nested.clear();
     }

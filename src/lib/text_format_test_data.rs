@@ -28,6 +28,8 @@ impl<'a> TestMessage {
         }
     }
 
+    // optional int32 value = 10;
+
     pub fn clear_value(&mut self) {
         self.value = None;
     }
@@ -254,6 +256,8 @@ impl<'a> TestTypes {
         }
     }
 
+    // optional double double_singular = 1;
+
     pub fn clear_double_singular(&mut self) {
         self.double_singular = None;
     }
@@ -270,6 +274,8 @@ impl<'a> TestTypes {
     pub fn get_double_singular(&self) -> f64 {
         self.double_singular.unwrap_or(0.)
     }
+
+    // optional float float_singular = 2;
 
     pub fn clear_float_singular(&mut self) {
         self.float_singular = None;
@@ -288,6 +294,8 @@ impl<'a> TestTypes {
         self.float_singular.unwrap_or(0.)
     }
 
+    // optional int32 int32_singular = 3;
+
     pub fn clear_int32_singular(&mut self) {
         self.int32_singular = None;
     }
@@ -304,6 +312,8 @@ impl<'a> TestTypes {
     pub fn get_int32_singular(&self) -> i32 {
         self.int32_singular.unwrap_or(0)
     }
+
+    // optional int64 int64_singular = 4;
 
     pub fn clear_int64_singular(&mut self) {
         self.int64_singular = None;
@@ -322,6 +332,8 @@ impl<'a> TestTypes {
         self.int64_singular.unwrap_or(0)
     }
 
+    // optional uint32 uint32_singular = 5;
+
     pub fn clear_uint32_singular(&mut self) {
         self.uint32_singular = None;
     }
@@ -338,6 +350,8 @@ impl<'a> TestTypes {
     pub fn get_uint32_singular(&self) -> u32 {
         self.uint32_singular.unwrap_or(0)
     }
+
+    // optional uint64 uint64_singular = 6;
 
     pub fn clear_uint64_singular(&mut self) {
         self.uint64_singular = None;
@@ -356,6 +370,8 @@ impl<'a> TestTypes {
         self.uint64_singular.unwrap_or(0)
     }
 
+    // optional sint32 sint32_singular = 7;
+
     pub fn clear_sint32_singular(&mut self) {
         self.sint32_singular = None;
     }
@@ -372,6 +388,8 @@ impl<'a> TestTypes {
     pub fn get_sint32_singular(&self) -> i32 {
         self.sint32_singular.unwrap_or(0)
     }
+
+    // optional sint64 sint64_singular = 8;
 
     pub fn clear_sint64_singular(&mut self) {
         self.sint64_singular = None;
@@ -390,6 +408,8 @@ impl<'a> TestTypes {
         self.sint64_singular.unwrap_or(0)
     }
 
+    // optional fixed32 fixed32_singular = 9;
+
     pub fn clear_fixed32_singular(&mut self) {
         self.fixed32_singular = None;
     }
@@ -406,6 +426,8 @@ impl<'a> TestTypes {
     pub fn get_fixed32_singular(&self) -> u32 {
         self.fixed32_singular.unwrap_or(0)
     }
+
+    // optional fixed64 fixed64_singular = 10;
 
     pub fn clear_fixed64_singular(&mut self) {
         self.fixed64_singular = None;
@@ -424,6 +446,8 @@ impl<'a> TestTypes {
         self.fixed64_singular.unwrap_or(0)
     }
 
+    // optional sfixed32 sfixed32_singular = 11;
+
     pub fn clear_sfixed32_singular(&mut self) {
         self.sfixed32_singular = None;
     }
@@ -440,6 +464,8 @@ impl<'a> TestTypes {
     pub fn get_sfixed32_singular(&self) -> i32 {
         self.sfixed32_singular.unwrap_or(0)
     }
+
+    // optional sfixed64 sfixed64_singular = 12;
 
     pub fn clear_sfixed64_singular(&mut self) {
         self.sfixed64_singular = None;
@@ -458,6 +484,8 @@ impl<'a> TestTypes {
         self.sfixed64_singular.unwrap_or(0)
     }
 
+    // optional bool bool_singular = 13;
+
     pub fn clear_bool_singular(&mut self) {
         self.bool_singular = None;
     }
@@ -474,6 +502,8 @@ impl<'a> TestTypes {
     pub fn get_bool_singular(&self) -> bool {
         self.bool_singular.unwrap_or(false)
     }
+
+    // optional string string_singular = 14;
 
     pub fn clear_string_singular(&mut self) {
         self.string_singular.clear();
@@ -504,6 +534,8 @@ impl<'a> TestTypes {
         }
     }
 
+    // optional bytes bytes_singular = 15;
+
     pub fn clear_bytes_singular(&mut self) {
         self.bytes_singular.clear();
     }
@@ -533,6 +565,8 @@ impl<'a> TestTypes {
         }
     }
 
+    // optional .TestEnum test_enum_singular = 16;
+
     pub fn clear_test_enum_singular(&mut self) {
         self.test_enum_singular = None;
     }
@@ -549,6 +583,8 @@ impl<'a> TestTypes {
     pub fn get_test_enum_singular(&self) -> TestEnum {
         self.test_enum_singular.unwrap_or(DARK)
     }
+
+    // optional .TestMessage test_message_singular = 17;
 
     pub fn clear_test_message_singular(&mut self) {
         self.test_message_singular.clear();
@@ -576,6 +612,8 @@ impl<'a> TestTypes {
         self.test_message_singular.as_ref().unwrap_or_else(|| TestMessage::default_instance())
     }
 
+    // repeated double double_repeated = 31;
+
     pub fn clear_double_repeated(&mut self) {
         self.double_repeated.clear();
     }
@@ -597,6 +635,8 @@ impl<'a> TestTypes {
     pub fn add_double_repeated(&mut self, v: f64) {
         self.double_repeated.push(v);
     }
+
+    // repeated float float_repeated = 32;
 
     pub fn clear_float_repeated(&mut self) {
         self.float_repeated.clear();
@@ -620,6 +660,8 @@ impl<'a> TestTypes {
         self.float_repeated.push(v);
     }
 
+    // repeated int32 int32_repeated = 33;
+
     pub fn clear_int32_repeated(&mut self) {
         self.int32_repeated.clear();
     }
@@ -641,6 +683,8 @@ impl<'a> TestTypes {
     pub fn add_int32_repeated(&mut self, v: i32) {
         self.int32_repeated.push(v);
     }
+
+    // repeated int64 int64_repeated = 34;
 
     pub fn clear_int64_repeated(&mut self) {
         self.int64_repeated.clear();
@@ -664,6 +708,8 @@ impl<'a> TestTypes {
         self.int64_repeated.push(v);
     }
 
+    // repeated uint32 uint32_repeated = 35;
+
     pub fn clear_uint32_repeated(&mut self) {
         self.uint32_repeated.clear();
     }
@@ -685,6 +731,8 @@ impl<'a> TestTypes {
     pub fn add_uint32_repeated(&mut self, v: u32) {
         self.uint32_repeated.push(v);
     }
+
+    // repeated uint64 uint64_repeated = 36;
 
     pub fn clear_uint64_repeated(&mut self) {
         self.uint64_repeated.clear();
@@ -708,6 +756,8 @@ impl<'a> TestTypes {
         self.uint64_repeated.push(v);
     }
 
+    // repeated sint32 sint32_repeated = 37;
+
     pub fn clear_sint32_repeated(&mut self) {
         self.sint32_repeated.clear();
     }
@@ -729,6 +779,8 @@ impl<'a> TestTypes {
     pub fn add_sint32_repeated(&mut self, v: i32) {
         self.sint32_repeated.push(v);
     }
+
+    // repeated sint64 sint64_repeated = 38;
 
     pub fn clear_sint64_repeated(&mut self) {
         self.sint64_repeated.clear();
@@ -752,6 +804,8 @@ impl<'a> TestTypes {
         self.sint64_repeated.push(v);
     }
 
+    // repeated fixed32 fixed32_repeated = 39;
+
     pub fn clear_fixed32_repeated(&mut self) {
         self.fixed32_repeated.clear();
     }
@@ -773,6 +827,8 @@ impl<'a> TestTypes {
     pub fn add_fixed32_repeated(&mut self, v: u32) {
         self.fixed32_repeated.push(v);
     }
+
+    // repeated fixed64 fixed64_repeated = 40;
 
     pub fn clear_fixed64_repeated(&mut self) {
         self.fixed64_repeated.clear();
@@ -796,6 +852,8 @@ impl<'a> TestTypes {
         self.fixed64_repeated.push(v);
     }
 
+    // repeated sfixed32 sfixed32_repeated = 41;
+
     pub fn clear_sfixed32_repeated(&mut self) {
         self.sfixed32_repeated.clear();
     }
@@ -817,6 +875,8 @@ impl<'a> TestTypes {
     pub fn add_sfixed32_repeated(&mut self, v: i32) {
         self.sfixed32_repeated.push(v);
     }
+
+    // repeated sfixed64 sfixed64_repeated = 42;
 
     pub fn clear_sfixed64_repeated(&mut self) {
         self.sfixed64_repeated.clear();
@@ -840,6 +900,8 @@ impl<'a> TestTypes {
         self.sfixed64_repeated.push(v);
     }
 
+    // repeated bool bool_repeated = 43;
+
     pub fn clear_bool_repeated(&mut self) {
         self.bool_repeated.clear();
     }
@@ -861,6 +923,8 @@ impl<'a> TestTypes {
     pub fn add_bool_repeated(&mut self, v: bool) {
         self.bool_repeated.push(v);
     }
+
+    // repeated string string_repeated = 44;
 
     pub fn clear_string_repeated(&mut self) {
         self.string_repeated.clear();
@@ -884,6 +948,8 @@ impl<'a> TestTypes {
         self.string_repeated.push(v);
     }
 
+    // repeated bytes bytes_repeated = 45;
+
     pub fn clear_bytes_repeated(&mut self) {
         self.bytes_repeated.clear();
     }
@@ -906,6 +972,8 @@ impl<'a> TestTypes {
         self.bytes_repeated.push(v);
     }
 
+    // repeated .TestEnum test_enum_repeated = 46;
+
     pub fn clear_test_enum_repeated(&mut self) {
         self.test_enum_repeated.clear();
     }
@@ -927,6 +995,8 @@ impl<'a> TestTypes {
     pub fn add_test_enum_repeated(&mut self, v: TestEnum) {
         self.test_enum_repeated.push(v);
     }
+
+    // repeated .TestMessage test_message_repeated = 47;
 
     pub fn clear_test_message_repeated(&mut self) {
         self.test_message_repeated.clear();
