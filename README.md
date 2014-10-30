@@ -87,7 +87,6 @@ Have a look at generated files, used internally in rust-protobuf:
 * Protobuf reflection
 * Extensions
 * Generate stubs for services
-* Default value
 
 ## Contact me
 
