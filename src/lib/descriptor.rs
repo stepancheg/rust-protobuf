@@ -1557,15 +1557,6 @@ impl<'a> DescriptorProto_ExtensionRange {
         self.start = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_start(&'a mut self) -> &'a mut i32 {
-        if self.start.is_none() {
-            self.start = Some(0);
-        };
-        self.start.as_mut().unwrap()
-    }
-
     pub fn get_start(&self) -> i32 {
         self.start.unwrap_or_else(|| 0)
     }
@@ -1581,15 +1572,6 @@ impl<'a> DescriptorProto_ExtensionRange {
     // Param is passed by value, moved
     pub fn set_end(&mut self, v: i32) {
         self.end = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_end(&'a mut self) -> &'a mut i32 {
-        if self.end.is_none() {
-            self.end = Some(0);
-        };
-        self.end.as_mut().unwrap()
     }
 
     pub fn get_end(&self) -> i32 {
@@ -1831,15 +1813,6 @@ impl<'a> FieldDescriptorProto {
         self.number = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_number(&'a mut self) -> &'a mut i32 {
-        if self.number.is_none() {
-            self.number = Some(0);
-        };
-        self.number.as_mut().unwrap()
-    }
-
     pub fn get_number(&self) -> i32 {
         self.number.unwrap_or_else(|| 0)
     }
@@ -1857,15 +1830,6 @@ impl<'a> FieldDescriptorProto {
         self.label = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_label(&'a mut self) -> &'a mut FieldDescriptorProto_Label {
-        if self.label.is_none() {
-            self.label = Some(FieldDescriptorProto_LABEL_OPTIONAL);
-        };
-        self.label.as_mut().unwrap()
-    }
-
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
         self.label.unwrap_or_else(|| FieldDescriptorProto_LABEL_OPTIONAL)
     }
@@ -1881,15 +1845,6 @@ impl<'a> FieldDescriptorProto {
     // Param is passed by value, moved
     pub fn set_field_type(&mut self, v: FieldDescriptorProto_Type) {
         self.field_type = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_field_type(&'a mut self) -> &'a mut FieldDescriptorProto_Type {
-        if self.field_type.is_none() {
-            self.field_type = Some(FieldDescriptorProto_TYPE_DOUBLE);
-        };
-        self.field_type.as_mut().unwrap()
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
@@ -2849,15 +2804,6 @@ impl<'a> EnumValueDescriptorProto {
     // Param is passed by value, moved
     pub fn set_number(&mut self, v: i32) {
         self.number = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_number(&'a mut self) -> &'a mut i32 {
-        if self.number.is_none() {
-            self.number = Some(0);
-        };
-        self.number.as_mut().unwrap()
     }
 
     pub fn get_number(&self) -> i32 {
@@ -3870,15 +3816,6 @@ impl<'a> FileOptions {
         self.java_multiple_files = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_multiple_files(&'a mut self) -> &'a mut bool {
-        if self.java_multiple_files.is_none() {
-            self.java_multiple_files = Some(false);
-        };
-        self.java_multiple_files.as_mut().unwrap()
-    }
-
     pub fn get_java_multiple_files(&self) -> bool {
         self.java_multiple_files.unwrap_or_else(|| false)
     }
@@ -3896,15 +3833,6 @@ impl<'a> FileOptions {
         self.java_generate_equals_and_hash = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_generate_equals_and_hash(&'a mut self) -> &'a mut bool {
-        if self.java_generate_equals_and_hash.is_none() {
-            self.java_generate_equals_and_hash = Some(false);
-        };
-        self.java_generate_equals_and_hash.as_mut().unwrap()
-    }
-
     pub fn get_java_generate_equals_and_hash(&self) -> bool {
         self.java_generate_equals_and_hash.unwrap_or_else(|| false)
     }
@@ -3920,15 +3848,6 @@ impl<'a> FileOptions {
     // Param is passed by value, moved
     pub fn set_optimize_for(&mut self, v: FileOptions_OptimizeMode) {
         self.optimize_for = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_optimize_for(&'a mut self) -> &'a mut FileOptions_OptimizeMode {
-        if self.optimize_for.is_none() {
-            self.optimize_for = Some(FileOptions_SPEED);
-        };
-        self.optimize_for.as_mut().unwrap()
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
@@ -3977,15 +3896,6 @@ impl<'a> FileOptions {
         self.cc_generic_services = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_cc_generic_services(&'a mut self) -> &'a mut bool {
-        if self.cc_generic_services.is_none() {
-            self.cc_generic_services = Some(false);
-        };
-        self.cc_generic_services.as_mut().unwrap()
-    }
-
     pub fn get_cc_generic_services(&self) -> bool {
         self.cc_generic_services.unwrap_or_else(|| false)
     }
@@ -4003,15 +3913,6 @@ impl<'a> FileOptions {
         self.java_generic_services = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_generic_services(&'a mut self) -> &'a mut bool {
-        if self.java_generic_services.is_none() {
-            self.java_generic_services = Some(false);
-        };
-        self.java_generic_services.as_mut().unwrap()
-    }
-
     pub fn get_java_generic_services(&self) -> bool {
         self.java_generic_services.unwrap_or_else(|| false)
     }
@@ -4027,15 +3928,6 @@ impl<'a> FileOptions {
     // Param is passed by value, moved
     pub fn set_py_generic_services(&mut self, v: bool) {
         self.py_generic_services = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_py_generic_services(&'a mut self) -> &'a mut bool {
-        if self.py_generic_services.is_none() {
-            self.py_generic_services = Some(false);
-        };
-        self.py_generic_services.as_mut().unwrap()
     }
 
     pub fn get_py_generic_services(&self) -> bool {
@@ -4582,15 +4474,6 @@ impl<'a> MessageOptions {
         self.message_set_wire_format = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_message_set_wire_format(&'a mut self) -> &'a mut bool {
-        if self.message_set_wire_format.is_none() {
-            self.message_set_wire_format = Some(false);
-        };
-        self.message_set_wire_format.as_mut().unwrap()
-    }
-
     pub fn get_message_set_wire_format(&self) -> bool {
         self.message_set_wire_format.unwrap_or_else(|| false)
     }
@@ -4606,15 +4489,6 @@ impl<'a> MessageOptions {
     // Param is passed by value, moved
     pub fn set_no_standard_descriptor_accessor(&mut self, v: bool) {
         self.no_standard_descriptor_accessor = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_no_standard_descriptor_accessor(&'a mut self) -> &'a mut bool {
-        if self.no_standard_descriptor_accessor.is_none() {
-            self.no_standard_descriptor_accessor = Some(false);
-        };
-        self.no_standard_descriptor_accessor.as_mut().unwrap()
     }
 
     pub fn get_no_standard_descriptor_accessor(&self) -> bool {
@@ -4883,15 +4757,6 @@ impl<'a> FieldOptions {
         self.ctype = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_ctype(&'a mut self) -> &'a mut FieldOptions_CType {
-        if self.ctype.is_none() {
-            self.ctype = Some(FieldOptions_STRING);
-        };
-        self.ctype.as_mut().unwrap()
-    }
-
     pub fn get_ctype(&self) -> FieldOptions_CType {
         self.ctype.unwrap_or_else(|| FieldOptions_STRING)
     }
@@ -4907,15 +4772,6 @@ impl<'a> FieldOptions {
     // Param is passed by value, moved
     pub fn set_packed(&mut self, v: bool) {
         self.packed = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_packed(&'a mut self) -> &'a mut bool {
-        if self.packed.is_none() {
-            self.packed = Some(false);
-        };
-        self.packed.as_mut().unwrap()
     }
 
     pub fn get_packed(&self) -> bool {
@@ -4935,15 +4791,6 @@ impl<'a> FieldOptions {
         self.lazy = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_lazy(&'a mut self) -> &'a mut bool {
-        if self.lazy.is_none() {
-            self.lazy = Some(false);
-        };
-        self.lazy.as_mut().unwrap()
-    }
-
     pub fn get_lazy(&self) -> bool {
         self.lazy.unwrap_or_else(|| false)
     }
@@ -4959,15 +4806,6 @@ impl<'a> FieldOptions {
     // Param is passed by value, moved
     pub fn set_deprecated(&mut self, v: bool) {
         self.deprecated = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_deprecated(&'a mut self) -> &'a mut bool {
-        if self.deprecated.is_none() {
-            self.deprecated = Some(false);
-        };
-        self.deprecated.as_mut().unwrap()
     }
 
     pub fn get_deprecated(&self) -> bool {
@@ -5014,15 +4852,6 @@ impl<'a> FieldOptions {
     // Param is passed by value, moved
     pub fn set_weak(&mut self, v: bool) {
         self.weak = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_weak(&'a mut self) -> &'a mut bool {
-        if self.weak.is_none() {
-            self.weak = Some(false);
-        };
-        self.weak.as_mut().unwrap()
     }
 
     pub fn get_weak(&self) -> bool {
@@ -5457,15 +5286,6 @@ impl<'a> EnumOptions {
     // Param is passed by value, moved
     pub fn set_allow_alias(&mut self, v: bool) {
         self.allow_alias = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_allow_alias(&'a mut self) -> &'a mut bool {
-        if self.allow_alias.is_none() {
-            self.allow_alias = Some(true);
-        };
-        self.allow_alias.as_mut().unwrap()
     }
 
     pub fn get_allow_alias(&self) -> bool {
@@ -6244,15 +6064,6 @@ impl<'a> UninterpretedOption {
         self.positive_int_value = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_positive_int_value(&'a mut self) -> &'a mut u64 {
-        if self.positive_int_value.is_none() {
-            self.positive_int_value = Some(0);
-        };
-        self.positive_int_value.as_mut().unwrap()
-    }
-
     pub fn get_positive_int_value(&self) -> u64 {
         self.positive_int_value.unwrap_or_else(|| 0)
     }
@@ -6270,15 +6081,6 @@ impl<'a> UninterpretedOption {
         self.negative_int_value = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_negative_int_value(&'a mut self) -> &'a mut i64 {
-        if self.negative_int_value.is_none() {
-            self.negative_int_value = Some(0);
-        };
-        self.negative_int_value.as_mut().unwrap()
-    }
-
     pub fn get_negative_int_value(&self) -> i64 {
         self.negative_int_value.unwrap_or_else(|| 0)
     }
@@ -6294,15 +6096,6 @@ impl<'a> UninterpretedOption {
     // Param is passed by value, moved
     pub fn set_double_value(&mut self, v: f64) {
         self.double_value = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_double_value(&'a mut self) -> &'a mut f64 {
-        if self.double_value.is_none() {
-            self.double_value = Some(0.);
-        };
-        self.double_value.as_mut().unwrap()
     }
 
     pub fn get_double_value(&self) -> f64 {
@@ -6768,15 +6561,6 @@ impl<'a> UninterpretedOption_NamePart {
     // Param is passed by value, moved
     pub fn set_is_extension(&mut self, v: bool) {
         self.is_extension = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_is_extension(&'a mut self) -> &'a mut bool {
-        if self.is_extension.is_none() {
-            self.is_extension = Some(false);
-        };
-        self.is_extension.as_mut().unwrap()
     }
 
     pub fn get_is_extension(&self) -> bool {

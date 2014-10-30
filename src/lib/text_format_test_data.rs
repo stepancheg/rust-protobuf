@@ -41,15 +41,6 @@ impl<'a> TestMessage {
         self.value = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_value(&'a mut self) -> &'a mut i32 {
-        if self.value.is_none() {
-            self.value = Some(0);
-        };
-        self.value.as_mut().unwrap()
-    }
-
     pub fn get_value(&self) -> i32 {
         self.value.unwrap_or_else(|| 0)
     }
@@ -276,15 +267,6 @@ impl<'a> TestTypes {
         self.double_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_double_singular(&'a mut self) -> &'a mut f64 {
-        if self.double_singular.is_none() {
-            self.double_singular = Some(0.);
-        };
-        self.double_singular.as_mut().unwrap()
-    }
-
     pub fn get_double_singular(&self) -> f64 {
         self.double_singular.unwrap_or_else(|| 0.)
     }
@@ -300,15 +282,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_float_singular(&mut self, v: f32) {
         self.float_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_float_singular(&'a mut self) -> &'a mut f32 {
-        if self.float_singular.is_none() {
-            self.float_singular = Some(0.);
-        };
-        self.float_singular.as_mut().unwrap()
     }
 
     pub fn get_float_singular(&self) -> f32 {
@@ -328,15 +301,6 @@ impl<'a> TestTypes {
         self.int32_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_int32_singular(&'a mut self) -> &'a mut i32 {
-        if self.int32_singular.is_none() {
-            self.int32_singular = Some(0);
-        };
-        self.int32_singular.as_mut().unwrap()
-    }
-
     pub fn get_int32_singular(&self) -> i32 {
         self.int32_singular.unwrap_or_else(|| 0)
     }
@@ -352,15 +316,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_int64_singular(&mut self, v: i64) {
         self.int64_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_int64_singular(&'a mut self) -> &'a mut i64 {
-        if self.int64_singular.is_none() {
-            self.int64_singular = Some(0);
-        };
-        self.int64_singular.as_mut().unwrap()
     }
 
     pub fn get_int64_singular(&self) -> i64 {
@@ -380,15 +335,6 @@ impl<'a> TestTypes {
         self.uint32_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_uint32_singular(&'a mut self) -> &'a mut u32 {
-        if self.uint32_singular.is_none() {
-            self.uint32_singular = Some(0);
-        };
-        self.uint32_singular.as_mut().unwrap()
-    }
-
     pub fn get_uint32_singular(&self) -> u32 {
         self.uint32_singular.unwrap_or_else(|| 0)
     }
@@ -404,15 +350,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_uint64_singular(&mut self, v: u64) {
         self.uint64_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_uint64_singular(&'a mut self) -> &'a mut u64 {
-        if self.uint64_singular.is_none() {
-            self.uint64_singular = Some(0);
-        };
-        self.uint64_singular.as_mut().unwrap()
     }
 
     pub fn get_uint64_singular(&self) -> u64 {
@@ -432,15 +369,6 @@ impl<'a> TestTypes {
         self.sint32_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sint32_singular(&'a mut self) -> &'a mut i32 {
-        if self.sint32_singular.is_none() {
-            self.sint32_singular = Some(0);
-        };
-        self.sint32_singular.as_mut().unwrap()
-    }
-
     pub fn get_sint32_singular(&self) -> i32 {
         self.sint32_singular.unwrap_or_else(|| 0)
     }
@@ -456,15 +384,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_sint64_singular(&mut self, v: i64) {
         self.sint64_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sint64_singular(&'a mut self) -> &'a mut i64 {
-        if self.sint64_singular.is_none() {
-            self.sint64_singular = Some(0);
-        };
-        self.sint64_singular.as_mut().unwrap()
     }
 
     pub fn get_sint64_singular(&self) -> i64 {
@@ -484,15 +403,6 @@ impl<'a> TestTypes {
         self.fixed32_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_fixed32_singular(&'a mut self) -> &'a mut u32 {
-        if self.fixed32_singular.is_none() {
-            self.fixed32_singular = Some(0);
-        };
-        self.fixed32_singular.as_mut().unwrap()
-    }
-
     pub fn get_fixed32_singular(&self) -> u32 {
         self.fixed32_singular.unwrap_or_else(|| 0)
     }
@@ -508,15 +418,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_fixed64_singular(&mut self, v: u64) {
         self.fixed64_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_fixed64_singular(&'a mut self) -> &'a mut u64 {
-        if self.fixed64_singular.is_none() {
-            self.fixed64_singular = Some(0);
-        };
-        self.fixed64_singular.as_mut().unwrap()
     }
 
     pub fn get_fixed64_singular(&self) -> u64 {
@@ -536,15 +437,6 @@ impl<'a> TestTypes {
         self.sfixed32_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sfixed32_singular(&'a mut self) -> &'a mut i32 {
-        if self.sfixed32_singular.is_none() {
-            self.sfixed32_singular = Some(0);
-        };
-        self.sfixed32_singular.as_mut().unwrap()
-    }
-
     pub fn get_sfixed32_singular(&self) -> i32 {
         self.sfixed32_singular.unwrap_or_else(|| 0)
     }
@@ -562,15 +454,6 @@ impl<'a> TestTypes {
         self.sfixed64_singular = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sfixed64_singular(&'a mut self) -> &'a mut i64 {
-        if self.sfixed64_singular.is_none() {
-            self.sfixed64_singular = Some(0);
-        };
-        self.sfixed64_singular.as_mut().unwrap()
-    }
-
     pub fn get_sfixed64_singular(&self) -> i64 {
         self.sfixed64_singular.unwrap_or_else(|| 0)
     }
@@ -586,15 +469,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_bool_singular(&mut self, v: bool) {
         self.bool_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bool_singular(&'a mut self) -> &'a mut bool {
-        if self.bool_singular.is_none() {
-            self.bool_singular = Some(false);
-        };
-        self.bool_singular.as_mut().unwrap()
     }
 
     pub fn get_bool_singular(&self) -> bool {
@@ -670,15 +544,6 @@ impl<'a> TestTypes {
     // Param is passed by value, moved
     pub fn set_test_enum_singular(&mut self, v: TestEnum) {
         self.test_enum_singular = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_test_enum_singular(&'a mut self) -> &'a mut TestEnum {
-        if self.test_enum_singular.is_none() {
-            self.test_enum_singular = Some(DARK);
-        };
-        self.test_enum_singular.as_mut().unwrap()
     }
 
     pub fn get_test_enum_singular(&self) -> TestEnum {

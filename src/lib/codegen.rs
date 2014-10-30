@@ -1276,23 +1276,26 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
         w.self_field_assign_value("v", &set_xxx_param_type);
     });
 
-    let mut_xxx_return_type = w.field().mut_xxx_return_type();
-    w.write_line("");
-    w.comment("Mutable pointer to the field.");
-    if !w.field().repeated {
-        w.comment("If field is not initialized, it is initialized with default value first.");
-    }
-    w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
-    |w| {
+    // mut_xxx() are pointless for primitive types
+    if w.field().type_is_not_trivial() || w.field().repeated {
+        let mut_xxx_return_type = w.field().mut_xxx_return_type();
+        w.write_line("");
+        w.comment("Mutable pointer to the field.");
         if !w.field().repeated {
-            w.if_self_field_is_none(|w| {
-                w.self_field_assign_default();
-            });
-            w.write_line(format!("{:s}.as_mut().unwrap()", w.self_field()));
-        } else {
-            w.write_line(format!("&mut {:s}", w.self_field()));
+            w.comment("If field is not initialized, it is initialized with default value first.");
         }
-    });
+        w.pub_fn(format!("mut_{:s}(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
+        |w| {
+            if !w.field().repeated {
+                w.if_self_field_is_none(|w| {
+                    w.self_field_assign_default();
+                });
+                w.write_line(format!("{:s}.as_mut().unwrap()", w.self_field()));
+            } else {
+                w.write_line(format!("&mut {:s}", w.self_field()));
+            }
+        });
+    }
 
     w.write_line("");
     write_message_field_get(w);

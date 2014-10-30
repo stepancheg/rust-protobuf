@@ -41,15 +41,6 @@ impl<'a> Test1 {
         self.a = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_a(&'a mut self) -> &'a mut i32 {
-        if self.a.is_none() {
-            self.a = Some(0);
-        };
-        self.a.as_mut().unwrap()
-    }
-
     pub fn get_a(&self) -> i32 {
         self.a.unwrap_or_else(|| 0)
     }
@@ -976,15 +967,6 @@ impl<'a> TestEmpty {
         self.foo = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_foo(&'a mut self) -> &'a mut i32 {
-        if self.foo.is_none() {
-            self.foo = Some(0);
-        };
-        self.foo.as_mut().unwrap()
-    }
-
     pub fn get_foo(&self) -> i32 {
         self.foo.unwrap_or_else(|| 0)
     }
@@ -1143,15 +1125,6 @@ impl<'a> TestRequired {
     // Param is passed by value, moved
     pub fn set_b(&mut self, v: bool) {
         self.b = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_b(&'a mut self) -> &'a mut bool {
-        if self.b.is_none() {
-            self.b = Some(false);
-        };
-        self.b.as_mut().unwrap()
     }
 
     pub fn get_b(&self) -> bool {
@@ -1315,15 +1288,6 @@ impl<'a> TestUnknownFields {
     // Param is passed by value, moved
     pub fn set_a(&mut self, v: i32) {
         self.a = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_a(&'a mut self) -> &'a mut i32 {
-        if self.a.is_none() {
-            self.a = Some(0);
-        };
-        self.a.as_mut().unwrap()
     }
 
     pub fn get_a(&self) -> i32 {
@@ -2076,15 +2040,6 @@ impl<'a> TestDescriptor {
         self.stuff = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_stuff(&'a mut self) -> &'a mut i32 {
-        if self.stuff.is_none() {
-            self.stuff = Some(0);
-        };
-        self.stuff.as_mut().unwrap()
-    }
-
     pub fn get_stuff(&self) -> i32 {
         self.stuff.unwrap_or_else(|| 0)
     }
@@ -2273,15 +2228,6 @@ impl<'a> TestTypesSingular {
         self.double_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_double_field(&'a mut self) -> &'a mut f64 {
-        if self.double_field.is_none() {
-            self.double_field = Some(0.);
-        };
-        self.double_field.as_mut().unwrap()
-    }
-
     pub fn get_double_field(&self) -> f64 {
         self.double_field.unwrap_or_else(|| 0.)
     }
@@ -2297,15 +2243,6 @@ impl<'a> TestTypesSingular {
     // Param is passed by value, moved
     pub fn set_float_field(&mut self, v: f32) {
         self.float_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_float_field(&'a mut self) -> &'a mut f32 {
-        if self.float_field.is_none() {
-            self.float_field = Some(0.);
-        };
-        self.float_field.as_mut().unwrap()
     }
 
     pub fn get_float_field(&self) -> f32 {
@@ -2325,15 +2262,6 @@ impl<'a> TestTypesSingular {
         self.int32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_int32_field(&'a mut self) -> &'a mut i32 {
-        if self.int32_field.is_none() {
-            self.int32_field = Some(0);
-        };
-        self.int32_field.as_mut().unwrap()
-    }
-
     pub fn get_int32_field(&self) -> i32 {
         self.int32_field.unwrap_or_else(|| 0)
     }
@@ -2349,15 +2277,6 @@ impl<'a> TestTypesSingular {
     // Param is passed by value, moved
     pub fn set_int64_field(&mut self, v: i64) {
         self.int64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_int64_field(&'a mut self) -> &'a mut i64 {
-        if self.int64_field.is_none() {
-            self.int64_field = Some(0);
-        };
-        self.int64_field.as_mut().unwrap()
     }
 
     pub fn get_int64_field(&self) -> i64 {
@@ -2377,15 +2296,6 @@ impl<'a> TestTypesSingular {
         self.uint32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_uint32_field(&'a mut self) -> &'a mut u32 {
-        if self.uint32_field.is_none() {
-            self.uint32_field = Some(0);
-        };
-        self.uint32_field.as_mut().unwrap()
-    }
-
     pub fn get_uint32_field(&self) -> u32 {
         self.uint32_field.unwrap_or_else(|| 0)
     }
@@ -2401,15 +2311,6 @@ impl<'a> TestTypesSingular {
     // Param is passed by value, moved
     pub fn set_uint64_field(&mut self, v: u64) {
         self.uint64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_uint64_field(&'a mut self) -> &'a mut u64 {
-        if self.uint64_field.is_none() {
-            self.uint64_field = Some(0);
-        };
-        self.uint64_field.as_mut().unwrap()
     }
 
     pub fn get_uint64_field(&self) -> u64 {
@@ -2429,15 +2330,6 @@ impl<'a> TestTypesSingular {
         self.sint32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sint32_field(&'a mut self) -> &'a mut i32 {
-        if self.sint32_field.is_none() {
-            self.sint32_field = Some(0);
-        };
-        self.sint32_field.as_mut().unwrap()
-    }
-
     pub fn get_sint32_field(&self) -> i32 {
         self.sint32_field.unwrap_or_else(|| 0)
     }
@@ -2453,15 +2345,6 @@ impl<'a> TestTypesSingular {
     // Param is passed by value, moved
     pub fn set_sint64_field(&mut self, v: i64) {
         self.sint64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sint64_field(&'a mut self) -> &'a mut i64 {
-        if self.sint64_field.is_none() {
-            self.sint64_field = Some(0);
-        };
-        self.sint64_field.as_mut().unwrap()
     }
 
     pub fn get_sint64_field(&self) -> i64 {
@@ -2481,15 +2364,6 @@ impl<'a> TestTypesSingular {
         self.fixed32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_fixed32_field(&'a mut self) -> &'a mut u32 {
-        if self.fixed32_field.is_none() {
-            self.fixed32_field = Some(0);
-        };
-        self.fixed32_field.as_mut().unwrap()
-    }
-
     pub fn get_fixed32_field(&self) -> u32 {
         self.fixed32_field.unwrap_or_else(|| 0)
     }
@@ -2505,15 +2379,6 @@ impl<'a> TestTypesSingular {
     // Param is passed by value, moved
     pub fn set_fixed64_field(&mut self, v: u64) {
         self.fixed64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_fixed64_field(&'a mut self) -> &'a mut u64 {
-        if self.fixed64_field.is_none() {
-            self.fixed64_field = Some(0);
-        };
-        self.fixed64_field.as_mut().unwrap()
     }
 
     pub fn get_fixed64_field(&self) -> u64 {
@@ -2533,15 +2398,6 @@ impl<'a> TestTypesSingular {
         self.sfixed32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut i32 {
-        if self.sfixed32_field.is_none() {
-            self.sfixed32_field = Some(0);
-        };
-        self.sfixed32_field.as_mut().unwrap()
-    }
-
     pub fn get_sfixed32_field(&self) -> i32 {
         self.sfixed32_field.unwrap_or_else(|| 0)
     }
@@ -2559,15 +2415,6 @@ impl<'a> TestTypesSingular {
         self.sfixed64_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut i64 {
-        if self.sfixed64_field.is_none() {
-            self.sfixed64_field = Some(0);
-        };
-        self.sfixed64_field.as_mut().unwrap()
-    }
-
     pub fn get_sfixed64_field(&self) -> i64 {
         self.sfixed64_field.unwrap_or_else(|| 0)
     }
@@ -2583,15 +2430,6 @@ impl<'a> TestTypesSingular {
     // Param is passed by value, moved
     pub fn set_bool_field(&mut self, v: bool) {
         self.bool_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bool_field(&'a mut self) -> &'a mut bool {
-        if self.bool_field.is_none() {
-            self.bool_field = Some(false);
-        };
-        self.bool_field.as_mut().unwrap()
     }
 
     pub fn get_bool_field(&self) -> bool {
@@ -5514,15 +5352,6 @@ impl<'a> TestDefaultValues {
         self.double_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_double_field(&'a mut self) -> &'a mut f64 {
-        if self.double_field.is_none() {
-            self.double_field = Some(1f64);
-        };
-        self.double_field.as_mut().unwrap()
-    }
-
     pub fn get_double_field(&self) -> f64 {
         self.double_field.unwrap_or_else(|| 1f64)
     }
@@ -5538,15 +5367,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_float_field(&mut self, v: f32) {
         self.float_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_float_field(&'a mut self) -> &'a mut f32 {
-        if self.float_field.is_none() {
-            self.float_field = Some(2f32);
-        };
-        self.float_field.as_mut().unwrap()
     }
 
     pub fn get_float_field(&self) -> f32 {
@@ -5566,15 +5386,6 @@ impl<'a> TestDefaultValues {
         self.int32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_int32_field(&'a mut self) -> &'a mut i32 {
-        if self.int32_field.is_none() {
-            self.int32_field = Some(3i32);
-        };
-        self.int32_field.as_mut().unwrap()
-    }
-
     pub fn get_int32_field(&self) -> i32 {
         self.int32_field.unwrap_or_else(|| 3i32)
     }
@@ -5590,15 +5401,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_int64_field(&mut self, v: i64) {
         self.int64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_int64_field(&'a mut self) -> &'a mut i64 {
-        if self.int64_field.is_none() {
-            self.int64_field = Some(4i64);
-        };
-        self.int64_field.as_mut().unwrap()
     }
 
     pub fn get_int64_field(&self) -> i64 {
@@ -5618,15 +5420,6 @@ impl<'a> TestDefaultValues {
         self.uint32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_uint32_field(&'a mut self) -> &'a mut u32 {
-        if self.uint32_field.is_none() {
-            self.uint32_field = Some(5u32);
-        };
-        self.uint32_field.as_mut().unwrap()
-    }
-
     pub fn get_uint32_field(&self) -> u32 {
         self.uint32_field.unwrap_or_else(|| 5u32)
     }
@@ -5642,15 +5435,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_uint64_field(&mut self, v: u64) {
         self.uint64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_uint64_field(&'a mut self) -> &'a mut u64 {
-        if self.uint64_field.is_none() {
-            self.uint64_field = Some(6u64);
-        };
-        self.uint64_field.as_mut().unwrap()
     }
 
     pub fn get_uint64_field(&self) -> u64 {
@@ -5670,15 +5454,6 @@ impl<'a> TestDefaultValues {
         self.sint32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sint32_field(&'a mut self) -> &'a mut i32 {
-        if self.sint32_field.is_none() {
-            self.sint32_field = Some(7i32);
-        };
-        self.sint32_field.as_mut().unwrap()
-    }
-
     pub fn get_sint32_field(&self) -> i32 {
         self.sint32_field.unwrap_or_else(|| 7i32)
     }
@@ -5694,15 +5469,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_sint64_field(&mut self, v: i64) {
         self.sint64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sint64_field(&'a mut self) -> &'a mut i64 {
-        if self.sint64_field.is_none() {
-            self.sint64_field = Some(8i64);
-        };
-        self.sint64_field.as_mut().unwrap()
     }
 
     pub fn get_sint64_field(&self) -> i64 {
@@ -5722,15 +5488,6 @@ impl<'a> TestDefaultValues {
         self.fixed32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_fixed32_field(&'a mut self) -> &'a mut u32 {
-        if self.fixed32_field.is_none() {
-            self.fixed32_field = Some(9u32);
-        };
-        self.fixed32_field.as_mut().unwrap()
-    }
-
     pub fn get_fixed32_field(&self) -> u32 {
         self.fixed32_field.unwrap_or_else(|| 9u32)
     }
@@ -5746,15 +5503,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_fixed64_field(&mut self, v: u64) {
         self.fixed64_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_fixed64_field(&'a mut self) -> &'a mut u64 {
-        if self.fixed64_field.is_none() {
-            self.fixed64_field = Some(10u64);
-        };
-        self.fixed64_field.as_mut().unwrap()
     }
 
     pub fn get_fixed64_field(&self) -> u64 {
@@ -5774,15 +5522,6 @@ impl<'a> TestDefaultValues {
         self.sfixed32_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sfixed32_field(&'a mut self) -> &'a mut i32 {
-        if self.sfixed32_field.is_none() {
-            self.sfixed32_field = Some(11i32);
-        };
-        self.sfixed32_field.as_mut().unwrap()
-    }
-
     pub fn get_sfixed32_field(&self) -> i32 {
         self.sfixed32_field.unwrap_or_else(|| 11i32)
     }
@@ -5800,15 +5539,6 @@ impl<'a> TestDefaultValues {
         self.sfixed64_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_sfixed64_field(&'a mut self) -> &'a mut i64 {
-        if self.sfixed64_field.is_none() {
-            self.sfixed64_field = Some(12i64);
-        };
-        self.sfixed64_field.as_mut().unwrap()
-    }
-
     pub fn get_sfixed64_field(&self) -> i64 {
         self.sfixed64_field.unwrap_or_else(|| 12i64)
     }
@@ -5824,15 +5554,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_bool_field(&mut self, v: bool) {
         self.bool_field = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bool_field(&'a mut self) -> &'a mut bool {
-        if self.bool_field.is_none() {
-            self.bool_field = Some(true);
-        };
-        self.bool_field.as_mut().unwrap()
     }
 
     pub fn get_bool_field(&self) -> bool {
@@ -5910,15 +5631,6 @@ impl<'a> TestDefaultValues {
         self.enum_field = Some(v);
     }
 
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_enum_field(&'a mut self) -> &'a mut EnumForDefaultValue {
-        if self.enum_field.is_none() {
-            self.enum_field = Some(TWO);
-        };
-        self.enum_field.as_mut().unwrap()
-    }
-
     pub fn get_enum_field(&self) -> EnumForDefaultValue {
         self.enum_field.unwrap_or_else(|| TWO)
     }
@@ -5934,15 +5646,6 @@ impl<'a> TestDefaultValues {
     // Param is passed by value, moved
     pub fn set_enum_field_without_default(&mut self, v: EnumForDefaultValue) {
         self.enum_field_without_default = Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_enum_field_without_default(&'a mut self) -> &'a mut EnumForDefaultValue {
-        if self.enum_field_without_default.is_none() {
-            self.enum_field_without_default = Some(ONE);
-        };
-        self.enum_field_without_default.as_mut().unwrap()
     }
 
     pub fn get_enum_field_without_default(&self) -> EnumForDefaultValue {
