@@ -7,7 +7,7 @@ use std::char;
 fn decode_hex_digit(digit: char) -> u8 {
     match char::to_digit(digit, 16) {
         Some(d) => d as u8,
-        _ => fail!()
+        _ => panic!()
     }
 }
 
@@ -26,7 +26,7 @@ pub fn decode_hex(hex: &str) -> Vec<u8> {
         if pos == hex.char_len() {
             break;
         }
-        fail!("pos = {:u}d", pos);
+        panic!("pos = {:u}d", pos);
     }
     r
 }
@@ -34,7 +34,7 @@ pub fn decode_hex(hex: &str) -> Vec<u8> {
 fn encode_hex_digit(digit: u8) -> char {
     match char::from_digit(digit as uint, 16) {
         Some(c) => c,
-        _ => fail!()
+        _ => panic!()
     }
 }
 

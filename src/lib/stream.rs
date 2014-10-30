@@ -139,7 +139,7 @@ impl<'a> CodedInputStream<'a> {
     // Otherwize returns Ok(true).
     fn refill_buffer(&mut self) -> ProtobufResult<bool> {
         if self.buffer_pos < self.buffer_size {
-            fail!("called when buffer is not empty");
+            panic!("called when buffer is not empty");
         }
         if self.pos() == self.current_limit {
             return Ok(false);
@@ -161,7 +161,7 @@ impl<'a> CodedInputStream<'a> {
                     };
                     assert!(self.buffer_size > 0);
                 },
-                None => fail!(),
+                None => panic!(),
             }
             self.recompute_buffer_size_after_limit();
             Ok(true)
@@ -195,7 +195,7 @@ impl<'a> CodedInputStream<'a> {
         let old_limit = self.current_limit;
         let new_limit = self.pos() + limit;
         if new_limit > old_limit {
-            fail!("truncated message");
+            panic!("truncated message");
         }
         self.current_limit = new_limit;
         self.recompute_buffer_size_after_limit();
@@ -204,7 +204,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn pop_limit(&mut self, old_limit: u32) {
         if self.bytes_until_limit() != 0 {
-            fail!("must pop only at current limit")
+            panic!("must pop only at current limit")
         }
         self.current_limit = old_limit;
         self.recompute_buffer_size_after_limit();
@@ -521,7 +521,7 @@ impl<'a> CodedOutputStream<'a> {
                 try!(writer.write(self.buffer.slice(0, self.position as uint))
                     .map_err(|e| ProtobufIoError(e)));
             },
-            None => fail!()
+            None => panic!()
         };
         self.position = 0;
         Ok(())
@@ -548,7 +548,7 @@ impl<'a> CodedOutputStream<'a> {
         // TODO: write into buffer if enough capacity
         match self.writer {
             Some(ref mut writer) => try!(writer.write(bytes).map_err(|e| ProtobufIoError(e))),
-            None => fail!()
+            None => panic!()
         };
         Ok(())
     }

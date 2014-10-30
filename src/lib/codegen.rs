@@ -69,14 +69,14 @@ impl RustType {
     fn ref_str(&self, lt: &str) -> String {
         match *self {
             RustRef(ref param) => format!("&'{} {}", lt, *param),
-            _ => fail!("not a ref: {}", *self),
+            _ => panic!("not a ref: {}", *self),
         }
     }
 
     fn mut_ref_str(&self, lt: &str) -> String {
         match *self {
             RustRef(ref param) => format!("&'{} mut {}", lt, *param),
-            _ => fail!("not a ref: {}", *self),
+            _ => panic!("not a ref: {}", *self),
         }
     }
 
@@ -106,7 +106,7 @@ impl RustType {
             RustRef(box RustMessage(ref name)) => format!("{}::default_instance()", name),
             // TODO: use proper constant
             RustEnum(ref name)                 => format!("{}::new(0)", name),
-            _ => fail!("cannot create default value for: {}", *self),
+            _ => panic!("cannot create default value for: {}", *self),
         }
     }
 
@@ -116,7 +116,7 @@ impl RustType {
             RustOption(..)           => format!("Some({})", value),
             RustSingularField(..)    => format!("::protobuf::SingularField::some({})", value),
             RustSingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
-            _ => fail!("not a wrapper type: {}", *self),
+            _ => panic!("not a wrapper type: {}", *self),
         }
     }
 
@@ -131,7 +131,7 @@ impl RustType {
     fn into(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
             (x, y) if x == y => v.to_string(),
-            _ => fail!("internal error: cannot convert {} to {}", self, target),
+            _ => panic!("internal error: cannot convert {} to {}", self, target),
         }
     }
 
@@ -141,7 +141,7 @@ impl RustType {
             &RustVec(ref p)           |
             &RustRepeatedField(ref p) => box RustSlice(p.clone()),
             &RustMessage(ref p)       => box RustMessage(p.clone()),
-            x => fail!("no ref type for {}", x),
+            x => panic!("no ref type for {}", x),
         })
     }
 }
@@ -166,7 +166,7 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
         FieldDescriptorProto_TYPE_BYTES    => RustVec(box RustUnsigned(8)),
         FieldDescriptorProto_TYPE_ENUM |
         FieldDescriptorProto_TYPE_GROUP |
-        FieldDescriptorProto_TYPE_MESSAGE => fail!()
+        FieldDescriptorProto_TYPE_MESSAGE => panic!()
     }
 }
 
@@ -190,7 +190,7 @@ fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         FieldDescriptorProto_TYPE_BYTES    => "bytes",
         FieldDescriptorProto_TYPE_ENUM     |
         FieldDescriptorProto_TYPE_GROUP    |
-        FieldDescriptorProto_TYPE_MESSAGE  => fail!()
+        FieldDescriptorProto_TYPE_MESSAGE  => panic!()
     }
 }
 
@@ -214,7 +214,7 @@ fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::W
         FieldDescriptorProto_TYPE_STRING   => WireTypeLengthDelimited,
         FieldDescriptorProto_TYPE_BYTES    => WireTypeLengthDelimited,
         FieldDescriptorProto_TYPE_MESSAGE  => WireTypeLengthDelimited,
-        FieldDescriptorProto_TYPE_GROUP    => fail!()
+        FieldDescriptorProto_TYPE_GROUP    => panic!()
     }
 }
 
@@ -243,12 +243,12 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
         match field.get_field_type() {
             FieldDescriptorProto_TYPE_MESSAGE => RustMessage(name),
             FieldDescriptorProto_TYPE_ENUM    => RustEnum(name),
-            _ => fail!("unknown named type: {}", field.get_field_type()),
+            _ => panic!("unknown named type: {}", field.get_field_type()),
         }
     } else if field.has_field_type() {
         rust_name(field.get_field_type())
     } else {
-        fail!("neither type_name, nor field_type specified for field: {}", field.get_name());
+        panic!("neither type_name, nor field_type specified for field: {}", field.get_name());
     }
 }
 
@@ -420,7 +420,7 @@ impl Field {
                 FieldDescriptorProto_TYPE_ENUM     => format!("{}", proto_default),
                 FieldDescriptorProto_TYPE_GROUP |
                 FieldDescriptorProto_TYPE_MESSAGE =>
-                    fail!("default value is not implemented for type: {}", self.field_type)
+                    panic!("default value is not implemented for type: {}", self.field_type)
             })
         } else {
             None
@@ -838,7 +838,7 @@ impl<'a> IndentWriter<'a> {
 
     #[allow(dead_code)]
     fn fail<S : Str>(&self, reason: S) {
-        self.write_line(format!("fail!({});", reason.as_slice()));
+        self.write_line(format!("panic!({});", reason.as_slice()));
     }
 
     #[allow(dead_code)]
@@ -939,7 +939,7 @@ fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
         FieldDescriptorProto_TYPE_BYTES =>
             w.write_line(format!("try!(is.read_bytes_into(tmp))")),
         _ =>
-            fail!(),
+            panic!(),
     }
 }
 
@@ -973,7 +973,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 match repeat_mode {
                     Single => w.self_field_assign_some("tmp"),
                     RepeatRegular => w.self_field_push("tmp"),
-                    _ => fail!()
+                    _ => panic!()
                 }
             },
             RepeatPacked => {
@@ -1548,7 +1548,7 @@ fn write_enum_impl(w: &mut IndentWriter) {
                 for value in w.en().values.iter() {
                     w.write_line(format!("{:d} => {:s},", value.number(), value.rust_name()));
                 }
-                w.write_line(format!("_ => fail!()"));
+                w.write_line(format!("_ => panic!()"));
             });
         });
     });

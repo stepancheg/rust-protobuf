@@ -7,14 +7,14 @@ pub fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
 
 pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
     if !s.ends_with(suffix) {
-        fail!();
+        panic!();
     }
     s.slice_to(s.len() - suffix.len())
 }
 
 pub fn remove_prefix<'s>(s: &'s str, prefix: &str) -> &'s str {
     if !s.starts_with(prefix) {
-        fail!();
+        panic!();
     }
     s.slice_from(prefix.len())
 }

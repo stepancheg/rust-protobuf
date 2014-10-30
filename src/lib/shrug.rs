@@ -6595,7 +6595,7 @@ impl TestEnumDescriptor {
             1 => RED,
             2 => BLUE,
             3 => GREEN,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }
@@ -6628,7 +6628,7 @@ impl EnumForDefaultValue {
             1 => ONE,
             2 => TWO,
             3 => THREE,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }

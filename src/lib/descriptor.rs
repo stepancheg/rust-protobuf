@@ -2429,7 +2429,7 @@ impl FieldDescriptorProto_Type {
             16 => FieldDescriptorProto_TYPE_SFIXED64,
             17 => FieldDescriptorProto_TYPE_SINT32,
             18 => FieldDescriptorProto_TYPE_SINT64,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }
@@ -2462,7 +2462,7 @@ impl FieldDescriptorProto_Label {
             1 => FieldDescriptorProto_LABEL_OPTIONAL,
             2 => FieldDescriptorProto_LABEL_REQUIRED,
             3 => FieldDescriptorProto_LABEL_REPEATED,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }
@@ -4522,7 +4522,7 @@ impl FileOptions_OptimizeMode {
             1 => FileOptions_SPEED,
             2 => FileOptions_CODE_SIZE,
             3 => FileOptions_LITE_RUNTIME,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }
@@ -5401,7 +5401,7 @@ impl FieldOptions_CType {
             0 => FieldOptions_STRING,
             1 => FieldOptions_CORD,
             2 => FieldOptions_STRING_PIECE,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }

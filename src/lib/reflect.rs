@@ -18,99 +18,99 @@ pub trait FieldAccessor<M : Message> {
     fn name(&self) -> &'static str;
 
     fn has_field(&self, _m: &M) -> bool {
-        fail!();
+        panic!();
     }
 
     fn len_field(&self, _m: &M) -> uint {
-        fail!();
+        panic!();
     }
 
     fn get_message<'a>(&self, _m: &'a M) -> &'a Message {
-        fail!();
+        panic!();
     }
 
     fn get_rep_message_item<'a>(&self, _m: &'a M, _index: uint) -> &'a Message {
-        fail!();
+        panic!();
     }
 
     fn get_enum(&self, _m: &M) -> &'static EnumValueDescriptor {
-        fail!();
+        panic!();
     }
 
     fn get_rep_enum_item(&self, _m: &M, _index: uint) -> &'static EnumValueDescriptor {
-        fail!();
+        panic!();
     }
 
     fn get_str<'a>(&self, _m: &'a M) -> &'a str {
-        fail!();
+        panic!();
     }
 
     fn get_rep_str<'a>(&self, _m: &'a M) -> &'a [String] {
-        fail!();
+        panic!();
     }
 
     fn get_bytes<'a>(&self, _m: &'a M) -> &'a [u8] {
-        fail!();
+        panic!();
     }
 
     fn get_rep_bytes<'a>(&self, _m: &'a M) -> &'a [Vec<u8>] {
-        fail!();
+        panic!();
     }
 
     fn get_u32(&self, _m: &M) -> u32 {
-        fail!();
+        panic!();
     }
 
     fn get_rep_u32<'a>(&self, _m: &'a M) -> &'a [u32] {
-        fail!();
+        panic!();
     }
 
     fn get_u64(&self, _m: &M) -> u64 {
-        fail!();
+        panic!();
     }
 
     fn get_rep_u64<'a>(&self, _m: &'a M) -> &'a [u64] {
-        fail!();
+        panic!();
     }
 
     fn get_i32(&self, _m: &M) -> i32 {
-        fail!();
+        panic!();
     }
 
     fn get_rep_i32<'a>(&self, _m: &'a M) -> &'a [i32] {
-        fail!();
+        panic!();
     }
 
     fn get_i64(&self, _m: &M) -> i64 {
-        fail!();
+        panic!();
     }
 
     fn get_rep_i64<'a>(&self, _m: &'a M) -> &'a [i64] {
-        fail!();
+        panic!();
     }
 
     fn get_bool(&self, _m: &M) -> bool {
-        fail!();
+        panic!();
     }
 
     fn get_rep_bool<'a>(&self, _m: &'a M) -> &'a [bool] {
-        fail!();
+        panic!();
     }
 
     fn get_f32(&self, _m: &M) -> f32 {
-        fail!();
+        panic!();
     }
 
     fn get_rep_f32<'a>(&self, _m: &'a M) -> &'a [f32] {
-        fail!();
+        panic!();
     }
 
     fn get_f64(&self, _m: &M) -> f64 {
-        fail!();
+        panic!();
     }
 
     fn get_rep_f64<'a>(&self, _m: &'a M) -> &'a [f64] {
-        fail!();
+        panic!();
     }
 }
 

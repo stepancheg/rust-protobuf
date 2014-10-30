@@ -94,7 +94,7 @@ impl TestRunner {
     fn check(&self) {
         if !self.any_matched {
             let name = self.selected.as_ref().map(|s| s.as_slice()).unwrap_or("bug");
-            fail!("no tests found with name {}", name);
+            panic!("no tests found with name {}", name);
         }
     }
 }
@@ -103,7 +103,7 @@ fn main() {
     let selected = match os::args().as_slice() {
         [_] => None,
         [_, ref test] => Some(test.to_string()),
-        v => fail!("usage: {} <test>", v[0]),
+        v => panic!("usage: {} <test>", v[0]),
     };
 
     let mut runner = TestRunner { selected: selected, any_matched: false };

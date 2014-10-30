@@ -119,7 +119,7 @@ impl MessageA_EnumA {
     pub fn new(value: i32) -> MessageA_EnumA {
         match value {
             0 => MessageA_FOO,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }
@@ -253,7 +253,7 @@ impl MessageB_EnumB {
     pub fn new(value: i32) -> MessageB_EnumB {
         match value {
             0 => MessageB_FOO,
-            _ => fail!()
+            _ => panic!()
         }
     }
 }

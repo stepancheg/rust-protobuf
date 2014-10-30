@@ -87,7 +87,7 @@ impl<T> SingularField<T> {
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
             //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(_) => fail!(),
+            Some(_) => panic!(),
             None => &mut []
         }
     }
@@ -97,7 +97,7 @@ impl<T> SingularField<T> {
         if self.set {
             self.value
         } else {
-            fail!();
+            panic!();
         }
     }
 
@@ -254,7 +254,7 @@ impl<T> SingularPtrField<T> {
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         match self.as_mut() {
             //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(_) => fail!(),
+            Some(_) => panic!(),
             None => &mut []
         }
     }
@@ -264,7 +264,7 @@ impl<T> SingularPtrField<T> {
         if self.set {
             *self.value.unwrap()
         } else {
-            fail!();
+            panic!();
         }
     }
 

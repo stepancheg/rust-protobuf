@@ -1,4 +1,4 @@
-// TODO: drop all fail!
+// TODO: drop all panic!
 
 use std::mem;
 use std::raw;
@@ -99,11 +99,11 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
 
     // http://stackoverflow.com/q/20342436/15018
     fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
-        fail!();
+        panic!();
     }
 
     fn type_id(&self) -> TypeId {
-        fail!();
+        panic!();
     }
 
     // Rust does not allow implementation of trait for trait:
@@ -142,7 +142,7 @@ pub trait ProtobufEnum : Eq {
 
     // http://stackoverflow.com/q/20342436/15018
     fn enum_descriptor_static(_: Option<Self>) -> &'static EnumDescriptor {
-        fail!();
+        panic!();
     }
 }
 

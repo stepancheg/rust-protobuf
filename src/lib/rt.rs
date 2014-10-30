@@ -128,7 +128,7 @@ pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: wire_format::WireType
         wire_format::WireTypeFixed64 => 8,
         wire_format::WireTypeFixed32 => 4,
         wire_format::WireTypeVarint => value.len_varint(),
-        _ => fail!()
+        _ => panic!()
     }
 }
 
