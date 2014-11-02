@@ -10,16 +10,14 @@ pub struct RepeatedField<T> {
     len: uint,
 }
 
-impl<T> Collection for RepeatedField<T> {
+impl<T> RepeatedField<T> {
     #[inline]
     fn len(&self) -> uint {
         self.len
     }
-}
 
-impl<T> Mutable for RepeatedField<T> {
     #[inline]
-    fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.len = 0;
     }
 }

@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::collections::hashmap;
+use std::collections::hash_map;
 use std::default::Default;
 use std::slice;
 use stream::wire_format;
@@ -125,8 +125,8 @@ impl UnknownFields {
         self.init_map();
 
         match self.fields.as_mut().unwrap().entry(number) {
-            hashmap::Occupied(e) => e.into_mut(),
-            hashmap::Vacant(e) => e.set(Default::default()),
+            hash_map::Occupied(e) => e.into_mut(),
+            hash_map::Vacant(e) => e.set(Default::default()),
         }
     }
 
@@ -166,7 +166,7 @@ impl Clear for UnknownFields {
 }
 
 pub struct UnknownFieldIter<'s> {
-    entries: Option<hashmap::Entries<'s, u32, UnknownValues>>,
+    entries: Option<hash_map::Entries<'s, u32, UnknownValues>>,
 }
 
 impl<'s> Iterator<(u32, &'s UnknownValues)> for UnknownFieldIter<'s> {
