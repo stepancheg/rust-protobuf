@@ -2,7 +2,7 @@
 
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
-#![allow(non_uppercase_statics)]
+#![allow(non_upper_case_globals)]
 
 
 #[deriving(Clone,PartialEq,Default)]
@@ -87,12 +87,12 @@ impl ::protobuf::Message for TestMessage {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.value {
@@ -1490,7 +1490,7 @@ impl ::protobuf::Message for TestTypes {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }

@@ -1169,7 +1169,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
             };
         });
         w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
-        w.write_line("*sizes.get_mut(pos) = my_size;");
+        w.write_line("sizes[pos] = my_size;");
         w.comment("value is returned for convenience");
         w.write_line("my_size");
     });
@@ -1236,7 +1236,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     if !msg.has_any_message_field() {
         // `sizes` and `sizes_pos` are unused
-        w.allow(["unused_variable"]);
+        w.allow(["unused_variables"]);
     }
     w.def_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()>", |w| {
         // To have access to its methods but not polute the name space.
@@ -1735,7 +1735,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
             w.write_line("#![allow(non_camel_case_types)]");
-            w.write_line("#![allow(non_uppercase_statics)]");
+            w.write_line("#![allow(non_upper_case_globals)]");
 
             // TODO: get rid of generation with glob imports, it forces users to use that feature
             w.write_line("");

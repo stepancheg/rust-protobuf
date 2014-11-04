@@ -1,5 +1,3 @@
-use std::collections;
-
 /// anything that can be cleared
 pub trait Clear {
     fn clear(&mut self);

@@ -2,7 +2,7 @@
 
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
-#![allow(non_uppercase_statics)]
+#![allow(non_upper_case_globals)]
 
 
 #[deriving(Clone,PartialEq,Default)]
@@ -93,7 +93,7 @@ impl ::protobuf::Message for FileDescriptorSet {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -663,7 +663,7 @@ impl ::protobuf::Message for FileDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -1319,7 +1319,7 @@ impl ::protobuf::Message for DescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -1670,12 +1670,12 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
             my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.start {
@@ -2133,7 +2133,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -2667,7 +2667,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -2967,7 +2967,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -3273,7 +3273,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -3628,7 +3628,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -4191,7 +4191,7 @@ impl ::protobuf::Message for FileOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -4688,7 +4688,7 @@ impl ::protobuf::Message for MessageOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -5105,7 +5105,7 @@ impl ::protobuf::Message for FieldOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -5493,7 +5493,7 @@ impl ::protobuf::Message for EnumOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -5686,7 +5686,7 @@ impl ::protobuf::Message for EnumValueOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -5853,7 +5853,7 @@ impl ::protobuf::Message for ServiceOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -6020,7 +6020,7 @@ impl ::protobuf::Message for MethodOptions {
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -6409,7 +6409,7 @@ impl ::protobuf::Message for UninterpretedOption {
             my_size += ::protobuf::rt::string_size(8, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -6775,12 +6775,12 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
             my_size += 2;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name_part.as_ref() {
@@ -6969,7 +6969,7 @@ impl ::protobuf::Message for SourceCodeInfo {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -7273,12 +7273,12 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             my_size += ::protobuf::rt::string_size(4, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         if !self.path.is_empty() {

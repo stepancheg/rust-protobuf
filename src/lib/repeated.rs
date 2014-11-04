@@ -136,7 +136,7 @@ impl<T> RepeatedField<T> {
         if self.len == self.vec.len() {
             self.vec.push(value);
         } else {
-            *self.vec.get_mut(self.len) = value;
+            self.vec[self.len] = value;
         }
         self.len += 1;
     }
@@ -230,7 +230,7 @@ impl<T : Default+Clear> RepeatedField<T> {
         if self.len == self.vec.len() {
             self.vec.push(Default::default());
         } else {
-            self.vec.get_mut(self.len).clear();
+            self.vec[self.len].clear();
         }
         self.len += 1;
         self.last_mut().unwrap()

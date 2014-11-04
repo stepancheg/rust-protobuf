@@ -2,7 +2,7 @@
 
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
-#![allow(non_uppercase_statics)]
+#![allow(non_upper_case_globals)]
 
 
 #[deriving(Clone,PartialEq,Default)]
@@ -90,12 +90,12 @@ impl ::protobuf::Message for Test1 {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.a {
@@ -267,12 +267,12 @@ impl ::protobuf::Message for Test2 {
             my_size += ::protobuf::rt::string_size(2, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.b.as_ref() {
@@ -442,7 +442,7 @@ impl ::protobuf::Message for Test3 {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -619,12 +619,12 @@ impl ::protobuf::Message for Test4 {
             my_size += ::protobuf::rt::vec_packed_varint_size(4, self.d.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         if !self.d.is_empty() {
@@ -839,12 +839,12 @@ impl ::protobuf::Message for TestPackedUnpacked {
             my_size += ::protobuf::rt::vec_packed_varint_size(5, self.packed.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.unpacked.iter() {
@@ -1025,12 +1025,12 @@ impl ::protobuf::Message for TestEmpty {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.foo {
@@ -1190,12 +1190,12 @@ impl ::protobuf::Message for TestRequired {
             my_size += 2;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.b {
@@ -1355,12 +1355,12 @@ impl ::protobuf::Message for TestUnknownFields {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.a {
@@ -1571,7 +1571,7 @@ impl ::protobuf::Message for TestSelfReference {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -1776,12 +1776,12 @@ impl ::protobuf::Message for TestDefaultInstanceField {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.s.as_ref() {
@@ -1948,7 +1948,7 @@ impl ::protobuf::Message for TestDefaultInstance {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
@@ -2112,12 +2112,12 @@ impl ::protobuf::Message for TestDescriptor {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.stuff {
@@ -2732,12 +2732,12 @@ impl ::protobuf::Message for TestTypesSingular {
             my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.double_field {
@@ -3857,12 +3857,12 @@ impl ::protobuf::Message for TestTypesRepeated {
             my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.double_field.iter() {
@@ -4951,12 +4951,12 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
             my_size += ::protobuf::rt::bytes_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         if !self.double_field.is_empty() {
@@ -6004,12 +6004,12 @@ impl ::protobuf::Message for TestDefaultValues {
             my_size += ::protobuf::rt::enum_size(17, *value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        *sizes.get_mut(pos) = my_size;
+        sizes[pos] = my_size;
         // value is returned for convenience
         my_size
     }
 
-    #[allow(unused_variable)]
+    #[allow(unused_variables)]
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.double_field {
