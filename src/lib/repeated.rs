@@ -187,11 +187,13 @@ impl<T> RepeatedField<T> {
         self.vec.into_iter()
     }
 
+    #[deprecated = "use `foo[index]` instead"]
     #[inline]
     pub fn get<'a>(&'a self, index: uint) -> &'a T {
         &self.as_slice()[index]
     }
 
+    #[deprecated = "use `foo[index] = bar` instead"]
     #[inline]
     pub fn get_mut<'a>(&'a mut self, index: uint) -> &'a mut T {
         &mut self.as_mut_slice()[index]
@@ -280,6 +282,20 @@ impl<T> AsSlice<T> for RepeatedField<T> {
     #[inline]
     fn as_slice<'a>(&'a self) -> &'a [T] {
         self.vec.slice_to(self.len)
+    }
+}
+
+impl<T> Index<uint, T> for RepeatedField<T> {
+    #[inline]
+    fn index<'a>(&'a self, index: &uint) -> &'a T {
+        &self.as_slice()[*index]
+    }
+}
+
+impl<T> IndexMut<uint, T> for RepeatedField<T> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, index: &uint) -> &'a mut T {
+        &mut self.as_mut_slice()[*index]
     }
 }
 
