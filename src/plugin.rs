@@ -3,8 +3,25 @@
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
+#![allow(unused_imports)]
 
-use descriptor::*;
+use super::descriptor::FileDescriptorSet;
+use super::descriptor::FileDescriptorProto;
+use super::descriptor::DescriptorProto;
+use super::descriptor::FieldDescriptorProto;
+use super::descriptor::EnumDescriptorProto;
+use super::descriptor::EnumValueDescriptorProto;
+use super::descriptor::ServiceDescriptorProto;
+use super::descriptor::MethodDescriptorProto;
+use super::descriptor::FileOptions;
+use super::descriptor::MessageOptions;
+use super::descriptor::FieldOptions;
+use super::descriptor::EnumOptions;
+use super::descriptor::EnumValueOptions;
+use super::descriptor::ServiceOptions;
+use super::descriptor::MethodOptions;
+use super::descriptor::UninterpretedOption;
+use super::descriptor::SourceCodeInfo;
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorRequest {
