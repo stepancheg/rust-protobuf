@@ -1744,7 +1744,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("");
             for dep in file.get_dependency().iter() {
                 for message in files_map[dep.as_slice()].get_message_type().iter() {
-                    w.write_line(format!("use {:s}::{:s};",
+                    w.write_line(format!("use super::{:s}::{:s};",
                         proto_path_to_rust_base(dep.as_slice()),
                         message.get_name()));
                 }

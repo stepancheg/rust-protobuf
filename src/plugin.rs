@@ -5,23 +5,23 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_imports)]
 
-use descriptor::FileDescriptorSet;
-use descriptor::FileDescriptorProto;
-use descriptor::DescriptorProto;
-use descriptor::FieldDescriptorProto;
-use descriptor::EnumDescriptorProto;
-use descriptor::EnumValueDescriptorProto;
-use descriptor::ServiceDescriptorProto;
-use descriptor::MethodDescriptorProto;
-use descriptor::FileOptions;
-use descriptor::MessageOptions;
-use descriptor::FieldOptions;
-use descriptor::EnumOptions;
-use descriptor::EnumValueOptions;
-use descriptor::ServiceOptions;
-use descriptor::MethodOptions;
-use descriptor::UninterpretedOption;
-use descriptor::SourceCodeInfo;
+use super::descriptor::FileDescriptorSet;
+use super::descriptor::FileDescriptorProto;
+use super::descriptor::DescriptorProto;
+use super::descriptor::FieldDescriptorProto;
+use super::descriptor::EnumDescriptorProto;
+use super::descriptor::EnumValueDescriptorProto;
+use super::descriptor::ServiceDescriptorProto;
+use super::descriptor::MethodDescriptorProto;
+use super::descriptor::FileOptions;
+use super::descriptor::MessageOptions;
+use super::descriptor::FieldOptions;
+use super::descriptor::EnumOptions;
+use super::descriptor::EnumValueOptions;
+use super::descriptor::ServiceOptions;
+use super::descriptor::MethodOptions;
+use super::descriptor::UninterpretedOption;
+use super::descriptor::SourceCodeInfo;
 
 #[deriving(Clone,PartialEq,Default)]
 pub struct CodeGeneratorRequest {
