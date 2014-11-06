@@ -9,3 +9,7 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 name = "protobuf"
 path = "src/lib/protobuf.rs"
 
+[[bin]]
+
+name = "protoc-gen-rust"
+path = "src/protoc-gen-rust.rs"
