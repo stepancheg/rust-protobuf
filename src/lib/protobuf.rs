@@ -66,7 +66,7 @@ mod test_nonunique_enum;
 mod test_ident;
 
 // so `use protobuf::*` could work in descriptor mod
-pub mod protobuf {
+mod protobuf {
     pub use descriptor;
     pub use codegen;
     pub use reflect;
