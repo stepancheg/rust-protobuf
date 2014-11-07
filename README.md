@@ -40,17 +40,16 @@ Where branch is:
 2) Compile the project:
 
 ```
-cd src
-./rebuild.sh
+cargo build
 ```
 
-`protoc-gen-rust` binary is generated. `protoc-gen-rust` is a rust
+`protoc-gen-rust` binary is generated in `target/` folder. `protoc-gen-rust` is a rust
 plugin for protoc.
 
 3) Add `protoc-gen-rust` to $PATH:
 
 ```
-PATH="`pwd`:$PATH"
+PATH="`pwd`/target:$PATH"
 ```
 
 4) Generate .rs files:
@@ -64,10 +63,18 @@ This will generate .rs files in current directory.
 Same procedure is used to regenerate .rs files for rust-protobuf
 itself, see `./regerate.sh`.
 
-5) Include generated files into your project .rs file:
+5) Add rust-protobuf as dependency to your project `Cargo.toml`:
 
 ```
-extern mod protobuf; // depend on rust-protobuf runtime
+[dependencies.protobuf]
+
+git = "https://github.com/stepancheg/rust-protobuf.git"
+```
+
+6) Include generated files into your project .rs file:
+
+```
+extern crate protobuf; // depend on rust-protobuf runtime
 mod foo; // add generated file to the project
 ```
 
