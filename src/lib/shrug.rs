@@ -567,10 +567,6 @@ impl<'a> Test4 {
     pub fn get_d(&'a self) -> &'a [i32] {
         self.d.as_slice()
     }
-
-    pub fn add_d(&mut self, v: i32) {
-        self.d.push(v);
-    }
 }
 
 impl ::protobuf::Message for Test4 {
@@ -746,10 +742,6 @@ impl<'a> TestPackedUnpacked {
         self.unpacked.as_slice()
     }
 
-    pub fn add_unpacked(&mut self, v: i32) {
-        self.unpacked.push(v);
-    }
-
     // repeated int32 packed = 5;
 
     pub fn clear_packed(&mut self) {
@@ -768,10 +760,6 @@ impl<'a> TestPackedUnpacked {
 
     pub fn get_packed(&'a self) -> &'a [i32] {
         self.packed.as_slice()
-    }
-
-    pub fn add_packed(&mut self, v: i32) {
-        self.packed.push(v);
     }
 }
 
@@ -3248,10 +3236,6 @@ impl<'a> TestTypesRepeated {
         self.double_field.as_slice()
     }
 
-    pub fn add_double_field(&mut self, v: f64) {
-        self.double_field.push(v);
-    }
-
     // repeated float float_field = 2;
 
     pub fn clear_float_field(&mut self) {
@@ -3270,10 +3254,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_float_field(&'a self) -> &'a [f32] {
         self.float_field.as_slice()
-    }
-
-    pub fn add_float_field(&mut self, v: f32) {
-        self.float_field.push(v);
     }
 
     // repeated int32 int32_field = 3;
@@ -3296,10 +3276,6 @@ impl<'a> TestTypesRepeated {
         self.int32_field.as_slice()
     }
 
-    pub fn add_int32_field(&mut self, v: i32) {
-        self.int32_field.push(v);
-    }
-
     // repeated int64 int64_field = 4;
 
     pub fn clear_int64_field(&mut self) {
@@ -3318,10 +3294,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_int64_field(&'a self) -> &'a [i64] {
         self.int64_field.as_slice()
-    }
-
-    pub fn add_int64_field(&mut self, v: i64) {
-        self.int64_field.push(v);
     }
 
     // repeated uint32 uint32_field = 5;
@@ -3344,10 +3316,6 @@ impl<'a> TestTypesRepeated {
         self.uint32_field.as_slice()
     }
 
-    pub fn add_uint32_field(&mut self, v: u32) {
-        self.uint32_field.push(v);
-    }
-
     // repeated uint64 uint64_field = 6;
 
     pub fn clear_uint64_field(&mut self) {
@@ -3366,10 +3334,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_uint64_field(&'a self) -> &'a [u64] {
         self.uint64_field.as_slice()
-    }
-
-    pub fn add_uint64_field(&mut self, v: u64) {
-        self.uint64_field.push(v);
     }
 
     // repeated sint32 sint32_field = 7;
@@ -3392,10 +3356,6 @@ impl<'a> TestTypesRepeated {
         self.sint32_field.as_slice()
     }
 
-    pub fn add_sint32_field(&mut self, v: i32) {
-        self.sint32_field.push(v);
-    }
-
     // repeated sint64 sint64_field = 8;
 
     pub fn clear_sint64_field(&mut self) {
@@ -3414,10 +3374,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_sint64_field(&'a self) -> &'a [i64] {
         self.sint64_field.as_slice()
-    }
-
-    pub fn add_sint64_field(&mut self, v: i64) {
-        self.sint64_field.push(v);
     }
 
     // repeated fixed32 fixed32_field = 9;
@@ -3440,10 +3396,6 @@ impl<'a> TestTypesRepeated {
         self.fixed32_field.as_slice()
     }
 
-    pub fn add_fixed32_field(&mut self, v: u32) {
-        self.fixed32_field.push(v);
-    }
-
     // repeated fixed64 fixed64_field = 10;
 
     pub fn clear_fixed64_field(&mut self) {
@@ -3462,10 +3414,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_fixed64_field(&'a self) -> &'a [u64] {
         self.fixed64_field.as_slice()
-    }
-
-    pub fn add_fixed64_field(&mut self, v: u64) {
-        self.fixed64_field.push(v);
     }
 
     // repeated sfixed32 sfixed32_field = 11;
@@ -3488,10 +3436,6 @@ impl<'a> TestTypesRepeated {
         self.sfixed32_field.as_slice()
     }
 
-    pub fn add_sfixed32_field(&mut self, v: i32) {
-        self.sfixed32_field.push(v);
-    }
-
     // repeated sfixed64 sfixed64_field = 12;
 
     pub fn clear_sfixed64_field(&mut self) {
@@ -3510,10 +3454,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_sfixed64_field(&'a self) -> &'a [i64] {
         self.sfixed64_field.as_slice()
-    }
-
-    pub fn add_sfixed64_field(&mut self, v: i64) {
-        self.sfixed64_field.push(v);
     }
 
     // repeated bool bool_field = 13;
@@ -3536,10 +3476,6 @@ impl<'a> TestTypesRepeated {
         self.bool_field.as_slice()
     }
 
-    pub fn add_bool_field(&mut self, v: bool) {
-        self.bool_field.push(v);
-    }
-
     // repeated string string_field = 14;
 
     pub fn clear_string_field(&mut self) {
@@ -3560,10 +3496,6 @@ impl<'a> TestTypesRepeated {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: ::std::string::String) {
-        self.string_field.push(v);
-    }
-
     // repeated bytes bytes_field = 15;
 
     pub fn clear_bytes_field(&mut self) {
@@ -3582,10 +3514,6 @@ impl<'a> TestTypesRepeated {
 
     pub fn get_bytes_field(&'a self) -> &'a [::std::vec::Vec<u8>] {
         self.bytes_field.as_slice()
-    }
-
-    pub fn add_bytes_field(&mut self, v: ::std::vec::Vec<u8>) {
-        self.bytes_field.push(v);
     }
 }
 
@@ -4328,10 +4256,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.double_field.as_slice()
     }
 
-    pub fn add_double_field(&mut self, v: f64) {
-        self.double_field.push(v);
-    }
-
     // repeated float float_field = 2;
 
     pub fn clear_float_field(&mut self) {
@@ -4350,10 +4274,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_float_field(&'a self) -> &'a [f32] {
         self.float_field.as_slice()
-    }
-
-    pub fn add_float_field(&mut self, v: f32) {
-        self.float_field.push(v);
     }
 
     // repeated int32 int32_field = 3;
@@ -4376,10 +4296,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.int32_field.as_slice()
     }
 
-    pub fn add_int32_field(&mut self, v: i32) {
-        self.int32_field.push(v);
-    }
-
     // repeated int64 int64_field = 4;
 
     pub fn clear_int64_field(&mut self) {
@@ -4398,10 +4314,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_int64_field(&'a self) -> &'a [i64] {
         self.int64_field.as_slice()
-    }
-
-    pub fn add_int64_field(&mut self, v: i64) {
-        self.int64_field.push(v);
     }
 
     // repeated uint32 uint32_field = 5;
@@ -4424,10 +4336,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.uint32_field.as_slice()
     }
 
-    pub fn add_uint32_field(&mut self, v: u32) {
-        self.uint32_field.push(v);
-    }
-
     // repeated uint64 uint64_field = 6;
 
     pub fn clear_uint64_field(&mut self) {
@@ -4446,10 +4354,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_uint64_field(&'a self) -> &'a [u64] {
         self.uint64_field.as_slice()
-    }
-
-    pub fn add_uint64_field(&mut self, v: u64) {
-        self.uint64_field.push(v);
     }
 
     // repeated sint32 sint32_field = 7;
@@ -4472,10 +4376,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.sint32_field.as_slice()
     }
 
-    pub fn add_sint32_field(&mut self, v: i32) {
-        self.sint32_field.push(v);
-    }
-
     // repeated sint64 sint64_field = 8;
 
     pub fn clear_sint64_field(&mut self) {
@@ -4494,10 +4394,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_sint64_field(&'a self) -> &'a [i64] {
         self.sint64_field.as_slice()
-    }
-
-    pub fn add_sint64_field(&mut self, v: i64) {
-        self.sint64_field.push(v);
     }
 
     // repeated fixed32 fixed32_field = 9;
@@ -4520,10 +4416,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.fixed32_field.as_slice()
     }
 
-    pub fn add_fixed32_field(&mut self, v: u32) {
-        self.fixed32_field.push(v);
-    }
-
     // repeated fixed64 fixed64_field = 10;
 
     pub fn clear_fixed64_field(&mut self) {
@@ -4542,10 +4434,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_fixed64_field(&'a self) -> &'a [u64] {
         self.fixed64_field.as_slice()
-    }
-
-    pub fn add_fixed64_field(&mut self, v: u64) {
-        self.fixed64_field.push(v);
     }
 
     // repeated sfixed32 sfixed32_field = 11;
@@ -4568,10 +4456,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.sfixed32_field.as_slice()
     }
 
-    pub fn add_sfixed32_field(&mut self, v: i32) {
-        self.sfixed32_field.push(v);
-    }
-
     // repeated sfixed64 sfixed64_field = 12;
 
     pub fn clear_sfixed64_field(&mut self) {
@@ -4590,10 +4474,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_sfixed64_field(&'a self) -> &'a [i64] {
         self.sfixed64_field.as_slice()
-    }
-
-    pub fn add_sfixed64_field(&mut self, v: i64) {
-        self.sfixed64_field.push(v);
     }
 
     // repeated bool bool_field = 13;
@@ -4616,10 +4496,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.bool_field.as_slice()
     }
 
-    pub fn add_bool_field(&mut self, v: bool) {
-        self.bool_field.push(v);
-    }
-
     // repeated string string_field = 14;
 
     pub fn clear_string_field(&mut self) {
@@ -4640,10 +4516,6 @@ impl<'a> TestTypesRepeatedPacked {
         self.string_field.as_slice()
     }
 
-    pub fn add_string_field(&mut self, v: ::std::string::String) {
-        self.string_field.push(v);
-    }
-
     // repeated bytes bytes_field = 15;
 
     pub fn clear_bytes_field(&mut self) {
@@ -4662,10 +4534,6 @@ impl<'a> TestTypesRepeatedPacked {
 
     pub fn get_bytes_field(&'a self) -> &'a [::std::vec::Vec<u8>] {
         self.bytes_field.as_slice()
-    }
-
-    pub fn add_bytes_field(&mut self, v: ::std::vec::Vec<u8>) {
-        self.bytes_field.push(v);
     }
 }
 

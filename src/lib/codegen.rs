@@ -1353,15 +1353,6 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
 
     w.write_line("");
     write_message_field_get(w);
-
-    if w.field().repeated {
-        w.write_line("");
-        w.pub_fn(format!("add_{:s}(&mut self, v: {})",
-                w.field().name, w.field().type_name),
-        |w| {
-            w.self_field_push("v");
-        });
-    }
 }
 
 fn write_message_field_accessors(w: &mut IndentWriter) {

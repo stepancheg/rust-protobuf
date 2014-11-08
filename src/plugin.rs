@@ -70,10 +70,6 @@ impl<'a> CodeGeneratorRequest {
         self.file_to_generate.as_slice()
     }
 
-    pub fn add_file_to_generate(&mut self, v: ::std::string::String) {
-        self.file_to_generate.push(v);
-    }
-
     // optional string parameter = 2;
 
     pub fn clear_parameter(&mut self) {
@@ -123,10 +119,6 @@ impl<'a> CodeGeneratorRequest {
 
     pub fn get_proto_file(&'a self) -> &'a [FileDescriptorProto] {
         self.proto_file.as_slice()
-    }
-
-    pub fn add_proto_file(&mut self, v: FileDescriptorProto) {
-        self.proto_file.push(v);
     }
 }
 
@@ -392,10 +384,6 @@ impl<'a> CodeGeneratorResponse {
 
     pub fn get_file(&'a self) -> &'a [CodeGeneratorResponse_File] {
         self.file.as_slice()
-    }
-
-    pub fn add_file(&mut self, v: CodeGeneratorResponse_File) {
-        self.file.push(v);
     }
 }
 

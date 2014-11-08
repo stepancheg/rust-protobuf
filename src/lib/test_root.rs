@@ -48,10 +48,6 @@ impl<'a> Root {
     pub fn get_nested(&'a self) -> &'a [Root_Nested] {
         self.nested.as_slice()
     }
-
-    pub fn add_nested(&mut self, v: Root_Nested) {
-        self.nested.push(v);
-    }
 }
 
 impl ::protobuf::Message for Root {

@@ -633,10 +633,6 @@ impl<'a> TestTypes {
         self.double_repeated.as_slice()
     }
 
-    pub fn add_double_repeated(&mut self, v: f64) {
-        self.double_repeated.push(v);
-    }
-
     // repeated float float_repeated = 32;
 
     pub fn clear_float_repeated(&mut self) {
@@ -655,10 +651,6 @@ impl<'a> TestTypes {
 
     pub fn get_float_repeated(&'a self) -> &'a [f32] {
         self.float_repeated.as_slice()
-    }
-
-    pub fn add_float_repeated(&mut self, v: f32) {
-        self.float_repeated.push(v);
     }
 
     // repeated int32 int32_repeated = 33;
@@ -681,10 +673,6 @@ impl<'a> TestTypes {
         self.int32_repeated.as_slice()
     }
 
-    pub fn add_int32_repeated(&mut self, v: i32) {
-        self.int32_repeated.push(v);
-    }
-
     // repeated int64 int64_repeated = 34;
 
     pub fn clear_int64_repeated(&mut self) {
@@ -703,10 +691,6 @@ impl<'a> TestTypes {
 
     pub fn get_int64_repeated(&'a self) -> &'a [i64] {
         self.int64_repeated.as_slice()
-    }
-
-    pub fn add_int64_repeated(&mut self, v: i64) {
-        self.int64_repeated.push(v);
     }
 
     // repeated uint32 uint32_repeated = 35;
@@ -729,10 +713,6 @@ impl<'a> TestTypes {
         self.uint32_repeated.as_slice()
     }
 
-    pub fn add_uint32_repeated(&mut self, v: u32) {
-        self.uint32_repeated.push(v);
-    }
-
     // repeated uint64 uint64_repeated = 36;
 
     pub fn clear_uint64_repeated(&mut self) {
@@ -751,10 +731,6 @@ impl<'a> TestTypes {
 
     pub fn get_uint64_repeated(&'a self) -> &'a [u64] {
         self.uint64_repeated.as_slice()
-    }
-
-    pub fn add_uint64_repeated(&mut self, v: u64) {
-        self.uint64_repeated.push(v);
     }
 
     // repeated sint32 sint32_repeated = 37;
@@ -777,10 +753,6 @@ impl<'a> TestTypes {
         self.sint32_repeated.as_slice()
     }
 
-    pub fn add_sint32_repeated(&mut self, v: i32) {
-        self.sint32_repeated.push(v);
-    }
-
     // repeated sint64 sint64_repeated = 38;
 
     pub fn clear_sint64_repeated(&mut self) {
@@ -799,10 +771,6 @@ impl<'a> TestTypes {
 
     pub fn get_sint64_repeated(&'a self) -> &'a [i64] {
         self.sint64_repeated.as_slice()
-    }
-
-    pub fn add_sint64_repeated(&mut self, v: i64) {
-        self.sint64_repeated.push(v);
     }
 
     // repeated fixed32 fixed32_repeated = 39;
@@ -825,10 +793,6 @@ impl<'a> TestTypes {
         self.fixed32_repeated.as_slice()
     }
 
-    pub fn add_fixed32_repeated(&mut self, v: u32) {
-        self.fixed32_repeated.push(v);
-    }
-
     // repeated fixed64 fixed64_repeated = 40;
 
     pub fn clear_fixed64_repeated(&mut self) {
@@ -847,10 +811,6 @@ impl<'a> TestTypes {
 
     pub fn get_fixed64_repeated(&'a self) -> &'a [u64] {
         self.fixed64_repeated.as_slice()
-    }
-
-    pub fn add_fixed64_repeated(&mut self, v: u64) {
-        self.fixed64_repeated.push(v);
     }
 
     // repeated sfixed32 sfixed32_repeated = 41;
@@ -873,10 +833,6 @@ impl<'a> TestTypes {
         self.sfixed32_repeated.as_slice()
     }
 
-    pub fn add_sfixed32_repeated(&mut self, v: i32) {
-        self.sfixed32_repeated.push(v);
-    }
-
     // repeated sfixed64 sfixed64_repeated = 42;
 
     pub fn clear_sfixed64_repeated(&mut self) {
@@ -895,10 +851,6 @@ impl<'a> TestTypes {
 
     pub fn get_sfixed64_repeated(&'a self) -> &'a [i64] {
         self.sfixed64_repeated.as_slice()
-    }
-
-    pub fn add_sfixed64_repeated(&mut self, v: i64) {
-        self.sfixed64_repeated.push(v);
     }
 
     // repeated bool bool_repeated = 43;
@@ -921,10 +873,6 @@ impl<'a> TestTypes {
         self.bool_repeated.as_slice()
     }
 
-    pub fn add_bool_repeated(&mut self, v: bool) {
-        self.bool_repeated.push(v);
-    }
-
     // repeated string string_repeated = 44;
 
     pub fn clear_string_repeated(&mut self) {
@@ -943,10 +891,6 @@ impl<'a> TestTypes {
 
     pub fn get_string_repeated(&'a self) -> &'a [::std::string::String] {
         self.string_repeated.as_slice()
-    }
-
-    pub fn add_string_repeated(&mut self, v: ::std::string::String) {
-        self.string_repeated.push(v);
     }
 
     // repeated bytes bytes_repeated = 45;
@@ -969,10 +913,6 @@ impl<'a> TestTypes {
         self.bytes_repeated.as_slice()
     }
 
-    pub fn add_bytes_repeated(&mut self, v: ::std::vec::Vec<u8>) {
-        self.bytes_repeated.push(v);
-    }
-
     // repeated .TestEnum test_enum_repeated = 46;
 
     pub fn clear_test_enum_repeated(&mut self) {
@@ -993,10 +933,6 @@ impl<'a> TestTypes {
         self.test_enum_repeated.as_slice()
     }
 
-    pub fn add_test_enum_repeated(&mut self, v: TestEnum) {
-        self.test_enum_repeated.push(v);
-    }
-
     // repeated .TestMessage test_message_repeated = 47;
 
     pub fn clear_test_message_repeated(&mut self) {
@@ -1015,10 +951,6 @@ impl<'a> TestTypes {
 
     pub fn get_test_message_repeated(&'a self) -> &'a [TestMessage] {
         self.test_message_repeated.as_slice()
-    }
-
-    pub fn add_test_message_repeated(&mut self, v: TestMessage) {
-        self.test_message_repeated.push(v);
     }
 }
 

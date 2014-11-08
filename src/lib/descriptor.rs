@@ -48,10 +48,6 @@ impl<'a> FileDescriptorSet {
     pub fn get_file(&'a self) -> &'a [FileDescriptorProto] {
         self.file.as_slice()
     }
-
-    pub fn add_file(&mut self, v: FileDescriptorProto) {
-        self.file.push(v);
-    }
 }
 
 impl ::protobuf::Message for FileDescriptorSet {
@@ -298,10 +294,6 @@ impl<'a> FileDescriptorProto {
         self.dependency.as_slice()
     }
 
-    pub fn add_dependency(&mut self, v: ::std::string::String) {
-        self.dependency.push(v);
-    }
-
     // repeated int32 public_dependency = 10;
 
     pub fn clear_public_dependency(&mut self) {
@@ -320,10 +312,6 @@ impl<'a> FileDescriptorProto {
 
     pub fn get_public_dependency(&'a self) -> &'a [i32] {
         self.public_dependency.as_slice()
-    }
-
-    pub fn add_public_dependency(&mut self, v: i32) {
-        self.public_dependency.push(v);
     }
 
     // repeated int32 weak_dependency = 11;
@@ -346,10 +334,6 @@ impl<'a> FileDescriptorProto {
         self.weak_dependency.as_slice()
     }
 
-    pub fn add_weak_dependency(&mut self, v: i32) {
-        self.weak_dependency.push(v);
-    }
-
     // repeated .google.protobuf.DescriptorProto message_type = 4;
 
     pub fn clear_message_type(&mut self) {
@@ -368,10 +352,6 @@ impl<'a> FileDescriptorProto {
 
     pub fn get_message_type(&'a self) -> &'a [DescriptorProto] {
         self.message_type.as_slice()
-    }
-
-    pub fn add_message_type(&mut self, v: DescriptorProto) {
-        self.message_type.push(v);
     }
 
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
@@ -394,10 +374,6 @@ impl<'a> FileDescriptorProto {
         self.enum_type.as_slice()
     }
 
-    pub fn add_enum_type(&mut self, v: EnumDescriptorProto) {
-        self.enum_type.push(v);
-    }
-
     // repeated .google.protobuf.ServiceDescriptorProto service = 6;
 
     pub fn clear_service(&mut self) {
@@ -418,10 +394,6 @@ impl<'a> FileDescriptorProto {
         self.service.as_slice()
     }
 
-    pub fn add_service(&mut self, v: ServiceDescriptorProto) {
-        self.service.push(v);
-    }
-
     // repeated .google.protobuf.FieldDescriptorProto extension = 7;
 
     pub fn clear_extension(&mut self) {
@@ -440,10 +412,6 @@ impl<'a> FileDescriptorProto {
 
     pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
         self.extension.as_slice()
-    }
-
-    pub fn add_extension(&mut self, v: FieldDescriptorProto) {
-        self.extension.push(v);
     }
 
     // optional .google.protobuf.FileOptions options = 8;
@@ -1086,10 +1054,6 @@ impl<'a> DescriptorProto {
         self.field.as_slice()
     }
 
-    pub fn add_field(&mut self, v: FieldDescriptorProto) {
-        self.field.push(v);
-    }
-
     // repeated .google.protobuf.FieldDescriptorProto extension = 6;
 
     pub fn clear_extension(&mut self) {
@@ -1108,10 +1072,6 @@ impl<'a> DescriptorProto {
 
     pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
         self.extension.as_slice()
-    }
-
-    pub fn add_extension(&mut self, v: FieldDescriptorProto) {
-        self.extension.push(v);
     }
 
     // repeated .google.protobuf.DescriptorProto nested_type = 3;
@@ -1134,10 +1094,6 @@ impl<'a> DescriptorProto {
         self.nested_type.as_slice()
     }
 
-    pub fn add_nested_type(&mut self, v: DescriptorProto) {
-        self.nested_type.push(v);
-    }
-
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
 
     pub fn clear_enum_type(&mut self) {
@@ -1158,10 +1114,6 @@ impl<'a> DescriptorProto {
         self.enum_type.as_slice()
     }
 
-    pub fn add_enum_type(&mut self, v: EnumDescriptorProto) {
-        self.enum_type.push(v);
-    }
-
     // repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
 
     pub fn clear_extension_range(&mut self) {
@@ -1180,10 +1132,6 @@ impl<'a> DescriptorProto {
 
     pub fn get_extension_range(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
         self.extension_range.as_slice()
-    }
-
-    pub fn add_extension_range(&mut self, v: DescriptorProto_ExtensionRange) {
-        self.extension_range.push(v);
     }
 
     // optional .google.protobuf.MessageOptions options = 7;
@@ -2574,10 +2522,6 @@ impl<'a> EnumDescriptorProto {
         self.value.as_slice()
     }
 
-    pub fn add_value(&mut self, v: EnumValueDescriptorProto) {
-        self.value.push(v);
-    }
-
     // optional .google.protobuf.EnumOptions options = 3;
 
     pub fn clear_options(&mut self) {
@@ -3178,10 +3122,6 @@ impl<'a> ServiceDescriptorProto {
 
     pub fn get_method(&'a self) -> &'a [MethodDescriptorProto] {
         self.method.as_slice()
-    }
-
-    pub fn add_method(&mut self, v: MethodDescriptorProto) {
-        self.method.push(v);
     }
 
     // optional .google.protobuf.ServiceOptions options = 3;
@@ -4056,10 +3996,6 @@ impl<'a> FileOptions {
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
-    }
 }
 
 impl ::protobuf::Message for FileOptions {
@@ -4623,10 +4559,6 @@ impl<'a> MessageOptions {
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
-    }
 }
 
 impl ::protobuf::Message for MessageOptions {
@@ -4999,10 +4931,6 @@ impl<'a> FieldOptions {
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
-    }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
     }
 }
 
@@ -5438,10 +5366,6 @@ impl<'a> EnumOptions {
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
-    }
 }
 
 impl ::protobuf::Message for EnumOptions {
@@ -5641,10 +5565,6 @@ impl<'a> EnumValueOptions {
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
-    }
 }
 
 impl ::protobuf::Message for EnumValueOptions {
@@ -5808,10 +5728,6 @@ impl<'a> ServiceOptions {
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
-    }
 }
 
 impl ::protobuf::Message for ServiceOptions {
@@ -5974,10 +5890,6 @@ impl<'a> MethodOptions {
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
-    }
-
-    pub fn add_uninterpreted_option(&mut self, v: UninterpretedOption) {
-        self.uninterpreted_option.push(v);
     }
 }
 
@@ -6153,10 +6065,6 @@ impl<'a> UninterpretedOption {
 
     pub fn get_name(&'a self) -> &'a [UninterpretedOption_NamePart] {
         self.name.as_slice()
-    }
-
-    pub fn add_name(&mut self, v: UninterpretedOption_NamePart) {
-        self.name.push(v);
     }
 
     // optional string identifier_value = 3;
@@ -6924,10 +6832,6 @@ impl<'a> SourceCodeInfo {
     pub fn get_location(&'a self) -> &'a [SourceCodeInfo_Location] {
         self.location.as_slice()
     }
-
-    pub fn add_location(&mut self, v: SourceCodeInfo_Location) {
-        self.location.push(v);
-    }
 }
 
 impl ::protobuf::Message for SourceCodeInfo {
@@ -7098,10 +7002,6 @@ impl<'a> SourceCodeInfo_Location {
         self.path.as_slice()
     }
 
-    pub fn add_path(&mut self, v: i32) {
-        self.path.push(v);
-    }
-
     // repeated int32 span = 2;
 
     pub fn clear_span(&mut self) {
@@ -7120,10 +7020,6 @@ impl<'a> SourceCodeInfo_Location {
 
     pub fn get_span(&'a self) -> &'a [i32] {
         self.span.as_slice()
-    }
-
-    pub fn add_span(&mut self, v: i32) {
-        self.span.push(v);
     }
 
     // optional string leading_comments = 3;
