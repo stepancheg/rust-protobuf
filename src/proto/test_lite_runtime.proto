@@ -1,0 +1,5 @@
+option optimize_for = LITE_RUNTIME;
+
+message TestLiteRuntime {
+    optional int32 v = 1;
+}

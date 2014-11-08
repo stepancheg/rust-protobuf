@@ -530,6 +530,7 @@ struct MessageInfo<'a> {
     prefix: String,
     type_name: String,
     fields: Vec<Field>,
+    lite_runtime: bool,
 }
 
 impl<'a> MessageInfo<'a> {
@@ -542,6 +543,9 @@ impl<'a> MessageInfo<'a> {
             fields: message.message.get_field().iter().flat_map(|field| {
                 Field::parse(field, root_scope, message.get_package()).into_iter()
             }).collect(),
+            lite_runtime:
+                message.get_file_descriptor().get_options().get_optimize_for()
+                    == FileOptions_LITE_RUNTIME,
         }
     }
 
@@ -1087,7 +1091,11 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.deriving(["Clone", "PartialEq", "Default"]);
+    let mut deriving = vec!["Clone", "PartialEq", "Default"];
+    if msg.lite_runtime {
+        deriving.push("Show");
+    }
+    w.deriving(deriving.as_slice());
     w.pub_struct(msg.type_name.as_slice(), |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
@@ -1408,6 +1416,32 @@ fn write_message_merge_from(w: &mut IndentWriter) {
     });
 }
 
+fn write_message_descriptor_static(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.allow(["unused_unsafe", "unused_mut"]);
+    w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
+        w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
+            let vec_type_param = format!(
+                    "&'static ::protobuf::reflect::FieldAccessor<{}>",
+                    msg.type_name);
+            w.write_line(format!("let mut fields: ::std::vec::Vec<{}> = ::std::vec::Vec::new();", vec_type_param));
+            for field in msg.fields.iter() {
+                let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
+                // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
+                w.write_line(format!("fields.push(unsafe {{ ::std::mem::transmute(&{} as &'static ::protobuf::reflect::FieldAccessor<{}>) }});",
+                        acc_name, msg.type_name));
+            }
+            w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
+            w.indented(|w| {
+                w.write_line(format!("\"{}\",", msg.type_name));
+                w.write_line("fields,");
+                w.write_line("file_descriptor_proto()");
+            });
+            w.write_line(")");
+        });
+    });
+}
+
 fn write_message_impl_message(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.impl_for_block("::protobuf::Message", msg.type_name.as_slice(), |w| {
@@ -1431,29 +1465,10 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         write_message_write_to_with_computed_sizes(w);
         w.write_line("");
         write_message_unknown_fields(w);
-        w.write_line("");
-        w.allow(["unused_unsafe", "unused_mut"]);
-        w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
-            w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
-                let vec_type_param = format!(
-                        "&'static ::protobuf::reflect::FieldAccessor<{}>",
-                        msg.type_name);
-                w.write_line(format!("let mut fields: ::std::vec::Vec<{}> = ::std::vec::Vec::new();", vec_type_param));
-                for field in msg.fields.iter() {
-                    let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
-                    // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
-                    w.write_line(format!("fields.push(unsafe {{ ::std::mem::transmute(&{} as &'static ::protobuf::reflect::FieldAccessor<{}>) }});",
-                            acc_name, msg.type_name));
-                }
-                w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
-                w.indented(|w| {
-                    w.write_line(format!("\"{}\",", msg.type_name));
-                    w.write_line("fields,");
-                    w.write_line("file_descriptor_proto()");
-                });
-                w.write_line(")");
-            });
-        });
+        if !msg.lite_runtime {
+            w.write_line("");
+            write_message_descriptor_static(w);
+        }
         w.write_line("");
         w.def_fn("type_id(&self) -> ::std::intrinsics::TypeId", |w| {
             w.write_line(format!("::std::intrinsics::TypeId::of::<{}>()", msg.type_name));
@@ -1606,10 +1621,12 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
         write_message_impl_message(w);
         w.write_line("");
         write_message_impl_clear(w);
-        w.write_line("");
-        write_message_impl_show(w);
-        w.write_line("");
-        write_message_descriptor(w);
+        if !msg.lite_runtime {
+            w.write_line("");
+            write_message_impl_show(w);
+            w.write_line("");
+            write_message_descriptor(w);
+        }
 
         let mut nested_prefix = msg.type_name.to_string();
         nested_prefix.push_str("_");
@@ -1764,8 +1781,10 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
                 write_enum(enum_type, &root_scope, &mut w);
             }
 
-            w.write_line("");
-            write_file_descriptor_data(file, &mut w);
+            if file.get_options().get_optimize_for() != FileOptions_LITE_RUNTIME {
+                w.write_line("");
+                write_file_descriptor_data(file, &mut w);
+            }
         }
 
         results.push(GenResult {

@@ -64,6 +64,8 @@ mod text_format_test_data;
 mod test_nonunique_enum;
 #[cfg(test)]
 mod test_ident;
+#[cfg(test)]
+mod test_lite_runtime;
 
 // so `use protobuf::*` could work in descriptor mod
 mod protobuf {

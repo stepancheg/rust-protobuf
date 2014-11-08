@@ -9,6 +9,7 @@ use core::parse_length_delimited_from_bytes;
 use core::parse_from_bytes;
 
 use shrug::*;
+use test_lite_runtime;
 
 fn test_serialize_deserialize_length_delimited<M : Message>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
@@ -246,4 +247,14 @@ fn test_default_value() {
     assert_eq!(b"cde\n33", d.get_bytes_field());
     assert_eq!(TWO, d.get_enum_field());
     assert_eq!(ONE, d.get_enum_field_without_default());
+}
+
+#[test]
+fn test_lite_runtime() {
+    let mut m = test_lite_runtime::TestLiteRuntime::new();
+    m.set_v(10);
+    test_serialize_deserialize("08 0a", &m);
+
+    // test it doesn't crash
+    format!("{}", m);
 }

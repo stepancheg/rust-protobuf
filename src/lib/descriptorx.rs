@@ -42,6 +42,11 @@ pub struct FileScope<'a> {
 }
 
 impl<'a> FileScope<'a> {
+    #[allow(unused)]
+    pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
+        self.file_descriptor
+    }
+
     fn get_package(&self) -> &'a str {
         self.file_descriptor.get_package()
     }
@@ -102,6 +107,10 @@ impl<'a> Clone for Scope<'a> {
 }
 
 impl<'a> Scope<'a> {
+    pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
+        self.file_descriptor
+    }
+
     fn get_package(&self) -> &'a str {
         self.file_descriptor.get_package()
     }
@@ -182,6 +191,10 @@ impl<'a> Scope<'a> {
 pub trait WithScope<'a> {
     fn get_scope(&self) -> &Scope<'a>;
 
+    fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
+        self.get_scope().get_file_descriptor()
+    }
+
     // message or enum name
     fn get_name(&self) -> &'a str;
 
@@ -231,6 +244,11 @@ impl<'a> WithScope<'a> for MessageWithScope<'a> {
 }
 
 impl<'a> MessageWithScope<'a> {
+    #[allow(unused)]
+    pub fn get_scope(&self) -> &Scope<'a> {
+        &self.scope
+    }
+
     pub fn into_scope(mut self) -> Scope<'a> {
         self.scope.path.push(self.message);
         self.scope

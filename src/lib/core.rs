@@ -99,7 +99,8 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
 
     // http://stackoverflow.com/q/20342436/15018
     fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
-        panic!();
+        panic!("descriptor_static is not implemented for message, \
+            LITE_RUNTIME must be used");
     }
 
     fn type_id(&self) -> TypeId {
