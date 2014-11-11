@@ -365,7 +365,7 @@ impl<'a> CodedInputStream<'a> {
     /// Read raw bytes into supplied vector. Vector must be empty.
     pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
         assert!(target.is_empty());
-        target.reserve_additional(count as uint);
+        target.reserve(count as uint);
         while target.len() < count as uint {
             let rem = count - target.len() as u32;
             if rem <= self.remaining_in_buffer() {
