@@ -1,0 +1,62 @@
+use std::mem;
+
+pub enum MaybeOwnedSlice<'a, T : 'a> {
+    MaybeOwnedSliceRef(&'a [T]),
+    MaybeOwnedSliceOwned(Vec<T>),
+}
+
+impl<'a, T : 'a> MaybeOwnedSlice<'a, T> {
+    pub fn from_vec(vec: Vec<T>) -> MaybeOwnedSlice<'static, T> {
+        MaybeOwnedSliceOwned(vec)
+    }
+
+    pub fn from_slice(slice: &'a [T]) -> MaybeOwnedSlice<'a, T> {
+        MaybeOwnedSliceRef(slice)
+    }
+
+    #[inline]
+    pub fn as_mut_slice<'b>(&'b mut self) -> &'b mut [T] {
+        match *self {
+            MaybeOwnedSliceRef(ref mut slice) => unsafe { mem::transmute(slice.as_slice()) },
+            MaybeOwnedSliceOwned(ref mut vec) => vec.as_mut_slice(),
+        }
+    }
+
+    #[inline]
+    pub fn slice<'a>(&'a self, start: uint, end: uint) -> &'a [T] {
+        self.as_slice().slice(start, end)
+    }
+
+    #[inline]
+    pub fn slice_from<'a>(&'a self, start: uint) -> &'a [T] {
+        self.as_slice().slice_from(start)
+    }
+
+    #[inline]
+    pub fn slice_to<'a>(&'a self, end: uint) -> &'a [T] {
+        self.as_slice().slice_to(end)
+    }
+}
+
+impl<'a, T : 'a> AsSlice<T> for MaybeOwnedSlice<'a, T> {
+    fn as_slice<'b>(&'b self) -> &'b [T] {
+        match *self {
+            MaybeOwnedSliceRef(slice) => slice,
+            MaybeOwnedSliceOwned(ref vec) => vec.as_slice(),
+        }
+    }
+}
+
+impl<'a, T : 'a> Index<uint, T> for MaybeOwnedSlice<'a, T> {
+    #[inline]
+    fn index<'b>(&'b self, index: &uint) -> &'b T {
+        &self.as_slice()[*index]
+    }
+}
+
+impl<'a, T : 'a> IndexMut<uint, T> for MaybeOwnedSlice<'a, T> {
+    #[inline]
+    fn index_mut<'b>(&'b mut self, index: &uint) -> &'b mut T {
+        &mut self.as_mut_slice()[*index]
+    }
+}

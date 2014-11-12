@@ -4,7 +4,6 @@ extern crate time;
 
 use std::io::File;
 use std::io::MemWriter;
-use std::io::BufReader;
 use std::default::Default;
 use std::os;
 
@@ -52,8 +51,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
 
     let read_data = measure_and_print(format!("{}: read", name).as_slice(), random_data.len() as u64, || {
         let mut r = Vec::new();
-        let mut reader = BufReader::new(buf.as_slice());
-        let mut coded_input_stream = protobuf::CodedInputStream::new(&mut reader);
+        let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(buf.as_slice());
         while !coded_input_stream.eof().unwrap() {
             r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream).unwrap());
         }
@@ -63,8 +61,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
     assert_eq!(random_data, read_data);
 
     let merged = measure_and_print(format!("{}: read reuse", name).as_slice(), random_data.len() as u64, || {
-        let mut reader = BufReader::new(buf.as_slice());
-        let mut coded_input_stream = protobuf::CodedInputStream::new(&mut reader);
+        let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(buf.as_slice());
         let mut msg: M = Default::default();
         let mut count = 0;
         while !coded_input_stream.eof().unwrap() {

@@ -3,6 +3,7 @@ use std::num::Bounded;
 use std::io::EndOfFile;
 use std::io::IoError;
 
+use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
 use misc::VecWriter;
 use misc::VecReader;
@@ -91,7 +92,7 @@ pub mod wire_format {
 }
 
 pub struct CodedInputStream<'a> {
-    buffer: Vec<u8>,
+    buffer: MaybeOwnedSlice<'a, u8>,
     buffer_size: u32,
     buffer_pos: u32,
     reader: Option<&'a mut Reader + 'a>,
@@ -106,12 +107,25 @@ impl<'a> CodedInputStream<'a> {
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
         CodedInputStream {
-            buffer: buffer,
+            buffer: MaybeOwnedSlice::from_vec(buffer),
             buffer_size: 0,
             buffer_pos: 0,
             reader: Some(reader),
             total_bytes_retired: 0,
             current_limit: Bounded::max_value(),
+            buffer_size_after_limit: 0,
+        }
+    }
+
+    pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
+        let len = bytes.len() as u32;
+        CodedInputStream {
+            buffer: MaybeOwnedSlice::from_slice(bytes),
+            buffer_size: len,
+            buffer_pos: 0,
+            reader: None,
+            total_bytes_retired: 0,
+            current_limit: len,
             buffer_size_after_limit: 0,
         }
     }
@@ -485,10 +499,10 @@ impl<'a> WithCodedInputStream for &'a mut Reader + 'a {
 
 impl<'a> WithCodedInputStream for &'a [u8] {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
-        let mut reader = VecReader::new(self.to_vec());
-        (&mut reader as &mut Reader).with_coded_input_stream(|is| {
-            cb(is)
-        })
+        let mut is = CodedInputStream::from_bytes(self);
+        let r = cb(&mut is);
+        assert!(is.eof().unwrap());
+        r
     }
 }
 
