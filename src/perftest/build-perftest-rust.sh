@@ -2,9 +2,9 @@
 
 cd $(dirname $0)
 
-root=$(cd ..; pwd)
-PATH="$root:$PATH"
+cargo build --release
+
+root=$(cd ../..; pwd)
+PATH="$root/target/release:$PATH"
 
 protoc --rust_out . perftest_data.proto
-
-rustc --opt-level=3 -L $root perftest.rs

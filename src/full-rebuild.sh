@@ -10,6 +10,4 @@
 ./build-test.sh
 ./test
 
-./perftest/build-perftest-rust.sh
-
 # vim: set ts=4 sw=4 et:
