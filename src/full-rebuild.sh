@@ -8,6 +8,5 @@
 ./rebuild.sh
 
 ./build-test.sh
-./test
 
 # vim: set ts=4 sw=4 et:
