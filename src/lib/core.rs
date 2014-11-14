@@ -77,10 +77,17 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
         })
     }
 
-    fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
-        with_coded_output_stream_to_bytes(|os| {
+    fn write_to_vec(&self, v: &mut Vec<u8>) -> ProtobufResult<()> {
+        v.with_coded_output_stream(|os| {
             self.write_to(os)
         })
+    }
+
+    fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
+        // TODO: compute message size and reserve that size
+        let mut v = Vec::new();
+        try!(self.write_to_vec(&mut v));
+        Ok(v)
     }
 
     fn write_length_delimited_to_writer(&self, w: &mut Writer) -> ProtobufResult<()> {

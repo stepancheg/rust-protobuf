@@ -1736,9 +1736,10 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             .expect("no descriptor for file");
         let base = proto_path_to_rust_base(file.get_name());
 
-        let mut os = VecWriter::new();
+        let mut v = Vec::new();
 
         {
+            let mut os = VecWriter::new(&mut v);
             let mut w = IndentWriter::new(&mut os as &mut Writer);
 
             w.write_line("// This file is generated. Do not edit");
@@ -1784,7 +1785,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
                 r.push_str(".rs");
                 r
             },
-            content: os.vec,
+            content: v,
         });
     }
     results

@@ -5,19 +5,19 @@ use std::slice;
 use std::result::Ok;
 use std::result::Err;
 
-pub struct VecWriter {
-    pub vec: Vec<u8>,
+pub struct VecWriter<'a> {
+    vec: &'a mut Vec<u8>,
 }
 
-impl VecWriter {
-    pub fn new() -> VecWriter {
+impl<'a> VecWriter<'a> {
+    pub fn new(vec: &'a mut Vec<u8>) -> VecWriter<'a> {
         VecWriter {
-            vec: Vec::new(),
+            vec: vec
         }
     }
 }
 
-impl Writer for VecWriter {
+impl<'a> Writer for VecWriter<'a> {
     fn write(&mut self, v: &[u8]) -> io::IoResult<()> {
         self.vec.push_all(v);
         Ok(())
@@ -32,11 +32,14 @@ mod test {
 
     #[test]
     fn test_vec_writer() {
-        let mut w = VecWriter::new();
-        fn foo(writer: &mut Writer) {
-            writer.write(b"hi").unwrap();
+        let mut v = Vec::new();
+        {
+            let mut w = VecWriter::new(&mut v);
+            fn foo(writer: &mut Writer) {
+                writer.write(b"hi").unwrap();
+            }
+            foo(&mut w as &mut Writer);
         }
-        foo(&mut w as &mut Writer);
-        assert_eq!(b"hi".to_vec(), w.vec);
+        assert_eq!(b"hi".to_vec(), v);
     }
 }

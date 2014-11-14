@@ -2,6 +2,7 @@ use std::mem;
 use std::num::Bounded;
 use std::io::EndOfFile;
 use std::io::IoError;
+use std::io::BufWriter;
 
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
@@ -470,14 +471,25 @@ impl<'a> WithCodedOutputStream for &'a mut Writer + 'a {
     }
 }
 
+impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
+    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
+            -> ProtobufResult<T>
+    {
+        let mut w = VecWriter::new(self);
+        (&mut w as &mut Writer).with_coded_output_stream(|os| {
+            cb(os)
+        })
+    }
+}
+
 pub fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream| -> ProtobufResult<()>)
         -> ProtobufResult<Vec<u8>>
 {
-    let mut w = VecWriter::new();
-    try!((&mut w as &mut Writer).with_coded_output_stream(|os| {
+    let mut v = Vec::new();
+    try!(v.with_coded_output_stream(|os| {
         cb(os)
     }));
-    Ok(w.vec)
+    Ok(v)
 }
 
 pub trait WithCodedInputStream {
@@ -899,14 +911,14 @@ mod test {
     }
 
     fn test_write(expected: &str, gen: |&mut CodedOutputStream| -> ProtobufResult<()>) {
-        let mut writer = VecWriter::new();
+        let mut v = Vec::new();
         {
+            let mut writer = VecWriter::new(&mut v);
             let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
             gen(&mut os).unwrap();
             os.flush().unwrap();
         }
-        let r = writer.vec;
-        assert_eq!(encode_hex(decode_hex(expected).as_slice()), encode_hex(r.as_slice()));
+        assert_eq!(encode_hex(decode_hex(expected).as_slice()), encode_hex(v.as_slice()));
     }
 
     #[test]
