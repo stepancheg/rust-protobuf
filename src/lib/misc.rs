@@ -24,39 +24,6 @@ impl Writer for VecWriter {
     }
 }
 
-pub struct VecReader {
-    vec: Vec<u8>,
-    pos: uint,
-}
-
-impl VecReader {
-    pub fn new(bytes: Vec<u8>) -> VecReader {
-        VecReader {
-            vec: bytes,
-            pos: 0,
-        }
-    }
-
-    fn remaining(&self) -> uint {
-        self.vec.len() - self.pos
-    }
-}
-
-impl Reader for VecReader {
-    fn read(&mut self, bytes: &mut [u8]) -> io::IoResult<uint> {
-        if self.remaining() == 0 {
-            Err(io::standard_error(io::EndOfFile))
-        } else {
-            let n = if bytes.len() < self.remaining() { bytes.len() } else { self.remaining() };
-            slice::bytes::copy_memory(bytes, self.vec.slice(self.pos, self.pos + n));
-            self.pos += n;
-            Ok(n)
-        }
-    }
-}
-
-
-
 #[cfg(test)]
 mod test {
 

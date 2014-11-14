@@ -6,7 +6,6 @@ use std::io::IoError;
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
 use misc::VecWriter;
-use misc::VecReader;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
