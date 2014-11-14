@@ -61,6 +61,11 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
         self.compute_sizes(&mut sizes)
     }
 
+    fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
+        let mut is = CodedInputStream::from_bytes(bytes);
+        self.merge_from(&mut is)
+    }
+
     fn check_initialized(&self) {
         // TODO: report which fields are not initialized
         assert!(self.is_initialized());
