@@ -932,7 +932,7 @@ mod test {
     #[test]
     fn test_output_stream_write_raw_bytes() {
         test_write("00 ab", |os| {
-            os.write_raw_bytes([0x00, 0xab])
+            os.write_raw_bytes(&[0x00, 0xab])
         });
     }
 

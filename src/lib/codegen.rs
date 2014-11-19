@@ -1254,7 +1254,7 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     if !msg.has_any_message_field() {
         // `sizes` and `sizes_pos` are unused
-        w.allow(["unused_variables"]);
+        w.allow(&["unused_variables"]);
     }
     w.def_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()>", |w| {
         // To have access to its methods but not polute the name space.
@@ -1418,7 +1418,7 @@ fn write_message_merge_from(w: &mut IndentWriter) {
 
 fn write_message_descriptor_static(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.allow(["unused_unsafe", "unused_mut"]);
+    w.allow(&["unused_unsafe", "unused_mut"]);
     w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
         w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
             let vec_type_param = format!(
@@ -1489,7 +1489,7 @@ fn write_message_impl_show(w: &mut IndentWriter) {
 fn write_message_descriptor_field(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     let field = w.field.unwrap();
-    w.allow(["non_camel_case_types"]);
+    w.allow(&["non_camel_case_types"]);
     let accessor_name = format!("{}_{}_acc", msg.type_name, field.name);
     let accessor_type_name = accessor_name + "_type";
     w.write_line(format!("struct {};", accessor_type_name));
@@ -1644,7 +1644,7 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
 }
 
 fn write_enum_struct(w: &mut IndentWriter) {
-    w.deriving(["Clone", "PartialEq", "Eq", "Show"]);
+    w.deriving(&["Clone", "PartialEq", "Eq", "Show"]);
     w.write_line(format!("pub enum {:s} {{", w.en().type_name));
     for value in w.en().values.iter() {
         w.write_line(format!("    {:s} = {:i},", value.rust_name_inner(), value.number()));

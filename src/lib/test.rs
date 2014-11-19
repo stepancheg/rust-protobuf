@@ -103,7 +103,7 @@ fn test_write_missing_required() {
 #[test]
 #[should_fail]
 fn test_read_missing_required() {
-    parse_from_bytes::<TestRequired>([]).unwrap();
+    parse_from_bytes::<TestRequired>(&[]).unwrap();
 }
 
 #[test]
@@ -166,8 +166,8 @@ fn test_types_repeated() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice([String::from_str("thirty two"), String::from_str("thirty three")]));
-    message.set_bytes_field(RepeatedField::from_slice([[33u8, 34].to_vec(), [35u8].to_vec()]));
+    message.set_string_field(RepeatedField::from_slice(&[String::from_str("thirty two"), String::from_str("thirty three")]));
+    message.set_bytes_field(RepeatedField::from_slice(&[[33u8, 34].to_vec(), [35u8].to_vec()]));
     test_serialize_deserialize_no_hex(&message);
 }
 
@@ -187,8 +187,8 @@ fn test_types_repeated_packed() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice([String::from_str("thirty two"), String::from_str("thirty three")]));
-    message.set_bytes_field(RepeatedField::from_slice([[33u8, 34].to_vec(), [35u8].to_vec()]));
+    message.set_string_field(RepeatedField::from_slice(&[String::from_str("thirty two"), String::from_str("thirty three")]));
+    message.set_bytes_field(RepeatedField::from_slice(&[[33u8, 34].to_vec(), [35u8].to_vec()]));
     test_serialize_deserialize_no_hex(&message);
 }
 
