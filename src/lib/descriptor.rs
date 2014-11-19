@@ -1828,7 +1828,7 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
-        self.label.unwrap_or(FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_OPTIONAL)
+        self.label.unwrap_or(FieldDescriptorProto_Label::LABEL_OPTIONAL)
     }
 
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
@@ -1847,7 +1847,7 @@ impl<'a> FieldDescriptorProto {
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
-        self.field_type.unwrap_or(FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_DOUBLE)
+        self.field_type.unwrap_or(FieldDescriptorProto_Type::TYPE_DOUBLE)
     }
 
     // optional string type_name = 6;
@@ -2350,47 +2350,47 @@ impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescripto
 
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum FieldDescriptorProto_Type {
-    FieldDescriptorProto_TYPE_DOUBLE = 1,
-    FieldDescriptorProto_TYPE_FLOAT = 2,
-    FieldDescriptorProto_TYPE_INT64 = 3,
-    FieldDescriptorProto_TYPE_UINT64 = 4,
-    FieldDescriptorProto_TYPE_INT32 = 5,
-    FieldDescriptorProto_TYPE_FIXED64 = 6,
-    FieldDescriptorProto_TYPE_FIXED32 = 7,
-    FieldDescriptorProto_TYPE_BOOL = 8,
-    FieldDescriptorProto_TYPE_STRING = 9,
-    FieldDescriptorProto_TYPE_GROUP = 10,
-    FieldDescriptorProto_TYPE_MESSAGE = 11,
-    FieldDescriptorProto_TYPE_BYTES = 12,
-    FieldDescriptorProto_TYPE_UINT32 = 13,
-    FieldDescriptorProto_TYPE_ENUM = 14,
-    FieldDescriptorProto_TYPE_SFIXED32 = 15,
-    FieldDescriptorProto_TYPE_SFIXED64 = 16,
-    FieldDescriptorProto_TYPE_SINT32 = 17,
-    FieldDescriptorProto_TYPE_SINT64 = 18,
+    TYPE_DOUBLE = 1,
+    TYPE_FLOAT = 2,
+    TYPE_INT64 = 3,
+    TYPE_UINT64 = 4,
+    TYPE_INT32 = 5,
+    TYPE_FIXED64 = 6,
+    TYPE_FIXED32 = 7,
+    TYPE_BOOL = 8,
+    TYPE_STRING = 9,
+    TYPE_GROUP = 10,
+    TYPE_MESSAGE = 11,
+    TYPE_BYTES = 12,
+    TYPE_UINT32 = 13,
+    TYPE_ENUM = 14,
+    TYPE_SFIXED32 = 15,
+    TYPE_SFIXED64 = 16,
+    TYPE_SINT32 = 17,
+    TYPE_SINT64 = 18,
 }
 
 impl FieldDescriptorProto_Type {
     pub fn new(value: i32) -> FieldDescriptorProto_Type {
         match value {
-            1 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_DOUBLE,
-            2 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_FLOAT,
-            3 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_INT64,
-            4 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_UINT64,
-            5 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_INT32,
-            6 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_FIXED64,
-            7 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_FIXED32,
-            8 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_BOOL,
-            9 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_STRING,
-            10 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_GROUP,
-            11 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_MESSAGE,
-            12 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_BYTES,
-            13 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_UINT32,
-            14 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_ENUM,
-            15 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_SFIXED32,
-            16 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_SFIXED64,
-            17 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_SINT32,
-            18 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_SINT64,
+            1 => FieldDescriptorProto_Type::TYPE_DOUBLE,
+            2 => FieldDescriptorProto_Type::TYPE_FLOAT,
+            3 => FieldDescriptorProto_Type::TYPE_INT64,
+            4 => FieldDescriptorProto_Type::TYPE_UINT64,
+            5 => FieldDescriptorProto_Type::TYPE_INT32,
+            6 => FieldDescriptorProto_Type::TYPE_FIXED64,
+            7 => FieldDescriptorProto_Type::TYPE_FIXED32,
+            8 => FieldDescriptorProto_Type::TYPE_BOOL,
+            9 => FieldDescriptorProto_Type::TYPE_STRING,
+            10 => FieldDescriptorProto_Type::TYPE_GROUP,
+            11 => FieldDescriptorProto_Type::TYPE_MESSAGE,
+            12 => FieldDescriptorProto_Type::TYPE_BYTES,
+            13 => FieldDescriptorProto_Type::TYPE_UINT32,
+            14 => FieldDescriptorProto_Type::TYPE_ENUM,
+            15 => FieldDescriptorProto_Type::TYPE_SFIXED32,
+            16 => FieldDescriptorProto_Type::TYPE_SFIXED64,
+            17 => FieldDescriptorProto_Type::TYPE_SINT32,
+            18 => FieldDescriptorProto_Type::TYPE_SINT64,
             _ => panic!()
         }
     }
@@ -2413,17 +2413,17 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum FieldDescriptorProto_Label {
-    FieldDescriptorProto_LABEL_OPTIONAL = 1,
-    FieldDescriptorProto_LABEL_REQUIRED = 2,
-    FieldDescriptorProto_LABEL_REPEATED = 3,
+    LABEL_OPTIONAL = 1,
+    LABEL_REQUIRED = 2,
+    LABEL_REPEATED = 3,
 }
 
 impl FieldDescriptorProto_Label {
     pub fn new(value: i32) -> FieldDescriptorProto_Label {
         match value {
-            1 => FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_OPTIONAL,
-            2 => FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_REQUIRED,
-            3 => FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_REPEATED,
+            1 => FieldDescriptorProto_Label::LABEL_OPTIONAL,
+            2 => FieldDescriptorProto_Label::LABEL_REQUIRED,
+            3 => FieldDescriptorProto_Label::LABEL_REPEATED,
             _ => panic!()
         }
     }
@@ -3886,7 +3886,7 @@ impl<'a> FileOptions {
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
-        self.optimize_for.unwrap_or(FileOptions_OptimizeMode::FileOptions_SPEED)
+        self.optimize_for.unwrap_or(FileOptions_OptimizeMode::SPEED)
     }
 
     // optional string go_package = 11;
@@ -4444,17 +4444,17 @@ impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_uninterpret
 
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum FileOptions_OptimizeMode {
-    FileOptions_SPEED = 1,
-    FileOptions_CODE_SIZE = 2,
-    FileOptions_LITE_RUNTIME = 3,
+    SPEED = 1,
+    CODE_SIZE = 2,
+    LITE_RUNTIME = 3,
 }
 
 impl FileOptions_OptimizeMode {
     pub fn new(value: i32) -> FileOptions_OptimizeMode {
         match value {
-            1 => FileOptions_OptimizeMode::FileOptions_SPEED,
-            2 => FileOptions_OptimizeMode::FileOptions_CODE_SIZE,
-            3 => FileOptions_OptimizeMode::FileOptions_LITE_RUNTIME,
+            1 => FileOptions_OptimizeMode::SPEED,
+            2 => FileOptions_OptimizeMode::CODE_SIZE,
+            3 => FileOptions_OptimizeMode::LITE_RUNTIME,
             _ => panic!()
         }
     }
@@ -4803,7 +4803,7 @@ impl<'a> FieldOptions {
     }
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
-        self.ctype.unwrap_or(FieldOptions_CType::FieldOptions_STRING)
+        self.ctype.unwrap_or(FieldOptions_CType::STRING)
     }
 
     // optional bool packed = 2;
@@ -5272,17 +5272,17 @@ impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_uninterpr
 
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum FieldOptions_CType {
-    FieldOptions_STRING = 0,
-    FieldOptions_CORD = 1,
-    FieldOptions_STRING_PIECE = 2,
+    STRING = 0,
+    CORD = 1,
+    STRING_PIECE = 2,
 }
 
 impl FieldOptions_CType {
     pub fn new(value: i32) -> FieldOptions_CType {
         match value {
-            0 => FieldOptions_CType::FieldOptions_STRING,
-            1 => FieldOptions_CType::FieldOptions_CORD,
-            2 => FieldOptions_CType::FieldOptions_STRING_PIECE,
+            0 => FieldOptions_CType::STRING,
+            1 => FieldOptions_CType::CORD,
+            2 => FieldOptions_CType::STRING_PIECE,
             _ => panic!()
         }
     }

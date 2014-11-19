@@ -113,13 +113,13 @@ impl ::std::fmt::Show for MessageA {
 
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum MessageA_EnumA {
-    MessageA_FOO = 0,
+    FOO = 0,
 }
 
 impl MessageA_EnumA {
     pub fn new(value: i32) -> MessageA_EnumA {
         match value {
-            0 => MessageA_EnumA::MessageA_FOO,
+            0 => MessageA_EnumA::FOO,
             _ => panic!()
         }
     }
@@ -247,13 +247,13 @@ impl ::std::fmt::Show for MessageB {
 
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum MessageB_EnumB {
-    MessageB_FOO = 0,
+    FOO = 0,
 }
 
 impl MessageB_EnumB {
     pub fn new(value: i32) -> MessageB_EnumB {
         match value {
-            0 => MessageB_EnumB::MessageB_FOO,
+            0 => MessageB_EnumB::FOO,
             _ => panic!()
         }
     }
