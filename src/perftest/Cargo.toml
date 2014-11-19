@@ -1,0 +1,13 @@
+[project]
+name = "rust-protobuf-perftest"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+
+[dependencies.protobuf]
+path = "../.."
+
+[[bin]]
+
+name = "rust-protobuf-perftest"
+path = "perftest.rs"
+test = false

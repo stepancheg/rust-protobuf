@@ -2,9 +2,15 @@
 
 cd $(dirname $0)
 
-cargo build --release
+(
+    cd ../..
+    # building protoc-gen-rust
+    cargo build
+)
 
 root=$(cd ../..; pwd)
-PATH="$root/target/release:$PATH"
+PATH="$root/target:$PATH"
 
 protoc --rust_out . perftest_data.proto
+
+cargo build --release
