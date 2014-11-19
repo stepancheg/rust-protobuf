@@ -6,6 +6,9 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 [dependencies.protobuf]
 path = "../.."
 
+[dependencies.time]
+git = "http://github.com/rust-lang/time"
+
 [[bin]]
 
 name = "rust-protobuf-perftest"
