@@ -67,7 +67,7 @@ impl ::protobuf::Message for Test1 {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.a = Some(tmp);
@@ -244,7 +244,7 @@ impl ::protobuf::Message for Test2 {
             match field_number {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.b.set_default();
                     try!(is.read_string_into(tmp))
@@ -418,7 +418,7 @@ impl ::protobuf::Message for Test3 {
             match field_number {
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.c.set_default();
                     try!(is.merge_message(tmp))
@@ -592,7 +592,7 @@ impl ::protobuf::Message for Test4 {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.d.push(try!(is.read_int32()));
                     }
@@ -786,7 +786,7 @@ impl ::protobuf::Message for TestPackedUnpacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.unpacked.push(try!(is.read_int32()));
                     }
@@ -801,7 +801,7 @@ impl ::protobuf::Message for TestPackedUnpacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.packed.push(try!(is.read_int32()));
                     }
@@ -990,7 +990,7 @@ impl ::protobuf::Message for TestEmpty {
             match field_number {
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.foo = Some(tmp);
@@ -1155,7 +1155,7 @@ impl ::protobuf::Message for TestRequired {
             match field_number {
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
                     self.b = Some(tmp);
@@ -1320,7 +1320,7 @@ impl ::protobuf::Message for TestUnknownFields {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.a = Some(tmp);
@@ -1524,14 +1524,14 @@ impl ::protobuf::Message for TestSelfReference {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.r1.set_default();
                     try!(is.merge_message(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.r2.set_default();
                     try!(is.merge_message(tmp))
@@ -1741,7 +1741,7 @@ impl ::protobuf::Message for TestDefaultInstanceField {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.s.set_default();
                     try!(is.read_string_into(tmp))
@@ -1912,7 +1912,7 @@ impl ::protobuf::Message for TestDefaultInstance {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.field.set_default();
                     try!(is.merge_message(tmp))
@@ -2077,7 +2077,7 @@ impl ::protobuf::Message for TestDescriptor {
             match field_number {
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.stuff = Some(tmp);
@@ -2557,105 +2557,105 @@ impl ::protobuf::Message for TestTypesSingular {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_double());
                     self.double_field = Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_float());
                     self.float_field = Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.int32_field = Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int64());
                     self.int64_field = Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_uint32());
                     self.uint32_field = Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_uint64());
                     self.uint64_field = Some(tmp);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sint32());
                     self.sint32_field = Some(tmp);
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sint64());
                     self.sint64_field = Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_fixed32());
                     self.fixed32_field = Some(tmp);
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_fixed64());
                     self.fixed64_field = Some(tmp);
                 },
                 11 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sfixed32());
                     self.sfixed32_field = Some(tmp);
                 },
                 12 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sfixed64());
                     self.sfixed64_field = Some(tmp);
                 },
                 13 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
                     self.bool_field = Some(tmp);
                 },
                 14 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.string_field.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.bytes_field.set_default();
                     try!(is.read_bytes_into(tmp))
@@ -3540,7 +3540,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.double_field.push(try!(is.read_double()));
                     }
@@ -3555,7 +3555,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.float_field.push(try!(is.read_float()));
                     }
@@ -3570,7 +3570,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.int32_field.push(try!(is.read_int32()));
                     }
@@ -3585,7 +3585,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.int64_field.push(try!(is.read_int64()));
                     }
@@ -3600,7 +3600,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.uint32_field.push(try!(is.read_uint32()));
                     }
@@ -3615,7 +3615,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.uint64_field.push(try!(is.read_uint64()));
                     }
@@ -3630,7 +3630,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sint32_field.push(try!(is.read_sint32()));
                     }
@@ -3645,7 +3645,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sint64_field.push(try!(is.read_sint64()));
                     }
@@ -3660,7 +3660,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.fixed32_field.push(try!(is.read_fixed32()));
                     }
@@ -3675,7 +3675,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.fixed64_field.push(try!(is.read_fixed64()));
                     }
@@ -3690,7 +3690,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sfixed32_field.push(try!(is.read_sfixed32()));
                     }
@@ -3705,7 +3705,7 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sfixed64_field.push(try!(is.read_sfixed64()));
                     }
@@ -3720,21 +3720,21 @@ impl ::protobuf::Message for TestTypesRepeated {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.bool_field.push(try!(is.read_bool()));
                     }
                 },
                 14 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.string_field.push_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.bytes_field.push_default();
                     try!(is.read_bytes_into(tmp))
@@ -4560,7 +4560,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.double_field.push(try!(is.read_double()));
                     }
@@ -4575,7 +4575,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.float_field.push(try!(is.read_float()));
                     }
@@ -4590,7 +4590,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.int32_field.push(try!(is.read_int32()));
                     }
@@ -4605,7 +4605,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.int64_field.push(try!(is.read_int64()));
                     }
@@ -4620,7 +4620,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.uint32_field.push(try!(is.read_uint32()));
                     }
@@ -4635,7 +4635,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.uint64_field.push(try!(is.read_uint64()));
                     }
@@ -4650,7 +4650,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sint32_field.push(try!(is.read_sint32()));
                     }
@@ -4665,7 +4665,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sint64_field.push(try!(is.read_sint64()));
                     }
@@ -4680,7 +4680,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.fixed32_field.push(try!(is.read_fixed32()));
                     }
@@ -4695,7 +4695,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.fixed64_field.push(try!(is.read_fixed64()));
                     }
@@ -4710,7 +4710,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sfixed32_field.push(try!(is.read_sfixed32()));
                     }
@@ -4725,7 +4725,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.sfixed64_field.push(try!(is.read_sfixed64()));
                     }
@@ -4740,21 +4740,21 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
                         is.pop_limit(old_limit);
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                            return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         };
                         self.bool_field.push(try!(is.read_bool()));
                     }
                 },
                 14 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.string_field.push_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.bytes_field.push_default();
                     try!(is.read_bytes_into(tmp))
@@ -5651,7 +5651,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_enum_field(&self) -> EnumForDefaultValue {
-        self.enum_field.unwrap_or(TWO)
+        self.enum_field.unwrap_or(EnumForDefaultValue::TWO)
     }
 
     // optional .shrug.EnumForDefaultValue enum_field_without_default = 17;
@@ -5670,7 +5670,7 @@ impl<'a> TestDefaultValues {
     }
 
     pub fn get_enum_field_without_default(&self) -> EnumForDefaultValue {
-        self.enum_field_without_default.unwrap_or(ONE)
+        self.enum_field_without_default.unwrap_or(EnumForDefaultValue::ONE)
     }
 }
 
@@ -5689,119 +5689,119 @@ impl ::protobuf::Message for TestDefaultValues {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_double());
                     self.double_field = Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_float());
                     self.float_field = Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.int32_field = Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int64());
                     self.int64_field = Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_uint32());
                     self.uint32_field = Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_uint64());
                     self.uint64_field = Some(tmp);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sint32());
                     self.sint32_field = Some(tmp);
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sint64());
                     self.sint64_field = Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_fixed32());
                     self.fixed32_field = Some(tmp);
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_fixed64());
                     self.fixed64_field = Some(tmp);
                 },
                 11 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sfixed32());
                     self.sfixed32_field = Some(tmp);
                 },
                 12 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_sfixed64());
                     self.sfixed64_field = Some(tmp);
                 },
                 13 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
                     self.bool_field = Some(tmp);
                 },
                 14 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.string_field.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.bytes_field.set_default();
                     try!(is.read_bytes_into(tmp))
                 },
                 16 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = EnumForDefaultValue::new(try!(is.read_int32()));
                     self.enum_field = Some(tmp);
                 },
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = EnumForDefaultValue::new(try!(is.read_int32()));
                     self.enum_field_without_default = Some(tmp);
@@ -6381,9 +6381,9 @@ pub enum TestEnumDescriptor {
 impl TestEnumDescriptor {
     pub fn new(value: i32) -> TestEnumDescriptor {
         match value {
-            1 => RED,
-            2 => BLUE,
-            3 => GREEN,
+            1 => TestEnumDescriptor::RED,
+            2 => TestEnumDescriptor::BLUE,
+            3 => TestEnumDescriptor::GREEN,
             _ => panic!()
         }
     }
@@ -6414,9 +6414,9 @@ pub enum EnumForDefaultValue {
 impl EnumForDefaultValue {
     pub fn new(value: i32) -> EnumForDefaultValue {
         match value {
-            1 => ONE,
-            2 => TWO,
-            3 => THREE,
+            1 => EnumForDefaultValue::ONE,
+            2 => EnumForDefaultValue::TWO,
+            3 => EnumForDefaultValue::THREE,
             _ => panic!()
         }
     }

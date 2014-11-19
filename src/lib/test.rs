@@ -221,7 +221,7 @@ fn test_message_descriptor() {
 
 #[test]
 fn test_enum_descriptor() {
-    let d = RED.enum_descriptor();
+    let d = TestEnumDescriptor::RED.enum_descriptor();
     assert_eq!("TestEnumDescriptor", d.name());
     assert_eq!("TestEnumDescriptor", reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name());
     assert_eq!("GREEN", d.value_by_name("GREEN").name());
@@ -245,8 +245,8 @@ fn test_default_value() {
     assert_eq!(true, d.get_bool_field());
     assert_eq!("abc\n22", d.get_string_field());
     assert_eq!(b"cde\n33", d.get_bytes_field());
-    assert_eq!(TWO, d.get_enum_field());
-    assert_eq!(ONE, d.get_enum_field_without_default());
+    assert_eq!(EnumForDefaultValue::TWO, d.get_enum_field());
+    assert_eq!(EnumForDefaultValue::ONE, d.get_enum_field_without_default());
 }
 
 #[test]

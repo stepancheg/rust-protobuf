@@ -64,7 +64,7 @@ impl ::protobuf::Message for TestLiteRuntime {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
                     self.v = Some(tmp);

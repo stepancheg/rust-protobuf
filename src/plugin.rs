@@ -137,21 +137,21 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.file_to_generate.push_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.parameter.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.proto_file.push_default();
                     try!(is.merge_message(tmp))
@@ -402,14 +402,14 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.error.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.file.push_default();
                     try!(is.merge_message(tmp))
@@ -678,21 +678,21 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.insertion_point.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.content.set_default();
                     try!(is.read_string_into(tmp))

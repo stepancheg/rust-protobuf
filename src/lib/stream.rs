@@ -10,23 +10,17 @@ use misc::VecWriter;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
-use unknown::UnknownLengthDelimited;
-use unknown::UnknownLengthDelimitedRef;
-use unknown::UnknownVarint;
-use unknown::UnknownVarintRef;
-use unknown::UnknownFixed32;
-use unknown::UnknownFixed64;
-use unknown::UnknownFixed32Ref;
-use unknown::UnknownFixed64Ref;
 use zigzag::decode_zig_zag_32;
 use zigzag::decode_zig_zag_64;
 use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 use error::ProtobufResult;
-use error::ProtobufIoError;
-use error::ProtobufWireError;
+use error::ProtobufError;
 
 pub mod wire_format {
+    // TODO: temporary
+    pub use self::WireType::*;
+
     pub const TAG_TYPE_BITS: u32 = 3;
     pub const TAG_TYPE_MASK: u32 = (1u << TAG_TYPE_BITS as uint) as u32 - 1;
 
@@ -170,7 +164,7 @@ impl<'a> CodedInputStream<'a> {
                     let r = reader.read(self.buffer.as_mut_slice());
                     self.buffer_size = match r {
                         Err(ref e) if e.kind == EndOfFile => return Ok(false),
-                        Err(e) => return Err(ProtobufIoError(e)),
+                        Err(e) => return Err(ProtobufError::IoError(e)),
                         Ok(x) => x as u32,
                     };
                     assert!(self.buffer_size > 0);
@@ -184,7 +178,7 @@ impl<'a> CodedInputStream<'a> {
 
     fn refill_buffer_really(&mut self) -> ProtobufResult<()> {
         if !try!(self.refill_buffer()) {
-            return Err(ProtobufIoError(IoError {
+            return Err(ProtobufError::IoError(IoError {
                 kind: EndOfFile,
                 desc: "unexpected EOF",
                 detail: None,
@@ -292,7 +286,7 @@ impl<'a> CodedInputStream<'a> {
         let v = try!(self.read_raw_varint32());
         match wire_format::Tag::new(v) {
             Some(tag) => Ok(tag),
-            None => Err(ProtobufWireError(format!("unknown tag: {:u}", v))),
+            None => Err(ProtobufError::WireError(format!("unknown tag: {:u}", v))),
         }
     }
 
@@ -361,14 +355,14 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_unknown(&mut self, wire_type: wire_format::WireType) -> ProtobufResult<UnknownValue> {
         match wire_type {
-            wire_format::WireTypeVarint => { self.read_raw_varint64().map(|v| UnknownVarint(v)) },
-            wire_format::WireTypeFixed64 => { self.read_fixed64().map(|v| UnknownFixed64(v)) },
-            wire_format::WireTypeFixed32 => { self.read_fixed32().map(|v| UnknownFixed32(v)) } ,
+            wire_format::WireTypeVarint => { self.read_raw_varint64().map(|v| UnknownValue::Varint(v)) },
+            wire_format::WireTypeFixed64 => { self.read_fixed64().map(|v| UnknownValue::Fixed64(v)) },
+            wire_format::WireTypeFixed32 => { self.read_fixed32().map(|v| UnknownValue::Fixed32(v)) } ,
             wire_format::WireTypeLengthDelimited => {
                 let len = try!(self.read_raw_varint32());
-                self.read_raw_bytes(len).map(|v| UnknownLengthDelimited(v))
+                self.read_raw_bytes(len).map(|v| UnknownValue::LengthDelimited(v))
             },
-            _ => Err(ProtobufWireError(format!("unknown wire type: {:i}", wire_type as int)))
+            _ => Err(ProtobufError::WireError(format!("unknown wire type: {:i}", wire_type as int)))
         }
     }
 
@@ -433,7 +427,7 @@ impl<'a> CodedInputStream<'a> {
 
         let s = match String::from_utf8(vec) {
             Ok(t) => t,
-            Err(_) => return Err(ProtobufWireError(format!("invalid UTF-8 string on wire"))),
+            Err(_) => return Err(ProtobufError::WireError(format!("invalid UTF-8 string on wire"))),
         };
         mem::replace(target, s);
         Ok(())
@@ -544,7 +538,7 @@ impl<'a> CodedOutputStream<'a> {
         match self.writer {
             Some(ref mut writer) => {
                 try!(writer.write(self.buffer.slice(0, self.position as uint))
-                    .map_err(|e| ProtobufIoError(e)));
+                    .map_err(|e| ProtobufError::IoError(e)));
             },
             None => panic!()
         };
@@ -572,7 +566,7 @@ impl<'a> CodedOutputStream<'a> {
         try!(self.refresh_buffer());
         // TODO: write into buffer if enough capacity
         match self.writer {
-            Some(ref mut writer) => try!(writer.write(bytes).map_err(|e| ProtobufIoError(e))),
+            Some(ref mut writer) => try!(writer.write(bytes).map_err(|e| ProtobufError::IoError(e))),
             None => panic!()
         };
         Ok(())
@@ -696,10 +690,10 @@ impl<'a> CodedOutputStream<'a> {
 
     pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> ProtobufResult<()> {
         match unknown {
-            UnknownFixed64Ref(fixed64) => self.write_raw_little_endian64(fixed64),
-            UnknownFixed32Ref(fixed32) => self.write_raw_little_endian32(fixed32),
-            UnknownVarintRef(varint) => self.write_raw_varint64(varint),
-            UnknownLengthDelimitedRef(bytes) => self.write_bytes_no_tag(bytes),
+            UnknownValueRef::Fixed64(fixed64) => self.write_raw_little_endian64(fixed64),
+            UnknownValueRef::Fixed32(fixed32) => self.write_raw_little_endian32(fixed32),
+            UnknownValueRef::Varint(varint) => self.write_raw_varint64(varint),
+            UnknownValueRef::LengthDelimited(bytes) => self.write_bytes_no_tag(bytes),
         }
     }
 

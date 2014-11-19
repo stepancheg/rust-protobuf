@@ -119,7 +119,7 @@ pub enum MessageA_EnumA {
 impl MessageA_EnumA {
     pub fn new(value: i32) -> MessageA_EnumA {
         match value {
-            0 => MessageA_FOO,
+            0 => MessageA_EnumA::MessageA_FOO,
             _ => panic!()
         }
     }
@@ -253,7 +253,7 @@ pub enum MessageB_EnumB {
 impl MessageB_EnumB {
     pub fn new(value: i32) -> MessageB_EnumB {
         match value {
-            0 => MessageB_FOO,
+            0 => MessageB_EnumB::MessageB_FOO,
             _ => panic!()
         }
     }

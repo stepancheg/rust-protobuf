@@ -7,10 +7,10 @@ use clear::Clear;
 
 #[deriving(Show)]
 pub enum UnknownValue {
-    UnknownFixed32(u32),
-    UnknownFixed64(u64),
-    UnknownVarint(u64),
-    UnknownLengthDelimited(Vec<u8>),
+    Fixed32(u32),
+    Fixed64(u64),
+    Varint(u64),
+    LengthDelimited(Vec<u8>),
 }
 
 impl UnknownValue {
@@ -20,28 +20,28 @@ impl UnknownValue {
 
     pub fn get_ref<'s>(&'s self) -> UnknownValueRef<'s> {
         match *self {
-            UnknownFixed32(fixed32) => UnknownFixed32Ref(fixed32),
-            UnknownFixed64(fixed64) => UnknownFixed64Ref(fixed64),
-            UnknownVarint(varint) => UnknownVarintRef(varint),
-            UnknownLengthDelimited(ref bytes) => UnknownLengthDelimitedRef(bytes.as_slice()),
+            UnknownValue::Fixed32(fixed32) => UnknownValueRef::Fixed32(fixed32),
+            UnknownValue::Fixed64(fixed64) => UnknownValueRef::Fixed64(fixed64),
+            UnknownValue::Varint(varint) => UnknownValueRef::Varint(varint),
+            UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(bytes.as_slice()),
         }
     }
 }
 
 pub enum UnknownValueRef<'o> {
-    UnknownFixed32Ref(u32),
-    UnknownFixed64Ref(u64),
-    UnknownVarintRef(u64),
-    UnknownLengthDelimitedRef(&'o [u8]),
+    Fixed32(u32),
+    Fixed64(u64),
+    Varint(u64),
+    LengthDelimited(&'o [u8]),
 }
 
 impl<'o> UnknownValueRef<'o> {
     pub fn wire_type(&self) -> wire_format::WireType {
         match *self {
-            UnknownFixed32Ref(_) => wire_format::WireTypeFixed32,
-            UnknownFixed64Ref(_) => wire_format::WireTypeFixed64,
-            UnknownVarintRef(_) => wire_format::WireTypeVarint,
-            UnknownLengthDelimitedRef(_) => wire_format::WireTypeLengthDelimited,
+            UnknownValueRef::Fixed32(_) => wire_format::WireTypeFixed32,
+            UnknownValueRef::Fixed64(_) => wire_format::WireTypeFixed64,
+            UnknownValueRef::Varint(_) => wire_format::WireTypeVarint,
+            UnknownValueRef::LengthDelimited(_) => wire_format::WireTypeLengthDelimited,
         }
     }
 }
@@ -57,10 +57,10 @@ pub struct UnknownValues {
 impl UnknownValues {
     pub fn add_value(&mut self, value: UnknownValue) {
         match value {
-            UnknownFixed64(fixed64) => self.fixed64.push(fixed64),
-            UnknownFixed32(fixed32) => self.fixed32.push(fixed32),
-            UnknownVarint(varint) => self.varint.push(varint),
-            UnknownLengthDelimited(length_delimited) => self.length_delimited.push(length_delimited),
+            UnknownValue::Fixed64(fixed64) => self.fixed64.push(fixed64),
+            UnknownValue::Fixed32(fixed32) => self.fixed32.push(fixed32),
+            UnknownValue::Varint(varint) => self.varint.push(varint),
+            UnknownValue::LengthDelimited(length_delimited) => self.length_delimited.push(length_delimited),
         };
     }
 
@@ -85,19 +85,19 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
     fn next(&mut self) -> Option<UnknownValueRef<'o>> {
         let fixed32 = self.fixed32.next();
         if fixed32.is_some() {
-            return Some(UnknownFixed32Ref(*fixed32.unwrap()));
+            return Some(UnknownValueRef::Fixed32(*fixed32.unwrap()));
         }
         let fixed64 = self.fixed64.next();
         if fixed64.is_some() {
-            return Some(UnknownFixed64Ref(*fixed64.unwrap()));
+            return Some(UnknownValueRef::Fixed64(*fixed64.unwrap()));
         }
         let varint = self.varint.next();
         if varint.is_some() {
-            return Some(UnknownVarintRef(*varint.unwrap()));
+            return Some(UnknownValueRef::Varint(*varint.unwrap()));
         }
         let length_delimited = self.length_delimited.next();
         if length_delimited.is_some() {
-            return Some(UnknownLengthDelimitedRef(length_delimited.as_ref().unwrap().as_slice()))
+            return Some(UnknownValueRef::LengthDelimited(length_delimited.as_ref().unwrap().as_slice()))
         }
         None
     }

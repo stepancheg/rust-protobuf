@@ -65,7 +65,7 @@ impl ::protobuf::Message for Root {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufWireError("unexpected wire type".to_string()));
+                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.nested.push_default();
                     try!(is.merge_message(tmp))

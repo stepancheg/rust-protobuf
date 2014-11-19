@@ -1,24 +1,24 @@
 use std::mem;
 
 pub enum MaybeOwnedSlice<'a, T : 'a> {
-    MaybeOwnedSliceRef(&'a [T]),
-    MaybeOwnedSliceOwned(Vec<T>),
+    Ref(&'a [T]),
+    Owned(Vec<T>),
 }
 
 impl<'a, T : 'a> MaybeOwnedSlice<'a, T> {
     pub fn from_vec(vec: Vec<T>) -> MaybeOwnedSlice<'static, T> {
-        MaybeOwnedSliceOwned(vec)
+        MaybeOwnedSlice::Owned(vec)
     }
 
     pub fn from_slice(slice: &'a [T]) -> MaybeOwnedSlice<'a, T> {
-        MaybeOwnedSliceRef(slice)
+        MaybeOwnedSlice::Ref(slice)
     }
 
     #[inline]
     pub fn as_mut_slice<'b>(&'b mut self) -> &'b mut [T] {
         match *self {
-            MaybeOwnedSliceRef(ref mut slice) => unsafe { mem::transmute(slice.as_slice()) },
-            MaybeOwnedSliceOwned(ref mut vec) => vec.as_mut_slice(),
+            MaybeOwnedSlice::Ref(ref mut slice) => unsafe { mem::transmute(slice.as_slice()) },
+            MaybeOwnedSlice::Owned(ref mut vec) => vec.as_mut_slice(),
         }
     }
 
@@ -41,8 +41,8 @@ impl<'a, T : 'a> MaybeOwnedSlice<'a, T> {
 impl<'a, T : 'a> AsSlice<T> for MaybeOwnedSlice<'a, T> {
     fn as_slice<'b>(&'b self) -> &'b [T] {
         match *self {
-            MaybeOwnedSliceRef(slice) => slice,
-            MaybeOwnedSliceOwned(ref vec) => vec.as_slice(),
+            MaybeOwnedSlice::Ref(slice) => slice,
+            MaybeOwnedSlice::Owned(ref vec) => vec.as_slice(),
         }
     }
 }
