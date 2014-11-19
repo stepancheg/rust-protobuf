@@ -1645,11 +1645,11 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
 
 fn write_enum_struct(w: &mut IndentWriter) {
     w.deriving(&["Clone", "PartialEq", "Eq", "Show"]);
-    w.write_line(format!("pub enum {:s} {{", w.en().type_name));
-    for value in w.en().values.iter() {
-        w.write_line(format!("    {:s} = {:i},", value.rust_name_inner(), value.number()));
-    }
-    w.write_line(format!("}}"));
+    w.expr_block(format!("pub enum {:s}", w.en().type_name), |w| {
+        for value in w.en().values.iter() {
+            w.write_line(format!("{:s} = {:i},", value.rust_name_inner(), value.number()));
+        }
+    });
 }
 
 fn write_enum_impl(w: &mut IndentWriter) {
