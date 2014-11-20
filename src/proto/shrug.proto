@@ -74,6 +74,7 @@ message TestTypesSingular {
     optional bool bool_field = 13;
     optional string string_field = 14;
     optional bytes bytes_field = 15;
+    optional TestEnumDescriptor enum_field = 16;
 }
 
 message TestTypesRepeated {
@@ -92,6 +93,7 @@ message TestTypesRepeated {
     repeated bool bool_field = 13 [packed=false];
     repeated string string_field = 14;
     repeated bytes bytes_field = 15;
+    repeated TestEnumDescriptor enum_field = 16 [packed=false];
 }
 
 message TestTypesRepeatedPacked {
@@ -110,6 +112,7 @@ message TestTypesRepeatedPacked {
     repeated bool bool_field = 13 [packed=true];
     repeated string string_field = 14;
     repeated bytes bytes_field = 15;
+    repeated TestEnumDescriptor enum_field = 16 [packed=true];
 }
 
 enum EnumForDefaultValue {

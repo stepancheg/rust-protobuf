@@ -453,6 +453,14 @@ impl Field {
         }
     }
 
+    // data is enum
+    fn is_enum(&self) -> bool {
+        match self.field_type {
+            FieldDescriptorProto_Type::TYPE_ENUM => true,
+            _ => false,
+        }
+    }
+
     // data is stored in heap
     fn type_is_not_trivial(&self) -> bool {
         match self.field_type {
@@ -801,9 +809,14 @@ impl<'a> IndentWriter<'a> {
 
     fn self_field_vec_packed_varint_data_size(&self) -> String {
         assert!(!self.field().is_fixed());
-        let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
-        format!("::protobuf::rt::vec_packed_varint{}_data_size({}.as_slice())",
-            zigzag_suffix, self.self_field())
+        let fn_name = if self.field().is_enum() {
+            "vec_packed_enum_data_size".to_string()
+        } else {
+            let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
+            format!("vec_packed_varint{}_data_size", zigzag_suffix)
+        };
+        format!("::protobuf::rt::{}({}.as_slice())",
+            fn_name, self.self_field())
     }
 
     fn self_field_vec_packed_data_size(&self) -> String {
@@ -826,9 +839,14 @@ impl<'a> IndentWriter<'a> {
     fn self_field_vec_packed_varint_size(&self) -> String {
         // zero is filtered outside
         assert!(!self.field().is_fixed());
-        let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
-        format!("::protobuf::rt::vec_packed_varint{}_size({}, {}.as_slice())",
-            zigzag_suffix, self.field().number, self.self_field())
+        let fn_name = if self.field().is_enum() {
+            "vec_packed_enum_size".to_string()
+        } else {
+            let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
+            format!("vec_packed_varint{}_size", zigzag_suffix)
+        };
+        format!("::protobuf::rt::{}({}, {}.as_slice())",
+            fn_name, self.field().number, self.self_field())
     }
 
     fn self_field_vec_packed_size(&mut self) -> String {
