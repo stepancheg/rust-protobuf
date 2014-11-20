@@ -286,7 +286,7 @@ impl<'a> CodedInputStream<'a> {
         let v = try!(self.read_raw_varint32());
         match wire_format::Tag::new(v) {
             Some(tag) => Ok(tag),
-            None => Err(ProtobufError::WireError(format!("unknown tag: {:u}", v))),
+            None => Err(ProtobufError::WireError(format!("unknown tag: {}", v))),
         }
     }
 
@@ -362,7 +362,7 @@ impl<'a> CodedInputStream<'a> {
                 let len = try!(self.read_raw_varint32());
                 self.read_raw_bytes(len).map(|v| UnknownValue::LengthDelimited(v))
             },
-            _ => Err(ProtobufError::WireError(format!("unknown wire type: {:i}", wire_type as int)))
+            _ => Err(ProtobufError::WireError(format!("unknown wire type: {}", wire_type as int)))
         }
     }
 

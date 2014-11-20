@@ -26,7 +26,7 @@ pub fn decode_hex(hex: &str) -> Vec<u8> {
         if pos == hex.char_len() {
             break;
         }
-        panic!("pos = {:u}d", pos);
+        panic!("pos = {}d", pos);
     }
     r
 }
