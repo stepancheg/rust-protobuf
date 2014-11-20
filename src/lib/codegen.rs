@@ -1694,6 +1694,15 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
     });
 }
 
+fn write_enum_impl_varint(w: &mut IndentWriter) {
+    w.impl_for_block("::protobuf::rt::ProtobufVarint", w.en().type_name.as_slice(), |w| {
+        w.def_fn("len_varint(&self) -> u32", |w| {
+            w.write_line("use protobuf::ProtobufEnum;");
+            w.write_line("self.value().len_varint()");
+        });
+    });
+}
+
 fn write_enum(enum_with_scope: &EnumWithScope, _root_scope: &RootScope, w: &mut IndentWriter) {
     let en = Enum::parse(enum_with_scope);
     w.bind_enum(&en, |w| {
@@ -1702,6 +1711,8 @@ fn write_enum(enum_with_scope: &EnumWithScope, _root_scope: &RootScope, w: &mut 
         write_enum_impl(w);
         w.write_line("");
         write_enum_impl_enum(w);
+        w.write_line("");
+        write_enum_impl_varint(w);
     });
 }
 
