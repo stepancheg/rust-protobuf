@@ -238,7 +238,7 @@ impl<'a> FileDescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -269,7 +269,7 @@ impl<'a> FileDescriptorProto {
 
     pub fn get_package(&'a self) -> &'a str {
         match self.package.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -640,13 +640,13 @@ impl ::protobuf::Message for FileDescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.package.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
@@ -685,7 +685,7 @@ impl ::protobuf::Message for FileDescriptorProto {
             try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -694,7 +694,7 @@ impl ::protobuf::Message for FileDescriptorProto {
             None => {},
         };
         match self.source_code_info.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -1029,7 +1029,7 @@ impl<'a> DescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1276,7 +1276,7 @@ impl ::protobuf::Message for DescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
@@ -1312,7 +1312,7 @@ impl ::protobuf::Message for DescriptorProto {
             try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -1628,14 +1628,14 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.start {
-            Some(ref v) => {
-                try!(os.write_int32(1, *v));
+            Some(v) => {
+                try!(os.write_int32(1, v));
             },
             None => {},
         };
         match self.end {
-            Some(ref v) => {
-                try!(os.write_int32(2, *v));
+            Some(v) => {
+                try!(os.write_int32(2, v));
             },
             None => {},
         };
@@ -1788,7 +1788,7 @@ impl<'a> FieldDescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1876,7 +1876,7 @@ impl<'a> FieldDescriptorProto {
 
     pub fn get_type_name(&'a self) -> &'a str {
         match self.type_name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1907,7 +1907,7 @@ impl<'a> FieldDescriptorProto {
 
     pub fn get_extendee(&'a self) -> &'a str {
         match self.extendee.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1938,7 +1938,7 @@ impl<'a> FieldDescriptorProto {
 
     pub fn get_default_value(&'a self) -> &'a str {
         match self.default_value.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -2090,49 +2090,49 @@ impl ::protobuf::Message for FieldDescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.number {
-            Some(ref v) => {
-                try!(os.write_int32(3, *v));
+            Some(v) => {
+                try!(os.write_int32(3, v));
             },
             None => {},
         };
         match self.label {
-            Some(ref v) => {
-                try!(os.write_enum(4, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(4, v as i32));
             },
             None => {},
         };
         match self.field_type {
-            Some(ref v) => {
-                try!(os.write_enum(5, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(5, v as i32));
             },
             None => {},
         };
         match self.type_name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(6, v.as_slice()));
             },
             None => {},
         };
         match self.extendee.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
         match self.default_value.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(7, v.as_slice()));
             },
             None => {},
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -2497,7 +2497,7 @@ impl<'a> EnumDescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -2620,7 +2620,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
@@ -2632,7 +2632,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -2799,7 +2799,7 @@ impl<'a> EnumValueDescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -2920,19 +2920,19 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.number {
-            Some(ref v) => {
-                try!(os.write_int32(2, *v));
+            Some(v) => {
+                try!(os.write_int32(2, v));
             },
             None => {},
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -3099,7 +3099,7 @@ impl<'a> ServiceDescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -3222,7 +3222,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
@@ -3234,7 +3234,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -3403,7 +3403,7 @@ impl<'a> MethodDescriptorProto {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -3434,7 +3434,7 @@ impl<'a> MethodDescriptorProto {
 
     pub fn get_input_type(&'a self) -> &'a str {
         match self.input_type.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -3465,7 +3465,7 @@ impl<'a> MethodDescriptorProto {
 
     pub fn get_output_type(&'a self) -> &'a str {
         match self.output_type.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -3577,25 +3577,25 @@ impl ::protobuf::Message for MethodDescriptorProto {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.input_type.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
         match self.output_type.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(3, v.as_slice()));
             },
             None => {},
         };
         match self.options.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -3796,7 +3796,7 @@ impl<'a> FileOptions {
 
     pub fn get_java_package(&'a self) -> &'a str {
         match self.java_package.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -3827,7 +3827,7 @@ impl<'a> FileOptions {
 
     pub fn get_java_outer_classname(&'a self) -> &'a str {
         match self.java_outer_classname.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -3915,7 +3915,7 @@ impl<'a> FileOptions {
 
     pub fn get_go_package(&'a self) -> &'a str {
         match self.go_package.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -4136,56 +4136,56 @@ impl ::protobuf::Message for FileOptions {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.java_package.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.java_outer_classname.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(8, v.as_slice()));
             },
             None => {},
         };
         match self.java_multiple_files {
-            Some(ref v) => {
-                try!(os.write_bool(10, *v));
+            Some(v) => {
+                try!(os.write_bool(10, v));
             },
             None => {},
         };
         match self.java_generate_equals_and_hash {
-            Some(ref v) => {
-                try!(os.write_bool(20, *v));
+            Some(v) => {
+                try!(os.write_bool(20, v));
             },
             None => {},
         };
         match self.optimize_for {
-            Some(ref v) => {
-                try!(os.write_enum(9, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(9, v as i32));
             },
             None => {},
         };
         match self.go_package.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(11, v.as_slice()));
             },
             None => {},
         };
         match self.cc_generic_services {
-            Some(ref v) => {
-                try!(os.write_bool(16, *v));
+            Some(v) => {
+                try!(os.write_bool(16, v));
             },
             None => {},
         };
         match self.java_generic_services {
-            Some(ref v) => {
-                try!(os.write_bool(17, *v));
+            Some(v) => {
+                try!(os.write_bool(17, v));
             },
             None => {},
         };
         match self.py_generic_services {
-            Some(ref v) => {
-                try!(os.write_bool(18, *v));
+            Some(v) => {
+                try!(os.write_bool(18, v));
             },
             None => {},
         };
@@ -4629,14 +4629,14 @@ impl ::protobuf::Message for MessageOptions {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.message_set_wire_format {
-            Some(ref v) => {
-                try!(os.write_bool(1, *v));
+            Some(v) => {
+                try!(os.write_bool(1, v));
             },
             None => {},
         };
         match self.no_standard_descriptor_accessor {
-            Some(ref v) => {
-                try!(os.write_bool(2, *v));
+            Some(v) => {
+                try!(os.write_bool(2, v));
             },
             None => {},
         };
@@ -4889,7 +4889,7 @@ impl<'a> FieldOptions {
 
     pub fn get_experimental_map_key(&'a self) -> &'a str {
         match self.experimental_map_key.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -5042,38 +5042,38 @@ impl ::protobuf::Message for FieldOptions {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.ctype {
-            Some(ref v) => {
-                try!(os.write_enum(1, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(1, v as i32));
             },
             None => {},
         };
         match self.packed {
-            Some(ref v) => {
-                try!(os.write_bool(2, *v));
+            Some(v) => {
+                try!(os.write_bool(2, v));
             },
             None => {},
         };
         match self.lazy {
-            Some(ref v) => {
-                try!(os.write_bool(5, *v));
+            Some(v) => {
+                try!(os.write_bool(5, v));
             },
             None => {},
         };
         match self.deprecated {
-            Some(ref v) => {
-                try!(os.write_bool(3, *v));
+            Some(v) => {
+                try!(os.write_bool(3, v));
             },
             None => {},
         };
         match self.experimental_map_key.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(9, v.as_slice()));
             },
             None => {},
         };
         match self.weak {
-            Some(ref v) => {
-                try!(os.write_bool(10, *v));
+            Some(v) => {
+                try!(os.write_bool(10, v));
             },
             None => {},
         };
@@ -5426,8 +5426,8 @@ impl ::protobuf::Message for EnumOptions {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.allow_alias {
-            Some(ref v) => {
-                try!(os.write_bool(2, *v));
+            Some(v) => {
+                try!(os.write_bool(2, v));
             },
             None => {},
         };
@@ -6093,7 +6093,7 @@ impl<'a> UninterpretedOption {
 
     pub fn get_identifier_value(&'a self) -> &'a str {
         match self.identifier_value.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -6181,7 +6181,7 @@ impl<'a> UninterpretedOption {
 
     pub fn get_string_value(&'a self) -> &'a [u8] {
         match self.string_value.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => [].as_slice(),
         }
     }
@@ -6212,7 +6212,7 @@ impl<'a> UninterpretedOption {
 
     pub fn get_aggregate_value(&'a self) -> &'a str {
         match self.aggregate_value.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -6332,37 +6332,37 @@ impl ::protobuf::Message for UninterpretedOption {
             try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
         };
         match self.identifier_value.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(3, v.as_slice()));
             },
             None => {},
         };
         match self.positive_int_value {
-            Some(ref v) => {
-                try!(os.write_uint64(4, *v));
+            Some(v) => {
+                try!(os.write_uint64(4, v));
             },
             None => {},
         };
         match self.negative_int_value {
-            Some(ref v) => {
-                try!(os.write_int64(5, *v));
+            Some(v) => {
+                try!(os.write_int64(5, v));
             },
             None => {},
         };
         match self.double_value {
-            Some(ref v) => {
-                try!(os.write_double(6, *v));
+            Some(v) => {
+                try!(os.write_double(6, v));
             },
             None => {},
         };
         match self.string_value.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_bytes(7, v.as_slice()));
             },
             None => {},
         };
         match self.aggregate_value.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(8, v.as_slice()));
             },
             None => {},
@@ -6604,7 +6604,7 @@ impl<'a> UninterpretedOption_NamePart {
 
     pub fn get_name_part(&'a self) -> &'a str {
         match self.name_part.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -6693,14 +6693,14 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name_part.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.is_extension {
-            Some(ref v) => {
-                try!(os.write_bool(2, *v));
+            Some(v) => {
+                try!(os.write_bool(2, v));
             },
             None => {},
         };
@@ -7048,7 +7048,7 @@ impl<'a> SourceCodeInfo_Location {
 
     pub fn get_leading_comments(&'a self) -> &'a str {
         match self.leading_comments.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -7079,7 +7079,7 @@ impl<'a> SourceCodeInfo_Location {
 
     pub fn get_trailing_comments(&'a self) -> &'a str {
         match self.trailing_comments.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -7193,13 +7193,13 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             };
         };
         match self.leading_comments.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(3, v.as_slice()));
             },
             None => {},
         };
         match self.trailing_comments.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(4, v.as_slice()));
             },
             None => {},
