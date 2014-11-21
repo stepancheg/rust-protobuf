@@ -97,8 +97,8 @@ impl ::protobuf::Message for TestMessage {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.value {
-            Some(ref v) => {
-                try!(os.write_int32(10, *v));
+            Some(v) => {
+                try!(os.write_int32(10, v));
             },
             None => {},
         };
@@ -530,7 +530,7 @@ impl<'a> TestTypes {
 
     pub fn get_string_singular(&'a self) -> &'a str {
         match self.string_singular.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -561,7 +561,7 @@ impl<'a> TestTypes {
 
     pub fn get_bytes_singular(&'a self) -> &'a [u8] {
         match self.bytes_singular.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => [].as_slice(),
         }
     }
@@ -1431,103 +1431,103 @@ impl ::protobuf::Message for TestTypes {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.double_singular {
-            Some(ref v) => {
-                try!(os.write_double(1, *v));
+            Some(v) => {
+                try!(os.write_double(1, v));
             },
             None => {},
         };
         match self.float_singular {
-            Some(ref v) => {
-                try!(os.write_float(2, *v));
+            Some(v) => {
+                try!(os.write_float(2, v));
             },
             None => {},
         };
         match self.int32_singular {
-            Some(ref v) => {
-                try!(os.write_int32(3, *v));
+            Some(v) => {
+                try!(os.write_int32(3, v));
             },
             None => {},
         };
         match self.int64_singular {
-            Some(ref v) => {
-                try!(os.write_int64(4, *v));
+            Some(v) => {
+                try!(os.write_int64(4, v));
             },
             None => {},
         };
         match self.uint32_singular {
-            Some(ref v) => {
-                try!(os.write_uint32(5, *v));
+            Some(v) => {
+                try!(os.write_uint32(5, v));
             },
             None => {},
         };
         match self.uint64_singular {
-            Some(ref v) => {
-                try!(os.write_uint64(6, *v));
+            Some(v) => {
+                try!(os.write_uint64(6, v));
             },
             None => {},
         };
         match self.sint32_singular {
-            Some(ref v) => {
-                try!(os.write_sint32(7, *v));
+            Some(v) => {
+                try!(os.write_sint32(7, v));
             },
             None => {},
         };
         match self.sint64_singular {
-            Some(ref v) => {
-                try!(os.write_sint64(8, *v));
+            Some(v) => {
+                try!(os.write_sint64(8, v));
             },
             None => {},
         };
         match self.fixed32_singular {
-            Some(ref v) => {
-                try!(os.write_fixed32(9, *v));
+            Some(v) => {
+                try!(os.write_fixed32(9, v));
             },
             None => {},
         };
         match self.fixed64_singular {
-            Some(ref v) => {
-                try!(os.write_fixed64(10, *v));
+            Some(v) => {
+                try!(os.write_fixed64(10, v));
             },
             None => {},
         };
         match self.sfixed32_singular {
-            Some(ref v) => {
-                try!(os.write_sfixed32(11, *v));
+            Some(v) => {
+                try!(os.write_sfixed32(11, v));
             },
             None => {},
         };
         match self.sfixed64_singular {
-            Some(ref v) => {
-                try!(os.write_sfixed64(12, *v));
+            Some(v) => {
+                try!(os.write_sfixed64(12, v));
             },
             None => {},
         };
         match self.bool_singular {
-            Some(ref v) => {
-                try!(os.write_bool(13, *v));
+            Some(v) => {
+                try!(os.write_bool(13, v));
             },
             None => {},
         };
         match self.string_singular.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(14, v.as_slice()));
             },
             None => {},
         };
         match self.bytes_singular.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_bytes(15, v.as_slice()));
             },
             None => {},
         };
         match self.test_enum_singular {
-            Some(ref v) => {
-                try!(os.write_enum(16, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(16, v as i32));
             },
             None => {},
         };
         match self.test_message_singular.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(17, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;

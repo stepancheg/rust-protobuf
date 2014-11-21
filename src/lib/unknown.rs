@@ -97,7 +97,7 @@ impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
         }
         let length_delimited = self.length_delimited.next();
         if length_delimited.is_some() {
-            return Some(UnknownValueRef::LengthDelimited(length_delimited.as_ref().unwrap().as_slice()))
+            return Some(UnknownValueRef::LengthDelimited(length_delimited.unwrap().as_slice()))
         }
         None
     }

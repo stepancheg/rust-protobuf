@@ -124,18 +124,23 @@ impl RustType {
         }
     }
 
-    fn view_as(&self, target: &RustType, v: &str) -> String {
-        match (self, target) {
-            (&RustType::String,  &RustType::Ref(box RustType::Str)) => format!("{}.as_slice()", v),
-            (&RustType::Vec(..), &RustType::Ref(box RustType::Slice(..))) => format!("{}.as_slice()", v),
-            _ => v.to_string(),
-        }
-    }
-
+    // expression to convert `v` of type `self` to type `target`
     fn into(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
-            (x, y) if x == y => v.to_string(),
-            _ => panic!("internal error: cannot convert {} to {}", self, target),
+            (x, y) if x == y                        => format!("{}", v),
+            (&RustType::Ref(ref x), y) if **x == *y => format!("*{}", v),
+            (&RustType::String, &RustType::Ref(box RustType::Str))                    |
+            (&RustType::Ref(box RustType::String), &RustType::Ref(box RustType::Str)) =>
+                    format!("{}.as_slice()", v),
+            (&RustType::Vec(ref x), &RustType::Ref(box RustType::Slice(ref y))) if x == y =>
+                    format!("{}.as_slice()", v),
+            (&RustType::Ref(box RustType::Vec(ref x)), &RustType::Ref(box RustType::Slice(ref y))) if x == y =>
+                    format!("{}.as_slice()", v),
+            (&RustType::Enum(..), &RustType::Signed(32)) =>
+                    format!("{} as i32", v),
+            (&RustType::Ref(box RustType::Enum(..)), &RustType::Signed(32)) =>
+                    format!("*{} as i32", v),
+            _ => panic!("cannot convert {} to {}", self, target),
         }
     }
 
@@ -147,6 +152,25 @@ impl RustType {
             &RustType::Message(ref p)       => box RustType::Message(p.clone()),
             x => panic!("no ref type for {}", x),
         })
+    }
+
+    fn elem_type(&self) -> RustType {
+        match self {
+            &RustType::Option(ref ty) => (**ty).clone(),
+            x => panic!("cannot get elem type of {}", x),
+        }
+    }
+
+    // type of `v` in `for v in xxx`
+    fn iter_elem_type(&self) -> RustType {
+        match self {
+            &RustType::Vec(ref ty)              |
+            &RustType::Option(ref ty)           |
+            &RustType::RepeatedField(ref ty)    |
+            &RustType::SingularField(ref ty)    |
+            &RustType::SingularPtrField(ref ty) => RustType::Ref(ty.clone()),
+            x => panic!("cannot iterate {}", x),
+        }
     }
 }
 
@@ -168,9 +192,9 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
         FieldDescriptorProto_Type::TYPE_BOOL     => RustType::Bool,
         FieldDescriptorProto_Type::TYPE_STRING   => RustType::String,
         FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(box RustType::Unsigned(8)),
-        FieldDescriptorProto_Type::TYPE_ENUM |
-        FieldDescriptorProto_Type::TYPE_GROUP |
-        FieldDescriptorProto_Type::TYPE_MESSAGE => panic!()
+        FieldDescriptorProto_Type::TYPE_ENUM     |
+        FieldDescriptorProto_Type::TYPE_GROUP    |
+        FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!("there is no rust name for {}", field_type),
     }
 }
 
@@ -382,6 +406,10 @@ impl Field {
         })
     }
 
+    fn number(&self) -> u32 {
+        self.number
+    }
+
     fn tag_size(&self) -> u32 {
         rt::tag_size(self.number)
     }
@@ -405,6 +433,33 @@ impl Field {
             } else {
                 RustType::Option(c)
             }
+        }
+    }
+
+    // type of `v` in `for v in field`
+    fn full_storage_iter_elem_type(&self) -> RustType {
+        self.full_storage_type().iter_elem_type()
+    }
+
+    // suffix `xxx` as in `os.write_xxx_no_tag(..)`
+    fn os_write_fn_suffix(&self) -> &str {
+        match self.field_type {
+            FieldDescriptorProto_Type::TYPE_MESSAGE => "message",
+            FieldDescriptorProto_Type::TYPE_ENUM    => "enum",
+            ty => protobuf_name(ty),
+        }
+    }
+
+    // type of `v` in `os.write_xxx_no_tag(v)`
+    fn os_write_fn_param_type(&self) -> RustType {
+        match self.field_type {
+            FieldDescriptorProto_Type::TYPE_STRING =>
+                RustType::Ref(box RustType::Str),
+            FieldDescriptorProto_Type::TYPE_BYTES  =>
+                RustType::Ref(box RustType::Slice(box RustType::Unsigned(8))),
+            FieldDescriptorProto_Type::TYPE_ENUM   =>
+                RustType::Signed(32),
+            t => rust_name(t),
         }
     }
 
@@ -436,6 +491,27 @@ impl Field {
                 true => self.type_name.ref_type(),
                 false => self.type_name.clone(),
             }
+        }
+    }
+
+    // suffix to convert field value to option
+    // like `.as_ref()` in `self.xx.as_ref()`
+    fn as_option(&self) -> &'static str {
+        assert!(!self.repeated);
+        match self.full_storage_type() {
+            RustType::Option(..) => "",
+            _                    => ".as_ref()"
+        }
+    }
+
+    // type of expression returned by `as_option()`
+    fn as_option_type(&self) -> RustType {
+        assert!(!self.repeated);
+        match self.full_storage_type() {
+            r @ RustType::Option(..)       => r,
+            RustType::SingularField(ty)    |
+            RustType::SingularPtrField(ty) => RustType::Option(box RustType::Ref(ty)),
+            x => panic!("cannot convert {} to option", x),
         }
     }
 
@@ -736,14 +812,7 @@ impl<'a> IndentWriter<'a> {
 
     // field data viewed as Option
     fn self_field_as_option(&self) -> String {
-        assert!(!self.field().repeated);
-        // TODO: make it RustType function
-        if self.field().type_is_not_trivial() {
-            // Singular*Field.as_ref()
-            format!("{}.as_ref()", self.self_field())
-        } else {
-            self.self_field()
-        }
+        format!("{}{}", self.self_field(), self.field().as_option())
     }
 
     fn if_self_field_is_some(&self, cb: |&mut IndentWriter|) {
@@ -758,8 +827,9 @@ impl<'a> IndentWriter<'a> {
         self.if_stmt(self.self_field_is_none(), cb);
     }
 
-    fn for_self_field(&mut self, varn: &str, cb: |&mut IndentWriter|) {
-        self.for_stmt(format!("{}.iter()", self.self_field()), varn, cb);
+    fn for_self_field(&mut self, varn: &str, cb: |&mut IndentWriter, v_type: &RustType|) {
+        let v_type = self.field().full_storage_iter_elem_type();
+        self.for_stmt(format!("{}.iter()", self.self_field()), varn, |w| cb(w, &v_type));
     }
 
     fn self_field_assign<S : Str>(&self, value: S) {
@@ -1160,7 +1230,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                             }
                         },
                         None => {
-                            w.for_self_field("value", |w| {
+                            w.for_self_field("value", |w, _value_type| {
                                 match field.field_type {
                                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
                                         w.write_line("let len = value.compute_sizes(sizes);");
@@ -1209,57 +1279,54 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
 }
 
 fn write_message_write_field(w: &mut IndentWriter) {
-    let field = w.field();
-    let field_type = field.field_type;
-    let write_method_suffix = match field_type {
-        FieldDescriptorProto_Type::TYPE_MESSAGE => "message",
-        FieldDescriptorProto_Type::TYPE_ENUM => "enum",
-        t => protobuf_name(t),
-    };
-    let field_number = field.proto_field.get_number();
-    let vv = match field.field_type {
-        FieldDescriptorProto_Type::TYPE_MESSAGE => "v", // TODO: as &Message
-        FieldDescriptorProto_Type::TYPE_ENUM => "*v as i32",
-        FieldDescriptorProto_Type::TYPE_BYTES |
-        FieldDescriptorProto_Type::TYPE_STRING => "v.as_slice()",
-        _ => "*v",
-    };
-    let write_value_lines = match field.field_type {
-        FieldDescriptorProto_Type::TYPE_MESSAGE => vec!(
-            format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));",
-                    field_number as int, wire_format::WireTypeLengthDelimited),
-            format!("try!(os.write_raw_varint32(sizes[*sizes_pos]));"),
-            format!("*sizes_pos += 1;"),
-            format!("try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));"),
-        ),
-        _ => vec!(
-            format!("try!(os.write_{}({}, {}));", write_method_suffix, field_number as int, vv),
-        ),
-    };
-    match field.repeat_mode {
+    fn write_value_lines(w: &mut IndentWriter, ty: &RustType) {
+        match w.field().field_type {
+            FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));",
+                        w.field().number(),
+                        wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("try!(os.write_raw_varint32(sizes[*sizes_pos]));"));
+                w.write_line(format!("*sizes_pos += 1;"));
+                w.write_line(format!("try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));"));
+            }
+            _ => {
+                let param_type = w.field().os_write_fn_param_type();
+                w.write_line(format!("try!(os.write_{}({}, {}));",
+                    w.field().os_write_fn_suffix(),
+                    w.field().number(),
+                    ty.into(&param_type, "v")));
+            }
+        }
+    }
+
+    match w.field().repeat_mode {
         RepeatMode::Single => {
             w.match_block(w.self_field_as_option(), |w| {
-                w.case_block("Some(ref v)", |w| {
-                    w.write_lines(write_value_lines.as_slice());
+                let option_type = w.field().as_option_type();
+                w.case_block("Some(v)", |w| {
+                    let v_type = option_type.elem_type();
+                    write_value_lines(w, &v_type);
                 });
                 w.case_expr("None", "{}");
             });
         },
         RepeatMode::RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
-                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));", field_number as int, wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));", w.field().number(), wire_format::WireTypeLengthDelimited));
                 // Data size is computed again here,
                 // probably it should be cached in `sizes` vec
                 let data_size_expr = w.self_field_vec_packed_data_size();
                 w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
-                w.for_self_field("v", |w| {
-                    w.write_line(format!("try!(os.write_{}_no_tag({}));", write_method_suffix, vv));
+                w.for_self_field("v", |w, v_type| {
+                    let param_type = w.field().os_write_fn_param_type();
+                    w.write_line(format!("try!(os.write_{}_no_tag({}));",
+                        w.field().os_write_fn_suffix(), v_type.into(&param_type, "v")));
                 });
             });
         },
         RepeatMode::RepeatRegular => {
-            w.for_self_field("v", |w| {
-                w.write_lines(write_value_lines.as_slice());
+            w.for_self_field("v", |w, v_type| {
+                write_value_lines(w, v_type);
             });
         },
     };
@@ -1313,13 +1380,16 @@ fn write_message_field_get(w: &mut IndentWriter) {
             } else {
                 if get_xxx_return_type.is_ref() {
                     w.match_expr(w.self_field_as_option(), |w| {
+                        let option_type = w.field().as_option_type();
+                        let v_type = option_type.elem_type();
+                        let r_type = w.field().get_xxx_return_type();
                         w.case_expr(
-                            "Some(ref v)",
-                            w.field().type_name.view_as(&w.field().get_xxx_return_type(), "v")
+                            "Some(v)",
+                            v_type.into(&r_type, "v")
                         );
                         w.case_expr(
                             "None",
-                            w.field().default_value_rust()
+                            w.field().default_value_rust(),
                         );
                     });
                 } else {

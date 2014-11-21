@@ -97,8 +97,8 @@ impl ::protobuf::Message for Test1 {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.value {
-            Some(ref v) => {
-                try!(os.write_int32(1, *v));
+            Some(v) => {
+                try!(os.write_int32(1, v));
             },
             None => {},
         };
@@ -969,7 +969,7 @@ impl ::protobuf::Message for TestOptionalMessages {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.message1.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -978,7 +978,7 @@ impl ::protobuf::Message for TestOptionalMessages {
             None => {},
         };
         match self.message2.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -987,7 +987,7 @@ impl ::protobuf::Message for TestOptionalMessages {
             None => {},
         };
         match self.message3.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -1154,7 +1154,7 @@ impl<'a> TestStrings {
 
     pub fn get_s1(&'a self) -> &'a str {
         match self.s1.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1185,7 +1185,7 @@ impl<'a> TestStrings {
 
     pub fn get_s2(&'a self) -> &'a str {
         match self.s2.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1216,7 +1216,7 @@ impl<'a> TestStrings {
 
     pub fn get_s3(&'a self) -> &'a str {
         match self.s3.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1290,19 +1290,19 @@ impl ::protobuf::Message for TestStrings {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.s1.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.s2.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
         match self.s3.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(3, v.as_slice()));
             },
             None => {},

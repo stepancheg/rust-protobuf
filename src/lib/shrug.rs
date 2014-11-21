@@ -100,8 +100,8 @@ impl ::protobuf::Message for Test1 {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.a {
-            Some(ref v) => {
-                try!(os.write_int32(1, *v));
+            Some(v) => {
+                try!(os.write_int32(1, v));
             },
             None => {},
         };
@@ -220,7 +220,7 @@ impl<'a> Test2 {
 
     pub fn get_b(&'a self) -> &'a str {
         match self.b.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -277,7 +277,7 @@ impl ::protobuf::Message for Test2 {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.b.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
@@ -451,7 +451,7 @@ impl ::protobuf::Message for Test3 {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.c.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -1023,8 +1023,8 @@ impl ::protobuf::Message for TestEmpty {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.foo {
-            Some(ref v) => {
-                try!(os.write_int32(10, *v));
+            Some(v) => {
+                try!(os.write_int32(10, v));
             },
             None => {},
         };
@@ -1188,8 +1188,8 @@ impl ::protobuf::Message for TestRequired {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.b {
-            Some(ref v) => {
-                try!(os.write_bool(5, *v));
+            Some(v) => {
+                try!(os.write_bool(5, v));
             },
             None => {},
         };
@@ -1353,8 +1353,8 @@ impl ::protobuf::Message for TestUnknownFields {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.a {
-            Some(ref v) => {
-                try!(os.write_int32(1, *v));
+            Some(v) => {
+                try!(os.write_int32(1, v));
             },
             None => {},
         };
@@ -1568,7 +1568,7 @@ impl ::protobuf::Message for TestSelfReference {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.r1.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -1577,7 +1577,7 @@ impl ::protobuf::Message for TestSelfReference {
             None => {},
         };
         match self.r2.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -1720,7 +1720,7 @@ impl<'a> TestDefaultInstanceField {
 
     pub fn get_s(&'a self) -> &'a str {
         match self.s.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -1774,7 +1774,7 @@ impl ::protobuf::Message for TestDefaultInstanceField {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.s.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
@@ -1945,7 +1945,7 @@ impl ::protobuf::Message for TestDefaultInstance {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.field.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
                 try!(os.write_raw_varint32(sizes[*sizes_pos]));
                 *sizes_pos += 1;
@@ -2110,8 +2110,8 @@ impl ::protobuf::Message for TestDescriptor {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.stuff {
-            Some(ref v) => {
-                try!(os.write_int32(10, *v));
+            Some(v) => {
+                try!(os.write_int32(10, v));
             },
             None => {},
         };
@@ -2507,7 +2507,7 @@ impl<'a> TestTypesSingular {
 
     pub fn get_string_field(&'a self) -> &'a str {
         match self.string_field.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -2538,7 +2538,7 @@ impl<'a> TestTypesSingular {
 
     pub fn get_bytes_field(&'a self) -> &'a [u8] {
         match self.bytes_field.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => [].as_slice(),
         }
     }
@@ -2761,98 +2761,98 @@ impl ::protobuf::Message for TestTypesSingular {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.double_field {
-            Some(ref v) => {
-                try!(os.write_double(1, *v));
+            Some(v) => {
+                try!(os.write_double(1, v));
             },
             None => {},
         };
         match self.float_field {
-            Some(ref v) => {
-                try!(os.write_float(2, *v));
+            Some(v) => {
+                try!(os.write_float(2, v));
             },
             None => {},
         };
         match self.int32_field {
-            Some(ref v) => {
-                try!(os.write_int32(3, *v));
+            Some(v) => {
+                try!(os.write_int32(3, v));
             },
             None => {},
         };
         match self.int64_field {
-            Some(ref v) => {
-                try!(os.write_int64(4, *v));
+            Some(v) => {
+                try!(os.write_int64(4, v));
             },
             None => {},
         };
         match self.uint32_field {
-            Some(ref v) => {
-                try!(os.write_uint32(5, *v));
+            Some(v) => {
+                try!(os.write_uint32(5, v));
             },
             None => {},
         };
         match self.uint64_field {
-            Some(ref v) => {
-                try!(os.write_uint64(6, *v));
+            Some(v) => {
+                try!(os.write_uint64(6, v));
             },
             None => {},
         };
         match self.sint32_field {
-            Some(ref v) => {
-                try!(os.write_sint32(7, *v));
+            Some(v) => {
+                try!(os.write_sint32(7, v));
             },
             None => {},
         };
         match self.sint64_field {
-            Some(ref v) => {
-                try!(os.write_sint64(8, *v));
+            Some(v) => {
+                try!(os.write_sint64(8, v));
             },
             None => {},
         };
         match self.fixed32_field {
-            Some(ref v) => {
-                try!(os.write_fixed32(9, *v));
+            Some(v) => {
+                try!(os.write_fixed32(9, v));
             },
             None => {},
         };
         match self.fixed64_field {
-            Some(ref v) => {
-                try!(os.write_fixed64(10, *v));
+            Some(v) => {
+                try!(os.write_fixed64(10, v));
             },
             None => {},
         };
         match self.sfixed32_field {
-            Some(ref v) => {
-                try!(os.write_sfixed32(11, *v));
+            Some(v) => {
+                try!(os.write_sfixed32(11, v));
             },
             None => {},
         };
         match self.sfixed64_field {
-            Some(ref v) => {
-                try!(os.write_sfixed64(12, *v));
+            Some(v) => {
+                try!(os.write_sfixed64(12, v));
             },
             None => {},
         };
         match self.bool_field {
-            Some(ref v) => {
-                try!(os.write_bool(13, *v));
+            Some(v) => {
+                try!(os.write_bool(13, v));
             },
             None => {},
         };
         match self.string_field.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(14, v.as_slice()));
             },
             None => {},
         };
         match self.bytes_field.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_bytes(15, v.as_slice()));
             },
             None => {},
         };
         match self.enum_field {
-            Some(ref v) => {
-                try!(os.write_enum(16, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(16, v as i32));
             },
             None => {},
         };
@@ -5789,7 +5789,7 @@ impl<'a> TestDefaultValues {
 
     pub fn get_string_field(&'a self) -> &'a str {
         match self.string_field.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "abc\n22",
         }
     }
@@ -5820,7 +5820,7 @@ impl<'a> TestDefaultValues {
 
     pub fn get_bytes_field(&'a self) -> &'a [u8] {
         match self.bytes_field.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => b"cde\n33",
         }
     }
@@ -6072,104 +6072,104 @@ impl ::protobuf::Message for TestDefaultValues {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.double_field {
-            Some(ref v) => {
-                try!(os.write_double(1, *v));
+            Some(v) => {
+                try!(os.write_double(1, v));
             },
             None => {},
         };
         match self.float_field {
-            Some(ref v) => {
-                try!(os.write_float(2, *v));
+            Some(v) => {
+                try!(os.write_float(2, v));
             },
             None => {},
         };
         match self.int32_field {
-            Some(ref v) => {
-                try!(os.write_int32(3, *v));
+            Some(v) => {
+                try!(os.write_int32(3, v));
             },
             None => {},
         };
         match self.int64_field {
-            Some(ref v) => {
-                try!(os.write_int64(4, *v));
+            Some(v) => {
+                try!(os.write_int64(4, v));
             },
             None => {},
         };
         match self.uint32_field {
-            Some(ref v) => {
-                try!(os.write_uint32(5, *v));
+            Some(v) => {
+                try!(os.write_uint32(5, v));
             },
             None => {},
         };
         match self.uint64_field {
-            Some(ref v) => {
-                try!(os.write_uint64(6, *v));
+            Some(v) => {
+                try!(os.write_uint64(6, v));
             },
             None => {},
         };
         match self.sint32_field {
-            Some(ref v) => {
-                try!(os.write_sint32(7, *v));
+            Some(v) => {
+                try!(os.write_sint32(7, v));
             },
             None => {},
         };
         match self.sint64_field {
-            Some(ref v) => {
-                try!(os.write_sint64(8, *v));
+            Some(v) => {
+                try!(os.write_sint64(8, v));
             },
             None => {},
         };
         match self.fixed32_field {
-            Some(ref v) => {
-                try!(os.write_fixed32(9, *v));
+            Some(v) => {
+                try!(os.write_fixed32(9, v));
             },
             None => {},
         };
         match self.fixed64_field {
-            Some(ref v) => {
-                try!(os.write_fixed64(10, *v));
+            Some(v) => {
+                try!(os.write_fixed64(10, v));
             },
             None => {},
         };
         match self.sfixed32_field {
-            Some(ref v) => {
-                try!(os.write_sfixed32(11, *v));
+            Some(v) => {
+                try!(os.write_sfixed32(11, v));
             },
             None => {},
         };
         match self.sfixed64_field {
-            Some(ref v) => {
-                try!(os.write_sfixed64(12, *v));
+            Some(v) => {
+                try!(os.write_sfixed64(12, v));
             },
             None => {},
         };
         match self.bool_field {
-            Some(ref v) => {
-                try!(os.write_bool(13, *v));
+            Some(v) => {
+                try!(os.write_bool(13, v));
             },
             None => {},
         };
         match self.string_field.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(14, v.as_slice()));
             },
             None => {},
         };
         match self.bytes_field.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_bytes(15, v.as_slice()));
             },
             None => {},
         };
         match self.enum_field {
-            Some(ref v) => {
-                try!(os.write_enum(16, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(16, v as i32));
             },
             None => {},
         };
         match self.enum_field_without_default {
-            Some(ref v) => {
-                try!(os.write_enum(17, *v as i32));
+            Some(v) => {
+                try!(os.write_enum(17, v as i32));
             },
             None => {},
         };

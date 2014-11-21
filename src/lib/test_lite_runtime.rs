@@ -97,8 +97,8 @@ impl ::protobuf::Message for TestLiteRuntime {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.v {
-            Some(ref v) => {
-                try!(os.write_int32(1, *v));
+            Some(v) => {
+                try!(os.write_int32(1, v));
             },
             None => {},
         };

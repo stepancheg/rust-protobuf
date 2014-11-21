@@ -96,7 +96,7 @@ impl<'a> CodeGeneratorRequest {
 
     pub fn get_parameter(&'a self) -> &'a str {
         match self.parameter.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -193,7 +193,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             try!(os.write_string(1, v.as_slice()));
         };
         match self.parameter.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
@@ -361,7 +361,7 @@ impl<'a> CodeGeneratorResponse {
 
     pub fn get_error(&'a self) -> &'a str {
         match self.error.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -445,7 +445,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.error.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
@@ -595,7 +595,7 @@ impl<'a> CodeGeneratorResponse_File {
 
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -626,7 +626,7 @@ impl<'a> CodeGeneratorResponse_File {
 
     pub fn get_insertion_point(&'a self) -> &'a str {
         match self.insertion_point.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -657,7 +657,7 @@ impl<'a> CodeGeneratorResponse_File {
 
     pub fn get_content(&'a self) -> &'a str {
         match self.content.as_ref() {
-            Some(ref v) => v.as_slice(),
+            Some(v) => v.as_slice(),
             None => "",
         }
     }
@@ -731,19 +731,19 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
             },
             None => {},
         };
         match self.insertion_point.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(2, v.as_slice()));
             },
             None => {},
         };
         match self.content.as_ref() {
-            Some(ref v) => {
+            Some(v) => {
                 try!(os.write_string(15, v.as_slice()));
             },
             None => {},
