@@ -23,6 +23,7 @@ pub use core::ProtobufEnum;
 pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
 pub use core::parse_length_delimited_from;
+pub use core::parse_length_delimited_from_bytes;
 pub use stream::CodedInputStream;
 pub use stream::CodedOutputStream;
 pub use stream::wire_format;
@@ -42,29 +43,16 @@ pub mod text_format;
 pub mod stream;
 pub mod error;
 
+// used by test
+pub mod hex;
+
 mod misc;
 mod zigzag;
-mod hex;
 mod maybe_owned_slice;
 mod paginate;
 mod unknown;
 mod strx;
 mod descriptorx;
-
-#[cfg(test)]
-mod shrug;
-#[cfg(test)]
-mod test_root;
-#[cfg(test)]
-mod test;
-#[cfg(test)]
-mod text_format_test_data;
-#[cfg(test)]
-mod test_nonunique_enum;
-#[cfg(test)]
-mod test_ident;
-#[cfg(test)]
-mod test_lite_runtime;
 
 // so `use protobuf::*` could work in descriptor mod
 mod protobuf {

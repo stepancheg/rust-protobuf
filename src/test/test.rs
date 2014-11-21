@@ -1,15 +1,10 @@
-use hex::encode_hex;
-use hex::decode_hex;
-use descriptor;
-use reflect;
-use repeated::RepeatedField;
-use core::Message;
-use core::ProtobufEnum;
-use core::parse_length_delimited_from_bytes;
-use core::parse_from_bytes;
+use protobuf::hex::encode_hex;
+use protobuf::hex::decode_hex;
 
 use shrug::*;
 use test_lite_runtime;
+
+use protobuf::*;
 
 fn test_serialize_deserialize_length_delimited<M : Message>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
