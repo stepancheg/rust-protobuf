@@ -1782,8 +1782,10 @@ fn write_enum(enum_with_scope: &EnumWithScope, _root_scope: &RootScope, w: &mut 
     });
 }
 
-fn proto_path_to_rust_base<'s>(path: &'s str) -> &'s str {
-    remove_suffix(remove_to(path, '/'), ".proto")
+fn proto_path_to_rust_base(path: &str) -> String {
+    let without_dir = remove_to(path, '/');
+    let without_suffix = remove_suffix(without_dir, ".proto");
+    without_suffix.replace("-", "_")
 }
 
 pub struct GenResult {
