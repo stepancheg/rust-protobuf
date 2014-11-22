@@ -1,9 +1,6 @@
 use std::io::Writer;
-use std::io::Reader;
 use std::io;
-use std::slice;
 use std::result::Ok;
-use std::result::Err;
 
 pub struct VecWriter<'a> {
     vec: &'a mut Vec<u8>,

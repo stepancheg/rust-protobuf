@@ -278,6 +278,7 @@ impl<'a> Clone for EnumWithScope<'a> {
 
 impl<'a> EnumWithScope<'a> {
     // For enums, the default value is the first value listed in the enum's type definition
+    #[allow(dead_code)]
     pub fn default_value(&self) -> &'a EnumValueDescriptorProto {
         self.en.get_value().iter().next().expect("enum without values")
     }

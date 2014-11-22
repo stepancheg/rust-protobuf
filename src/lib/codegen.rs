@@ -107,8 +107,7 @@ impl RustType {
             RustType::RepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
             RustType::Message(ref name)              => format!("{}::new()", name),
             RustType::Ref(box RustType::Message(ref name)) => format!("{}::default_instance()", name),
-            // TODO: use proper constant
-            RustType::Enum(ref name)                 =>
+            RustType::Enum(..)                       =>
                 panic!("enum default value cannot be determined by type"),
             _ => panic!("cannot create default value for: {}", *self),
         }
@@ -948,6 +947,7 @@ impl<'a> IndentWriter<'a> {
         }).unwrap();
     }
 
+    #[allow(dead_code)]
     fn write_lines(&self, lines: &[String]) {
         for line in lines.iter() {
             self.write_line(line.to_string());

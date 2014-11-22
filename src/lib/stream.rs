@@ -1,8 +1,7 @@
 use std::mem;
-use std::num::Bounded;
+use std::num::Int;
 use std::io::EndOfFile;
 use std::io::IoError;
-use std::io::BufWriter;
 
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
@@ -106,7 +105,7 @@ impl<'a> CodedInputStream<'a> {
             buffer_pos: 0,
             reader: Some(reader),
             total_bytes_retired: 0,
-            current_limit: Bounded::max_value(),
+            current_limit: Int::max_value(),
             buffer_size_after_limit: 0,
         }
     }
