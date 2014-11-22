@@ -648,6 +648,7 @@ struct Enum<'a> {
     //en: EnumWithScope<'a>,
     type_name: String,
     values: Vec<EnumValue>,
+    lite_runtime: bool,
 }
 
 #[deriving(Clone)]
@@ -665,6 +666,9 @@ impl<'a> Enum<'a> {
             values: en.en.get_value().iter()
                 .map(|p| EnumValue::parse(p, en.scope.rust_prefix().as_slice(), en.rust_name().as_slice()))
                 .collect(),
+            lite_runtime:
+                en.get_scope().get_file_descriptor().get_options().get_optimize_for()
+                    == FileOptions_OptimizeMode::LITE_RUNTIME,
         }
     }
 
@@ -1751,16 +1755,19 @@ fn write_enum_impl(w: &mut IndentWriter) {
 }
 
 fn write_enum_impl_enum(w: &mut IndentWriter) {
+    let en = w.en.unwrap();
     w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name.as_slice(), |w| {
         w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
         });
-        w.write_line("");
-        w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", w.en().type_name), |w| {
-            w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", w.en().type_name));
+        if !en.lite_runtime {
+            w.write_line("");
+            w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", w.en().type_name), |w| {
+                w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
+                    w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", w.en().type_name));
+                });
             });
-        });
+        }
     });
 }
 
