@@ -4,10 +4,6 @@
 
 Compile the project.
 
-### ./clean.sh
-
-Clean all stuff that shouldn't live in git.
-
 ### ./regenerate.sh
 
 Generate .rs files from .proto files, that needed
