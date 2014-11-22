@@ -125,3 +125,25 @@ impl ::protobuf::Clear for TestLiteRuntime {
         self.unknown_fields.clear();
     }
 }
+
+#[deriving(Clone,PartialEq,Eq,Show)]
+pub enum EnumTestLiteRuntime {
+    ONE = 1,
+    TWO = 2,
+}
+
+impl EnumTestLiteRuntime {
+    pub fn new(value: i32) -> EnumTestLiteRuntime {
+        match value {
+            1 => EnumTestLiteRuntime::ONE,
+            2 => EnumTestLiteRuntime::TWO,
+            _ => panic!()
+        }
+    }
+}
+
+impl ::protobuf::ProtobufEnum for EnumTestLiteRuntime {
+    fn value(&self) -> i32 {
+        *self as i32
+    }
+}
