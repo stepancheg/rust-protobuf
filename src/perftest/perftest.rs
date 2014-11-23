@@ -37,7 +37,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
     while total_size < 1000000 {
         let ref item = data[rng.gen_range(0, data.len())];
         random_data.push(item.clone());
-        total_size += item.serialized_size();
+        total_size += item.compute_size();
     }
 
     let mut writer = MemWriter::new();

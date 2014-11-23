@@ -10,6 +10,7 @@
 pub struct Test1 {
     value: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> Test1 {
@@ -27,6 +28,7 @@ impl<'a> Test1 {
                 Test1 {
                     value: ::std::option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -82,22 +84,18 @@ impl ::protobuf::Message for Test1 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.value.iter() {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    #[allow(unused_variables)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.value {
             Some(v) => {
@@ -107,6 +105,10 @@ impl ::protobuf::Message for Test1 {
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -185,6 +187,7 @@ impl ::protobuf::reflect::FieldAccessor<Test1> for Test1_value_acc_type {
 pub struct TestRepeatedBool {
     values: ::std::vec::Vec<bool>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> TestRepeatedBool {
@@ -202,6 +205,7 @@ impl<'a> TestRepeatedBool {
                 TestRepeatedBool {
                     values: ::std::vec::Vec::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -266,26 +270,26 @@ impl ::protobuf::Message for TestRepeatedBool {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         my_size += 2 * self.values.len() as u32;
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    #[allow(unused_variables)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.values.iter() {
             try!(os.write_bool(1, *v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -364,6 +368,7 @@ impl ::protobuf::reflect::FieldAccessor<TestRepeatedBool> for TestRepeatedBool_v
 pub struct TestRepeatedPackedInt32 {
     values: ::std::vec::Vec<i32>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> TestRepeatedPackedInt32 {
@@ -381,6 +386,7 @@ impl<'a> TestRepeatedPackedInt32 {
                 TestRepeatedPackedInt32 {
                     values: ::std::vec::Vec::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -445,25 +451,22 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         if !self.values.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, self.values.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    #[allow(unused_variables)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         if !self.values.is_empty() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            // TODO: Data size is computed again, it should be cached
             try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.values.as_slice())));
             for v in self.values.iter() {
                 try!(os.write_int32_no_tag(*v));
@@ -471,6 +474,10 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -551,6 +558,7 @@ pub struct TestRepeatedMessages {
     messages2: ::protobuf::RepeatedField<TestRepeatedMessages>,
     messages3: ::protobuf::RepeatedField<TestRepeatedMessages>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> TestRepeatedMessages {
@@ -570,6 +578,7 @@ impl<'a> TestRepeatedMessages {
                     messages2: ::protobuf::RepeatedField::new(),
                     messages3: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -680,51 +689,49 @@ impl ::protobuf::Message for TestRepeatedMessages {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.messages1.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.messages2.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.messages3.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.messages1.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.messages2.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.messages3.iter() {
             try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -847,6 +854,7 @@ pub struct TestOptionalMessages {
     message2: ::protobuf::SingularPtrField<TestOptionalMessages>,
     message3: ::protobuf::SingularPtrField<TestOptionalMessages>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> TestOptionalMessages {
@@ -866,6 +874,7 @@ impl<'a> TestOptionalMessages {
                     message2: ::protobuf::SingularPtrField::none(),
                     message3: ::protobuf::SingularPtrField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -1000,60 +1009,58 @@ impl ::protobuf::Message for TestOptionalMessages {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.message1.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.message2.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.message3.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.message1.as_ref() {
             Some(v) => {
                 try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(sizes[*sizes_pos]));
-                *sizes_pos += 1;
-                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+                try!(os.write_raw_varint32(v.get_cached_size()));
+                try!(v.write_to_with_cached_sizes(os));
             },
             None => {},
         };
         match self.message2.as_ref() {
             Some(v) => {
                 try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(sizes[*sizes_pos]));
-                *sizes_pos += 1;
-                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+                try!(os.write_raw_varint32(v.get_cached_size()));
+                try!(v.write_to_with_cached_sizes(os));
             },
             None => {},
         };
         match self.message3.as_ref() {
             Some(v) => {
                 try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(sizes[*sizes_pos]));
-                *sizes_pos += 1;
-                try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+                try!(os.write_raw_varint32(v.get_cached_size()));
+                try!(v.write_to_with_cached_sizes(os));
             },
             None => {},
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1176,6 +1183,7 @@ pub struct TestStrings {
     s2: ::protobuf::SingularField<::std::string::String>,
     s3: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> TestStrings {
@@ -1195,6 +1203,7 @@ impl<'a> TestStrings {
                     s2: ::protobuf::SingularField::none(),
                     s3: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -1338,10 +1347,8 @@ impl ::protobuf::Message for TestStrings {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.s1.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -1353,13 +1360,11 @@ impl ::protobuf::Message for TestStrings {
             my_size += ::protobuf::rt::string_size(3, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    #[allow(unused_variables)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.s1.as_ref() {
             Some(v) => {
@@ -1381,6 +1386,10 @@ impl ::protobuf::Message for TestStrings {
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -1506,6 +1515,7 @@ pub struct PerftestData {
     test_strings: ::protobuf::RepeatedField<TestStrings>,
     test_repeated_packed_int32: ::protobuf::RepeatedField<TestRepeatedPackedInt32>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> PerftestData {
@@ -1528,6 +1538,7 @@ impl<'a> PerftestData {
                     test_strings: ::protobuf::RepeatedField::new(),
                     test_repeated_packed_int32: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -1719,81 +1730,76 @@ impl ::protobuf::Message for PerftestData {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.test1.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.test_repeated_bool.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.test_repeated_messages.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.test_optional_messages.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.test_strings.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.test_repeated_packed_int32.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.test1.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.test_repeated_bool.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.test_repeated_messages.iter() {
             try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.test_optional_messages.iter() {
             try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.test_strings.iter() {
             try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         for v in self.test_repeated_packed_int32.iter() {
             try!(os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

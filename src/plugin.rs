@@ -29,6 +29,7 @@ pub struct CodeGeneratorRequest {
     parameter: ::protobuf::SingularField<::std::string::String>,
     proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> CodeGeneratorRequest {
@@ -48,6 +49,7 @@ impl<'a> CodeGeneratorRequest {
                     parameter: ::protobuf::SingularField::none(),
                     proto_file: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -169,10 +171,8 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.file_to_generate.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -181,16 +181,15 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             my_size += ::protobuf::rt::string_size(2, value.as_slice());
         };
         for value in self.proto_file.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         for v in self.file_to_generate.iter() {
             try!(os.write_string(1, v.as_slice()));
@@ -203,12 +202,15 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         };
         for v in self.proto_file.iter() {
             try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -330,6 +332,7 @@ pub struct CodeGeneratorResponse {
     error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> CodeGeneratorResponse {
@@ -348,6 +351,7 @@ impl<'a> CodeGeneratorResponse {
                     error: ::protobuf::SingularField::none(),
                     file: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -442,25 +446,22 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.error.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
         };
         for value in self.file.iter() {
-            let len = value.compute_sizes(sizes);
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.error.as_ref() {
             Some(v) => {
@@ -470,12 +471,15 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         };
         for v in self.file.iter() {
             try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(sizes[*sizes_pos]));
-            *sizes_pos += 1;
-            try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {
@@ -577,6 +581,7 @@ pub struct CodeGeneratorResponse_File {
     insertion_point: ::protobuf::SingularField<::std::string::String>,
     content: ::protobuf::SingularField<::std::string::String>,
     unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
 }
 
 impl<'a> CodeGeneratorResponse_File {
@@ -596,6 +601,7 @@ impl<'a> CodeGeneratorResponse_File {
                     insertion_point: ::protobuf::SingularField::none(),
                     content: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
                 }
             })
         }
@@ -739,10 +745,8 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     // Compute sizes of nested messages
-    fn compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32 {
+    fn compute_size(&self) -> u32 {
         use protobuf::{Message};
-        let pos = sizes.len();
-        sizes.push(0);
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -754,13 +758,11 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
             my_size += ::protobuf::rt::string_size(15, value.as_slice());
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        sizes[pos] = my_size;
-        // value is returned for convenience
+        self.cached_size.set(my_size);
         my_size
     }
 
-    #[allow(unused_variables)]
-    fn write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
@@ -782,6 +784,10 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields {

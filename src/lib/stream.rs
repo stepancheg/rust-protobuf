@@ -516,8 +516,6 @@ pub struct CodedOutputStream<'a> {
     // within buffer
     position: u32,
     writer: Option<&'a mut Writer + 'a>,
-    // TODO: used by core, should not be public
-    pub sizes: Vec<u32>, // used by Message::write_to
 }
 
 impl<'a> CodedOutputStream<'a> {
@@ -529,7 +527,6 @@ impl<'a> CodedOutputStream<'a> {
             buffer: buffer,
             position: 0,
             writer: Some(writer),
-            sizes: Vec::new(),
         }
     }
 

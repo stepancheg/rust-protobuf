@@ -24,41 +24,37 @@ pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
     // all required fields set
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
-    fn write_to_with_computed_sizes(&self, os: &mut CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint)
-            -> ProtobufResult<()>;
-    fn compute_sizes(&self, sizes: &mut Vec<u32>) -> u32;
+
+    // sizes of this messages (and nested messages) must be cached
+    // by calling `compute_size` prior to this call
+    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()>;
+
+    // compute and cache size of this message and all nested messages
+    fn compute_size(&self) -> u32;
+
+    // get size previously computed by `compute_size`
+    fn get_cached_size(&self) -> u32;
 
     fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         self.check_initialized();
-        let mut sizes = mem::replace(&mut os.sizes, Vec::new());
-        assert!(sizes.is_empty());
-        self.compute_sizes(&mut sizes);
-        let mut sizes_pos = 1; // first element is self
-        try!(self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos));
-        assert_eq!(sizes_pos, sizes.len());
+
+        // cache sizes
+        self.compute_size();
+        try!(self.write_to_with_cached_sizes(os));
+
         // TODO: assert we've written same number of bytes as computed
-        sizes.truncate(0);
-        mem::replace(&mut os.sizes, sizes);
+
         Ok(())
     }
 
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        let mut sizes = mem::replace(&mut os.sizes, Vec::new());
-        assert!(sizes.is_empty());
-        let size = self.compute_sizes(&mut sizes);
+        let size = self.compute_size();
         try!(os.write_raw_varint32(size));
-        let mut sizes_pos = 1; // first element is self
-        try!(self.write_to_with_computed_sizes(os, sizes.as_slice(), &mut sizes_pos));
-        assert_eq!(sizes_pos, sizes.len());
-        // TODO: assert we've written same number of bytes as computed
-        sizes.truncate(0);
-        mem::replace(&mut os.sizes, sizes);
-        Ok(())
-    }
+        try!(self.write_to_with_cached_sizes(os));
 
-    fn serialized_size(&self) -> u32 {
-        let mut sizes = Vec::new();
-        self.compute_sizes(&mut sizes)
+        // TODO: assert we've written same number of bytes as computed
+
+        Ok(())
     }
 
     fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {

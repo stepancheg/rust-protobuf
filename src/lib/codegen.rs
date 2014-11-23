@@ -623,15 +623,6 @@ impl<'a> MessageInfo<'a> {
         }
     }
 
-    fn has_any_message_field(&self) -> bool {
-        for field in self.fields.iter() {
-            if field.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                return true;
-            }
-        }
-        false
-    }
-
     fn required_fields(&'a self) -> Vec<&'a Field> {
         let mut r = Vec::new();
         for field in self.fields.iter() {
@@ -1203,19 +1194,18 @@ fn write_message_struct(w: &mut IndentWriter) {
             w.field_entry(field.name.as_slice(), format!("{}", field.full_storage_type()));
         });
         w.field_entry("unknown_fields", "::protobuf::UnknownFields");
+        w.field_entry("cached_size", "::std::cell::Cell<u32>");
     });
 }
 
-fn write_message_compute_sizes(w: &mut IndentWriter) {
+fn write_message_compute_size(w: &mut IndentWriter) {
     // Append sizes of messages in the tree to the specified vector.
     // First appended element is size of self, and then nested message sizes.
     // in serialization order are appended recursively.");
     w.comment("Compute sizes of nested messages");
-    w.def_fn("compute_sizes(&self, sizes: &mut ::std::vec::Vec<u32>) -> u32", |w| {
+    w.def_fn("compute_size(&self) -> u32", |w| {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
-        w.write_line("let pos = sizes.len();");
-        w.write_line("sizes.push(0);");
         w.write_line("let mut my_size = 0;");
         w.fields(|w| {
             let field = w.field();
@@ -1240,7 +1230,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
                             w.for_self_field("value", |w, _value_type| {
                                 match field.field_type {
                                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                                        w.write_line("let len = value.compute_sizes(sizes);");
+                                        w.write_line("let len = value.compute_size();");
                                         w.write_line(format!(
                                                 "my_size += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
                                                 w.field().tag_size() as uint));
@@ -1279,8 +1269,7 @@ fn write_message_compute_sizes(w: &mut IndentWriter) {
             };
         });
         w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
-        w.write_line("sizes[pos] = my_size;");
-        w.comment("value is returned for convenience");
+        w.write_line("self.cached_size.set(my_size);");
         w.write_line("my_size");
     });
 }
@@ -1292,9 +1281,8 @@ fn write_message_write_field(w: &mut IndentWriter) {
                 w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));",
                         w.field().number(),
                         wire_format::WireTypeLengthDelimited));
-                w.write_line(format!("try!(os.write_raw_varint32(sizes[*sizes_pos]));"));
-                w.write_line(format!("*sizes_pos += 1;"));
-                w.write_line(format!("try!(v.write_to_with_computed_sizes(os, sizes.as_slice(), sizes_pos));"));
+                w.write_line(format!("try!(os.write_raw_varint32(v.get_cached_size()));"));
+                w.write_line(format!("try!(v.write_to_with_cached_sizes(os));"));
             }
             _ => {
                 let param_type = w.field().os_write_fn_param_type();
@@ -1320,8 +1308,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
         RepeatMode::RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
                 w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));", w.field().number(), wire_format::WireTypeLengthDelimited));
-                // Data size is computed again here,
-                // probably it should be cached in `sizes` vec
+                w.comment("TODO: Data size is computed again, it should be cached");
                 let data_size_expr = w.self_field_vec_packed_data_size();
                 w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
                 w.for_self_field("v", |w, v_type| {
@@ -1339,13 +1326,8 @@ fn write_message_write_field(w: &mut IndentWriter) {
     };
 }
 
-fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    if !msg.has_any_message_field() {
-        // `sizes` and `sizes_pos` are unused
-        w.allow(&["unused_variables"]);
-    }
-    w.def_fn("write_to_with_computed_sizes(&self, os: &mut ::protobuf::CodedOutputStream, sizes: &[u32], sizes_pos: &mut uint) -> ::protobuf::ProtobufResult<()>", |w| {
+fn write_message_write_to_with_cached_sizes(w: &mut IndentWriter) {
+    w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
         // To have access to its methods but not polute the name space.
         w.write_line("use protobuf::{Message};");
         w.fields(|w| {
@@ -1353,6 +1335,12 @@ fn write_message_write_to_with_computed_sizes(w: &mut IndentWriter) {
         });
         w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
         w.write_line("::std::result::Ok(())");
+    });
+}
+
+fn write_message_get_cached_size(w: &mut IndentWriter) {
+    w.def_fn("get_cached_size(&self) -> u32", |w| {
+        w.write_line("self.cached_size.get()");
     });
 }
 
@@ -1366,6 +1354,7 @@ fn write_message_default_instance(w: &mut IndentWriter) {
                     w.field_default();
                 });
                 w.field_entry("unknown_fields", "::protobuf::UnknownFields::new()");
+                w.field_entry("cached_size", "::std::cell::Cell::new(0)");
             });
         });
     });
@@ -1552,9 +1541,11 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         w.write_line("");
         write_message_merge_from(w);
         w.write_line("");
-        write_message_compute_sizes(w);
+        write_message_compute_size(w);
         w.write_line("");
-        write_message_write_to_with_computed_sizes(w);
+        write_message_write_to_with_cached_sizes(w);
+        w.write_line("");
+        write_message_get_cached_size(w);
         w.write_line("");
         write_message_unknown_fields(w);
         if !msg.lite_runtime {
