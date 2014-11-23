@@ -23,7 +23,7 @@ use super::descriptor::MethodOptions;
 use super::descriptor::UninterpretedOption;
 use super::descriptor::SourceCodeInfo;
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct CodeGeneratorRequest {
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
@@ -254,6 +254,15 @@ impl ::protobuf::Clear for CodeGeneratorRequest {
     }
 }
 
+impl ::std::cmp::PartialEq for CodeGeneratorRequest {
+    fn eq(&self, other: &CodeGeneratorRequest) -> bool {
+        self.file_to_generate == other.file_to_generate &&
+        self.parameter == other.parameter &&
+        self.proto_file == other.proto_file &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -316,7 +325,7 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorR
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct CodeGeneratorResponse {
     error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
@@ -510,6 +519,14 @@ impl ::protobuf::Clear for CodeGeneratorResponse {
     }
 }
 
+impl ::std::cmp::PartialEq for CodeGeneratorResponse {
+    fn eq(&self, other: &CodeGeneratorResponse) -> bool {
+        self.error == other.error &&
+        self.file == other.file &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -554,7 +571,7 @@ impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGenerator
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct CodeGeneratorResponse_File {
     name: ::protobuf::SingularField<::std::string::String>,
     insertion_point: ::protobuf::SingularField<::std::string::String>,
@@ -807,6 +824,15 @@ impl ::protobuf::Clear for CodeGeneratorResponse_File {
         self.clear_insertion_point();
         self.clear_content();
         self.unknown_fields.clear();
+    }
+}
+
+impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
+    fn eq(&self, other: &CodeGeneratorResponse_File) -> bool {
+        self.name == other.name &&
+        self.insertion_point == other.insertion_point &&
+        self.content == other.content &&
+        self.unknown_fields == other.unknown_fields
     }
 }
 

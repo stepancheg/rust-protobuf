@@ -6,7 +6,7 @@
 #![allow(unused_imports)]
 
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct FileDescriptorSet {
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -149,6 +149,13 @@ impl ::protobuf::Clear for FileDescriptorSet {
     }
 }
 
+impl ::std::cmp::PartialEq for FileDescriptorSet {
+    fn eq(&self, other: &FileDescriptorSet) -> bool {
+        self.file == other.file &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for FileDescriptorSet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -175,7 +182,7 @@ impl ::protobuf::reflect::FieldAccessor<FileDescriptorSet> for FileDescriptorSet
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct FileDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     package: ::protobuf::SingularField<::std::string::String>,
@@ -774,6 +781,23 @@ impl ::protobuf::Clear for FileDescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for FileDescriptorProto {
+    fn eq(&self, other: &FileDescriptorProto) -> bool {
+        self.name == other.name &&
+        self.package == other.package &&
+        self.dependency == other.dependency &&
+        self.public_dependency == other.public_dependency &&
+        self.weak_dependency == other.weak_dependency &&
+        self.message_type == other.message_type &&
+        self.enum_type == other.enum_type &&
+        self.service == other.service &&
+        self.extension == other.extension &&
+        self.options == other.options &&
+        self.source_code_info == other.source_code_info &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for FileDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -980,7 +1004,7 @@ impl ::protobuf::reflect::FieldAccessor<FileDescriptorProto> for FileDescriptorP
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct DescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     field: ::protobuf::RepeatedField<FieldDescriptorProto>,
@@ -1390,6 +1414,19 @@ impl ::protobuf::Clear for DescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for DescriptorProto {
+    fn eq(&self, other: &DescriptorProto) -> bool {
+        self.name == other.name &&
+        self.field == other.field &&
+        self.extension == other.extension &&
+        self.nested_type == other.nested_type &&
+        self.enum_type == other.enum_type &&
+        self.extension_range == other.extension_range &&
+        self.options == other.options &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for DescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -1524,7 +1561,7 @@ impl ::protobuf::reflect::FieldAccessor<DescriptorProto> for DescriptorProto_opt
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct DescriptorProto_ExtensionRange {
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
@@ -1705,6 +1742,14 @@ impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
     }
 }
 
+impl ::std::cmp::PartialEq for DescriptorProto_ExtensionRange {
+    fn eq(&self, other: &DescriptorProto_ExtensionRange) -> bool {
+        self.start == other.start &&
+        self.end == other.end &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for DescriptorProto_ExtensionRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -1749,7 +1794,7 @@ impl ::protobuf::reflect::FieldAccessor<DescriptorProto_ExtensionRange> for Desc
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct FieldDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
@@ -2224,6 +2269,20 @@ impl ::protobuf::Clear for FieldDescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for FieldDescriptorProto {
+    fn eq(&self, other: &FieldDescriptorProto) -> bool {
+        self.name == other.name &&
+        self.number == other.number &&
+        self.label == other.label &&
+        self.field_type == other.field_type &&
+        self.type_name == other.type_name &&
+        self.extendee == other.extendee &&
+        self.default_value == other.default_value &&
+        self.options == other.options &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for FieldDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -2480,7 +2539,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct EnumDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
@@ -2726,6 +2785,15 @@ impl ::protobuf::Clear for EnumDescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for EnumDescriptorProto {
+    fn eq(&self, other: &EnumDescriptorProto) -> bool {
+        self.name == other.name &&
+        self.value == other.value &&
+        self.options == other.options &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for EnumDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -2788,7 +2856,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumDescriptorProto> for EnumDescriptorP
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct EnumValueDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
@@ -3032,6 +3100,15 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
+    fn eq(&self, other: &EnumValueDescriptorProto) -> bool {
+        self.name == other.name &&
+        self.number == other.number &&
+        self.options == other.options &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for EnumValueDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -3094,7 +3171,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumValueDescriptorProto> for EnumValueD
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct ServiceDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
@@ -3340,6 +3417,15 @@ impl ::protobuf::Clear for ServiceDescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for ServiceDescriptorProto {
+    fn eq(&self, other: &ServiceDescriptorProto) -> bool {
+        self.name == other.name &&
+        self.method == other.method &&
+        self.options == other.options &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for ServiceDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -3402,7 +3488,7 @@ impl ::protobuf::reflect::FieldAccessor<ServiceDescriptorProto> for ServiceDescr
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct MethodDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     input_type: ::protobuf::SingularField<::std::string::String>,
@@ -3709,6 +3795,16 @@ impl ::protobuf::Clear for MethodDescriptorProto {
     }
 }
 
+impl ::std::cmp::PartialEq for MethodDescriptorProto {
+    fn eq(&self, other: &MethodDescriptorProto) -> bool {
+        self.name == other.name &&
+        self.input_type == other.input_type &&
+        self.output_type == other.output_type &&
+        self.options == other.options &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for MethodDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -3789,7 +3885,7 @@ impl ::protobuf::reflect::FieldAccessor<MethodDescriptorProto> for MethodDescrip
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct FileOptions {
     java_package: ::protobuf::SingularField<::std::string::String>,
     java_outer_classname: ::protobuf::SingularField<::std::string::String>,
@@ -4319,6 +4415,22 @@ impl ::protobuf::Clear for FileOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for FileOptions {
+    fn eq(&self, other: &FileOptions) -> bool {
+        self.java_package == other.java_package &&
+        self.java_outer_classname == other.java_outer_classname &&
+        self.java_multiple_files == other.java_multiple_files &&
+        self.java_generate_equals_and_hash == other.java_generate_equals_and_hash &&
+        self.optimize_for == other.optimize_for &&
+        self.go_package == other.go_package &&
+        self.cc_generic_services == other.cc_generic_services &&
+        self.java_generic_services == other.java_generic_services &&
+        self.py_generic_services == other.py_generic_services &&
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for FileOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -4544,7 +4656,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct MessageOptions {
     message_set_wire_format: ::std::option::Option<bool>,
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
@@ -4765,6 +4877,15 @@ impl ::protobuf::Clear for MessageOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for MessageOptions {
+    fn eq(&self, other: &MessageOptions) -> bool {
+        self.message_set_wire_format == other.message_set_wire_format &&
+        self.no_standard_descriptor_accessor == other.no_standard_descriptor_accessor &&
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for MessageOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -4827,7 +4948,7 @@ impl ::protobuf::reflect::FieldAccessor<MessageOptions> for MessageOptions_unint
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct FieldOptions {
     ctype: ::std::option::Option<FieldOptions_CType>,
     packed: ::std::option::Option<bool>,
@@ -5216,6 +5337,19 @@ impl ::protobuf::Clear for FieldOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for FieldOptions {
+    fn eq(&self, other: &FieldOptions) -> bool {
+        self.ctype == other.ctype &&
+        self.packed == other.packed &&
+        self.lazy == other.lazy &&
+        self.deprecated == other.deprecated &&
+        self.experimental_map_key == other.experimental_map_key &&
+        self.weak == other.weak &&
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for FieldOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -5387,7 +5521,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct EnumOptions {
     allow_alias: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
@@ -5569,6 +5703,14 @@ impl ::protobuf::Clear for EnumOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for EnumOptions {
+    fn eq(&self, other: &EnumOptions) -> bool {
+        self.allow_alias == other.allow_alias &&
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for EnumOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -5613,7 +5755,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumOptions> for EnumOptions_uninterpret
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -5756,6 +5898,13 @@ impl ::protobuf::Clear for EnumValueOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for EnumValueOptions {
+    fn eq(&self, other: &EnumValueOptions) -> bool {
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for EnumValueOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -5782,7 +5931,7 @@ impl ::protobuf::reflect::FieldAccessor<EnumValueOptions> for EnumValueOptions_u
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -5925,6 +6074,13 @@ impl ::protobuf::Clear for ServiceOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for ServiceOptions {
+    fn eq(&self, other: &ServiceOptions) -> bool {
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for ServiceOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -5951,7 +6107,7 @@ impl ::protobuf::reflect::FieldAccessor<ServiceOptions> for ServiceOptions_unint
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct MethodOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -6094,6 +6250,13 @@ impl ::protobuf::Clear for MethodOptions {
     }
 }
 
+impl ::std::cmp::PartialEq for MethodOptions {
+    fn eq(&self, other: &MethodOptions) -> bool {
+        self.uninterpreted_option == other.uninterpreted_option &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for MethodOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -6120,7 +6283,7 @@ impl ::protobuf::reflect::FieldAccessor<MethodOptions> for MethodOptions_uninter
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct UninterpretedOption {
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: ::protobuf::SingularField<::std::string::String>,
@@ -6533,6 +6696,19 @@ impl ::protobuf::Clear for UninterpretedOption {
     }
 }
 
+impl ::std::cmp::PartialEq for UninterpretedOption {
+    fn eq(&self, other: &UninterpretedOption) -> bool {
+        self.name == other.name &&
+        self.identifier_value == other.identifier_value &&
+        self.positive_int_value == other.positive_int_value &&
+        self.negative_int_value == other.negative_int_value &&
+        self.double_value == other.double_value &&
+        self.string_value == other.string_value &&
+        self.aggregate_value == other.aggregate_value &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for UninterpretedOption {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -6667,7 +6843,7 @@ impl ::protobuf::reflect::FieldAccessor<UninterpretedOption> for UninterpretedOp
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct UninterpretedOption_NamePart {
     name_part: ::protobuf::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
@@ -6866,6 +7042,14 @@ impl ::protobuf::Clear for UninterpretedOption_NamePart {
     }
 }
 
+impl ::std::cmp::PartialEq for UninterpretedOption_NamePart {
+    fn eq(&self, other: &UninterpretedOption_NamePart) -> bool {
+        self.name_part == other.name_part &&
+        self.is_extension == other.is_extension &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for UninterpretedOption_NamePart {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -6910,7 +7094,7 @@ impl ::protobuf::reflect::FieldAccessor<UninterpretedOption_NamePart> for Uninte
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct SourceCodeInfo {
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -7053,6 +7237,13 @@ impl ::protobuf::Clear for SourceCodeInfo {
     }
 }
 
+impl ::std::cmp::PartialEq for SourceCodeInfo {
+    fn eq(&self, other: &SourceCodeInfo) -> bool {
+        self.location == other.location &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for SourceCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -7079,7 +7270,7 @@ impl ::protobuf::reflect::FieldAccessor<SourceCodeInfo> for SourceCodeInfo_locat
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct SourceCodeInfo_Location {
     path: ::std::vec::Vec<i32>,
     span: ::std::vec::Vec<i32>,
@@ -7379,6 +7570,16 @@ impl ::protobuf::Clear for SourceCodeInfo_Location {
         self.clear_leading_comments();
         self.clear_trailing_comments();
         self.unknown_fields.clear();
+    }
+}
+
+impl ::std::cmp::PartialEq for SourceCodeInfo_Location {
+    fn eq(&self, other: &SourceCodeInfo_Location) -> bool {
+        self.path == other.path &&
+        self.span == other.span &&
+        self.leading_comments == other.leading_comments &&
+        self.trailing_comments == other.trailing_comments &&
+        self.unknown_fields == other.unknown_fields
     }
 }
 

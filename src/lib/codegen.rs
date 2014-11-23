@@ -1192,7 +1192,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    let mut deriving = vec!["Clone", "PartialEq", "Default"];
+    let mut deriving = vec!["Clone", "Default"];
     if msg.lite_runtime {
         deriving.push("Show");
     }
@@ -1702,6 +1702,18 @@ fn write_message_impl_clear(w: &mut IndentWriter) {
     });
 }
 
+fn write_message_impl_partial_eq(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.impl_for_block("::std::cmp::PartialEq", msg.type_name.as_slice(), |w| {
+        w.def_fn(format!("eq(&self, other: &{}) -> bool", msg.type_name), |w| {
+            w.fields(|w| {
+                w.write_line(format!("self.{field} == other.{field} &&", field=w.field().name));
+            });
+            w.write_line("self.unknown_fields == other.unknown_fields");
+        });
+    });
+}
+
 fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWriter) {
     let msg = MessageInfo::parse(m2, root_scope);
 
@@ -1713,6 +1725,8 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
         write_message_impl_message(w);
         w.write_line("");
         write_message_impl_clear(w);
+        w.write_line("");
+        write_message_impl_partial_eq(w);
         if !msg.lite_runtime {
             w.write_line("");
             write_message_impl_show(w);

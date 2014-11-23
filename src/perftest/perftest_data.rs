@@ -6,7 +6,7 @@
 #![allow(unused_imports)]
 
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct Test1 {
     value: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -148,6 +148,13 @@ impl ::protobuf::Clear for Test1 {
     }
 }
 
+impl ::std::cmp::PartialEq for Test1 {
+    fn eq(&self, other: &Test1) -> bool {
+        self.value == other.value &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for Test1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -174,7 +181,7 @@ impl ::protobuf::reflect::FieldAccessor<Test1> for Test1_value_acc_type {
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct TestRepeatedBool {
     values: ::std::vec::Vec<bool>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -320,6 +327,13 @@ impl ::protobuf::Clear for TestRepeatedBool {
     }
 }
 
+impl ::std::cmp::PartialEq for TestRepeatedBool {
+    fn eq(&self, other: &TestRepeatedBool) -> bool {
+        self.values == other.values &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for TestRepeatedBool {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -346,7 +360,7 @@ impl ::protobuf::reflect::FieldAccessor<TestRepeatedBool> for TestRepeatedBool_v
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct TestRepeatedPackedInt32 {
     values: ::std::vec::Vec<i32>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -498,6 +512,13 @@ impl ::protobuf::Clear for TestRepeatedPackedInt32 {
     }
 }
 
+impl ::std::cmp::PartialEq for TestRepeatedPackedInt32 {
+    fn eq(&self, other: &TestRepeatedPackedInt32) -> bool {
+        self.values == other.values &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for TestRepeatedPackedInt32 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -524,7 +545,7 @@ impl ::protobuf::reflect::FieldAccessor<TestRepeatedPackedInt32> for TestRepeate
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct TestRepeatedMessages {
     messages1: ::protobuf::RepeatedField<TestRepeatedMessages>,
     messages2: ::protobuf::RepeatedField<TestRepeatedMessages>,
@@ -749,6 +770,15 @@ impl ::protobuf::Clear for TestRepeatedMessages {
     }
 }
 
+impl ::std::cmp::PartialEq for TestRepeatedMessages {
+    fn eq(&self, other: &TestRepeatedMessages) -> bool {
+        self.messages1 == other.messages1 &&
+        self.messages2 == other.messages2 &&
+        self.messages3 == other.messages3 &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for TestRepeatedMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -811,7 +841,7 @@ impl ::protobuf::reflect::FieldAccessor<TestRepeatedMessages> for TestRepeatedMe
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct TestOptionalMessages {
     message1: ::protobuf::SingularPtrField<TestOptionalMessages>,
     message2: ::protobuf::SingularPtrField<TestOptionalMessages>,
@@ -1069,6 +1099,15 @@ impl ::protobuf::Clear for TestOptionalMessages {
     }
 }
 
+impl ::std::cmp::PartialEq for TestOptionalMessages {
+    fn eq(&self, other: &TestOptionalMessages) -> bool {
+        self.message1 == other.message1 &&
+        self.message2 == other.message2 &&
+        self.message3 == other.message3 &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for TestOptionalMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -1131,7 +1170,7 @@ impl ::protobuf::reflect::FieldAccessor<TestOptionalMessages> for TestOptionalMe
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct TestStrings {
     s1: ::protobuf::SingularField<::std::string::String>,
     s2: ::protobuf::SingularField<::std::string::String>,
@@ -1387,6 +1426,15 @@ impl ::protobuf::Clear for TestStrings {
     }
 }
 
+impl ::std::cmp::PartialEq for TestStrings {
+    fn eq(&self, other: &TestStrings) -> bool {
+        self.s1 == other.s1 &&
+        self.s2 == other.s2 &&
+        self.s3 == other.s3 &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
 impl ::std::fmt::Show for TestStrings {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         use protobuf::{Message};
@@ -1449,7 +1497,7 @@ impl ::protobuf::reflect::FieldAccessor<TestStrings> for TestStrings_s3_acc_type
     }
 }
 
-#[deriving(Clone,PartialEq,Default)]
+#[deriving(Clone,Default)]
 pub struct PerftestData {
     test1: ::protobuf::RepeatedField<Test1>,
     test_repeated_bool: ::protobuf::RepeatedField<TestRepeatedBool>,
@@ -1794,6 +1842,18 @@ impl ::protobuf::Clear for PerftestData {
         self.clear_test_strings();
         self.clear_test_repeated_packed_int32();
         self.unknown_fields.clear();
+    }
+}
+
+impl ::std::cmp::PartialEq for PerftestData {
+    fn eq(&self, other: &PerftestData) -> bool {
+        self.test1 == other.test1 &&
+        self.test_repeated_bool == other.test_repeated_bool &&
+        self.test_repeated_messages == other.test_repeated_messages &&
+        self.test_optional_messages == other.test_optional_messages &&
+        self.test_strings == other.test_strings &&
+        self.test_repeated_packed_int32 == other.test_repeated_packed_int32 &&
+        self.unknown_fields == other.unknown_fields
     }
 }
 
