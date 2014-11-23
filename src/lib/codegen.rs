@@ -113,10 +113,22 @@ impl RustType {
         }
     }
 
+    fn clear(&self, v: &str) -> String {
+        match *self {
+            RustType::Option(..) => format!("{} = ::std::option::None", v),
+            RustType::Vec(..) |
+            RustType::String |
+            RustType::RepeatedField(..) |
+            RustType::SingularField(..) |
+            RustType::SingularPtrField(..) => format!("{}.clear()", v),
+            ref ty => panic!("cannot clear type: {}", ty),
+        }
+    }
+
     // wrap value in storage type
     fn wrap_value(&self, value: &str) -> String {
         match *self {
-            RustType::Option(..)           => format!("Some({})", value),
+            RustType::Option(..)           => format!("::std::option::Some({})", value),
             RustType::SingularField(..)    => format!("::protobuf::SingularField::some({})", value),
             RustType::SingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
             _ => panic!("not a wrapper type: {}", *self),
@@ -830,14 +842,9 @@ impl<'a> IndentWriter<'a> {
         self.write_line(format!("{} = {};", self.self_field(), value.as_slice()));
     }
 
-    fn self_field_assign_none(&self) {
-        assert!(!self.field().repeated);
-        self.self_field_assign("None");
-    }
-
     fn self_field_assign_some<S : Str>(&self, value: S) {
         assert!(!self.field().repeated);
-        self.self_field_assign(format!("Some({})", value.as_slice()));
+        self.self_field_assign(self.field().full_storage_type().wrap_value(value.as_slice()));
     }
 
     fn self_field_assign_default(&self) {
@@ -1091,11 +1098,8 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn clear_field(&self) {
-        if self.field().repeated || self.field().type_is_not_trivial() {
-            self.write_line(format!("{}.clear();", self.self_field()));
-        } else {
-            self.self_field_assign_none();
-        }
+        let clear_expr = self.field().full_storage_type().clear(self.self_field().as_slice());
+        self.write_line(format!("{};", clear_expr));
     }
 
     fn assert_wire_type(&self, wire_type: wire_format::WireType) {

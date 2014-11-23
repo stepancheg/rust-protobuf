@@ -37,7 +37,7 @@ impl<'a> Test1 {
     // optional int32 value = 1;
 
     pub fn clear_value(&mut self) {
-        self.value = None;
+        self.value = ::std::option::None;
     }
 
     pub fn has_value(&self) -> bool {
@@ -46,7 +46,7 @@ impl<'a> Test1 {
 
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: i32) {
-        self.value = Some(v);
+        self.value = ::std::option::Some(v);
     }
 
     pub fn get_value(&self) -> i32 {
@@ -72,7 +72,7 @@ impl ::protobuf::Message for Test1 {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.value = Some(tmp);
+                    self.value = ::std::option::Some(tmp);
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));

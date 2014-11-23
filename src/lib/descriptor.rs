@@ -1590,7 +1590,7 @@ impl<'a> DescriptorProto_ExtensionRange {
     // optional int32 start = 1;
 
     pub fn clear_start(&mut self) {
-        self.start = None;
+        self.start = ::std::option::None;
     }
 
     pub fn has_start(&self) -> bool {
@@ -1599,7 +1599,7 @@ impl<'a> DescriptorProto_ExtensionRange {
 
     // Param is passed by value, moved
     pub fn set_start(&mut self, v: i32) {
-        self.start = Some(v);
+        self.start = ::std::option::Some(v);
     }
 
     pub fn get_start(&self) -> i32 {
@@ -1609,7 +1609,7 @@ impl<'a> DescriptorProto_ExtensionRange {
     // optional int32 end = 2;
 
     pub fn clear_end(&mut self) {
-        self.end = None;
+        self.end = ::std::option::None;
     }
 
     pub fn has_end(&self) -> bool {
@@ -1618,7 +1618,7 @@ impl<'a> DescriptorProto_ExtensionRange {
 
     // Param is passed by value, moved
     pub fn set_end(&mut self, v: i32) {
-        self.end = Some(v);
+        self.end = ::std::option::Some(v);
     }
 
     pub fn get_end(&self) -> i32 {
@@ -1644,14 +1644,14 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.start = Some(tmp);
+                    self.start = ::std::option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.end = Some(tmp);
+                    self.end = ::std::option::Some(tmp);
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1868,7 +1868,7 @@ impl<'a> FieldDescriptorProto {
     // optional int32 number = 3;
 
     pub fn clear_number(&mut self) {
-        self.number = None;
+        self.number = ::std::option::None;
     }
 
     pub fn has_number(&self) -> bool {
@@ -1877,7 +1877,7 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_number(&mut self, v: i32) {
-        self.number = Some(v);
+        self.number = ::std::option::Some(v);
     }
 
     pub fn get_number(&self) -> i32 {
@@ -1887,7 +1887,7 @@ impl<'a> FieldDescriptorProto {
     // optional .google.protobuf.FieldDescriptorProto.Label label = 4;
 
     pub fn clear_label(&mut self) {
-        self.label = None;
+        self.label = ::std::option::None;
     }
 
     pub fn has_label(&self) -> bool {
@@ -1896,7 +1896,7 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_label(&mut self, v: FieldDescriptorProto_Label) {
-        self.label = Some(v);
+        self.label = ::std::option::Some(v);
     }
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
@@ -1906,7 +1906,7 @@ impl<'a> FieldDescriptorProto {
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
 
     pub fn clear_field_type(&mut self) {
-        self.field_type = None;
+        self.field_type = ::std::option::None;
     }
 
     pub fn has_field_type(&self) -> bool {
@@ -1915,7 +1915,7 @@ impl<'a> FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_field_type(&mut self, v: FieldDescriptorProto_Type) {
-        self.field_type = Some(v);
+        self.field_type = ::std::option::Some(v);
     }
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
@@ -2069,21 +2069,21 @@ impl ::protobuf::Message for FieldDescriptorProto {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.number = Some(tmp);
+                    self.number = ::std::option::Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = FieldDescriptorProto_Label::new(try!(is.read_int32()));
-                    self.label = Some(tmp);
+                    self.label = ::std::option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = FieldDescriptorProto_Type::new(try!(is.read_int32()));
-                    self.field_type = Some(tmp);
+                    self.field_type = ::std::option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -2923,7 +2923,7 @@ impl<'a> EnumValueDescriptorProto {
     // optional int32 number = 2;
 
     pub fn clear_number(&mut self) {
-        self.number = None;
+        self.number = ::std::option::None;
     }
 
     pub fn has_number(&self) -> bool {
@@ -2932,7 +2932,7 @@ impl<'a> EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_number(&mut self, v: i32) {
-        self.number = Some(v);
+        self.number = ::std::option::Some(v);
     }
 
     pub fn get_number(&self) -> i32 {
@@ -2993,7 +2993,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.number = Some(tmp);
+                    self.number = ::std::option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -4002,7 +4002,7 @@ impl<'a> FileOptions {
     // optional bool java_multiple_files = 10;
 
     pub fn clear_java_multiple_files(&mut self) {
-        self.java_multiple_files = None;
+        self.java_multiple_files = ::std::option::None;
     }
 
     pub fn has_java_multiple_files(&self) -> bool {
@@ -4011,7 +4011,7 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_multiple_files(&mut self, v: bool) {
-        self.java_multiple_files = Some(v);
+        self.java_multiple_files = ::std::option::Some(v);
     }
 
     pub fn get_java_multiple_files(&self) -> bool {
@@ -4021,7 +4021,7 @@ impl<'a> FileOptions {
     // optional bool java_generate_equals_and_hash = 20;
 
     pub fn clear_java_generate_equals_and_hash(&mut self) {
-        self.java_generate_equals_and_hash = None;
+        self.java_generate_equals_and_hash = ::std::option::None;
     }
 
     pub fn has_java_generate_equals_and_hash(&self) -> bool {
@@ -4030,7 +4030,7 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_generate_equals_and_hash(&mut self, v: bool) {
-        self.java_generate_equals_and_hash = Some(v);
+        self.java_generate_equals_and_hash = ::std::option::Some(v);
     }
 
     pub fn get_java_generate_equals_and_hash(&self) -> bool {
@@ -4040,7 +4040,7 @@ impl<'a> FileOptions {
     // optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
 
     pub fn clear_optimize_for(&mut self) {
-        self.optimize_for = None;
+        self.optimize_for = ::std::option::None;
     }
 
     pub fn has_optimize_for(&self) -> bool {
@@ -4049,7 +4049,7 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_optimize_for(&mut self, v: FileOptions_OptimizeMode) {
-        self.optimize_for = Some(v);
+        self.optimize_for = ::std::option::Some(v);
     }
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
@@ -4090,7 +4090,7 @@ impl<'a> FileOptions {
     // optional bool cc_generic_services = 16;
 
     pub fn clear_cc_generic_services(&mut self) {
-        self.cc_generic_services = None;
+        self.cc_generic_services = ::std::option::None;
     }
 
     pub fn has_cc_generic_services(&self) -> bool {
@@ -4099,7 +4099,7 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_cc_generic_services(&mut self, v: bool) {
-        self.cc_generic_services = Some(v);
+        self.cc_generic_services = ::std::option::Some(v);
     }
 
     pub fn get_cc_generic_services(&self) -> bool {
@@ -4109,7 +4109,7 @@ impl<'a> FileOptions {
     // optional bool java_generic_services = 17;
 
     pub fn clear_java_generic_services(&mut self) {
-        self.java_generic_services = None;
+        self.java_generic_services = ::std::option::None;
     }
 
     pub fn has_java_generic_services(&self) -> bool {
@@ -4118,7 +4118,7 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_generic_services(&mut self, v: bool) {
-        self.java_generic_services = Some(v);
+        self.java_generic_services = ::std::option::Some(v);
     }
 
     pub fn get_java_generic_services(&self) -> bool {
@@ -4128,7 +4128,7 @@ impl<'a> FileOptions {
     // optional bool py_generic_services = 18;
 
     pub fn clear_py_generic_services(&mut self) {
-        self.py_generic_services = None;
+        self.py_generic_services = ::std::option::None;
     }
 
     pub fn has_py_generic_services(&self) -> bool {
@@ -4137,7 +4137,7 @@ impl<'a> FileOptions {
 
     // Param is passed by value, moved
     pub fn set_py_generic_services(&mut self, v: bool) {
-        self.py_generic_services = Some(v);
+        self.py_generic_services = ::std::option::Some(v);
     }
 
     pub fn get_py_generic_services(&self) -> bool {
@@ -4197,21 +4197,21 @@ impl ::protobuf::Message for FileOptions {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.java_multiple_files = Some(tmp);
+                    self.java_multiple_files = ::std::option::Some(tmp);
                 },
                 20 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.java_generate_equals_and_hash = Some(tmp);
+                    self.java_generate_equals_and_hash = ::std::option::Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = FileOptions_OptimizeMode::new(try!(is.read_int32()));
-                    self.optimize_for = Some(tmp);
+                    self.optimize_for = ::std::option::Some(tmp);
                 },
                 11 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -4225,21 +4225,21 @@ impl ::protobuf::Message for FileOptions {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.cc_generic_services = Some(tmp);
+                    self.cc_generic_services = ::std::option::Some(tmp);
                 },
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.java_generic_services = Some(tmp);
+                    self.java_generic_services = ::std::option::Some(tmp);
                 },
                 18 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.py_generic_services = Some(tmp);
+                    self.py_generic_services = ::std::option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -4699,7 +4699,7 @@ impl<'a> MessageOptions {
     // optional bool message_set_wire_format = 1;
 
     pub fn clear_message_set_wire_format(&mut self) {
-        self.message_set_wire_format = None;
+        self.message_set_wire_format = ::std::option::None;
     }
 
     pub fn has_message_set_wire_format(&self) -> bool {
@@ -4708,7 +4708,7 @@ impl<'a> MessageOptions {
 
     // Param is passed by value, moved
     pub fn set_message_set_wire_format(&mut self, v: bool) {
-        self.message_set_wire_format = Some(v);
+        self.message_set_wire_format = ::std::option::Some(v);
     }
 
     pub fn get_message_set_wire_format(&self) -> bool {
@@ -4718,7 +4718,7 @@ impl<'a> MessageOptions {
     // optional bool no_standard_descriptor_accessor = 2;
 
     pub fn clear_no_standard_descriptor_accessor(&mut self) {
-        self.no_standard_descriptor_accessor = None;
+        self.no_standard_descriptor_accessor = ::std::option::None;
     }
 
     pub fn has_no_standard_descriptor_accessor(&self) -> bool {
@@ -4727,7 +4727,7 @@ impl<'a> MessageOptions {
 
     // Param is passed by value, moved
     pub fn set_no_standard_descriptor_accessor(&mut self, v: bool) {
-        self.no_standard_descriptor_accessor = Some(v);
+        self.no_standard_descriptor_accessor = ::std::option::Some(v);
     }
 
     pub fn get_no_standard_descriptor_accessor(&self) -> bool {
@@ -4773,14 +4773,14 @@ impl ::protobuf::Message for MessageOptions {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.message_set_wire_format = Some(tmp);
+                    self.message_set_wire_format = ::std::option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.no_standard_descriptor_accessor = Some(tmp);
+                    self.no_standard_descriptor_accessor = ::std::option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -5001,7 +5001,7 @@ impl<'a> FieldOptions {
     // optional .google.protobuf.FieldOptions.CType ctype = 1;
 
     pub fn clear_ctype(&mut self) {
-        self.ctype = None;
+        self.ctype = ::std::option::None;
     }
 
     pub fn has_ctype(&self) -> bool {
@@ -5010,7 +5010,7 @@ impl<'a> FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_ctype(&mut self, v: FieldOptions_CType) {
-        self.ctype = Some(v);
+        self.ctype = ::std::option::Some(v);
     }
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
@@ -5020,7 +5020,7 @@ impl<'a> FieldOptions {
     // optional bool packed = 2;
 
     pub fn clear_packed(&mut self) {
-        self.packed = None;
+        self.packed = ::std::option::None;
     }
 
     pub fn has_packed(&self) -> bool {
@@ -5029,7 +5029,7 @@ impl<'a> FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_packed(&mut self, v: bool) {
-        self.packed = Some(v);
+        self.packed = ::std::option::Some(v);
     }
 
     pub fn get_packed(&self) -> bool {
@@ -5039,7 +5039,7 @@ impl<'a> FieldOptions {
     // optional bool lazy = 5;
 
     pub fn clear_lazy(&mut self) {
-        self.lazy = None;
+        self.lazy = ::std::option::None;
     }
 
     pub fn has_lazy(&self) -> bool {
@@ -5048,7 +5048,7 @@ impl<'a> FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_lazy(&mut self, v: bool) {
-        self.lazy = Some(v);
+        self.lazy = ::std::option::Some(v);
     }
 
     pub fn get_lazy(&self) -> bool {
@@ -5058,7 +5058,7 @@ impl<'a> FieldOptions {
     // optional bool deprecated = 3;
 
     pub fn clear_deprecated(&mut self) {
-        self.deprecated = None;
+        self.deprecated = ::std::option::None;
     }
 
     pub fn has_deprecated(&self) -> bool {
@@ -5067,7 +5067,7 @@ impl<'a> FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_deprecated(&mut self, v: bool) {
-        self.deprecated = Some(v);
+        self.deprecated = ::std::option::Some(v);
     }
 
     pub fn get_deprecated(&self) -> bool {
@@ -5108,7 +5108,7 @@ impl<'a> FieldOptions {
     // optional bool weak = 10;
 
     pub fn clear_weak(&mut self) {
-        self.weak = None;
+        self.weak = ::std::option::None;
     }
 
     pub fn has_weak(&self) -> bool {
@@ -5117,7 +5117,7 @@ impl<'a> FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_weak(&mut self, v: bool) {
-        self.weak = Some(v);
+        self.weak = ::std::option::Some(v);
     }
 
     pub fn get_weak(&self) -> bool {
@@ -5163,28 +5163,28 @@ impl ::protobuf::Message for FieldOptions {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = FieldOptions_CType::new(try!(is.read_int32()));
-                    self.ctype = Some(tmp);
+                    self.ctype = ::std::option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.packed = Some(tmp);
+                    self.packed = ::std::option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.lazy = Some(tmp);
+                    self.lazy = ::std::option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.deprecated = Some(tmp);
+                    self.deprecated = ::std::option::Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -5198,7 +5198,7 @@ impl ::protobuf::Message for FieldOptions {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.weak = Some(tmp);
+                    self.weak = ::std::option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -5566,7 +5566,7 @@ impl<'a> EnumOptions {
     // optional bool allow_alias = 2;
 
     pub fn clear_allow_alias(&mut self) {
-        self.allow_alias = None;
+        self.allow_alias = ::std::option::None;
     }
 
     pub fn has_allow_alias(&self) -> bool {
@@ -5575,7 +5575,7 @@ impl<'a> EnumOptions {
 
     // Param is passed by value, moved
     pub fn set_allow_alias(&mut self, v: bool) {
-        self.allow_alias = Some(v);
+        self.allow_alias = ::std::option::Some(v);
     }
 
     pub fn get_allow_alias(&self) -> bool {
@@ -5621,7 +5621,7 @@ impl ::protobuf::Message for EnumOptions {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.allow_alias = Some(tmp);
+                    self.allow_alias = ::std::option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -6397,7 +6397,7 @@ impl<'a> UninterpretedOption {
     // optional uint64 positive_int_value = 4;
 
     pub fn clear_positive_int_value(&mut self) {
-        self.positive_int_value = None;
+        self.positive_int_value = ::std::option::None;
     }
 
     pub fn has_positive_int_value(&self) -> bool {
@@ -6406,7 +6406,7 @@ impl<'a> UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_positive_int_value(&mut self, v: u64) {
-        self.positive_int_value = Some(v);
+        self.positive_int_value = ::std::option::Some(v);
     }
 
     pub fn get_positive_int_value(&self) -> u64 {
@@ -6416,7 +6416,7 @@ impl<'a> UninterpretedOption {
     // optional int64 negative_int_value = 5;
 
     pub fn clear_negative_int_value(&mut self) {
-        self.negative_int_value = None;
+        self.negative_int_value = ::std::option::None;
     }
 
     pub fn has_negative_int_value(&self) -> bool {
@@ -6425,7 +6425,7 @@ impl<'a> UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_negative_int_value(&mut self, v: i64) {
-        self.negative_int_value = Some(v);
+        self.negative_int_value = ::std::option::Some(v);
     }
 
     pub fn get_negative_int_value(&self) -> i64 {
@@ -6435,7 +6435,7 @@ impl<'a> UninterpretedOption {
     // optional double double_value = 6;
 
     pub fn clear_double_value(&mut self) {
-        self.double_value = None;
+        self.double_value = ::std::option::None;
     }
 
     pub fn has_double_value(&self) -> bool {
@@ -6444,7 +6444,7 @@ impl<'a> UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_double_value(&mut self, v: f64) {
-        self.double_value = Some(v);
+        self.double_value = ::std::option::Some(v);
     }
 
     pub fn get_double_value(&self) -> f64 {
@@ -6546,21 +6546,21 @@ impl ::protobuf::Message for UninterpretedOption {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_uint64());
-                    self.positive_int_value = Some(tmp);
+                    self.positive_int_value = ::std::option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int64());
-                    self.negative_int_value = Some(tmp);
+                    self.negative_int_value = ::std::option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_double());
-                    self.double_value = Some(tmp);
+                    self.double_value = ::std::option::Some(tmp);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -6929,7 +6929,7 @@ impl<'a> UninterpretedOption_NamePart {
     // required bool is_extension = 2;
 
     pub fn clear_is_extension(&mut self) {
-        self.is_extension = None;
+        self.is_extension = ::std::option::None;
     }
 
     pub fn has_is_extension(&self) -> bool {
@@ -6938,7 +6938,7 @@ impl<'a> UninterpretedOption_NamePart {
 
     // Param is passed by value, moved
     pub fn set_is_extension(&mut self, v: bool) {
-        self.is_extension = Some(v);
+        self.is_extension = ::std::option::Some(v);
     }
 
     pub fn get_is_extension(&self) -> bool {
@@ -6977,7 +6977,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.is_extension = Some(tmp);
+                    self.is_extension = ::std::option::Some(tmp);
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
