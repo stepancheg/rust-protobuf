@@ -17,7 +17,7 @@ pub fn decode_hex(hex: &str) -> Vec<u8> {
     let mut r: Vec<u8> = Vec::new();
     let mut pos = 0;
     loop {
-        while pos < hex.char_len() && hex.to_ascii().get(pos).unwrap().to_byte() == b' ' {
+        while pos < hex.char_len() && hex.to_ascii().get(pos).unwrap().as_byte() == b' ' {
             pos += 1;
         }
         if hex.char_len() - pos >= 2 {
