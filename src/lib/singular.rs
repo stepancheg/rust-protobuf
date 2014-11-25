@@ -319,15 +319,16 @@ impl<T> SingularPtrField<T> {
 
 impl<T : Default+Clear> SingularField<T> {
     #[inline]
-    pub fn unwrap_or_default(self) -> T {
-        self.unwrap_or_else(|| Default::default())
+    pub fn unwrap_or_default(mut self) -> T {
+        self.value.clear();
+        self.value
     }
 
     #[inline]
     pub fn set_default<'a>(&'a mut self) -> &'a mut T {
         self.set = true;
         self.value.clear();
-        self.as_mut().unwrap()
+        &mut self.value
     }
 }
 
