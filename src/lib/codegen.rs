@@ -478,8 +478,6 @@ impl Field {
     fn set_xxx_param_type(&self) -> RustType {
         if self.repeated {
             self.full_storage_type()
-        } else if self.field_type == FieldDescriptorProto_Type::TYPE_STRING {
-            RustType::String
         } else {
             self.type_name.clone()
         }
