@@ -50,6 +50,11 @@ impl<'a> FileDescriptorSet {
         &mut self.file
     }
 
+    // Take field
+    pub fn take_file(&mut self) -> ::protobuf::RepeatedField<FileDescriptorProto> {
+        ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_file(&'a self) -> &'a [FileDescriptorProto] {
         self.file.as_slice()
     }
@@ -256,6 +261,11 @@ impl<'a> FileDescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -287,6 +297,11 @@ impl<'a> FileDescriptorProto {
         self.package.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_package(&mut self) -> ::std::string::String {
+        self.package.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_package(&'a self) -> &'a str {
         match self.package.as_ref() {
             Some(v) => v.as_slice(),
@@ -310,6 +325,11 @@ impl<'a> FileDescriptorProto {
         &mut self.dependency
     }
 
+    // Take field
+    pub fn take_dependency(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.dependency, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_dependency(&'a self) -> &'a [::std::string::String] {
         self.dependency.as_slice()
     }
@@ -328,6 +348,11 @@ impl<'a> FileDescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_public_dependency(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.public_dependency
+    }
+
+    // Take field
+    pub fn take_public_dependency(&mut self) -> ::std::vec::Vec<i32> {
+        ::std::mem::replace(&mut self.public_dependency, ::std::vec::Vec::new())
     }
 
     pub fn get_public_dependency(&'a self) -> &'a [i32] {
@@ -350,6 +375,11 @@ impl<'a> FileDescriptorProto {
         &mut self.weak_dependency
     }
 
+    // Take field
+    pub fn take_weak_dependency(&mut self) -> ::std::vec::Vec<i32> {
+        ::std::mem::replace(&mut self.weak_dependency, ::std::vec::Vec::new())
+    }
+
     pub fn get_weak_dependency(&'a self) -> &'a [i32] {
         self.weak_dependency.as_slice()
     }
@@ -368,6 +398,11 @@ impl<'a> FileDescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_message_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.message_type
+    }
+
+    // Take field
+    pub fn take_message_type(&mut self) -> ::protobuf::RepeatedField<DescriptorProto> {
+        ::std::mem::replace(&mut self.message_type, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_message_type(&'a self) -> &'a [DescriptorProto] {
@@ -390,6 +425,11 @@ impl<'a> FileDescriptorProto {
         &mut self.enum_type
     }
 
+    // Take field
+    pub fn take_enum_type(&mut self) -> ::protobuf::RepeatedField<EnumDescriptorProto> {
+        ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
         self.enum_type.as_slice()
     }
@@ -410,6 +450,11 @@ impl<'a> FileDescriptorProto {
         &mut self.service
     }
 
+    // Take field
+    pub fn take_service(&mut self) -> ::protobuf::RepeatedField<ServiceDescriptorProto> {
+        ::std::mem::replace(&mut self.service, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_service(&'a self) -> &'a [ServiceDescriptorProto] {
         self.service.as_slice()
     }
@@ -428,6 +473,11 @@ impl<'a> FileDescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_extension(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
+    }
+
+    // Take field
+    pub fn take_extension(&mut self) -> ::protobuf::RepeatedField<FieldDescriptorProto> {
+        ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
@@ -458,6 +508,11 @@ impl<'a> FileDescriptorProto {
         self.options.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_options(&mut self) -> FileOptions {
+        self.options.take().unwrap_or_else(|| FileOptions::new())
+    }
+
     pub fn get_options(&'a self) -> &'a FileOptions {
         self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
     }
@@ -484,6 +539,11 @@ impl<'a> FileDescriptorProto {
             self.source_code_info.set_default();
         };
         self.source_code_info.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_source_code_info(&mut self) -> SourceCodeInfo {
+        self.source_code_info.take().unwrap_or_else(|| SourceCodeInfo::new())
     }
 
     pub fn get_source_code_info(&'a self) -> &'a SourceCodeInfo {
@@ -1067,6 +1127,11 @@ impl<'a> DescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -1090,6 +1155,11 @@ impl<'a> DescriptorProto {
         &mut self.field
     }
 
+    // Take field
+    pub fn take_field(&mut self) -> ::protobuf::RepeatedField<FieldDescriptorProto> {
+        ::std::mem::replace(&mut self.field, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_field(&'a self) -> &'a [FieldDescriptorProto] {
         self.field.as_slice()
     }
@@ -1108,6 +1178,11 @@ impl<'a> DescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_extension(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
+    }
+
+    // Take field
+    pub fn take_extension(&mut self) -> ::protobuf::RepeatedField<FieldDescriptorProto> {
+        ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
@@ -1130,6 +1205,11 @@ impl<'a> DescriptorProto {
         &mut self.nested_type
     }
 
+    // Take field
+    pub fn take_nested_type(&mut self) -> ::protobuf::RepeatedField<DescriptorProto> {
+        ::std::mem::replace(&mut self.nested_type, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_nested_type(&'a self) -> &'a [DescriptorProto] {
         self.nested_type.as_slice()
     }
@@ -1150,6 +1230,11 @@ impl<'a> DescriptorProto {
         &mut self.enum_type
     }
 
+    // Take field
+    pub fn take_enum_type(&mut self) -> ::protobuf::RepeatedField<EnumDescriptorProto> {
+        ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
         self.enum_type.as_slice()
     }
@@ -1168,6 +1253,11 @@ impl<'a> DescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_extension_range(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
         &mut self.extension_range
+    }
+
+    // Take field
+    pub fn take_extension_range(&mut self) -> ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
+        ::std::mem::replace(&mut self.extension_range, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_extension_range(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
@@ -1196,6 +1286,11 @@ impl<'a> DescriptorProto {
             self.options.set_default();
         };
         self.options.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_options(&mut self) -> MessageOptions {
+        self.options.take().unwrap_or_else(|| MessageOptions::new())
     }
 
     pub fn get_options(&'a self) -> &'a MessageOptions {
@@ -1858,6 +1953,11 @@ impl<'a> FieldDescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -1946,6 +2046,11 @@ impl<'a> FieldDescriptorProto {
         self.type_name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_type_name(&mut self) -> ::std::string::String {
+        self.type_name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_type_name(&'a self) -> &'a str {
         match self.type_name.as_ref() {
             Some(v) => v.as_slice(),
@@ -1975,6 +2080,11 @@ impl<'a> FieldDescriptorProto {
             self.extendee.set_default();
         };
         self.extendee.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_extendee(&mut self) -> ::std::string::String {
+        self.extendee.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_extendee(&'a self) -> &'a str {
@@ -2008,6 +2118,11 @@ impl<'a> FieldDescriptorProto {
         self.default_value.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_default_value(&mut self) -> ::std::string::String {
+        self.default_value.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_default_value(&'a self) -> &'a str {
         match self.default_value.as_ref() {
             Some(v) => v.as_slice(),
@@ -2037,6 +2152,11 @@ impl<'a> FieldDescriptorProto {
             self.options.set_default();
         };
         self.options.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_options(&mut self) -> FieldOptions {
+        self.options.take().unwrap_or_else(|| FieldOptions::new())
     }
 
     pub fn get_options(&'a self) -> &'a FieldOptions {
@@ -2595,6 +2715,11 @@ impl<'a> EnumDescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -2616,6 +2741,11 @@ impl<'a> EnumDescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_value(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
         &mut self.value
+    }
+
+    // Take field
+    pub fn take_value(&mut self) -> ::protobuf::RepeatedField<EnumValueDescriptorProto> {
+        ::std::mem::replace(&mut self.value, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_value(&'a self) -> &'a [EnumValueDescriptorProto] {
@@ -2644,6 +2774,11 @@ impl<'a> EnumDescriptorProto {
             self.options.set_default();
         };
         self.options.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_options(&mut self) -> EnumOptions {
+        self.options.take().unwrap_or_else(|| EnumOptions::new())
     }
 
     pub fn get_options(&'a self) -> &'a EnumOptions {
@@ -2913,6 +3048,11 @@ impl<'a> EnumValueDescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -2961,6 +3101,11 @@ impl<'a> EnumValueDescriptorProto {
             self.options.set_default();
         };
         self.options.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_options(&mut self) -> EnumValueOptions {
+        self.options.take().unwrap_or_else(|| EnumValueOptions::new())
     }
 
     pub fn get_options(&'a self) -> &'a EnumValueOptions {
@@ -3230,6 +3375,11 @@ impl<'a> ServiceDescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -3251,6 +3401,11 @@ impl<'a> ServiceDescriptorProto {
     // Mutable pointer to the field.
     pub fn mut_method(&'a mut self) -> &'a mut ::protobuf::RepeatedField<MethodDescriptorProto> {
         &mut self.method
+    }
+
+    // Take field
+    pub fn take_method(&mut self) -> ::protobuf::RepeatedField<MethodDescriptorProto> {
+        ::std::mem::replace(&mut self.method, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_method(&'a self) -> &'a [MethodDescriptorProto] {
@@ -3279,6 +3434,11 @@ impl<'a> ServiceDescriptorProto {
             self.options.set_default();
         };
         self.options.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_options(&mut self) -> ServiceOptions {
+        self.options.take().unwrap_or_else(|| ServiceOptions::new())
     }
 
     pub fn get_options(&'a self) -> &'a ServiceOptions {
@@ -3550,6 +3710,11 @@ impl<'a> MethodDescriptorProto {
         self.name.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
@@ -3579,6 +3744,11 @@ impl<'a> MethodDescriptorProto {
             self.input_type.set_default();
         };
         self.input_type.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_input_type(&mut self) -> ::std::string::String {
+        self.input_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_input_type(&'a self) -> &'a str {
@@ -3612,6 +3782,11 @@ impl<'a> MethodDescriptorProto {
         self.output_type.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_output_type(&mut self) -> ::std::string::String {
+        self.output_type.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_output_type(&'a self) -> &'a str {
         match self.output_type.as_ref() {
             Some(v) => v.as_slice(),
@@ -3641,6 +3816,11 @@ impl<'a> MethodDescriptorProto {
             self.options.set_default();
         };
         self.options.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_options(&mut self) -> MethodOptions {
+        self.options.take().unwrap_or_else(|| MethodOptions::new())
     }
 
     pub fn get_options(&'a self) -> &'a MethodOptions {
@@ -3961,6 +4141,11 @@ impl<'a> FileOptions {
         self.java_package.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_java_package(&mut self) -> ::std::string::String {
+        self.java_package.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_java_package(&'a self) -> &'a str {
         match self.java_package.as_ref() {
             Some(v) => v.as_slice(),
@@ -3990,6 +4175,11 @@ impl<'a> FileOptions {
             self.java_outer_classname.set_default();
         };
         self.java_outer_classname.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_java_outer_classname(&mut self) -> ::std::string::String {
+        self.java_outer_classname.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_java_outer_classname(&'a self) -> &'a str {
@@ -4080,6 +4270,11 @@ impl<'a> FileOptions {
         self.go_package.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_go_package(&mut self) -> ::std::string::String {
+        self.go_package.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_go_package(&'a self) -> &'a str {
         match self.go_package.as_ref() {
             Some(v) => v.as_slice(),
@@ -4158,6 +4353,11 @@ impl<'a> FileOptions {
     // Mutable pointer to the field.
     pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
+    }
+
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
@@ -4750,6 +4950,11 @@ impl<'a> MessageOptions {
         &mut self.uninterpreted_option
     }
 
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
@@ -5098,6 +5303,11 @@ impl<'a> FieldOptions {
         self.experimental_map_key.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_experimental_map_key(&mut self) -> ::std::string::String {
+        self.experimental_map_key.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_experimental_map_key(&'a self) -> &'a str {
         match self.experimental_map_key.as_ref() {
             Some(v) => v.as_slice(),
@@ -5138,6 +5348,11 @@ impl<'a> FieldOptions {
     // Mutable pointer to the field.
     pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
+    }
+
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
@@ -5598,6 +5813,11 @@ impl<'a> EnumOptions {
         &mut self.uninterpreted_option
     }
 
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
@@ -5813,6 +6033,11 @@ impl<'a> EnumValueOptions {
         &mut self.uninterpreted_option
     }
 
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
@@ -5991,6 +6216,11 @@ impl<'a> ServiceOptions {
         &mut self.uninterpreted_option
     }
 
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
@@ -6167,6 +6397,11 @@ impl<'a> MethodOptions {
     // Mutable pointer to the field.
     pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
+    }
+
+    // Take field
+    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
@@ -6359,6 +6594,11 @@ impl<'a> UninterpretedOption {
         &mut self.name
     }
 
+    // Take field
+    pub fn take_name(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
+        ::std::mem::replace(&mut self.name, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_name(&'a self) -> &'a [UninterpretedOption_NamePart] {
         self.name.as_slice()
     }
@@ -6385,6 +6625,11 @@ impl<'a> UninterpretedOption {
             self.identifier_value.set_default();
         };
         self.identifier_value.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_identifier_value(&mut self) -> ::std::string::String {
+        self.identifier_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_identifier_value(&'a self) -> &'a str {
@@ -6475,6 +6720,11 @@ impl<'a> UninterpretedOption {
         self.string_value.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_string_value(&mut self) -> ::std::vec::Vec<u8> {
+        self.string_value.take().unwrap_or_else(|| ::std::vec::Vec::new())
+    }
+
     pub fn get_string_value(&'a self) -> &'a [u8] {
         match self.string_value.as_ref() {
             Some(v) => v.as_slice(),
@@ -6504,6 +6754,11 @@ impl<'a> UninterpretedOption {
             self.aggregate_value.set_default();
         };
         self.aggregate_value.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_aggregate_value(&mut self) -> ::std::string::String {
+        self.aggregate_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_aggregate_value(&'a self) -> &'a str {
@@ -6919,6 +7174,11 @@ impl<'a> UninterpretedOption_NamePart {
         self.name_part.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_name_part(&mut self) -> ::std::string::String {
+        self.name_part.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_name_part(&'a self) -> &'a str {
         match self.name_part.as_ref() {
             Some(v) => v.as_slice(),
@@ -7162,6 +7422,11 @@ impl<'a> SourceCodeInfo {
         &mut self.location
     }
 
+    // Take field
+    pub fn take_location(&mut self) -> ::protobuf::RepeatedField<SourceCodeInfo_Location> {
+        ::std::mem::replace(&mut self.location, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_location(&'a self) -> &'a [SourceCodeInfo_Location] {
         self.location.as_slice()
     }
@@ -7346,6 +7611,11 @@ impl<'a> SourceCodeInfo_Location {
         &mut self.path
     }
 
+    // Take field
+    pub fn take_path(&mut self) -> ::std::vec::Vec<i32> {
+        ::std::mem::replace(&mut self.path, ::std::vec::Vec::new())
+    }
+
     pub fn get_path(&'a self) -> &'a [i32] {
         self.path.as_slice()
     }
@@ -7364,6 +7634,11 @@ impl<'a> SourceCodeInfo_Location {
     // Mutable pointer to the field.
     pub fn mut_span(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.span
+    }
+
+    // Take field
+    pub fn take_span(&mut self) -> ::std::vec::Vec<i32> {
+        ::std::mem::replace(&mut self.span, ::std::vec::Vec::new())
     }
 
     pub fn get_span(&'a self) -> &'a [i32] {
@@ -7392,6 +7667,11 @@ impl<'a> SourceCodeInfo_Location {
             self.leading_comments.set_default();
         };
         self.leading_comments.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_leading_comments(&mut self) -> ::std::string::String {
+        self.leading_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_leading_comments(&'a self) -> &'a str {
@@ -7423,6 +7703,11 @@ impl<'a> SourceCodeInfo_Location {
             self.trailing_comments.set_default();
         };
         self.trailing_comments.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_trailing_comments(&mut self) -> ::std::string::String {
+        self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_trailing_comments(&'a self) -> &'a str {

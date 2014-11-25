@@ -227,6 +227,11 @@ impl<'a> TestRepeatedBool {
         &mut self.values
     }
 
+    // Take field
+    pub fn take_values(&mut self) -> ::std::vec::Vec<bool> {
+        ::std::mem::replace(&mut self.values, ::std::vec::Vec::new())
+    }
+
     pub fn get_values(&'a self) -> &'a [bool] {
         self.values.as_slice()
     }
@@ -406,6 +411,11 @@ impl<'a> TestRepeatedPackedInt32 {
     // Mutable pointer to the field.
     pub fn mut_values(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.values
+    }
+
+    // Take field
+    pub fn take_values(&mut self) -> ::std::vec::Vec<i32> {
+        ::std::mem::replace(&mut self.values, ::std::vec::Vec::new())
     }
 
     pub fn get_values(&'a self) -> &'a [i32] {
@@ -600,6 +610,11 @@ impl<'a> TestRepeatedMessages {
         &mut self.messages1
     }
 
+    // Take field
+    pub fn take_messages1(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
+        ::std::mem::replace(&mut self.messages1, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_messages1(&'a self) -> &'a [TestRepeatedMessages] {
         self.messages1.as_slice()
     }
@@ -620,6 +635,11 @@ impl<'a> TestRepeatedMessages {
         &mut self.messages2
     }
 
+    // Take field
+    pub fn take_messages2(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
+        ::std::mem::replace(&mut self.messages2, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_messages2(&'a self) -> &'a [TestRepeatedMessages] {
         self.messages2.as_slice()
     }
@@ -638,6 +658,11 @@ impl<'a> TestRepeatedMessages {
     // Mutable pointer to the field.
     pub fn mut_messages3(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
         &mut self.messages3
+    }
+
+    // Take field
+    pub fn take_messages3(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
+        ::std::mem::replace(&mut self.messages3, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_messages3(&'a self) -> &'a [TestRepeatedMessages] {
@@ -904,6 +929,11 @@ impl<'a> TestOptionalMessages {
         self.message1.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_message1(&mut self) -> TestOptionalMessages {
+        self.message1.take().unwrap_or_else(|| TestOptionalMessages::new())
+    }
+
     pub fn get_message1(&'a self) -> &'a TestOptionalMessages {
         self.message1.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
@@ -932,6 +962,11 @@ impl<'a> TestOptionalMessages {
         self.message2.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_message2(&mut self) -> TestOptionalMessages {
+        self.message2.take().unwrap_or_else(|| TestOptionalMessages::new())
+    }
+
     pub fn get_message2(&'a self) -> &'a TestOptionalMessages {
         self.message2.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
@@ -958,6 +993,11 @@ impl<'a> TestOptionalMessages {
             self.message3.set_default();
         };
         self.message3.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_message3(&mut self) -> TestOptionalMessages {
+        self.message3.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
     pub fn get_message3(&'a self) -> &'a TestOptionalMessages {
@@ -1233,6 +1273,11 @@ impl<'a> TestStrings {
         self.s1.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_s1(&mut self) -> ::std::string::String {
+        self.s1.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_s1(&'a self) -> &'a str {
         match self.s1.as_ref() {
             Some(v) => v.as_slice(),
@@ -1264,6 +1309,11 @@ impl<'a> TestStrings {
         self.s2.as_mut().unwrap()
     }
 
+    // Take field
+    pub fn take_s2(&mut self) -> ::std::string::String {
+        self.s2.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
     pub fn get_s2(&'a self) -> &'a str {
         match self.s2.as_ref() {
             Some(v) => v.as_slice(),
@@ -1293,6 +1343,11 @@ impl<'a> TestStrings {
             self.s3.set_default();
         };
         self.s3.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_s3(&mut self) -> ::std::string::String {
+        self.s3.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_s3(&'a self) -> &'a str {
@@ -1560,6 +1615,11 @@ impl<'a> PerftestData {
         &mut self.test1
     }
 
+    // Take field
+    pub fn take_test1(&mut self) -> ::protobuf::RepeatedField<Test1> {
+        ::std::mem::replace(&mut self.test1, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_test1(&'a self) -> &'a [Test1] {
         self.test1.as_slice()
     }
@@ -1578,6 +1638,11 @@ impl<'a> PerftestData {
     // Mutable pointer to the field.
     pub fn mut_test_repeated_bool(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedBool> {
         &mut self.test_repeated_bool
+    }
+
+    // Take field
+    pub fn take_test_repeated_bool(&mut self) -> ::protobuf::RepeatedField<TestRepeatedBool> {
+        ::std::mem::replace(&mut self.test_repeated_bool, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_repeated_bool(&'a self) -> &'a [TestRepeatedBool] {
@@ -1600,6 +1665,11 @@ impl<'a> PerftestData {
         &mut self.test_repeated_messages
     }
 
+    // Take field
+    pub fn take_test_repeated_messages(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
+        ::std::mem::replace(&mut self.test_repeated_messages, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_test_repeated_messages(&'a self) -> &'a [TestRepeatedMessages] {
         self.test_repeated_messages.as_slice()
     }
@@ -1618,6 +1688,11 @@ impl<'a> PerftestData {
     // Mutable pointer to the field.
     pub fn mut_test_optional_messages(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestOptionalMessages> {
         &mut self.test_optional_messages
+    }
+
+    // Take field
+    pub fn take_test_optional_messages(&mut self) -> ::protobuf::RepeatedField<TestOptionalMessages> {
+        ::std::mem::replace(&mut self.test_optional_messages, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_optional_messages(&'a self) -> &'a [TestOptionalMessages] {
@@ -1640,6 +1715,11 @@ impl<'a> PerftestData {
         &mut self.test_strings
     }
 
+    // Take field
+    pub fn take_test_strings(&mut self) -> ::protobuf::RepeatedField<TestStrings> {
+        ::std::mem::replace(&mut self.test_strings, ::protobuf::RepeatedField::new())
+    }
+
     pub fn get_test_strings(&'a self) -> &'a [TestStrings] {
         self.test_strings.as_slice()
     }
@@ -1658,6 +1738,11 @@ impl<'a> PerftestData {
     // Mutable pointer to the field.
     pub fn mut_test_repeated_packed_int32(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedPackedInt32> {
         &mut self.test_repeated_packed_int32
+    }
+
+    // Take field
+    pub fn take_test_repeated_packed_int32(&mut self) -> ::protobuf::RepeatedField<TestRepeatedPackedInt32> {
+        ::std::mem::replace(&mut self.test_repeated_packed_int32, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_repeated_packed_int32(&'a self) -> &'a [TestRepeatedPackedInt32] {

@@ -483,6 +483,11 @@ impl Field {
         }
     }
 
+    // for field `foo`, return type if `fn take_foo(..)`
+    fn take_xxx_return_type(&self) -> RustType {
+        self.set_xxx_param_type()
+    }
+
     // for field `foo`, return type of `fn mut_foo(..)`
     fn mut_xxx_return_type(&self) -> RustType {
         RustType::Ref(box if self.repeated {
@@ -1439,6 +1444,24 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
                 w.write_line(format!("{}.as_mut().unwrap()", w.self_field()));
             } else {
                 w.write_line(format!("&mut {}", w.self_field()));
+            }
+        });
+        w.write_line("");
+        w.comment("Take field");
+        let take_xxx_return_type = w.field().take_xxx_return_type();
+        w.pub_fn(format!("take_{}(&mut self) -> {}", w.field().name, take_xxx_return_type), |w| {
+            if !w.field().repeated {
+                if w.field().type_is_not_trivial() {
+                    w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
+                        w.field().name, w.field().type_name.default_value()));
+                } else {
+                    w.write_line(format!("self.{}.take().unwrap_or({})",
+                        w.field().name, w.field().default_value_rust()));
+                }
+            } else {
+                w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
+                        w.field().name,
+                        take_xxx_return_type.default_value()));
             }
         });
     }
