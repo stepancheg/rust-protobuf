@@ -5,6 +5,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_imports)]
 
+use protobuf::Message as Message_imported_for_functions;
+use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 use super::descriptor::FileDescriptorSet;
 use super::descriptor::FileDescriptorProto;
 use super::descriptor::DescriptorProto;
@@ -187,7 +189,6 @@ impl ::protobuf::Message for CodeGeneratorRequest {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.file_to_generate.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -205,7 +206,6 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.file_to_generate.iter() {
             try!(os.write_string(1, v.as_slice()));
         };
@@ -282,7 +282,6 @@ impl ::std::cmp::PartialEq for CodeGeneratorRequest {
 
 impl ::std::fmt::Show for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -472,7 +471,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.error.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -487,7 +485,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.error.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -558,7 +555,6 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse {
 
 impl ::std::fmt::Show for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -786,7 +782,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -803,7 +798,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -884,7 +878,6 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
 
 impl ::std::fmt::Show for CodeGeneratorResponse_File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }

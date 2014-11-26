@@ -5,6 +5,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_imports)]
 
+use protobuf::Message as Message_imported_for_functions;
+use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[deriving(Clone,Default)]
 pub struct Test1 {
@@ -85,7 +87,6 @@ impl ::protobuf::Message for Test1 {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.value.iter() {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -96,7 +97,6 @@ impl ::protobuf::Message for Test1 {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.value {
             Some(v) => {
                 try!(os.write_int32(1, v));
@@ -159,7 +159,6 @@ impl ::std::cmp::PartialEq for Test1 {
 
 impl ::std::fmt::Show for Test1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -274,7 +273,6 @@ impl ::protobuf::Message for TestRepeatedBool {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         my_size += 2 * self.values.len() as u32;
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -283,7 +281,6 @@ impl ::protobuf::Message for TestRepeatedBool {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.values.iter() {
             try!(os.write_bool(1, *v));
         };
@@ -343,7 +340,6 @@ impl ::std::cmp::PartialEq for TestRepeatedBool {
 
 impl ::std::fmt::Show for TestRepeatedBool {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -458,7 +454,6 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         if !self.values.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, self.values.as_slice());
@@ -469,7 +464,6 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         if !self.values.is_empty() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
@@ -534,7 +528,6 @@ impl ::std::cmp::PartialEq for TestRepeatedPackedInt32 {
 
 impl ::std::fmt::Show for TestRepeatedPackedInt32 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -711,7 +704,6 @@ impl ::protobuf::Message for TestRepeatedMessages {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.messages1.iter() {
             let len = value.compute_size();
@@ -731,7 +723,6 @@ impl ::protobuf::Message for TestRepeatedMessages {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.messages1.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -809,7 +800,6 @@ impl ::std::cmp::PartialEq for TestRepeatedMessages {
 
 impl ::std::fmt::Show for TestRepeatedMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -1046,7 +1036,6 @@ impl ::protobuf::Message for TestOptionalMessages {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.message1.iter() {
             let len = value.compute_size();
@@ -1066,7 +1055,6 @@ impl ::protobuf::Message for TestOptionalMessages {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.message1.as_ref() {
             Some(v) => {
                 try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -1153,7 +1141,6 @@ impl ::std::cmp::PartialEq for TestOptionalMessages {
 
 impl ::std::fmt::Show for TestOptionalMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -1399,7 +1386,6 @@ impl ::protobuf::Message for TestStrings {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.s1.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -1416,7 +1402,6 @@ impl ::protobuf::Message for TestStrings {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.s1.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -1497,7 +1482,6 @@ impl ::std::cmp::PartialEq for TestStrings {
 
 impl ::std::fmt::Show for TestStrings {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -1812,7 +1796,6 @@ impl ::protobuf::Message for PerftestData {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.test1.iter() {
             let len = value.compute_size();
@@ -1844,7 +1827,6 @@ impl ::protobuf::Message for PerftestData {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.test1.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -1946,7 +1928,6 @@ impl ::std::cmp::PartialEq for PerftestData {
 
 impl ::std::fmt::Show for PerftestData {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }

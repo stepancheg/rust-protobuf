@@ -5,6 +5,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_imports)]
 
+use protobuf::Message as Message_imported_for_functions;
+use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[deriving(Clone,Default)]
 pub struct FileDescriptorSet {
@@ -91,7 +93,6 @@ impl ::protobuf::Message for FileDescriptorSet {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.file.iter() {
             let len = value.compute_size();
@@ -103,7 +104,6 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.file.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -165,7 +165,6 @@ impl ::std::cmp::PartialEq for FileDescriptorSet {
 
 impl ::std::fmt::Show for FileDescriptorSet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -664,7 +663,6 @@ impl ::protobuf::Message for FileDescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -711,7 +709,6 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -855,7 +852,6 @@ impl ::std::cmp::PartialEq for FileDescriptorProto {
 
 impl ::std::fmt::Show for FileDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -1367,7 +1363,6 @@ impl ::protobuf::Message for DescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -1402,7 +1397,6 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -1516,7 +1510,6 @@ impl ::std::cmp::PartialEq for DescriptorProto {
 
 impl ::std::fmt::Show for DescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -1755,7 +1748,6 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.start.iter() {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -1769,7 +1761,6 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.start {
             Some(v) => {
                 try!(os.write_int32(1, v));
@@ -1841,7 +1832,6 @@ impl ::std::cmp::PartialEq for DescriptorProto_ExtensionRange {
 
 impl ::std::fmt::Show for DescriptorProto_ExtensionRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -2240,7 +2230,6 @@ impl ::protobuf::Message for FieldDescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -2273,7 +2262,6 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -2401,7 +2389,6 @@ impl ::std::cmp::PartialEq for FieldDescriptorProto {
 
 impl ::std::fmt::Show for FieldDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -2457,7 +2444,6 @@ impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescripto
     }
 
     fn get_enum<'a>(&self, m: &FieldDescriptorProto) -> &'static ::protobuf::reflect::EnumValueDescriptor {
-        use protobuf::{ProtobufEnum};
         m.get_label().descriptor()
     }
 }
@@ -2476,7 +2462,6 @@ impl ::protobuf::reflect::FieldAccessor<FieldDescriptorProto> for FieldDescripto
     }
 
     fn get_enum<'a>(&self, m: &FieldDescriptorProto) -> &'static ::protobuf::reflect::EnumValueDescriptor {
-        use protobuf::{ProtobufEnum};
         m.get_field_type().descriptor()
     }
 }
@@ -2825,7 +2810,6 @@ impl ::protobuf::Message for EnumDescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -2844,7 +2828,6 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -2926,7 +2909,6 @@ impl ::std::cmp::PartialEq for EnumDescriptorProto {
 
 impl ::std::fmt::Show for EnumDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -3152,7 +3134,6 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -3170,7 +3151,6 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -3253,7 +3233,6 @@ impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
 
 impl ::std::fmt::Show for EnumValueDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -3485,7 +3464,6 @@ impl ::protobuf::Message for ServiceDescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -3504,7 +3482,6 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -3586,7 +3563,6 @@ impl ::std::cmp::PartialEq for ServiceDescriptorProto {
 
 impl ::std::fmt::Show for ServiceDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -3874,7 +3850,6 @@ impl ::protobuf::Message for MethodDescriptorProto {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -3895,7 +3870,6 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -3987,7 +3961,6 @@ impl ::std::cmp::PartialEq for MethodDescriptorProto {
 
 impl ::std::fmt::Show for MethodDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -4453,7 +4426,6 @@ impl ::protobuf::Message for FileOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.java_package.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -4492,7 +4464,6 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.java_package.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -4635,7 +4606,6 @@ impl ::std::cmp::PartialEq for FileOptions {
 
 impl ::std::fmt::Show for FileOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -4727,7 +4697,6 @@ impl ::protobuf::reflect::FieldAccessor<FileOptions> for FileOptions_optimize_fo
     }
 
     fn get_enum<'a>(&self, m: &FileOptions) -> &'static ::protobuf::reflect::EnumValueDescriptor {
-        use protobuf::{ProtobufEnum};
         m.get_optimize_for().descriptor()
     }
 }
@@ -4998,7 +4967,6 @@ impl ::protobuf::Message for MessageOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         if self.message_set_wire_format.is_some() {
             my_size += 2;
@@ -5016,7 +4984,6 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.message_set_wire_format {
             Some(v) => {
                 try!(os.write_bool(1, v));
@@ -5096,7 +5063,6 @@ impl ::std::cmp::PartialEq for MessageOptions {
 
 impl ::std::fmt::Show for MessageOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -5426,7 +5392,6 @@ impl ::protobuf::Message for FieldOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.ctype.iter() {
             my_size += ::protobuf::rt::enum_size(1, *value);
@@ -5456,7 +5421,6 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.ctype {
             Some(v) => {
                 try!(os.write_enum(1, v as i32));
@@ -5572,7 +5536,6 @@ impl ::std::cmp::PartialEq for FieldOptions {
 
 impl ::std::fmt::Show for FieldOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -5592,7 +5555,6 @@ impl ::protobuf::reflect::FieldAccessor<FieldOptions> for FieldOptions_ctype_acc
     }
 
     fn get_enum<'a>(&self, m: &FieldOptions) -> &'static ::protobuf::reflect::EnumValueDescriptor {
-        use protobuf::{ProtobufEnum};
         m.get_ctype().descriptor()
     }
 }
@@ -5853,7 +5815,6 @@ impl ::protobuf::Message for EnumOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         if self.allow_alias.is_some() {
             my_size += 2;
@@ -5868,7 +5829,6 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.allow_alias {
             Some(v) => {
                 try!(os.write_bool(2, v));
@@ -5939,7 +5899,6 @@ impl ::std::cmp::PartialEq for EnumOptions {
 
 impl ::std::fmt::Show for EnumOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -6066,7 +6025,6 @@ impl ::protobuf::Message for EnumValueOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.uninterpreted_option.iter() {
             let len = value.compute_size();
@@ -6078,7 +6036,6 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -6140,7 +6097,6 @@ impl ::std::cmp::PartialEq for EnumValueOptions {
 
 impl ::std::fmt::Show for EnumValueOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -6249,7 +6205,6 @@ impl ::protobuf::Message for ServiceOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.uninterpreted_option.iter() {
             let len = value.compute_size();
@@ -6261,7 +6216,6 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -6323,7 +6277,6 @@ impl ::std::cmp::PartialEq for ServiceOptions {
 
 impl ::std::fmt::Show for ServiceOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -6432,7 +6385,6 @@ impl ::protobuf::Message for MethodOptions {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.uninterpreted_option.iter() {
             let len = value.compute_size();
@@ -6444,7 +6396,6 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -6506,7 +6457,6 @@ impl ::std::cmp::PartialEq for MethodOptions {
 
 impl ::std::fmt::Show for MethodOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -6834,7 +6784,6 @@ impl ::protobuf::Message for UninterpretedOption {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name.iter() {
             let len = value.compute_size();
@@ -6864,7 +6813,6 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.name.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -6980,7 +6928,6 @@ impl ::std::cmp::PartialEq for UninterpretedOption {
 
 impl ::std::fmt::Show for UninterpretedOption {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -7242,7 +7189,6 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.name_part.iter() {
             my_size += ::protobuf::rt::string_size(1, value.as_slice());
@@ -7256,7 +7202,6 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         match self.name_part.as_ref() {
             Some(v) => {
                 try!(os.write_string(1, v.as_slice()));
@@ -7328,7 +7273,6 @@ impl ::std::cmp::PartialEq for UninterpretedOption_NamePart {
 
 impl ::std::fmt::Show for UninterpretedOption_NamePart {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -7455,7 +7399,6 @@ impl ::protobuf::Message for SourceCodeInfo {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         for value in self.location.iter() {
             let len = value.compute_size();
@@ -7467,7 +7410,6 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         for v in self.location.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
@@ -7529,7 +7471,6 @@ impl ::std::cmp::PartialEq for SourceCodeInfo {
 
 impl ::std::fmt::Show for SourceCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }
@@ -7774,7 +7715,6 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
 
     // Compute sizes of nested messages
     fn compute_size(&self) -> u32 {
-        use protobuf::{Message};
         let mut my_size = 0;
         if !self.path.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, self.path.as_slice());
@@ -7794,7 +7734,6 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        use protobuf::{Message};
         if !self.path.is_empty() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
@@ -7888,7 +7827,6 @@ impl ::std::cmp::PartialEq for SourceCodeInfo_Location {
 
 impl ::std::fmt::Show for SourceCodeInfo_Location {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        use protobuf::{Message};
         self.fmt_impl(f)
     }
 }

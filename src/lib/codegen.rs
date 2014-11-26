@@ -1214,7 +1214,6 @@ fn write_message_compute_size(w: &mut IndentWriter) {
     w.comment("Compute sizes of nested messages");
     w.def_fn("compute_size(&self) -> u32", |w| {
         // To have access to its methods but not polute the name space.
-        w.write_line("use protobuf::{Message};");
         w.write_line("let mut my_size = 0;");
         w.fields(|w| {
             let field = w.field();
@@ -1338,7 +1337,6 @@ fn write_message_write_field(w: &mut IndentWriter) {
 fn write_message_write_to_with_cached_sizes(w: &mut IndentWriter) {
     w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
         // To have access to its methods but not polute the name space.
-        w.write_line("use protobuf::{Message};");
         w.fields(|w| {
             write_message_write_field(w);
         });
@@ -1590,7 +1588,6 @@ fn write_message_impl_show(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.impl_for_block("::std::fmt::Show", msg.type_name.as_slice(), |w| {
         w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
-            w.write_line("use protobuf::{Message};");
             w.write_line("self.fmt_impl(f)");
         });
     });
@@ -1645,7 +1642,6 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
                     w.def_fn(format!("get_rep_enum_item<'a>(&self, m: &{}, index: uint) -> &'static ::protobuf::reflect::EnumValueDescriptor",
                             msg.type_name),
                     |w| {
-                        w.write_line("use protobuf::{ProtobufEnum};");
                         w.write_line(format!("m.get_{}()[index].descriptor()", field.name));
                     });
                 },
@@ -1678,7 +1674,6 @@ fn write_message_descriptor_field(w: &mut IndentWriter) {
                     w.def_fn(format!("get_enum<'a>(&self, m: &{}) -> &'static ::protobuf::reflect::EnumValueDescriptor",
                             msg.type_name),
                     |w| {
-                        w.write_line("use protobuf::{ProtobufEnum};");
                         w.write_line(format!("m.get_{}().descriptor()", field.name));
                     });
                 },
@@ -1889,6 +1884,8 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("#![allow(unused_imports)]");
 
             w.write_line("");
+            w.write_line("use protobuf::Message as Message_imported_for_functions;");
+            w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
             for dep in file.get_dependency().iter() {
                 for message in files_map[dep.as_slice()].get_message_type().iter() {
                     w.write_line(format!("use super::{}::{};",
