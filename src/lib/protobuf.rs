@@ -5,7 +5,6 @@
 #![desc = "protobuf implementation for rust"]
 #![license = "BSD"]
 
-extern crate sync;
 extern crate collections;
 
 pub use unknown::UnknownFields;

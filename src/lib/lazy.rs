@@ -1,8 +1,8 @@
 use std::mem;
-use sync::one;
+use std::sync;
 
 pub struct Lazy<T> {
-    pub lock: one::Once,
+    pub lock: sync::Once,
     pub ptr: *const T,
 }
 
@@ -17,4 +17,4 @@ impl<T> Lazy<T> {
     }
 }
 
-pub const ONCE_INIT: one::Once = one::ONCE_INIT;
+pub const ONCE_INIT: sync::Once = sync::ONCE_INIT;
