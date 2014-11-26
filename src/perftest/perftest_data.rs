@@ -251,14 +251,17 @@ impl ::protobuf::Message for TestRepeatedBool {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        try!(is.read_repeated_packed_bool_into(&mut self.values));
-                    } else {
-                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    match wire_type {
+                        ::protobuf::wire_format::WireTypeLengthDelimited => {
+                            try!(is.read_repeated_packed_bool_into(&mut self.values));
+                        },
+                        ::protobuf::wire_format::WireTypeVarint => {
+                            self.values.push(try!(is.read_bool()));
+                        },
+                        _ => {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        };
-                        self.values.push(try!(is.read_bool()));
-                    }
+                        },
+                    };
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -432,14 +435,17 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        try!(is.read_repeated_packed_int32_into(&mut self.values));
-                    } else {
-                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    match wire_type {
+                        ::protobuf::wire_format::WireTypeLengthDelimited => {
+                            try!(is.read_repeated_packed_int32_into(&mut self.values));
+                        },
+                        ::protobuf::wire_format::WireTypeVarint => {
+                            self.values.push(try!(is.read_int32()));
+                        },
+                        _ => {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        };
-                        self.values.push(try!(is.read_int32()));
-                    }
+                        },
+                    };
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));

@@ -1106,11 +1106,17 @@ impl<'a> IndentWriter<'a> {
         self.write_line(format!("{};", clear_expr));
     }
 
-    fn assert_wire_type(&self, wire_type: wire_format::WireType) {
+    fn error_wire_type(&mut self, _wire_type: wire_format::WireType) {
+        // TODO: write wire type
+        let message = "\"unexpected wire type\".to_string()";
+        self.write_line(format!(
+                "return ::std::result::Err(::protobuf::ProtobufError::WireError({}));",
+                message));
+    }
+
+    fn assert_wire_type(&mut self, wire_type: wire_format::WireType) {
         self.if_stmt(format!("wire_type != ::protobuf::wire_format::{}", wire_type), |w| {
-            // TODO: write wire type
-            let message = "\"unexpected wire type\".to_string()";
-            w.write_line(format!("return ::std::result::Err(::protobuf::ProtobufError::WireError({}));", message));
+            w.error_wire_type(wire_type);
         });
     }
 }
@@ -1165,17 +1171,20 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 }
             },
             RepeatMode::RepeatPacked => {
-                w.write_line(format!("if wire_type == ::protobuf::wire_format::{} {{", wire_format::WireTypeLengthDelimited));
-                w.indented(|w| {
-                    w.write_line(format!("try!(is.read_repeated_packed_{}_into(&mut self.{}));",
-                            protobuf_name(field.field_type), field.name));
+                w.match_block("wire_type", |w| {
+                    w.case_block(format!("::protobuf::wire_format::{}",
+                            wire_format::WireTypeLengthDelimited).as_slice(),
+                    |w| {
+                        w.write_line(format!("try!(is.read_repeated_packed_{}_into(&mut self.{}));",
+                                protobuf_name(field.field_type), field.name));
+                    });
+                    w.case_block(format!("::protobuf::wire_format::{}", wire_type).as_slice(), |w| {
+                        w.self_field_push(read_proc.as_slice());
+                    });
+                    w.case_block("_", |w| {
+                        w.error_wire_type(wire_type);
+                    });
                 });
-                w.write_line("} else {");
-                w.indented(|w| {
-                    w.assert_wire_type(wire_type);
-                    w.self_field_push(read_proc.as_slice());
-                });
-                w.write_line("}");
             },
         };
     }
