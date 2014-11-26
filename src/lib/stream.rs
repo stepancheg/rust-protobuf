@@ -5,6 +5,7 @@ use std::io::IoError;
 
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
+use core::ProtobufEnum;
 use misc::VecWriter;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
@@ -350,6 +351,15 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_bool(&mut self) -> ProtobufResult<bool> {
         self.read_raw_varint32().map(|v| v != 0)
+    }
+
+    pub fn read_enum<E : ProtobufEnum>(&mut self) -> ProtobufResult<E> {
+        let i = try!(self.read_int32());
+        match ProtobufEnum::from_i32(i) {
+            Some(e) => Ok(e),
+            None => Err(ProtobufError::WireError(
+                format!("invalid value for enum: {}", i))),
+        }
     }
 
     pub fn read_unknown(&mut self, wire_type: wire_format::WireType) -> ProtobufResult<UnknownValue> {

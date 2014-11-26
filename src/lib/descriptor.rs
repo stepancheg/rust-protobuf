@@ -2195,14 +2195,14 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = FieldDescriptorProto_Label::new(try!(is.read_int32()));
+                    let tmp = try!(is.read_enum());
                     self.label = ::std::option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = FieldDescriptorProto_Type::new(try!(is.read_int32()));
+                    let tmp = try!(is.read_enum());
                     self.field_type = ::std::option::Some(tmp);
                 },
                 6 => {
@@ -2579,35 +2579,34 @@ pub enum FieldDescriptorProto_Type {
     TYPE_SINT64 = 18,
 }
 
-impl FieldDescriptorProto_Type {
-    pub fn new(value: i32) -> FieldDescriptorProto_Type {
-        match value {
-            1 => FieldDescriptorProto_Type::TYPE_DOUBLE,
-            2 => FieldDescriptorProto_Type::TYPE_FLOAT,
-            3 => FieldDescriptorProto_Type::TYPE_INT64,
-            4 => FieldDescriptorProto_Type::TYPE_UINT64,
-            5 => FieldDescriptorProto_Type::TYPE_INT32,
-            6 => FieldDescriptorProto_Type::TYPE_FIXED64,
-            7 => FieldDescriptorProto_Type::TYPE_FIXED32,
-            8 => FieldDescriptorProto_Type::TYPE_BOOL,
-            9 => FieldDescriptorProto_Type::TYPE_STRING,
-            10 => FieldDescriptorProto_Type::TYPE_GROUP,
-            11 => FieldDescriptorProto_Type::TYPE_MESSAGE,
-            12 => FieldDescriptorProto_Type::TYPE_BYTES,
-            13 => FieldDescriptorProto_Type::TYPE_UINT32,
-            14 => FieldDescriptorProto_Type::TYPE_ENUM,
-            15 => FieldDescriptorProto_Type::TYPE_SFIXED32,
-            16 => FieldDescriptorProto_Type::TYPE_SFIXED64,
-            17 => FieldDescriptorProto_Type::TYPE_SINT32,
-            18 => FieldDescriptorProto_Type::TYPE_SINT64,
-            _ => panic!()
-        }
-    }
-}
 
 impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     fn value(&self) -> i32 {
         *self as i32
+    }
+
+    fn from_i32(value: i32) -> ::std::option::Option<FieldDescriptorProto_Type> {
+        match value {
+            1 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_DOUBLE),
+            2 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_FLOAT),
+            3 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_INT64),
+            4 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_UINT64),
+            5 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_INT32),
+            6 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_FIXED64),
+            7 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_FIXED32),
+            8 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_BOOL),
+            9 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_STRING),
+            10 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_GROUP),
+            11 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_MESSAGE),
+            12 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_BYTES),
+            13 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_UINT32),
+            14 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_ENUM),
+            15 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SFIXED32),
+            16 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SFIXED64),
+            17 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SINT32),
+            18 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SINT64),
+            _ => ::std::option::None
+        }
     }
 
     fn enum_descriptor_static(_: Option<FieldDescriptorProto_Type>) -> &'static ::protobuf::reflect::EnumDescriptor {
@@ -2630,20 +2629,19 @@ pub enum FieldDescriptorProto_Label {
     LABEL_REPEATED = 3,
 }
 
-impl FieldDescriptorProto_Label {
-    pub fn new(value: i32) -> FieldDescriptorProto_Label {
-        match value {
-            1 => FieldDescriptorProto_Label::LABEL_OPTIONAL,
-            2 => FieldDescriptorProto_Label::LABEL_REQUIRED,
-            3 => FieldDescriptorProto_Label::LABEL_REPEATED,
-            _ => panic!()
-        }
-    }
-}
 
 impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     fn value(&self) -> i32 {
         *self as i32
+    }
+
+    fn from_i32(value: i32) -> ::std::option::Option<FieldDescriptorProto_Label> {
+        match value {
+            1 => ::std::option::Some(FieldDescriptorProto_Label::LABEL_OPTIONAL),
+            2 => ::std::option::Some(FieldDescriptorProto_Label::LABEL_REQUIRED),
+            3 => ::std::option::Some(FieldDescriptorProto_Label::LABEL_REPEATED),
+            _ => ::std::option::None
+        }
     }
 
     fn enum_descriptor_static(_: Option<FieldDescriptorProto_Label>) -> &'static ::protobuf::reflect::EnumDescriptor {
@@ -4410,7 +4408,7 @@ impl ::protobuf::Message for FileOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = FileOptions_OptimizeMode::new(try!(is.read_int32()));
+                    let tmp = try!(is.read_enum());
                     self.optimize_for = ::std::option::Some(tmp);
                 },
                 11 => {
@@ -4835,20 +4833,19 @@ pub enum FileOptions_OptimizeMode {
     LITE_RUNTIME = 3,
 }
 
-impl FileOptions_OptimizeMode {
-    pub fn new(value: i32) -> FileOptions_OptimizeMode {
-        match value {
-            1 => FileOptions_OptimizeMode::SPEED,
-            2 => FileOptions_OptimizeMode::CODE_SIZE,
-            3 => FileOptions_OptimizeMode::LITE_RUNTIME,
-            _ => panic!()
-        }
-    }
-}
 
 impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     fn value(&self) -> i32 {
         *self as i32
+    }
+
+    fn from_i32(value: i32) -> ::std::option::Option<FileOptions_OptimizeMode> {
+        match value {
+            1 => ::std::option::Some(FileOptions_OptimizeMode::SPEED),
+            2 => ::std::option::Some(FileOptions_OptimizeMode::CODE_SIZE),
+            3 => ::std::option::Some(FileOptions_OptimizeMode::LITE_RUNTIME),
+            _ => ::std::option::None
+        }
     }
 
     fn enum_descriptor_static(_: Option<FileOptions_OptimizeMode>) -> &'static ::protobuf::reflect::EnumDescriptor {
@@ -5377,7 +5374,7 @@ impl ::protobuf::Message for FieldOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = FieldOptions_CType::new(try!(is.read_int32()));
+                    let tmp = try!(is.read_enum());
                     self.ctype = ::std::option::Some(tmp);
                 },
                 2 => {
@@ -5719,20 +5716,19 @@ pub enum FieldOptions_CType {
     STRING_PIECE = 2,
 }
 
-impl FieldOptions_CType {
-    pub fn new(value: i32) -> FieldOptions_CType {
-        match value {
-            0 => FieldOptions_CType::STRING,
-            1 => FieldOptions_CType::CORD,
-            2 => FieldOptions_CType::STRING_PIECE,
-            _ => panic!()
-        }
-    }
-}
 
 impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     fn value(&self) -> i32 {
         *self as i32
+    }
+
+    fn from_i32(value: i32) -> ::std::option::Option<FieldOptions_CType> {
+        match value {
+            0 => ::std::option::Some(FieldOptions_CType::STRING),
+            1 => ::std::option::Some(FieldOptions_CType::CORD),
+            2 => ::std::option::Some(FieldOptions_CType::STRING_PIECE),
+            _ => ::std::option::None
+        }
     }
 
     fn enum_descriptor_static(_: Option<FieldOptions_CType>) -> &'static ::protobuf::reflect::EnumDescriptor {

@@ -141,6 +141,8 @@ pub fn message_down_cast<'a, M : 'static + Message>(m: &'a Message) -> &'a M {
 pub trait ProtobufEnum : Eq {
     fn value(&self) -> i32;
 
+    fn from_i32(v: i32) -> Option<Self>;
+
     fn descriptor(&self) -> &'static EnumValueDescriptor {
         self.enum_descriptor().value_by_number(self.value())
     }

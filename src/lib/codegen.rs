@@ -227,7 +227,7 @@ fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         FieldDescriptorProto_Type::TYPE_BOOL     => "bool",
         FieldDescriptorProto_Type::TYPE_STRING   => "string",
         FieldDescriptorProto_Type::TYPE_BYTES    => "bytes",
-        FieldDescriptorProto_Type::TYPE_ENUM     |
+        FieldDescriptorProto_Type::TYPE_ENUM     => "enum",
         FieldDescriptorProto_Type::TYPE_GROUP    |
         FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!()
     }
@@ -1010,6 +1010,7 @@ impl<'a> IndentWriter<'a> {
         self.expr_block("unsafe", cb);
     }
 
+    #[allow(dead_code)]
     fn impl_block<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
         self.expr_block(format!("impl {}", name.as_slice()), cb);
     }
@@ -1151,11 +1152,7 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 RepeatMode::Single
             };
 
-        let read_proc0 = match field.field_type {
-            FieldDescriptorProto_Type::TYPE_ENUM => format!("{}::new(try!(is.read_int32()))", field.type_name),
-            t => format!("try!(is.read_{}())", protobuf_name(t)),
-        };
-        let read_proc = read_proc0.as_slice();
+        let read_proc = format!("try!(is.read_{}())", protobuf_name(field.field_type));
 
         match repeat_mode {
             RepeatMode::Single | RepeatMode::RepeatRegular => {
@@ -1173,14 +1170,14 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                     w.write_line("let len = try!(is.read_raw_varint32());");
                     w.write_line("let old_limit = is.push_limit(len);");
                     w.while_block("!try!(is.eof())", |w| {
-                        w.self_field_push(read_proc);
+                        w.self_field_push(read_proc.as_slice());
                     });
                     w.write_line("is.pop_limit(old_limit);");
                 });
                 w.write_line("} else {");
                 w.indented(|w| {
                     w.assert_wire_type(wire_type);
-                    w.self_field_push(read_proc);
+                    w.self_field_push(read_proc.as_slice());
                 });
                 w.write_line("}");
             },
@@ -1774,17 +1771,7 @@ fn write_enum_struct(w: &mut IndentWriter) {
     });
 }
 
-fn write_enum_impl(w: &mut IndentWriter) {
-    w.impl_block(w.en().type_name.as_slice(), |w| {
-        w.pub_fn(format!("new(value: i32) -> {}", w.en().type_name), |w| {
-            w.match_expr("value", |w| {
-                for value in w.en().values.iter() {
-                    w.write_line(format!("{} => {},", value.number(), value.rust_name_outer()));
-                }
-                w.write_line(format!("_ => panic!()"));
-            });
-        });
-    });
+fn write_enum_impl(_w: &mut IndentWriter) {
 }
 
 fn write_enum_impl_enum(w: &mut IndentWriter) {
@@ -1792,6 +1779,16 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
     w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name.as_slice(), |w| {
         w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
+        });
+        w.write_line("");
+        w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", w.en().type_name), |w| {
+            w.match_expr("value", |w| {
+                for value in w.en().values.iter() {
+                    w.write_line(format!("{} => ::std::option::Some({}),",
+                        value.number(), value.rust_name_outer()));
+                }
+                w.write_line(format!("_ => ::std::option::None"));
+            });
         });
         if !en.lite_runtime {
             w.write_line("");
