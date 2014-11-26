@@ -1167,12 +1167,8 @@ fn write_merge_from_field(w: &mut IndentWriter) {
             RepeatMode::RepeatPacked => {
                 w.write_line(format!("if wire_type == ::protobuf::wire_format::{} {{", wire_format::WireTypeLengthDelimited));
                 w.indented(|w| {
-                    w.write_line("let len = try!(is.read_raw_varint32());");
-                    w.write_line("let old_limit = is.push_limit(len);");
-                    w.while_block("!try!(is.eof())", |w| {
-                        w.self_field_push(read_proc.as_slice());
-                    });
-                    w.write_line("is.pop_limit(old_limit);");
+                    w.write_line(format!("try!(is.read_repeated_packed_{}_into(&mut self.{}));",
+                            protobuf_name(field.field_type), field.name));
                 });
                 w.write_line("} else {");
                 w.indented(|w| {

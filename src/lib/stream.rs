@@ -362,6 +362,168 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
+    pub fn read_repeated_packed_double_into(&mut self, target: &mut Vec<f64>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        target.reserve((len / 4) as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_double()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_float_into(&mut self, target: &mut Vec<f32>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        target.reserve((len / 4) as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_float()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_int64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_int64()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_int32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_int32()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_uint64_into(&mut self, target: &mut Vec<u64>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_uint64()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_uint32_into(&mut self, target: &mut Vec<u32>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_uint32()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_sint64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_sint64()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_sint32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_sint32()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_fixed64_into(&mut self, target: &mut Vec<u64>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        target.reserve((len / 8) as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_fixed64()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_fixed32_into(&mut self, target: &mut Vec<u32>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        target.reserve((len / 4) as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_fixed32()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_sfixed64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        target.reserve((len / 8) as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_sfixed64()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_sfixed32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        target.reserve((len / 4) as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_sfixed32()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_bool_into(&mut self, target: &mut Vec<bool>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+
+        // regular bool value is 1-byte size
+        target.reserve(len as uint);
+
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_bool()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    pub fn read_repeated_packed_enum_into<E : ProtobufEnum>(&mut self, target: &mut Vec<E>) -> ProtobufResult<()> {
+        let len = try!(self.read_raw_varint32());
+        let old_limit = self.push_limit(len);
+        while !try!(self.eof()) {
+            target.push(try!(self.read_enum()));
+        }
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
     pub fn read_unknown(&mut self, wire_type: wire_format::WireType) -> ProtobufResult<UnknownValue> {
         match wire_type {
             wire_format::WireTypeVarint => { self.read_raw_varint64().map(|v| UnknownValue::Varint(v)) },

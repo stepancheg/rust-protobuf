@@ -587,12 +587,7 @@ impl ::protobuf::Message for FileDescriptorProto {
                 },
                 10 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = try!(is.read_raw_varint32());
-                        let old_limit = is.push_limit(len);
-                        while !try!(is.eof()) {
-                            self.public_dependency.push(try!(is.read_int32()));
-                        }
-                        is.pop_limit(old_limit);
+                        try!(is.read_repeated_packed_int32_into(&mut self.public_dependency));
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
@@ -602,12 +597,7 @@ impl ::protobuf::Message for FileDescriptorProto {
                 },
                 11 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = try!(is.read_raw_varint32());
-                        let old_limit = is.push_limit(len);
-                        while !try!(is.eof()) {
-                            self.weak_dependency.push(try!(is.read_int32()));
-                        }
-                        is.pop_limit(old_limit);
+                        try!(is.read_repeated_packed_int32_into(&mut self.weak_dependency));
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
@@ -7729,12 +7719,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             match field_number {
                 1 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = try!(is.read_raw_varint32());
-                        let old_limit = is.push_limit(len);
-                        while !try!(is.eof()) {
-                            self.path.push(try!(is.read_int32()));
-                        }
-                        is.pop_limit(old_limit);
+                        try!(is.read_repeated_packed_int32_into(&mut self.path));
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
@@ -7744,12 +7729,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                 },
                 2 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = try!(is.read_raw_varint32());
-                        let old_limit = is.push_limit(len);
-                        while !try!(is.eof()) {
-                            self.span.push(try!(is.read_int32()));
-                        }
-                        is.pop_limit(old_limit);
+                        try!(is.read_repeated_packed_int32_into(&mut self.span));
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));

@@ -252,12 +252,7 @@ impl ::protobuf::Message for TestRepeatedBool {
             match field_number {
                 1 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = try!(is.read_raw_varint32());
-                        let old_limit = is.push_limit(len);
-                        while !try!(is.eof()) {
-                            self.values.push(try!(is.read_bool()));
-                        }
-                        is.pop_limit(old_limit);
+                        try!(is.read_repeated_packed_bool_into(&mut self.values));
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
@@ -438,12 +433,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
             match field_number {
                 1 => {
                     if wire_type == ::protobuf::wire_format::WireTypeLengthDelimited {
-                        let len = try!(is.read_raw_varint32());
-                        let old_limit = is.push_limit(len);
-                        while !try!(is.eof()) {
-                            self.values.push(try!(is.read_int32()));
-                        }
-                        is.pop_limit(old_limit);
+                        try!(is.read_repeated_packed_int32_into(&mut self.values));
                     } else {
                         if wire_type != ::protobuf::wire_format::WireTypeVarint {
                             return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
