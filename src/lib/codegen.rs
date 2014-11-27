@@ -717,7 +717,7 @@ impl EnumValue {
 
 struct IndentWriter<'a> {
     // TODO: add mut
-    writer: &'a Writer + 'a,
+    writer: &'a (Writer + 'a),
     indent: String,
     msg: Option<&'a MessageInfo<'a>>,
     field: Option<&'a Field>,
