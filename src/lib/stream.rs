@@ -89,7 +89,7 @@ pub struct CodedInputStream<'a> {
     buffer: MaybeOwnedSlice<'a, u8>,
     buffer_size: u32,
     buffer_pos: u32,
-    reader: Option<&'a mut Reader + 'a>,
+    reader: Option<&'a mut (Reader + 'a)>,
     total_bytes_retired: u32,
     current_limit: u32,
     buffer_size_after_limit: u32,
@@ -625,7 +625,7 @@ pub trait WithCodedOutputStream {
             -> ProtobufResult<T>;
 }
 
-impl<'a> WithCodedOutputStream for &'a mut Writer + 'a {
+impl<'a> WithCodedOutputStream for &'a mut (Writer + 'a) {
     fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
             -> ProtobufResult<T>
     {
@@ -661,7 +661,7 @@ pub trait WithCodedInputStream {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T;
 }
 
-impl<'a> WithCodedInputStream for &'a mut Reader + 'a {
+impl<'a> WithCodedInputStream for &'a mut (Reader + 'a) {
     fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
         let mut is = CodedInputStream::new(self);
         let r = cb(&mut is);
@@ -687,7 +687,7 @@ pub struct CodedOutputStream<'a> {
     buffer: Vec<u8>,
     // within buffer
     position: u32,
-    writer: Option<&'a mut Writer + 'a>,
+    writer: Option<&'a mut (Writer + 'a)>,
 }
 
 impl<'a> CodedOutputStream<'a> {

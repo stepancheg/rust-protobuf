@@ -143,11 +143,11 @@ trait FieldAccessorGeneric {
 }
 
 struct FieldAccessorGenericImpl<M> {
-    accessor: &'static FieldAccessor<M> + 'static
+    accessor: &'static (FieldAccessor<M> + 'static)
 }
 
 impl<M : Message> FieldAccessorGenericImpl<M> {
-    fn new(a: &'static FieldAccessor<M> + 'static) -> FieldAccessorGenericImpl<M> {
+    fn new(a: &'static (FieldAccessor<M> + 'static)) -> FieldAccessorGenericImpl<M> {
         FieldAccessorGenericImpl {
             accessor: a
         }
@@ -258,7 +258,7 @@ pub struct FieldDescriptor {
 }
 
 impl FieldDescriptor {
-    fn new<M : 'static + Message>(a: &'static FieldAccessor<M> + 'static, proto: &'static FieldDescriptorProto)
+    fn new<M : 'static + Message>(a: &'static (FieldAccessor<M> + 'static), proto: &'static FieldDescriptorProto)
         -> FieldDescriptor
     {
         assert_eq!(proto.get_name(), a.name());
@@ -425,7 +425,7 @@ impl MessageDescriptor {
 
     pub fn new<M : 'static + Message>(
             rust_name: &'static str,
-            fields: Vec<&'static FieldAccessor<M> + 'static>,
+            fields: Vec<&'static (FieldAccessor<M> + 'static)>,
             file: &'static FileDescriptorProto
         ) -> MessageDescriptor
     {
