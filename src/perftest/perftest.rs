@@ -47,7 +47,7 @@ fn run_test<M : Message>(name: &str, data: &[M]) {
         }
     });
 
-    let buf = writer.unwrap();
+    let buf = writer.into_inner();
 
     let read_data = measure_and_print(format!("{}: read", name).as_slice(), random_data.len() as u64, || {
         let mut r = Vec::new();
