@@ -1,0 +1,6 @@
+import "test_import_imported.proto";
+
+message ContainsImported {
+    optional ImportedMessage imported_message = 1;
+    optional ImportedEnum imported_enum = 2;
+}

@@ -1887,10 +1887,16 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("use protobuf::Message as Message_imported_for_functions;");
             w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
             for dep in file.get_dependency().iter() {
+                // TODO: should use absolute paths in file instead of global uses
                 for message in files_map[dep.as_slice()].get_message_type().iter() {
                     w.write_line(format!("use super::{}::{};",
                         proto_path_to_rust_base(dep.as_slice()),
                         message.get_name()));
+                }
+                for en in files_map[dep.as_slice()].get_enum_type().iter() {
+                    w.write_line(format!("use super::{}::{};",
+                        proto_path_to_rust_base(dep.as_slice()),
+                        en.get_name()));
                 }
             }
 
