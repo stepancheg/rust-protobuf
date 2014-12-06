@@ -241,10 +241,20 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorRequest_file_to_generate_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorRequest_parameter_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorRequest_proto_file_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_string_accessor(
+                    "file_to_generate",
+                    CodeGeneratorRequest::get_file_to_generate,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "parameter",
+                    CodeGeneratorRequest::has_parameter,
+                    CodeGeneratorRequest::get_parameter,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "proto_file",
+                    CodeGeneratorRequest::get_proto_file,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
                     "CodeGeneratorRequest",
                     fields,
@@ -280,61 +290,6 @@ impl ::std::cmp::PartialEq for CodeGeneratorRequest {
 impl ::std::fmt::Show for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorRequest_file_to_generate_acc_type;
-static CodeGeneratorRequest_file_to_generate_acc: CodeGeneratorRequest_file_to_generate_acc_type = CodeGeneratorRequest_file_to_generate_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorRequest_file_to_generate_acc_type {
-    fn name(&self) -> &'static str {
-        "file_to_generate"
-    }
-
-    fn len_field(&self, m: &CodeGeneratorRequest) -> uint {
-        m.get_file_to_generate().len()
-    }
-
-    fn get_rep_str<'a>(&self, m: &'a CodeGeneratorRequest) -> &'a [::std::string::String] {
-        m.get_file_to_generate()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorRequest_parameter_acc_type;
-static CodeGeneratorRequest_parameter_acc: CodeGeneratorRequest_parameter_acc_type = CodeGeneratorRequest_parameter_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorRequest_parameter_acc_type {
-    fn name(&self) -> &'static str {
-        "parameter"
-    }
-
-    fn has_field(&self, m: &CodeGeneratorRequest) -> bool {
-        m.has_parameter()
-    }
-
-    fn get_str<'a>(&self, m: &'a CodeGeneratorRequest) -> &'a str {
-        m.get_parameter()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorRequest_proto_file_acc_type;
-static CodeGeneratorRequest_proto_file_acc: CodeGeneratorRequest_proto_file_acc_type = CodeGeneratorRequest_proto_file_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorRequest> for CodeGeneratorRequest_proto_file_acc_type {
-    fn name(&self) -> &'static str {
-        "proto_file"
-    }
-
-    fn len_field(&self, m: &CodeGeneratorRequest) -> uint {
-        m.get_proto_file().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a CodeGeneratorRequest, index: uint) -> &'a ::protobuf::Message {
-        &m.get_proto_file()[index] as &'a ::protobuf::Message
     }
 }
 
@@ -514,9 +469,16 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_error_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>) });
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_file_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "error",
+                    CodeGeneratorResponse::has_error,
+                    CodeGeneratorResponse::get_error,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "file",
+                    CodeGeneratorResponse::get_file,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
                     "CodeGeneratorResponse",
                     fields,
@@ -550,43 +512,6 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse {
 impl ::std::fmt::Show for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorResponse_error_acc_type;
-static CodeGeneratorResponse_error_acc: CodeGeneratorResponse_error_acc_type = CodeGeneratorResponse_error_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGeneratorResponse_error_acc_type {
-    fn name(&self) -> &'static str {
-        "error"
-    }
-
-    fn has_field(&self, m: &CodeGeneratorResponse) -> bool {
-        m.has_error()
-    }
-
-    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse) -> &'a str {
-        m.get_error()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorResponse_file_acc_type;
-static CodeGeneratorResponse_file_acc: CodeGeneratorResponse_file_acc_type = CodeGeneratorResponse_file_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse> for CodeGeneratorResponse_file_acc_type {
-    fn name(&self) -> &'static str {
-        "file"
-    }
-
-    fn len_field(&self, m: &CodeGeneratorResponse) -> uint {
-        m.get_file().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a CodeGeneratorResponse, index: uint) -> &'a ::protobuf::Message {
-        &m.get_file()[index] as &'a ::protobuf::Message
     }
 }
 
@@ -825,10 +750,22 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_File_name_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_File_insertion_point_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
-                fields.push(unsafe { ::std::mem::transmute(&CodeGeneratorResponse_File_content_acc as &'static ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "name",
+                    CodeGeneratorResponse_File::has_name,
+                    CodeGeneratorResponse_File::get_name,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "insertion_point",
+                    CodeGeneratorResponse_File::has_insertion_point,
+                    CodeGeneratorResponse_File::get_insertion_point,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "content",
+                    CodeGeneratorResponse_File::has_content,
+                    CodeGeneratorResponse_File::get_content,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
                     "CodeGeneratorResponse_File",
                     fields,
@@ -864,61 +801,6 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
 impl ::std::fmt::Show for CodeGeneratorResponse_File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorResponse_File_name_acc_type;
-static CodeGeneratorResponse_File_name_acc: CodeGeneratorResponse_File_name_acc_type = CodeGeneratorResponse_File_name_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File> for CodeGeneratorResponse_File_name_acc_type {
-    fn name(&self) -> &'static str {
-        "name"
-    }
-
-    fn has_field(&self, m: &CodeGeneratorResponse_File) -> bool {
-        m.has_name()
-    }
-
-    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse_File) -> &'a str {
-        m.get_name()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorResponse_File_insertion_point_acc_type;
-static CodeGeneratorResponse_File_insertion_point_acc: CodeGeneratorResponse_File_insertion_point_acc_type = CodeGeneratorResponse_File_insertion_point_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File> for CodeGeneratorResponse_File_insertion_point_acc_type {
-    fn name(&self) -> &'static str {
-        "insertion_point"
-    }
-
-    fn has_field(&self, m: &CodeGeneratorResponse_File) -> bool {
-        m.has_insertion_point()
-    }
-
-    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse_File) -> &'a str {
-        m.get_insertion_point()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct CodeGeneratorResponse_File_content_acc_type;
-static CodeGeneratorResponse_File_content_acc: CodeGeneratorResponse_File_content_acc_type = CodeGeneratorResponse_File_content_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<CodeGeneratorResponse_File> for CodeGeneratorResponse_File_content_acc_type {
-    fn name(&self) -> &'static str {
-        "content"
-    }
-
-    fn has_field(&self, m: &CodeGeneratorResponse_File) -> bool {
-        m.has_content()
-    }
-
-    fn get_str<'a>(&self, m: &'a CodeGeneratorResponse_File) -> &'a str {
-        m.get_content()
     }
 }
 

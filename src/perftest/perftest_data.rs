@@ -124,8 +124,12 @@ impl ::protobuf::Message for Test1 {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<Test1>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&Test1_value_acc as &'static ::protobuf::reflect::FieldAccessor<Test1>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_singular_i32_accessor(
+                    "value",
+                    Test1::has_value,
+                    Test1::get_value,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<Test1>(
                     "Test1",
                     fields,
@@ -157,25 +161,6 @@ impl ::std::cmp::PartialEq for Test1 {
 impl ::std::fmt::Show for Test1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct Test1_value_acc_type;
-static Test1_value_acc: Test1_value_acc_type = Test1_value_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<Test1> for Test1_value_acc_type {
-    fn name(&self) -> &'static str {
-        "value"
-    }
-
-    fn has_field(&self, m: &Test1) -> bool {
-        m.has_value()
-    }
-
-    fn get_i32(&self, m: &Test1) -> i32 {
-        m.get_value()
     }
 }
 
@@ -305,8 +290,11 @@ impl ::protobuf::Message for TestRepeatedBool {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestRepeatedBool>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&TestRepeatedBool_values_acc as &'static ::protobuf::reflect::FieldAccessor<TestRepeatedBool>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_bool_accessor(
+                    "values",
+                    TestRepeatedBool::get_values,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<TestRepeatedBool>(
                     "TestRepeatedBool",
                     fields,
@@ -338,25 +326,6 @@ impl ::std::cmp::PartialEq for TestRepeatedBool {
 impl ::std::fmt::Show for TestRepeatedBool {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct TestRepeatedBool_values_acc_type;
-static TestRepeatedBool_values_acc: TestRepeatedBool_values_acc_type = TestRepeatedBool_values_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestRepeatedBool> for TestRepeatedBool_values_acc_type {
-    fn name(&self) -> &'static str {
-        "values"
-    }
-
-    fn len_field(&self, m: &TestRepeatedBool) -> uint {
-        m.get_values().len()
-    }
-
-    fn get_rep_bool<'a>(&self, m: &'a TestRepeatedBool) -> &'a [bool] {
-        m.get_values()
     }
 }
 
@@ -493,8 +462,11 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestRepeatedPackedInt32>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&TestRepeatedPackedInt32_values_acc as &'static ::protobuf::reflect::FieldAccessor<TestRepeatedPackedInt32>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_i32_accessor(
+                    "values",
+                    TestRepeatedPackedInt32::get_values,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<TestRepeatedPackedInt32>(
                     "TestRepeatedPackedInt32",
                     fields,
@@ -526,25 +498,6 @@ impl ::std::cmp::PartialEq for TestRepeatedPackedInt32 {
 impl ::std::fmt::Show for TestRepeatedPackedInt32 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct TestRepeatedPackedInt32_values_acc_type;
-static TestRepeatedPackedInt32_values_acc: TestRepeatedPackedInt32_values_acc_type = TestRepeatedPackedInt32_values_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestRepeatedPackedInt32> for TestRepeatedPackedInt32_values_acc_type {
-    fn name(&self) -> &'static str {
-        "values"
-    }
-
-    fn len_field(&self, m: &TestRepeatedPackedInt32) -> uint {
-        m.get_values().len()
-    }
-
-    fn get_rep_i32<'a>(&self, m: &'a TestRepeatedPackedInt32) -> &'a [i32] {
-        m.get_values()
     }
 }
 
@@ -759,10 +712,19 @@ impl ::protobuf::Message for TestRepeatedMessages {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestRepeatedMessages>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&TestRepeatedMessages_messages1_acc as &'static ::protobuf::reflect::FieldAccessor<TestRepeatedMessages>) });
-                fields.push(unsafe { ::std::mem::transmute(&TestRepeatedMessages_messages2_acc as &'static ::protobuf::reflect::FieldAccessor<TestRepeatedMessages>) });
-                fields.push(unsafe { ::std::mem::transmute(&TestRepeatedMessages_messages3_acc as &'static ::protobuf::reflect::FieldAccessor<TestRepeatedMessages>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "messages1",
+                    TestRepeatedMessages::get_messages1,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "messages2",
+                    TestRepeatedMessages::get_messages2,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "messages3",
+                    TestRepeatedMessages::get_messages3,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<TestRepeatedMessages>(
                     "TestRepeatedMessages",
                     fields,
@@ -798,61 +760,6 @@ impl ::std::cmp::PartialEq for TestRepeatedMessages {
 impl ::std::fmt::Show for TestRepeatedMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct TestRepeatedMessages_messages1_acc_type;
-static TestRepeatedMessages_messages1_acc: TestRepeatedMessages_messages1_acc_type = TestRepeatedMessages_messages1_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestRepeatedMessages> for TestRepeatedMessages_messages1_acc_type {
-    fn name(&self) -> &'static str {
-        "messages1"
-    }
-
-    fn len_field(&self, m: &TestRepeatedMessages) -> uint {
-        m.get_messages1().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a TestRepeatedMessages, index: uint) -> &'a ::protobuf::Message {
-        &m.get_messages1()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct TestRepeatedMessages_messages2_acc_type;
-static TestRepeatedMessages_messages2_acc: TestRepeatedMessages_messages2_acc_type = TestRepeatedMessages_messages2_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestRepeatedMessages> for TestRepeatedMessages_messages2_acc_type {
-    fn name(&self) -> &'static str {
-        "messages2"
-    }
-
-    fn len_field(&self, m: &TestRepeatedMessages) -> uint {
-        m.get_messages2().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a TestRepeatedMessages, index: uint) -> &'a ::protobuf::Message {
-        &m.get_messages2()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct TestRepeatedMessages_messages3_acc_type;
-static TestRepeatedMessages_messages3_acc: TestRepeatedMessages_messages3_acc_type = TestRepeatedMessages_messages3_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestRepeatedMessages> for TestRepeatedMessages_messages3_acc_type {
-    fn name(&self) -> &'static str {
-        "messages3"
-    }
-
-    fn len_field(&self, m: &TestRepeatedMessages) -> uint {
-        m.get_messages3().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a TestRepeatedMessages, index: uint) -> &'a ::protobuf::Message {
-        &m.get_messages3()[index] as &'a ::protobuf::Message
     }
 }
 
@@ -1091,10 +998,22 @@ impl ::protobuf::Message for TestOptionalMessages {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestOptionalMessages>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&TestOptionalMessages_message1_acc as &'static ::protobuf::reflect::FieldAccessor<TestOptionalMessages>) });
-                fields.push(unsafe { ::std::mem::transmute(&TestOptionalMessages_message2_acc as &'static ::protobuf::reflect::FieldAccessor<TestOptionalMessages>) });
-                fields.push(unsafe { ::std::mem::transmute(&TestOptionalMessages_message3_acc as &'static ::protobuf::reflect::FieldAccessor<TestOptionalMessages>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
+                    "message1",
+                    TestOptionalMessages::has_message1,
+                    TestOptionalMessages::get_message1,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
+                    "message2",
+                    TestOptionalMessages::has_message2,
+                    TestOptionalMessages::get_message2,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
+                    "message3",
+                    TestOptionalMessages::has_message3,
+                    TestOptionalMessages::get_message3,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<TestOptionalMessages>(
                     "TestOptionalMessages",
                     fields,
@@ -1130,61 +1049,6 @@ impl ::std::cmp::PartialEq for TestOptionalMessages {
 impl ::std::fmt::Show for TestOptionalMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct TestOptionalMessages_message1_acc_type;
-static TestOptionalMessages_message1_acc: TestOptionalMessages_message1_acc_type = TestOptionalMessages_message1_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestOptionalMessages> for TestOptionalMessages_message1_acc_type {
-    fn name(&self) -> &'static str {
-        "message1"
-    }
-
-    fn has_field(&self, m: &TestOptionalMessages) -> bool {
-        m.has_message1()
-    }
-
-    fn get_message<'a>(&self, m: &'a TestOptionalMessages) -> &'a ::protobuf::Message {
-        m.get_message1() as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct TestOptionalMessages_message2_acc_type;
-static TestOptionalMessages_message2_acc: TestOptionalMessages_message2_acc_type = TestOptionalMessages_message2_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestOptionalMessages> for TestOptionalMessages_message2_acc_type {
-    fn name(&self) -> &'static str {
-        "message2"
-    }
-
-    fn has_field(&self, m: &TestOptionalMessages) -> bool {
-        m.has_message2()
-    }
-
-    fn get_message<'a>(&self, m: &'a TestOptionalMessages) -> &'a ::protobuf::Message {
-        m.get_message2() as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct TestOptionalMessages_message3_acc_type;
-static TestOptionalMessages_message3_acc: TestOptionalMessages_message3_acc_type = TestOptionalMessages_message3_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestOptionalMessages> for TestOptionalMessages_message3_acc_type {
-    fn name(&self) -> &'static str {
-        "message3"
-    }
-
-    fn has_field(&self, m: &TestOptionalMessages) -> bool {
-        m.has_message3()
-    }
-
-    fn get_message<'a>(&self, m: &'a TestOptionalMessages) -> &'a ::protobuf::Message {
-        m.get_message3() as &'a ::protobuf::Message
     }
 }
 
@@ -1423,10 +1287,22 @@ impl ::protobuf::Message for TestStrings {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<TestStrings>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&TestStrings_s1_acc as &'static ::protobuf::reflect::FieldAccessor<TestStrings>) });
-                fields.push(unsafe { ::std::mem::transmute(&TestStrings_s2_acc as &'static ::protobuf::reflect::FieldAccessor<TestStrings>) });
-                fields.push(unsafe { ::std::mem::transmute(&TestStrings_s3_acc as &'static ::protobuf::reflect::FieldAccessor<TestStrings>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "s1",
+                    TestStrings::has_s1,
+                    TestStrings::get_s1,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "s2",
+                    TestStrings::has_s2,
+                    TestStrings::get_s2,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                    "s3",
+                    TestStrings::has_s3,
+                    TestStrings::get_s3,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<TestStrings>(
                     "TestStrings",
                     fields,
@@ -1462,61 +1338,6 @@ impl ::std::cmp::PartialEq for TestStrings {
 impl ::std::fmt::Show for TestStrings {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct TestStrings_s1_acc_type;
-static TestStrings_s1_acc: TestStrings_s1_acc_type = TestStrings_s1_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestStrings> for TestStrings_s1_acc_type {
-    fn name(&self) -> &'static str {
-        "s1"
-    }
-
-    fn has_field(&self, m: &TestStrings) -> bool {
-        m.has_s1()
-    }
-
-    fn get_str<'a>(&self, m: &'a TestStrings) -> &'a str {
-        m.get_s1()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct TestStrings_s2_acc_type;
-static TestStrings_s2_acc: TestStrings_s2_acc_type = TestStrings_s2_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestStrings> for TestStrings_s2_acc_type {
-    fn name(&self) -> &'static str {
-        "s2"
-    }
-
-    fn has_field(&self, m: &TestStrings) -> bool {
-        m.has_s2()
-    }
-
-    fn get_str<'a>(&self, m: &'a TestStrings) -> &'a str {
-        m.get_s2()
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct TestStrings_s3_acc_type;
-static TestStrings_s3_acc: TestStrings_s3_acc_type = TestStrings_s3_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<TestStrings> for TestStrings_s3_acc_type {
-    fn name(&self) -> &'static str {
-        "s3"
-    }
-
-    fn has_field(&self, m: &TestStrings) -> bool {
-        m.has_s3()
-    }
-
-    fn get_str<'a>(&self, m: &'a TestStrings) -> &'a str {
-        m.get_s3()
     }
 }
 
@@ -1860,13 +1681,31 @@ impl ::protobuf::Message for PerftestData {
         };
         unsafe {
             descriptor.get(|| {
-                let mut fields: ::std::vec::Vec<&'static ::protobuf::reflect::FieldAccessor<PerftestData>> = ::std::vec::Vec::new();
-                fields.push(unsafe { ::std::mem::transmute(&PerftestData_test1_acc as &'static ::protobuf::reflect::FieldAccessor<PerftestData>) });
-                fields.push(unsafe { ::std::mem::transmute(&PerftestData_test_repeated_bool_acc as &'static ::protobuf::reflect::FieldAccessor<PerftestData>) });
-                fields.push(unsafe { ::std::mem::transmute(&PerftestData_test_repeated_messages_acc as &'static ::protobuf::reflect::FieldAccessor<PerftestData>) });
-                fields.push(unsafe { ::std::mem::transmute(&PerftestData_test_optional_messages_acc as &'static ::protobuf::reflect::FieldAccessor<PerftestData>) });
-                fields.push(unsafe { ::std::mem::transmute(&PerftestData_test_strings_acc as &'static ::protobuf::reflect::FieldAccessor<PerftestData>) });
-                fields.push(unsafe { ::std::mem::transmute(&PerftestData_test_repeated_packed_int32_acc as &'static ::protobuf::reflect::FieldAccessor<PerftestData>) });
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "test1",
+                    PerftestData::get_test1,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "test_repeated_bool",
+                    PerftestData::get_test_repeated_bool,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "test_repeated_messages",
+                    PerftestData::get_test_repeated_messages,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "test_optional_messages",
+                    PerftestData::get_test_optional_messages,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "test_strings",
+                    PerftestData::get_test_strings,
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                    "test_repeated_packed_int32",
+                    PerftestData::get_test_repeated_packed_int32,
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<PerftestData>(
                     "PerftestData",
                     fields,
@@ -1908,115 +1747,6 @@ impl ::std::cmp::PartialEq for PerftestData {
 impl ::std::fmt::Show for PerftestData {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.fmt_impl(f)
-    }
-}
-
-
-#[allow(non_camel_case_types)]
-struct PerftestData_test1_acc_type;
-static PerftestData_test1_acc: PerftestData_test1_acc_type = PerftestData_test1_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<PerftestData> for PerftestData_test1_acc_type {
-    fn name(&self) -> &'static str {
-        "test1"
-    }
-
-    fn len_field(&self, m: &PerftestData) -> uint {
-        m.get_test1().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a PerftestData, index: uint) -> &'a ::protobuf::Message {
-        &m.get_test1()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct PerftestData_test_repeated_bool_acc_type;
-static PerftestData_test_repeated_bool_acc: PerftestData_test_repeated_bool_acc_type = PerftestData_test_repeated_bool_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<PerftestData> for PerftestData_test_repeated_bool_acc_type {
-    fn name(&self) -> &'static str {
-        "test_repeated_bool"
-    }
-
-    fn len_field(&self, m: &PerftestData) -> uint {
-        m.get_test_repeated_bool().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a PerftestData, index: uint) -> &'a ::protobuf::Message {
-        &m.get_test_repeated_bool()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct PerftestData_test_repeated_messages_acc_type;
-static PerftestData_test_repeated_messages_acc: PerftestData_test_repeated_messages_acc_type = PerftestData_test_repeated_messages_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<PerftestData> for PerftestData_test_repeated_messages_acc_type {
-    fn name(&self) -> &'static str {
-        "test_repeated_messages"
-    }
-
-    fn len_field(&self, m: &PerftestData) -> uint {
-        m.get_test_repeated_messages().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a PerftestData, index: uint) -> &'a ::protobuf::Message {
-        &m.get_test_repeated_messages()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct PerftestData_test_optional_messages_acc_type;
-static PerftestData_test_optional_messages_acc: PerftestData_test_optional_messages_acc_type = PerftestData_test_optional_messages_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<PerftestData> for PerftestData_test_optional_messages_acc_type {
-    fn name(&self) -> &'static str {
-        "test_optional_messages"
-    }
-
-    fn len_field(&self, m: &PerftestData) -> uint {
-        m.get_test_optional_messages().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a PerftestData, index: uint) -> &'a ::protobuf::Message {
-        &m.get_test_optional_messages()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct PerftestData_test_strings_acc_type;
-static PerftestData_test_strings_acc: PerftestData_test_strings_acc_type = PerftestData_test_strings_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<PerftestData> for PerftestData_test_strings_acc_type {
-    fn name(&self) -> &'static str {
-        "test_strings"
-    }
-
-    fn len_field(&self, m: &PerftestData) -> uint {
-        m.get_test_strings().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a PerftestData, index: uint) -> &'a ::protobuf::Message {
-        &m.get_test_strings()[index] as &'a ::protobuf::Message
-    }
-}
-
-#[allow(non_camel_case_types)]
-struct PerftestData_test_repeated_packed_int32_acc_type;
-static PerftestData_test_repeated_packed_int32_acc: PerftestData_test_repeated_packed_int32_acc_type = PerftestData_test_repeated_packed_int32_acc_type;
-
-impl ::protobuf::reflect::FieldAccessor<PerftestData> for PerftestData_test_repeated_packed_int32_acc_type {
-    fn name(&self) -> &'static str {
-        "test_repeated_packed_int32"
-    }
-
-    fn len_field(&self, m: &PerftestData) -> uint {
-        m.get_test_repeated_packed_int32().len()
-    }
-
-    fn get_rep_message_item<'a>(&self, m: &'a PerftestData, index: uint) -> &'a ::protobuf::Message {
-        &m.get_test_repeated_packed_int32()[index] as &'a ::protobuf::Message
     }
 }
 

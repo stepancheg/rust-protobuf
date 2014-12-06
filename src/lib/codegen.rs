@@ -61,6 +61,16 @@ impl fmt::Show for RustType {
 }
 
 impl RustType {
+    fn is_primitive(&self) -> bool {
+        match *self {
+            RustType::Signed(..)   |
+            RustType::Unsigned(..) |
+            RustType::Float(..)    |
+            RustType::Bool         => true,
+            _                      => false,
+        }
+    }
+
     fn is_ref(&self) -> bool {
         match *self {
             RustType::Ref(..) => true,
@@ -609,6 +619,34 @@ impl Field {
             field_type_protobuf_name(&self.proto_field),
             self.proto_field.get_name(),
             self.proto_field.get_number())
+    }
+
+    // name of function in protobuf::reflect::accessor
+    // that generates accessor for this field
+    fn make_accessor_fn(&self) -> String {
+        let repeated_or_signular = match self.repeated {
+            true  => "repeated",
+            false => "singular",
+        };
+        let suffix = match &self.type_name {
+            t if t.is_primitive()                     => t.to_string(),
+            &RustType::String                         => "string".to_string(),
+            &RustType::Vec(box RustType::Unsigned(8)) => "bytes".to_string(),
+            &RustType::Enum(..)                       => "enum".to_string(),
+            &RustType::Message(..)                    => "message".to_string(),
+            t => panic!("unexpected field type: {}", t),
+        };
+        format!("make_{}_{}_accessor", repeated_or_signular, suffix)
+    }
+
+    // accessor function function params
+    fn make_accessor_fn_fn_params(&self) -> Vec<&'static str> {
+        let mut r = Vec::new();
+        if !self.repeated {
+            r.push("has");
+        }
+        r.push("get");
+        r
     }
 }
 
@@ -1530,15 +1568,20 @@ fn write_message_descriptor_static(w: &mut IndentWriter) {
     w.allow(&["unused_unsafe", "unused_mut"]);
     w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
         w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
-            let vec_type_param = format!(
-                    "&'static ::protobuf::reflect::FieldAccessor<{}>",
-                    msg.type_name);
-            w.write_line(format!("let mut fields: ::std::vec::Vec<{}> = ::std::vec::Vec::new();", vec_type_param));
+            w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
             for field in msg.fields.iter() {
-                let acc_name = format!("{}_{}_acc", msg.type_name, field.name);
-                // TODO: transmute is because of https://github.com/mozilla/rust/issues/13887
-                w.write_line(format!("fields.push(unsafe {{ ::std::mem::transmute(&{} as &'static ::protobuf::reflect::FieldAccessor<{}>) }});",
-                        acc_name, msg.type_name));
+                w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
+                w.indented(|w| {
+                    w.write_line(format!("\"{}\",", field.name));
+                    for f in field.make_accessor_fn_fn_params().iter() {
+                        w.write_line(format!("{}::{}_{},",
+                                msg.type_name,
+                                f,
+                                field.name,
+                            ));
+                    }
+                });
+                w.write_line("));");
             }
             w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
             w.indented(|w| {
@@ -1596,116 +1639,6 @@ fn write_message_impl_show(w: &mut IndentWriter) {
     });
 }
 
-fn write_message_descriptor_field(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    let field = w.field.unwrap();
-    w.allow(&["non_camel_case_types"]);
-    let accessor_name = format!("{}_{}_acc", msg.type_name, field.name);
-    let accessor_type_name = accessor_name + "_type";
-    w.write_line(format!("struct {};", accessor_type_name));
-    w.write_line(format!("static {}: {} = {};", accessor_name, accessor_type_name, accessor_type_name));
-    w.write_line("");
-    w.impl_for_block(
-            format!("::protobuf::reflect::FieldAccessor<{}>", msg.type_name), accessor_type_name,
-    |w| {
-        w.def_fn("name(&self) -> &'static str", |w| {
-            w.write_line(format!("\"{}\"", field.name));
-        });
-
-        w.write_line("");
-        if field.repeated {
-            w.def_fn(format!("len_field(&self, m: &{}) -> uint", msg.type_name), |w| {
-                w.write_line(format!("m.get_{}().len()", field.name));
-            });
-        } else {
-            w.def_fn(format!("has_field(&self, m: &{}) -> bool", msg.type_name), |w| {
-                w.write_line(format!("m.has_{}()", field.name));
-            });
-        }
-
-        let name_suffix = match field.field_type {
-            FieldDescriptorProto_Type::TYPE_MESSAGE => "message".to_string(),
-            FieldDescriptorProto_Type::TYPE_ENUM    => "enum".to_string(),
-            FieldDescriptorProto_Type::TYPE_STRING  => "str".to_string(),
-            FieldDescriptorProto_Type::TYPE_BYTES   => "bytes".to_string(),
-            _ => field.type_name.to_string(),
-        };
-
-        w.write_line("");
-        if field.repeated {
-            match field.field_type {
-                FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                    w.def_fn(format!("get_rep_message_item<'a>(&self, m: &'a {}, index: uint) -> &'a ::protobuf::Message",
-                            msg.type_name),
-                    |w| {
-                        w.write_line(format!("&m.get_{}()[index] as &'a ::protobuf::Message", field.name));
-                    });
-                },
-                FieldDescriptorProto_Type::TYPE_ENUM => {
-                    w.def_fn(format!("get_rep_enum_item<'a>(&self, m: &{}, index: uint) -> &'static ::protobuf::reflect::EnumValueDescriptor",
-                            msg.type_name),
-                    |w| {
-                        w.write_line(format!("m.get_{}()[index].descriptor()", field.name));
-                    });
-                },
-                _ => {
-                    w.def_fn(format!("get_rep_{}<'a>(&self, m: &'a {}) -> {}",
-                            name_suffix,
-                            msg.type_name,
-                            w.field().get_xxx_return_type().ref_str("a")),
-                    |w| {
-                        w.write_line(format!("m.get_{}()", field.name));
-                    });
-                },
-            };
-        } else {
-            let get_xxx_return_type = w.field().get_xxx_return_type();
-            let (lt_decl, lt_param) = match get_xxx_return_type.is_ref() {
-                true  => ("<'a>", "'a "),
-                false => ("", ""),
-            };
-            let return_type_str = get_xxx_return_type.ref_str_safe("a");
-            match field.field_type {
-                FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                    w.def_fn(format!("get_message<'a>(&self, m: &'a {}) -> &'a ::protobuf::Message",
-                            msg.type_name),
-                    |w| {
-                        w.write_line(format!("m.get_{}() as &'a ::protobuf::Message", field.name));
-                    });
-                },
-                FieldDescriptorProto_Type::TYPE_ENUM => {
-                    w.def_fn(format!("get_enum<'a>(&self, m: &{}) -> &'static ::protobuf::reflect::EnumValueDescriptor",
-                            msg.type_name),
-                    |w| {
-                        w.write_line(format!("m.get_{}().descriptor()", field.name));
-                    });
-                },
-                _ => {
-                    w.def_fn(format!("get_{}{}(&self, m: &{}{}) -> {}",
-                            name_suffix,
-                            lt_decl,
-                            lt_param,
-                            msg.type_name,
-                            return_type_str),
-                    |w| {
-                        w.write_line(format!("m.get_{}()", field.name));
-                    });
-                },
-            };
-        }
-    });
-}
-
-fn write_message_descriptor(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    for field in msg.fields.iter() {
-        w.bind_field(field, |w| {
-            w.write_line("");
-            write_message_descriptor_field(w);
-        });
-    }
-}
-
 fn write_message_impl_clear(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.impl_for_block("::protobuf::Clear", msg.type_name.as_slice(), |w| {
@@ -1746,8 +1679,6 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
         if !msg.lite_runtime {
             w.write_line("");
             write_message_impl_show(w);
-            w.write_line("");
-            write_message_descriptor(w);
         }
 
         let mut nested_prefix = msg.type_name.to_string();

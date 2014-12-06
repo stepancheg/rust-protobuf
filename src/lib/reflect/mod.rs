@@ -1,7 +1,8 @@
-use core::message_down_cast;
+use std::collections::HashMap;
+use std::default::Default;
+
 use core::Message;
 use core::ProtobufEnum;
-use std::default::Default;
 use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::FieldDescriptorProto;
@@ -10,261 +11,25 @@ use descriptor::EnumValueDescriptorProto;
 use descriptor::FieldDescriptorProto_Label;
 use descriptorx::find_enum_by_rust_name;
 use descriptorx::find_message_by_rust_name;
-use std::collections::HashMap;
+use reflect::accessor::FieldAccessor;
 
 
-/// this trait should not be used directly, use `FieldDescriptor` instead
-pub trait FieldAccessor<M : Message> {
-    fn name(&self) -> &'static str;
+pub mod accessor;
 
-    fn has_field(&self, _m: &M) -> bool {
-        panic!();
-    }
-
-    fn len_field(&self, _m: &M) -> uint {
-        panic!();
-    }
-
-    fn get_message<'a>(&self, _m: &'a M) -> &'a Message {
-        panic!();
-    }
-
-    fn get_rep_message_item<'a>(&self, _m: &'a M, _index: uint) -> &'a Message {
-        panic!();
-    }
-
-    fn get_enum(&self, _m: &M) -> &'static EnumValueDescriptor {
-        panic!();
-    }
-
-    fn get_rep_enum_item(&self, _m: &M, _index: uint) -> &'static EnumValueDescriptor {
-        panic!();
-    }
-
-    fn get_str<'a>(&self, _m: &'a M) -> &'a str {
-        panic!();
-    }
-
-    fn get_rep_str<'a>(&self, _m: &'a M) -> &'a [String] {
-        panic!();
-    }
-
-    fn get_bytes<'a>(&self, _m: &'a M) -> &'a [u8] {
-        panic!();
-    }
-
-    fn get_rep_bytes<'a>(&self, _m: &'a M) -> &'a [Vec<u8>] {
-        panic!();
-    }
-
-    fn get_u32(&self, _m: &M) -> u32 {
-        panic!();
-    }
-
-    fn get_rep_u32<'a>(&self, _m: &'a M) -> &'a [u32] {
-        panic!();
-    }
-
-    fn get_u64(&self, _m: &M) -> u64 {
-        panic!();
-    }
-
-    fn get_rep_u64<'a>(&self, _m: &'a M) -> &'a [u64] {
-        panic!();
-    }
-
-    fn get_i32(&self, _m: &M) -> i32 {
-        panic!();
-    }
-
-    fn get_rep_i32<'a>(&self, _m: &'a M) -> &'a [i32] {
-        panic!();
-    }
-
-    fn get_i64(&self, _m: &M) -> i64 {
-        panic!();
-    }
-
-    fn get_rep_i64<'a>(&self, _m: &'a M) -> &'a [i64] {
-        panic!();
-    }
-
-    fn get_bool(&self, _m: &M) -> bool {
-        panic!();
-    }
-
-    fn get_rep_bool<'a>(&self, _m: &'a M) -> &'a [bool] {
-        panic!();
-    }
-
-    fn get_f32(&self, _m: &M) -> f32 {
-        panic!();
-    }
-
-    fn get_rep_f32<'a>(&self, _m: &'a M) -> &'a [f32] {
-        panic!();
-    }
-
-    fn get_f64(&self, _m: &M) -> f64 {
-        panic!();
-    }
-
-    fn get_rep_f64<'a>(&self, _m: &'a M) -> &'a [f64] {
-        panic!();
-    }
-}
-
-
-trait FieldAccessorGeneric {
-    fn has_field_generic(&self, m: &Message) -> bool;
-    fn len_field_generic(&self, m: &Message) -> uint;
-    fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message;
-    fn get_rep_message_item_generic<'a>(&self, m: &'a Message, index: uint) -> &'a Message;
-    fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
-    fn get_rep_enum_item_generic(&self, m: &Message, index: uint) -> &'static EnumValueDescriptor;
-    fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
-    fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [String];
-    fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8];
-    fn get_rep_bytes_generic<'a>(&self, m: &'a Message) -> &'a [Vec<u8>];
-    fn get_u32_generic(&self, m: &Message) -> u32;
-    fn get_rep_u32_generic<'a>(&self, m: &'a Message) -> &'a [u32];
-    fn get_u64_generic(&self, m: &Message) -> u64;
-    fn get_rep_u64_generic<'a>(&self, m: &'a Message) -> &'a [u64];
-    fn get_i32_generic(&self, m: &Message) -> i32;
-    fn get_rep_i32_generic<'a>(&self, m: &'a Message) -> &'a [i32];
-    fn get_i64_generic(&self, m: &Message) -> i64;
-    fn get_rep_i64_generic<'a>(&self, m: &'a Message) -> &'a [i64];
-    fn get_bool_generic(&self, m: &Message) -> bool;
-    fn get_rep_bool_generic<'a>(&self, m: &'a Message) -> &'a [bool];
-    fn get_f32_generic(&self, m: &Message) -> f32;
-    fn get_rep_f32_generic<'a>(&self, m: &'a Message) -> &'a [f32];
-    fn get_f64_generic(&self, m: &Message) -> f64;
-    fn get_rep_f64_generic<'a>(&self, m: &'a Message) -> &'a [f64];
-}
-
-struct FieldAccessorGenericImpl<M> {
-    accessor: &'static (FieldAccessor<M> + 'static)
-}
-
-impl<M : Message> FieldAccessorGenericImpl<M> {
-    fn new(a: &'static (FieldAccessor<M> + 'static)) -> FieldAccessorGenericImpl<M> {
-        FieldAccessorGenericImpl {
-            accessor: a
-        }
-    }
-}
-
-impl<M : 'static + Message> FieldAccessorGeneric for FieldAccessorGenericImpl<M> {
-    fn has_field_generic(&self, m: &Message) -> bool {
-        self.accessor.has_field(message_down_cast(m))
-    }
-
-    fn len_field_generic(&self, m: &Message) -> uint {
-        self.accessor.len_field(message_down_cast(m))
-    }
-
-    fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message {
-        self.accessor.get_message(message_down_cast(m))
-    }
-
-    fn get_rep_message_item_generic<'a>(&self, m: &'a Message, index: uint) -> &'a Message {
-        self.accessor.get_rep_message_item(message_down_cast(m), index)
-    }
-
-    fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor {
-        self.accessor.get_enum(message_down_cast(m))
-    }
-
-    fn get_rep_enum_item_generic(&self, m: &Message, index: uint) -> &'static EnumValueDescriptor {
-        self.accessor.get_rep_enum_item(message_down_cast(m), index)
-    }
-
-    fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str {
-        self.accessor.get_str(message_down_cast(m))
-    }
-
-    fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [String] {
-        self.accessor.get_rep_str(message_down_cast(m))
-    }
-
-    fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8] {
-        self.accessor.get_bytes(message_down_cast(m))
-    }
-
-    fn get_rep_bytes_generic<'a>(&self, m: &'a Message) -> &'a [Vec<u8>] {
-        self.accessor.get_rep_bytes(message_down_cast(m))
-    }
-
-    fn get_u32_generic(&self, m: &Message) -> u32 {
-        self.accessor.get_u32(message_down_cast(m))
-    }
-
-    fn get_rep_u32_generic<'a>(&self, m: &'a Message) -> &'a [u32] {
-        self.accessor.get_rep_u32(message_down_cast(m))
-    }
-
-    fn get_u64_generic(&self, m: &Message) -> u64 {
-        self.accessor.get_u64(message_down_cast(m))
-    }
-
-    fn get_rep_u64_generic<'a>(&self, m: &'a Message) -> &'a [u64] {
-        self.accessor.get_rep_u64(message_down_cast(m))
-    }
-
-    fn get_i32_generic(&self, m: &Message) -> i32 {
-        self.accessor.get_i32(message_down_cast(m))
-    }
-
-    fn get_rep_i32_generic<'a>(&self, m: &'a Message) -> &'a [i32] {
-        self.accessor.get_rep_i32(message_down_cast(m))
-    }
-
-    fn get_i64_generic(&self, m: &Message) -> i64 {
-        self.accessor.get_i64(message_down_cast(m))
-    }
-
-    fn get_rep_i64_generic<'a>(&self, m: &'a Message) -> &'a [i64] {
-        self.accessor.get_rep_i64(message_down_cast(m))
-    }
-
-    fn get_bool_generic(&self, m: &Message) -> bool {
-        self.accessor.get_bool(message_down_cast(m))
-    }
-
-    fn get_rep_bool_generic<'a>(&self, m: &'a Message) -> &'a [bool] {
-        self.accessor.get_rep_bool(message_down_cast(m))
-    }
-
-    fn get_f32_generic(&self, m: &Message) -> f32 {
-        self.accessor.get_f32(message_down_cast(m))
-    }
-
-    fn get_rep_f32_generic<'a>(&self, m: &'a Message) -> &'a [f32] {
-        self.accessor.get_rep_f32(message_down_cast(m))
-    }
-
-    fn get_f64_generic(&self, m: &Message) -> f64 {
-        self.accessor.get_f64(message_down_cast(m))
-    }
-
-    fn get_rep_f64_generic<'a>(&self, m: &'a Message) -> &'a [f64] {
-        self.accessor.get_rep_f64(message_down_cast(m))
-    }
-}
 
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
-    accessor: Box<FieldAccessorGeneric + 'static>,
+    accessor: Box<FieldAccessor + 'static>,
 }
 
 impl FieldDescriptor {
-    fn new<M : 'static + Message>(a: &'static (FieldAccessor<M> + 'static), proto: &'static FieldDescriptorProto)
+    fn new(a: Box<FieldAccessor + 'static>, proto: &'static FieldDescriptorProto)
         -> FieldDescriptor
     {
-        assert_eq!(proto.get_name(), a.name());
+        assert_eq!(proto.get_name(), a.name_generic());
         FieldDescriptor {
             proto: proto,
-            accessor: box FieldAccessorGenericImpl::new(a) as Box<FieldAccessorGeneric>,
+            accessor: a
         }
     }
 
@@ -425,7 +190,7 @@ impl MessageDescriptor {
 
     pub fn new<M : 'static + Message>(
             rust_name: &'static str,
-            fields: Vec<&'static (FieldAccessor<M> + 'static)>,
+            fields: Vec<Box<FieldAccessor + 'static>>,
             file: &'static FileDescriptorProto
         ) -> MessageDescriptor
     {
@@ -446,8 +211,11 @@ impl MessageDescriptor {
         MessageDescriptor {
             proto: proto.message,
             factory: box MessageFactoryTyped::<M>::new() as Box<MessageFactory>,
-            fields: fields.iter()
-                    .map(|f| FieldDescriptor::new(*f, *field_proto_by_name.get(&f.name()).unwrap()))
+            fields: fields.into_iter()
+                    .map(|f| {
+                        let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                        FieldDescriptor::new(f, proto)
+                    })
                     .collect(),
             index_by_name: index_by_name,
             index_by_number: index_by_number,
