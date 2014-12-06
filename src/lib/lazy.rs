@@ -7,7 +7,7 @@ pub struct Lazy<T> {
 }
 
 impl<T> Lazy<T> {
-    pub fn get(&self, init: || -> T) -> &'static T {
+    pub fn get(&'static self, init: || -> T) -> &'static T {
         unsafe {
             self.lock.doit(|| {
                 mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = mem::transmute(box init())
