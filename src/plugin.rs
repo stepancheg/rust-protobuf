@@ -209,11 +209,8 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         for v in self.file_to_generate.iter() {
             try!(os.write_string(1, v.as_slice()));
         };
-        match self.parameter.as_ref() {
-            Some(v) => {
-                try!(os.write_string(2, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.parameter.as_ref() {
+            try!(os.write_string(2, v.as_slice()));
         };
         for v in self.proto_file.iter() {
             try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -485,11 +482,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.error.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.error.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
         for v in self.file.iter() {
             try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -798,23 +792,14 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.insertion_point.as_ref() {
-            Some(v) => {
-                try!(os.write_string(2, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.insertion_point.as_ref() {
+            try!(os.write_string(2, v.as_slice()));
         };
-        match self.content.as_ref() {
-            Some(v) => {
-                try!(os.write_string(15, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.content.as_ref() {
+            try!(os.write_string(15, v.as_slice()));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())

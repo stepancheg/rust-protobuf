@@ -709,17 +709,11 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.package.as_ref() {
-            Some(v) => {
-                try!(os.write_string(2, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.package.as_ref() {
+            try!(os.write_string(2, v.as_slice()));
         };
         for v in self.dependency.iter() {
             try!(os.write_string(3, v.as_slice()));
@@ -750,21 +744,15 @@ impl ::protobuf::Message for FileDescriptorProto {
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
-        match self.source_code_info.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.source_code_info.as_ref() {
+            try!(os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -1397,11 +1385,8 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
         for v in self.field.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -1428,13 +1413,10 @@ impl ::protobuf::Message for DescriptorProto {
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -1761,17 +1743,11 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.start {
-            Some(v) => {
-                try!(os.write_int32(1, v));
-            },
-            None => {},
+        if let Some(v) = self.start {
+            try!(os.write_int32(1, v));
         };
-        match self.end {
-            Some(v) => {
-                try!(os.write_int32(2, v));
-            },
-            None => {},
+        if let Some(v) = self.end {
+            try!(os.write_int32(2, v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -2262,55 +2238,31 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.number {
-            Some(v) => {
-                try!(os.write_int32(3, v));
-            },
-            None => {},
+        if let Some(v) = self.number {
+            try!(os.write_int32(3, v));
         };
-        match self.label {
-            Some(v) => {
-                try!(os.write_enum(4, v as i32));
-            },
-            None => {},
+        if let Some(v) = self.label {
+            try!(os.write_enum(4, v as i32));
         };
-        match self.field_type {
-            Some(v) => {
-                try!(os.write_enum(5, v as i32));
-            },
-            None => {},
+        if let Some(v) = self.field_type {
+            try!(os.write_enum(5, v as i32));
         };
-        match self.type_name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(6, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.type_name.as_ref() {
+            try!(os.write_string(6, v.as_slice()));
         };
-        match self.extendee.as_ref() {
-            Some(v) => {
-                try!(os.write_string(2, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.extendee.as_ref() {
+            try!(os.write_string(2, v.as_slice()));
         };
-        match self.default_value.as_ref() {
-            Some(v) => {
-                try!(os.write_string(7, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.default_value.as_ref() {
+            try!(os.write_string(7, v.as_slice()));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -2828,24 +2780,18 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
         for v in self.value.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -3151,25 +3097,16 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.number {
-            Some(v) => {
-                try!(os.write_int32(2, v));
-            },
-            None => {},
+        if let Some(v) = self.number {
+            try!(os.write_int32(2, v));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -3482,24 +3419,18 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
         for v in self.method.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -3870,31 +3801,19 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.input_type.as_ref() {
-            Some(v) => {
-                try!(os.write_string(2, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.input_type.as_ref() {
+            try!(os.write_string(2, v.as_slice()));
         };
-        match self.output_type.as_ref() {
-            Some(v) => {
-                try!(os.write_string(3, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.output_type.as_ref() {
+            try!(os.write_string(3, v.as_slice()));
         };
-        match self.options.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.options.as_ref() {
+            try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -4464,59 +4383,32 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.java_package.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.java_package.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.java_outer_classname.as_ref() {
-            Some(v) => {
-                try!(os.write_string(8, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.java_outer_classname.as_ref() {
+            try!(os.write_string(8, v.as_slice()));
         };
-        match self.java_multiple_files {
-            Some(v) => {
-                try!(os.write_bool(10, v));
-            },
-            None => {},
+        if let Some(v) = self.java_multiple_files {
+            try!(os.write_bool(10, v));
         };
-        match self.java_generate_equals_and_hash {
-            Some(v) => {
-                try!(os.write_bool(20, v));
-            },
-            None => {},
+        if let Some(v) = self.java_generate_equals_and_hash {
+            try!(os.write_bool(20, v));
         };
-        match self.optimize_for {
-            Some(v) => {
-                try!(os.write_enum(9, v as i32));
-            },
-            None => {},
+        if let Some(v) = self.optimize_for {
+            try!(os.write_enum(9, v as i32));
         };
-        match self.go_package.as_ref() {
-            Some(v) => {
-                try!(os.write_string(11, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.go_package.as_ref() {
+            try!(os.write_string(11, v.as_slice()));
         };
-        match self.cc_generic_services {
-            Some(v) => {
-                try!(os.write_bool(16, v));
-            },
-            None => {},
+        if let Some(v) = self.cc_generic_services {
+            try!(os.write_bool(16, v));
         };
-        match self.java_generic_services {
-            Some(v) => {
-                try!(os.write_bool(17, v));
-            },
-            None => {},
+        if let Some(v) = self.java_generic_services {
+            try!(os.write_bool(17, v));
         };
-        match self.py_generic_services {
-            Some(v) => {
-                try!(os.write_bool(18, v));
-            },
-            None => {},
+        if let Some(v) = self.py_generic_services {
+            try!(os.write_bool(18, v));
         };
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -4984,17 +4876,11 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.message_set_wire_format {
-            Some(v) => {
-                try!(os.write_bool(1, v));
-            },
-            None => {},
+        if let Some(v) = self.message_set_wire_format {
+            try!(os.write_bool(1, v));
         };
-        match self.no_standard_descriptor_accessor {
-            Some(v) => {
-                try!(os.write_bool(2, v));
-            },
-            None => {},
+        if let Some(v) = self.no_standard_descriptor_accessor {
+            try!(os.write_bool(2, v));
         };
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -5421,41 +5307,23 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.ctype {
-            Some(v) => {
-                try!(os.write_enum(1, v as i32));
-            },
-            None => {},
+        if let Some(v) = self.ctype {
+            try!(os.write_enum(1, v as i32));
         };
-        match self.packed {
-            Some(v) => {
-                try!(os.write_bool(2, v));
-            },
-            None => {},
+        if let Some(v) = self.packed {
+            try!(os.write_bool(2, v));
         };
-        match self.lazy {
-            Some(v) => {
-                try!(os.write_bool(5, v));
-            },
-            None => {},
+        if let Some(v) = self.lazy {
+            try!(os.write_bool(5, v));
         };
-        match self.deprecated {
-            Some(v) => {
-                try!(os.write_bool(3, v));
-            },
-            None => {},
+        if let Some(v) = self.deprecated {
+            try!(os.write_bool(3, v));
         };
-        match self.experimental_map_key.as_ref() {
-            Some(v) => {
-                try!(os.write_string(9, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.experimental_map_key.as_ref() {
+            try!(os.write_string(9, v.as_slice()));
         };
-        match self.weak {
-            Some(v) => {
-                try!(os.write_bool(10, v));
-            },
-            None => {},
+        if let Some(v) = self.weak {
+            try!(os.write_bool(10, v));
         };
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -5829,11 +5697,8 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.allow_alias {
-            Some(v) => {
-                try!(os.write_bool(2, v));
-            },
-            None => {},
+        if let Some(v) = self.allow_alias {
+            try!(os.write_bool(2, v));
         };
         for v in self.uninterpreted_option.iter() {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -6818,41 +6683,23 @@ impl ::protobuf::Message for UninterpretedOption {
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        match self.identifier_value.as_ref() {
-            Some(v) => {
-                try!(os.write_string(3, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.identifier_value.as_ref() {
+            try!(os.write_string(3, v.as_slice()));
         };
-        match self.positive_int_value {
-            Some(v) => {
-                try!(os.write_uint64(4, v));
-            },
-            None => {},
+        if let Some(v) = self.positive_int_value {
+            try!(os.write_uint64(4, v));
         };
-        match self.negative_int_value {
-            Some(v) => {
-                try!(os.write_int64(5, v));
-            },
-            None => {},
+        if let Some(v) = self.negative_int_value {
+            try!(os.write_int64(5, v));
         };
-        match self.double_value {
-            Some(v) => {
-                try!(os.write_double(6, v));
-            },
-            None => {},
+        if let Some(v) = self.double_value {
+            try!(os.write_double(6, v));
         };
-        match self.string_value.as_ref() {
-            Some(v) => {
-                try!(os.write_bytes(7, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.string_value.as_ref() {
+            try!(os.write_bytes(7, v.as_slice()));
         };
-        match self.aggregate_value.as_ref() {
-            Some(v) => {
-                try!(os.write_string(8, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.aggregate_value.as_ref() {
+            try!(os.write_string(8, v.as_slice()));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -7202,17 +7049,11 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.name_part.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.name_part.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.is_extension {
-            Some(v) => {
-                try!(os.write_bool(2, v));
-            },
-            None => {},
+        if let Some(v) = self.is_extension {
+            try!(os.write_bool(2, v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -7750,17 +7591,11 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                 try!(os.write_int32_no_tag(*v));
             };
         };
-        match self.leading_comments.as_ref() {
-            Some(v) => {
-                try!(os.write_string(3, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.leading_comments.as_ref() {
+            try!(os.write_string(3, v.as_slice()));
         };
-        match self.trailing_comments.as_ref() {
-            Some(v) => {
-                try!(os.write_string(4, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.trailing_comments.as_ref() {
+            try!(os.write_string(4, v.as_slice()));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())

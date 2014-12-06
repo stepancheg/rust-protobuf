@@ -97,11 +97,8 @@ impl ::protobuf::Message for Test1 {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.value {
-            Some(v) => {
-                try!(os.write_int32(1, v));
-            },
-            None => {},
+        if let Some(v) = self.value {
+            try!(os.write_int32(1, v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -1055,29 +1052,20 @@ impl ::protobuf::Message for TestOptionalMessages {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.message1.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.message1.as_ref() {
+            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
-        match self.message2.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.message2.as_ref() {
+            try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
-        match self.message3.as_ref() {
-            Some(v) => {
-                try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-                try!(os.write_raw_varint32(v.get_cached_size()));
-                try!(v.write_to_with_cached_sizes(os));
-            },
-            None => {},
+        if let Some(v) = self.message3.as_ref() {
+            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(os.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())
@@ -1402,23 +1390,14 @@ impl ::protobuf::Message for TestStrings {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        match self.s1.as_ref() {
-            Some(v) => {
-                try!(os.write_string(1, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.s1.as_ref() {
+            try!(os.write_string(1, v.as_slice()));
         };
-        match self.s2.as_ref() {
-            Some(v) => {
-                try!(os.write_string(2, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.s2.as_ref() {
+            try!(os.write_string(2, v.as_slice()));
         };
-        match self.s3.as_ref() {
-            Some(v) => {
-                try!(os.write_string(3, v.as_slice()));
-            },
-            None => {},
+        if let Some(v) = self.s3.as_ref() {
+            try!(os.write_string(3, v.as_slice()));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Ok(())

@@ -1075,6 +1075,10 @@ impl<'a> IndentWriter<'a> {
         self.stmt_block(format!("if {}", cond.as_slice()), cb);
     }
 
+    fn if_let_stmt(&self, decl: &str, expr: &str, cb: |&mut IndentWriter|) {
+        self.if_stmt(format!("let {} = {}", decl, expr), cb);
+    }
+
     fn for_stmt<S1 : Str, S2 : Str>(&self, over: S1, varn: S2, cb: |&mut IndentWriter|) {
         self.stmt_block(format!("for {} in {}", varn.as_slice(), over.as_slice()), cb)
     }
@@ -1304,13 +1308,10 @@ fn write_message_write_field(w: &mut IndentWriter) {
 
     match w.field().repeat_mode {
         RepeatMode::Single => {
-            w.match_block(w.self_field_as_option(), |w| {
+            w.if_let_stmt("Some(v)", w.self_field_as_option().as_slice(), |w| {
                 let option_type = w.field().as_option_type();
-                w.case_block("Some(v)", |w| {
-                    let v_type = option_type.elem_type();
-                    write_value_lines(w, &v_type);
-                });
-                w.case_expr("None", "{}");
+                let v_type = option_type.elem_type();
+                write_value_lines(w, &v_type);
             });
         },
         RepeatMode::RepeatPacked => {
