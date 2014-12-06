@@ -2,9 +2,6 @@
 #![feature(globs)]
 #![allow(non_camel_case_types)]
 
-#![desc = "protobuf implementation for rust"]
-#![license = "BSD"]
-
 extern crate collections;
 
 pub use unknown::UnknownFields;
