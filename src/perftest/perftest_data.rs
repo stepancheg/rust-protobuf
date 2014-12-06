@@ -15,7 +15,7 @@ pub struct Test1 {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> Test1 {
+impl Test1 {
     pub fn new() -> Test1 {
         ::std::default::Default::default()
     }
@@ -51,7 +51,7 @@ impl<'a> Test1 {
         self.value = ::std::option::Some(v);
     }
 
-    pub fn get_value(&self) -> i32 {
+    pub fn get_value<'a>(&self) -> i32 {
         self.value.unwrap_or(0)
     }
 }
@@ -186,7 +186,7 @@ pub struct TestRepeatedBool {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> TestRepeatedBool {
+impl TestRepeatedBool {
     pub fn new() -> TestRepeatedBool {
         ::std::default::Default::default()
     }
@@ -219,7 +219,7 @@ impl<'a> TestRepeatedBool {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_values(&'a mut self) -> &'a mut ::std::vec::Vec<bool> {
+    pub fn mut_values<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<bool> {
         &mut self.values
     }
 
@@ -228,7 +228,7 @@ impl<'a> TestRepeatedBool {
         ::std::mem::replace(&mut self.values, ::std::vec::Vec::new())
     }
 
-    pub fn get_values(&'a self) -> &'a [bool] {
+    pub fn get_values<'a>(&'a self) -> &'a [bool] {
         self.values.as_slice()
     }
 }
@@ -367,7 +367,7 @@ pub struct TestRepeatedPackedInt32 {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> TestRepeatedPackedInt32 {
+impl TestRepeatedPackedInt32 {
     pub fn new() -> TestRepeatedPackedInt32 {
         ::std::default::Default::default()
     }
@@ -400,7 +400,7 @@ impl<'a> TestRepeatedPackedInt32 {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_values(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_values<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.values
     }
 
@@ -409,7 +409,7 @@ impl<'a> TestRepeatedPackedInt32 {
         ::std::mem::replace(&mut self.values, ::std::vec::Vec::new())
     }
 
-    pub fn get_values(&'a self) -> &'a [i32] {
+    pub fn get_values<'a>(&'a self) -> &'a [i32] {
         self.values.as_slice()
     }
 }
@@ -557,7 +557,7 @@ pub struct TestRepeatedMessages {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> TestRepeatedMessages {
+impl TestRepeatedMessages {
     pub fn new() -> TestRepeatedMessages {
         ::std::default::Default::default()
     }
@@ -592,7 +592,7 @@ impl<'a> TestRepeatedMessages {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_messages1(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
+    pub fn mut_messages1<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
         &mut self.messages1
     }
 
@@ -601,7 +601,7 @@ impl<'a> TestRepeatedMessages {
         ::std::mem::replace(&mut self.messages1, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_messages1(&'a self) -> &'a [TestRepeatedMessages] {
+    pub fn get_messages1<'a>(&'a self) -> &'a [TestRepeatedMessages] {
         self.messages1.as_slice()
     }
 
@@ -617,7 +617,7 @@ impl<'a> TestRepeatedMessages {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_messages2(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
+    pub fn mut_messages2<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
         &mut self.messages2
     }
 
@@ -626,7 +626,7 @@ impl<'a> TestRepeatedMessages {
         ::std::mem::replace(&mut self.messages2, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_messages2(&'a self) -> &'a [TestRepeatedMessages] {
+    pub fn get_messages2<'a>(&'a self) -> &'a [TestRepeatedMessages] {
         self.messages2.as_slice()
     }
 
@@ -642,7 +642,7 @@ impl<'a> TestRepeatedMessages {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_messages3(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
+    pub fn mut_messages3<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
         &mut self.messages3
     }
 
@@ -651,7 +651,7 @@ impl<'a> TestRepeatedMessages {
         ::std::mem::replace(&mut self.messages3, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_messages3(&'a self) -> &'a [TestRepeatedMessages] {
+    pub fn get_messages3<'a>(&'a self) -> &'a [TestRepeatedMessages] {
         self.messages3.as_slice()
     }
 }
@@ -865,7 +865,7 @@ pub struct TestOptionalMessages {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> TestOptionalMessages {
+impl TestOptionalMessages {
     pub fn new() -> TestOptionalMessages {
         ::std::default::Default::default()
     }
@@ -905,7 +905,7 @@ impl<'a> TestOptionalMessages {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_message1(&'a mut self) -> &'a mut TestOptionalMessages {
+    pub fn mut_message1<'a>(&'a mut self) -> &'a mut TestOptionalMessages {
         if self.message1.is_none() {
             self.message1.set_default();
         };
@@ -917,7 +917,7 @@ impl<'a> TestOptionalMessages {
         self.message1.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
-    pub fn get_message1(&'a self) -> &'a TestOptionalMessages {
+    pub fn get_message1<'a>(&'a self) -> &'a TestOptionalMessages {
         self.message1.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
 
@@ -938,7 +938,7 @@ impl<'a> TestOptionalMessages {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_message2(&'a mut self) -> &'a mut TestOptionalMessages {
+    pub fn mut_message2<'a>(&'a mut self) -> &'a mut TestOptionalMessages {
         if self.message2.is_none() {
             self.message2.set_default();
         };
@@ -950,7 +950,7 @@ impl<'a> TestOptionalMessages {
         self.message2.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
-    pub fn get_message2(&'a self) -> &'a TestOptionalMessages {
+    pub fn get_message2<'a>(&'a self) -> &'a TestOptionalMessages {
         self.message2.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
 
@@ -971,7 +971,7 @@ impl<'a> TestOptionalMessages {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_message3(&'a mut self) -> &'a mut TestOptionalMessages {
+    pub fn mut_message3<'a>(&'a mut self) -> &'a mut TestOptionalMessages {
         if self.message3.is_none() {
             self.message3.set_default();
         };
@@ -983,7 +983,7 @@ impl<'a> TestOptionalMessages {
         self.message3.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
-    pub fn get_message3(&'a self) -> &'a TestOptionalMessages {
+    pub fn get_message3<'a>(&'a self) -> &'a TestOptionalMessages {
         self.message3.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
 }
@@ -1197,7 +1197,7 @@ pub struct TestStrings {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> TestStrings {
+impl TestStrings {
     pub fn new() -> TestStrings {
         ::std::default::Default::default()
     }
@@ -1237,7 +1237,7 @@ impl<'a> TestStrings {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_s1(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_s1<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.s1.is_none() {
             self.s1.set_default();
         };
@@ -1249,7 +1249,7 @@ impl<'a> TestStrings {
         self.s1.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_s1(&'a self) -> &'a str {
+    pub fn get_s1<'a>(&'a self) -> &'a str {
         match self.s1.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -1273,7 +1273,7 @@ impl<'a> TestStrings {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_s2(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_s2<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.s2.is_none() {
             self.s2.set_default();
         };
@@ -1285,7 +1285,7 @@ impl<'a> TestStrings {
         self.s2.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_s2(&'a self) -> &'a str {
+    pub fn get_s2<'a>(&'a self) -> &'a str {
         match self.s2.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -1309,7 +1309,7 @@ impl<'a> TestStrings {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_s3(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_s3<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.s3.is_none() {
             self.s3.set_default();
         };
@@ -1321,7 +1321,7 @@ impl<'a> TestStrings {
         self.s3.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_s3(&'a self) -> &'a str {
+    pub fn get_s3<'a>(&'a self) -> &'a str {
         match self.s3.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -1532,7 +1532,7 @@ pub struct PerftestData {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> PerftestData {
+impl PerftestData {
     pub fn new() -> PerftestData {
         ::std::default::Default::default()
     }
@@ -1570,7 +1570,7 @@ impl<'a> PerftestData {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test1(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Test1> {
+    pub fn mut_test1<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Test1> {
         &mut self.test1
     }
 
@@ -1579,7 +1579,7 @@ impl<'a> PerftestData {
         ::std::mem::replace(&mut self.test1, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_test1(&'a self) -> &'a [Test1] {
+    pub fn get_test1<'a>(&'a self) -> &'a [Test1] {
         self.test1.as_slice()
     }
 
@@ -1595,7 +1595,7 @@ impl<'a> PerftestData {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test_repeated_bool(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedBool> {
+    pub fn mut_test_repeated_bool<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedBool> {
         &mut self.test_repeated_bool
     }
 
@@ -1604,7 +1604,7 @@ impl<'a> PerftestData {
         ::std::mem::replace(&mut self.test_repeated_bool, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_test_repeated_bool(&'a self) -> &'a [TestRepeatedBool] {
+    pub fn get_test_repeated_bool<'a>(&'a self) -> &'a [TestRepeatedBool] {
         self.test_repeated_bool.as_slice()
     }
 
@@ -1620,7 +1620,7 @@ impl<'a> PerftestData {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test_repeated_messages(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
+    pub fn mut_test_repeated_messages<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
         &mut self.test_repeated_messages
     }
 
@@ -1629,7 +1629,7 @@ impl<'a> PerftestData {
         ::std::mem::replace(&mut self.test_repeated_messages, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_test_repeated_messages(&'a self) -> &'a [TestRepeatedMessages] {
+    pub fn get_test_repeated_messages<'a>(&'a self) -> &'a [TestRepeatedMessages] {
         self.test_repeated_messages.as_slice()
     }
 
@@ -1645,7 +1645,7 @@ impl<'a> PerftestData {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test_optional_messages(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestOptionalMessages> {
+    pub fn mut_test_optional_messages<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestOptionalMessages> {
         &mut self.test_optional_messages
     }
 
@@ -1654,7 +1654,7 @@ impl<'a> PerftestData {
         ::std::mem::replace(&mut self.test_optional_messages, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_test_optional_messages(&'a self) -> &'a [TestOptionalMessages] {
+    pub fn get_test_optional_messages<'a>(&'a self) -> &'a [TestOptionalMessages] {
         self.test_optional_messages.as_slice()
     }
 
@@ -1670,7 +1670,7 @@ impl<'a> PerftestData {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test_strings(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestStrings> {
+    pub fn mut_test_strings<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestStrings> {
         &mut self.test_strings
     }
 
@@ -1679,7 +1679,7 @@ impl<'a> PerftestData {
         ::std::mem::replace(&mut self.test_strings, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_test_strings(&'a self) -> &'a [TestStrings] {
+    pub fn get_test_strings<'a>(&'a self) -> &'a [TestStrings] {
         self.test_strings.as_slice()
     }
 
@@ -1695,7 +1695,7 @@ impl<'a> PerftestData {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_test_repeated_packed_int32(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedPackedInt32> {
+    pub fn mut_test_repeated_packed_int32<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedPackedInt32> {
         &mut self.test_repeated_packed_int32
     }
 
@@ -1704,7 +1704,7 @@ impl<'a> PerftestData {
         ::std::mem::replace(&mut self.test_repeated_packed_int32, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_test_repeated_packed_int32(&'a self) -> &'a [TestRepeatedPackedInt32] {
+    pub fn get_test_repeated_packed_int32<'a>(&'a self) -> &'a [TestRepeatedPackedInt32] {
         self.test_repeated_packed_int32.as_slice()
     }
 }

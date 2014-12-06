@@ -15,7 +15,7 @@ pub struct FileDescriptorSet {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> FileDescriptorSet {
+impl FileDescriptorSet {
     pub fn new() -> FileDescriptorSet {
         ::std::default::Default::default()
     }
@@ -48,7 +48,7 @@ impl<'a> FileDescriptorSet {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
+    pub fn mut_file<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
         &mut self.file
     }
 
@@ -57,7 +57,7 @@ impl<'a> FileDescriptorSet {
         ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_file(&'a self) -> &'a [FileDescriptorProto] {
+    pub fn get_file<'a>(&'a self) -> &'a [FileDescriptorProto] {
         self.file.as_slice()
     }
 }
@@ -205,7 +205,7 @@ pub struct FileDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> FileDescriptorProto {
+impl FileDescriptorProto {
     pub fn new() -> FileDescriptorProto {
         ::std::default::Default::default()
     }
@@ -253,7 +253,7 @@ impl<'a> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -265,7 +265,7 @@ impl<'a> FileDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -289,7 +289,7 @@ impl<'a> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_package(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_package<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.package.is_none() {
             self.package.set_default();
         };
@@ -301,7 +301,7 @@ impl<'a> FileDescriptorProto {
         self.package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_package(&'a self) -> &'a str {
+    pub fn get_package<'a>(&'a self) -> &'a str {
         match self.package.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -320,7 +320,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_dependency<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.dependency
     }
 
@@ -329,7 +329,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.dependency, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_dependency(&'a self) -> &'a [::std::string::String] {
+    pub fn get_dependency<'a>(&'a self) -> &'a [::std::string::String] {
         self.dependency.as_slice()
     }
 
@@ -345,7 +345,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_public_dependency(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_public_dependency<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.public_dependency
     }
 
@@ -354,7 +354,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.public_dependency, ::std::vec::Vec::new())
     }
 
-    pub fn get_public_dependency(&'a self) -> &'a [i32] {
+    pub fn get_public_dependency<'a>(&'a self) -> &'a [i32] {
         self.public_dependency.as_slice()
     }
 
@@ -370,7 +370,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_weak_dependency(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_weak_dependency<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.weak_dependency
     }
 
@@ -379,7 +379,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.weak_dependency, ::std::vec::Vec::new())
     }
 
-    pub fn get_weak_dependency(&'a self) -> &'a [i32] {
+    pub fn get_weak_dependency<'a>(&'a self) -> &'a [i32] {
         self.weak_dependency.as_slice()
     }
 
@@ -395,7 +395,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_message_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
+    pub fn mut_message_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.message_type
     }
 
@@ -404,7 +404,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.message_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_message_type(&'a self) -> &'a [DescriptorProto] {
+    pub fn get_message_type<'a>(&'a self) -> &'a [DescriptorProto] {
         self.message_type.as_slice()
     }
 
@@ -420,7 +420,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+    pub fn mut_enum_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -429,7 +429,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
+    pub fn get_enum_type<'a>(&'a self) -> &'a [EnumDescriptorProto] {
         self.enum_type.as_slice()
     }
 
@@ -445,7 +445,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_service(&'a mut self) -> &'a mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
+    pub fn mut_service<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
         &mut self.service
     }
 
@@ -454,7 +454,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.service, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_service(&'a self) -> &'a [ServiceDescriptorProto] {
+    pub fn get_service<'a>(&'a self) -> &'a [ServiceDescriptorProto] {
         self.service.as_slice()
     }
 
@@ -470,7 +470,7 @@ impl<'a> FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_extension<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -479,7 +479,7 @@ impl<'a> FileDescriptorProto {
         ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
+    pub fn get_extension<'a>(&'a self) -> &'a [FieldDescriptorProto] {
         self.extension.as_slice()
     }
 
@@ -500,7 +500,7 @@ impl<'a> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut FileOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut FileOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -512,7 +512,7 @@ impl<'a> FileDescriptorProto {
         self.options.take().unwrap_or_else(|| FileOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a FileOptions {
+    pub fn get_options<'a>(&'a self) -> &'a FileOptions {
         self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
     }
 
@@ -533,7 +533,7 @@ impl<'a> FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_code_info(&'a mut self) -> &'a mut SourceCodeInfo {
+    pub fn mut_source_code_info<'a>(&'a mut self) -> &'a mut SourceCodeInfo {
         if self.source_code_info.is_none() {
             self.source_code_info.set_default();
         };
@@ -545,7 +545,7 @@ impl<'a> FileDescriptorProto {
         self.source_code_info.take().unwrap_or_else(|| SourceCodeInfo::new())
     }
 
-    pub fn get_source_code_info(&'a self) -> &'a SourceCodeInfo {
+    pub fn get_source_code_info<'a>(&'a self) -> &'a SourceCodeInfo {
         self.source_code_info.as_ref().unwrap_or_else(|| SourceCodeInfo::default_instance())
     }
 }
@@ -1056,7 +1056,7 @@ pub struct DescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> DescriptorProto {
+impl DescriptorProto {
     pub fn new() -> DescriptorProto {
         ::std::default::Default::default()
     }
@@ -1100,7 +1100,7 @@ impl<'a> DescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -1112,7 +1112,7 @@ impl<'a> DescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -1131,7 +1131,7 @@ impl<'a> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_field(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_field<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.field
     }
 
@@ -1140,7 +1140,7 @@ impl<'a> DescriptorProto {
         ::std::mem::replace(&mut self.field, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_field(&'a self) -> &'a [FieldDescriptorProto] {
+    pub fn get_field<'a>(&'a self) -> &'a [FieldDescriptorProto] {
         self.field.as_slice()
     }
 
@@ -1156,7 +1156,7 @@ impl<'a> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_extension<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -1165,7 +1165,7 @@ impl<'a> DescriptorProto {
         ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension(&'a self) -> &'a [FieldDescriptorProto] {
+    pub fn get_extension<'a>(&'a self) -> &'a [FieldDescriptorProto] {
         self.extension.as_slice()
     }
 
@@ -1181,7 +1181,7 @@ impl<'a> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
+    pub fn mut_nested_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.nested_type
     }
 
@@ -1190,7 +1190,7 @@ impl<'a> DescriptorProto {
         ::std::mem::replace(&mut self.nested_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_nested_type(&'a self) -> &'a [DescriptorProto] {
+    pub fn get_nested_type<'a>(&'a self) -> &'a [DescriptorProto] {
         self.nested_type.as_slice()
     }
 
@@ -1206,7 +1206,7 @@ impl<'a> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+    pub fn mut_enum_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -1215,7 +1215,7 @@ impl<'a> DescriptorProto {
         ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enum_type(&'a self) -> &'a [EnumDescriptorProto] {
+    pub fn get_enum_type<'a>(&'a self) -> &'a [EnumDescriptorProto] {
         self.enum_type.as_slice()
     }
 
@@ -1231,7 +1231,7 @@ impl<'a> DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension_range(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
+    pub fn mut_extension_range<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
         &mut self.extension_range
     }
 
@@ -1240,7 +1240,7 @@ impl<'a> DescriptorProto {
         ::std::mem::replace(&mut self.extension_range, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension_range(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
+    pub fn get_extension_range<'a>(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
         self.extension_range.as_slice()
     }
 
@@ -1261,7 +1261,7 @@ impl<'a> DescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut MessageOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut MessageOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -1273,7 +1273,7 @@ impl<'a> DescriptorProto {
         self.options.take().unwrap_or_else(|| MessageOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a MessageOptions {
+    pub fn get_options<'a>(&'a self) -> &'a MessageOptions {
         self.options.as_ref().unwrap_or_else(|| MessageOptions::default_instance())
     }
 }
@@ -1631,7 +1631,7 @@ pub struct DescriptorProto_ExtensionRange {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> DescriptorProto_ExtensionRange {
+impl DescriptorProto_ExtensionRange {
     pub fn new() -> DescriptorProto_ExtensionRange {
         ::std::default::Default::default()
     }
@@ -1668,7 +1668,7 @@ impl<'a> DescriptorProto_ExtensionRange {
         self.start = ::std::option::Some(v);
     }
 
-    pub fn get_start(&self) -> i32 {
+    pub fn get_start<'a>(&self) -> i32 {
         self.start.unwrap_or(0)
     }
 
@@ -1687,7 +1687,7 @@ impl<'a> DescriptorProto_ExtensionRange {
         self.end = ::std::option::Some(v);
     }
 
-    pub fn get_end(&self) -> i32 {
+    pub fn get_end<'a>(&self) -> i32 {
         self.end.unwrap_or(0)
     }
 }
@@ -1863,7 +1863,7 @@ pub struct FieldDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> FieldDescriptorProto {
+impl FieldDescriptorProto {
     pub fn new() -> FieldDescriptorProto {
         ::std::default::Default::default()
     }
@@ -1908,7 +1908,7 @@ impl<'a> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -1920,7 +1920,7 @@ impl<'a> FieldDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -1942,7 +1942,7 @@ impl<'a> FieldDescriptorProto {
         self.number = ::std::option::Some(v);
     }
 
-    pub fn get_number(&self) -> i32 {
+    pub fn get_number<'a>(&self) -> i32 {
         self.number.unwrap_or(0)
     }
 
@@ -1961,7 +1961,7 @@ impl<'a> FieldDescriptorProto {
         self.label = ::std::option::Some(v);
     }
 
-    pub fn get_label(&self) -> FieldDescriptorProto_Label {
+    pub fn get_label<'a>(&self) -> FieldDescriptorProto_Label {
         self.label.unwrap_or(FieldDescriptorProto_Label::LABEL_OPTIONAL)
     }
 
@@ -1980,7 +1980,7 @@ impl<'a> FieldDescriptorProto {
         self.field_type = ::std::option::Some(v);
     }
 
-    pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
+    pub fn get_field_type<'a>(&self) -> FieldDescriptorProto_Type {
         self.field_type.unwrap_or(FieldDescriptorProto_Type::TYPE_DOUBLE)
     }
 
@@ -2001,7 +2001,7 @@ impl<'a> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_type_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_type_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.type_name.is_none() {
             self.type_name.set_default();
         };
@@ -2013,7 +2013,7 @@ impl<'a> FieldDescriptorProto {
         self.type_name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_type_name(&'a self) -> &'a str {
+    pub fn get_type_name<'a>(&'a self) -> &'a str {
         match self.type_name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -2037,7 +2037,7 @@ impl<'a> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_extendee(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_extendee<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.extendee.is_none() {
             self.extendee.set_default();
         };
@@ -2049,7 +2049,7 @@ impl<'a> FieldDescriptorProto {
         self.extendee.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_extendee(&'a self) -> &'a str {
+    pub fn get_extendee<'a>(&'a self) -> &'a str {
         match self.extendee.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -2073,7 +2073,7 @@ impl<'a> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_default_value(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_default_value<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.default_value.is_none() {
             self.default_value.set_default();
         };
@@ -2085,7 +2085,7 @@ impl<'a> FieldDescriptorProto {
         self.default_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_default_value(&'a self) -> &'a str {
+    pub fn get_default_value<'a>(&'a self) -> &'a str {
         match self.default_value.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -2109,7 +2109,7 @@ impl<'a> FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut FieldOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut FieldOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -2121,7 +2121,7 @@ impl<'a> FieldDescriptorProto {
         self.options.take().unwrap_or_else(|| FieldOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a FieldOptions {
+    pub fn get_options<'a>(&'a self) -> &'a FieldOptions {
         self.options.as_ref().unwrap_or_else(|| FieldOptions::default_instance())
     }
 }
@@ -2599,7 +2599,7 @@ pub struct EnumDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> EnumDescriptorProto {
+impl EnumDescriptorProto {
     pub fn new() -> EnumDescriptorProto {
         ::std::default::Default::default()
     }
@@ -2639,7 +2639,7 @@ impl<'a> EnumDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2651,7 +2651,7 @@ impl<'a> EnumDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -2670,7 +2670,7 @@ impl<'a> EnumDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_value(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
+    pub fn mut_value<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
         &mut self.value
     }
 
@@ -2679,7 +2679,7 @@ impl<'a> EnumDescriptorProto {
         ::std::mem::replace(&mut self.value, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_value(&'a self) -> &'a [EnumValueDescriptorProto] {
+    pub fn get_value<'a>(&'a self) -> &'a [EnumValueDescriptorProto] {
         self.value.as_slice()
     }
 
@@ -2700,7 +2700,7 @@ impl<'a> EnumDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut EnumOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut EnumOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -2712,7 +2712,7 @@ impl<'a> EnumDescriptorProto {
         self.options.take().unwrap_or_else(|| EnumOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a EnumOptions {
+    pub fn get_options<'a>(&'a self) -> &'a EnumOptions {
         self.options.as_ref().unwrap_or_else(|| EnumOptions::default_instance())
     }
 }
@@ -2923,7 +2923,7 @@ pub struct EnumValueDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> EnumValueDescriptorProto {
+impl EnumValueDescriptorProto {
     pub fn new() -> EnumValueDescriptorProto {
         ::std::default::Default::default()
     }
@@ -2963,7 +2963,7 @@ impl<'a> EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2975,7 +2975,7 @@ impl<'a> EnumValueDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -2997,7 +2997,7 @@ impl<'a> EnumValueDescriptorProto {
         self.number = ::std::option::Some(v);
     }
 
-    pub fn get_number(&self) -> i32 {
+    pub fn get_number<'a>(&self) -> i32 {
         self.number.unwrap_or(0)
     }
 
@@ -3018,7 +3018,7 @@ impl<'a> EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut EnumValueOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut EnumValueOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -3030,7 +3030,7 @@ impl<'a> EnumValueDescriptorProto {
         self.options.take().unwrap_or_else(|| EnumValueOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a EnumValueOptions {
+    pub fn get_options<'a>(&'a self) -> &'a EnumValueOptions {
         self.options.as_ref().unwrap_or_else(|| EnumValueOptions::default_instance())
     }
 }
@@ -3238,7 +3238,7 @@ pub struct ServiceDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> ServiceDescriptorProto {
+impl ServiceDescriptorProto {
     pub fn new() -> ServiceDescriptorProto {
         ::std::default::Default::default()
     }
@@ -3278,7 +3278,7 @@ impl<'a> ServiceDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -3290,7 +3290,7 @@ impl<'a> ServiceDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -3309,7 +3309,7 @@ impl<'a> ServiceDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_method(&'a mut self) -> &'a mut ::protobuf::RepeatedField<MethodDescriptorProto> {
+    pub fn mut_method<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<MethodDescriptorProto> {
         &mut self.method
     }
 
@@ -3318,7 +3318,7 @@ impl<'a> ServiceDescriptorProto {
         ::std::mem::replace(&mut self.method, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_method(&'a self) -> &'a [MethodDescriptorProto] {
+    pub fn get_method<'a>(&'a self) -> &'a [MethodDescriptorProto] {
         self.method.as_slice()
     }
 
@@ -3339,7 +3339,7 @@ impl<'a> ServiceDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut ServiceOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut ServiceOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -3351,7 +3351,7 @@ impl<'a> ServiceDescriptorProto {
         self.options.take().unwrap_or_else(|| ServiceOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a ServiceOptions {
+    pub fn get_options<'a>(&'a self) -> &'a ServiceOptions {
         self.options.as_ref().unwrap_or_else(|| ServiceOptions::default_instance())
     }
 }
@@ -3563,7 +3563,7 @@ pub struct MethodDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> MethodDescriptorProto {
+impl MethodDescriptorProto {
     pub fn new() -> MethodDescriptorProto {
         ::std::default::Default::default()
     }
@@ -3604,7 +3604,7 @@ impl<'a> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -3616,7 +3616,7 @@ impl<'a> MethodDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -3640,7 +3640,7 @@ impl<'a> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_input_type(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_input_type<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.input_type.is_none() {
             self.input_type.set_default();
         };
@@ -3652,7 +3652,7 @@ impl<'a> MethodDescriptorProto {
         self.input_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_input_type(&'a self) -> &'a str {
+    pub fn get_input_type<'a>(&'a self) -> &'a str {
         match self.input_type.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -3676,7 +3676,7 @@ impl<'a> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_output_type(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_output_type<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.output_type.is_none() {
             self.output_type.set_default();
         };
@@ -3688,7 +3688,7 @@ impl<'a> MethodDescriptorProto {
         self.output_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_output_type(&'a self) -> &'a str {
+    pub fn get_output_type<'a>(&'a self) -> &'a str {
         match self.output_type.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -3712,7 +3712,7 @@ impl<'a> MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options(&'a mut self) -> &'a mut MethodOptions {
+    pub fn mut_options<'a>(&'a mut self) -> &'a mut MethodOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -3724,7 +3724,7 @@ impl<'a> MethodDescriptorProto {
         self.options.take().unwrap_or_else(|| MethodOptions::new())
     }
 
-    pub fn get_options(&'a self) -> &'a MethodOptions {
+    pub fn get_options<'a>(&'a self) -> &'a MethodOptions {
         self.options.as_ref().unwrap_or_else(|| MethodOptions::default_instance())
     }
 }
@@ -3973,7 +3973,7 @@ pub struct FileOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> FileOptions {
+impl FileOptions {
     pub fn new() -> FileOptions {
         ::std::default::Default::default()
     }
@@ -4020,7 +4020,7 @@ impl<'a> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_package(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_java_package<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.java_package.is_none() {
             self.java_package.set_default();
         };
@@ -4032,7 +4032,7 @@ impl<'a> FileOptions {
         self.java_package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_java_package(&'a self) -> &'a str {
+    pub fn get_java_package<'a>(&'a self) -> &'a str {
         match self.java_package.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -4056,7 +4056,7 @@ impl<'a> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_outer_classname(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_java_outer_classname<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.java_outer_classname.is_none() {
             self.java_outer_classname.set_default();
         };
@@ -4068,7 +4068,7 @@ impl<'a> FileOptions {
         self.java_outer_classname.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_java_outer_classname(&'a self) -> &'a str {
+    pub fn get_java_outer_classname<'a>(&'a self) -> &'a str {
         match self.java_outer_classname.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -4090,7 +4090,7 @@ impl<'a> FileOptions {
         self.java_multiple_files = ::std::option::Some(v);
     }
 
-    pub fn get_java_multiple_files(&self) -> bool {
+    pub fn get_java_multiple_files<'a>(&self) -> bool {
         self.java_multiple_files.unwrap_or(false)
     }
 
@@ -4109,7 +4109,7 @@ impl<'a> FileOptions {
         self.java_generate_equals_and_hash = ::std::option::Some(v);
     }
 
-    pub fn get_java_generate_equals_and_hash(&self) -> bool {
+    pub fn get_java_generate_equals_and_hash<'a>(&self) -> bool {
         self.java_generate_equals_and_hash.unwrap_or(false)
     }
 
@@ -4128,7 +4128,7 @@ impl<'a> FileOptions {
         self.optimize_for = ::std::option::Some(v);
     }
 
-    pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
+    pub fn get_optimize_for<'a>(&self) -> FileOptions_OptimizeMode {
         self.optimize_for.unwrap_or(FileOptions_OptimizeMode::SPEED)
     }
 
@@ -4149,7 +4149,7 @@ impl<'a> FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_go_package(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_go_package<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.go_package.is_none() {
             self.go_package.set_default();
         };
@@ -4161,7 +4161,7 @@ impl<'a> FileOptions {
         self.go_package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_go_package(&'a self) -> &'a str {
+    pub fn get_go_package<'a>(&'a self) -> &'a str {
         match self.go_package.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -4183,7 +4183,7 @@ impl<'a> FileOptions {
         self.cc_generic_services = ::std::option::Some(v);
     }
 
-    pub fn get_cc_generic_services(&self) -> bool {
+    pub fn get_cc_generic_services<'a>(&self) -> bool {
         self.cc_generic_services.unwrap_or(false)
     }
 
@@ -4202,7 +4202,7 @@ impl<'a> FileOptions {
         self.java_generic_services = ::std::option::Some(v);
     }
 
-    pub fn get_java_generic_services(&self) -> bool {
+    pub fn get_java_generic_services<'a>(&self) -> bool {
         self.java_generic_services.unwrap_or(false)
     }
 
@@ -4221,7 +4221,7 @@ impl<'a> FileOptions {
         self.py_generic_services = ::std::option::Some(v);
     }
 
-    pub fn get_py_generic_services(&self) -> bool {
+    pub fn get_py_generic_services<'a>(&self) -> bool {
         self.py_generic_services.unwrap_or(false)
     }
 
@@ -4237,7 +4237,7 @@ impl<'a> FileOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4246,7 +4246,7 @@ impl<'a> FileOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -4727,7 +4727,7 @@ pub struct MessageOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> MessageOptions {
+impl MessageOptions {
     pub fn new() -> MessageOptions {
         ::std::default::Default::default()
     }
@@ -4765,7 +4765,7 @@ impl<'a> MessageOptions {
         self.message_set_wire_format = ::std::option::Some(v);
     }
 
-    pub fn get_message_set_wire_format(&self) -> bool {
+    pub fn get_message_set_wire_format<'a>(&self) -> bool {
         self.message_set_wire_format.unwrap_or(false)
     }
 
@@ -4784,7 +4784,7 @@ impl<'a> MessageOptions {
         self.no_standard_descriptor_accessor = ::std::option::Some(v);
     }
 
-    pub fn get_no_standard_descriptor_accessor(&self) -> bool {
+    pub fn get_no_standard_descriptor_accessor<'a>(&self) -> bool {
         self.no_standard_descriptor_accessor.unwrap_or(false)
     }
 
@@ -4800,7 +4800,7 @@ impl<'a> MessageOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4809,7 +4809,7 @@ impl<'a> MessageOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -5021,7 +5021,7 @@ pub struct FieldOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> FieldOptions {
+impl FieldOptions {
     pub fn new() -> FieldOptions {
         ::std::default::Default::default()
     }
@@ -5063,7 +5063,7 @@ impl<'a> FieldOptions {
         self.ctype = ::std::option::Some(v);
     }
 
-    pub fn get_ctype(&self) -> FieldOptions_CType {
+    pub fn get_ctype<'a>(&self) -> FieldOptions_CType {
         self.ctype.unwrap_or(FieldOptions_CType::STRING)
     }
 
@@ -5082,7 +5082,7 @@ impl<'a> FieldOptions {
         self.packed = ::std::option::Some(v);
     }
 
-    pub fn get_packed(&self) -> bool {
+    pub fn get_packed<'a>(&self) -> bool {
         self.packed.unwrap_or(false)
     }
 
@@ -5101,7 +5101,7 @@ impl<'a> FieldOptions {
         self.lazy = ::std::option::Some(v);
     }
 
-    pub fn get_lazy(&self) -> bool {
+    pub fn get_lazy<'a>(&self) -> bool {
         self.lazy.unwrap_or(false)
     }
 
@@ -5120,7 +5120,7 @@ impl<'a> FieldOptions {
         self.deprecated = ::std::option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
+    pub fn get_deprecated<'a>(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -5141,7 +5141,7 @@ impl<'a> FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_experimental_map_key(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_experimental_map_key<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.experimental_map_key.is_none() {
             self.experimental_map_key.set_default();
         };
@@ -5153,7 +5153,7 @@ impl<'a> FieldOptions {
         self.experimental_map_key.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_experimental_map_key(&'a self) -> &'a str {
+    pub fn get_experimental_map_key<'a>(&'a self) -> &'a str {
         match self.experimental_map_key.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -5175,7 +5175,7 @@ impl<'a> FieldOptions {
         self.weak = ::std::option::Some(v);
     }
 
-    pub fn get_weak(&self) -> bool {
+    pub fn get_weak<'a>(&self) -> bool {
         self.weak.unwrap_or(false)
     }
 
@@ -5191,7 +5191,7 @@ impl<'a> FieldOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5200,7 +5200,7 @@ impl<'a> FieldOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -5578,7 +5578,7 @@ pub struct EnumOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> EnumOptions {
+impl EnumOptions {
     pub fn new() -> EnumOptions {
         ::std::default::Default::default()
     }
@@ -5615,7 +5615,7 @@ impl<'a> EnumOptions {
         self.allow_alias = ::std::option::Some(v);
     }
 
-    pub fn get_allow_alias(&self) -> bool {
+    pub fn get_allow_alias<'a>(&self) -> bool {
         self.allow_alias.unwrap_or(true)
     }
 
@@ -5631,7 +5631,7 @@ impl<'a> EnumOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5640,7 +5640,7 @@ impl<'a> EnumOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -5812,7 +5812,7 @@ pub struct EnumValueOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> EnumValueOptions {
+impl EnumValueOptions {
     pub fn new() -> EnumValueOptions {
         ::std::default::Default::default()
     }
@@ -5845,7 +5845,7 @@ impl<'a> EnumValueOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5854,7 +5854,7 @@ impl<'a> EnumValueOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -5992,7 +5992,7 @@ pub struct ServiceOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> ServiceOptions {
+impl ServiceOptions {
     pub fn new() -> ServiceOptions {
         ::std::default::Default::default()
     }
@@ -6025,7 +6025,7 @@ impl<'a> ServiceOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -6034,7 +6034,7 @@ impl<'a> ServiceOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -6172,7 +6172,7 @@ pub struct MethodOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> MethodOptions {
+impl MethodOptions {
     pub fn new() -> MethodOptions {
         ::std::default::Default::default()
     }
@@ -6205,7 +6205,7 @@ impl<'a> MethodOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -6214,7 +6214,7 @@ impl<'a> MethodOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
         self.uninterpreted_option.as_slice()
     }
 }
@@ -6358,7 +6358,7 @@ pub struct UninterpretedOption {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> UninterpretedOption {
+impl UninterpretedOption {
     pub fn new() -> UninterpretedOption {
         ::std::default::Default::default()
     }
@@ -6397,7 +6397,7 @@ impl<'a> UninterpretedOption {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_name(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
         &mut self.name
     }
 
@@ -6406,7 +6406,7 @@ impl<'a> UninterpretedOption {
         ::std::mem::replace(&mut self.name, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_name(&'a self) -> &'a [UninterpretedOption_NamePart] {
+    pub fn get_name<'a>(&'a self) -> &'a [UninterpretedOption_NamePart] {
         self.name.as_slice()
     }
 
@@ -6427,7 +6427,7 @@ impl<'a> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_identifier_value(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_identifier_value<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.identifier_value.is_none() {
             self.identifier_value.set_default();
         };
@@ -6439,7 +6439,7 @@ impl<'a> UninterpretedOption {
         self.identifier_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_identifier_value(&'a self) -> &'a str {
+    pub fn get_identifier_value<'a>(&'a self) -> &'a str {
         match self.identifier_value.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -6461,7 +6461,7 @@ impl<'a> UninterpretedOption {
         self.positive_int_value = ::std::option::Some(v);
     }
 
-    pub fn get_positive_int_value(&self) -> u64 {
+    pub fn get_positive_int_value<'a>(&self) -> u64 {
         self.positive_int_value.unwrap_or(0)
     }
 
@@ -6480,7 +6480,7 @@ impl<'a> UninterpretedOption {
         self.negative_int_value = ::std::option::Some(v);
     }
 
-    pub fn get_negative_int_value(&self) -> i64 {
+    pub fn get_negative_int_value<'a>(&self) -> i64 {
         self.negative_int_value.unwrap_or(0)
     }
 
@@ -6499,7 +6499,7 @@ impl<'a> UninterpretedOption {
         self.double_value = ::std::option::Some(v);
     }
 
-    pub fn get_double_value(&self) -> f64 {
+    pub fn get_double_value<'a>(&self) -> f64 {
         self.double_value.unwrap_or(0.)
     }
 
@@ -6520,7 +6520,7 @@ impl<'a> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_value(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
+    pub fn mut_string_value<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
         if self.string_value.is_none() {
             self.string_value.set_default();
         };
@@ -6532,7 +6532,7 @@ impl<'a> UninterpretedOption {
         self.string_value.take().unwrap_or_else(|| ::std::vec::Vec::new())
     }
 
-    pub fn get_string_value(&'a self) -> &'a [u8] {
+    pub fn get_string_value<'a>(&'a self) -> &'a [u8] {
         match self.string_value.as_ref() {
             Some(v) => v.as_slice(),
             None => [].as_slice(),
@@ -6556,7 +6556,7 @@ impl<'a> UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_aggregate_value(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_aggregate_value<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.aggregate_value.is_none() {
             self.aggregate_value.set_default();
         };
@@ -6568,7 +6568,7 @@ impl<'a> UninterpretedOption {
         self.aggregate_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_aggregate_value(&'a self) -> &'a str {
+    pub fn get_aggregate_value<'a>(&'a self) -> &'a str {
         match self.aggregate_value.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -6914,7 +6914,7 @@ pub struct UninterpretedOption_NamePart {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> UninterpretedOption_NamePart {
+impl UninterpretedOption_NamePart {
     pub fn new() -> UninterpretedOption_NamePart {
         ::std::default::Default::default()
     }
@@ -6953,7 +6953,7 @@ impl<'a> UninterpretedOption_NamePart {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name_part(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name_part<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name_part.is_none() {
             self.name_part.set_default();
         };
@@ -6965,7 +6965,7 @@ impl<'a> UninterpretedOption_NamePart {
         self.name_part.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name_part(&'a self) -> &'a str {
+    pub fn get_name_part<'a>(&'a self) -> &'a str {
         match self.name_part.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -6987,7 +6987,7 @@ impl<'a> UninterpretedOption_NamePart {
         self.is_extension = ::std::option::Some(v);
     }
 
-    pub fn get_is_extension(&self) -> bool {
+    pub fn get_is_extension<'a>(&self) -> bool {
         self.is_extension.unwrap_or(false)
     }
 }
@@ -7162,7 +7162,7 @@ pub struct SourceCodeInfo {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> SourceCodeInfo {
+impl SourceCodeInfo {
     pub fn new() -> SourceCodeInfo {
         ::std::default::Default::default()
     }
@@ -7195,7 +7195,7 @@ impl<'a> SourceCodeInfo {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_location(&'a mut self) -> &'a mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
+    pub fn mut_location<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
         &mut self.location
     }
 
@@ -7204,7 +7204,7 @@ impl<'a> SourceCodeInfo {
         ::std::mem::replace(&mut self.location, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_location(&'a self) -> &'a [SourceCodeInfo_Location] {
+    pub fn get_location<'a>(&'a self) -> &'a [SourceCodeInfo_Location] {
         self.location.as_slice()
     }
 }
@@ -7345,7 +7345,7 @@ pub struct SourceCodeInfo_Location {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> SourceCodeInfo_Location {
+impl SourceCodeInfo_Location {
     pub fn new() -> SourceCodeInfo_Location {
         ::std::default::Default::default()
     }
@@ -7381,7 +7381,7 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_path(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_path<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.path
     }
 
@@ -7390,7 +7390,7 @@ impl<'a> SourceCodeInfo_Location {
         ::std::mem::replace(&mut self.path, ::std::vec::Vec::new())
     }
 
-    pub fn get_path(&'a self) -> &'a [i32] {
+    pub fn get_path<'a>(&'a self) -> &'a [i32] {
         self.path.as_slice()
     }
 
@@ -7406,7 +7406,7 @@ impl<'a> SourceCodeInfo_Location {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_span(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_span<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
         &mut self.span
     }
 
@@ -7415,7 +7415,7 @@ impl<'a> SourceCodeInfo_Location {
         ::std::mem::replace(&mut self.span, ::std::vec::Vec::new())
     }
 
-    pub fn get_span(&'a self) -> &'a [i32] {
+    pub fn get_span<'a>(&'a self) -> &'a [i32] {
         self.span.as_slice()
     }
 
@@ -7436,7 +7436,7 @@ impl<'a> SourceCodeInfo_Location {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_leading_comments(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_leading_comments<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.leading_comments.is_none() {
             self.leading_comments.set_default();
         };
@@ -7448,7 +7448,7 @@ impl<'a> SourceCodeInfo_Location {
         self.leading_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_leading_comments(&'a self) -> &'a str {
+    pub fn get_leading_comments<'a>(&'a self) -> &'a str {
         match self.leading_comments.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -7472,7 +7472,7 @@ impl<'a> SourceCodeInfo_Location {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_trailing_comments(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_trailing_comments<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.trailing_comments.is_none() {
             self.trailing_comments.set_default();
         };
@@ -7484,7 +7484,7 @@ impl<'a> SourceCodeInfo_Location {
         self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_trailing_comments(&'a self) -> &'a str {
+    pub fn get_trailing_comments<'a>(&'a self) -> &'a str {
         match self.trailing_comments.as_ref() {
             Some(v) => v.as_slice(),
             None => "",

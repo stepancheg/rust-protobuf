@@ -34,7 +34,7 @@ pub struct CodeGeneratorRequest {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> CodeGeneratorRequest {
+impl CodeGeneratorRequest {
     pub fn new() -> CodeGeneratorRequest {
         ::std::default::Default::default()
     }
@@ -69,7 +69,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file_to_generate(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_file_to_generate<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.file_to_generate
     }
 
@@ -78,7 +78,7 @@ impl<'a> CodeGeneratorRequest {
         ::std::mem::replace(&mut self.file_to_generate, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_file_to_generate(&'a self) -> &'a [::std::string::String] {
+    pub fn get_file_to_generate<'a>(&'a self) -> &'a [::std::string::String] {
         self.file_to_generate.as_slice()
     }
 
@@ -99,7 +99,7 @@ impl<'a> CodeGeneratorRequest {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_parameter(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_parameter<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.parameter.is_none() {
             self.parameter.set_default();
         };
@@ -111,7 +111,7 @@ impl<'a> CodeGeneratorRequest {
         self.parameter.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_parameter(&'a self) -> &'a str {
+    pub fn get_parameter<'a>(&'a self) -> &'a str {
         match self.parameter.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -130,7 +130,7 @@ impl<'a> CodeGeneratorRequest {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
+    pub fn mut_proto_file<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
         &mut self.proto_file
     }
 
@@ -139,7 +139,7 @@ impl<'a> CodeGeneratorRequest {
         ::std::mem::replace(&mut self.proto_file, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_proto_file(&'a self) -> &'a [FileDescriptorProto] {
+    pub fn get_proto_file<'a>(&'a self) -> &'a [FileDescriptorProto] {
         self.proto_file.as_slice()
     }
 }
@@ -346,7 +346,7 @@ pub struct CodeGeneratorResponse {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> CodeGeneratorResponse {
+impl CodeGeneratorResponse {
     pub fn new() -> CodeGeneratorResponse {
         ::std::default::Default::default()
     }
@@ -385,7 +385,7 @@ impl<'a> CodeGeneratorResponse {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_error(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_error<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.error.is_none() {
             self.error.set_default();
         };
@@ -397,7 +397,7 @@ impl<'a> CodeGeneratorResponse {
         self.error.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_error(&'a self) -> &'a str {
+    pub fn get_error<'a>(&'a self) -> &'a str {
         match self.error.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -416,7 +416,7 @@ impl<'a> CodeGeneratorResponse {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&'a mut self) -> &'a mut ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
+    pub fn mut_file<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
         &mut self.file
     }
 
@@ -425,7 +425,7 @@ impl<'a> CodeGeneratorResponse {
         ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_file(&'a self) -> &'a [CodeGeneratorResponse_File] {
+    pub fn get_file<'a>(&'a self) -> &'a [CodeGeneratorResponse_File] {
         self.file.as_slice()
     }
 }
@@ -599,7 +599,7 @@ pub struct CodeGeneratorResponse_File {
     cached_size: ::std::cell::Cell<u32>,
 }
 
-impl<'a> CodeGeneratorResponse_File {
+impl CodeGeneratorResponse_File {
     pub fn new() -> CodeGeneratorResponse_File {
         ::std::default::Default::default()
     }
@@ -639,7 +639,7 @@ impl<'a> CodeGeneratorResponse_File {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -651,7 +651,7 @@ impl<'a> CodeGeneratorResponse_File {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&'a self) -> &'a str {
+    pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -675,7 +675,7 @@ impl<'a> CodeGeneratorResponse_File {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_insertion_point(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_insertion_point<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.insertion_point.is_none() {
             self.insertion_point.set_default();
         };
@@ -687,7 +687,7 @@ impl<'a> CodeGeneratorResponse_File {
         self.insertion_point.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_insertion_point(&'a self) -> &'a str {
+    pub fn get_insertion_point<'a>(&'a self) -> &'a str {
         match self.insertion_point.as_ref() {
             Some(v) => v.as_slice(),
             None => "",
@@ -711,7 +711,7 @@ impl<'a> CodeGeneratorResponse_File {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_content(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_content<'a>(&'a mut self) -> &'a mut ::std::string::String {
         if self.content.is_none() {
             self.content.set_default();
         };
@@ -723,7 +723,7 @@ impl<'a> CodeGeneratorResponse_File {
         self.content.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_content(&'a self) -> &'a str {
+    pub fn get_content<'a>(&'a self) -> &'a str {
         match self.content.as_ref() {
             Some(v) => v.as_slice(),
             None => "",

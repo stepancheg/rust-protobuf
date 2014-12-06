@@ -1016,7 +1016,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn impl_self_block<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
-        self.expr_block(format!("impl<'a> {}", name.as_slice()), cb);
+        self.expr_block(format!("impl {}", name.as_slice()), cb);
     }
 
     fn impl_for_block<S1 : Str, S2 : Str>(&self, tr: S1, ty: S2, cb: |&mut IndentWriter|) {
@@ -1375,7 +1375,8 @@ fn write_message_field_get(w: &mut IndentWriter) {
         false => "&self",
     };
     let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
-    w.pub_fn(format!("get_{}({}) -> {}", w.field().name, self_param, get_xxx_return_type_str),
+    // TODO: 'a is not needed when function does not return a reference
+    w.pub_fn(format!("get_{}<'a>({}) -> {}", w.field().name, self_param, get_xxx_return_type_str),
     |w| {
         if !w.field().repeated {
             if w.field().field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
@@ -1436,7 +1437,8 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
         if !w.field().repeated {
             w.comment("If field is not initialized, it is initialized with default value first.");
         }
-        w.pub_fn(format!("mut_{}(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
+        // TODO: 'a is not needed when function does not return a reference
+        w.pub_fn(format!("mut_{}<'a>(&'a mut self) -> {}", w.field().name, mut_xxx_return_type.mut_ref_str("a")),
         |w| {
             if !w.field().repeated {
                 w.if_self_field_is_none(|w| {
