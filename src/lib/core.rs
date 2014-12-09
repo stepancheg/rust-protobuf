@@ -19,7 +19,9 @@ use stream::with_coded_output_stream_to_bytes;
 use error::ProtobufResult;
 
 
-pub trait Message : PartialEq + Clone + Default + fmt::Show + Clear {
+pub trait Message : PartialEq + Default + fmt::Show + Clear {
+    // also all generated Message types implement Clone trait
+
     fn new() -> Self;
     // all required fields set
     fn is_initialized(&self) -> bool;
