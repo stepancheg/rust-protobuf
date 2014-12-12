@@ -77,7 +77,7 @@ impl ::protobuf::Message for FileDescriptorSet {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.file.push_default();
                     try!(is.merge_message(tmp))
@@ -88,7 +88,7 @@ impl ::protobuf::Message for FileDescriptorSet {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -110,7 +110,7 @@ impl ::protobuf::Message for FileDescriptorSet {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -549,21 +549,21 @@ impl ::protobuf::Message for FileDescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.package.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.dependency.push_default();
                     try!(is.read_string_into(tmp))
@@ -577,7 +577,7 @@ impl ::protobuf::Message for FileDescriptorProto {
                             self.public_dependency.push(try!(is.read_int32()));
                         },
                         _ => {
-                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         },
                     };
                 },
@@ -590,48 +590,48 @@ impl ::protobuf::Message for FileDescriptorProto {
                             self.weak_dependency.push(try!(is.read_int32()));
                         },
                         _ => {
-                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         },
                     };
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.message_type.push_default();
                     try!(is.merge_message(tmp))
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.enum_type.push_default();
                     try!(is.merge_message(tmp))
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.service.push_default();
                     try!(is.merge_message(tmp))
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.extension.push_default();
                     try!(is.merge_message(tmp))
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.source_code_info.set_default();
                     try!(is.merge_message(tmp))
@@ -642,7 +642,7 @@ impl ::protobuf::Message for FileDescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -739,7 +739,7 @@ impl ::protobuf::Message for FileDescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -1115,49 +1115,49 @@ impl ::protobuf::Message for DescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.field.push_default();
                     try!(is.merge_message(tmp))
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.extension.push_default();
                     try!(is.merge_message(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.nested_type.push_default();
                     try!(is.merge_message(tmp))
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.enum_type.push_default();
                     try!(is.merge_message(tmp))
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.extension_range.push_default();
                     try!(is.merge_message(tmp))
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
@@ -1168,7 +1168,7 @@ impl ::protobuf::Message for DescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -1241,7 +1241,7 @@ impl ::protobuf::Message for DescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -1362,8 +1362,8 @@ impl DescriptorProto_ExtensionRange {
         unsafe {
             instance.get(|| {
                 DescriptorProto_ExtensionRange {
-                    start: ::std::option::None,
-                    end: ::std::option::None,
+                    start: ::std::option::Option::None,
+                    end: ::std::option::Option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -1374,7 +1374,7 @@ impl DescriptorProto_ExtensionRange {
     // optional int32 start = 1;
 
     pub fn clear_start(&mut self) {
-        self.start = ::std::option::None;
+        self.start = ::std::option::Option::None;
     }
 
     pub fn has_start(&self) -> bool {
@@ -1383,7 +1383,7 @@ impl DescriptorProto_ExtensionRange {
 
     // Param is passed by value, moved
     pub fn set_start(&mut self, v: i32) {
-        self.start = ::std::option::Some(v);
+        self.start = ::std::option::Option::Some(v);
     }
 
     pub fn get_start<'a>(&self) -> i32 {
@@ -1393,7 +1393,7 @@ impl DescriptorProto_ExtensionRange {
     // optional int32 end = 2;
 
     pub fn clear_end(&mut self) {
-        self.end = ::std::option::None;
+        self.end = ::std::option::Option::None;
     }
 
     pub fn has_end(&self) -> bool {
@@ -1402,7 +1402,7 @@ impl DescriptorProto_ExtensionRange {
 
     // Param is passed by value, moved
     pub fn set_end(&mut self, v: i32) {
-        self.end = ::std::option::Some(v);
+        self.end = ::std::option::Option::Some(v);
     }
 
     pub fn get_end<'a>(&self) -> i32 {
@@ -1425,17 +1425,17 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.start = ::std::option::Some(tmp);
+                    self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.end = ::std::option::Some(tmp);
+                    self.end = ::std::option::Option::Some(tmp);
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1443,7 +1443,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -1468,7 +1468,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
             try!(os.write_int32(2, v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -1566,9 +1566,9 @@ impl FieldDescriptorProto {
             instance.get(|| {
                 FieldDescriptorProto {
                     name: ::protobuf::SingularField::none(),
-                    number: ::std::option::None,
-                    label: ::std::option::None,
-                    field_type: ::std::option::None,
+                    number: ::std::option::Option::None,
+                    label: ::std::option::Option::None,
+                    field_type: ::std::option::Option::None,
                     type_name: ::protobuf::SingularField::none(),
                     extendee: ::protobuf::SingularField::none(),
                     default_value: ::protobuf::SingularField::none(),
@@ -1619,7 +1619,7 @@ impl FieldDescriptorProto {
     // optional int32 number = 3;
 
     pub fn clear_number(&mut self) {
-        self.number = ::std::option::None;
+        self.number = ::std::option::Option::None;
     }
 
     pub fn has_number(&self) -> bool {
@@ -1628,7 +1628,7 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_number(&mut self, v: i32) {
-        self.number = ::std::option::Some(v);
+        self.number = ::std::option::Option::Some(v);
     }
 
     pub fn get_number<'a>(&self) -> i32 {
@@ -1638,7 +1638,7 @@ impl FieldDescriptorProto {
     // optional .google.protobuf.FieldDescriptorProto.Label label = 4;
 
     pub fn clear_label(&mut self) {
-        self.label = ::std::option::None;
+        self.label = ::std::option::Option::None;
     }
 
     pub fn has_label(&self) -> bool {
@@ -1647,7 +1647,7 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_label(&mut self, v: FieldDescriptorProto_Label) {
-        self.label = ::std::option::Some(v);
+        self.label = ::std::option::Option::Some(v);
     }
 
     pub fn get_label<'a>(&self) -> FieldDescriptorProto_Label {
@@ -1657,7 +1657,7 @@ impl FieldDescriptorProto {
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
 
     pub fn clear_field_type(&mut self) {
-        self.field_type = ::std::option::None;
+        self.field_type = ::std::option::Option::None;
     }
 
     pub fn has_field_type(&self) -> bool {
@@ -1666,7 +1666,7 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_field_type(&mut self, v: FieldDescriptorProto_Type) {
-        self.field_type = ::std::option::Some(v);
+        self.field_type = ::std::option::Option::Some(v);
     }
 
     pub fn get_field_type<'a>(&self) -> FieldDescriptorProto_Type {
@@ -1830,56 +1830,56 @@ impl ::protobuf::Message for FieldDescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.number = ::std::option::Some(tmp);
+                    self.number = ::std::option::Option::Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_enum());
-                    self.label = ::std::option::Some(tmp);
+                    self.label = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_enum());
-                    self.field_type = ::std::option::Some(tmp);
+                    self.field_type = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.type_name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.extendee.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.default_value.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
@@ -1890,7 +1890,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -1954,7 +1954,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -2096,25 +2096,25 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 
     fn from_i32(value: i32) -> ::std::option::Option<FieldDescriptorProto_Type> {
         match value {
-            1 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_DOUBLE),
-            2 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_FLOAT),
-            3 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_INT64),
-            4 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_UINT64),
-            5 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_INT32),
-            6 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_FIXED64),
-            7 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_FIXED32),
-            8 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_BOOL),
-            9 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_STRING),
-            10 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_GROUP),
-            11 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_MESSAGE),
-            12 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_BYTES),
-            13 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_UINT32),
-            14 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_ENUM),
-            15 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SFIXED32),
-            16 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SFIXED64),
-            17 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SINT32),
-            18 => ::std::option::Some(FieldDescriptorProto_Type::TYPE_SINT64),
-            _ => ::std::option::None
+            1 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_DOUBLE),
+            2 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_FLOAT),
+            3 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_INT64),
+            4 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_UINT64),
+            5 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_INT32),
+            6 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_FIXED64),
+            7 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_FIXED32),
+            8 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_BOOL),
+            9 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_STRING),
+            10 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_GROUP),
+            11 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_MESSAGE),
+            12 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_BYTES),
+            13 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_UINT32),
+            14 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_ENUM),
+            15 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SFIXED32),
+            16 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SFIXED64),
+            17 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SINT32),
+            18 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SINT64),
+            _ => ::std::option::Option::None
         }
     }
 
@@ -2146,10 +2146,10 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 
     fn from_i32(value: i32) -> ::std::option::Option<FieldDescriptorProto_Label> {
         match value {
-            1 => ::std::option::Some(FieldDescriptorProto_Label::LABEL_OPTIONAL),
-            2 => ::std::option::Some(FieldDescriptorProto_Label::LABEL_REQUIRED),
-            3 => ::std::option::Some(FieldDescriptorProto_Label::LABEL_REPEATED),
-            _ => ::std::option::None
+            1 => ::std::option::Option::Some(FieldDescriptorProto_Label::LABEL_OPTIONAL),
+            2 => ::std::option::Option::Some(FieldDescriptorProto_Label::LABEL_REQUIRED),
+            3 => ::std::option::Option::Some(FieldDescriptorProto_Label::LABEL_REPEATED),
+            _ => ::std::option::Option::None
         }
     }
 
@@ -2308,21 +2308,21 @@ impl ::protobuf::Message for EnumDescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.value.push_default();
                     try!(is.merge_message(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
@@ -2333,7 +2333,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -2370,7 +2370,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -2469,7 +2469,7 @@ impl EnumValueDescriptorProto {
             instance.get(|| {
                 EnumValueDescriptorProto {
                     name: ::protobuf::SingularField::none(),
-                    number: ::std::option::None,
+                    number: ::std::option::Option::None,
                     options: ::protobuf::SingularPtrField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
@@ -2517,7 +2517,7 @@ impl EnumValueDescriptorProto {
     // optional int32 number = 2;
 
     pub fn clear_number(&mut self) {
-        self.number = ::std::option::None;
+        self.number = ::std::option::Option::None;
     }
 
     pub fn has_number(&self) -> bool {
@@ -2526,7 +2526,7 @@ impl EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_number(&mut self, v: i32) {
-        self.number = ::std::option::Some(v);
+        self.number = ::std::option::Option::Some(v);
     }
 
     pub fn get_number<'a>(&self) -> i32 {
@@ -2582,21 +2582,21 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.number = ::std::option::Some(tmp);
+                    self.number = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
@@ -2607,7 +2607,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -2641,7 +2641,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -2860,21 +2860,21 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.method.push_default();
                     try!(is.merge_message(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
@@ -2885,7 +2885,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -2922,7 +2922,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -3189,28 +3189,28 @@ impl ::protobuf::Message for MethodDescriptorProto {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.input_type.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.output_type.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.options.set_default();
                     try!(is.merge_message(tmp))
@@ -3221,7 +3221,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -3261,7 +3261,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -3376,13 +3376,13 @@ impl FileOptions {
                 FileOptions {
                     java_package: ::protobuf::SingularField::none(),
                     java_outer_classname: ::protobuf::SingularField::none(),
-                    java_multiple_files: ::std::option::None,
-                    java_generate_equals_and_hash: ::std::option::None,
-                    optimize_for: ::std::option::None,
+                    java_multiple_files: ::std::option::Option::None,
+                    java_generate_equals_and_hash: ::std::option::Option::None,
+                    optimize_for: ::std::option::Option::None,
                     go_package: ::protobuf::SingularField::none(),
-                    cc_generic_services: ::std::option::None,
-                    java_generic_services: ::std::option::None,
-                    py_generic_services: ::std::option::None,
+                    cc_generic_services: ::std::option::Option::None,
+                    java_generic_services: ::std::option::Option::None,
+                    py_generic_services: ::std::option::Option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
@@ -3466,7 +3466,7 @@ impl FileOptions {
     // optional bool java_multiple_files = 10;
 
     pub fn clear_java_multiple_files(&mut self) {
-        self.java_multiple_files = ::std::option::None;
+        self.java_multiple_files = ::std::option::Option::None;
     }
 
     pub fn has_java_multiple_files(&self) -> bool {
@@ -3475,7 +3475,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_multiple_files(&mut self, v: bool) {
-        self.java_multiple_files = ::std::option::Some(v);
+        self.java_multiple_files = ::std::option::Option::Some(v);
     }
 
     pub fn get_java_multiple_files<'a>(&self) -> bool {
@@ -3485,7 +3485,7 @@ impl FileOptions {
     // optional bool java_generate_equals_and_hash = 20;
 
     pub fn clear_java_generate_equals_and_hash(&mut self) {
-        self.java_generate_equals_and_hash = ::std::option::None;
+        self.java_generate_equals_and_hash = ::std::option::Option::None;
     }
 
     pub fn has_java_generate_equals_and_hash(&self) -> bool {
@@ -3494,7 +3494,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_generate_equals_and_hash(&mut self, v: bool) {
-        self.java_generate_equals_and_hash = ::std::option::Some(v);
+        self.java_generate_equals_and_hash = ::std::option::Option::Some(v);
     }
 
     pub fn get_java_generate_equals_and_hash<'a>(&self) -> bool {
@@ -3504,7 +3504,7 @@ impl FileOptions {
     // optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
 
     pub fn clear_optimize_for(&mut self) {
-        self.optimize_for = ::std::option::None;
+        self.optimize_for = ::std::option::Option::None;
     }
 
     pub fn has_optimize_for(&self) -> bool {
@@ -3513,7 +3513,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_optimize_for(&mut self, v: FileOptions_OptimizeMode) {
-        self.optimize_for = ::std::option::Some(v);
+        self.optimize_for = ::std::option::Option::Some(v);
     }
 
     pub fn get_optimize_for<'a>(&self) -> FileOptions_OptimizeMode {
@@ -3559,7 +3559,7 @@ impl FileOptions {
     // optional bool cc_generic_services = 16;
 
     pub fn clear_cc_generic_services(&mut self) {
-        self.cc_generic_services = ::std::option::None;
+        self.cc_generic_services = ::std::option::Option::None;
     }
 
     pub fn has_cc_generic_services(&self) -> bool {
@@ -3568,7 +3568,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_cc_generic_services(&mut self, v: bool) {
-        self.cc_generic_services = ::std::option::Some(v);
+        self.cc_generic_services = ::std::option::Option::Some(v);
     }
 
     pub fn get_cc_generic_services<'a>(&self) -> bool {
@@ -3578,7 +3578,7 @@ impl FileOptions {
     // optional bool java_generic_services = 17;
 
     pub fn clear_java_generic_services(&mut self) {
-        self.java_generic_services = ::std::option::None;
+        self.java_generic_services = ::std::option::Option::None;
     }
 
     pub fn has_java_generic_services(&self) -> bool {
@@ -3587,7 +3587,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_generic_services(&mut self, v: bool) {
-        self.java_generic_services = ::std::option::Some(v);
+        self.java_generic_services = ::std::option::Option::Some(v);
     }
 
     pub fn get_java_generic_services<'a>(&self) -> bool {
@@ -3597,7 +3597,7 @@ impl FileOptions {
     // optional bool py_generic_services = 18;
 
     pub fn clear_py_generic_services(&mut self) {
-        self.py_generic_services = ::std::option::None;
+        self.py_generic_services = ::std::option::Option::None;
     }
 
     pub fn has_py_generic_services(&self) -> bool {
@@ -3606,7 +3606,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_py_generic_services(&mut self, v: bool) {
-        self.py_generic_services = ::std::option::Some(v);
+        self.py_generic_services = ::std::option::Option::Some(v);
     }
 
     pub fn get_py_generic_services<'a>(&self) -> bool {
@@ -3654,70 +3654,70 @@ impl ::protobuf::Message for FileOptions {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.java_package.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.java_outer_classname.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.java_multiple_files = ::std::option::Some(tmp);
+                    self.java_multiple_files = ::std::option::Option::Some(tmp);
                 },
                 20 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.java_generate_equals_and_hash = ::std::option::Some(tmp);
+                    self.java_generate_equals_and_hash = ::std::option::Option::Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_enum());
-                    self.optimize_for = ::std::option::Some(tmp);
+                    self.optimize_for = ::std::option::Option::Some(tmp);
                 },
                 11 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.go_package.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 16 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.cc_generic_services = ::std::option::Some(tmp);
+                    self.cc_generic_services = ::std::option::Option::Some(tmp);
                 },
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.java_generic_services = ::std::option::Some(tmp);
+                    self.java_generic_services = ::std::option::Option::Some(tmp);
                 },
                 18 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.py_generic_services = ::std::option::Some(tmp);
+                    self.py_generic_services = ::std::option::Option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -3728,7 +3728,7 @@ impl ::protobuf::Message for FileOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -3804,7 +3804,7 @@ impl ::protobuf::Message for FileOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -3944,10 +3944,10 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
 
     fn from_i32(value: i32) -> ::std::option::Option<FileOptions_OptimizeMode> {
         match value {
-            1 => ::std::option::Some(FileOptions_OptimizeMode::SPEED),
-            2 => ::std::option::Some(FileOptions_OptimizeMode::CODE_SIZE),
-            3 => ::std::option::Some(FileOptions_OptimizeMode::LITE_RUNTIME),
-            _ => ::std::option::None
+            1 => ::std::option::Option::Some(FileOptions_OptimizeMode::SPEED),
+            2 => ::std::option::Option::Some(FileOptions_OptimizeMode::CODE_SIZE),
+            3 => ::std::option::Option::Some(FileOptions_OptimizeMode::LITE_RUNTIME),
+            _ => ::std::option::Option::None
         }
     }
 
@@ -3986,8 +3986,8 @@ impl MessageOptions {
         unsafe {
             instance.get(|| {
                 MessageOptions {
-                    message_set_wire_format: ::std::option::None,
-                    no_standard_descriptor_accessor: ::std::option::None,
+                    message_set_wire_format: ::std::option::Option::None,
+                    no_standard_descriptor_accessor: ::std::option::Option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
@@ -3999,7 +3999,7 @@ impl MessageOptions {
     // optional bool message_set_wire_format = 1;
 
     pub fn clear_message_set_wire_format(&mut self) {
-        self.message_set_wire_format = ::std::option::None;
+        self.message_set_wire_format = ::std::option::Option::None;
     }
 
     pub fn has_message_set_wire_format(&self) -> bool {
@@ -4008,7 +4008,7 @@ impl MessageOptions {
 
     // Param is passed by value, moved
     pub fn set_message_set_wire_format(&mut self, v: bool) {
-        self.message_set_wire_format = ::std::option::Some(v);
+        self.message_set_wire_format = ::std::option::Option::Some(v);
     }
 
     pub fn get_message_set_wire_format<'a>(&self) -> bool {
@@ -4018,7 +4018,7 @@ impl MessageOptions {
     // optional bool no_standard_descriptor_accessor = 2;
 
     pub fn clear_no_standard_descriptor_accessor(&mut self) {
-        self.no_standard_descriptor_accessor = ::std::option::None;
+        self.no_standard_descriptor_accessor = ::std::option::Option::None;
     }
 
     pub fn has_no_standard_descriptor_accessor(&self) -> bool {
@@ -4027,7 +4027,7 @@ impl MessageOptions {
 
     // Param is passed by value, moved
     pub fn set_no_standard_descriptor_accessor(&mut self, v: bool) {
-        self.no_standard_descriptor_accessor = ::std::option::Some(v);
+        self.no_standard_descriptor_accessor = ::std::option::Option::Some(v);
     }
 
     pub fn get_no_standard_descriptor_accessor<'a>(&self) -> bool {
@@ -4075,21 +4075,21 @@ impl ::protobuf::Message for MessageOptions {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.message_set_wire_format = ::std::option::Some(tmp);
+                    self.message_set_wire_format = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.no_standard_descriptor_accessor = ::std::option::Some(tmp);
+                    self.no_standard_descriptor_accessor = ::std::option::Option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -4100,7 +4100,7 @@ impl ::protobuf::Message for MessageOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -4134,7 +4134,7 @@ impl ::protobuf::Message for MessageOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -4236,12 +4236,12 @@ impl FieldOptions {
         unsafe {
             instance.get(|| {
                 FieldOptions {
-                    ctype: ::std::option::None,
-                    packed: ::std::option::None,
-                    lazy: ::std::option::None,
-                    deprecated: ::std::option::None,
+                    ctype: ::std::option::Option::None,
+                    packed: ::std::option::Option::None,
+                    lazy: ::std::option::Option::None,
+                    deprecated: ::std::option::Option::None,
                     experimental_map_key: ::protobuf::SingularField::none(),
-                    weak: ::std::option::None,
+                    weak: ::std::option::Option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
@@ -4253,7 +4253,7 @@ impl FieldOptions {
     // optional .google.protobuf.FieldOptions.CType ctype = 1;
 
     pub fn clear_ctype(&mut self) {
-        self.ctype = ::std::option::None;
+        self.ctype = ::std::option::Option::None;
     }
 
     pub fn has_ctype(&self) -> bool {
@@ -4262,7 +4262,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_ctype(&mut self, v: FieldOptions_CType) {
-        self.ctype = ::std::option::Some(v);
+        self.ctype = ::std::option::Option::Some(v);
     }
 
     pub fn get_ctype<'a>(&self) -> FieldOptions_CType {
@@ -4272,7 +4272,7 @@ impl FieldOptions {
     // optional bool packed = 2;
 
     pub fn clear_packed(&mut self) {
-        self.packed = ::std::option::None;
+        self.packed = ::std::option::Option::None;
     }
 
     pub fn has_packed(&self) -> bool {
@@ -4281,7 +4281,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_packed(&mut self, v: bool) {
-        self.packed = ::std::option::Some(v);
+        self.packed = ::std::option::Option::Some(v);
     }
 
     pub fn get_packed<'a>(&self) -> bool {
@@ -4291,7 +4291,7 @@ impl FieldOptions {
     // optional bool lazy = 5;
 
     pub fn clear_lazy(&mut self) {
-        self.lazy = ::std::option::None;
+        self.lazy = ::std::option::Option::None;
     }
 
     pub fn has_lazy(&self) -> bool {
@@ -4300,7 +4300,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_lazy(&mut self, v: bool) {
-        self.lazy = ::std::option::Some(v);
+        self.lazy = ::std::option::Option::Some(v);
     }
 
     pub fn get_lazy<'a>(&self) -> bool {
@@ -4310,7 +4310,7 @@ impl FieldOptions {
     // optional bool deprecated = 3;
 
     pub fn clear_deprecated(&mut self) {
-        self.deprecated = ::std::option::None;
+        self.deprecated = ::std::option::Option::None;
     }
 
     pub fn has_deprecated(&self) -> bool {
@@ -4319,7 +4319,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_deprecated(&mut self, v: bool) {
-        self.deprecated = ::std::option::Some(v);
+        self.deprecated = ::std::option::Option::Some(v);
     }
 
     pub fn get_deprecated<'a>(&self) -> bool {
@@ -4365,7 +4365,7 @@ impl FieldOptions {
     // optional bool weak = 10;
 
     pub fn clear_weak(&mut self) {
-        self.weak = ::std::option::None;
+        self.weak = ::std::option::Option::None;
     }
 
     pub fn has_weak(&self) -> bool {
@@ -4374,7 +4374,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_weak(&mut self, v: bool) {
-        self.weak = ::std::option::Some(v);
+        self.weak = ::std::option::Option::Some(v);
     }
 
     pub fn get_weak<'a>(&self) -> bool {
@@ -4422,49 +4422,49 @@ impl ::protobuf::Message for FieldOptions {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_enum());
-                    self.ctype = ::std::option::Some(tmp);
+                    self.ctype = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.packed = ::std::option::Some(tmp);
+                    self.packed = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.lazy = ::std::option::Some(tmp);
+                    self.lazy = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.deprecated = ::std::option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.experimental_map_key.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.weak = ::std::option::Some(tmp);
+                    self.weak = ::std::option::Option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -4475,7 +4475,7 @@ impl ::protobuf::Message for FieldOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -4533,7 +4533,7 @@ impl ::protobuf::Message for FieldOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -4652,10 +4652,10 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 
     fn from_i32(value: i32) -> ::std::option::Option<FieldOptions_CType> {
         match value {
-            0 => ::std::option::Some(FieldOptions_CType::STRING),
-            1 => ::std::option::Some(FieldOptions_CType::CORD),
-            2 => ::std::option::Some(FieldOptions_CType::STRING_PIECE),
-            _ => ::std::option::None
+            0 => ::std::option::Option::Some(FieldOptions_CType::STRING),
+            1 => ::std::option::Option::Some(FieldOptions_CType::CORD),
+            2 => ::std::option::Option::Some(FieldOptions_CType::STRING_PIECE),
+            _ => ::std::option::Option::None
         }
     }
 
@@ -4693,7 +4693,7 @@ impl EnumOptions {
         unsafe {
             instance.get(|| {
                 EnumOptions {
-                    allow_alias: ::std::option::None,
+                    allow_alias: ::std::option::Option::None,
                     uninterpreted_option: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
@@ -4705,7 +4705,7 @@ impl EnumOptions {
     // optional bool allow_alias = 2;
 
     pub fn clear_allow_alias(&mut self) {
-        self.allow_alias = ::std::option::None;
+        self.allow_alias = ::std::option::Option::None;
     }
 
     pub fn has_allow_alias(&self) -> bool {
@@ -4714,7 +4714,7 @@ impl EnumOptions {
 
     // Param is passed by value, moved
     pub fn set_allow_alias(&mut self, v: bool) {
-        self.allow_alias = ::std::option::Some(v);
+        self.allow_alias = ::std::option::Option::Some(v);
     }
 
     pub fn get_allow_alias<'a>(&self) -> bool {
@@ -4762,14 +4762,14 @@ impl ::protobuf::Message for EnumOptions {
             match field_number {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.allow_alias = ::std::option::Some(tmp);
+                    self.allow_alias = ::std::option::Option::Some(tmp);
                 },
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -4780,7 +4780,7 @@ impl ::protobuf::Message for EnumOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -4808,7 +4808,7 @@ impl ::protobuf::Message for EnumOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -4946,7 +4946,7 @@ impl ::protobuf::Message for EnumValueOptions {
             match field_number {
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -4957,7 +4957,7 @@ impl ::protobuf::Message for EnumValueOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -4979,7 +4979,7 @@ impl ::protobuf::Message for EnumValueOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -5110,7 +5110,7 @@ impl ::protobuf::Message for ServiceOptions {
             match field_number {
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -5121,7 +5121,7 @@ impl ::protobuf::Message for ServiceOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -5143,7 +5143,7 @@ impl ::protobuf::Message for ServiceOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -5274,7 +5274,7 @@ impl ::protobuf::Message for MethodOptions {
             match field_number {
                 999 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.uninterpreted_option.push_default();
                     try!(is.merge_message(tmp))
@@ -5285,7 +5285,7 @@ impl ::protobuf::Message for MethodOptions {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -5307,7 +5307,7 @@ impl ::protobuf::Message for MethodOptions {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -5397,9 +5397,9 @@ impl UninterpretedOption {
                 UninterpretedOption {
                     name: ::protobuf::RepeatedField::new(),
                     identifier_value: ::protobuf::SingularField::none(),
-                    positive_int_value: ::std::option::None,
-                    negative_int_value: ::std::option::None,
-                    double_value: ::std::option::None,
+                    positive_int_value: ::std::option::Option::None,
+                    negative_int_value: ::std::option::Option::None,
+                    double_value: ::std::option::Option::None,
                     string_value: ::protobuf::SingularField::none(),
                     aggregate_value: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
@@ -5473,7 +5473,7 @@ impl UninterpretedOption {
     // optional uint64 positive_int_value = 4;
 
     pub fn clear_positive_int_value(&mut self) {
-        self.positive_int_value = ::std::option::None;
+        self.positive_int_value = ::std::option::Option::None;
     }
 
     pub fn has_positive_int_value(&self) -> bool {
@@ -5482,7 +5482,7 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_positive_int_value(&mut self, v: u64) {
-        self.positive_int_value = ::std::option::Some(v);
+        self.positive_int_value = ::std::option::Option::Some(v);
     }
 
     pub fn get_positive_int_value<'a>(&self) -> u64 {
@@ -5492,7 +5492,7 @@ impl UninterpretedOption {
     // optional int64 negative_int_value = 5;
 
     pub fn clear_negative_int_value(&mut self) {
-        self.negative_int_value = ::std::option::None;
+        self.negative_int_value = ::std::option::Option::None;
     }
 
     pub fn has_negative_int_value(&self) -> bool {
@@ -5501,7 +5501,7 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_negative_int_value(&mut self, v: i64) {
-        self.negative_int_value = ::std::option::Some(v);
+        self.negative_int_value = ::std::option::Option::Some(v);
     }
 
     pub fn get_negative_int_value<'a>(&self) -> i64 {
@@ -5511,7 +5511,7 @@ impl UninterpretedOption {
     // optional double double_value = 6;
 
     pub fn clear_double_value(&mut self) {
-        self.double_value = ::std::option::None;
+        self.double_value = ::std::option::Option::None;
     }
 
     pub fn has_double_value(&self) -> bool {
@@ -5520,7 +5520,7 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_double_value(&mut self, v: f64) {
-        self.double_value = ::std::option::Some(v);
+        self.double_value = ::std::option::Option::Some(v);
     }
 
     pub fn get_double_value<'a>(&self) -> f64 {
@@ -5615,49 +5615,49 @@ impl ::protobuf::Message for UninterpretedOption {
             match field_number {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name.push_default();
                     try!(is.merge_message(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.identifier_value.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_uint64());
-                    self.positive_int_value = ::std::option::Some(tmp);
+                    self.positive_int_value = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int64());
-                    self.negative_int_value = ::std::option::Some(tmp);
+                    self.negative_int_value = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_double());
-                    self.double_value = ::std::option::Some(tmp);
+                    self.double_value = ::std::option::Option::Some(tmp);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.string_value.set_default();
                     try!(is.read_bytes_into(tmp))
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.aggregate_value.set_default();
                     try!(is.read_string_into(tmp))
@@ -5668,7 +5668,7 @@ impl ::protobuf::Message for UninterpretedOption {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -5726,7 +5726,7 @@ impl ::protobuf::Message for UninterpretedOption {
             try!(os.write_string(8, v.as_slice()));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -5852,7 +5852,7 @@ impl UninterpretedOption_NamePart {
             instance.get(|| {
                 UninterpretedOption_NamePart {
                     name_part: ::protobuf::SingularField::none(),
-                    is_extension: ::std::option::None,
+                    is_extension: ::std::option::Option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -5899,7 +5899,7 @@ impl UninterpretedOption_NamePart {
     // required bool is_extension = 2;
 
     pub fn clear_is_extension(&mut self) {
-        self.is_extension = ::std::option::None;
+        self.is_extension = ::std::option::Option::None;
     }
 
     pub fn has_is_extension(&self) -> bool {
@@ -5908,7 +5908,7 @@ impl UninterpretedOption_NamePart {
 
     // Param is passed by value, moved
     pub fn set_is_extension(&mut self, v: bool) {
-        self.is_extension = ::std::option::Some(v);
+        self.is_extension = ::std::option::Option::Some(v);
     }
 
     pub fn get_is_extension<'a>(&self) -> bool {
@@ -5937,17 +5937,17 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.name_part.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_bool());
-                    self.is_extension = ::std::option::Some(tmp);
+                    self.is_extension = ::std::option::Option::Some(tmp);
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -5955,7 +5955,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -5980,7 +5980,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
             try!(os.write_bool(2, v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -6119,7 +6119,7 @@ impl ::protobuf::Message for SourceCodeInfo {
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.location.push_default();
                     try!(is.merge_message(tmp))
@@ -6130,7 +6130,7 @@ impl ::protobuf::Message for SourceCodeInfo {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -6152,7 +6152,7 @@ impl ::protobuf::Message for SourceCodeInfo {
             try!(v.write_to_with_cached_sizes(os));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -6393,7 +6393,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                             self.path.push(try!(is.read_int32()));
                         },
                         _ => {
-                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         },
                     };
                 },
@@ -6406,20 +6406,20 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                             self.span.push(try!(is.read_int32()));
                         },
                         _ => {
-                            return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                         },
                     };
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.leading_comments.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
+                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = self.trailing_comments.set_default();
                     try!(is.read_string_into(tmp))
@@ -6430,7 +6430,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                 },
             };
         }
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     // Compute sizes of nested messages
@@ -6477,7 +6477,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             try!(os.write_string(4, v.as_slice()));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
-        ::std::result::Ok(())
+        ::std::result::Result::Ok(())
     }
 
     fn get_cached_size(&self) -> u32 {

@@ -1,6 +1,5 @@
 use std::io::Writer;
 use std::io;
-use std::result::Ok;
 
 pub struct VecWriter<'a> {
     vec: &'a mut Vec<u8>,

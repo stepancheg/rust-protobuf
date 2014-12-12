@@ -111,7 +111,7 @@ impl RustType {
             RustType::Bool(..)                       => "false".to_string(),
             RustType::Vec(..)                        => "::std::vec::Vec::new()".to_string(),
             RustType::String                         => "::std::string::String::new()".to_string(),
-            RustType::Option(..)                     => "::std::option::None".to_string(),
+            RustType::Option(..)                     => "::std::option::Option::None".to_string(),
             RustType::SingularField(..)              => "::protobuf::SingularField::none()".to_string(),
             RustType::SingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_string(),
             RustType::RepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
@@ -125,7 +125,7 @@ impl RustType {
 
     fn clear(&self, v: &str) -> String {
         match *self {
-            RustType::Option(..) => format!("{} = ::std::option::None", v),
+            RustType::Option(..) => format!("{} = ::std::option::Option::None", v),
             RustType::Vec(..) |
             RustType::String |
             RustType::RepeatedField(..) |
@@ -138,7 +138,7 @@ impl RustType {
     // wrap value in storage type
     fn wrap_value(&self, value: &str) -> String {
         match *self {
-            RustType::Option(..)           => format!("::std::option::Some({})", value),
+            RustType::Option(..)           => format!("::std::option::Option::Some({})", value),
             RustType::SingularField(..)    => format!("::protobuf::SingularField::some({})", value),
             RustType::SingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
             _ => panic!("not a wrapper type: {}", *self),
@@ -1152,7 +1152,7 @@ impl<'a> IndentWriter<'a> {
         // TODO: write wire type
         let message = "\"unexpected wire type\".to_string()";
         self.write_line(format!(
-                "return ::std::result::Err(::protobuf::ProtobufError::WireError({}));",
+                "return ::std::result::Result::Err(::protobuf::ProtobufError::WireError({}));",
                 message));
     }
 
@@ -1380,7 +1380,7 @@ fn write_message_write_to_with_cached_sizes(w: &mut IndentWriter) {
             write_message_write_field(w);
         });
         w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
-        w.write_line("::std::result::Ok(())");
+        w.write_line("::std::result::Result::Ok(())");
     });
 }
 
@@ -1559,7 +1559,7 @@ fn write_message_merge_from(w: &mut IndentWriter) {
                 });
             });
         });
-        w.write_line("::std::result::Ok(())");
+        w.write_line("::std::result::Result::Ok(())");
     });
 }
 
@@ -1718,10 +1718,10 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
         w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", w.en().type_name), |w| {
             w.match_expr("value", |w| {
                 for value in w.en().values.iter() {
-                    w.write_line(format!("{} => ::std::option::Some({}),",
+                    w.write_line(format!("{} => ::std::option::Option::Some({}),",
                         value.number(), value.rust_name_outer()));
                 }
-                w.write_line(format!("_ => ::std::option::None"));
+                w.write_line(format!("_ => ::std::option::Option::None"));
             });
         });
         if !en.lite_runtime {
