@@ -250,6 +250,8 @@ pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
 }
 
+impl Copy for EnumValueDescriptor {}
+
 impl EnumValueDescriptor {
     pub fn name(&self) -> &'static str {
         self.proto.get_name()

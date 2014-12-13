@@ -2088,7 +2088,6 @@ pub enum FieldDescriptorProto_Type {
     TYPE_SINT64 = 18,
 }
 
-
 impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     fn value(&self) -> i32 {
         *self as i32
@@ -2131,13 +2130,15 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     }
 }
 
+impl ::std::kinds::Copy for FieldDescriptorProto_Type {
+}
+
 #[deriving(Clone,PartialEq,Eq,Show)]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
     LABEL_REQUIRED = 2,
     LABEL_REPEATED = 3,
 }
-
 
 impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     fn value(&self) -> i32 {
@@ -2164,6 +2165,9 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
             })
         }
     }
+}
+
+impl ::std::kinds::Copy for FieldDescriptorProto_Label {
 }
 
 #[deriving(Clone,Default)]
@@ -3936,7 +3940,6 @@ pub enum FileOptions_OptimizeMode {
     LITE_RUNTIME = 3,
 }
 
-
 impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     fn value(&self) -> i32 {
         *self as i32
@@ -3962,6 +3965,9 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
             })
         }
     }
+}
+
+impl ::std::kinds::Copy for FileOptions_OptimizeMode {
 }
 
 #[deriving(Clone,Default)]
@@ -4644,7 +4650,6 @@ pub enum FieldOptions_CType {
     STRING_PIECE = 2,
 }
 
-
 impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     fn value(&self) -> i32 {
         *self as i32
@@ -4670,6 +4675,9 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
             })
         }
     }
+}
+
+impl ::std::kinds::Copy for FieldOptions_CType {
 }
 
 #[deriving(Clone,Default)]

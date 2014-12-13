@@ -1705,9 +1705,6 @@ fn write_enum_struct(w: &mut IndentWriter) {
     });
 }
 
-fn write_enum_impl(_w: &mut IndentWriter) {
-}
-
 fn write_enum_impl_enum(w: &mut IndentWriter) {
     let en = w.en.unwrap();
     w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name.as_slice(), |w| {
@@ -1735,14 +1732,19 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
     });
 }
 
+fn write_enum_impl_copy(w: &mut IndentWriter) {
+    w.impl_for_block("::std::kinds::Copy", w.en().type_name.as_slice(), |_w| {
+    });
+}
+
 fn write_enum(enum_with_scope: &EnumWithScope, _root_scope: &RootScope, w: &mut IndentWriter) {
     let en = Enum::parse(enum_with_scope);
     w.bind_enum(&en, |w| {
         write_enum_struct(w);
         w.write_line("");
-        write_enum_impl(w);
-        w.write_line("");
         write_enum_impl_enum(w);
+        w.write_line("");
+        write_enum_impl_copy(w);
     });
 }
 
@@ -1757,6 +1759,7 @@ pub struct GenResult {
     pub content: Vec<u8>,
 }
 
+#[allow(missing_copy_implementations)]
 pub struct GenOptions {
     pub dummy: bool,
 }

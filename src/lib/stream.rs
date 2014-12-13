@@ -34,6 +34,8 @@ pub mod wire_format {
         WireTypeFixed32         = 5,
     }
 
+    impl Copy for WireType {}
+
     impl WireType {
         pub fn new(n: u32) -> Option<WireType> {
             match n {
@@ -49,6 +51,8 @@ pub mod wire_format {
     }
 
     pub struct Tag(u32);
+
+    impl Copy for Tag {}
 
     impl Tag {
         pub fn value(self) -> u32 {
