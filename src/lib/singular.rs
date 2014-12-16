@@ -120,7 +120,7 @@ impl<T> SingularField<T> {
     }
 
     #[inline]
-    pub fn map<U>(self, f: |T| -> U) -> SingularPtrField<U> {
+    pub fn map<U, F>(self, f: F) -> SingularPtrField<U> where F: Fn(T) -> U {
         SingularPtrField::from_option(self.into_option().map(f))
     }
 
@@ -287,7 +287,7 @@ impl<T> SingularPtrField<T> {
     }
 
     #[inline]
-    pub fn map<U>(self, f: |T| -> U) -> SingularPtrField<U> {
+    pub fn map<U, F>(self, f: F) -> SingularPtrField<U> where F: Fn(T) -> U {
         SingularPtrField::from_option(self.into_option().map(f))
     }
 

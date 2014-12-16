@@ -350,7 +350,7 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
 // singular
 
-pub fn make_singular_u32_accessor<M : Message>(
+pub fn make_singular_u32_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> u32,
@@ -365,7 +365,7 @@ pub fn make_singular_u32_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_i32_accessor<M : Message>(
+pub fn make_singular_i32_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> i32,
@@ -380,7 +380,7 @@ pub fn make_singular_i32_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_u64_accessor<M : Message>(
+pub fn make_singular_u64_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> u64,
@@ -395,7 +395,7 @@ pub fn make_singular_u64_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_i64_accessor<M : Message>(
+pub fn make_singular_i64_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> i64,
@@ -410,7 +410,7 @@ pub fn make_singular_i64_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_f32_accessor<M : Message>(
+pub fn make_singular_f32_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> f32,
@@ -425,7 +425,7 @@ pub fn make_singular_f32_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_f64_accessor<M : Message>(
+pub fn make_singular_f64_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> f64,
@@ -440,7 +440,7 @@ pub fn make_singular_f64_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_bool_accessor<M : Message>(
+pub fn make_singular_bool_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> bool,
@@ -455,7 +455,7 @@ pub fn make_singular_bool_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_string_accessor<M : Message>(
+pub fn make_singular_string_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: for<'a> fn(&'a M) -> &'a str,
@@ -470,7 +470,7 @@ pub fn make_singular_string_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_bytes_accessor<M : Message>(
+pub fn make_singular_bytes_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: for<'a> fn(&'a M) -> &'a [u8],
@@ -485,7 +485,7 @@ pub fn make_singular_bytes_accessor<M : Message>(
     }
 }
 
-pub fn make_singular_enum_accessor<M : Message, E : ProtobufEnum + 'static>(
+pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: fn(&M) -> E,
@@ -502,7 +502,7 @@ pub fn make_singular_enum_accessor<M : Message, E : ProtobufEnum + 'static>(
     }
 }
 
-pub fn make_singular_message_accessor<M : Message, F : Message + 'static>(
+pub fn make_singular_message_accessor<M : Message + 'static, F : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
         get: for<'a> fn(&'a M) -> &'a F,
@@ -521,7 +521,7 @@ pub fn make_singular_message_accessor<M : Message, F : Message + 'static>(
 
 // repeated
 
-pub fn make_repeated_u32_accessor<M : Message>(
+pub fn make_repeated_u32_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [u32],
     ) -> Box<FieldAccessor + 'static>
@@ -532,7 +532,7 @@ pub fn make_repeated_u32_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_i32_accessor<M : Message>(
+pub fn make_repeated_i32_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [i32],
     ) -> Box<FieldAccessor + 'static>
@@ -543,7 +543,7 @@ pub fn make_repeated_i32_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_u64_accessor<M : Message>(
+pub fn make_repeated_u64_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [u64],
     ) -> Box<FieldAccessor + 'static>
@@ -554,7 +554,7 @@ pub fn make_repeated_u64_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_i64_accessor<M : Message>(
+pub fn make_repeated_i64_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [i64],
     ) -> Box<FieldAccessor + 'static>
@@ -565,7 +565,7 @@ pub fn make_repeated_i64_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_f32_accessor<M : Message>(
+pub fn make_repeated_f32_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [f32],
     ) -> Box<FieldAccessor + 'static>
@@ -576,7 +576,7 @@ pub fn make_repeated_f32_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_f64_accessor<M : Message>(
+pub fn make_repeated_f64_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [f64],
     ) -> Box<FieldAccessor + 'static>
@@ -587,7 +587,7 @@ pub fn make_repeated_f64_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_bool_accessor<M : Message>(
+pub fn make_repeated_bool_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [bool],
     ) -> Box<FieldAccessor + 'static>
@@ -598,7 +598,7 @@ pub fn make_repeated_bool_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_string_accessor<M : Message>(
+pub fn make_repeated_string_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [String],
     ) -> Box<FieldAccessor + 'static>
@@ -609,7 +609,7 @@ pub fn make_repeated_string_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_bytes_accessor<M : Message>(
+pub fn make_repeated_bytes_accessor<M : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [Vec<u8>],
     ) -> Box<FieldAccessor + 'static>
@@ -620,7 +620,7 @@ pub fn make_repeated_bytes_accessor<M : Message>(
     }
 }
 
-pub fn make_repeated_enum_accessor<M : Message, E : ProtobufEnum + 'static>(
+pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [E],
     ) -> Box<FieldAccessor + 'static>
@@ -633,7 +633,7 @@ pub fn make_repeated_enum_accessor<M : Message, E : ProtobufEnum + 'static>(
     }
 }
 
-pub fn make_repeated_message_accessor<M : Message, F : Message + 'static>(
+pub fn make_repeated_message_accessor<M : Message + 'static, F : Message + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [F],
     ) -> Box<FieldAccessor + 'static>
