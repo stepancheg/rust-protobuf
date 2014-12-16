@@ -210,7 +210,7 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn sort_by(&mut self, compare: |&T, &T| -> Ordering) {
+    pub fn sort_by<F>(&mut self, compare: F) where F: Fn(&T, &T) -> Ordering {
         self.as_mut_slice().sort_by(compare)
     }
 
