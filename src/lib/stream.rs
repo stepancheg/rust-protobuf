@@ -132,7 +132,7 @@ impl<'a> CodedInputStream<'a> {
         self.buffer_size - self.buffer_pos
     }
 
-    fn remaining_in_buffer_slice<'a>(&'a self) -> &'a [u8] {
+    fn remaining_in_buffer_slice<'b>(&'b self) -> &'b [u8] {
         self.buffer.slice(self.buffer_pos as uint, self.buffer_size as uint)
     }
 

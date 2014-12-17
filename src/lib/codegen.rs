@@ -702,7 +702,7 @@ struct EnumValue {
 }
 
 impl<'a> Enum<'a> {
-    fn parse<'a>(en: &EnumWithScope<'a>) -> Enum<'a> {
+    fn parse<'b>(en: &EnumWithScope<'b>) -> Enum<'b> {
         Enum {
             //en: en.clone(),
             type_name: en.rust_name(),
