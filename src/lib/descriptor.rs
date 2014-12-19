@@ -569,30 +569,10 @@ impl ::protobuf::Message for FileDescriptorProto {
                     try!(is.read_string_into(tmp))
                 },
                 10 => {
-                    match wire_type {
-                        ::protobuf::wire_format::WireTypeLengthDelimited => {
-                            try!(is.read_repeated_packed_int32_into(&mut self.public_dependency));
-                        },
-                        ::protobuf::wire_format::WireTypeVarint => {
-                            self.public_dependency.push(try!(is.read_int32()));
-                        },
-                        _ => {
-                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        },
-                    };
+                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency));
                 },
                 11 => {
-                    match wire_type {
-                        ::protobuf::wire_format::WireTypeLengthDelimited => {
-                            try!(is.read_repeated_packed_int32_into(&mut self.weak_dependency));
-                        },
-                        ::protobuf::wire_format::WireTypeVarint => {
-                            self.weak_dependency.push(try!(is.read_int32()));
-                        },
-                        _ => {
-                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        },
-                    };
+                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency));
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -6393,30 +6373,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    match wire_type {
-                        ::protobuf::wire_format::WireTypeLengthDelimited => {
-                            try!(is.read_repeated_packed_int32_into(&mut self.path));
-                        },
-                        ::protobuf::wire_format::WireTypeVarint => {
-                            self.path.push(try!(is.read_int32()));
-                        },
-                        _ => {
-                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        },
-                    };
+                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path));
                 },
                 2 => {
-                    match wire_type {
-                        ::protobuf::wire_format::WireTypeLengthDelimited => {
-                            try!(is.read_repeated_packed_int32_into(&mut self.span));
-                        },
-                        ::protobuf::wire_format::WireTypeVarint => {
-                            self.span.push(try!(is.read_int32()));
-                        },
-                        _ => {
-                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        },
-                    };
+                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.span));
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {

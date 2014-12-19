@@ -1213,20 +1213,10 @@ fn write_merge_from_field(w: &mut IndentWriter) {
                 }
             },
             RepeatMode::RepeatPacked => {
-                w.match_block("wire_type", |w| {
-                    w.case_block(format!("::protobuf::wire_format::{}",
-                            wire_format::WireTypeLengthDelimited).as_slice(),
-                    |w| {
-                        w.write_line(format!("try!(is.read_repeated_packed_{}_into(&mut self.{}));",
-                                protobuf_name(field.field_type), field.name));
-                    });
-                    w.case_block(format!("::protobuf::wire_format::{}", wire_type).as_slice(), |w| {
-                        w.self_field_push(read_proc.as_slice());
-                    });
-                    w.case_block("_", |w| {
-                        w.error_wire_type(wire_type);
-                    });
-                });
+                w.write_line(format!(
+                    "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+                        protobuf_name(field.field_type),
+                        field.name));
             },
         };
     }

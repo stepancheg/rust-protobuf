@@ -6,6 +6,14 @@ use std::iter::AdditiveIterator;
 use core::*;
 use zigzag::*;
 use stream::wire_format;
+use stream::wire_format::WireType;
+use stream::wire_format::WireTypeFixed32;
+use stream::wire_format::WireTypeFixed64;
+use stream::wire_format::WireTypeLengthDelimited;
+use stream::wire_format::WireTypeVarint;
+use error::ProtobufError;
+use error::ProtobufResult;
+use stream::CodedInputStream;
 
 use unknown::UnknownFields;
 
@@ -133,19 +141,19 @@ pub fn vec_packed_enum_size<E : ProtobufEnum>(field_number: u32, vec: &[E]) -> u
 
 // Size of tag does not depend on wire type
 pub fn tag_size(field_number: u32) -> u32 {
-    wire_format::Tag::make(field_number, wire_format::WireTypeFixed64).value().len_varint()
+    wire_format::Tag::make(field_number, WireTypeFixed64).value().len_varint()
 }
 
-pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: wire_format::WireType) -> u32 {
+pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: WireType) -> u32 {
     match wt {
-        wire_format::WireTypeFixed64 => 8,
-        wire_format::WireTypeFixed32 => 4,
-        wire_format::WireTypeVarint => value.len_varint(),
+        WireTypeFixed64 => 8,
+        WireTypeFixed32 => 4,
+        WireTypeVarint => value.len_varint(),
         _ => panic!()
     }
 }
 
-pub fn value_size<T : ProtobufVarint>(field_number: u32, value: T, wt: wire_format::WireType) -> u32 {
+pub fn value_size<T : ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u32 {
     tag_size(field_number) + value_size_no_tag(value, wt)
 }
 
@@ -190,5 +198,147 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
         }
     }
     r
+}
+
+
+pub fn read_repeated_int32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_int32_into(target),
+        WireTypeVarint => { target.push(try!(is.read_int32())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_int64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_int64_into(target),
+        WireTypeVarint => { target.push(try!(is.read_int64())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_uint32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u32>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_uint32_into(target),
+        WireTypeVarint => { target.push(try!(is.read_uint32())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_uint64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u64>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_uint64_into(target),
+        WireTypeVarint => { target.push(try!(is.read_uint64())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_sint32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_sint32_into(target),
+        WireTypeVarint => { target.push(try!(is.read_sint32())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_sint64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_sint64_into(target),
+        WireTypeVarint => { target.push(try!(is.read_sint64())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_fixed32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u32>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_fixed32_into(target),
+        WireTypeFixed32 => { target.push(try!(is.read_fixed32())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_fixed64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u64>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_fixed64_into(target),
+        WireTypeFixed64 => { target.push(try!(is.read_fixed64())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_sfixed32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_sfixed32_into(target),
+        WireTypeFixed32 => { target.push(try!(is.read_sfixed32())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_sfixed64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_sfixed64_into(target),
+        WireTypeFixed64 => { target.push(try!(is.read_sfixed64())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_double_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<f64>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_double_into(target),
+        WireTypeFixed64 => { target.push(try!(is.read_double())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_float_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<f32>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_float_into(target),
+        WireTypeFixed32 => { target.push(try!(is.read_float())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_bool_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<bool>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_bool_into(target),
+        WireTypeVarint => { target.push(try!(is.read_bool())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_enum_into<E : ProtobufEnum>(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<E>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
+        WireTypeVarint => { target.push(try!(is.read_enum())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
 }
 

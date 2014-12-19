@@ -232,17 +232,7 @@ impl ::protobuf::Message for TestRepeatedBool {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    match wire_type {
-                        ::protobuf::wire_format::WireTypeLengthDelimited => {
-                            try!(is.read_repeated_packed_bool_into(&mut self.values));
-                        },
-                        ::protobuf::wire_format::WireTypeVarint => {
-                            self.values.push(try!(is.read_bool()));
-                        },
-                        _ => {
-                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        },
-                    };
+                    try!(::protobuf::rt::read_repeated_bool_into(wire_type, is, &mut self.values));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -397,17 +387,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    match wire_type {
-                        ::protobuf::wire_format::WireTypeLengthDelimited => {
-                            try!(is.read_repeated_packed_int32_into(&mut self.values));
-                        },
-                        ::protobuf::wire_format::WireTypeVarint => {
-                            self.values.push(try!(is.read_int32()));
-                        },
-                        _ => {
-                            return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                        },
-                    };
+                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.values));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
