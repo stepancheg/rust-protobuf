@@ -125,12 +125,12 @@ impl<T> SingularField<T> {
     }
 
     #[inline]
-    pub fn iter<'a>(&'a self) -> option::Item<&'a T> {
+    pub fn iter<'a>(&'a self) -> option::IntoIter<&'a T> {
         self.as_ref().into_iter()
     }
 
     #[inline]
-    pub fn mut_iter<'a>(&'a mut self) -> option::Item<&'a mut T> {
+    pub fn mut_iter<'a>(&'a mut self) -> option::IntoIter<&'a mut T> {
         self.as_mut().into_iter()
     }
 
@@ -292,12 +292,12 @@ impl<T> SingularPtrField<T> {
     }
 
     #[inline]
-    pub fn iter<'a>(&'a self) -> option::Item<&'a T> {
+    pub fn iter<'a>(&'a self) -> option::IntoIter<&'a T> {
         self.as_ref().into_iter()
     }
 
     #[inline]
-    pub fn mut_iter<'a>(&'a mut self) -> option::Item<&'a mut T> {
+    pub fn mut_iter<'a>(&'a mut self) -> option::IntoIter<&'a mut T> {
         self.as_mut().into_iter()
     }
 
