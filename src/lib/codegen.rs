@@ -238,8 +238,8 @@ fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         FieldDescriptorProto_Type::TYPE_STRING   => "string",
         FieldDescriptorProto_Type::TYPE_BYTES    => "bytes",
         FieldDescriptorProto_Type::TYPE_ENUM     => "enum",
-        FieldDescriptorProto_Type::TYPE_GROUP    |
-        FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!()
+        FieldDescriptorProto_Type::TYPE_MESSAGE  => "message",
+        FieldDescriptorProto_Type::TYPE_GROUP    => panic!()
     }
 }
 
@@ -908,6 +908,7 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
+    #[allow(dead_code)]
     fn self_field_push<S : Str>(&self, value: S) {
         assert!(self.field().repeated);
         self.write_line(format!("{}.push({});", self.self_field(), value.as_slice()));
@@ -1165,21 +1166,24 @@ impl<'a> IndentWriter<'a> {
 
 fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
     let field = w.field();
-    w.assert_wire_type(wire_format::WireTypeLengthDelimited);
     if field.repeated {
-        w.write_line(format!("let tmp = {}.push_default();", w.self_field()));
+        w.write_line(format!(
+            "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+                protobuf_name(field.field_type),
+                field.name));
     } else {
+        w.assert_wire_type(wire_format::WireTypeLengthDelimited);
         w.write_line(format!("let tmp = {}.set_default();", w.self_field()));
-    }
-    match field.field_type {
-        FieldDescriptorProto_Type::TYPE_MESSAGE =>
-            w.write_line(format!("try!(is.merge_message(tmp))")),
-        FieldDescriptorProto_Type::TYPE_STRING =>
-            w.write_line(format!("try!(is.read_string_into(tmp))")),
-        FieldDescriptorProto_Type::TYPE_BYTES =>
-            w.write_line(format!("try!(is.read_bytes_into(tmp))")),
-        _ =>
-            panic!(),
+        match field.field_type {
+            FieldDescriptorProto_Type::TYPE_MESSAGE =>
+                w.write_line(format!("try!(is.merge_message(tmp))")),
+            FieldDescriptorProto_Type::TYPE_STRING =>
+                w.write_line(format!("try!(is.read_string_into(tmp))")),
+            FieldDescriptorProto_Type::TYPE_BYTES =>
+                w.write_line(format!("try!(is.read_bytes_into(tmp))")),
+            _ =>
+                panic!(),
+        }
     }
 }
 
@@ -1189,30 +1193,15 @@ fn write_merge_from_field(w: &mut IndentWriter) {
         write_merge_from_field_message_string_bytes(w);
     } else {
         let wire_type = field_type_wire_type(field.field_type);
-        let repeat_mode =
-            if field.repeated {
-                if wire_type == wire_format::WireTypeLengthDelimited {
-                    RepeatMode::RepeatRegular
-                } else {
-                    RepeatMode::RepeatPacked // may be both regular or packed
-                }
-            } else {
-                RepeatMode::Single
-            };
-
         let read_proc = format!("try!(is.read_{}())", protobuf_name(field.field_type));
 
-        match repeat_mode {
-            RepeatMode::Single | RepeatMode::RepeatRegular => {
+        match field.repeated {
+            false => {
                 w.assert_wire_type(wire_type);
                 w.write_line(format!("let tmp = {};", read_proc));
-                match repeat_mode {
-                    RepeatMode::Single => w.self_field_assign_some("tmp"),
-                    RepeatMode::RepeatRegular => w.self_field_push("tmp"),
-                    _ => panic!()
-                }
+                w.self_field_assign_some("tmp");
             },
-            RepeatMode::RepeatPacked => {
+            true => {
                 w.write_line(format!(
                     "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
                         protobuf_name(field.field_type),

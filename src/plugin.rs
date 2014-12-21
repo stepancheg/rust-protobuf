@@ -158,11 +158,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.file_to_generate.push_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate));
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
@@ -172,11 +168,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.proto_file.push_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -406,11 +398,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                     try!(is.read_string_into(tmp))
                 },
                 15 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.file.push_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));

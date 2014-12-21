@@ -13,6 +13,7 @@ use stream::wire_format::WireTypeLengthDelimited;
 use stream::wire_format::WireTypeVarint;
 use error::ProtobufError;
 use error::ProtobufResult;
+use repeated::RepeatedField;
 use stream::CodedInputStream;
 
 use unknown::UnknownFields;
@@ -338,6 +339,45 @@ pub fn read_repeated_enum_into<E : ProtobufEnum>(
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
         WireTypeVarint => { target.push(try!(is.read_enum())); Ok(()) },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_string_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<String>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.push_default();
+            is.read_string_into(tmp)
+        },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_bytes_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Vec<u8>>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.push_default();
+            is.read_bytes_into(tmp)
+        },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_repeated_message_into<M : Message>(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<M>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.push_default();
+            is.merge_message(tmp)
+        },
         _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
     }
 }
