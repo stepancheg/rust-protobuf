@@ -182,7 +182,7 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn into_iter(mut self) -> vec::MoveItems<T> {
+    pub fn into_iter(mut self) -> vec::IntoIter<T> {
         self.vec.truncate(self.len);
         self.vec.into_iter()
     }
@@ -200,12 +200,12 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn iter<'a>(&'a self) -> slice::Items<'a, T> {
+    pub fn iter<'a>(&'a self) -> slice::Iter<'a, T> {
         self.as_slice().iter()
     }
 
     #[inline]
-    pub fn iter_mut<'a>(&'a mut self) -> slice::MutItems<'a, T> {
+    pub fn iter_mut<'a>(&'a mut self) -> slice::IterMut<'a, T> {
         self.as_mut_slice().iter_mut()
     }
 

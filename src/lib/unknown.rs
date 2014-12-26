@@ -75,10 +75,10 @@ impl UnknownValues {
 }
 
 pub struct UnknownValuesIter<'o> {
-    fixed32: slice::Items<'o, u32>,
-    fixed64: slice::Items<'o, u64>,
-    varint: slice::Items<'o, u64>,
-    length_delimited: slice::Items<'o, Vec<u8>>,
+    fixed32: slice::Iter<'o, u32>,
+    fixed64: slice::Iter<'o, u64>,
+    varint: slice::Iter<'o, u64>,
+    length_delimited: slice::Iter<'o, Vec<u8>>,
 }
 
 impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
@@ -125,8 +125,8 @@ impl UnknownFields {
         self.init_map();
 
         match self.fields.as_mut().unwrap().entry(number) {
-            hash_map::Occupied(e) => e.into_mut(),
-            hash_map::Vacant(e) => e.set(Default::default()),
+            hash_map::Entry::Occupied(e) => e.into_mut(),
+            hash_map::Entry::Vacant(e) => e.set(Default::default()),
         }
     }
 
