@@ -5,6 +5,7 @@ use std::io::IoError;
 
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
+use core::MessageStatic;
 use core::ProtobufEnum;
 use misc::VecWriter;
 use unknown::UnknownFields;
@@ -616,8 +617,8 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn read_message<M : Message>(&mut self) -> ProtobufResult<M> {
-        let mut r: M = Message::new();
+    pub fn read_message<M : Message + MessageStatic>(&mut self) -> ProtobufResult<M> {
+        let mut r: M = MessageStatic::new();
         try!(self.merge_message(&mut r));
         r.check_initialized();
         Ok(r)

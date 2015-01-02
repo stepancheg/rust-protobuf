@@ -6,19 +6,19 @@ use test_lite_runtime;
 
 use protobuf::*;
 
-fn test_serialize_deserialize_length_delimited<M : Message>(msg: &M) {
+fn test_serialize_deserialize_length_delimited<M : Message + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
     let parsed = parse_length_delimited_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
 
-fn test_serialize_deserialize_no_hex<M : Message>(msg: &M) {
+fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_to_bytes().unwrap();
     let parsed = parse_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 }
 
-fn test_serialize_deserialize<M : Message>(hex: &str, msg: &M) {
+fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let expected_bytes = decode_hex(hex);
     let expected_hex = encode_hex(expected_bytes.as_slice());
     let serialized = msg.write_to_bytes().unwrap();
@@ -32,7 +32,7 @@ fn test_serialize_deserialize<M : Message>(hex: &str, msg: &M) {
     test_serialize_deserialize_length_delimited(msg);
 }
 
-fn test_deserialize<M : Message>(hex: &str, msg: &M) {
+fn test_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let bytes = decode_hex(hex);
     let parsed = parse_from_bytes::<M>(bytes.as_slice()).unwrap();
     assert!(*msg == parsed);

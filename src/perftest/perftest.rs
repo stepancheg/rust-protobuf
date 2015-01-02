@@ -12,6 +12,7 @@ use std::rand::StdRng;
 use std::rand::SeedableRng;
 
 use protobuf::Message;
+use protobuf::MessageStatic;
 use perftest_data::PerftestData;
 
 mod perftest_data;
@@ -29,7 +30,7 @@ fn measure_and_print<R>(title: &str, iter: u64, f: || -> R) -> R {
     r
 }
 
-fn run_test<M : Message + Clone>(name: &str, data: &[M]) {
+fn run_test<M : Message + MessageStatic>(name: &str, data: &[M]) {
     let mut rng: StdRng = SeedableRng::from_seed([10, 20, 30, 40].as_slice());
     let mut random_data: Vec<M> = Vec::new();
 
@@ -81,7 +82,7 @@ struct TestRunner {
 }
 
 impl TestRunner {
-    fn test<M : Message + Clone>(&mut self, name: &str, data: &[M]) {
+    fn test<M : Message + MessageStatic>(&mut self, name: &str, data: &[M]) {
         if self.selected.is_none() || name == self.selected.as_ref().unwrap().as_slice() {
             run_test(name, data);
             self.any_matched = true;

@@ -1576,10 +1576,6 @@ fn write_message_descriptor_static(w: &mut IndentWriter) {
 fn write_message_impl_message(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.impl_for_block("::protobuf::Message", msg.type_name.as_slice(), |w| {
-        w.def_fn(format!("new() -> {}", msg.type_name), |w| {
-            w.write_line(format!("{}::new()", msg.type_name));
-        });
-        w.write_line("");
         w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
             w.required_fields(|w| {
                 w.if_self_field_is_none(|w| {
@@ -1598,14 +1594,27 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         write_message_get_cached_size(w);
         w.write_line("");
         write_message_unknown_fields(w);
-        if !msg.lite_runtime {
-            w.write_line("");
-            write_message_descriptor_static(w);
-        }
         w.write_line("");
         w.def_fn("type_id(&self) -> ::std::intrinsics::TypeId", |w| {
             w.write_line(format!("::std::intrinsics::TypeId::of::<{}>()", msg.type_name));
         });
+        w.write_line("");
+        w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
+            w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)"); //, msg.type_name.as_slice());
+        });
+    });
+}
+
+fn write_message_impl_message_static(w: &mut IndentWriter) {
+    let msg = w.msg.unwrap();
+    w.impl_for_block("::protobuf::MessageStatic", msg.type_name.as_slice(), |w| {
+        w.def_fn(format!("new() -> {}", msg.type_name), |w| {
+            w.write_line(format!("{}::new()", msg.type_name));
+        });
+        if !msg.lite_runtime {
+            w.write_line("");
+            write_message_descriptor_static(w);
+        }
     });
 }
 
@@ -1651,6 +1660,8 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
         write_message_impl_self(w);
         w.write_line("");
         write_message_impl_message(w);
+        w.write_line("");
+        write_message_impl_message_static(w);
         w.write_line("");
         write_message_impl_clear(w);
         w.write_line("");

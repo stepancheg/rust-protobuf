@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::collections::hash::map as hash_map;
+use std::collections::hash_map;
 use std::default::Default;
 use std::slice;
 use stream::wire_format;

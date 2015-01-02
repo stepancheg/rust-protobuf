@@ -63,10 +63,6 @@ impl FileDescriptorSet {
 }
 
 impl ::protobuf::Message for FileDescriptorSet {
-    fn new() -> FileDescriptorSet {
-        FileDescriptorSet::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -121,6 +117,20 @@ impl ::protobuf::Message for FileDescriptorSet {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FileDescriptorSet>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for FileDescriptorSet {
+    fn new() -> FileDescriptorSet {
+        FileDescriptorSet::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FileDescriptorSet>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -141,10 +151,6 @@ impl ::protobuf::Message for FileDescriptorSet {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FileDescriptorSet>()
     }
 }
 
@@ -531,10 +537,6 @@ impl FileDescriptorProto {
 }
 
 impl ::protobuf::Message for FileDescriptorProto {
-    fn new() -> FileDescriptorProto {
-        FileDescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -710,6 +712,20 @@ impl ::protobuf::Message for FileDescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FileDescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for FileDescriptorProto {
+    fn new() -> FileDescriptorProto {
+        FileDescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FileDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -774,10 +790,6 @@ impl ::protobuf::Message for FileDescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FileDescriptorProto>()
     }
 }
 
@@ -1057,10 +1069,6 @@ impl DescriptorProto {
 }
 
 impl ::protobuf::Message for DescriptorProto {
-    fn new() -> DescriptorProto {
-        DescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1192,6 +1200,20 @@ impl ::protobuf::Message for DescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<DescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for DescriptorProto {
+    fn new() -> DescriptorProto {
+        DescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<DescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -1238,10 +1260,6 @@ impl ::protobuf::Message for DescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<DescriptorProto>()
     }
 }
 
@@ -1347,10 +1365,6 @@ impl DescriptorProto_ExtensionRange {
 }
 
 impl ::protobuf::Message for DescriptorProto_ExtensionRange {
-    fn new() -> DescriptorProto_ExtensionRange {
-        DescriptorProto_ExtensionRange::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1419,6 +1433,20 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<DescriptorProto_ExtensionRange>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for DescriptorProto_ExtensionRange {
+    fn new() -> DescriptorProto_ExtensionRange {
+        DescriptorProto_ExtensionRange::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<DescriptorProto_ExtensionRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -1445,10 +1473,6 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<DescriptorProto_ExtensionRange>()
     }
 }
 
@@ -1752,10 +1776,6 @@ impl FieldDescriptorProto {
 }
 
 impl ::protobuf::Message for FieldDescriptorProto {
-    fn new() -> FieldDescriptorProto {
-        FieldDescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1905,6 +1925,20 @@ impl ::protobuf::Message for FieldDescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FieldDescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for FieldDescriptorProto {
+    fn new() -> FieldDescriptorProto {
+        FieldDescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FieldDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -1961,10 +1995,6 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FieldDescriptorProto>()
     }
 }
 
@@ -2234,10 +2264,6 @@ impl EnumDescriptorProto {
 }
 
 impl ::protobuf::Message for EnumDescriptorProto {
-    fn new() -> EnumDescriptorProto {
-        EnumDescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2321,6 +2347,20 @@ impl ::protobuf::Message for EnumDescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumDescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for EnumDescriptorProto {
+    fn new() -> EnumDescriptorProto {
+        EnumDescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -2351,10 +2391,6 @@ impl ::protobuf::Message for EnumDescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumDescriptorProto>()
     }
 }
 
@@ -2504,10 +2540,6 @@ impl EnumValueDescriptorProto {
 }
 
 impl ::protobuf::Message for EnumValueDescriptorProto {
-    fn new() -> EnumValueDescriptorProto {
-        EnumValueDescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2592,6 +2624,20 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumValueDescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for EnumValueDescriptorProto {
+    fn new() -> EnumValueDescriptorProto {
+        EnumValueDescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumValueDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -2623,10 +2669,6 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumValueDescriptorProto>()
     }
 }
 
@@ -2782,10 +2824,6 @@ impl ServiceDescriptorProto {
 }
 
 impl ::protobuf::Message for ServiceDescriptorProto {
-    fn new() -> ServiceDescriptorProto {
-        ServiceDescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -2869,6 +2907,20 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<ServiceDescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for ServiceDescriptorProto {
+    fn new() -> ServiceDescriptorProto {
+        ServiceDescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<ServiceDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -2899,10 +2951,6 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<ServiceDescriptorProto>()
     }
 }
 
@@ -3107,10 +3155,6 @@ impl MethodDescriptorProto {
 }
 
 impl ::protobuf::Message for MethodDescriptorProto {
-    fn new() -> MethodDescriptorProto {
-        MethodDescriptorProto::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -3208,6 +3252,20 @@ impl ::protobuf::Message for MethodDescriptorProto {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<MethodDescriptorProto>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for MethodDescriptorProto {
+    fn new() -> MethodDescriptorProto {
+        MethodDescriptorProto::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<MethodDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -3244,10 +3302,6 @@ impl ::protobuf::Message for MethodDescriptorProto {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<MethodDescriptorProto>()
     }
 }
 
@@ -3572,10 +3626,6 @@ impl FileOptions {
 }
 
 impl ::protobuf::Message for FileOptions {
-    fn new() -> FileOptions {
-        FileOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -3747,6 +3797,20 @@ impl ::protobuf::Message for FileOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FileOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for FileOptions {
+    fn new() -> FileOptions {
+        FileOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FileOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -3812,10 +3876,6 @@ impl ::protobuf::Message for FileOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FileOptions>()
     }
 }
 
@@ -3991,10 +4051,6 @@ impl MessageOptions {
 }
 
 impl ::protobuf::Message for MessageOptions {
-    fn new() -> MessageOptions {
-        MessageOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4075,6 +4131,20 @@ impl ::protobuf::Message for MessageOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<MessageOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for MessageOptions {
+    fn new() -> MessageOptions {
+        MessageOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<MessageOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -4105,10 +4175,6 @@ impl ::protobuf::Message for MessageOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<MessageOptions>()
     }
 }
 
@@ -4334,10 +4400,6 @@ impl FieldOptions {
 }
 
 impl ::protobuf::Message for FieldOptions {
-    fn new() -> FieldOptions {
-        FieldOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4470,6 +4532,20 @@ impl ::protobuf::Message for FieldOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<FieldOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for FieldOptions {
+    fn new() -> FieldOptions {
+        FieldOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FieldOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -4520,10 +4596,6 @@ impl ::protobuf::Message for FieldOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FieldOptions>()
     }
 }
 
@@ -4672,10 +4744,6 @@ impl EnumOptions {
 }
 
 impl ::protobuf::Message for EnumOptions {
-    fn new() -> EnumOptions {
-        EnumOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4743,6 +4811,20 @@ impl ::protobuf::Message for EnumOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for EnumOptions {
+    fn new() -> EnumOptions {
+        EnumOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -4768,10 +4850,6 @@ impl ::protobuf::Message for EnumOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumOptions>()
     }
 }
 
@@ -4852,10 +4930,6 @@ impl EnumValueOptions {
 }
 
 impl ::protobuf::Message for EnumValueOptions {
-    fn new() -> EnumValueOptions {
-        EnumValueOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -4910,6 +4984,20 @@ impl ::protobuf::Message for EnumValueOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<EnumValueOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for EnumValueOptions {
+    fn new() -> EnumValueOptions {
+        EnumValueOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumValueOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -4930,10 +5018,6 @@ impl ::protobuf::Message for EnumValueOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumValueOptions>()
     }
 }
 
@@ -5012,10 +5096,6 @@ impl ServiceOptions {
 }
 
 impl ::protobuf::Message for ServiceOptions {
-    fn new() -> ServiceOptions {
-        ServiceOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -5070,6 +5150,20 @@ impl ::protobuf::Message for ServiceOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<ServiceOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for ServiceOptions {
+    fn new() -> ServiceOptions {
+        ServiceOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<ServiceOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -5090,10 +5184,6 @@ impl ::protobuf::Message for ServiceOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<ServiceOptions>()
     }
 }
 
@@ -5172,10 +5262,6 @@ impl MethodOptions {
 }
 
 impl ::protobuf::Message for MethodOptions {
-    fn new() -> MethodOptions {
-        MethodOptions::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -5230,6 +5316,20 @@ impl ::protobuf::Message for MethodOptions {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<MethodOptions>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for MethodOptions {
+    fn new() -> MethodOptions {
+        MethodOptions::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<MethodOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -5250,10 +5350,6 @@ impl ::protobuf::Message for MethodOptions {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<MethodOptions>()
     }
 }
 
@@ -5509,10 +5605,6 @@ impl UninterpretedOption {
 }
 
 impl ::protobuf::Message for UninterpretedOption {
-    fn new() -> UninterpretedOption {
-        UninterpretedOption::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -5645,6 +5737,20 @@ impl ::protobuf::Message for UninterpretedOption {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<UninterpretedOption>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for UninterpretedOption {
+    fn new() -> UninterpretedOption {
+        UninterpretedOption::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<UninterpretedOption>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -5695,10 +5801,6 @@ impl ::protobuf::Message for UninterpretedOption {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<UninterpretedOption>()
     }
 }
 
@@ -5821,10 +5923,6 @@ impl UninterpretedOption_NamePart {
 }
 
 impl ::protobuf::Message for UninterpretedOption_NamePart {
-    fn new() -> UninterpretedOption_NamePart {
-        UninterpretedOption_NamePart::new()
-    }
-
     fn is_initialized(&self) -> bool {
         if self.name_part.is_none() {
             return false;
@@ -5899,6 +5997,20 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<UninterpretedOption_NamePart>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for UninterpretedOption_NamePart {
+    fn new() -> UninterpretedOption_NamePart {
+        UninterpretedOption_NamePart::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<UninterpretedOption_NamePart>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -5925,10 +6037,6 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<UninterpretedOption_NamePart>()
     }
 }
 
@@ -6009,10 +6117,6 @@ impl SourceCodeInfo {
 }
 
 impl ::protobuf::Message for SourceCodeInfo {
-    fn new() -> SourceCodeInfo {
-        SourceCodeInfo::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -6067,6 +6171,20 @@ impl ::protobuf::Message for SourceCodeInfo {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<SourceCodeInfo>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for SourceCodeInfo {
+    fn new() -> SourceCodeInfo {
+        SourceCodeInfo::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<SourceCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -6087,10 +6205,6 @@ impl ::protobuf::Message for SourceCodeInfo {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<SourceCodeInfo>()
     }
 }
 
@@ -6272,10 +6386,6 @@ impl SourceCodeInfo_Location {
 }
 
 impl ::protobuf::Message for SourceCodeInfo_Location {
-    fn new() -> SourceCodeInfo_Location {
-        SourceCodeInfo_Location::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -6372,6 +6482,20 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<SourceCodeInfo_Location>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for SourceCodeInfo_Location {
+    fn new() -> SourceCodeInfo_Location {
+        SourceCodeInfo_Location::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<SourceCodeInfo_Location>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -6406,10 +6530,6 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<SourceCodeInfo_Location>()
     }
 }
 

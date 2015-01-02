@@ -19,10 +19,32 @@ use stream::with_coded_output_stream_to_bytes;
 use error::ProtobufResult;
 
 
-pub trait Message : PartialEq + fmt::Show + Clear {
-    // also all generated Message types implement Clone, Default traits
-
+// For some reason Rust doesn't allow conversion of &Foo to &Message it
+// Message contains static functions. So static functions must be placed
+// into separate place. For me it looks like unnecessary complication.
+//
+// See https://github.com/rust-lang/rust/commit/cd31e6ff for details.
+pub trait MessageStatic : Message + Clone + Default {
     fn new() -> Self;
+
+    // http://stackoverflow.com/q/20342436/15018
+    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
+        panic!("descriptor_static is not implemented for message, \
+            LITE_RUNTIME must be used");
+    }
+}
+
+
+pub trait Message : PartialEq + fmt::Show + Clear {
+    // All generated Message types also implement MessageStatic.
+    // However, rust doesn't allow these types to be extended by
+    // Message.
+
+    fn descriptor(&self) -> &'static MessageDescriptor {
+        //MessageStatic::descriptor_static(None::<Self>)
+        panic!("TODO");
+    }
+
     // all required fields set
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
@@ -103,16 +125,6 @@ pub trait Message : PartialEq + fmt::Show + Clear {
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
 
-    fn descriptor(&self) -> &'static MessageDescriptor {
-        Message::descriptor_static(None::<Self>)
-    }
-
-    // http://stackoverflow.com/q/20342436/15018
-    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
-        panic!("descriptor_static is not implemented for message, \
-            LITE_RUNTIME must be used");
-    }
-
     fn type_id(&self) -> TypeId {
         panic!();
     }
@@ -159,37 +171,39 @@ pub trait ProtobufEnum : Eq {
     }
 }
 
-pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
-    let mut r: M = Message::new();
+pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+    let mut r: M = MessageStatic::new();
     try!(r.merge_from(is));
     r.check_initialized();
     Ok(r)
 }
 
-pub fn parse_from_reader<M : Message>(reader: &mut Reader) -> ProtobufResult<M> {
+pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Reader) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })
 }
 
-pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
+pub fn parse_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })
 }
 
-pub fn parse_length_delimited_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from<M : Message + MessageStatic>(is: &mut CodedInputStream)
+        -> ProtobufResult<M>
+{
     is.read_message::<M>()
 }
 
-pub fn parse_length_delimited_from_reader<M : Message>(r: &mut Reader) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(r: &mut Reader) -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| {
         is.read_message::<M>()
     })
 }
 
-pub fn parse_length_delimited_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| {
         is.read_message::<M>()
     })

@@ -145,10 +145,6 @@ impl CodeGeneratorRequest {
 }
 
 impl ::protobuf::Message for CodeGeneratorRequest {
-    fn new() -> CodeGeneratorRequest {
-        CodeGeneratorRequest::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -225,6 +221,20 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<CodeGeneratorRequest>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for CodeGeneratorRequest {
+    fn new() -> CodeGeneratorRequest {
+        CodeGeneratorRequest::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -254,10 +264,6 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorRequest>()
     }
 }
 
@@ -378,10 +384,6 @@ impl CodeGeneratorResponse {
 }
 
 impl ::protobuf::Message for CodeGeneratorResponse {
-    fn new() -> CodeGeneratorResponse {
-        CodeGeneratorResponse::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -449,6 +451,20 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for CodeGeneratorResponse {
+    fn new() -> CodeGeneratorResponse {
+        CodeGeneratorResponse::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -474,10 +490,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse>()
     }
 }
 
@@ -645,10 +657,6 @@ impl CodeGeneratorResponse_File {
 }
 
 impl ::protobuf::Message for CodeGeneratorResponse_File {
-    fn new() -> CodeGeneratorResponse_File {
-        CodeGeneratorResponse_File::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -730,6 +738,20 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse_File>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for CodeGeneratorResponse_File {
+    fn new() -> CodeGeneratorResponse_File {
+        CodeGeneratorResponse_File::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -761,10 +783,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse_File>()
     }
 }
 

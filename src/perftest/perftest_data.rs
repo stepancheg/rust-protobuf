@@ -57,10 +57,6 @@ impl Test1 {
 }
 
 impl ::protobuf::Message for Test1 {
-    fn new() -> Test1 {
-        Test1::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -116,6 +112,20 @@ impl ::protobuf::Message for Test1 {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<Test1>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for Test1 {
+    fn new() -> Test1 {
+        Test1::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<Test1>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -137,10 +147,6 @@ impl ::protobuf::Message for Test1 {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<Test1>()
     }
 }
 
@@ -219,10 +225,6 @@ impl TestRepeatedBool {
 }
 
 impl ::protobuf::Message for TestRepeatedBool {
-    fn new() -> TestRepeatedBool {
-        TestRepeatedBool::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -272,6 +274,20 @@ impl ::protobuf::Message for TestRepeatedBool {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestRepeatedBool>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for TestRepeatedBool {
+    fn new() -> TestRepeatedBool {
+        TestRepeatedBool::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<TestRepeatedBool>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -292,10 +308,6 @@ impl ::protobuf::Message for TestRepeatedBool {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestRepeatedBool>()
     }
 }
 
@@ -374,10 +386,6 @@ impl TestRepeatedPackedInt32 {
 }
 
 impl ::protobuf::Message for TestRepeatedPackedInt32 {
-    fn new() -> TestRepeatedPackedInt32 {
-        TestRepeatedPackedInt32::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -434,6 +442,20 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestRepeatedPackedInt32>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for TestRepeatedPackedInt32 {
+    fn new() -> TestRepeatedPackedInt32 {
+        TestRepeatedPackedInt32::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<TestRepeatedPackedInt32>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -454,10 +476,6 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestRepeatedPackedInt32>()
     }
 }
 
@@ -590,10 +608,6 @@ impl TestRepeatedMessages {
 }
 
 impl ::protobuf::Message for TestRepeatedMessages {
-    fn new() -> TestRepeatedMessages {
-        TestRepeatedMessages::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -672,6 +686,20 @@ impl ::protobuf::Message for TestRepeatedMessages {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestRepeatedMessages>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for TestRepeatedMessages {
+    fn new() -> TestRepeatedMessages {
+        TestRepeatedMessages::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<TestRepeatedMessages>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -700,10 +728,6 @@ impl ::protobuf::Message for TestRepeatedMessages {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestRepeatedMessages>()
     }
 }
 
@@ -864,10 +888,6 @@ impl TestOptionalMessages {
 }
 
 impl ::protobuf::Message for TestOptionalMessages {
-    fn new() -> TestOptionalMessages {
-        TestOptionalMessages::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -958,6 +978,20 @@ impl ::protobuf::Message for TestOptionalMessages {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestOptionalMessages>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for TestOptionalMessages {
+    fn new() -> TestOptionalMessages {
+        TestOptionalMessages::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<TestOptionalMessages>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -989,10 +1023,6 @@ impl ::protobuf::Message for TestOptionalMessages {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestOptionalMessages>()
     }
 }
 
@@ -1162,10 +1192,6 @@ impl TestStrings {
 }
 
 impl ::protobuf::Message for TestStrings {
-    fn new() -> TestStrings {
-        TestStrings::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1247,6 +1273,20 @@ impl ::protobuf::Message for TestStrings {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<TestStrings>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for TestStrings {
+    fn new() -> TestStrings {
+        TestStrings::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<TestStrings>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -1278,10 +1318,6 @@ impl ::protobuf::Message for TestStrings {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestStrings>()
     }
 }
 
@@ -1499,10 +1535,6 @@ impl PerftestData {
 }
 
 impl ::protobuf::Message for PerftestData {
-    fn new() -> PerftestData {
-        PerftestData::new()
-    }
-
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1617,6 +1649,20 @@ impl ::protobuf::Message for PerftestData {
         &mut self.unknown_fields
     }
 
+    fn type_id(&self) -> ::std::intrinsics::TypeId {
+        ::std::intrinsics::TypeId::of::<PerftestData>()
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for PerftestData {
+    fn new() -> PerftestData {
+        PerftestData::new()
+    }
+
     #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<PerftestData>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
@@ -1657,10 +1703,6 @@ impl ::protobuf::Message for PerftestData {
                 )
             })
         }
-    }
-
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<PerftestData>()
     }
 }
 

@@ -15,6 +15,7 @@ pub use singular::SingularField;
 pub use singular::SingularPtrField;
 pub use clear::Clear;
 pub use core::Message;
+pub use core::MessageStatic;
 pub use core::ProtobufEnum;
 pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
