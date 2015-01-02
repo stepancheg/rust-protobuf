@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::collections::hash_map;
+use std::collections::hash::map as hash_map;
 use std::default::Default;
 use std::slice;
 use stream::wire_format;
@@ -166,7 +166,7 @@ impl Clear for UnknownFields {
 }
 
 pub struct UnknownFieldIter<'s> {
-    entries: Option<hash_map::Entries<'s, u32, UnknownValues>>,
+    entries: Option<hash_map::Iter<'s, u32, UnknownValues>>,
 }
 
 impl<'s> Iterator<(u32, &'s UnknownValues)> for UnknownFieldIter<'s> {

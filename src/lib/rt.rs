@@ -2,6 +2,7 @@
 // Should not be used by programs written by hands.
 
 use std::iter::AdditiveIterator;
+use std::default::Default;
 
 use core::*;
 use zigzag::*;
@@ -369,7 +370,7 @@ pub fn read_repeated_bytes_into(
     }
 }
 
-pub fn read_repeated_message_into<M : Message>(
+pub fn read_repeated_message_into<M : Message + Default>(
     wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<M>)
         -> ProtobufResult<()>
 {

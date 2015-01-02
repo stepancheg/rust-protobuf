@@ -167,7 +167,7 @@ impl<M> MessageFactoryTyped<M> {
     }
 }
 
-impl<M : 'static + Message> MessageFactory for MessageFactoryTyped<M> {
+impl<M : 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> {
     fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
         box m as Box<Message>
@@ -188,7 +188,7 @@ impl MessageDescriptor {
         Message::descriptor_static(None::<M>)
     }
 
-    pub fn new<M : 'static + Message>(
+    pub fn new<M : 'static + Message + Default>(
             rust_name: &'static str,
             fields: Vec<Box<FieldAccessor + 'static>>,
             file: &'static FileDescriptorProto

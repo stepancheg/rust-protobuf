@@ -160,13 +160,10 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn remove(&mut self, index: uint) -> Option<T> {
-        if index < self.len {
-            self.len -= 1;
-            self.vec.remove(index)
-        } else {
-            None
-        }
+    pub fn remove(&mut self, index: uint) -> T {
+        assert!(index < self.len);
+        self.len -= 1;
+        self.vec.remove(index)
     }
 
     #[inline]

@@ -982,7 +982,7 @@ impl<'a> IndentWriter<'a> {
         (if line.as_slice().is_empty() {
             mut_writer.write("\n".as_bytes())
         } else {
-            let s = [self.indent.as_slice(), line.as_slice(), "\n"].concat();
+            let s: String = [self.indent.as_slice(), line.as_slice(), "\n"].concat();
             mut_writer.write(s.as_bytes())
         }).unwrap();
     }
