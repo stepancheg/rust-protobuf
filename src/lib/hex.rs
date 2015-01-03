@@ -47,7 +47,7 @@ fn encode_hex_byte(byte: u8) -> [char, ..2] {
 
 pub fn encode_hex(bytes: &[u8]) -> String {
     let strs: Vec<String> = bytes.iter().map(|byte| {
-        String::from_chars(encode_hex_byte(*byte).as_slice())
+        encode_hex_byte(*byte).iter().map(|c| *c).collect()
     }).collect();
     strs.connect(" ")
 }
