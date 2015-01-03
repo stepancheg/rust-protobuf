@@ -40,10 +40,7 @@ pub trait Message : PartialEq + fmt::Show + Clear {
     // However, rust doesn't allow these types to be extended by
     // Message.
 
-    fn descriptor(&self) -> &'static MessageDescriptor {
-        //MessageStatic::descriptor_static(None::<Self>)
-        panic!("TODO");
-    }
+    fn descriptor(&self) -> &'static MessageDescriptor;
 
     // all required fields set
     fn is_initialized(&self) -> bool;
