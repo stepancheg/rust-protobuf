@@ -167,5 +167,5 @@ pub fn print_to_string(m: &Message) -> String {
 }
 
 pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
-    f.write(print_to_string(m).as_bytes())
+    f.write_str(print_to_string(m).as_slice())
 }
