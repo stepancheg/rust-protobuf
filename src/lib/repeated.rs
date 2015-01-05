@@ -1,6 +1,7 @@
 use std::vec;
 use std::slice;
 use std::default::Default;
+use std::iter::FromIterator;
 use std::ops::Index;
 use std::ops::IndexMut;
 use std::cmp::Ordering;
@@ -257,7 +258,7 @@ impl<T : Clone> Clone for RepeatedField<T> {
 
 impl<T> FromIterator<T> for RepeatedField<T> {
     #[inline]
-    fn from_iter<I : Iterator<T>>(iter: I) -> RepeatedField<T> {
+    fn from_iter<I : Iterator<Item = T>>(iter: I) -> RepeatedField<T> {
         RepeatedField::from_vec(FromIterator::from_iter(iter))
     }
 }

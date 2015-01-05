@@ -81,7 +81,9 @@ pub struct UnknownValuesIter<'o> {
     length_delimited: slice::Iter<'o, Vec<u8>>,
 }
 
-impl<'o> Iterator<UnknownValueRef<'o>> for UnknownValuesIter<'o> {
+impl<'o> Iterator for UnknownValuesIter<'o> {
+    type Item = UnknownValueRef<'o>;
+
     fn next(&mut self) -> Option<UnknownValueRef<'o>> {
         let fixed32 = self.fixed32.next();
         if fixed32.is_some() {
@@ -169,7 +171,9 @@ pub struct UnknownFieldIter<'s> {
     entries: Option<hash_map::Iter<'s, u32, UnknownValues>>,
 }
 
-impl<'s> Iterator<(u32, &'s UnknownValues)> for UnknownFieldIter<'s> {
+impl<'s> Iterator for UnknownFieldIter<'s> {
+    type Item = (u32, &'s UnknownValues);
+
     fn next(&mut self) -> Option<(u32, &'s UnknownValues)> {
         if self.entries.is_none() {
             None
