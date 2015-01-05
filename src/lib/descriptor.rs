@@ -8,7 +8,7 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct FileDescriptorSet {
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -174,7 +174,7 @@ impl ::std::fmt::Show for FileDescriptorSet {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct FileDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     package: ::protobuf::SingularField<::std::string::String>,
@@ -833,7 +833,7 @@ impl ::std::fmt::Show for FileDescriptorProto {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct DescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     field: ::protobuf::RepeatedField<FieldDescriptorProto>,
@@ -1295,7 +1295,7 @@ impl ::std::fmt::Show for DescriptorProto {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct DescriptorProto_ExtensionRange {
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
@@ -1498,7 +1498,7 @@ impl ::std::fmt::Show for DescriptorProto_ExtensionRange {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct FieldDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
@@ -2032,7 +2032,7 @@ impl ::std::fmt::Show for FieldDescriptorProto {
     }
 }
 
-#[deriving(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Show)]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
     TYPE_FLOAT = 2,
@@ -2099,7 +2099,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 impl ::std::kinds::Copy for FieldDescriptorProto_Type {
 }
 
-#[deriving(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Show)]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
     LABEL_REQUIRED = 2,
@@ -2136,7 +2136,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 impl ::std::kinds::Copy for FieldDescriptorProto_Label {
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct EnumDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
@@ -2418,7 +2418,7 @@ impl ::std::fmt::Show for EnumDescriptorProto {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct EnumValueDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
@@ -2696,7 +2696,7 @@ impl ::std::fmt::Show for EnumValueDescriptorProto {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct ServiceDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
@@ -2978,7 +2978,7 @@ impl ::std::fmt::Show for ServiceDescriptorProto {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct MethodDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     input_type: ::protobuf::SingularField<::std::string::String>,
@@ -3331,7 +3331,7 @@ impl ::std::fmt::Show for MethodDescriptorProto {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct FileOptions {
     java_package: ::protobuf::SingularField<::std::string::String>,
     java_outer_classname: ::protobuf::SingularField<::std::string::String>,
@@ -3917,7 +3917,7 @@ impl ::std::fmt::Show for FileOptions {
     }
 }
 
-#[deriving(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Show)]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
     CODE_SIZE = 2,
@@ -3954,7 +3954,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
 impl ::std::kinds::Copy for FileOptions_OptimizeMode {
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct MessageOptions {
     message_set_wire_format: ::std::option::Option<bool>,
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
@@ -4202,7 +4202,7 @@ impl ::std::fmt::Show for MessageOptions {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct FieldOptions {
     ctype: ::std::option::Option<FieldOptions_CType>,
     packed: ::std::option::Option<bool>,
@@ -4631,7 +4631,7 @@ impl ::std::fmt::Show for FieldOptions {
     }
 }
 
-#[deriving(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Show)]
 pub enum FieldOptions_CType {
     STRING = 0,
     CORD = 1,
@@ -4668,7 +4668,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 impl ::std::kinds::Copy for FieldOptions_CType {
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct EnumOptions {
     allow_alias: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
@@ -4875,7 +4875,7 @@ impl ::std::fmt::Show for EnumOptions {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct EnumValueOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -5041,7 +5041,7 @@ impl ::std::fmt::Show for EnumValueOptions {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct ServiceOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -5207,7 +5207,7 @@ impl ::std::fmt::Show for ServiceOptions {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct MethodOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -5373,7 +5373,7 @@ impl ::std::fmt::Show for MethodOptions {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct UninterpretedOption {
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: ::protobuf::SingularField<::std::string::String>,
@@ -5836,7 +5836,7 @@ impl ::std::fmt::Show for UninterpretedOption {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct UninterpretedOption_NamePart {
     name_part: ::protobuf::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
@@ -6062,7 +6062,7 @@ impl ::std::fmt::Show for UninterpretedOption_NamePart {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct SourceCodeInfo {
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -6228,7 +6228,7 @@ impl ::std::fmt::Show for SourceCodeInfo {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct SourceCodeInfo_Location {
     path: ::std::vec::Vec<i32>,
     span: ::std::vec::Vec<i32>,

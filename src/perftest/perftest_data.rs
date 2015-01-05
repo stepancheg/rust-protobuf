@@ -8,7 +8,7 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct Test1 {
     value: ::std::option::Option<i32>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -170,7 +170,7 @@ impl ::std::fmt::Show for Test1 {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct TestRepeatedBool {
     values: ::std::vec::Vec<bool>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -331,7 +331,7 @@ impl ::std::fmt::Show for TestRepeatedBool {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct TestRepeatedPackedInt32 {
     values: ::std::vec::Vec<i32>,
     unknown_fields: ::protobuf::UnknownFields,
@@ -499,7 +499,7 @@ impl ::std::fmt::Show for TestRepeatedPackedInt32 {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct TestRepeatedMessages {
     messages1: ::protobuf::RepeatedField<TestRepeatedMessages>,
     messages2: ::protobuf::RepeatedField<TestRepeatedMessages>,
@@ -755,7 +755,7 @@ impl ::std::fmt::Show for TestRepeatedMessages {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct TestOptionalMessages {
     message1: ::protobuf::SingularPtrField<TestOptionalMessages>,
     message2: ::protobuf::SingularPtrField<TestOptionalMessages>,
@@ -1050,7 +1050,7 @@ impl ::std::fmt::Show for TestOptionalMessages {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct TestStrings {
     s1: ::protobuf::SingularField<::std::string::String>,
     s2: ::protobuf::SingularField<::std::string::String>,
@@ -1345,7 +1345,7 @@ impl ::std::fmt::Show for TestStrings {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct PerftestData {
     test1: ::protobuf::RepeatedField<Test1>,
     test_repeated_bool: ::protobuf::RepeatedField<TestRepeatedBool>,

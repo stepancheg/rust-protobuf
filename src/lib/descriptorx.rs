@@ -90,7 +90,7 @@ impl<'a> FileScope<'a> {
 }
 
 
-//#[deriving(Clone)]
+//#[derive(Clone)]
 pub struct Scope<'a> {
     pub file_descriptor: &'a FileDescriptorProto,
     pub path: Vec<&'a DescriptorProto>,
@@ -217,7 +217,7 @@ pub trait WithScope<'a> {
     }
 }
 
-//#[deriving(Clone)]
+//#[derive(Clone)]
 pub struct MessageWithScope<'a> {
     pub scope: Scope<'a>,
     pub message: &'a DescriptorProto,
@@ -260,7 +260,7 @@ impl<'a> MessageWithScope<'a> {
 }
 
 
-//#[deriving(Clone)]
+//#[derive(Clone)]
 pub struct EnumWithScope<'a> {
     pub scope: Scope<'a>,
     pub en: &'a EnumDescriptorProto,

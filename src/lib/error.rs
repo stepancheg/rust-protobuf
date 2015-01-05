@@ -3,7 +3,7 @@ use std::error::Error;
 
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
-#[deriving(Show,Eq,PartialEq)]
+#[derive(Show,Eq,PartialEq)]
 pub enum ProtobufError {
     IoError(IoError),
     WireError(String),

@@ -25,7 +25,7 @@ use super::descriptor::MethodOptions;
 use super::descriptor::UninterpretedOption;
 use super::descriptor::SourceCodeInfo;
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct CodeGeneratorRequest {
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
@@ -291,7 +291,7 @@ impl ::std::fmt::Show for CodeGeneratorRequest {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct CodeGeneratorResponse {
     error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
@@ -515,7 +515,7 @@ impl ::std::fmt::Show for CodeGeneratorResponse {
     }
 }
 
-#[deriving(Clone,Default)]
+#[derive(Clone,Default)]
 pub struct CodeGeneratorResponse_File {
     name: ::protobuf::SingularField<::std::string::String>,
     insertion_point: ::protobuf::SingularField<::std::string::String>,

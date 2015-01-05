@@ -441,7 +441,7 @@ mod test {
 
     #[test]
     fn test_set_default_clears() {
-        #[deriving(Default)]
+        #[derive(Default)]
         struct Foo {
             b: int,
         }

@@ -16,7 +16,7 @@ use descriptorx::RootScope;
 use descriptorx::Scope;
 use descriptorx::WithScope;
 
-#[deriving(Clone,PartialEq,Eq)]
+#[derive(Clone,PartialEq,Eq)]
 enum RustType {
     Signed(uint),
     Unsigned(uint),
@@ -354,14 +354,14 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
     }
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 enum RepeatMode {
     Single,
     RepeatRegular,
     RepeatPacked,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 struct Field {
     proto_field: FieldDescriptorProto,
     name: String,
@@ -650,7 +650,7 @@ impl Field {
     }
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 struct MessageInfo<'a> {
     proto_message: DescriptorProto,
     pkg: String,
@@ -694,7 +694,7 @@ struct Enum<'a> {
     lite_runtime: bool,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 struct EnumValue {
     proto: EnumValueDescriptorProto,
     prefix: String,
@@ -1080,9 +1080,9 @@ impl<'a> IndentWriter<'a> {
         self.fail("TODO");
     }
 
-    fn deriving(&mut self, deriving: &[&str]) {
-        let v: Vec<String> = deriving.iter().map(|&s| s.to_string()).collect();
-        self.write_line(format!("#[deriving({})]", v.connect(",")));
+    fn derive(&mut self, derive: &[&str]) {
+        let v: Vec<String> = derive.iter().map(|&s| s.to_string()).collect();
+        self.write_line(format!("#[derive({})]", v.connect(",")));
     }
 
     fn allow(&mut self, what: &[&str]) {
@@ -1213,11 +1213,11 @@ fn write_merge_from_field(w: &mut IndentWriter) {
 
 fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    let mut deriving = vec!["Clone", "Default"];
+    let mut derive = vec!["Clone", "Default"];
     if msg.lite_runtime {
-        deriving.push("Show");
+        derive.push("Show");
     }
-    w.deriving(deriving.as_slice());
+    w.derive(derive.as_slice());
     w.pub_struct(msg.type_name.as_slice(), |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
@@ -1687,7 +1687,7 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
 }
 
 fn write_enum_struct(w: &mut IndentWriter) {
-    w.deriving(&["Clone", "PartialEq", "Eq", "Show"]);
+    w.derive(&["Clone", "PartialEq", "Eq", "Show"]);
     w.expr_block(format!("pub enum {}", w.en().type_name), |w| {
         for value in w.en().values.iter() {
             w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
