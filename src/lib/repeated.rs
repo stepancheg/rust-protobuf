@@ -3,6 +3,7 @@ use std::slice;
 use std::default::Default;
 use std::ops::Index;
 use std::ops::IndexMut;
+use std::cmp::Ordering;
 use std::fmt;
 
 use clear::Clear;
