@@ -1,4 +1,6 @@
 use std::mem;
+use std::ops::Index;
+use std::ops::IndexMut;
 
 pub enum MaybeOwnedSlice<'a, T : 'a> {
     Ref(&'a [T]),
@@ -49,14 +51,18 @@ impl<'a, T : 'a> AsSlice<T> for MaybeOwnedSlice<'a, T> {
     }
 }
 
-impl<'a, T : 'a> Index<uint, T> for MaybeOwnedSlice<'a, T> {
+impl<'a, T : 'a> Index<uint> for MaybeOwnedSlice<'a, T> {
+    type Output = T;
+
     #[inline]
     fn index<'b>(&'b self, index: &uint) -> &'b T {
         &self.as_slice()[*index]
     }
 }
 
-impl<'a, T : 'a> IndexMut<uint, T> for MaybeOwnedSlice<'a, T> {
+impl<'a, T : 'a> IndexMut<uint> for MaybeOwnedSlice<'a, T> {
+    type Output = T;
+
     #[inline]
     fn index_mut<'b>(&'b mut self, index: &uint) -> &'b mut T {
         &mut self.as_mut_slice()[*index]

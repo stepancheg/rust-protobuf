@@ -1,4 +1,5 @@
 #![crate_type = "lib"]
+#![feature(associated_types)]
 #![feature(globs)]
 #![allow(non_camel_case_types)]
 

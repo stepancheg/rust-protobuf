@@ -1,6 +1,8 @@
 use std::vec;
 use std::slice;
 use std::default::Default;
+use std::ops::Index;
+use std::ops::IndexMut;
 use std::fmt;
 
 use clear::Clear;
@@ -282,14 +284,18 @@ impl<T> AsSlice<T> for RepeatedField<T> {
     }
 }
 
-impl<T> Index<uint, T> for RepeatedField<T> {
+impl<T> Index<uint> for RepeatedField<T> {
+    type Output = T;
+
     #[inline]
     fn index<'a>(&'a self, index: &uint) -> &'a T {
         &self.as_slice()[*index]
     }
 }
 
-impl<T> IndexMut<uint, T> for RepeatedField<T> {
+impl<T> IndexMut<uint> for RepeatedField<T> {
+    type Output = T;
+
     #[inline]
     fn index_mut<'a>(&'a mut self, index: &uint) -> &'a mut T {
         &mut self.as_mut_slice()[*index]
