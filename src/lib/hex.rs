@@ -41,7 +41,7 @@ fn encode_hex_digit(digit: u8) -> char {
     }
 }
 
-fn encode_hex_byte(byte: u8) -> [char, ..2] {
+fn encode_hex_byte(byte: u8) -> [char; 2] {
     [encode_hex_digit(byte >> 4), encode_hex_digit(byte & 0x0Fu8)]
 }
 

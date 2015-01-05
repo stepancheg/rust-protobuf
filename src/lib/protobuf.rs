@@ -1,6 +1,7 @@
 #![crate_type = "lib"]
 #![feature(associated_types)]
 #![feature(globs)]
+#![feature(slicing_syntax)]
 #![allow(non_camel_case_types)]
 
 extern crate collections;
