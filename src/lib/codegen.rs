@@ -1622,7 +1622,7 @@ fn write_message_impl_show(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     w.impl_for_block("::std::fmt::Show", msg.type_name.as_slice(), |w| {
         w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
-            w.write_line("self.fmt_impl(f)");
+            w.write_line("::protobuf::text_format::fmt(self, f)");
         });
     });
 }

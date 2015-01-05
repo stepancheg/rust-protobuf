@@ -62,6 +62,7 @@ mod protobuf {
     pub use error::*;
     pub use stream::*;
     pub use rt;
+    pub use text_format;
     pub use lazy;
     pub use unknown::UnknownFields;
     pub use unknown::UnknownValues;

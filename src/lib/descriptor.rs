@@ -170,7 +170,7 @@ impl ::std::cmp::PartialEq for FileDescriptorSet {
 
 impl ::std::fmt::Show for FileDescriptorSet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -829,7 +829,7 @@ impl ::std::cmp::PartialEq for FileDescriptorProto {
 
 impl ::std::fmt::Show for FileDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -1291,7 +1291,7 @@ impl ::std::cmp::PartialEq for DescriptorProto {
 
 impl ::std::fmt::Show for DescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -1494,7 +1494,7 @@ impl ::std::cmp::PartialEq for DescriptorProto_ExtensionRange {
 
 impl ::std::fmt::Show for DescriptorProto_ExtensionRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -2028,7 +2028,7 @@ impl ::std::cmp::PartialEq for FieldDescriptorProto {
 
 impl ::std::fmt::Show for FieldDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -2414,7 +2414,7 @@ impl ::std::cmp::PartialEq for EnumDescriptorProto {
 
 impl ::std::fmt::Show for EnumDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -2692,7 +2692,7 @@ impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
 
 impl ::std::fmt::Show for EnumValueDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -2974,7 +2974,7 @@ impl ::std::cmp::PartialEq for ServiceDescriptorProto {
 
 impl ::std::fmt::Show for ServiceDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -3327,7 +3327,7 @@ impl ::std::cmp::PartialEq for MethodDescriptorProto {
 
 impl ::std::fmt::Show for MethodDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -3913,7 +3913,7 @@ impl ::std::cmp::PartialEq for FileOptions {
 
 impl ::std::fmt::Show for FileOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -4198,7 +4198,7 @@ impl ::std::cmp::PartialEq for MessageOptions {
 
 impl ::std::fmt::Show for MessageOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -4627,7 +4627,7 @@ impl ::std::cmp::PartialEq for FieldOptions {
 
 impl ::std::fmt::Show for FieldOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -4871,7 +4871,7 @@ impl ::std::cmp::PartialEq for EnumOptions {
 
 impl ::std::fmt::Show for EnumOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -5037,7 +5037,7 @@ impl ::std::cmp::PartialEq for EnumValueOptions {
 
 impl ::std::fmt::Show for EnumValueOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -5203,7 +5203,7 @@ impl ::std::cmp::PartialEq for ServiceOptions {
 
 impl ::std::fmt::Show for ServiceOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -5369,7 +5369,7 @@ impl ::std::cmp::PartialEq for MethodOptions {
 
 impl ::std::fmt::Show for MethodOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -5832,7 +5832,7 @@ impl ::std::cmp::PartialEq for UninterpretedOption {
 
 impl ::std::fmt::Show for UninterpretedOption {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -6058,7 +6058,7 @@ impl ::std::cmp::PartialEq for UninterpretedOption_NamePart {
 
 impl ::std::fmt::Show for UninterpretedOption_NamePart {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -6224,7 +6224,7 @@ impl ::std::cmp::PartialEq for SourceCodeInfo {
 
 impl ::std::fmt::Show for SourceCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -6555,7 +6555,7 @@ impl ::std::cmp::PartialEq for SourceCodeInfo_Location {
 
 impl ::std::fmt::Show for SourceCodeInfo_Location {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 

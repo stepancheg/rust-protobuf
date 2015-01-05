@@ -130,9 +130,6 @@ pub trait Message : PartialEq + fmt::Show + Clear {
     // impl<M : Message> fmt::Show for M {
     // ...
     // }
-    fn fmt_impl(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        ::text_format::fmt(self, f)
-    }
 }
 
 pub fn message_is<M : 'static + Message>(m: &Message) -> bool {

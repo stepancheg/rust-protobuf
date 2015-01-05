@@ -166,7 +166,7 @@ impl ::std::cmp::PartialEq for Test1 {
 
 impl ::std::fmt::Show for Test1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -327,7 +327,7 @@ impl ::std::cmp::PartialEq for TestRepeatedBool {
 
 impl ::std::fmt::Show for TestRepeatedBool {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -495,7 +495,7 @@ impl ::std::cmp::PartialEq for TestRepeatedPackedInt32 {
 
 impl ::std::fmt::Show for TestRepeatedPackedInt32 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -751,7 +751,7 @@ impl ::std::cmp::PartialEq for TestRepeatedMessages {
 
 impl ::std::fmt::Show for TestRepeatedMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -1046,7 +1046,7 @@ impl ::std::cmp::PartialEq for TestOptionalMessages {
 
 impl ::std::fmt::Show for TestOptionalMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -1341,7 +1341,7 @@ impl ::std::cmp::PartialEq for TestStrings {
 
 impl ::std::fmt::Show for TestStrings {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -1732,7 +1732,7 @@ impl ::std::cmp::PartialEq for PerftestData {
 
 impl ::std::fmt::Show for PerftestData {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 

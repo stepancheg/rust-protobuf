@@ -287,7 +287,7 @@ impl ::std::cmp::PartialEq for CodeGeneratorRequest {
 
 impl ::std::fmt::Show for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -511,7 +511,7 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse {
 
 impl ::std::fmt::Show for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
@@ -806,7 +806,7 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
 
 impl ::std::fmt::Show for CodeGeneratorResponse_File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.fmt_impl(f)
+        ::protobuf::text_format::fmt(self, f)
     }
 }
 
