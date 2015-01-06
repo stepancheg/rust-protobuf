@@ -17,13 +17,13 @@ use perftest_data::PerftestData;
 
 mod perftest_data;
 
-fn measure_ns<R>(f: || -> R) -> (u64, R) {
+fn measure_ns<R, F: FnMut() -> R>(mut f: F) -> (u64, R) {
     let start = time::precise_time_ns();
     let r = f();
     (time::precise_time_ns() - start, r)
 }
 
-fn measure_and_print<R>(title: &str, iter: u64, f: || -> R) -> R {
+fn measure_and_print<R, F: FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
     let (ns, r) = measure_ns(f);
     let ns_per_iter = ns / iter;
     println!("{}: {} ns per iter", title, ns_per_iter);
