@@ -111,7 +111,9 @@ impl<T> SingularField<T> {
     }
 
     #[inline]
-    pub fn unwrap_or_else(self, f: || -> T) -> T {
+    pub fn unwrap_or_else<F>(self, f: F) -> T
+        where F : FnOnce() -> T
+    {
         if self.set {
             self.value
         } else {
@@ -120,7 +122,9 @@ impl<T> SingularField<T> {
     }
 
     #[inline]
-    pub fn map<U, F>(self, f: F) -> SingularPtrField<U> where F: FnOnce(T) -> U {
+    pub fn map<U, F>(self, f: F) -> SingularPtrField<U>
+        where F: FnOnce(T) -> U
+    {
         SingularPtrField::from_option(self.into_option().map(f))
     }
 
@@ -278,7 +282,9 @@ impl<T> SingularPtrField<T> {
     }
 
     #[inline]
-    pub fn unwrap_or_else(self, f: || -> T) -> T {
+    pub fn unwrap_or_else<F>(self, f: F) -> T
+        where F : FnOnce() -> T
+    {
         if self.set {
             *self.value.unwrap()
         } else {
@@ -287,7 +293,9 @@ impl<T> SingularPtrField<T> {
     }
 
     #[inline]
-    pub fn map<U, F>(self, f: F) -> SingularPtrField<U> where F: FnOnce(T) -> U {
+    pub fn map<U, F>(self, f: F) -> SingularPtrField<U>
+        where F: FnOnce(T) -> U
+    {
         SingularPtrField::from_option(self.into_option().map(f))
     }
 

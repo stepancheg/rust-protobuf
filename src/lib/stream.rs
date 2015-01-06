@@ -626,13 +626,15 @@ impl<'a> CodedInputStream<'a> {
 }
 
 pub trait WithCodedOutputStream {
-    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
-            -> ProtobufResult<T>;
+    fn with_coded_output_stream<T, F>(self, cb: F)
+            -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedOutputStream for &'a mut (Writer + 'a) {
-    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
+    fn with_coded_output_stream<T, F>(self, cb: F)
             -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
         let mut os = CodedOutputStream::new(self);
         let r = try!(cb(&mut os));
@@ -642,32 +644,33 @@ impl<'a> WithCodedOutputStream for &'a mut (Writer + 'a) {
 }
 
 impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
-    fn with_coded_output_stream<T>(self, cb: |&mut CodedOutputStream| -> ProtobufResult<T>)
+    fn with_coded_output_stream<T, F>(self, cb: F)
             -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
         let mut w = VecWriter::new(self);
-        (&mut w as &mut Writer).with_coded_output_stream(|os| {
-            cb(os)
-        })
+        (&mut w as &mut Writer).with_coded_output_stream(cb)
     }
 }
 
-pub fn with_coded_output_stream_to_bytes(cb: |&mut CodedOutputStream| -> ProtobufResult<()>)
+pub fn with_coded_output_stream_to_bytes<F>(cb: F)
         -> ProtobufResult<Vec<u8>>
+    where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<()>
 {
     let mut v = Vec::new();
-    try!(v.with_coded_output_stream(|os| {
-        cb(os)
-    }));
+    try!(v.with_coded_output_stream(cb));
     Ok(v)
 }
 
 pub trait WithCodedInputStream {
-    fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T;
+    fn with_coded_input_stream<T, F>(self, cb: F) -> T
+        where F : FnOnce(&mut CodedInputStream) -> T;
 }
 
 impl<'a> WithCodedInputStream for &'a mut (Reader + 'a) {
-    fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
+    fn with_coded_input_stream<T, F>(self, cb: F) -> T
+        where F : FnOnce(&mut CodedInputStream) -> T
+    {
         let mut is = CodedInputStream::new(self);
         let r = cb(&mut is);
         // reading from Reader requires all data to be read,
@@ -679,7 +682,9 @@ impl<'a> WithCodedInputStream for &'a mut (Reader + 'a) {
 }
 
 impl<'a> WithCodedInputStream for &'a [u8] {
-    fn with_coded_input_stream<T>(self, cb: |&mut CodedInputStream| -> T) -> T {
+    fn with_coded_input_stream<T, F>(self, cb: F) -> T
+        where F : FnOnce(&mut CodedInputStream) -> T
+    {
         let mut is = CodedInputStream::from_bytes(self);
         let r = cb(&mut is);
         assert!(is.eof().unwrap());
@@ -1005,7 +1010,9 @@ mod test {
     use super::CodedInputStream;
     use super::CodedOutputStream;
 
-    fn test_read(hex: &str, callback: |&mut CodedInputStream|) {
+    fn test_read<F>(hex: &str, mut callback: F)
+        where F : FnMut(&mut CodedInputStream)
+    {
         let d = decode_hex(hex);
         let len = d.len();
         let mut reader = MemReader::new(d);
@@ -1077,7 +1084,9 @@ mod test {
         });
     }
 
-    fn test_write(expected: &str, gen: |&mut CodedOutputStream| -> ProtobufResult<()>) {
+    fn test_write<F>(expected: &str, mut gen: F)
+        where F : FnMut(&mut CodedOutputStream) -> ProtobufResult<()>
+    {
         let mut v = Vec::new();
         {
             let mut writer = VecWriter::new(&mut v);

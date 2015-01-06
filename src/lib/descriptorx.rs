@@ -162,13 +162,19 @@ impl<'a> Scope<'a> {
         }).collect()
     }
 
-    // apply callback for this scope and all nested scopes
-    fn walk_scopes(&self, callback: |&Scope<'a>|) {
-        callback(self);
+    fn walk_scopes_impl<F : FnMut(&Scope<'a>)>(&self, callback: &mut F) {
+        (*callback)(self);
 
         for nested in self.nested_scopes().iter() {
-            nested.walk_scopes(|scope| callback(scope));
+            nested.walk_scopes_impl(callback);
         }
+    }
+
+    // apply callback for this scope and all nested scopes
+    fn walk_scopes<F>(&self, mut callback: F)
+        where F : FnMut(&Scope<'a>)
+    {
+        self.walk_scopes_impl(&mut callback);
     }
 
     pub fn prefix(&self) -> String {

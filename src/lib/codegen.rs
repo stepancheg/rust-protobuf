@@ -773,7 +773,9 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn bind_message<T>(&self, msg: &MessageInfo, cb: |&mut IndentWriter| -> T) -> T {
+    fn bind_message<T, F>(&self, msg: &MessageInfo, cb: F) -> T
+        where F : Fn(&mut IndentWriter) -> T
+    {
         cb(&mut IndentWriter {
             writer: unsafe { mem::transmute(self.writer) },
             indent: self.indent.to_string(),
@@ -783,7 +785,9 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn bind_field<T>(&self, field: &'a Field, cb: |&mut IndentWriter| -> T) -> T {
+    fn bind_field<T, F>(&self, field: &'a Field, cb: F) -> T
+        where F : Fn(&mut IndentWriter) -> T
+    {
         assert!(self.msg.is_some());
         cb(&mut IndentWriter {
             writer: self.writer,
@@ -794,7 +798,9 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn bind_enum<T>(&self, en: &Enum, cb: |&mut IndentWriter| -> T) -> T {
+    fn bind_enum<T, F>(&self, en: &Enum, cb: F) -> T
+        where F : Fn(&mut IndentWriter) -> T
+    {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: self.indent.to_string(),
@@ -804,7 +810,9 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn fields(&self, cb: |&mut IndentWriter|) {
+    fn fields<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         let fields = &self.msg.as_ref().unwrap().fields;
         let mut iter = fields.iter();
         for field in iter {
@@ -812,7 +820,9 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn required_fields(&self, cb: |&mut IndentWriter|) {
+    fn required_fields<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         let fields = &self.msg.as_ref().unwrap().required_fields();
         let mut iter = fields.iter();
         for field in iter {
@@ -862,19 +872,27 @@ impl<'a> IndentWriter<'a> {
         format!("{}{}", self.self_field(), self.field().as_option())
     }
 
-    fn if_self_field_is_some(&self, cb: |&mut IndentWriter|) {
+    fn if_self_field_is_some<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.if_stmt(self.self_field_is_some(), cb);
     }
 
-    fn if_self_field_is_not_empty(&self, cb: |&mut IndentWriter|) {
+    fn if_self_field_is_not_empty<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.if_stmt(self.self_field_is_not_empty(), cb);
     }
 
-    fn if_self_field_is_none(&self, cb: |&mut IndentWriter|) {
+    fn if_self_field_is_none<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.if_stmt(self.self_field_is_none(), cb);
     }
 
-    fn for_self_field(&mut self, varn: &str, cb: |&mut IndentWriter, v_type: &RustType|) {
+    fn for_self_field<F>(&mut self, varn: &str, cb: F)
+        where F : Fn(&mut IndentWriter, &RustType)
+    {
         let v_type = self.field().full_storage_iter_elem_type();
         self.for_stmt(format!("{}.iter()", self.self_field()), varn, |w| cb(w, &v_type));
     }
@@ -994,7 +1012,9 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn indented(&self, cb: |&mut IndentWriter|) {
+    fn indented<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: format!("{}    ", self.indent),
@@ -1005,7 +1025,9 @@ impl<'a> IndentWriter<'a> {
     }
 
     #[allow(dead_code)]
-    fn commented(&self, cb: |&mut IndentWriter|) {
+    fn commented<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: format!("// {}", self.indent),
@@ -1022,7 +1044,9 @@ impl<'a> IndentWriter<'a> {
         });
     }
 
-    fn lazy_static_decl_get<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2, init: |&mut IndentWriter|) {
+    fn lazy_static_decl_get<S1 : Str, S2 : Str, F>(&mut self, name: S1, ty: S2, init: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.lazy_static(name.as_slice(), ty);
         self.unsafe_expr(|w| {
             w.write_line(format!("{}.get(|| {{", name.as_slice()));
@@ -1031,38 +1055,54 @@ impl<'a> IndentWriter<'a> {
         });
     }
 
-    fn block<S1 : Str, S2 : Str>(&self, first_line: S1, last_line: S2, cb: |&mut IndentWriter|) {
+    fn block<S1 : Str, S2 : Str, F>(&self, first_line: S1, last_line: S2, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.write_line(first_line.as_slice());
         self.indented(cb);
         self.write_line(last_line.as_slice());
     }
 
-    fn expr_block<S : Str>(&self, prefix: S, cb: |&mut IndentWriter|) {
+    fn expr_block<S : Str, F>(&self, prefix: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.block(format!("{} {{", prefix.as_slice()), "}", cb);
     }
 
-    fn stmt_block<S : Str>(&self, prefix: S, cb: |&mut IndentWriter|) {
+    fn stmt_block<S : Str, F>(&self, prefix: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.block(format!("{} {{", prefix.as_slice()), "};", cb);
     }
 
-    fn unsafe_expr(&self, cb: |&mut IndentWriter|) {
+    fn unsafe_expr<F>(&self, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block("unsafe", cb);
     }
 
     #[allow(dead_code)]
-    fn impl_block<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
+    fn impl_block<S : Str, F>(&self, name: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("impl {}", name.as_slice()), cb);
     }
 
-    fn impl_self_block<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
+    fn impl_self_block<S : Str, F>(&self, name: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("impl {}", name.as_slice()), cb);
     }
 
-    fn impl_for_block<S1 : Str, S2 : Str>(&self, tr: S1, ty: S2, cb: |&mut IndentWriter|) {
+    fn impl_for_block<S1 : Str, S2 : Str, F>(&self, tr: S1, ty: S2, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("impl {} for {}", tr.as_slice(), ty.as_slice()), cb);
     }
 
-    fn pub_struct<S : Str>(&self, name: S, cb: |&mut IndentWriter|) {
+    fn pub_struct<S : Str, F>(&self, name: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("pub struct {}", name.as_slice()), cb);
     }
 
@@ -1098,39 +1138,57 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn pub_fn<S : Str>(&self, sig: S, cb: |&mut IndentWriter|) {
+    fn pub_fn<S : Str, F>(&self, sig: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("pub fn {}", sig.as_slice()), cb);
     }
 
-    fn def_fn<S : Str>(&self, sig: S, cb: |&mut IndentWriter|) {
+    fn def_fn<S : Str, F>(&self, sig: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("fn {}", sig.as_slice()), cb);
     }
 
-    fn while_block<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
+    fn while_block<S : Str, F>(&self, cond: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("while {}", cond.as_slice()), cb);
     }
 
-    fn if_stmt<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
+    fn if_stmt<S : Str, F>(&self, cond: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.stmt_block(format!("if {}", cond.as_slice()), cb);
     }
 
-    fn if_let_stmt(&self, decl: &str, expr: &str, cb: |&mut IndentWriter|) {
+    fn if_let_stmt<F>(&self, decl: &str, expr: &str, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.if_stmt(format!("let {} = {}", decl, expr), cb);
     }
 
-    fn for_stmt<S1 : Str, S2 : Str>(&self, over: S1, varn: S2, cb: |&mut IndentWriter|) {
+    fn for_stmt<S1 : Str, S2 : Str, F>(&self, over: S1, varn: S2, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.stmt_block(format!("for {} in {}", varn.as_slice(), over.as_slice()), cb)
     }
 
-    fn match_block<S : Str>(&self, value: S, cb: |&mut IndentWriter|) {
+    fn match_block<S : Str, F>(&self, value: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.stmt_block(format!("match {}", value.as_slice()), cb);
     }
 
-    fn match_expr<S : Str>(&self, value: S, cb: |&mut IndentWriter|) {
+    fn match_expr<S : Str, F>(&self, value: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.expr_block(format!("match {}", value.as_slice()), cb);
     }
 
-    fn case_block<S : Str>(&self, cond: S, cb: |&mut IndentWriter|) {
+    fn case_block<S : Str, F>(&self, cond: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
         self.block(format!("{} => {{", cond.as_slice()), "},", cb);
     }
 
