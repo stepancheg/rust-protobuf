@@ -1,5 +1,4 @@
 #![crate_type = "bin"]
-#![feature(globs)]
 #![allow(non_camel_case_types)]
 
 extern crate protobuf;
