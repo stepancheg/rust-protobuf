@@ -1,5 +1,6 @@
 #![crate_type = "lib"]
-#![allow(non_camel_case_types)]
+#![allow(non_camel_case_types, unstable)]
+#![feature(box_syntax)]
 
 extern crate collections;
 

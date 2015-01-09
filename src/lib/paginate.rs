@@ -1,9 +1,9 @@
 pub trait PaginatableIterator<T> {
-    fn paginate(self, page: uint) -> Paginate<Self>;
+    fn paginate(self, page: usize) -> Paginate<Self>;
 }
 
 impl<T, U : Iterator<Item = T>> PaginatableIterator<T> for U {
-    fn paginate(self, page: uint) -> Paginate<U> {
+    fn paginate(self, page: usize) -> Paginate<U> {
         Paginate {
             iter: self,
             page: page,
@@ -13,7 +13,7 @@ impl<T, U : Iterator<Item = T>> PaginatableIterator<T> for U {
 
 struct Paginate<I> {
     iter: I,
-    page: uint,
+    page: usize,
 }
 
 impl<E, I : Iterator<Item = E>> Iterator for Paginate<I> {

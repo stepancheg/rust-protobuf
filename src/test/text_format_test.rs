@@ -72,5 +72,5 @@ fn test_complex_message() {
 fn test_show() {
     let mut m = TestTypes::new();
     m.set_bool_singular(true);
-    assert_eq!("bool_singular: true", m.to_string().as_slice());
+    assert_eq!("bool_singular: true", format!("{:?}", m).as_slice());
 }
