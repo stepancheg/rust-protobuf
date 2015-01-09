@@ -50,7 +50,7 @@ impl FieldDescriptor {
         self.accessor.has_field_generic(m)
     }
 
-    pub fn len_field(&self, m: &Message) -> uint {
+    pub fn len_field(&self, m: &Message) -> usize {
         self.accessor.len_field_generic(m)
     }
 
@@ -58,7 +58,7 @@ impl FieldDescriptor {
         self.accessor.get_message_generic(m)
     }
 
-    pub fn get_rep_message_item<'a>(&self, m: &'a Message, index: uint) -> &'a Message {
+    pub fn get_rep_message_item<'a>(&self, m: &'a Message, index: usize) -> &'a Message {
         self.accessor.get_rep_message_item_generic(m, index)
     }
 
@@ -66,7 +66,7 @@ impl FieldDescriptor {
         self.accessor.get_enum_generic(m)
     }
 
-    pub fn get_rep_enum_item(&self, m: &Message, index: uint) -> &'static EnumValueDescriptor {
+    pub fn get_rep_enum_item(&self, m: &Message, index: usize) -> &'static EnumValueDescriptor {
         self.accessor.get_rep_enum_item_generic(m, index)
     }
 
@@ -78,7 +78,7 @@ impl FieldDescriptor {
         self.accessor.get_rep_str_generic(m)
     }
 
-    pub fn get_rep_str_item<'a>(&self, m: &'a Message, index: uint) -> &'a str {
+    pub fn get_rep_str_item<'a>(&self, m: &'a Message, index: usize) -> &'a str {
         self.get_rep_str(m)[index].as_slice()
     }
 
@@ -90,7 +90,7 @@ impl FieldDescriptor {
         self.accessor.get_rep_bytes_generic(m)
     }
 
-    pub fn get_rep_bytes_item<'a>(&self, m: &'a Message, index: uint) -> &'a [u8] {
+    pub fn get_rep_bytes_item<'a>(&self, m: &'a Message, index: usize) -> &'a [u8] {
         self.get_rep_bytes(m)[index].as_slice()
     }
 
@@ -180,8 +180,8 @@ pub struct MessageDescriptor {
     factory: Box<MessageFactory + 'static>,
     fields: Vec<FieldDescriptor>,
 
-    index_by_name: HashMap<String, uint>,
-    index_by_number: HashMap<u32, uint>,
+    index_by_name: HashMap<String, usize>,
+    index_by_number: HashMap<u32, usize>,
 }
 
 impl MessageDescriptor {
@@ -267,8 +267,8 @@ pub struct EnumDescriptor {
     proto: &'static EnumDescriptorProto,
     values: Vec<EnumValueDescriptor>,
 
-    index_by_name: HashMap<String, uint>,
-    index_by_number: HashMap<i32, uint>,
+    index_by_name: HashMap<String, usize>,
+    index_by_number: HashMap<i32, usize>,
 }
 
 impl EnumDescriptor {

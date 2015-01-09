@@ -23,7 +23,7 @@ pub mod wire_format {
     pub use self::WireType::*;
 
     pub const TAG_TYPE_BITS: u32 = 3;
-    pub const TAG_TYPE_MASK: u32 = (1u << TAG_TYPE_BITS as uint) as u32 - 1;
+    pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) as u32 - 1;
 
     #[derive(PartialEq, Eq, Clone, Show)]
     pub enum WireType {
@@ -70,7 +70,7 @@ pub mod wire_format {
         }
 
         pub fn make(field_number: u32, wire_type: WireType) -> Tag {
-            Tag::new((field_number << TAG_TYPE_BITS as uint) as u32 | (wire_type as u32)).unwrap()
+            Tag::new((field_number << TAG_TYPE_BITS as usize) as u32 | (wire_type as u32)).unwrap()
         }
 
         pub fn unpack(self) -> (u32, WireType) {
@@ -82,7 +82,7 @@ pub mod wire_format {
         }
 
         pub fn field_number(self) -> u32 {
-            let r = (self.value() >> (TAG_TYPE_BITS as uint)) as u32;
+            let r = (self.value() >> (TAG_TYPE_BITS as usize)) as u32;
             assert!(r > 0, "field number must be positive");
             r
         }
@@ -134,7 +134,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     fn remaining_in_buffer_slice<'b>(&'b self) -> &'b [u8] {
-        self.buffer.slice(self.buffer_pos as uint, self.buffer_size as uint)
+        self.buffer.slice(self.buffer_pos as usize, self.buffer_size as usize)
     }
 
     fn pos(&self) -> u32 {
@@ -232,7 +232,7 @@ impl<'a> CodedInputStream<'a> {
             try!(self.refill_buffer_really());
         }
         assert!(self.buffer_pos < self.buffer_size);
-        let r = self.buffer[self.buffer_pos as uint];
+        let r = self.buffer[self.buffer_pos as usize];
         self.buffer_pos += 1;
         Ok(r)
     }
@@ -259,7 +259,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
         let mut bytes = [0u32; 4];
-        for i in range(0u, 4) {
+        for i in range(0us, 4) {
             bytes[i] = try!(self.read_raw_byte()) as u32;
         }
         Ok(
@@ -272,7 +272,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
         let mut bytes = [0u64; 8];
-        for i in range(0u, 8) {
+        for i in range(0us, 8) {
             bytes[i] = try!(self.read_raw_byte()) as u64;
         }
         Ok(
@@ -370,7 +370,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_double_into(&mut self, target: &mut Vec<f64>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
 
-        target.reserve((len / 4) as uint);
+        target.reserve((len / 4) as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -383,7 +383,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_float_into(&mut self, target: &mut Vec<f32>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
 
-        target.reserve((len / 4) as uint);
+        target.reserve((len / 4) as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -456,7 +456,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_fixed64_into(&mut self, target: &mut Vec<u64>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
 
-        target.reserve((len / 8) as uint);
+        target.reserve((len / 8) as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -469,7 +469,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_fixed32_into(&mut self, target: &mut Vec<u32>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
 
-        target.reserve((len / 4) as uint);
+        target.reserve((len / 4) as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -482,7 +482,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_sfixed64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
 
-        target.reserve((len / 8) as uint);
+        target.reserve((len / 8) as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -495,7 +495,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_sfixed32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
 
-        target.reserve((len / 4) as uint);
+        target.reserve((len / 4) as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -509,7 +509,7 @@ impl<'a> CodedInputStream<'a> {
         let len = try!(self.read_raw_varint32());
 
         // regular bool value is 1-byte size
-        target.reserve(len as uint);
+        target.reserve(len as usize);
 
         let old_limit = self.push_limit(len);
         while !try!(self.eof()) {
@@ -538,7 +538,7 @@ impl<'a> CodedInputStream<'a> {
                 let len = try!(self.read_raw_varint32());
                 self.read_raw_bytes(len).map(|v| UnknownValue::LengthDelimited(v))
             },
-            _ => Err(ProtobufError::WireError(format!("unknown wire type: {}", wire_type as int)))
+            _ => Err(ProtobufError::WireError(format!("unknown wire type: {}", wire_type as isize)))
         }
     }
 
@@ -549,11 +549,11 @@ impl<'a> CodedInputStream<'a> {
     /// Read raw bytes into supplied vector. Vector must be empty.
     pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
         assert!(target.is_empty());
-        target.reserve(count as uint);
-        while target.len() < count as uint {
+        target.reserve(count as usize);
+        while target.len() < count as usize {
             let rem = count - target.len() as u32;
             if rem <= self.remaining_in_buffer() {
-                target.push_all(self.buffer.slice(self.buffer_pos as uint, (self.buffer_pos + rem) as uint));
+                target.push_all(self.buffer.slice(self.buffer_pos as usize, (self.buffer_pos + rem) as usize));
                 self.buffer_pos += rem;
             } else {
                 target.push_all(self.remaining_in_buffer_slice());
@@ -715,7 +715,7 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.writer {
             Some(ref mut writer) => {
-                try!(writer.write(self.buffer.slice(0, self.position as uint))
+                try!(writer.write(self.buffer.slice(0, self.position as usize))
                     .map_err(|e| ProtobufError::IoError(e)));
             },
             None => panic!()
@@ -732,10 +732,10 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
-        if self.position as uint == self.buffer.len() {
+        if self.position as usize == self.buffer.len() {
             try!(self.refresh_buffer());
         }
-        self.buffer.as_mut_slice()[self.position as uint] = byte;
+        self.buffer.as_mut_slice()[self.position as usize] = byte;
         self.position += 1;
         Ok(())
     }

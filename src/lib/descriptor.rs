@@ -2096,7 +2096,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     }
 }
 
-impl ::std::kinds::Copy for FieldDescriptorProto_Type {
+impl ::std::marker::Copy for FieldDescriptorProto_Type {
 }
 
 #[derive(Clone,PartialEq,Eq,Show)]
@@ -2133,7 +2133,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     }
 }
 
-impl ::std::kinds::Copy for FieldDescriptorProto_Label {
+impl ::std::marker::Copy for FieldDescriptorProto_Label {
 }
 
 #[derive(Clone,Default)]
@@ -3951,7 +3951,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     }
 }
 
-impl ::std::kinds::Copy for FileOptions_OptimizeMode {
+impl ::std::marker::Copy for FileOptions_OptimizeMode {
 }
 
 #[derive(Clone,Default)]
@@ -4665,7 +4665,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     }
 }
 
-impl ::std::kinds::Copy for FieldOptions_CType {
+impl ::std::marker::Copy for FieldOptions_CType {
 }
 
 #[derive(Clone,Default)]

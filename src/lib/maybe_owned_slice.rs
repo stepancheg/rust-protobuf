@@ -25,19 +25,19 @@ impl<'a, T : 'a> MaybeOwnedSlice<'a, T> {
     }
 
     #[inline]
-    pub fn slice<'b>(&'b self, start: uint, end: uint) -> &'b [T] {
+    pub fn slice<'b>(&'b self, start: usize, end: usize) -> &'b [T] {
         self.as_slice().slice(start, end)
     }
 
     #[allow(dead_code)]
     #[inline]
-    pub fn slice_from<'b>(&'b self, start: uint) -> &'b [T] {
+    pub fn slice_from<'b>(&'b self, start: usize) -> &'b [T] {
         self.as_slice().slice_from(start)
     }
 
     #[allow(dead_code)]
     #[inline]
-    pub fn slice_to<'b>(&'b self, end: uint) -> &'b [T] {
+    pub fn slice_to<'b>(&'b self, end: usize) -> &'b [T] {
         self.as_slice().slice_to(end)
     }
 }
@@ -51,20 +51,20 @@ impl<'a, T : 'a> AsSlice<T> for MaybeOwnedSlice<'a, T> {
     }
 }
 
-impl<'a, T : 'a> Index<uint> for MaybeOwnedSlice<'a, T> {
+impl<'a, T : 'a> Index<usize> for MaybeOwnedSlice<'a, T> {
     type Output = T;
 
     #[inline]
-    fn index<'b>(&'b self, index: &uint) -> &'b T {
+    fn index<'b>(&'b self, index: &usize) -> &'b T {
         &self.as_slice()[*index]
     }
 }
 
-impl<'a, T : 'a> IndexMut<uint> for MaybeOwnedSlice<'a, T> {
+impl<'a, T : 'a> IndexMut<usize> for MaybeOwnedSlice<'a, T> {
     type Output = T;
 
     #[inline]
-    fn index_mut<'b>(&'b mut self, index: &uint) -> &'b mut T {
+    fn index_mut<'b>(&'b mut self, index: &usize) -> &'b mut T {
         &mut self.as_mut_slice()[*index]
     }
 }

@@ -126,7 +126,7 @@ impl UnknownFields {
     fn find_field<'a>(&'a mut self, number: &'a u32) -> &'a mut UnknownValues {
         self.init_map();
 
-        match self.fields.as_mut().unwrap().entry(number) {
+        match self.fields.as_mut().unwrap().entry(*number) {
             hash_map::Entry::Occupied(e) => e.into_mut(),
             hash_map::Entry::Vacant(e) => e.insert(Default::default()),
         }
