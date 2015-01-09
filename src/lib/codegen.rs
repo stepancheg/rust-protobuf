@@ -18,9 +18,9 @@ use descriptorx::WithScope;
 
 #[derive(Clone,PartialEq,Eq)]
 enum RustType {
-    Signed(uint),
-    Unsigned(uint),
-    Float(uint),
+    Signed(usize),
+    Unsigned(usize),
+    Float(usize),
     Bool,
     Vec(Box<RustType>),
     String,
@@ -44,16 +44,16 @@ impl fmt::Show for RustType {
             RustType::Unsigned(bits)     => write!(f, "u{}", bits),
             RustType::Float(bits)        => write!(f, "f{}", bits),
             RustType::Bool               => write!(f, "bool"),
-            RustType::Vec(ref param)     => write!(f, "::std::vec::Vec<{}>", *param),
+            RustType::Vec(ref param)     => write!(f, "::std::vec::Vec<{:?}>", *param),
             RustType::String             => write!(f, "::std::string::String"),
-            RustType::Slice(ref param)   => write!(f, "[{}]", *param),
+            RustType::Slice(ref param)   => write!(f, "[{:?}]", *param),
             RustType::Str                => write!(f, "str"),
-            RustType::Option(ref param)           => write!(f, "::std::option::Option<{}>", param),
-            RustType::SingularField(ref param)    => write!(f, "::protobuf::SingularField<{}>", param),
-            RustType::SingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", param),
-            RustType::RepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", param),
-            RustType::Uniq(ref param)             => write!(f, "::std::Box<{}>", *param),
-            RustType::Ref(ref param)              => write!(f, "&{}", *param),
+            RustType::Option(ref param)           => write!(f, "::std::option::Option<{:?}>", param),
+            RustType::SingularField(ref param)    => write!(f, "::protobuf::SingularField<{:?}>", param),
+            RustType::SingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{:?}>", param),
+            RustType::RepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{:?}>", param),
+            RustType::Uniq(ref param)             => write!(f, "::std::Box<{:?}>", *param),
+            RustType::Ref(ref param)              => write!(f, "&{:?}", *param),
             RustType::Message(ref param) |
             RustType::Enum(ref param)    => write!(f, "{}", param),
         }
@@ -80,15 +80,15 @@ impl RustType {
 
     fn ref_str(&self, lt: &str) -> String {
         match *self {
-            RustType::Ref(ref param) => format!("&'{} {}", lt, *param),
-            _ => panic!("not a ref: {}", *self),
+            RustType::Ref(ref param) => format!("&'{} {:?}", lt, *param),
+            _ => panic!("not a ref: {:?}", *self),
         }
     }
 
     fn mut_ref_str(&self, lt: &str) -> String {
         match *self {
-            RustType::Ref(ref param) => format!("&'{} mut {}", lt, *param),
-            _ => panic!("not a ref: {}", *self),
+            RustType::Ref(ref param) => format!("&'{} mut {:?}", lt, *param),
+            _ => panic!("not a ref: {:?}", *self),
         }
     }
 
@@ -96,7 +96,7 @@ impl RustType {
         if self.is_ref() {
             self.ref_str(lt)
         } else {
-            format!("{}", self)
+            format!("{:?}", self)
         }
     }
 
@@ -119,7 +119,7 @@ impl RustType {
             RustType::Ref(box RustType::Message(ref name)) => format!("{}::default_instance()", name),
             RustType::Enum(..)                       =>
                 panic!("enum default value cannot be determined by type"),
-            _ => panic!("cannot create default value for: {}", *self),
+            _ => panic!("cannot create default value for: {:?}", *self),
         }
     }
 
@@ -131,7 +131,7 @@ impl RustType {
             RustType::RepeatedField(..) |
             RustType::SingularField(..) |
             RustType::SingularPtrField(..) => format!("{}.clear()", v),
-            ref ty => panic!("cannot clear type: {}", ty),
+            ref ty => panic!("cannot clear type: {:?}", ty),
         }
     }
 
@@ -141,7 +141,7 @@ impl RustType {
             RustType::Option(..)           => format!("::std::option::Option::Some({})", value),
             RustType::SingularField(..)    => format!("::protobuf::SingularField::some({})", value),
             RustType::SingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
-            _ => panic!("not a wrapper type: {}", *self),
+            _ => panic!("not a wrapper type: {:?}", *self),
         }
     }
 
@@ -161,7 +161,7 @@ impl RustType {
                     format!("{} as i32", v),
             (&RustType::Ref(box RustType::Enum(..)), &RustType::Signed(32)) =>
                     format!("*{} as i32", v),
-            _ => panic!("cannot convert {} to {}", self, target),
+            _ => panic!("cannot convert {:?} to {:?}", self, target),
         }
     }
 
@@ -171,14 +171,14 @@ impl RustType {
             &RustType::Vec(ref p)           |
             &RustType::RepeatedField(ref p) => box RustType::Slice(p.clone()),
             &RustType::Message(ref p)       => box RustType::Message(p.clone()),
-            x => panic!("no ref type for {}", x),
+            x => panic!("no ref type for {:?}", x),
         })
     }
 
     fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),
-            x => panic!("cannot get elem type of {}", x),
+            x => panic!("cannot get elem type of {:?}", x),
         }
     }
 
@@ -190,7 +190,7 @@ impl RustType {
             &RustType::RepeatedField(ref ty)    |
             &RustType::SingularField(ref ty)    |
             &RustType::SingularPtrField(ref ty) => RustType::Ref(ty.clone()),
-            x => panic!("cannot iterate {}", x),
+            x => panic!("cannot iterate {:?}", x),
         }
     }
 }
@@ -215,7 +215,7 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
         FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(box RustType::Unsigned(8)),
         FieldDescriptorProto_Type::TYPE_ENUM     |
         FieldDescriptorProto_Type::TYPE_GROUP    |
-        FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!("there is no rust name for {}", field_type),
+        FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!("there is no rust name for {:?}", field_type),
     }
 }
 
@@ -345,7 +345,7 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
         match field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(name),
             FieldDescriptorProto_Type::TYPE_ENUM    => RustType::Enum(name),
-            _ => panic!("unknown named type: {}", field.get_field_type()),
+            _ => panic!("unknown named type: {:?}", field.get_field_type()),
         }
     } else if field.has_field_type() {
         rust_name(field.get_field_type())
@@ -535,7 +535,7 @@ impl Field {
             r @ RustType::Option(..)       => r,
             RustType::SingularField(ty)    |
             RustType::SingularPtrField(ty) => RustType::Option(box RustType::Ref(ty)),
-            x => panic!("cannot convert {} to option", x),
+            x => panic!("cannot convert {:?} to option", x),
         }
     }
 
@@ -601,7 +601,7 @@ impl Field {
                 FieldDescriptorProto_Type::TYPE_GROUP    |
                 FieldDescriptorProto_Type::TYPE_ENUM     => unreachable!(),
                 FieldDescriptorProto_Type::TYPE_MESSAGE  =>
-                    panic!("default value is not implemented for type: {}", self.field_type)
+                    panic!("default value is not implemented for type: {:?}", self.field_type)
             }
         } else {
             self.get_xxx_return_type().default_value()
@@ -629,12 +629,12 @@ impl Field {
             false => "singular",
         };
         let suffix = match &self.type_name {
-            t if t.is_primitive()                     => t.to_string(),
+            t if t.is_primitive()                     => format!("{:?}", t),
             &RustType::String                         => "string".to_string(),
             &RustType::Vec(box RustType::Unsigned(8)) => "bytes".to_string(),
             &RustType::Enum(..)                       => "enum".to_string(),
             &RustType::Message(..)                    => "message".to_string(),
-            t => panic!("unexpected field type: {}", t),
+            t => panic!("unexpected field type: {:?}", t),
         };
         format!("make_{}_{}_accessor", repeated_or_signular, suffix)
     }
@@ -1216,7 +1216,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn assert_wire_type(&mut self, wire_type: wire_format::WireType) {
-        self.if_stmt(format!("wire_type != ::protobuf::wire_format::{}", wire_type), |w| {
+        self.if_stmt(format!("wire_type != ::protobuf::wire_format::{:?}", wire_type), |w| {
             w.error_wire_type(wire_type);
         });
     }
@@ -1279,7 +1279,7 @@ fn write_message_struct(w: &mut IndentWriter) {
     w.pub_struct(msg.type_name.as_slice(), |w| {
         w.fields(|w| {
             let field = w.field.unwrap();
-            w.field_entry(field.name.as_slice(), format!("{}", field.full_storage_type()));
+            w.field_entry(field.name.as_slice(), format!("{:?}", field.full_storage_type()));
         });
         w.field_entry("unknown_fields", "::protobuf::UnknownFields");
         w.field_entry("cached_size", "::std::cell::Cell<u32>");
@@ -1303,13 +1303,13 @@ fn write_message_compute_size(w: &mut IndentWriter) {
                             if field.repeated {
                                 w.write_line(format!(
                                         "my_size += {} * {}.len() as u32;",
-                                        (s + w.field().tag_size()) as int,
+                                        (s + w.field().tag_size()) as isize,
                                         w.self_field()));
                             } else {
                                 w.if_self_field_is_some(|w| {
                                     w.write_line(format!(
                                             "my_size += {};",
-                                            (s + w.field().tag_size()) as int));
+                                            (s + w.field().tag_size()) as isize));
                                 });
                             }
                         },
@@ -1320,27 +1320,27 @@ fn write_message_compute_size(w: &mut IndentWriter) {
                                         w.write_line("let len = value.compute_size();");
                                         w.write_line(format!(
                                                 "my_size += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                                                w.field().tag_size() as uint));
+                                                w.field().tag_size() as usize));
                                     },
                                     FieldDescriptorProto_Type::TYPE_BYTES => {
                                         w.write_line(format!(
                                                 "my_size += ::protobuf::rt::bytes_size({}, value.as_slice());",
-                                                field.number as int));
+                                                field.number as isize));
                                     },
                                     FieldDescriptorProto_Type::TYPE_STRING => {
                                         w.write_line(format!(
                                                 "my_size += ::protobuf::rt::string_size({}, value.as_slice());",
-                                                field.number as int));
+                                                field.number as isize));
                                     },
                                     FieldDescriptorProto_Type::TYPE_ENUM => {
                                         w.write_line(format!(
                                                 "my_size += ::protobuf::rt::enum_size({}, *value);",
-                                                field.number as int));
+                                                field.number as isize));
                                     },
                                     _ => {
                                         w.write_line(format!(
-                                                "my_size += ::protobuf::rt::value_size({}, *value, ::protobuf::wire_format::{});",
-                                                field.number as int, field.wire_type));
+                                                "my_size += ::protobuf::rt::value_size({}, *value, ::protobuf::wire_format::{:?});",
+                                                field.number as isize, field.wire_type));
                                     },
                                 }
                             });
@@ -1365,7 +1365,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
     fn write_value_lines(w: &mut IndentWriter, ty: &RustType) {
         match w.field().field_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));",
+                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));",
                         w.field().number(),
                         wire_format::WireTypeLengthDelimited));
                 w.write_line(format!("try!(os.write_raw_varint32(v.get_cached_size()));"));
@@ -1391,7 +1391,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
         },
         RepeatMode::RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
-                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{}));", w.field().number(), wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", w.field().number(), wire_format::WireTypeLengthDelimited));
                 w.comment("TODO: Data size is computed again, it should be cached");
                 let data_size_expr = w.self_field_vec_packed_data_size();
                 w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
@@ -1455,7 +1455,7 @@ fn write_message_field_get(w: &mut IndentWriter) {
     |w| {
         if !w.field().repeated {
             if w.field().field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
+                w.write_line(format!("{}.as_ref().unwrap_or_else(|| {:?}::default_instance())",
                         w.self_field(), w.field().type_name));
             } else {
                 if get_xxx_return_type.is_ref() {
@@ -1500,7 +1500,7 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
     let set_xxx_param_type = w.field().set_xxx_param_type();
     w.write_line("");
     w.comment("Param is passed by value, moved");
-    w.pub_fn(format!("set_{}(&mut self, v: {})", w.field().name, set_xxx_param_type), |w| {
+    w.pub_fn(format!("set_{}(&mut self, v: {:?})", w.field().name, set_xxx_param_type), |w| {
         w.self_field_assign_value("v", &set_xxx_param_type);
     });
 
@@ -1527,7 +1527,7 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
         w.write_line("");
         w.comment("Take field");
         let take_xxx_return_type = w.field().take_xxx_return_type();
-        w.pub_fn(format!("take_{}(&mut self) -> {}", w.field().name, take_xxx_return_type), |w| {
+        w.pub_fn(format!("take_{}(&mut self) -> {:?}", w.field().name, take_xxx_return_type), |w| {
             if !w.field().repeated {
                 if w.field().type_is_not_trivial() {
                     w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
@@ -1781,7 +1781,7 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
 }
 
 fn write_enum_impl_copy(w: &mut IndentWriter) {
-    w.impl_for_block("::std::kinds::Copy", w.en().type_name.as_slice(), |_w| {
+    w.impl_for_block("::std::marker::Copy", w.en().type_name.as_slice(), |_w| {
     });
 }
 

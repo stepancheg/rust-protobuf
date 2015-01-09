@@ -11,12 +11,12 @@ use clear::Clear;
 
 pub struct RepeatedField<T> {
     vec: Vec<T>,
-    len: uint,
+    len: usize,
 }
 
 impl<T> RepeatedField<T> {
     #[inline]
-    fn len(&self) -> uint {
+    fn len(&self) -> usize {
         self.len
     }
 
@@ -66,7 +66,7 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn capacity(&self) -> uint {
+    pub fn capacity(&self) -> usize {
         self.vec.capacity()
     }
 
@@ -76,42 +76,42 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn slice<'a>(&'a self, start: uint, end: uint) -> &'a [T] {
+    pub fn slice<'a>(&'a self, start: usize, end: usize) -> &'a [T] {
         self.as_slice().slice(start, end)
     }
 
     #[inline]
-    pub fn slice_mut<'a>(&'a mut self, start: uint, end: uint) -> &'a mut [T] {
+    pub fn slice_mut<'a>(&'a mut self, start: usize, end: usize) -> &'a mut [T] {
         self.as_mut_slice().slice_mut(start, end)
     }
 
     #[inline]
-    pub fn slice_from<'a>(&'a self, start: uint) -> &'a [T] {
+    pub fn slice_from<'a>(&'a self, start: usize) -> &'a [T] {
         self.as_slice().slice_from(start)
     }
 
     #[inline]
-    pub fn slice_from_mut<'a>(&'a mut self, start: uint) -> &'a mut [T] {
+    pub fn slice_from_mut<'a>(&'a mut self, start: usize) -> &'a mut [T] {
         self.as_mut_slice().slice_from_mut(start)
     }
 
     #[inline]
-    pub fn slice_to<'a>(&'a self, end: uint) -> &'a [T] {
+    pub fn slice_to<'a>(&'a self, end: usize) -> &'a [T] {
         self.as_slice().slice_to(end)
     }
 
     #[inline]
-    pub fn slice_to_mut<'a>(&'a mut self, end: uint) -> &'a mut [T] {
+    pub fn slice_to_mut<'a>(&'a mut self, end: usize) -> &'a mut [T] {
         self.as_mut_slice().slice_to_mut(end)
     }
 
     #[inline]
-    pub fn split_at<'a>(&'a self, mid: uint) -> (&'a [T], &'a [T]) {
+    pub fn split_at<'a>(&'a self, mid: usize) -> (&'a [T], &'a [T]) {
         self.as_slice().split_at(mid)
     }
 
     #[inline]
-    pub fn split_at_mut<'a>(&'a mut self, mid: uint) -> (&'a mut [T], &'a mut [T]) {
+    pub fn split_at_mut<'a>(&'a mut self, mid: usize) -> (&'a mut [T], &'a mut [T]) {
         self.as_mut_slice().split_at_mut(mid)
     }
 
@@ -157,21 +157,21 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn insert(&mut self, index: uint, value: T) {
+    pub fn insert(&mut self, index: usize, value: T) {
         assert!(index <= self.len);
         self.vec.insert(index, value);
         self.len += 1;
     }
 
     #[inline]
-    pub fn remove(&mut self, index: uint) -> T {
+    pub fn remove(&mut self, index: usize) -> T {
         assert!(index < self.len);
         self.len -= 1;
         self.vec.remove(index)
     }
 
     #[inline]
-    pub fn truncate(&mut self, len: uint) {
+    pub fn truncate(&mut self, len: usize) {
         if self.len > len {
             self.len = len;
         }
@@ -190,13 +190,13 @@ impl<T> RepeatedField<T> {
 
     #[deprecated = "use `foo[index]` instead"]
     #[inline]
-    pub fn get<'a>(&'a self, index: uint) -> &'a T {
+    pub fn get<'a>(&'a self, index: usize) -> &'a T {
         &self.as_slice()[index]
     }
 
     #[deprecated = "use `foo[index] = bar` instead"]
     #[inline]
-    pub fn get_mut<'a>(&'a mut self, index: uint) -> &'a mut T {
+    pub fn get_mut<'a>(&'a mut self, index: usize) -> &'a mut T {
         &mut self.as_mut_slice()[index]
     }
 
@@ -286,20 +286,20 @@ impl<T> AsSlice<T> for RepeatedField<T> {
     }
 }
 
-impl<T> Index<uint> for RepeatedField<T> {
+impl<T> Index<usize> for RepeatedField<T> {
     type Output = T;
 
     #[inline]
-    fn index<'a>(&'a self, index: &uint) -> &'a T {
+    fn index<'a>(&'a self, index: &usize) -> &'a T {
         &self.as_slice()[*index]
     }
 }
 
-impl<T> IndexMut<uint> for RepeatedField<T> {
+impl<T> IndexMut<usize> for RepeatedField<T> {
     type Output = T;
 
     #[inline]
-    fn index_mut<'a>(&'a mut self, index: &uint) -> &'a mut T {
+    fn index_mut<'a>(&'a mut self, index: &usize) -> &'a mut T {
         &mut self.as_mut_slice()[*index]
     }
 }

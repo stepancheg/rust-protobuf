@@ -405,7 +405,7 @@ impl<T : fmt::Show> fmt::Show for SingularField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
-            write!(f, "Some({})", *self.as_ref().unwrap())
+            write!(f, "Some({:?})", *self.as_ref().unwrap())
         } else {
             write!(f, "None")
         }
@@ -416,7 +416,7 @@ impl<T : fmt::Show> fmt::Show for SingularPtrField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
-            write!(f, "Some({})", *self.as_ref().unwrap())
+            write!(f, "Some({:?})", *self.as_ref().unwrap())
         } else {
             write!(f, "None")
         }
@@ -451,7 +451,7 @@ mod test {
     fn test_set_default_clears() {
         #[derive(Default)]
         struct Foo {
-            b: int,
+            b: isize,
         }
 
         impl Clear for Foo {

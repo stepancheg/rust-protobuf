@@ -8,11 +8,11 @@ use reflect::EnumValueDescriptor;
 pub trait FieldAccessor {
     fn name_generic(&self) -> &'static str;
     fn has_field_generic(&self, m: &Message) -> bool;
-    fn len_field_generic(&self, m: &Message) -> uint;
+    fn len_field_generic(&self, m: &Message) -> usize;
     fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message;
-    fn get_rep_message_item_generic<'a>(&self, m: &'a Message, index: uint) -> &'a Message;
+    fn get_rep_message_item_generic<'a>(&self, m: &'a Message, index: usize) -> &'a Message;
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
-    fn get_rep_enum_item_generic(&self, m: &Message, index: uint) -> &'static EnumValueDescriptor;
+    fn get_rep_enum_item_generic(&self, m: &Message, index: usize) -> &'static EnumValueDescriptor;
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
     fn get_rep_str_generic<'a>(&self, m: &'a Message) -> &'a [String];
     fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8];
@@ -65,8 +65,8 @@ impl<M : Message, E : ProtobufEnum> GetSingularEnum<M> for GetSingularEnumImpl<M
 
 
 trait GetRepeatedMessage<M> {
-    fn len_field(&self, m: &M) -> uint;
-    fn get_message_item<'a>(&self, m: &'a M, index: uint) -> &'a Message;
+    fn len_field(&self, m: &M) -> usize;
+    fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a Message;
 }
 
 struct GetRepeatedMessageImpl<M, N> {
@@ -74,19 +74,19 @@ struct GetRepeatedMessageImpl<M, N> {
 }
 
 impl<M : Message, N : Message> GetRepeatedMessage<M> for GetRepeatedMessageImpl<M, N> {
-    fn len_field(&self, m: &M) -> uint {
+    fn len_field(&self, m: &M) -> usize {
         (self.get)(m).len()
     }
 
-    fn get_message_item<'a>(&self, m: &'a M, index: uint) -> &'a Message {
+    fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a Message {
         &(self.get)(m)[index] as &Message
     }
 }
 
 
 trait GetRepeatedEnum<M> {
-    fn len_field(&self, m: &M) -> uint;
-    fn get_enum_item(&self, m: &M, index: uint) -> &'static EnumValueDescriptor;
+    fn len_field(&self, m: &M) -> usize;
+    fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor;
 }
 
 struct GetRepeatedEnumImpl<M, E> {
@@ -94,11 +94,11 @@ struct GetRepeatedEnumImpl<M, E> {
 }
 
 impl<M : Message, E : ProtobufEnum> GetRepeatedEnum<M> for GetRepeatedEnumImpl<M, E> {
-    fn len_field(&self, m: &M) -> uint {
+    fn len_field(&self, m: &M) -> usize {
         (self.get)(m).len()
     }
 
-    fn get_enum_item(&self, m: &M, index: uint) -> &'static EnumValueDescriptor {
+    fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor {
         (self.get)(m)[index].descriptor()
     }
 }
@@ -133,7 +133,7 @@ enum RepeatedGet<M> {
 }
 
 impl<M : Message> RepeatedGet<M> {
-    fn len_field(&self, m: &M) -> uint {
+    fn len_field(&self, m: &M) -> usize {
         match *self {
             RepeatedGet::U32(get) => get(m).len(),
             RepeatedGet::U64(get) => get(m).len(),
@@ -172,7 +172,7 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
         }
     }
 
-    fn len_field_generic(&self, m: &Message) -> uint {
+    fn len_field_generic(&self, m: &Message) -> usize {
         match self.fns {
             FieldAccessorFunctions::Repeated(ref r) => r.len_field(message_down_cast(m)),
             _ => panic!(),
@@ -267,7 +267,7 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
         }
     }
 
-    fn get_rep_message_item_generic<'a>(&self, m: &'a Message, index: uint) -> &'a Message {
+    fn get_rep_message_item_generic<'a>(&self, m: &'a Message, index: usize) -> &'a Message {
         match self.fns {
             FieldAccessorFunctions::Repeated(RepeatedGet::Message(ref get)) =>
                 get.get_message_item(message_down_cast(m), index),
@@ -275,7 +275,7 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
         }
     }
 
-    fn get_rep_enum_item_generic(&self, m: &Message, index: uint) -> &'static EnumValueDescriptor {
+    fn get_rep_enum_item_generic(&self, m: &Message, index: usize) -> &'static EnumValueDescriptor {
         match self.fns {
             FieldAccessorFunctions::Repeated(RepeatedGet::Enum(ref get)) =>
                 get.get_enum_item(message_down_cast(m), index),
