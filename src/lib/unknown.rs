@@ -5,7 +5,7 @@ use std::slice;
 use stream::wire_format;
 use clear::Clear;
 
-#[derive(Show)]
+#[derive(Debug)]
 pub enum UnknownValue {
     Fixed32(u32),
     Fixed64(u64),
@@ -46,7 +46,7 @@ impl<'o> UnknownValueRef<'o> {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Show,Default)]
+#[derive(Clone,PartialEq,Eq,Debug,Default)]
 pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
@@ -105,7 +105,7 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Show,Default)]
+#[derive(Clone,PartialEq,Eq,Debug,Default)]
 pub struct UnknownFields {
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive

@@ -117,8 +117,8 @@ impl ::protobuf::Message for FileDescriptorSet {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FileDescriptorSet>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<FileDescriptorSet>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -168,7 +168,7 @@ impl ::std::cmp::PartialEq for FileDescriptorSet {
     }
 }
 
-impl ::std::fmt::Show for FileDescriptorSet {
+impl ::std::fmt::Debug for FileDescriptorSet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -712,8 +712,8 @@ impl ::protobuf::Message for FileDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FileDescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<FileDescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -827,7 +827,7 @@ impl ::std::cmp::PartialEq for FileDescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for FileDescriptorProto {
+impl ::std::fmt::Debug for FileDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -1200,8 +1200,8 @@ impl ::protobuf::Message for DescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<DescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<DescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1289,7 +1289,7 @@ impl ::std::cmp::PartialEq for DescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for DescriptorProto {
+impl ::std::fmt::Debug for DescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -1433,8 +1433,8 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<DescriptorProto_ExtensionRange>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<DescriptorProto_ExtensionRange>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1492,7 +1492,7 @@ impl ::std::cmp::PartialEq for DescriptorProto_ExtensionRange {
     }
 }
 
-impl ::std::fmt::Show for DescriptorProto_ExtensionRange {
+impl ::std::fmt::Debug for DescriptorProto_ExtensionRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -1925,8 +1925,8 @@ impl ::protobuf::Message for FieldDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FieldDescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<FieldDescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -2026,13 +2026,13 @@ impl ::std::cmp::PartialEq for FieldDescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for FieldDescriptorProto {
+impl ::std::fmt::Debug for FieldDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Debug)]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
     TYPE_FLOAT = 2,
@@ -2099,7 +2099,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 impl ::std::marker::Copy for FieldDescriptorProto_Type {
 }
 
-#[derive(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Debug)]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
     LABEL_REQUIRED = 2,
@@ -2347,8 +2347,8 @@ impl ::protobuf::Message for EnumDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumDescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<EnumDescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -2412,7 +2412,7 @@ impl ::std::cmp::PartialEq for EnumDescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for EnumDescriptorProto {
+impl ::std::fmt::Debug for EnumDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -2624,8 +2624,8 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumValueDescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<EnumValueDescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -2690,7 +2690,7 @@ impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for EnumValueDescriptorProto {
+impl ::std::fmt::Debug for EnumValueDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -2907,8 +2907,8 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<ServiceDescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<ServiceDescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -2972,7 +2972,7 @@ impl ::std::cmp::PartialEq for ServiceDescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for ServiceDescriptorProto {
+impl ::std::fmt::Debug for ServiceDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -3252,8 +3252,8 @@ impl ::protobuf::Message for MethodDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<MethodDescriptorProto>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<MethodDescriptorProto>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -3325,7 +3325,7 @@ impl ::std::cmp::PartialEq for MethodDescriptorProto {
     }
 }
 
-impl ::std::fmt::Show for MethodDescriptorProto {
+impl ::std::fmt::Debug for MethodDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -3797,8 +3797,8 @@ impl ::protobuf::Message for FileOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FileOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<FileOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -3911,13 +3911,13 @@ impl ::std::cmp::PartialEq for FileOptions {
     }
 }
 
-impl ::std::fmt::Show for FileOptions {
+impl ::std::fmt::Debug for FileOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Debug)]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
     CODE_SIZE = 2,
@@ -4131,8 +4131,8 @@ impl ::protobuf::Message for MessageOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<MessageOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<MessageOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -4196,7 +4196,7 @@ impl ::std::cmp::PartialEq for MessageOptions {
     }
 }
 
-impl ::std::fmt::Show for MessageOptions {
+impl ::std::fmt::Debug for MessageOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -4532,8 +4532,8 @@ impl ::protobuf::Message for FieldOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<FieldOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<FieldOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -4625,13 +4625,13 @@ impl ::std::cmp::PartialEq for FieldOptions {
     }
 }
 
-impl ::std::fmt::Show for FieldOptions {
+impl ::std::fmt::Debug for FieldOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Show)]
+#[derive(Clone,PartialEq,Eq,Debug)]
 pub enum FieldOptions_CType {
     STRING = 0,
     CORD = 1,
@@ -4811,8 +4811,8 @@ impl ::protobuf::Message for EnumOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<EnumOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -4869,7 +4869,7 @@ impl ::std::cmp::PartialEq for EnumOptions {
     }
 }
 
-impl ::std::fmt::Show for EnumOptions {
+impl ::std::fmt::Debug for EnumOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -4984,8 +4984,8 @@ impl ::protobuf::Message for EnumValueOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<EnumValueOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<EnumValueOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -5035,7 +5035,7 @@ impl ::std::cmp::PartialEq for EnumValueOptions {
     }
 }
 
-impl ::std::fmt::Show for EnumValueOptions {
+impl ::std::fmt::Debug for EnumValueOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -5150,8 +5150,8 @@ impl ::protobuf::Message for ServiceOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<ServiceOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<ServiceOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -5201,7 +5201,7 @@ impl ::std::cmp::PartialEq for ServiceOptions {
     }
 }
 
-impl ::std::fmt::Show for ServiceOptions {
+impl ::std::fmt::Debug for ServiceOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -5316,8 +5316,8 @@ impl ::protobuf::Message for MethodOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<MethodOptions>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<MethodOptions>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -5367,7 +5367,7 @@ impl ::std::cmp::PartialEq for MethodOptions {
     }
 }
 
-impl ::std::fmt::Show for MethodOptions {
+impl ::std::fmt::Debug for MethodOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -5737,8 +5737,8 @@ impl ::protobuf::Message for UninterpretedOption {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<UninterpretedOption>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<UninterpretedOption>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -5830,7 +5830,7 @@ impl ::std::cmp::PartialEq for UninterpretedOption {
     }
 }
 
-impl ::std::fmt::Show for UninterpretedOption {
+impl ::std::fmt::Debug for UninterpretedOption {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -5997,8 +5997,8 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<UninterpretedOption_NamePart>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<UninterpretedOption_NamePart>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -6056,7 +6056,7 @@ impl ::std::cmp::PartialEq for UninterpretedOption_NamePart {
     }
 }
 
-impl ::std::fmt::Show for UninterpretedOption_NamePart {
+impl ::std::fmt::Debug for UninterpretedOption_NamePart {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -6171,8 +6171,8 @@ impl ::protobuf::Message for SourceCodeInfo {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<SourceCodeInfo>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<SourceCodeInfo>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -6222,7 +6222,7 @@ impl ::std::cmp::PartialEq for SourceCodeInfo {
     }
 }
 
-impl ::std::fmt::Show for SourceCodeInfo {
+impl ::std::fmt::Debug for SourceCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -6482,8 +6482,8 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<SourceCodeInfo_Location>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<SourceCodeInfo_Location>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -6553,7 +6553,7 @@ impl ::std::cmp::PartialEq for SourceCodeInfo_Location {
     }
 }
 
-impl ::std::fmt::Show for SourceCodeInfo_Location {
+impl ::std::fmt::Debug for SourceCodeInfo_Location {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }

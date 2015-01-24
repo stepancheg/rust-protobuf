@@ -401,7 +401,7 @@ impl<T : Clone> Clone for SingularPtrField<T> {
     }
 }
 
-impl<T : fmt::Show> fmt::Show for SingularField<T> {
+impl<T : fmt::Debug> fmt::Debug for SingularField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
@@ -412,7 +412,7 @@ impl<T : fmt::Show> fmt::Show for SingularField<T> {
     }
 }
 
-impl<T : fmt::Show> fmt::Show for SingularPtrField<T> {
+impl<T : fmt::Debug> fmt::Debug for SingularPtrField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {

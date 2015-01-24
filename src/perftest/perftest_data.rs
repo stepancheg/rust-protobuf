@@ -112,8 +112,8 @@ impl ::protobuf::Message for Test1 {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<Test1>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<Test1>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -164,7 +164,7 @@ impl ::std::cmp::PartialEq for Test1 {
     }
 }
 
-impl ::std::fmt::Show for Test1 {
+impl ::std::fmt::Debug for Test1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -274,8 +274,8 @@ impl ::protobuf::Message for TestRepeatedBool {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestRepeatedBool>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<TestRepeatedBool>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -325,7 +325,7 @@ impl ::std::cmp::PartialEq for TestRepeatedBool {
     }
 }
 
-impl ::std::fmt::Show for TestRepeatedBool {
+impl ::std::fmt::Debug for TestRepeatedBool {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -442,8 +442,8 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestRepeatedPackedInt32>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<TestRepeatedPackedInt32>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -493,7 +493,7 @@ impl ::std::cmp::PartialEq for TestRepeatedPackedInt32 {
     }
 }
 
-impl ::std::fmt::Show for TestRepeatedPackedInt32 {
+impl ::std::fmt::Debug for TestRepeatedPackedInt32 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -686,8 +686,8 @@ impl ::protobuf::Message for TestRepeatedMessages {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestRepeatedMessages>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<TestRepeatedMessages>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -749,7 +749,7 @@ impl ::std::cmp::PartialEq for TestRepeatedMessages {
     }
 }
 
-impl ::std::fmt::Show for TestRepeatedMessages {
+impl ::std::fmt::Debug for TestRepeatedMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -978,8 +978,8 @@ impl ::protobuf::Message for TestOptionalMessages {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestOptionalMessages>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<TestOptionalMessages>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1044,7 +1044,7 @@ impl ::std::cmp::PartialEq for TestOptionalMessages {
     }
 }
 
-impl ::std::fmt::Show for TestOptionalMessages {
+impl ::std::fmt::Debug for TestOptionalMessages {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -1273,8 +1273,8 @@ impl ::protobuf::Message for TestStrings {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<TestStrings>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<TestStrings>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1339,7 +1339,7 @@ impl ::std::cmp::PartialEq for TestStrings {
     }
 }
 
-impl ::std::fmt::Show for TestStrings {
+impl ::std::fmt::Debug for TestStrings {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -1649,8 +1649,8 @@ impl ::protobuf::Message for PerftestData {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<PerftestData>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<PerftestData>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1730,7 +1730,7 @@ impl ::std::cmp::PartialEq for PerftestData {
     }
 }
 
-impl ::std::fmt::Show for PerftestData {
+impl ::std::fmt::Debug for PerftestData {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }

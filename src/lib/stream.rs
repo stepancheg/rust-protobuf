@@ -25,7 +25,7 @@ pub mod wire_format {
     pub const TAG_TYPE_BITS: u32 = 3;
     pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) as u32 - 1;
 
-    #[derive(PartialEq, Eq, Clone, Show)]
+    #[derive(PartialEq, Eq, Clone, Debug)]
     pub enum WireType {
         WireTypeVarint          = 0,
         WireTypeFixed64         = 1,

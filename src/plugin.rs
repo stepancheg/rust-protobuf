@@ -221,8 +221,8 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorRequest>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<CodeGeneratorRequest>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -285,7 +285,7 @@ impl ::std::cmp::PartialEq for CodeGeneratorRequest {
     }
 }
 
-impl ::std::fmt::Show for CodeGeneratorRequest {
+impl ::std::fmt::Debug for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -451,8 +451,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<CodeGeneratorResponse>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -509,7 +509,7 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse {
     }
 }
 
-impl ::std::fmt::Show for CodeGeneratorResponse {
+impl ::std::fmt::Debug for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
@@ -738,8 +738,8 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse_File>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<CodeGeneratorResponse_File>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -804,7 +804,7 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
     }
 }
 
-impl ::std::fmt::Show for CodeGeneratorResponse_File {
+impl ::std::fmt::Debug for CodeGeneratorResponse_File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }

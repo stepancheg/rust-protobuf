@@ -36,7 +36,7 @@ enum RustType {
     Enum(String),
 }
 
-impl fmt::Show for RustType {
+impl fmt::Debug for RustType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -1273,7 +1273,7 @@ fn write_message_struct(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
     let mut derive = vec!["Clone", "Default"];
     if msg.lite_runtime {
-        derive.push("Show");
+        derive.push("Debug");
     }
     w.derive(derive.as_slice());
     w.pub_struct(msg.type_name.as_slice(), |w| {
@@ -1653,8 +1653,8 @@ fn write_message_impl_message(w: &mut IndentWriter) {
         w.write_line("");
         write_message_unknown_fields(w);
         w.write_line("");
-        w.def_fn("type_id(&self) -> ::std::intrinsics::TypeId", |w| {
-            w.write_line(format!("::std::intrinsics::TypeId::of::<{}>()", msg.type_name));
+        w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
+            w.write_line(format!("::std::any::TypeId::of::<{}>()", msg.type_name));
         });
         w.write_line("");
         w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
@@ -1678,7 +1678,7 @@ fn write_message_impl_message_static(w: &mut IndentWriter) {
 
 fn write_message_impl_show(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_for_block("::std::fmt::Show", msg.type_name.as_slice(), |w| {
+    w.impl_for_block("::std::fmt::Debug", msg.type_name.as_slice(), |w| {
         w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
             w.write_line("::protobuf::text_format::fmt(self, f)");
         });
@@ -1745,7 +1745,7 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
 }
 
 fn write_enum_struct(w: &mut IndentWriter) {
-    w.derive(&["Clone", "PartialEq", "Eq", "Show"]);
+    w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
     w.expr_block(format!("pub enum {}", w.en().type_name), |w| {
         for value in w.en().values.iter() {
             w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));

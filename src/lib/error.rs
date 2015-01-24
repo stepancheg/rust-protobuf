@@ -1,12 +1,19 @@
 use std::io::IoError;
 use std::error::Error;
+use std::fmt;
 
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
-#[derive(Show,Eq,PartialEq)]
+#[derive(Debug,Eq,PartialEq)]
 pub enum ProtobufError {
     IoError(IoError),
     WireError(String),
+}
+
+impl fmt::Display for ProtobufError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
 }
 
 impl Error for ProtobufError {
