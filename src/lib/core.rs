@@ -4,7 +4,7 @@ use std::mem;
 use std::raw;
 use std::fmt;
 use std::default::Default;
-use std::intrinsics::TypeId;
+use std::any::TypeId;
 
 use clear::Clear;
 use reflect::MessageDescriptor;
@@ -35,7 +35,7 @@ pub trait MessageStatic : Message + Clone + Default {
 }
 
 
-pub trait Message : PartialEq + fmt::Show + Clear {
+pub trait Message : PartialEq + fmt::Debug + Clear {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
@@ -127,7 +127,7 @@ pub trait Message : PartialEq + fmt::Show + Clear {
     }
 
     // Rust does not allow implementation of trait for trait:
-    // impl<M : Message> fmt::Show for M {
+    // impl<M : Message> fmt::Debug for M {
     // ...
     // }
 }

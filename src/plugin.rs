@@ -221,8 +221,8 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorRequest>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<CodeGeneratorRequest>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -451,8 +451,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<CodeGeneratorResponse>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -738,8 +738,8 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::intrinsics::TypeId {
-        ::std::intrinsics::TypeId::of::<CodeGeneratorResponse_File>()
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<CodeGeneratorResponse_File>()
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {

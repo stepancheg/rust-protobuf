@@ -36,7 +36,7 @@ enum RustType {
     Enum(String),
 }
 
-impl fmt::Show for RustType {
+impl fmt::Debug for RustType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -1678,7 +1678,7 @@ fn write_message_impl_message_static(w: &mut IndentWriter) {
 
 fn write_message_impl_show(w: &mut IndentWriter) {
     let msg = w.msg.unwrap();
-    w.impl_for_block("::std::fmt::Show", msg.type_name.as_slice(), |w| {
+    w.impl_for_block("::std::fmt::Debug", msg.type_name.as_slice(), |w| {
         w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
             w.write_line("::protobuf::text_format::fmt(self, f)");
         });

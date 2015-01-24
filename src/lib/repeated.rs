@@ -304,7 +304,7 @@ impl<T> IndexMut<usize> for RepeatedField<T> {
     }
 }
 
-impl<T : fmt::Show> fmt::Show for RepeatedField<T> {
+impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.as_slice().fmt(f)
