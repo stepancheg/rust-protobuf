@@ -32,3 +32,9 @@ impl Error for ProtobufError {
         }
     }
 }
+
+impl fmt::Display for ProtobufError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.description())
+    }
+}
