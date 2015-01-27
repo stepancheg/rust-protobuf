@@ -1,38 +1,14 @@
-# Doesn't work, because rust-nightly is no longer updated
-#before_install:
-#  - yes | sudo add-apt-repository ppa:hansjorg/rust
-#  - sudo apt-get update
-#install:
-#  - sudo apt-get install rust-nightly protobuf-compiler
-
-# http://bettong.net/2014/05/09/how-to-test-rust-on-travis-ci/
-#before_install:
-#  - sudo apt-get update
-#install:
-#  - sudo apt-get install protobuf-compiler
-#  - curl -O http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-#  - tar xf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-#  - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh)
-#
-## LD_LIBRARY_PATH is needed because rust no longer uses rpath
-#script:
-#  - LD_LIBRARY_PATH=/usr/local/lib rustc --version
-#  - cd src/ && LD_LIBRARY_PATH=/usr/local/lib ./full-rebuild.sh
-
 language: rust
 
 rust:
   - nightly
 
 before_install:
-  - sudo apt-get update
-
-install:
-  - sudo apt-get install protobuf-compiler
-  - protoc --version || true
+  - sudo ./install-protobuf.sh
+  - protoc --version
 
 script:
   # Full rebuild with regenerate
-  - cd src/ && ./full-rebuild.sh
+  - src/full-rebuild.sh
   # Test cargo configuration
   - cargo test
