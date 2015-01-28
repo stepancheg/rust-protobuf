@@ -29,7 +29,7 @@ before_install:
 
 install:
   - sudo apt-get install protobuf-compiler
-  - protoc --version
+  - protoc --version || true
 
 script:
   # Full rebuild with regenerate
