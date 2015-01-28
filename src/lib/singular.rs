@@ -176,7 +176,7 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn some(value: T) -> SingularPtrField<T> {
         SingularPtrField {
-            value: Some(box value),
+            value: Some(Box::new(value)),
             set: true,
         }
     }
@@ -359,7 +359,7 @@ impl<T : Default+Clear> SingularPtrField<T> {
         if self.value.is_some() {
             self.value.as_mut().unwrap().clear();
         } else {
-            self.value = Some(box Default::default());
+            self.value = Some(Default::default());
         }
         self.as_mut().unwrap()
     }

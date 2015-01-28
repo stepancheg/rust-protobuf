@@ -171,7 +171,7 @@ impl<M> MessageFactoryTyped<M> {
 impl<M : 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> {
     fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
-        box m as Box<Message>
+        Box::new(m) as Box<Message>
     }
 }
 
@@ -211,7 +211,7 @@ impl MessageDescriptor {
 
         MessageDescriptor {
             proto: proto.message,
-            factory: box MessageFactoryTyped::<M>::new() as Box<MessageFactory>,
+            factory: Box::new(MessageFactoryTyped::<M>::new()) as Box<MessageFactory>,
             fields: fields.into_iter()
                     .map(|f| {
                         let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();

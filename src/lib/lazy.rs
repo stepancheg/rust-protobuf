@@ -12,7 +12,7 @@ impl<T> Lazy<T> {
     {
         unsafe {
             self.lock.call_once(|| {
-                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = mem::transmute(box init())
+                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = mem::transmute(Box::new(init()))
             });
             mem::transmute(self.ptr)
         }

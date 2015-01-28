@@ -1,7 +1,7 @@
 use std::mem;
 use std::num::Int;
-use std::io::EndOfFile;
-use std::io::IoError;
+use std::old_io::EndOfFile;
+use std::old_io::IoError;
 
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
@@ -999,7 +999,7 @@ impl<'a> CodedOutputStream<'a> {
 #[cfg(test)]
 mod test {
 
-    use std::io::MemReader;
+    use std::old_io::MemReader;
 
     use hex::encode_hex;
     use hex::decode_hex;

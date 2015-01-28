@@ -1,4 +1,4 @@
-use std::io::IoError;
+use std::old_io::IoError;
 use std::error::Error;
 use std::fmt;
 

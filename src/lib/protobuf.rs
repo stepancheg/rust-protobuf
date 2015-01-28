@@ -2,6 +2,8 @@
 #![allow(non_camel_case_types, unstable)]
 #![feature(box_syntax)]
 
+#![feature(box_syntax)]
+
 extern crate collections;
 
 pub use unknown::UnknownFields;

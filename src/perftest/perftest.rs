@@ -2,8 +2,8 @@ extern crate protobuf;
 extern crate rand;
 extern crate time;
 
-use std::io::File;
-use std::io::MemWriter;
+use std::old_io::File;
+use std::old_io::MemWriter;
 use std::default::Default;
 use std::os;
 

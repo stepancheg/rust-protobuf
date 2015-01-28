@@ -3,9 +3,10 @@
 
 extern crate protobuf;
 
-use std::io;
-use std::io::Reader;
-use std::io::Writer;
+use std::old_io::Reader;
+use std::old_io::Writer;
+use std::old_io::stdin;
+use std::old_io::stdout;
 use std::str;
 use plugin::*;
 use protobuf::parse_from_reader;
@@ -19,7 +20,7 @@ mod descriptor {
 mod plugin;
 
 fn main() {
-    let req = parse_from_reader::<CodeGeneratorRequest>(&mut io::stdio::stdin() as &mut Reader).unwrap();
+    let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin() as &mut Reader).unwrap();
     let gen_options = GenOptions {
         dummy: false,
     };
@@ -31,5 +32,5 @@ fn main() {
         r.set_content(str::from_utf8(file.content.as_slice()).unwrap().to_string());
         r
     }).collect());
-    resp.write_to_writer(&mut io::stdout() as &mut Writer).unwrap();
+    resp.write_to_writer(&mut stdout() as &mut Writer).unwrap();
 }

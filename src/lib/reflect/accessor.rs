@@ -356,13 +356,13 @@ pub fn make_singular_u32_accessor<M : Message + 'static>(
         get: fn(&M) -> u32,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::U32(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_i32_accessor<M : Message + 'static>(
@@ -371,13 +371,13 @@ pub fn make_singular_i32_accessor<M : Message + 'static>(
         get: fn(&M) -> i32,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::I32(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_u64_accessor<M : Message + 'static>(
@@ -386,13 +386,13 @@ pub fn make_singular_u64_accessor<M : Message + 'static>(
         get: fn(&M) -> u64,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::U64(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_i64_accessor<M : Message + 'static>(
@@ -401,13 +401,13 @@ pub fn make_singular_i64_accessor<M : Message + 'static>(
         get: fn(&M) -> i64,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::I64(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_f32_accessor<M : Message + 'static>(
@@ -416,13 +416,13 @@ pub fn make_singular_f32_accessor<M : Message + 'static>(
         get: fn(&M) -> f32,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::F32(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_f64_accessor<M : Message + 'static>(
@@ -431,13 +431,13 @@ pub fn make_singular_f64_accessor<M : Message + 'static>(
         get: fn(&M) -> f64,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::F64(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_bool_accessor<M : Message + 'static>(
@@ -446,13 +446,13 @@ pub fn make_singular_bool_accessor<M : Message + 'static>(
         get: fn(&M) -> bool,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::Bool(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_string_accessor<M : Message + 'static>(
@@ -461,13 +461,13 @@ pub fn make_singular_string_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a str,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::String(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_bytes_accessor<M : Message + 'static>(
@@ -476,13 +476,13 @@ pub fn make_singular_bytes_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [u8],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::Bytes(get),
         },
-    }
+    })
 }
 
 pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
@@ -491,15 +491,15 @@ pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'st
         get: fn(&M) -> E,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::Enum(
-                box GetSingularEnumImpl { get: get },
+                Box::new(GetSingularEnumImpl { get: get }),
             ),
         },
-    }
+    })
 }
 
 pub fn make_singular_message_accessor<M : Message + 'static, F : Message + 'static>(
@@ -508,15 +508,15 @@ pub fn make_singular_message_accessor<M : Message + 'static, F : Message + 'stat
         get: for<'a> fn(&'a M) -> &'a F,
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::Message(
-                box GetSingularMessageImpl { get: get },
+                Box::new(GetSingularMessageImpl { get: get }),
             ),
         },
-    }
+    })
 }
 
 // repeated
@@ -526,10 +526,10 @@ pub fn make_repeated_u32_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [u32],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::U32(get)),
-    }
+    })
 }
 
 pub fn make_repeated_i32_accessor<M : Message + 'static>(
@@ -537,10 +537,10 @@ pub fn make_repeated_i32_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [i32],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::I32(get)),
-    }
+    })
 }
 
 pub fn make_repeated_u64_accessor<M : Message + 'static>(
@@ -548,10 +548,10 @@ pub fn make_repeated_u64_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [u64],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::U64(get)),
-    }
+    })
 }
 
 pub fn make_repeated_i64_accessor<M : Message + 'static>(
@@ -559,10 +559,10 @@ pub fn make_repeated_i64_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [i64],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::I64(get)),
-    }
+    })
 }
 
 pub fn make_repeated_f32_accessor<M : Message + 'static>(
@@ -570,10 +570,10 @@ pub fn make_repeated_f32_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [f32],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::F32(get)),
-    }
+    })
 }
 
 pub fn make_repeated_f64_accessor<M : Message + 'static>(
@@ -581,10 +581,10 @@ pub fn make_repeated_f64_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [f64],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::F64(get)),
-    }
+    })
 }
 
 pub fn make_repeated_bool_accessor<M : Message + 'static>(
@@ -592,10 +592,10 @@ pub fn make_repeated_bool_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [bool],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::Bool(get)),
-    }
+    })
 }
 
 pub fn make_repeated_string_accessor<M : Message + 'static>(
@@ -603,10 +603,10 @@ pub fn make_repeated_string_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [String],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::String(get)),
-    }
+    })
 }
 
 pub fn make_repeated_bytes_accessor<M : Message + 'static>(
@@ -614,10 +614,10 @@ pub fn make_repeated_bytes_accessor<M : Message + 'static>(
         get: for<'a> fn(&'a M) -> &'a [Vec<u8>],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::Bytes(get)),
-    }
+    })
 }
 
 pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
@@ -625,12 +625,12 @@ pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'st
         get: for<'a> fn(&'a M) -> &'a [E],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::Enum(
-            box GetRepeatedEnumImpl { get: get },
+            Box::new(GetRepeatedEnumImpl { get: get }),
         )),
-    }
+    })
 }
 
 pub fn make_repeated_message_accessor<M : Message + 'static, F : Message + 'static>(
@@ -638,10 +638,10 @@ pub fn make_repeated_message_accessor<M : Message + 'static, F : Message + 'stat
         get: for<'a> fn(&'a M) -> &'a [F],
     ) -> Box<FieldAccessor + 'static>
 {
-    box FieldAccessorImpl {
+    Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::Message(
-            box GetRepeatedMessageImpl { get: get },
+            Box::new(GetRepeatedMessageImpl { get: get }),
         )),
-    }
+    })
 }

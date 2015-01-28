@@ -1,5 +1,5 @@
-use std::io::Writer;
-use std::io;
+use std::old_io::Writer;
+use std::old_io as io;
 
 pub struct VecWriter<'a> {
     vec: &'a mut Vec<u8>,
@@ -14,7 +14,7 @@ impl<'a> VecWriter<'a> {
 }
 
 impl<'a> Writer for VecWriter<'a> {
-    fn write(&mut self, v: &[u8]) -> io::IoResult<()> {
+    fn write_all(&mut self, v: &[u8]) -> io::IoResult<()> {
         self.vec.push_all(v);
         Ok(())
     }
@@ -23,7 +23,7 @@ impl<'a> Writer for VecWriter<'a> {
 #[cfg(test)]
 mod test {
 
-    use std::io::Writer;
+    use std::old_io::Writer;
     use misc::VecWriter;
 
     #[test]

@@ -119,7 +119,7 @@ impl UnknownFields {
 
     fn init_map(&mut self) {
         if self.fields.is_none() {
-            self.fields = Some(box Default::default());
+            self.fields = Some(Default::default());
         }
     }
 

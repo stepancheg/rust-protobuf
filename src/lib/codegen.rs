@@ -1,4 +1,4 @@
-use std::io::Writer;
+use std::old_io::Writer;
 use std::mem;
 use std::fmt;
 use std::collections::hash_map::HashMap;
@@ -167,10 +167,10 @@ impl RustType {
 
     fn ref_type(&self) -> RustType {
         RustType::Ref(match self {
-            &RustType::String               => box RustType::Str,
+            &RustType::String               => Box::new(RustType::Str),
             &RustType::Vec(ref p)           |
-            &RustType::RepeatedField(ref p) => box RustType::Slice(p.clone()),
-            &RustType::Message(ref p)       => box RustType::Message(p.clone()),
+            &RustType::RepeatedField(ref p) => Box::new(RustType::Slice(p.clone())),
+            &RustType::Message(ref p)       => Box::new(RustType::Message(p.clone())),
             x => panic!("no ref type for {:?}", x),
         })
     }
@@ -212,7 +212,7 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
         FieldDescriptorProto_Type::TYPE_SFIXED64 => RustType::Signed(64),
         FieldDescriptorProto_Type::TYPE_BOOL     => RustType::Bool,
         FieldDescriptorProto_Type::TYPE_STRING   => RustType::String,
-        FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(box RustType::Unsigned(8)),
+        FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(Box::new(RustType::Unsigned(8))),
         FieldDescriptorProto_Type::TYPE_ENUM     |
         FieldDescriptorProto_Type::TYPE_GROUP    |
         FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!("there is no rust name for {:?}", field_type),
@@ -437,7 +437,7 @@ impl Field {
 
     // type of field in struct
     fn full_storage_type(&self) -> RustType {
-        let c = box self.type_name.clone();
+        let c = Box::new(self.type_name.clone());
         if self.repeated {
             if self.type_is_not_trivial() {
                 RustType::RepeatedField(c)
@@ -475,9 +475,9 @@ impl Field {
     fn os_write_fn_param_type(&self) -> RustType {
         match self.field_type {
             FieldDescriptorProto_Type::TYPE_STRING =>
-                RustType::Ref(box RustType::Str),
+                RustType::Ref(Box::new(RustType::Str)),
             FieldDescriptorProto_Type::TYPE_BYTES  =>
-                RustType::Ref(box RustType::Slice(box RustType::Unsigned(8))),
+                RustType::Ref(Box::new(RustType::Slice(Box::new(RustType::Unsigned(8))))),
             FieldDescriptorProto_Type::TYPE_ENUM   =>
                 RustType::Signed(32),
             t => rust_name(t),
@@ -500,17 +500,17 @@ impl Field {
 
     // for field `foo`, return type of `fn mut_foo(..)`
     fn mut_xxx_return_type(&self) -> RustType {
-        RustType::Ref(box if self.repeated {
+        RustType::Ref(Box::new(if self.repeated {
             self.full_storage_type()
         } else {
             self.type_name.clone()
-        })
+        }))
     }
 
     // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
         match self.repeated {
-            true => RustType::Ref(box RustType::Slice(box self.type_name.clone())),
+            true => RustType::Ref(Box::new(RustType::Slice(Box::new(self.type_name.clone())))),
             false => match self.type_is_not_trivial() {
                 true => self.type_name.ref_type(),
                 false => self.type_name.clone(),
@@ -534,7 +534,7 @@ impl Field {
         match self.full_storage_type() {
             r @ RustType::Option(..)       => r,
             RustType::SingularField(ty)    |
-            RustType::SingularPtrField(ty) => RustType::Option(box RustType::Ref(ty)),
+            RustType::SingularPtrField(ty) => RustType::Option(Box::new(RustType::Ref(ty))),
             x => panic!("cannot convert {:?} to option", x),
         }
     }
