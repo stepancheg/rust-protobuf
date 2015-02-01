@@ -11,6 +11,7 @@ use super::descriptor::FileDescriptorSet;
 use super::descriptor::FileDescriptorProto;
 use super::descriptor::DescriptorProto;
 use super::descriptor::FieldDescriptorProto;
+use super::descriptor::OneofDescriptorProto;
 use super::descriptor::EnumDescriptorProto;
 use super::descriptor::EnumValueDescriptorProto;
 use super::descriptor::ServiceDescriptorProto;
