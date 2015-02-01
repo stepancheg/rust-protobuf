@@ -1,3 +1,10 @@
+#![feature(collections)]
+#![feature(core)]
+#![feature(io)]
+#![feature(os)]
+#![feature(path)]
+#![feature(rand)]
+
 extern crate protobuf;
 extern crate rand;
 extern crate time;

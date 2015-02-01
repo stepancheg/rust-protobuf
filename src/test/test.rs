@@ -27,7 +27,7 @@ fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let parsed = parse_from_bytes::<M>(expected_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
 
-    assert_eq!(expected_bytes.len(), msg.compute_size() as uint);
+    assert_eq!(expected_bytes.len(), msg.compute_size() as usize);
 
     test_serialize_deserialize_length_delimited(msg);
 }

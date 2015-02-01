@@ -1,4 +1,5 @@
-#![feature(globs)]
+#![feature(collections)]
+#![feature(core)]
 
 extern crate protobuf;
 

@@ -998,10 +998,10 @@ impl<'a> IndentWriter<'a> {
     fn write_line<S : Str>(&self, line: S) {
         let mut_writer: &mut Writer = unsafe { mem::transmute(self.writer) };
         (if line.as_slice().is_empty() {
-            mut_writer.write("\n".as_bytes())
+            mut_writer.write_all("\n".as_bytes())
         } else {
             let s: String = [self.indent.as_slice(), line.as_slice(), "\n"].concat();
-            mut_writer.write(s.as_bytes())
+            mut_writer.write_all(s.as_bytes())
         }).unwrap();
     }
 
