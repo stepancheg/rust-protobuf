@@ -1,5 +1,6 @@
 use std::mem;
 use std::sync;
+use std::boxed;
 
 pub struct Lazy<T> {
     pub lock: sync::Once,
@@ -12,7 +13,7 @@ impl<T> Lazy<T> {
     {
         unsafe {
             self.lock.call_once(|| {
-                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = mem::transmute(Box::new(init()))
+                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = boxed::into_raw(Box::new(init()));
             });
             mem::transmute(self.ptr)
         }
