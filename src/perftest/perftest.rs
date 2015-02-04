@@ -1,4 +1,3 @@
-#![feature(collections)]
 #![feature(core)]
 #![feature(io)]
 #![feature(os)]

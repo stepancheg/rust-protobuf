@@ -1,7 +1,6 @@
 #![crate_type = "bin"]
 #![allow(non_camel_case_types)]
 #![feature(io)]
-#![feature(collections)]
 #![feature(core)]
 
 extern crate protobuf;
