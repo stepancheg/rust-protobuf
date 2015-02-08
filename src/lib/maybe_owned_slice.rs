@@ -61,8 +61,6 @@ impl<'a, T : 'a> Index<usize> for MaybeOwnedSlice<'a, T> {
 }
 
 impl<'a, T : 'a> IndexMut<usize> for MaybeOwnedSlice<'a, T> {
-    type Output = T;
-
     #[inline]
     fn index_mut<'b>(&'b mut self, index: &usize) -> &'b mut T {
         &mut self.as_mut_slice()[*index]

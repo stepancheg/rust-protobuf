@@ -296,8 +296,6 @@ impl<T> Index<usize> for RepeatedField<T> {
 }
 
 impl<T> IndexMut<usize> for RepeatedField<T> {
-    type Output = T;
-
     #[inline]
     fn index_mut<'a>(&'a mut self, index: &usize) -> &'a mut T {
         &mut self.as_mut_slice()[*index]
