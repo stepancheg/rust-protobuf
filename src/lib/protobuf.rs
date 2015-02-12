@@ -1,6 +1,6 @@
 #![crate_type = "lib"]
 #![allow(non_camel_case_types)]
-#![feature(box_syntax)]
+#![feature(box_patterns, alloc)]
 
 // warnings
 #![feature(collections)]

@@ -814,7 +814,7 @@ impl<'a> IndentWriter<'a> {
         where F : Fn(&mut IndentWriter)
     {
         let fields = &self.msg.as_ref().unwrap().fields;
-        let mut iter = fields.iter();
+        let iter = fields.iter();
         for field in iter {
             self.bind_field(field, |w| cb(w));
         }
@@ -824,7 +824,7 @@ impl<'a> IndentWriter<'a> {
         where F : Fn(&mut IndentWriter)
     {
         let fields = &self.msg.as_ref().unwrap().required_fields();
-        let mut iter = fields.iter();
+        let iter = fields.iter();
         for field in iter {
             self.bind_field(*field, |w| cb(w));
         }
