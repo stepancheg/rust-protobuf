@@ -1,21 +1,18 @@
 #![feature(core)]
 #![feature(io)]
-#![feature(os)]
 #![feature(path)]
-#![feature(rand)]
+#![feature(env)]
 
 extern crate protobuf;
 extern crate rand;
 extern crate time;
 
 use std::old_io::File;
-use std::old_io::MemWriter;
 use std::default::Default;
-use std::os;
 
-use std::rand::Rng;
-use std::rand::StdRng;
-use std::rand::SeedableRng;
+use rand::Rng;
+use rand::StdRng;
+use rand::SeedableRng;
 
 use protobuf::Message;
 use protobuf::MessageStatic;
@@ -47,14 +44,12 @@ fn run_test<M : Message + MessageStatic>(name: &str, data: &[M]) {
         total_size += item.compute_size();
     }
 
-    let mut writer = MemWriter::new();
+    let mut buf = Vec::new();
     measure_and_print(format!("{}: write", name).as_slice(), random_data.len() as u64, || {
         for m in random_data.iter() {
-            m.write_length_delimited_to_writer(&mut writer).unwrap();
+            m.write_length_delimited_to_writer(&mut buf).unwrap();
         }
     });
-
-    let buf = writer.into_inner();
 
     let read_data = measure_and_print(format!("{}: read", name).as_slice(), random_data.len() as u64, || {
         let mut r = Vec::new();
@@ -104,7 +99,8 @@ impl TestRunner {
 }
 
 fn main() {
-    let selected = match os::args().as_slice() {
+    let args = std::env::args().collect::<Vec<_>>();
+    let selected = match args.iter().map(|s| s.as_slice()).collect::<Vec<_>>().as_slice() {
         [_] => None,
         [_, ref test] => Some(test.to_string()),
         v => panic!("usage: {} <test>", v[0]),

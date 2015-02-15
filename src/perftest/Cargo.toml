@@ -9,6 +9,8 @@ path = "../.."
 [dependencies.time]
 git = "http://github.com/rust-lang/time"
 
+[dependencies.rand]
+
 [[bin]]
 
 name = "rust-protobuf-perftest"
