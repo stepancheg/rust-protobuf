@@ -24,6 +24,8 @@ pub mod wire_format {
 
     pub const TAG_TYPE_BITS: u32 = 3;
     pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) as u32 - 1;
+    // max possible tag number
+    pub const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
 
     #[derive(PartialEq, Eq, Clone, Debug)]
     pub enum WireType {
@@ -51,26 +53,40 @@ pub mod wire_format {
         }
     }
 
-    pub struct Tag(u32);
+    pub struct Tag {
+        field_number: u32,
+        wire_type: WireType,
+    }
 
     impl Copy for Tag {}
 
     impl Tag {
         pub fn value(self) -> u32 {
-            match self {
-                Tag(value) => value
-            }
+            (self.field_number << TAG_TYPE_BITS) | (self.wire_type as u32)
         }
 
+        // TODO: should return Result instead of Option
         pub fn new(value: u32) -> Option<Tag> {
-            if WireType::new(value & TAG_TYPE_MASK).is_none() {
+            let wire_type = WireType::new(value & TAG_TYPE_MASK);
+            if wire_type.is_none() {
                 return None;
             }
-            Some(Tag(value))
+            let field_number = value >> TAG_TYPE_BITS;
+            if field_number == 0 {
+                return None;
+            }
+            Some(Tag {
+                field_number: field_number,
+                wire_type: wire_type.unwrap(),
+            })
         }
 
         pub fn make(field_number: u32, wire_type: WireType) -> Tag {
-            Tag::new((field_number << TAG_TYPE_BITS as usize) as u32 | (wire_type as u32)).unwrap()
+            assert!(field_number > 0 && field_number <= FIELD_NUMBER_MAX);
+            Tag {
+                field_number: field_number,
+                wire_type: wire_type,
+            }
         }
 
         pub fn unpack(self) -> (u32, WireType) {
@@ -78,13 +94,11 @@ pub mod wire_format {
         }
 
         fn wire_type(self) -> WireType {
-            WireType::new(self.value() & TAG_TYPE_MASK).expect("unknown wire type")
+            self.wire_type
         }
 
         pub fn field_number(self) -> u32 {
-            let r = (self.value() >> (TAG_TYPE_BITS as usize)) as u32;
-            assert!(r > 0, "field number must be positive");
-            r
+            self.field_number
         }
     }
 
@@ -225,6 +239,14 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn eof(&mut self) -> ProtobufResult<bool> {
         return Ok(self.buffer_pos == self.buffer_size && !try!(self.refill_buffer()))
+    }
+
+    pub fn check_eof(&mut self) -> ProtobufResult<()> {
+        let eof = try!(self.eof());
+        if !eof {
+            return Err(ProtobufError::WireError(format!("expecting EOF")));
+        }
+        Ok(())
     }
 
     pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
@@ -663,32 +685,32 @@ pub fn with_coded_output_stream_to_bytes<F>(cb: F)
 }
 
 pub trait WithCodedInputStream {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> T
-        where F : FnOnce(&mut CodedInputStream) -> T;
+    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedInputStream for &'a mut (Reader + 'a) {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> T
-        where F : FnOnce(&mut CodedInputStream) -> T
+    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
     {
         let mut is = CodedInputStream::new(self);
-        let r = cb(&mut is);
+        let r = try!(cb(&mut is));
         // reading from Reader requires all data to be read,
         // because CodedInputStream caches data, and otherwize
         // buffer would be discarded
-        assert!(is.eof().unwrap()); // TODO: unwrap
-        r
+        try!(is.check_eof());
+        Ok(r)
     }
 }
 
 impl<'a> WithCodedInputStream for &'a [u8] {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> T
-        where F : FnOnce(&mut CodedInputStream) -> T
+    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
     {
         let mut is = CodedInputStream::from_bytes(self);
-        let r = cb(&mut is);
-        assert!(is.eof().unwrap());
-        r
+        let r = try!(cb(&mut is));
+        try!(is.check_eof());
+        Ok(r)
     }
 }
 

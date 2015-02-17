@@ -256,3 +256,11 @@ fn test_lite_runtime() {
     // test it doesn't crash
     format!("{:?}", m);
 }
+
+#[test]
+fn test_invalid_tag() {
+    // 01 is invalid tag, because field number for that tag would be 0
+    let bytes = decode_hex("01 02 03");
+    let r = parse_from_bytes::<TestInvalidTag>(bytes.as_slice());
+    assert!(r.is_err());
+}

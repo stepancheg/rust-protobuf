@@ -140,3 +140,6 @@ message TestDefaultValues {
     optional EnumForDefaultValue enum_field = 16 [default = TWO];
     optional EnumForDefaultValue enum_field_without_default = 17;
 }
+
+message TestInvalidTag {
+}
