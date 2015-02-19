@@ -35,7 +35,7 @@ pub fn decode_hex(hex: &str) -> Vec<u8> {
 }
 
 fn encode_hex_digit(digit: u8) -> char {
-    match char::from_digit(digit as usize, 16) {
+    match char::from_digit(digit as u32, 16) {
         Some(c) => c,
         _ => panic!()
     }
