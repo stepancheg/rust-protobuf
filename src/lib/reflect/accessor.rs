@@ -39,10 +39,10 @@ trait GetSingularMessage<M> {
 }
 
 struct GetSingularMessageImpl<M, N> {
-    get: for<'a> fn(&'a M) -> &N,
+    get: for<'a> fn(&'a M) -> &'a N,
 }
 
-impl<M : Message, N : Message> GetSingularMessage<M> for GetSingularMessageImpl<M, N> {
+impl<M : Message, N : Message + 'static> GetSingularMessage<M> for GetSingularMessageImpl<M, N> {
     fn get_message<'a>(&self, m: &'a M) -> &'a Message {
         (self.get)(m) as &Message
     }
@@ -73,7 +73,7 @@ struct GetRepeatedMessageImpl<M, N> {
     get: for<'a> fn(&'a M) -> &'a [N],
 }
 
-impl<M : Message, N : Message> GetRepeatedMessage<M> for GetRepeatedMessageImpl<M, N> {
+impl<M : Message, N : Message + 'static> GetRepeatedMessage<M> for GetRepeatedMessageImpl<M, N> {
     fn len_field(&self, m: &M) -> usize {
         (self.get)(m).len()
     }
