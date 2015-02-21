@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::default::Default;
+use std::marker;
 
 use core::Message;
 use core::MessageStatic;
@@ -157,13 +158,15 @@ trait MessageFactory {
 }
 
 struct MessageFactoryTyped<M> {
-    _dummy: ()
+    _dummy: (),
+    _phantom_data: marker::PhantomData<M>,
 }
 
 impl<M> MessageFactoryTyped<M> {
     fn new() -> MessageFactoryTyped<M> {
         MessageFactoryTyped {
-            _dummy: ()
+            _dummy: (),
+            _phantom_data: marker::PhantomData,
         }
     }
 }

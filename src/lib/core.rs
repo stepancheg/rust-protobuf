@@ -24,7 +24,7 @@ use error::ProtobufResult;
 // into separate place. For me it looks like unnecessary complication.
 //
 // See https://github.com/rust-lang/rust/commit/cd31e6ff for details.
-pub trait MessageStatic : Message + Clone + Default {
+pub trait MessageStatic : Message + Clone + Default + PartialEq {
     fn new() -> Self;
 
     // http://stackoverflow.com/q/20342436/15018
@@ -35,7 +35,7 @@ pub trait MessageStatic : Message + Clone + Default {
 }
 
 
-pub trait Message : PartialEq + fmt::Debug + Clear {
+pub trait Message : fmt::Debug + Clear {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.

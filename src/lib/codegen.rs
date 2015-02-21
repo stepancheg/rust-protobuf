@@ -651,7 +651,7 @@ impl Field {
 }
 
 #[derive(Clone)]
-struct MessageInfo<'a> {
+struct MessageInfo {
     proto_message: DescriptorProto,
     pkg: String,
     prefix: String,
@@ -660,8 +660,8 @@ struct MessageInfo<'a> {
     lite_runtime: bool,
 }
 
-impl<'a> MessageInfo<'a> {
-    fn parse(message: &MessageWithScope<'a>, root_scope: &RootScope) -> MessageInfo<'a> {
+impl MessageInfo {
+    fn parse(message: &MessageWithScope, root_scope: &RootScope) -> MessageInfo {
         MessageInfo {
             proto_message: message.message.clone(),
             pkg: message.get_package().to_string(),
@@ -676,7 +676,7 @@ impl<'a> MessageInfo<'a> {
         }
     }
 
-    fn required_fields(&'a self) -> Vec<&'a Field> {
+    fn required_fields<'a>(&'a self) -> Vec<&'a Field> {
         let mut r = Vec::new();
         for field in self.fields.iter() {
             if field.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED {
@@ -687,7 +687,7 @@ impl<'a> MessageInfo<'a> {
     }
 }
 
-struct Enum<'a> {
+struct Enum {
     //en: EnumWithScope<'a>,
     type_name: String,
     values: Vec<EnumValue>,
@@ -701,8 +701,8 @@ struct EnumValue {
     enum_rust_name: String,
 }
 
-impl<'a> Enum<'a> {
-    fn parse<'b>(en: &EnumWithScope<'b>) -> Enum<'b> {
+impl Enum {
+    fn parse(en: &EnumWithScope) -> Enum {
         Enum {
             //en: en.clone(),
             type_name: en.rust_name(),
@@ -715,7 +715,7 @@ impl<'a> Enum<'a> {
         }
     }
 
-    fn value_by_name(&'a self, name: &str) -> &'a EnumValue {
+    fn value_by_name<'a>(&'a self, name: &str) -> &'a EnumValue {
         self.values.iter().find(|v| v.name() == name).unwrap()
     }
 }
@@ -757,9 +757,9 @@ struct IndentWriter<'a> {
     // TODO: add mut
     writer: &'a (Writer + 'a),
     indent: String,
-    msg: Option<&'a MessageInfo<'a>>,
+    msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
-    en: Option<&'a Enum<'a>>,
+    en: Option<&'a Enum>,
 }
 
 impl<'a> IndentWriter<'a> {
@@ -844,7 +844,7 @@ impl<'a> IndentWriter<'a> {
         self.field.unwrap()
     }
 
-    fn en(&self) -> &'a Enum<'a> {
+    fn en(&self) -> &'a Enum {
         self.en.unwrap()
     }
 

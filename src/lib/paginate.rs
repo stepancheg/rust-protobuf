@@ -1,8 +1,8 @@
-pub trait PaginatableIterator<T> {
+pub trait PaginatableIterator {
     fn paginate(self, page: usize) -> Paginate<Self>;
 }
 
-impl<T, U : Iterator<Item = T>> PaginatableIterator<T> for U {
+impl<T, U : Iterator<Item = T>> PaginatableIterator for U {
     fn paginate(self, page: usize) -> Paginate<U> {
         Paginate {
             iter: self,
