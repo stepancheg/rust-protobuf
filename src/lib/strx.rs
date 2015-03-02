@@ -1,6 +1,6 @@
 pub fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
     match s.rfind(c) {
-        Some(pos) => s.slice_from(pos + 1),
+        Some(pos) => &s[pos + 1 ..],
         None => s
     }
 }
@@ -8,7 +8,7 @@ pub fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
 #[allow(dead_code)]
 pub fn remove_from_last<'s>(s: &'s str, c: char) -> &'s str {
     match s.rfind(c) {
-        Some(pos) => s.slice_to(pos),
+        Some(pos) => &s[..pos],
         None => s,
     }
 }
@@ -17,14 +17,14 @@ pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
     if !s.ends_with(suffix) {
         panic!();
     }
-    s.slice_to(s.len() - suffix.len())
+    &s[.. s.len() - suffix.len()]
 }
 
 pub fn remove_prefix<'s>(s: &'s str, prefix: &str) -> &'s str {
     if !s.starts_with(prefix) {
         panic!();
     }
-    s.slice_from(prefix.len())
+    &s[prefix.len()..]
 }
 
 #[cfg(test)]

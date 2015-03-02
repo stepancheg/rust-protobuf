@@ -32,7 +32,7 @@ mod test {
         {
             let mut w = VecWriter::new(&mut v);
             fn foo(writer: &mut Writer) {
-                writer.write(b"hi").unwrap();
+                writer.write_all(b"hi").unwrap();
             }
             foo(&mut w as &mut Writer);
         }

@@ -26,19 +26,19 @@ impl<'a, T : 'a> MaybeOwnedSlice<'a, T> {
 
     #[inline]
     pub fn slice<'b>(&'b self, start: usize, end: usize) -> &'b [T] {
-        self.as_slice().slice(start, end)
+        &self.as_slice()[start..end]
     }
 
     #[allow(dead_code)]
     #[inline]
     pub fn slice_from<'b>(&'b self, start: usize) -> &'b [T] {
-        self.as_slice().slice_from(start)
+        &self.as_slice()[start..]
     }
 
     #[allow(dead_code)]
     #[inline]
     pub fn slice_to<'b>(&'b self, end: usize) -> &'b [T] {
-        self.as_slice().slice_to(end)
+        &self.as_slice()[..end]
     }
 }
 
