@@ -15,7 +15,7 @@ impl<'a> VecWriter<'a> {
 
 impl<'a> Writer for VecWriter<'a> {
     fn write_all(&mut self, v: &[u8]) -> io::IoResult<()> {
-        self.vec.push_all(v);
+        self.vec.extend(v.iter().map(|b| *b));
         Ok(())
     }
 }

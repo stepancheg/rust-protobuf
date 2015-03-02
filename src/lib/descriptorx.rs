@@ -70,7 +70,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.push_all(scope.get_enums().as_slice());
+            r.extend(scope.get_enums());
         });
 
         r
@@ -81,7 +81,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.push_all(scope.get_messages().as_slice());
+            r.extend(scope.get_messages());
         });
 
         r

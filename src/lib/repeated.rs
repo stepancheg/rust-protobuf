@@ -118,7 +118,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn tail<'a>(&'a self) -> &'a [T] {
-        self.as_slice().tail()
+        &self.as_slice()[1..]
     }
 
     #[inline]
@@ -133,7 +133,8 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn init<'a>(&'a self) -> &'a [T] {
-        self.as_slice().init()
+        let s = self.as_slice();
+        &s[..s.len() - 1]
     }
 
     #[inline]

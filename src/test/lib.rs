@@ -1,4 +1,3 @@
-#![feature(collections)]
 #![feature(core)]
 
 extern crate protobuf;
