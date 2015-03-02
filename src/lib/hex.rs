@@ -13,21 +13,18 @@ fn decode_hex_digit(digit: char) -> u8 {
 
 pub fn decode_hex(hex: &str) -> Vec<u8> {
     let mut r: Vec<u8> = Vec::new();
-    let mut pos = 0;
+    let mut chars = hex.chars().enumerate();
     loop {
-        while pos < hex.chars().count() && hex.char_at(pos) == ' ' {
-            pos += 1;
-        }
-
-        if hex.chars().count() - pos >= 2 {
-            r.push((decode_hex_digit(hex.char_at(pos)) << 4) | decode_hex_digit(hex.char_at(pos + 1)));
-            pos += 2;
-            continue;
-        }
-        if pos == hex.chars().count() {
-            break;
-        }
-        panic!("pos = {}d", pos);
+        let (pos, first) = match chars.next() {
+            None => break,
+            Some(elt) => elt
+        };
+        if first == ' ' { continue; }
+        let (_, second) = match chars.next() {
+            None => panic!("pos = {}d", pos),
+            Some(elt) => elt
+        };
+        r.push((decode_hex_digit(first) << 4) | decode_hex_digit(second));
     }
     r
 }

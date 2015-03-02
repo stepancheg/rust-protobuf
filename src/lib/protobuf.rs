@@ -5,8 +5,6 @@
 #![feature(collections)]
 #![feature(convert)]
 #![feature(core)]
-#![feature(str_char)]
-
 
 extern crate collections;
 
