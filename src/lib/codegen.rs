@@ -377,7 +377,7 @@ struct Field {
 }
 
 impl Field {
-    fn parse(field: &FieldDescriptorProto, root_scope: &RootScope, pkg: &str) -> Option<Field> {
+    fn parse(field: &FieldDescriptorProto, root_scope: &RootScope, pkg: &str) -> Field {
         let type_name = field_type_name(field, pkg);
         let repeated = match field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
@@ -412,7 +412,7 @@ impl Field {
             }
             _ => None,
         };
-        Some(Field {
+        Field {
             proto_field: field.clone(),
             name: name,
             field_type: field.get_field_type(),
@@ -424,7 +424,7 @@ impl Field {
             repeated: repeated,
             packed: packed,
             repeat_mode: repeat_mode,
-        })
+        }
     }
 
     fn number(&self) -> u32 {
@@ -667,8 +667,8 @@ impl MessageInfo {
             pkg: message.get_package().to_string(),
             prefix: message.scope.rust_prefix(),
             type_name: message.rust_name(),
-            fields: message.message.get_field().iter().flat_map(|field| {
-                Field::parse(field, root_scope, message.get_package()).into_iter()
+            fields: message.message.get_field().iter().map(|field| {
+                Field::parse(field, root_scope, message.get_package())
             }).collect(),
             lite_runtime:
                 message.get_file_descriptor().get_options().get_optimize_for()
