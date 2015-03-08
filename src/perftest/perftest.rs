@@ -1,14 +1,13 @@
 #![feature(core)]
-#![feature(io)]
 #![feature(path)]
-#![feature(env)]
 
 extern crate protobuf;
 extern crate rand;
 extern crate time;
 
-use std::old_io::File;
 use std::default::Default;
+use std::fs::File;
+use std::path::Path;
 
 use rand::Rng;
 use rand::StdRng;
@@ -108,7 +107,7 @@ fn main() {
 
     let mut runner = TestRunner { selected: selected, any_matched: false };
 
-    let mut is = File::open(&Path::new("perftest_data.pbbin"));
+    let mut is = File::open(&Path::new("perftest_data.pbbin")).unwrap();
     let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is).unwrap();
 
     runner.test("test1", test_data.get_test1());
