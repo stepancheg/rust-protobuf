@@ -1,7 +1,8 @@
 use std::mem;
 use std::num::Int;
-use std::old_io::EndOfFile;
-use std::old_io::IoError;
+use std::io;
+use std::io::Read;
+use std::io::Write;
 
 use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
@@ -108,14 +109,14 @@ pub struct CodedInputStream<'a> {
     buffer: MaybeOwnedSlice<'a, u8>,
     buffer_size: u32,
     buffer_pos: u32,
-    reader: Option<&'a mut (Reader + 'a)>,
+    reader: Option<&'a mut (Read + 'a)>,
     total_bytes_retired: u32,
     current_limit: u32,
     buffer_size_after_limit: u32,
 }
 
 impl<'a> CodedInputStream<'a> {
-    pub fn new(reader: &'a mut Reader) -> CodedInputStream<'a> {
+    pub fn new(reader: &'a mut Read) -> CodedInputStream<'a> {
         let buffer_len = 4096;
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
@@ -182,8 +183,8 @@ impl<'a> CodedInputStream<'a> {
 
                     let r = reader.read(self.buffer.as_mut_slice());
                     self.buffer_size = match r {
-                        Err(ref e) if e.kind == EndOfFile => return Ok(false),
                         Err(e) => return Err(ProtobufError::IoError(e)),
+                        Ok(x) if x == 0 => return Ok(false),
                         Ok(x) => x as u32,
                     };
                     assert!(self.buffer_size > 0);
@@ -197,11 +198,10 @@ impl<'a> CodedInputStream<'a> {
 
     fn refill_buffer_really(&mut self) -> ProtobufResult<()> {
         if !try!(self.refill_buffer()) {
-            return Err(ProtobufError::IoError(IoError {
-                kind: EndOfFile,
-                desc: "unexpected EOF",
-                detail: None,
-            }));
+            return Err(ProtobufError::IoError(io::Error::new(
+                io::ErrorKind::Other,
+                "unexpected EOF",
+                None)));
         }
         Ok(())
     }
@@ -653,7 +653,7 @@ pub trait WithCodedOutputStream {
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>;
 }
 
-impl<'a> WithCodedOutputStream for &'a mut (Writer + 'a) {
+impl<'a> WithCodedOutputStream for &'a mut (Write + 'a) {
     fn with_coded_output_stream<T, F>(self, cb: F)
             -> ProtobufResult<T>
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
@@ -671,7 +671,7 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
         let mut w = VecWriter::new(self);
-        (&mut w as &mut Writer).with_coded_output_stream(cb)
+        (&mut w as &mut Write).with_coded_output_stream(cb)
     }
 }
 
@@ -689,7 +689,7 @@ pub trait WithCodedInputStream {
         where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
 }
 
-impl<'a> WithCodedInputStream for &'a mut (Reader + 'a) {
+impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
         where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
     {
@@ -719,11 +719,11 @@ pub struct CodedOutputStream<'a> {
     buffer: Vec<u8>,
     // within buffer
     position: u32,
-    writer: Option<&'a mut (Writer + 'a)>,
+    writer: Option<&'a mut (Write + 'a)>,
 }
 
 impl<'a> CodedOutputStream<'a> {
-    pub fn new(writer: &'a mut Writer) -> CodedOutputStream<'a> {
+    pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
         let buffer_len = 4096;
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
@@ -1021,7 +1021,9 @@ impl<'a> CodedOutputStream<'a> {
 #[cfg(test)]
 mod test {
 
-    use std::old_io::MemReader;
+    use std::io;
+    use std::io::Read;
+    use std::io::Write;
 
     use hex::encode_hex;
     use hex::decode_hex;
@@ -1037,8 +1039,8 @@ mod test {
     {
         let d = decode_hex(hex);
         let len = d.len();
-        let mut reader = MemReader::new(d);
-        let mut is = CodedInputStream::new(&mut reader as &mut Reader);
+        let mut reader = io::Cursor::new(d);
+        let mut is = CodedInputStream::new(&mut reader as &mut Read);
         assert_eq!(0, is.pos());
         callback(&mut is);
         assert!(is.eof().unwrap());
@@ -1112,7 +1114,7 @@ mod test {
         let mut v = Vec::new();
         {
             let mut writer = VecWriter::new(&mut v);
-            let mut os = CodedOutputStream::new(&mut writer as &mut Writer);
+            let mut os = CodedOutputStream::new(&mut writer as &mut Write);
             gen(&mut os).unwrap();
             os.flush().unwrap();
         }

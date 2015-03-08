@@ -1,4 +1,4 @@
-use std::old_io::IoError;
+use std::io;
 use std::error::Error;
 use std::fmt;
 
@@ -6,7 +6,7 @@ pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
 #[derive(Debug,Eq,PartialEq)]
 pub enum ProtobufError {
-    IoError(IoError),
+    IoError(io::Error),
     WireError(String),
 }
 

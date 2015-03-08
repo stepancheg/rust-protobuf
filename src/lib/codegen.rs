@@ -1,7 +1,7 @@
-use std::old_io::Writer;
-use std::mem;
-use std::fmt;
 use std::collections::hash_map::HashMap;
+use std::fmt;
+use std::io::Write;
+use std::mem;
 
 use descriptor::*;
 use misc::*;
@@ -755,7 +755,7 @@ impl EnumValue {
 
 struct IndentWriter<'a> {
     // TODO: add mut
-    writer: &'a (Writer + 'a),
+    writer: &'a (Write + 'a),
     indent: String,
     msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
@@ -763,7 +763,7 @@ struct IndentWriter<'a> {
 }
 
 impl<'a> IndentWriter<'a> {
-    fn new(writer: &'a mut Writer) -> IndentWriter<'a> {
+    fn new(writer: &'a mut Write) -> IndentWriter<'a> {
         IndentWriter {
             writer: writer,
             indent: "".to_string(),
@@ -996,7 +996,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn write_line<S : Str>(&self, line: S) {
-        let mut_writer: &mut Writer = unsafe { mem::transmute(self.writer) };
+        let mut_writer: &mut Write = unsafe { mem::transmute(self.writer) };
         (if line.as_slice().is_empty() {
             mut_writer.write_all("\n".as_bytes())
         } else {
@@ -1858,7 +1858,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
         {
             let mut os = VecWriter::new(&mut v);
-            let mut w = IndentWriter::new(&mut os as &mut Writer);
+            let mut w = IndentWriter::new(&mut os as &mut Write);
 
             w.write_line("// This file is generated. Do not edit");
 

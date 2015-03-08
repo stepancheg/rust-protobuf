@@ -1,5 +1,4 @@
-use std::old_io::Writer;
-use std::old_io as io;
+use std::io;
 
 pub struct VecWriter<'a> {
     vec: &'a mut Vec<u8>,
@@ -13,9 +12,13 @@ impl<'a> VecWriter<'a> {
     }
 }
 
-impl<'a> Writer for VecWriter<'a> {
-    fn write_all(&mut self, v: &[u8]) -> io::IoResult<()> {
+impl<'a> io::Write for VecWriter<'a> {
+    fn write(&mut self, v: &[u8]) -> io::Result<usize> {
         self.vec.push_all(v);
+        Ok(v.len())
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
         Ok(())
     }
 }
@@ -23,7 +26,7 @@ impl<'a> Writer for VecWriter<'a> {
 #[cfg(test)]
 mod test {
 
-    use std::old_io::Writer;
+    use std::io;
     use misc::VecWriter;
 
     #[test]
@@ -31,10 +34,10 @@ mod test {
         let mut v = Vec::new();
         {
             let mut w = VecWriter::new(&mut v);
-            fn foo(writer: &mut Writer) {
+            fn foo(writer: &mut io::Write) {
                 writer.write(b"hi").unwrap();
             }
-            foo(&mut w as &mut Writer);
+            foo(&mut w as &mut io::Write);
         }
         assert_eq!(b"hi".to_vec(), v);
     }
