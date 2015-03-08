@@ -73,37 +73,37 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
-        self.vec.as_mut_slice()
+        &mut self.vec
     }
 
     #[inline]
     pub fn slice<'a>(&'a self, start: usize, end: usize) -> &'a [T] {
-        self.as_slice().slice(start, end)
+        &self.as_slice()[start..end]
     }
 
     #[inline]
     pub fn slice_mut<'a>(&'a mut self, start: usize, end: usize) -> &'a mut [T] {
-        self.as_mut_slice().slice_mut(start, end)
+        &mut self.as_mut_slice()[start..end]
     }
 
     #[inline]
     pub fn slice_from<'a>(&'a self, start: usize) -> &'a [T] {
-        self.as_slice().slice_from(start)
+        &self.as_slice()[start..]
     }
 
     #[inline]
     pub fn slice_from_mut<'a>(&'a mut self, start: usize) -> &'a mut [T] {
-        self.as_mut_slice().slice_from_mut(start)
+        &mut self.as_mut_slice()[start..]
     }
 
     #[inline]
     pub fn slice_to<'a>(&'a self, end: usize) -> &'a [T] {
-        self.as_slice().slice_to(end)
+        &self.as_slice()[..end]
     }
 
     #[inline]
     pub fn slice_to_mut<'a>(&'a mut self, end: usize) -> &'a mut [T] {
-        self.as_mut_slice().slice_to_mut(end)
+        &mut self.as_mut_slice()[..end]
     }
 
     #[inline]
@@ -118,7 +118,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn tail<'a>(&'a self) -> &'a [T] {
-        self.as_slice().tail()
+        &self.as_slice()[1..]
     }
 
     #[inline]
@@ -133,7 +133,8 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn init<'a>(&'a self) -> &'a [T] {
-        self.as_slice().init()
+        let s = self.as_slice();
+        &s[..s.len() - 1]
     }
 
     #[inline]
@@ -283,7 +284,7 @@ impl<T : PartialEq> RepeatedField<T> {
 impl<T> AsSlice<T> for RepeatedField<T> {
     #[inline]
     fn as_slice<'a>(&'a self) -> &'a [T] {
-        self.vec.slice_to(self.len)
+        &self.vec[..self.len]
     }
 }
 

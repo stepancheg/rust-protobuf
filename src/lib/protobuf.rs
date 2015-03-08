@@ -3,13 +3,10 @@
 #![feature(box_patterns, alloc)]
 
 // warnings
-#![feature(collections)]
 #![feature(core)]
-#![feature(io)]
+#![feature(old_io)]
 #![feature(std_misc)]
 
-
-extern crate collections;
 
 pub use unknown::UnknownFields;
 pub use unknown::UnknownValues;

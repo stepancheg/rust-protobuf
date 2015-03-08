@@ -575,10 +575,10 @@ impl<'a> CodedInputStream<'a> {
         while target.len() < count as usize {
             let rem = count - target.len() as u32;
             if rem <= self.remaining_in_buffer() {
-                target.push_all(self.buffer.slice(self.buffer_pos as usize, (self.buffer_pos + rem) as usize));
+                target.extend(self.buffer.slice(self.buffer_pos as usize, (self.buffer_pos + rem) as usize).iter().map(|b| *b));
                 self.buffer_pos += rem;
             } else {
-                target.push_all(self.remaining_in_buffer_slice());
+                target.extend(self.remaining_in_buffer_slice().iter().map(|b| *b));
                 self.buffer_pos = self.buffer_size;
                 try!(self.refill_buffer_really());
             }
@@ -737,7 +737,7 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.writer {
             Some(ref mut writer) => {
-                try!(writer.write(self.buffer.slice(0, self.position as usize))
+                try!(writer.write_all(&self.buffer[..self.position as usize])
                     .map_err(|e| ProtobufError::IoError(e)));
             },
             None => panic!()
@@ -766,7 +766,7 @@ impl<'a> CodedOutputStream<'a> {
         try!(self.refresh_buffer());
         // TODO: write into buffer if enough capacity
         match self.writer {
-            Some(ref mut writer) => try!(writer.write(bytes).map_err(|e| ProtobufError::IoError(e))),
+            Some(ref mut writer) => try!(writer.write_all(bytes).map_err(|e| ProtobufError::IoError(e))),
             None => panic!()
         };
         Ok(())

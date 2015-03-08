@@ -19,13 +19,13 @@ impl<'a> RootScope<'a> {
 
     pub fn find_enum(&'a self, fqn: &str) -> EnumWithScope<'a> {
         assert!(fqn.starts_with("."));
-        let fqn1 = fqn.slice_from(1);
+        let fqn1 = &fqn[1..];
         self.packages().into_iter()
             .flat_map(|p| {
                 (if p.get_package().is_empty() {
                     p.find_enum(fqn1)
                 } else if fqn1.starts_with((p.get_package().to_string() + ".").as_slice()) {
-                    let remaining = fqn1.slice_from(p.get_package().len() + 1);
+                    let remaining = &fqn1[p.get_package().len() + 1 ..];
                     p.find_enum(remaining)
                 } else {
                     None
@@ -70,7 +70,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.push_all(scope.get_enums().as_slice());
+            r.extend(scope.get_enums());
         });
 
         r
@@ -81,7 +81,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.push_all(scope.get_messages().as_slice());
+            r.extend(scope.get_messages());
         });
 
         r

@@ -15,7 +15,7 @@ impl<'a> VecWriter<'a> {
 
 impl<'a> Writer for VecWriter<'a> {
     fn write_all(&mut self, v: &[u8]) -> io::IoResult<()> {
-        self.vec.push_all(v);
+        self.vec.extend(v.iter().map(|b| *b));
         Ok(())
     }
 }
@@ -32,7 +32,7 @@ mod test {
         {
             let mut w = VecWriter::new(&mut v);
             fn foo(writer: &mut Writer) {
-                writer.write(b"hi").unwrap();
+                writer.write_all(b"hi").unwrap();
             }
             foo(&mut w as &mut Writer);
         }
