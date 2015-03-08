@@ -737,7 +737,7 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.writer {
             Some(ref mut writer) => {
-                try!(writer.write(self.buffer.slice(0, self.position as usize))
+                try!(writer.write_all(&self.buffer[0..self.position as usize])
                     .map_err(|e| ProtobufError::IoError(e)));
             },
             None => panic!()
@@ -766,7 +766,7 @@ impl<'a> CodedOutputStream<'a> {
         try!(self.refresh_buffer());
         // TODO: write into buffer if enough capacity
         match self.writer {
-            Some(ref mut writer) => try!(writer.write(bytes).map_err(|e| ProtobufError::IoError(e))),
+            Some(ref mut writer) => try!(writer.write_all(bytes).map_err(|e| ProtobufError::IoError(e))),
             None => panic!()
         };
         Ok(())
