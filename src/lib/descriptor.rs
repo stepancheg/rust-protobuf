@@ -10,7 +10,9 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[derive(Clone,Default)]
 pub struct FileDescriptorSet {
+    // message fields
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -176,6 +178,7 @@ impl ::std::fmt::Debug for FileDescriptorSet {
 
 #[derive(Clone,Default)]
 pub struct FileDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     package: ::protobuf::SingularField<::std::string::String>,
     dependency: ::protobuf::RepeatedField<::std::string::String>,
@@ -187,6 +190,7 @@ pub struct FileDescriptorProto {
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
     options: ::protobuf::SingularPtrField<FileOptions>,
     source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -835,6 +839,7 @@ impl ::std::fmt::Debug for FileDescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct DescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     field: ::protobuf::RepeatedField<FieldDescriptorProto>,
     extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
@@ -843,6 +848,7 @@ pub struct DescriptorProto {
     extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
     oneof_decl: ::protobuf::RepeatedField<OneofDescriptorProto>,
     options: ::protobuf::SingularPtrField<MessageOptions>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -1342,8 +1348,10 @@ impl ::std::fmt::Debug for DescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct DescriptorProto_ExtensionRange {
+    // message fields
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -1545,6 +1553,7 @@ impl ::std::fmt::Debug for DescriptorProto_ExtensionRange {
 
 #[derive(Clone,Default)]
 pub struct FieldDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
     label: ::std::option::Option<FieldDescriptorProto_Label>,
@@ -1554,6 +1563,7 @@ pub struct FieldDescriptorProto {
     default_value: ::protobuf::SingularField<::std::string::String>,
     oneof_index: ::std::option::Option<i32>,
     options: ::protobuf::SingularPtrField<FieldOptions>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -2224,7 +2234,9 @@ impl ::std::marker::Copy for FieldDescriptorProto_Label {
 
 #[derive(Clone,Default)]
 pub struct OneofDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -2403,9 +2415,11 @@ impl ::std::fmt::Debug for OneofDescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct EnumDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: ::protobuf::SingularPtrField<EnumOptions>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -2685,9 +2699,11 @@ impl ::std::fmt::Debug for EnumDescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct EnumValueDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
     options: ::protobuf::SingularPtrField<EnumValueOptions>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -2963,9 +2979,11 @@ impl ::std::fmt::Debug for EnumValueDescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct ServiceDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: ::protobuf::SingularPtrField<ServiceOptions>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -3245,10 +3263,12 @@ impl ::std::fmt::Debug for ServiceDescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct MethodDescriptorProto {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     input_type: ::protobuf::SingularField<::std::string::String>,
     output_type: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<MethodOptions>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -3598,6 +3618,7 @@ impl ::std::fmt::Debug for MethodDescriptorProto {
 
 #[derive(Clone,Default)]
 pub struct FileOptions {
+    // message fields
     java_package: ::protobuf::SingularField<::std::string::String>,
     java_outer_classname: ::protobuf::SingularField<::std::string::String>,
     java_multiple_files: ::std::option::Option<bool>,
@@ -3610,6 +3631,7 @@ pub struct FileOptions {
     py_generic_services: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -4303,10 +4325,12 @@ impl ::std::marker::Copy for FileOptions_OptimizeMode {
 
 #[derive(Clone,Default)]
 pub struct MessageOptions {
+    // message fields
     message_set_wire_format: ::std::option::Option<bool>,
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -4592,6 +4616,7 @@ impl ::std::fmt::Debug for MessageOptions {
 
 #[derive(Clone,Default)]
 pub struct FieldOptions {
+    // message fields
     ctype: ::std::option::Option<FieldOptions_CType>,
     packed: ::std::option::Option<bool>,
     lazy: ::std::option::Option<bool>,
@@ -4599,6 +4624,7 @@ pub struct FieldOptions {
     experimental_map_key: ::protobuf::SingularField<::std::string::String>,
     weak: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -5058,9 +5084,11 @@ impl ::std::marker::Copy for FieldOptions_CType {
 
 #[derive(Clone,Default)]
 pub struct EnumOptions {
+    // message fields
     allow_alias: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -5306,8 +5334,10 @@ impl ::std::fmt::Debug for EnumOptions {
 
 #[derive(Clone,Default)]
 pub struct EnumValueOptions {
+    // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -5513,8 +5543,10 @@ impl ::std::fmt::Debug for EnumValueOptions {
 
 #[derive(Clone,Default)]
 pub struct ServiceOptions {
+    // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -5720,8 +5752,10 @@ impl ::std::fmt::Debug for ServiceOptions {
 
 #[derive(Clone,Default)]
 pub struct MethodOptions {
+    // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -5927,6 +5961,7 @@ impl ::std::fmt::Debug for MethodOptions {
 
 #[derive(Clone,Default)]
 pub struct UninterpretedOption {
+    // message fields
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: ::protobuf::SingularField<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
@@ -5934,6 +5969,7 @@ pub struct UninterpretedOption {
     double_value: ::std::option::Option<f64>,
     string_value: ::protobuf::SingularField<::std::vec::Vec<u8>>,
     aggregate_value: ::protobuf::SingularField<::std::string::String>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -6390,8 +6426,10 @@ impl ::std::fmt::Debug for UninterpretedOption {
 
 #[derive(Clone,Default)]
 pub struct UninterpretedOption_NamePart {
+    // message fields
     name_part: ::protobuf::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -6616,7 +6654,9 @@ impl ::std::fmt::Debug for UninterpretedOption_NamePart {
 
 #[derive(Clone,Default)]
 pub struct SourceCodeInfo {
+    // message fields
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -6782,10 +6822,12 @@ impl ::std::fmt::Debug for SourceCodeInfo {
 
 #[derive(Clone,Default)]
 pub struct SourceCodeInfo_Location {
+    // message fields
     path: ::std::vec::Vec<i32>,
     span: ::std::vec::Vec<i32>,
     leading_comments: ::protobuf::SingularField<::std::string::String>,
     trailing_comments: ::protobuf::SingularField<::std::string::String>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }

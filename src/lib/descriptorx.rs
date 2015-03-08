@@ -4,6 +4,8 @@ use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
+use descriptor::FieldDescriptorProto;
+use descriptor::OneofDescriptorProto;
 
 
 pub struct RootScope<'a> {
@@ -263,6 +265,25 @@ impl<'a> MessageWithScope<'a> {
     pub fn to_scope(&self) -> Scope<'a> {
         self.clone().into_scope()
     }
+
+    pub fn fields(&'a self) -> Vec<FieldWithContext<'a>> {
+        self.message.get_field().iter()
+            .map(|f| FieldWithContext { field: f, message: self })
+            .collect()
+    }
+
+    pub fn oneofs(&'a self) -> Vec<OneofWithContext<'a>> {
+        self.message.get_oneof_decl().iter()
+            .enumerate()
+            .map(|(index, oneof)| OneofWithContext {
+                message: &self, oneof: &oneof, index: index as u32
+            })
+            .collect()
+    }
+
+    pub fn oneof_by_index(&'a self, index: u32) -> OneofWithContext<'a> {
+        self.oneofs().swap_remove(index as usize)
+    }
 }
 
 
@@ -297,6 +318,63 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
 
     fn get_name(&self) -> &'a str {
         self.en.get_name()
+    }
+}
+
+
+pub struct FieldWithContext<'a> {
+    pub field: &'a FieldDescriptorProto,
+    pub message: &'a MessageWithScope<'a>,
+}
+
+impl<'a> FieldWithContext<'a> {
+    fn is_oneof(&self) -> bool {
+        self.field.has_oneof_index()
+    }
+
+    pub fn oneof(&'a self) -> Option<OneofWithContext<'a>> {
+        if self.is_oneof() {
+            Some(self.message.oneof_by_index(self.field.get_oneof_index() as u32))
+        } else {
+            None
+        }
+    }
+}
+
+
+pub struct OneofVariantWithContext<'a> {
+    pub oneof: &'a OneofWithContext<'a>,
+    pub field: &'a FieldDescriptorProto,
+}
+
+impl<'a> OneofVariantWithContext<'a> {
+    pub fn field_name(&self) -> &str {
+        self.field.get_name()
+    }
+}
+
+
+pub struct OneofWithContext<'a> {
+    pub oneof: &'a OneofDescriptorProto,
+    pub index: u32,
+    pub message: &'a MessageWithScope<'a>
+}
+
+impl<'a> OneofWithContext<'a> {
+    pub fn name(&'a self) -> &'a str {
+        self.oneof.get_name()
+    }
+
+    // rust type name of enum
+    pub fn rust_name(&self) -> String {
+        format!("{}_oneof_{}", self.message.rust_name(), self.oneof.get_name())
+    }
+
+    pub fn variants(&'a self) -> Vec<OneofVariantWithContext<'a>> {
+        self.message.fields().iter()
+            .filter(|f| f.field.has_oneof_index() && f.field.get_oneof_index() == self.index as i32)
+            .map(|f| OneofVariantWithContext { oneof: self, field: &f.field })
+            .collect()
     }
 }
 

@@ -28,9 +28,11 @@ use super::descriptor::SourceCodeInfo;
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorRequest {
+    // message fields
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
     proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -294,8 +296,10 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorResponse {
+    // message fields
     error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -518,9 +522,11 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorResponse_File {
+    // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     insertion_point: ::protobuf::SingularField<::std::string::String>,
     content: ::protobuf::SingularField<::std::string::String>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }

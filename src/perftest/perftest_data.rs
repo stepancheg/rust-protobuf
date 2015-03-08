@@ -10,7 +10,9 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[derive(Clone,Default)]
 pub struct Test1 {
+    // message fields
     value: ::std::option::Option<i32>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -172,7 +174,9 @@ impl ::std::fmt::Debug for Test1 {
 
 #[derive(Clone,Default)]
 pub struct TestRepeatedBool {
+    // message fields
     values: ::std::vec::Vec<bool>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -333,7 +337,9 @@ impl ::std::fmt::Debug for TestRepeatedBool {
 
 #[derive(Clone,Default)]
 pub struct TestRepeatedPackedInt32 {
+    // message fields
     values: ::std::vec::Vec<i32>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -501,9 +507,11 @@ impl ::std::fmt::Debug for TestRepeatedPackedInt32 {
 
 #[derive(Clone,Default)]
 pub struct TestRepeatedMessages {
+    // message fields
     messages1: ::protobuf::RepeatedField<TestRepeatedMessages>,
     messages2: ::protobuf::RepeatedField<TestRepeatedMessages>,
     messages3: ::protobuf::RepeatedField<TestRepeatedMessages>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -757,9 +765,11 @@ impl ::std::fmt::Debug for TestRepeatedMessages {
 
 #[derive(Clone,Default)]
 pub struct TestOptionalMessages {
+    // message fields
     message1: ::protobuf::SingularPtrField<TestOptionalMessages>,
     message2: ::protobuf::SingularPtrField<TestOptionalMessages>,
     message3: ::protobuf::SingularPtrField<TestOptionalMessages>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -1052,9 +1062,11 @@ impl ::std::fmt::Debug for TestOptionalMessages {
 
 #[derive(Clone,Default)]
 pub struct TestStrings {
+    // message fields
     s1: ::protobuf::SingularField<::std::string::String>,
     s2: ::protobuf::SingularField<::std::string::String>,
     s3: ::protobuf::SingularField<::std::string::String>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
@@ -1347,12 +1359,14 @@ impl ::std::fmt::Debug for TestStrings {
 
 #[derive(Clone,Default)]
 pub struct PerftestData {
+    // message fields
     test1: ::protobuf::RepeatedField<Test1>,
     test_repeated_bool: ::protobuf::RepeatedField<TestRepeatedBool>,
     test_repeated_messages: ::protobuf::RepeatedField<TestRepeatedMessages>,
     test_optional_messages: ::protobuf::RepeatedField<TestOptionalMessages>,
     test_strings: ::protobuf::RepeatedField<TestStrings>,
     test_repeated_packed_int32: ::protobuf::RepeatedField<TestRepeatedPackedInt32>,
+    // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
