@@ -1,10 +1,12 @@
 // TODO: drop all panic!
 
+use std::any::TypeId;
+use std::default::Default;
+use std::fmt;
+use std::io::Read;
+use std::io::Write;
 use std::mem;
 use std::raw;
-use std::fmt;
-use std::default::Default;
-use std::any::TypeId;
 
 use clear::Clear;
 use reflect::MessageDescriptor;
@@ -88,7 +90,7 @@ pub trait Message : fmt::Debug + Clear {
         assert!(self.is_initialized());
     }
 
-    fn write_to_writer(&self, w: &mut Writer) -> ProtobufResult<()> {
+    fn write_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| {
             self.write_to(os)
         })
@@ -107,7 +109,7 @@ pub trait Message : fmt::Debug + Clear {
         Ok(v)
     }
 
-    fn write_length_delimited_to_writer(&self, w: &mut Writer) -> ProtobufResult<()> {
+    fn write_length_delimited_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| {
             self.write_length_delimited_to(os)
         })
@@ -172,7 +174,7 @@ pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> Pro
     Ok(r)
 }
 
-pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Reader) -> ProtobufResult<M> {
+pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })
@@ -190,7 +192,7 @@ pub fn parse_length_delimited_from<M : Message + MessageStatic>(is: &mut CodedIn
     is.read_message::<M>()
 }
 
-pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(r: &mut Reader) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(r: &mut Read) -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| {
         is.read_message::<M>()

@@ -5,7 +5,7 @@
 // warnings
 #![feature(collections)]
 #![feature(core)]
-#![feature(old_io)]
+#![feature(io)]
 #![feature(std_misc)]
 
 
