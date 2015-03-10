@@ -90,19 +90,19 @@ fn test_empty() {
 }
 
 #[test]
-#[should_fail]
+#[should_panic]
 fn test_write_missing_required() {
     TestRequired::new().write_to_bytes().unwrap();
 }
 
 #[test]
-#[should_fail]
+#[should_panic]
 fn test_read_missing_required() {
     parse_from_bytes::<TestRequired>(&[]).unwrap();
 }
 
 #[test]
-#[should_fail]
+#[should_panic]
 fn test_read_junk() {
     parse_from_bytes::<Test1>(decode_hex("00").as_slice()).unwrap();
 }

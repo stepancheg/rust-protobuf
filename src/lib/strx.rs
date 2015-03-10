@@ -55,7 +55,7 @@ mod test {
     }
 
     #[test]
-    #[should_fail]
+    #[should_panic]
     fn test_remove_prefix_fail() {
         remove_prefix("aaa", "bbb");
     }
@@ -66,7 +66,7 @@ mod test {
     }
 
     #[test]
-    #[should_fail]
+    #[should_panic]
     fn test_remove_suffix_fail() {
         remove_suffix("aaa", "bbb");
     }
