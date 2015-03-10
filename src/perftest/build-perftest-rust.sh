@@ -9,7 +9,7 @@ cd $(dirname $0)
 )
 
 root=$(cd ../..; pwd)
-PATH="$root/target:$PATH"
+PATH="$root/target/debug:$PATH"
 
 protoc --rust_out . perftest_data.proto
 
