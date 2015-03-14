@@ -14,8 +14,8 @@ use descriptorx::MessageWithScope;
 use descriptorx::FieldWithContext;
 use descriptorx::OneofWithContext;
 use descriptorx::OneofVariantWithContext;
+use descriptorx::FileScope;
 use descriptorx::RootScope;
-use descriptorx::Scope;
 use descriptorx::WithScope;
 
 #[derive(Clone,PartialEq,Eq)]
@@ -2137,10 +2137,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
                 }
             }
 
-            let scope = Scope {
-                file_descriptor: file,
-                path: Vec::new(),
-            };
+            let scope = FileScope { file_descriptor: file } .to_scope();
 
             for message in scope.get_messages().iter() {
                 w.write_line("");

@@ -39,8 +39,9 @@ impl<'a> RootScope<'a> {
 }
 
 
+#[derive(Clone)]
 pub struct FileScope<'a> {
-    file_descriptor: &'a FileDescriptorProto,
+    pub file_descriptor: &'a FileDescriptorProto,
 }
 
 impl<'a> FileScope<'a> {
@@ -53,9 +54,9 @@ impl<'a> FileScope<'a> {
         self.file_descriptor.get_package()
     }
 
-    fn to_scope(&self) -> Scope<'a> {
+    pub fn to_scope(&self) -> Scope<'a> {
         Scope {
-            file_descriptor: self.file_descriptor,
+            file_scope: self.clone(),
             path: Vec::new(),
         }
     }
@@ -94,24 +95,24 @@ impl<'a> FileScope<'a> {
 
 #[derive(Clone)]
 pub struct Scope<'a> {
-    pub file_descriptor: &'a FileDescriptorProto,
+    pub file_scope: FileScope<'a>,
     pub path: Vec<&'a DescriptorProto>,
 }
 
 
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
-        self.file_descriptor
+        self.file_scope.file_descriptor
     }
 
     fn get_package(&self) -> &'a str {
-        self.file_descriptor.get_package()
+        self.file_scope.file_descriptor.get_package()
     }
 
     // get message descriptors in this scope
     fn get_message_descriptors(&self) -> &'a [DescriptorProto] {
         if self.path.is_empty() {
-            self.file_descriptor.get_message_type()
+            self.file_scope.file_descriptor.get_message_type()
         } else {
             self.path.last().unwrap().get_nested_type()
         }
@@ -120,7 +121,7 @@ impl<'a> Scope<'a> {
     // get enum descriptors in this scope
     fn get_enum_descriptors(&self) -> &'a [EnumDescriptorProto] {
         if self.path.is_empty() {
-            self.file_descriptor.get_enum_type()
+            self.file_scope.file_descriptor.get_enum_type()
         } else {
             self.path.last().unwrap().get_enum_type()
         }
