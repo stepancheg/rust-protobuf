@@ -224,7 +224,7 @@ impl TestRepeatedBool {
     }
 
     pub fn get_values<'a>(&'a self) -> &'a [bool] {
-        self.values.as_slice()
+        &self.values
     }
 }
 
@@ -387,7 +387,7 @@ impl TestRepeatedPackedInt32 {
     }
 
     pub fn get_values<'a>(&'a self) -> &'a [i32] {
-        self.values.as_slice()
+        &self.values
     }
 }
 
@@ -416,7 +416,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.values.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, self.values.as_slice());
+            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.values);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -427,7 +427,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
         if !self.values.is_empty() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
-            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.values.as_slice())));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.values)));
             for v in self.values.iter() {
                 try!(os.write_int32_no_tag(*v));
             };
@@ -561,7 +561,7 @@ impl TestRepeatedMessages {
     }
 
     pub fn get_messages1<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        self.messages1.as_slice()
+        &self.messages1
     }
 
     // repeated .TestRepeatedMessages messages2 = 2;
@@ -586,7 +586,7 @@ impl TestRepeatedMessages {
     }
 
     pub fn get_messages2<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        self.messages2.as_slice()
+        &self.messages2
     }
 
     // repeated .TestRepeatedMessages messages3 = 3;
@@ -611,7 +611,7 @@ impl TestRepeatedMessages {
     }
 
     pub fn get_messages3<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        self.messages3.as_slice()
+        &self.messages3
     }
 }
 
@@ -1125,7 +1125,7 @@ impl TestStrings {
 
     pub fn get_s1<'a>(&'a self) -> &'a str {
         match self.s1.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1161,7 +1161,7 @@ impl TestStrings {
 
     pub fn get_s2<'a>(&'a self) -> &'a str {
         match self.s2.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1197,7 +1197,7 @@ impl TestStrings {
 
     pub fn get_s3<'a>(&'a self) -> &'a str {
         match self.s3.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1246,13 +1246,13 @@ impl ::protobuf::Message for TestStrings {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.s1.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.s2.iter() {
-            my_size += ::protobuf::rt::string_size(2, value.as_slice());
+            my_size += ::protobuf::rt::string_size(2, &value);
         };
         for value in self.s3.iter() {
-            my_size += ::protobuf::rt::string_size(3, value.as_slice());
+            my_size += ::protobuf::rt::string_size(3, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -1261,13 +1261,13 @@ impl ::protobuf::Message for TestStrings {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.s1.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.s2.as_ref() {
-            try!(os.write_string(2, v.as_slice()));
+            try!(os.write_string(2, &v));
         };
         if let Some(v) = self.s3.as_ref() {
-            try!(os.write_string(3, v.as_slice()));
+            try!(os.write_string(3, &v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
@@ -1419,7 +1419,7 @@ impl PerftestData {
     }
 
     pub fn get_test1<'a>(&'a self) -> &'a [Test1] {
-        self.test1.as_slice()
+        &self.test1
     }
 
     // repeated .TestRepeatedBool test_repeated_bool = 2;
@@ -1444,7 +1444,7 @@ impl PerftestData {
     }
 
     pub fn get_test_repeated_bool<'a>(&'a self) -> &'a [TestRepeatedBool] {
-        self.test_repeated_bool.as_slice()
+        &self.test_repeated_bool
     }
 
     // repeated .TestRepeatedMessages test_repeated_messages = 3;
@@ -1469,7 +1469,7 @@ impl PerftestData {
     }
 
     pub fn get_test_repeated_messages<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        self.test_repeated_messages.as_slice()
+        &self.test_repeated_messages
     }
 
     // repeated .TestOptionalMessages test_optional_messages = 4;
@@ -1494,7 +1494,7 @@ impl PerftestData {
     }
 
     pub fn get_test_optional_messages<'a>(&'a self) -> &'a [TestOptionalMessages] {
-        self.test_optional_messages.as_slice()
+        &self.test_optional_messages
     }
 
     // repeated .TestStrings test_strings = 5;
@@ -1519,7 +1519,7 @@ impl PerftestData {
     }
 
     pub fn get_test_strings<'a>(&'a self) -> &'a [TestStrings] {
-        self.test_strings.as_slice()
+        &self.test_strings
     }
 
     // repeated .TestRepeatedPackedInt32 test_repeated_packed_int32 = 6;
@@ -1544,7 +1544,7 @@ impl PerftestData {
     }
 
     pub fn get_test_repeated_packed_int32<'a>(&'a self) -> &'a [TestRepeatedPackedInt32] {
-        self.test_repeated_packed_int32.as_slice()
+        &self.test_repeated_packed_int32
     }
 }
 

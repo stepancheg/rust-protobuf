@@ -60,7 +60,7 @@ impl FileDescriptorSet {
     }
 
     pub fn get_file<'a>(&'a self) -> &'a [FileDescriptorProto] {
-        self.file.as_slice()
+        &self.file
     }
 }
 
@@ -257,7 +257,7 @@ impl FileDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -293,7 +293,7 @@ impl FileDescriptorProto {
 
     pub fn get_package<'a>(&'a self) -> &'a str {
         match self.package.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -320,7 +320,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_dependency<'a>(&'a self) -> &'a [::std::string::String] {
-        self.dependency.as_slice()
+        &self.dependency
     }
 
     // repeated int32 public_dependency = 10;
@@ -345,7 +345,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_public_dependency<'a>(&'a self) -> &'a [i32] {
-        self.public_dependency.as_slice()
+        &self.public_dependency
     }
 
     // repeated int32 weak_dependency = 11;
@@ -370,7 +370,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_weak_dependency<'a>(&'a self) -> &'a [i32] {
-        self.weak_dependency.as_slice()
+        &self.weak_dependency
     }
 
     // repeated .google.protobuf.DescriptorProto message_type = 4;
@@ -395,7 +395,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_message_type<'a>(&'a self) -> &'a [DescriptorProto] {
-        self.message_type.as_slice()
+        &self.message_type
     }
 
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
@@ -420,7 +420,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_enum_type<'a>(&'a self) -> &'a [EnumDescriptorProto] {
-        self.enum_type.as_slice()
+        &self.enum_type
     }
 
     // repeated .google.protobuf.ServiceDescriptorProto service = 6;
@@ -445,7 +445,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_service<'a>(&'a self) -> &'a [ServiceDescriptorProto] {
-        self.service.as_slice()
+        &self.service
     }
 
     // repeated .google.protobuf.FieldDescriptorProto extension = 7;
@@ -470,7 +470,7 @@ impl FileDescriptorProto {
     }
 
     pub fn get_extension<'a>(&'a self) -> &'a [FieldDescriptorProto] {
-        self.extension.as_slice()
+        &self.extension
     }
 
     // optional .google.protobuf.FileOptions options = 8;
@@ -611,13 +611,13 @@ impl ::protobuf::Message for FileDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.package.iter() {
-            my_size += ::protobuf::rt::string_size(2, value.as_slice());
+            my_size += ::protobuf::rt::string_size(2, &value);
         };
         for value in self.dependency.iter() {
-            my_size += ::protobuf::rt::string_size(3, value.as_slice());
+            my_size += ::protobuf::rt::string_size(3, &value);
         };
         for value in self.public_dependency.iter() {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -656,13 +656,13 @@ impl ::protobuf::Message for FileDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.package.as_ref() {
-            try!(os.write_string(2, v.as_slice()));
+            try!(os.write_string(2, &v));
         };
         for v in self.dependency.iter() {
-            try!(os.write_string(3, v.as_slice()));
+            try!(os.write_string(3, &v));
         };
         for v in self.public_dependency.iter() {
             try!(os.write_int32(10, *v));
@@ -912,7 +912,7 @@ impl DescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -939,7 +939,7 @@ impl DescriptorProto {
     }
 
     pub fn get_field<'a>(&'a self) -> &'a [FieldDescriptorProto] {
-        self.field.as_slice()
+        &self.field
     }
 
     // repeated .google.protobuf.FieldDescriptorProto extension = 6;
@@ -964,7 +964,7 @@ impl DescriptorProto {
     }
 
     pub fn get_extension<'a>(&'a self) -> &'a [FieldDescriptorProto] {
-        self.extension.as_slice()
+        &self.extension
     }
 
     // repeated .google.protobuf.DescriptorProto nested_type = 3;
@@ -989,7 +989,7 @@ impl DescriptorProto {
     }
 
     pub fn get_nested_type<'a>(&'a self) -> &'a [DescriptorProto] {
-        self.nested_type.as_slice()
+        &self.nested_type
     }
 
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
@@ -1014,7 +1014,7 @@ impl DescriptorProto {
     }
 
     pub fn get_enum_type<'a>(&'a self) -> &'a [EnumDescriptorProto] {
-        self.enum_type.as_slice()
+        &self.enum_type
     }
 
     // repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
@@ -1039,7 +1039,7 @@ impl DescriptorProto {
     }
 
     pub fn get_extension_range<'a>(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
-        self.extension_range.as_slice()
+        &self.extension_range
     }
 
     // repeated .google.protobuf.OneofDescriptorProto oneof_decl = 8;
@@ -1064,7 +1064,7 @@ impl DescriptorProto {
     }
 
     pub fn get_oneof_decl<'a>(&'a self) -> &'a [OneofDescriptorProto] {
-        self.oneof_decl.as_slice()
+        &self.oneof_decl
     }
 
     // optional .google.protobuf.MessageOptions options = 7;
@@ -1155,7 +1155,7 @@ impl ::protobuf::Message for DescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.field.iter() {
             let len = value.compute_size();
@@ -1192,7 +1192,7 @@ impl ::protobuf::Message for DescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         for v in self.field.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -1628,7 +1628,7 @@ impl FieldDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1721,7 +1721,7 @@ impl FieldDescriptorProto {
 
     pub fn get_type_name<'a>(&'a self) -> &'a str {
         match self.type_name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1757,7 +1757,7 @@ impl FieldDescriptorProto {
 
     pub fn get_extendee<'a>(&'a self) -> &'a str {
         match self.extendee.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1793,7 +1793,7 @@ impl FieldDescriptorProto {
 
     pub fn get_default_value<'a>(&'a self) -> &'a str {
         match self.default_value.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -1936,7 +1936,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.number.iter() {
             my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -1948,13 +1948,13 @@ impl ::protobuf::Message for FieldDescriptorProto {
             my_size += ::protobuf::rt::enum_size(5, *value);
         };
         for value in self.type_name.iter() {
-            my_size += ::protobuf::rt::string_size(6, value.as_slice());
+            my_size += ::protobuf::rt::string_size(6, &value);
         };
         for value in self.extendee.iter() {
-            my_size += ::protobuf::rt::string_size(2, value.as_slice());
+            my_size += ::protobuf::rt::string_size(2, &value);
         };
         for value in self.default_value.iter() {
-            my_size += ::protobuf::rt::string_size(7, value.as_slice());
+            my_size += ::protobuf::rt::string_size(7, &value);
         };
         for value in self.oneof_index.iter() {
             my_size += ::protobuf::rt::value_size(9, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -1970,7 +1970,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.number {
             try!(os.write_int32(3, v));
@@ -1982,13 +1982,13 @@ impl ::protobuf::Message for FieldDescriptorProto {
             try!(os.write_enum(5, v as i32));
         };
         if let Some(v) = self.type_name.as_ref() {
-            try!(os.write_string(6, v.as_slice()));
+            try!(os.write_string(6, &v));
         };
         if let Some(v) = self.extendee.as_ref() {
-            try!(os.write_string(2, v.as_slice()));
+            try!(os.write_string(2, &v));
         };
         if let Some(v) = self.default_value.as_ref() {
-            try!(os.write_string(7, v.as_slice()));
+            try!(os.write_string(7, &v));
         };
         if let Some(v) = self.oneof_index {
             try!(os.write_int32(9, v));
@@ -2293,7 +2293,7 @@ impl OneofDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -2328,7 +2328,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2337,7 +2337,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
@@ -2478,7 +2478,7 @@ impl EnumDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -2505,7 +2505,7 @@ impl EnumDescriptorProto {
     }
 
     pub fn get_value<'a>(&'a self) -> &'a [EnumValueDescriptorProto] {
-        self.value.as_slice()
+        &self.value
     }
 
     // optional .google.protobuf.EnumOptions options = 3;
@@ -2581,7 +2581,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.value.iter() {
             let len = value.compute_size();
@@ -2598,7 +2598,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         for v in self.value.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -2762,7 +2762,7 @@ impl EnumValueDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -2863,7 +2863,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.number.iter() {
             my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -2879,7 +2879,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.number {
             try!(os.write_int32(2, v));
@@ -3042,7 +3042,7 @@ impl ServiceDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3069,7 +3069,7 @@ impl ServiceDescriptorProto {
     }
 
     pub fn get_method<'a>(&'a self) -> &'a [MethodDescriptorProto] {
-        self.method.as_slice()
+        &self.method
     }
 
     // optional .google.protobuf.ServiceOptions options = 3;
@@ -3145,7 +3145,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.method.iter() {
             let len = value.compute_size();
@@ -3162,7 +3162,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         for v in self.method.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -3328,7 +3328,7 @@ impl MethodDescriptorProto {
 
     pub fn get_name<'a>(&'a self) -> &'a str {
         match self.name.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3364,7 +3364,7 @@ impl MethodDescriptorProto {
 
     pub fn get_input_type<'a>(&'a self) -> &'a str {
         match self.input_type.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3400,7 +3400,7 @@ impl MethodDescriptorProto {
 
     pub fn get_output_type<'a>(&'a self) -> &'a str {
         match self.output_type.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3489,13 +3489,13 @@ impl ::protobuf::Message for MethodDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.input_type.iter() {
-            my_size += ::protobuf::rt::string_size(2, value.as_slice());
+            my_size += ::protobuf::rt::string_size(2, &value);
         };
         for value in self.output_type.iter() {
-            my_size += ::protobuf::rt::string_size(3, value.as_slice());
+            my_size += ::protobuf::rt::string_size(3, &value);
         };
         for value in self.options.iter() {
             let len = value.compute_size();
@@ -3508,13 +3508,13 @@ impl ::protobuf::Message for MethodDescriptorProto {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.input_type.as_ref() {
-            try!(os.write_string(2, v.as_slice()));
+            try!(os.write_string(2, &v));
         };
         if let Some(v) = self.output_type.as_ref() {
-            try!(os.write_string(3, v.as_slice()));
+            try!(os.write_string(3, &v));
         };
         if let Some(v) = self.options.as_ref() {
             try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
@@ -3699,7 +3699,7 @@ impl FileOptions {
 
     pub fn get_java_package<'a>(&'a self) -> &'a str {
         match self.java_package.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3735,7 +3735,7 @@ impl FileOptions {
 
     pub fn get_java_outer_classname<'a>(&'a self) -> &'a str {
         match self.java_outer_classname.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3847,7 +3847,7 @@ impl FileOptions {
 
     pub fn get_go_package<'a>(&'a self) -> &'a str {
         match self.go_package.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -3950,7 +3950,7 @@ impl FileOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -4056,10 +4056,10 @@ impl ::protobuf::Message for FileOptions {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.java_package.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         for value in self.java_outer_classname.iter() {
-            my_size += ::protobuf::rt::string_size(8, value.as_slice());
+            my_size += ::protobuf::rt::string_size(8, &value);
         };
         if self.java_multiple_files.is_some() {
             my_size += 2;
@@ -4074,7 +4074,7 @@ impl ::protobuf::Message for FileOptions {
             my_size += ::protobuf::rt::enum_size(9, *value);
         };
         for value in self.go_package.iter() {
-            my_size += ::protobuf::rt::string_size(11, value.as_slice());
+            my_size += ::protobuf::rt::string_size(11, &value);
         };
         if self.cc_generic_services.is_some() {
             my_size += 3;
@@ -4099,10 +4099,10 @@ impl ::protobuf::Message for FileOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.java_package.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.java_outer_classname.as_ref() {
-            try!(os.write_string(8, v.as_slice()));
+            try!(os.write_string(8, &v));
         };
         if let Some(v) = self.java_multiple_files {
             try!(os.write_bool(10, v));
@@ -4117,7 +4117,7 @@ impl ::protobuf::Message for FileOptions {
             try!(os.write_enum(9, v as i32));
         };
         if let Some(v) = self.go_package.as_ref() {
-            try!(os.write_string(11, v.as_slice()));
+            try!(os.write_string(11, &v));
         };
         if let Some(v) = self.cc_generic_services {
             try!(os.write_bool(16, v));
@@ -4438,7 +4438,7 @@ impl MessageOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -4763,7 +4763,7 @@ impl FieldOptions {
 
     pub fn get_experimental_map_key<'a>(&'a self) -> &'a str {
         match self.experimental_map_key.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -4809,7 +4809,7 @@ impl FieldOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -4892,7 +4892,7 @@ impl ::protobuf::Message for FieldOptions {
             my_size += 2;
         };
         for value in self.experimental_map_key.iter() {
-            my_size += ::protobuf::rt::string_size(9, value.as_slice());
+            my_size += ::protobuf::rt::string_size(9, &value);
         };
         if self.weak.is_some() {
             my_size += 2;
@@ -4920,7 +4920,7 @@ impl ::protobuf::Message for FieldOptions {
             try!(os.write_bool(3, v));
         };
         if let Some(v) = self.experimental_map_key.as_ref() {
-            try!(os.write_string(9, v.as_slice()));
+            try!(os.write_string(9, &v));
         };
         if let Some(v) = self.weak {
             try!(os.write_bool(10, v));
@@ -5176,7 +5176,7 @@ impl EnumOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -5405,7 +5405,7 @@ impl EnumValueOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -5614,7 +5614,7 @@ impl ServiceOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -5823,7 +5823,7 @@ impl MethodOptions {
     }
 
     pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
-        self.uninterpreted_option.as_slice()
+        &self.uninterpreted_option
     }
 }
 
@@ -6023,7 +6023,7 @@ impl UninterpretedOption {
     }
 
     pub fn get_name<'a>(&'a self) -> &'a [UninterpretedOption_NamePart] {
-        self.name.as_slice()
+        &self.name
     }
 
     // optional string identifier_value = 3;
@@ -6057,7 +6057,7 @@ impl UninterpretedOption {
 
     pub fn get_identifier_value<'a>(&'a self) -> &'a str {
         match self.identifier_value.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -6150,8 +6150,8 @@ impl UninterpretedOption {
 
     pub fn get_string_value<'a>(&'a self) -> &'a [u8] {
         match self.string_value.as_ref() {
-            Some(v) => v.as_slice(),
-            None => [].as_slice(),
+            Some(v) => &v,
+            None => &[],
         }
     }
 
@@ -6186,7 +6186,7 @@ impl UninterpretedOption {
 
     pub fn get_aggregate_value<'a>(&'a self) -> &'a str {
         match self.aggregate_value.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -6263,7 +6263,7 @@ impl ::protobuf::Message for UninterpretedOption {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in self.identifier_value.iter() {
-            my_size += ::protobuf::rt::string_size(3, value.as_slice());
+            my_size += ::protobuf::rt::string_size(3, &value);
         };
         for value in self.positive_int_value.iter() {
             my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
@@ -6275,10 +6275,10 @@ impl ::protobuf::Message for UninterpretedOption {
             my_size += 9;
         };
         for value in self.string_value.iter() {
-            my_size += ::protobuf::rt::bytes_size(7, value.as_slice());
+            my_size += ::protobuf::rt::bytes_size(7, &value);
         };
         for value in self.aggregate_value.iter() {
-            my_size += ::protobuf::rt::string_size(8, value.as_slice());
+            my_size += ::protobuf::rt::string_size(8, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -6292,7 +6292,7 @@ impl ::protobuf::Message for UninterpretedOption {
             try!(v.write_to_with_cached_sizes(os));
         };
         if let Some(v) = self.identifier_value.as_ref() {
-            try!(os.write_string(3, v.as_slice()));
+            try!(os.write_string(3, &v));
         };
         if let Some(v) = self.positive_int_value {
             try!(os.write_uint64(4, v));
@@ -6304,10 +6304,10 @@ impl ::protobuf::Message for UninterpretedOption {
             try!(os.write_double(6, v));
         };
         if let Some(v) = self.string_value.as_ref() {
-            try!(os.write_bytes(7, v.as_slice()));
+            try!(os.write_bytes(7, &v));
         };
         if let Some(v) = self.aggregate_value.as_ref() {
-            try!(os.write_string(8, v.as_slice()));
+            try!(os.write_string(8, &v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
@@ -6487,7 +6487,7 @@ impl UninterpretedOption_NamePart {
 
     pub fn get_name_part<'a>(&'a self) -> &'a str {
         match self.name_part.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -6554,7 +6554,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name_part.iter() {
-            my_size += ::protobuf::rt::string_size(1, value.as_slice());
+            my_size += ::protobuf::rt::string_size(1, &value);
         };
         if self.is_extension.is_some() {
             my_size += 2;
@@ -6566,7 +6566,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name_part.as_ref() {
-            try!(os.write_string(1, v.as_slice()));
+            try!(os.write_string(1, &v));
         };
         if let Some(v) = self.is_extension {
             try!(os.write_bool(2, v));
@@ -6704,7 +6704,7 @@ impl SourceCodeInfo {
     }
 
     pub fn get_location<'a>(&'a self) -> &'a [SourceCodeInfo_Location] {
-        self.location.as_slice()
+        &self.location
     }
 }
 
@@ -6878,7 +6878,7 @@ impl SourceCodeInfo_Location {
     }
 
     pub fn get_path<'a>(&'a self) -> &'a [i32] {
-        self.path.as_slice()
+        &self.path
     }
 
     // repeated int32 span = 2;
@@ -6903,7 +6903,7 @@ impl SourceCodeInfo_Location {
     }
 
     pub fn get_span<'a>(&'a self) -> &'a [i32] {
-        self.span.as_slice()
+        &self.span
     }
 
     // optional string leading_comments = 3;
@@ -6937,7 +6937,7 @@ impl SourceCodeInfo_Location {
 
     pub fn get_leading_comments<'a>(&'a self) -> &'a str {
         match self.leading_comments.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -6973,7 +6973,7 @@ impl SourceCodeInfo_Location {
 
     pub fn get_trailing_comments<'a>(&'a self) -> &'a str {
         match self.trailing_comments.as_ref() {
-            Some(v) => v.as_slice(),
+            Some(v) => &v,
             None => "",
         }
     }
@@ -7021,16 +7021,16 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.path.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, self.path.as_slice());
+            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
         };
         if !self.span.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(2, self.span.as_slice());
+            my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
         };
         for value in self.leading_comments.iter() {
-            my_size += ::protobuf::rt::string_size(3, value.as_slice());
+            my_size += ::protobuf::rt::string_size(3, &value);
         };
         for value in self.trailing_comments.iter() {
-            my_size += ::protobuf::rt::string_size(4, value.as_slice());
+            my_size += ::protobuf::rt::string_size(4, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -7041,7 +7041,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         if !self.path.is_empty() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
-            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.path.as_slice())));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path)));
             for v in self.path.iter() {
                 try!(os.write_int32_no_tag(*v));
             };
@@ -7049,16 +7049,16 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         if !self.span.is_empty() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
-            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(self.span.as_slice())));
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.span)));
             for v in self.span.iter() {
                 try!(os.write_int32_no_tag(*v));
             };
         };
         if let Some(v) = self.leading_comments.as_ref() {
-            try!(os.write_string(3, v.as_slice()));
+            try!(os.write_string(3, &v));
         };
         if let Some(v) = self.trailing_comments.as_ref() {
-            try!(os.write_string(4, v.as_slice()));
+            try!(os.write_string(4, &v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
