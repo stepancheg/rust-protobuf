@@ -1376,113 +1376,6 @@ fn write_merge_from_field(w: &mut IndentWriter) {
     }
 }
 
-fn write_message_struct(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    let mut derive = vec!["Clone", "Default"];
-    if msg.lite_runtime {
-        derive.push("Debug");
-    }
-    w.derive(derive.as_slice());
-    w.pub_struct(msg.type_name.as_slice(), |w| {
-        if !msg.fields.is_empty() {
-            w.comment("message fields");
-            for field in &msg.fields {
-                w.field_decl(&field.name[..], &field.full_storage_type());
-            }
-        }
-        if !msg.oneofs.is_empty() {
-            w.comment("message oneof groups");
-            for oneof in &msg.oneofs {
-                w.commented(|w| {
-                    w.field_decl(&oneof.name[..], &oneof.full_storage_type());
-                });
-            }
-        }
-        w.comment("special fields");
-        w.field_entry("unknown_fields", "::protobuf::UnknownFields");
-        w.field_entry("cached_size", "::std::cell::Cell<u32>");
-    });
-}
-
-fn write_message_compute_size(w: &mut IndentWriter) {
-    // Append sizes of messages in the tree to the specified vector.
-    // First appended element is size of self, and then nested message sizes.
-    // in serialization order are appended recursively.");
-    w.comment("Compute sizes of nested messages");
-    w.def_fn("compute_size(&self) -> u32", |w| {
-        // To have access to its methods but not polute the name space.
-        w.write_line("let mut my_size = 0;");
-        w.fields(|w| {
-            let field = w.field();
-            match field.repeat_mode {
-                RepeatMode::Single | RepeatMode::RepeatRegular => {
-                    match field_type_size(field.field_type) {
-                        Some(s) => {
-                            if field.repeated {
-                                let tag_size = w.field().tag_size();
-                                let self_field = w.self_field();
-                                w.write_line(format!(
-                                        "my_size += {} * {}.len() as u32;",
-                                        (s + tag_size) as isize,
-                                        self_field));
-                            } else {
-                                w.if_self_field_is_some(|w| {
-                                    let tag_size = w.field().tag_size();
-                                    w.write_line(format!(
-                                            "my_size += {};",
-                                            (s + tag_size) as isize));
-                                });
-                            }
-                        },
-                        None => {
-                            w.for_self_field("value", |w, _value_type| {
-                                match field.field_type {
-                                    FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                                        w.write_line("let len = value.compute_size();");
-                                        let tag_size = w.field().tag_size();
-                                        w.write_line(format!(
-                                                "my_size += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                                                tag_size));
-                                    },
-                                    FieldDescriptorProto_Type::TYPE_BYTES => {
-                                        w.write_line(format!(
-                                                "my_size += ::protobuf::rt::bytes_size({}, value.as_slice());",
-                                                field.number as isize));
-                                    },
-                                    FieldDescriptorProto_Type::TYPE_STRING => {
-                                        w.write_line(format!(
-                                                "my_size += ::protobuf::rt::string_size({}, value.as_slice());",
-                                                field.number as isize));
-                                    },
-                                    FieldDescriptorProto_Type::TYPE_ENUM => {
-                                        w.write_line(format!(
-                                                "my_size += ::protobuf::rt::enum_size({}, *value);",
-                                                field.number as isize));
-                                    },
-                                    _ => {
-                                        w.write_line(format!(
-                                                "my_size += ::protobuf::rt::value_size({}, *value, ::protobuf::wire_format::{:?});",
-                                                field.number as isize, field.wire_type));
-                                    },
-                                }
-                            });
-                        },
-                    };
-                },
-                RepeatMode::RepeatPacked => {
-                    w.if_self_field_is_not_empty(|w| {
-                        let size_expr = w.self_field_vec_packed_size();
-                        w.write_line(format!("my_size += {};", size_expr));
-                    });
-                },
-            };
-        });
-        w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
-        w.write_line("self.cached_size.set(my_size);");
-        w.write_line("my_size");
-    });
-}
-
 fn write_message_write_field(w: &mut IndentWriter) {
     fn write_value_lines(w: &mut IndentWriter, ty: &RustType) {
         match w.field().field_type {
@@ -1535,46 +1428,6 @@ fn write_message_write_field(w: &mut IndentWriter) {
             });
         },
     };
-}
-
-fn write_message_write_to_with_cached_sizes(w: &mut IndentWriter) {
-    w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
-        // To have access to its methods but not polute the name space.
-        w.fields(|w| {
-            write_message_write_field(w);
-        });
-        w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
-        w.write_line("::std::result::Result::Ok(())");
-    });
-}
-
-fn write_message_get_cached_size(w: &mut IndentWriter) {
-    w.def_fn("get_cached_size(&self) -> u32", |w| {
-        w.write_line("self.cached_size.get()");
-    });
-}
-
-fn write_message_default_instance(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.pub_fn(format!("default_instance() -> &'static {}", msg.type_name), |w| {
-        let msg = w.msg.unwrap();
-        w.lazy_static_decl_get("instance", msg.type_name.as_slice(), |w| {
-            w.expr_block(format!("{}", msg.type_name), |w| {
-                for field in &msg.fields {
-                    let init = field.full_storage_type().default_value();
-                    w.field_entry(field.name.to_string(), init);
-                }
-                for oneof in &msg.oneofs {
-                    w.commented(|w| {
-                        let init = oneof.full_storage_type().default_value();
-                        w.field_entry(oneof.name.to_string(), init);
-                    });
-                }
-                w.field_entry("unknown_fields", "::protobuf::UnknownFields::new()");
-                w.field_entry("cached_size", "::std::cell::Cell::new(0)");
-            });
-        });
-    });
 }
 
 fn write_message_field_get(w: &mut IndentWriter) {
@@ -1777,171 +1630,6 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
     write_message_field_get(w);
 }
 
-fn write_message_field_accessors(w: &mut IndentWriter) {
-    w.fields(|w| {
-        w.write_line("");
-        let reconstruct_def = w.field().reconstruct_def();
-        w.comment((reconstruct_def + ";").as_slice());
-        w.write_line("");
-        write_message_single_field_accessors(w);
-    });
-}
-
-fn write_message_impl_self(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.impl_self_block(msg.type_name.as_slice(), |w| {
-        w.pub_fn(format!("new() -> {}", msg.type_name), |w| {
-            w.write_line("::std::default::Default::default()");
-        });
-
-        w.write_line("");
-        write_message_default_instance(w);
-        write_message_field_accessors(w);
-    });
-}
-
-fn write_message_unknown_fields(w: &mut IndentWriter) {
-    w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields", |w| {
-        w.write_line("&self.unknown_fields");
-    });
-    w.write_line("");
-    w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields", |w| {
-        w.write_line("&mut self.unknown_fields");
-    });
-}
-
-fn write_message_merge_from(w: &mut IndentWriter) {
-    w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
-        w.while_block("!try!(is.eof())", |w| {
-            w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
-            w.match_block("field_number", |w| {
-                w.fields(|w| {
-                    let number = w.field().number;
-                    w.case_block(number.to_string(), |w| {
-                        write_merge_from_field(w);
-                    });
-                });
-                w.case_block("_", |w| {
-                    w.write_line("let unknown = try!(is.read_unknown(wire_type));");
-                    w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
-                });
-            });
-        });
-        w.write_line("::std::result::Result::Ok(())");
-    });
-}
-
-fn write_message_descriptor_static(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.allow(&["unused_unsafe", "unused_mut"]);
-    w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
-        w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
-            w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
-            for field in msg.fields.iter() {
-                w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
-                w.indented(|w| {
-                    w.write_line(format!("\"{}\",", field.name));
-                    for f in field.make_accessor_fn_fn_params().iter() {
-                        w.write_line(format!("{}::{}_{},",
-                                msg.type_name,
-                                f,
-                                field.name,
-                            ));
-                    }
-                });
-                w.write_line("));");
-            }
-            w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
-            w.indented(|w| {
-                w.write_line(format!("\"{}\",", msg.type_name));
-                w.write_line("fields,");
-                w.write_line("file_descriptor_proto()");
-            });
-            w.write_line(")");
-        });
-    });
-}
-
-fn write_message_impl_message(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.impl_for_block("::protobuf::Message", msg.type_name.as_slice(), |w| {
-        w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
-            w.required_fields(|w| {
-                w.if_self_field_is_none(|w| {
-                    w.write_line("return false;");
-                });
-            });
-            w.write_line("true");
-        });
-        w.write_line("");
-        write_message_merge_from(w);
-        w.write_line("");
-        write_message_compute_size(w);
-        w.write_line("");
-        write_message_write_to_with_cached_sizes(w);
-        w.write_line("");
-        write_message_get_cached_size(w);
-        w.write_line("");
-        write_message_unknown_fields(w);
-        w.write_line("");
-        w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
-            w.write_line(format!("::std::any::TypeId::of::<{}>()", msg.type_name));
-        });
-        w.write_line("");
-        w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
-            w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)"); //, msg.type_name.as_slice());
-        });
-    });
-}
-
-fn write_message_impl_message_static(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.impl_for_block("::protobuf::MessageStatic", msg.type_name.as_slice(), |w| {
-        w.def_fn(format!("new() -> {}", msg.type_name), |w| {
-            w.write_line(format!("{}::new()", msg.type_name));
-        });
-        if !msg.lite_runtime {
-            w.write_line("");
-            write_message_descriptor_static(w);
-        }
-    });
-}
-
-fn write_message_impl_show(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.impl_for_block("::std::fmt::Debug", msg.type_name.as_slice(), |w| {
-        w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
-            w.write_line("::protobuf::text_format::fmt(self, f)");
-        });
-    });
-}
-
-fn write_message_impl_clear(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.impl_for_block("::protobuf::Clear", msg.type_name.as_slice(), |w| {
-        w.def_fn("clear(&mut self)", |w| {
-            w.fields(|w| {
-                let clear_field_func = w.clear_field_func();
-                w.write_line(format!("self.{}();", clear_field_func));
-            });
-            w.write_line("self.unknown_fields.clear();");
-        });
-    });
-}
-
-fn write_message_impl_partial_eq(w: &mut IndentWriter) {
-    let msg = w.msg.unwrap();
-    w.impl_for_block("::std::cmp::PartialEq", msg.type_name.as_slice(), |w| {
-        w.def_fn(format!("eq(&self, other: &{}) -> bool", msg.type_name), |w| {
-            w.fields(|w| {
-                let ref field_name = w.field().name;
-                w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
-            });
-            w.write_line("self.unknown_fields == other.unknown_fields");
-        });
-    });
-}
-
 fn write_message_oneof(oneof: &OneofInfo, w: &mut IndentWriter) {
     w.pub_enum(&format!("{:?}", oneof.type_name)[..], |w| {
         for variant in &oneof.variants {
@@ -1950,44 +1638,368 @@ fn write_message_oneof(oneof: &OneofInfo, w: &mut IndentWriter) {
     });
 }
 
-fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWriter) {
-    let msg = MessageInfo::parse(m2, root_scope);
-
-    w.bind_message(&msg, |w| {
-        write_message_struct(w);
-        for oneof in &msg.oneofs {
-            w.write_line("");
-            write_message_oneof(&oneof, w);
-        }
-        w.write_line("");
-        write_message_impl_self(w);
-        w.write_line("");
-        write_message_impl_message(w);
-        w.write_line("");
-        write_message_impl_message_static(w);
-        w.write_line("");
-        write_message_impl_clear(w);
-        w.write_line("");
-        write_message_impl_partial_eq(w);
-        if !msg.lite_runtime {
-            w.write_line("");
-            write_message_impl_show(w);
-        }
-
-        let mut nested_prefix = msg.type_name.to_string();
-        nested_prefix.push_str("_");
-
-        for nested in m2.to_scope().get_messages().iter() {
-            w.write_line("");
-            write_message(nested, root_scope, w);
-        }
-
-        for enum_type in m2.to_scope().get_enums().iter() {
-            w.write_line("");
-            write_enum(enum_type, root_scope, w);
-        }
-    });
+struct MessageContext<'a> {
+    message_with_scope: &'a MessageWithScope<'a>,
+    root_scope: &'a RootScope<'a>,
+    message: MessageInfo,
 }
+
+impl<'a> MessageContext<'a> {
+    fn new(message_with_scope: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>)
+        -> MessageContext<'a>
+    {
+        MessageContext {
+            message_with_scope: message_with_scope,
+            root_scope: root_scope,
+            message: MessageInfo::parse(message_with_scope, root_scope),
+        }
+    }
+
+    fn write_write_to_with_cached_sizes(&self, w: &mut IndentWriter) {
+        w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
+            // To have access to its methods but not polute the name space.
+            w.fields(|w| {
+                write_message_write_field(w);
+            });
+            w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
+            w.write_line("::std::result::Result::Ok(())");
+        });
+    }
+
+    fn write_get_cached_size(&self, w: &mut IndentWriter) {
+        w.def_fn("get_cached_size(&self) -> u32", |w| {
+            w.write_line("self.cached_size.get()");
+        });
+    }
+
+    fn write_default_instance(&self, w: &mut IndentWriter) {
+        w.pub_fn(format!("default_instance() -> &'static {}", self.message.type_name), |w| {
+            w.lazy_static_decl_get("instance", self.message.type_name.as_slice(), |w| {
+                w.expr_block(format!("{}", self.message.type_name), |w| {
+                    for field in &self.message.fields {
+                        let init = field.full_storage_type().default_value();
+                        w.field_entry(field.name.to_string(), init);
+                    }
+                    for oneof in &self.message.oneofs {
+                        w.commented(|w| {
+                            let init = oneof.full_storage_type().default_value();
+                            w.field_entry(oneof.name.to_string(), init);
+                        });
+                    }
+                    w.field_entry("unknown_fields", "::protobuf::UnknownFields::new()");
+                    w.field_entry("cached_size", "::std::cell::Cell::new(0)");
+                });
+            });
+        });
+    }
+
+    fn write_compute_size(&self, w: &mut IndentWriter) {
+        // Append sizes of messages in the tree to the specified vector.
+        // First appended element is size of self, and then nested message sizes.
+        // in serialization order are appended recursively.");
+        w.comment("Compute sizes of nested messages");
+        w.def_fn("compute_size(&self) -> u32", |w| {
+            // To have access to its methods but not polute the name space.
+            w.write_line("let mut my_size = 0;");
+            w.fields(|w| {
+                let field = w.field();
+                match field.repeat_mode {
+                    RepeatMode::Single | RepeatMode::RepeatRegular => {
+                        match field_type_size(field.field_type) {
+                            Some(s) => {
+                                if field.repeated {
+                                    let tag_size = w.field().tag_size();
+                                    let self_field = w.self_field();
+                                    w.write_line(format!(
+                                            "my_size += {} * {}.len() as u32;",
+                                            (s + tag_size) as isize,
+                                            self_field));
+                                } else {
+                                    w.if_self_field_is_some(|w| {
+                                        let tag_size = w.field().tag_size();
+                                        w.write_line(format!(
+                                                "my_size += {};",
+                                                (s + tag_size) as isize));
+                                    });
+                                }
+                            },
+                            None => {
+                                w.for_self_field("value", |w, _value_type| {
+                                    match field.field_type {
+                                        FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                                            w.write_line("let len = value.compute_size();");
+                                            let tag_size = w.field().tag_size();
+                                            w.write_line(format!(
+                                                    "my_size += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
+                                                    tag_size));
+                                        },
+                                        FieldDescriptorProto_Type::TYPE_BYTES => {
+                                            w.write_line(format!(
+                                                    "my_size += ::protobuf::rt::bytes_size({}, value.as_slice());",
+                                                    field.number as isize));
+                                        },
+                                        FieldDescriptorProto_Type::TYPE_STRING => {
+                                            w.write_line(format!(
+                                                    "my_size += ::protobuf::rt::string_size({}, value.as_slice());",
+                                                    field.number as isize));
+                                        },
+                                        FieldDescriptorProto_Type::TYPE_ENUM => {
+                                            w.write_line(format!(
+                                                    "my_size += ::protobuf::rt::enum_size({}, *value);",
+                                                    field.number as isize));
+                                        },
+                                        _ => {
+                                            w.write_line(format!(
+                                                    "my_size += ::protobuf::rt::value_size({}, *value, ::protobuf::wire_format::{:?});",
+                                                    field.number as isize, field.wire_type));
+                                        },
+                                    }
+                                });
+                            },
+                        };
+                    },
+                    RepeatMode::RepeatPacked => {
+                        w.if_self_field_is_not_empty(|w| {
+                            let size_expr = w.self_field_vec_packed_size();
+                            w.write_line(format!("my_size += {};", size_expr));
+                        });
+                    },
+                };
+            });
+            w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
+            w.write_line("self.cached_size.set(my_size);");
+            w.write_line("my_size");
+        });
+    }
+
+    fn write_field_accessors(&self, w: &mut IndentWriter) {
+        w.fields(|w| {
+            w.write_line("");
+            let reconstruct_def = w.field().reconstruct_def();
+            w.comment((reconstruct_def + ";").as_slice());
+            w.write_line("");
+            write_message_single_field_accessors(w);
+        });
+    }
+
+    fn write_impl_self(&self, w: &mut IndentWriter) {
+        w.impl_self_block(self.message.type_name.as_slice(), |w| {
+            w.pub_fn(format!("new() -> {}", self.message.type_name), |w| {
+                w.write_line("::std::default::Default::default()");
+            });
+
+            w.write_line("");
+            self.write_default_instance(w);
+            self.write_field_accessors(w);
+        });
+    }
+
+    fn write_unknown_fields(&self, w: &mut IndentWriter) {
+        w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields", |w| {
+            w.write_line("&self.unknown_fields");
+        });
+        w.write_line("");
+        w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields", |w| {
+            w.write_line("&mut self.unknown_fields");
+        });
+    }
+
+    fn write_merge_from(&self, w: &mut IndentWriter) {
+        w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
+            w.while_block("!try!(is.eof())", |w| {
+                w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
+                w.match_block("field_number", |w| {
+                    w.fields(|w| {
+                        let number = w.field().number;
+                        w.case_block(number.to_string(), |w| {
+                            write_merge_from_field(w);
+                        });
+                    });
+                    w.case_block("_", |w| {
+                        w.write_line("let unknown = try!(is.read_unknown(wire_type));");
+                        w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
+                    });
+                });
+            });
+            w.write_line("::std::result::Result::Ok(())");
+        });
+    }
+
+    fn write_descriptor_static(&self, w: &mut IndentWriter) {
+        let msg = w.msg.unwrap();
+        w.allow(&["unused_unsafe", "unused_mut"]);
+        w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
+            w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
+                w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
+                for field in msg.fields.iter() {
+                    w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
+                    w.indented(|w| {
+                        w.write_line(format!("\"{}\",", field.name));
+                        for f in field.make_accessor_fn_fn_params().iter() {
+                            w.write_line(format!("{}::{}_{},",
+                                    msg.type_name,
+                                    f,
+                                    field.name,
+                                ));
+                        }
+                    });
+                    w.write_line("));");
+                }
+                w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
+                w.indented(|w| {
+                    w.write_line(format!("\"{}\",", msg.type_name));
+                    w.write_line("fields,");
+                    w.write_line("file_descriptor_proto()");
+                });
+                w.write_line(")");
+            });
+        });
+    }
+
+    fn write_impl_message(&self, w: &mut IndentWriter) {
+        let msg = w.msg.unwrap();
+        w.impl_for_block("::protobuf::Message", msg.type_name.as_slice(), |w| {
+            w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
+                w.required_fields(|w| {
+                    w.if_self_field_is_none(|w| {
+                        w.write_line("return false;");
+                    });
+                });
+                w.write_line("true");
+            });
+            w.write_line("");
+            self.write_merge_from(w);
+            w.write_line("");
+            self.write_compute_size(w);
+            w.write_line("");
+            self.write_write_to_with_cached_sizes(w);
+            w.write_line("");
+            self.write_get_cached_size(w);
+            w.write_line("");
+            self.write_unknown_fields(w);
+            w.write_line("");
+            w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
+                w.write_line(format!("::std::any::TypeId::of::<{}>()", msg.type_name));
+            });
+            w.write_line("");
+            w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
+                w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)"); //, msg.type_name.as_slice());
+            });
+        });
+    }
+
+    fn write_impl_message_static(&self, w: &mut IndentWriter) {
+        let msg = w.msg.unwrap();
+        w.impl_for_block("::protobuf::MessageStatic", msg.type_name.as_slice(), |w| {
+            w.def_fn(format!("new() -> {}", msg.type_name), |w| {
+                w.write_line(format!("{}::new()", msg.type_name));
+            });
+            if !msg.lite_runtime {
+                w.write_line("");
+                self.write_descriptor_static(w);
+            }
+        });
+    }
+
+    fn write_impl_show(&self, w: &mut IndentWriter) {
+        let msg = w.msg.unwrap();
+        w.impl_for_block("::std::fmt::Debug", msg.type_name.as_slice(), |w| {
+            w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
+                w.write_line("::protobuf::text_format::fmt(self, f)");
+            });
+        });
+    }
+
+    fn write_impl_clear(&self, w: &mut IndentWriter) {
+        let msg = w.msg.unwrap();
+        w.impl_for_block("::protobuf::Clear", msg.type_name.as_slice(), |w| {
+            w.def_fn("clear(&mut self)", |w| {
+                w.fields(|w| {
+                    let clear_field_func = w.clear_field_func();
+                    w.write_line(format!("self.{}();", clear_field_func));
+                });
+                w.write_line("self.unknown_fields.clear();");
+            });
+        });
+    }
+
+    fn write_impl_partial_eq(&self, w: &mut IndentWriter) {
+        w.impl_for_block("::std::cmp::PartialEq", self.message.type_name.as_slice(), |w| {
+            w.def_fn(format!("eq(&self, other: &{}) -> bool", self.message.type_name), |w| {
+                w.fields(|w| {
+                    let ref field_name = w.field().name;
+                    w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
+                });
+                w.write_line("self.unknown_fields == other.unknown_fields");
+            });
+        });
+    }
+
+    fn write_struct(&self, w: &mut IndentWriter) {
+        let mut derive = vec!["Clone", "Default"];
+        if self.message.lite_runtime {
+            derive.push("Debug");
+        }
+        w.derive(derive.as_slice());
+        w.pub_struct(self.message.type_name.as_slice(), |w| {
+            if !self.message.fields.is_empty() {
+                w.comment("message fields");
+                for field in &self.message.fields {
+                    w.field_decl(&field.name[..], &field.full_storage_type());
+                }
+            }
+            if !self.message.oneofs.is_empty() {
+                w.comment("message oneof groups");
+                for oneof in &self.message.oneofs {
+                    w.commented(|w| {
+                        w.field_decl(&oneof.name[..], &oneof.full_storage_type());
+                    });
+                }
+            }
+            w.comment("special fields");
+            w.field_entry("unknown_fields", "::protobuf::UnknownFields");
+            w.field_entry("cached_size", "::std::cell::Cell<u32>");
+        });
+    }
+
+    fn write(&self, w: &mut IndentWriter) {
+        w.bind_message(&self.message, |w| {
+            self.write_struct(w);
+            for oneof in &self.message.oneofs {
+                w.write_line("");
+                write_message_oneof(&oneof, w);
+            }
+            w.write_line("");
+            self.write_impl_self(w);
+            w.write_line("");
+            self.write_impl_message(w);
+            w.write_line("");
+            self.write_impl_message_static(w);
+            w.write_line("");
+            self.write_impl_clear(w);
+            w.write_line("");
+            self.write_impl_partial_eq(w);
+            if !self.message.lite_runtime {
+                w.write_line("");
+                self.write_impl_show(w);
+            }
+
+            let mut nested_prefix = self.message.type_name.to_string();
+            nested_prefix.push_str("_");
+
+            for nested in self.message_with_scope.to_scope().get_messages().iter() {
+                w.write_line("");
+                MessageContext::new(nested, self.root_scope).write(w);
+            }
+
+            for enum_type in self.message_with_scope.to_scope().get_enums().iter() {
+                w.write_line("");
+                write_enum(enum_type, self.root_scope, w);
+            }
+        });
+    }
+}
+
 
 fn write_enum_struct(w: &mut IndentWriter) {
     w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
@@ -2141,7 +2153,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
             for message in scope.get_messages().iter() {
                 w.write_line("");
-                write_message(message, &root_scope, &mut w);
+                MessageContext::new(message, &root_scope).write(&mut w);
             }
             for enum_type in scope.get_enums().iter() {
                 w.write_line("");
