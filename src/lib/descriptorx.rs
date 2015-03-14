@@ -92,21 +92,12 @@ impl<'a> FileScope<'a> {
 }
 
 
-//#[derive(Clone)]
+#[derive(Clone)]
 pub struct Scope<'a> {
     pub file_descriptor: &'a FileDescriptorProto,
     pub path: Vec<&'a DescriptorProto>,
 }
 
-// https://github.com/rust-lang/rust/issues/18405
-impl<'a> Clone for Scope<'a> {
-    fn clone(&self) -> Scope<'a> {
-        Scope {
-            file_descriptor: self.file_descriptor,
-            path: self.path.clone(),
-        }
-    }
-}
 
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
@@ -225,21 +216,12 @@ pub trait WithScope<'a> {
     }
 }
 
-//#[derive(Clone)]
+#[derive(Clone)]
 pub struct MessageWithScope<'a> {
     pub scope: Scope<'a>,
     pub message: &'a DescriptorProto,
 }
 
-// https://github.com/rust-lang/rust/issues/18405
-impl<'a> Clone for MessageWithScope<'a> {
-    fn clone(&self) -> MessageWithScope<'a> {
-        MessageWithScope {
-            scope: self.scope.clone(),
-            message: self.message,
-        }
-    }
-}
 
 impl<'a> WithScope<'a> for MessageWithScope<'a> {
     fn get_scope(&self) -> &Scope<'a> {
@@ -287,21 +269,12 @@ impl<'a> MessageWithScope<'a> {
 }
 
 
-//#[derive(Clone)]
+#[derive(Clone)]
 pub struct EnumWithScope<'a> {
     pub scope: Scope<'a>,
     pub en: &'a EnumDescriptorProto,
 }
 
-// https://github.com/rust-lang/rust/issues/18405
-impl<'a> Clone for EnumWithScope<'a> {
-    fn clone(&self) -> EnumWithScope<'a> {
-        EnumWithScope {
-            scope: self.scope.clone(),
-            en: self.en,
-        }
-    }
-}
 
 impl<'a> EnumWithScope<'a> {
     // For enums, the default value is the first value listed in the enum's type definition
