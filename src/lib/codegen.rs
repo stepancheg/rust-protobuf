@@ -1,7 +1,6 @@
 use std::collections::hash_map::HashMap;
 use std::fmt;
 use std::io::Write;
-use std::mem;
 
 use descriptor::*;
 use misc::*;
@@ -850,8 +849,7 @@ impl EnumValue {
 
 
 struct IndentWriter<'a> {
-    // TODO: add mut
-    writer: &'a (Write + 'a),
+    writer: &'a mut (Write + 'a),
     indent: String,
     msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
@@ -869,11 +867,11 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn bind_message<T, F>(&self, msg: &MessageInfo, cb: F) -> T
+    fn bind_message<T, F>(&mut self, msg: &MessageInfo, cb: F) -> T
         where F : Fn(&mut IndentWriter) -> T
     {
         cb(&mut IndentWriter {
-            writer: unsafe { mem::transmute(self.writer) },
+            writer: self.writer,
             indent: self.indent.to_string(),
             msg: Some(msg),
             field: None,
@@ -881,7 +879,7 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn bind_field<T, F>(&self, field: &'a Field, cb: F) -> T
+    fn bind_field<T, F>(&mut self, field: &'a Field, cb: F) -> T
         where F : Fn(&mut IndentWriter) -> T
     {
         assert!(self.msg.is_some());
@@ -894,7 +892,7 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn bind_enum<T, F>(&self, en: &Enum, cb: F) -> T
+    fn bind_enum<T, F>(&mut self, en: &Enum, cb: F) -> T
         where F : Fn(&mut IndentWriter) -> T
     {
         cb(&mut IndentWriter {
@@ -906,7 +904,7 @@ impl<'a> IndentWriter<'a> {
         })
     }
 
-    fn fields<F>(&self, cb: F)
+    fn fields<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         let fields = &self.msg.as_ref().unwrap().fields;
@@ -916,7 +914,7 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn required_fields<F>(&self, cb: F)
+    fn required_fields<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         let fields = &self.msg.as_ref().unwrap().required_fields();
@@ -968,54 +966,62 @@ impl<'a> IndentWriter<'a> {
         format!("{}{}", self.self_field(), self.field().as_option())
     }
 
-    fn if_self_field_is_some<F>(&self, cb: F)
+    fn if_self_field_is_some<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.if_stmt(self.self_field_is_some(), cb);
+        let self_field_is_some = self.self_field_is_some();
+        self.if_stmt(self_field_is_some, cb);
     }
 
-    fn if_self_field_is_not_empty<F>(&self, cb: F)
+    fn if_self_field_is_not_empty<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.if_stmt(self.self_field_is_not_empty(), cb);
+        let self_field_is_not_empty = self.self_field_is_not_empty();
+        self.if_stmt(self_field_is_not_empty, cb);
     }
 
-    fn if_self_field_is_none<F>(&self, cb: F)
+    fn if_self_field_is_none<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.if_stmt(self.self_field_is_none(), cb);
+        let self_field_is_none = self.self_field_is_none();
+        self.if_stmt(self_field_is_none, cb)
     }
 
     fn for_self_field<F>(&mut self, varn: &str, cb: F)
         where F : Fn(&mut IndentWriter, &RustType)
     {
         let v_type = self.field().full_storage_iter_elem_type();
-        self.for_stmt(format!("{}.iter()", self.self_field()), varn, |w| cb(w, &v_type));
+        let self_field = self.self_field();
+        self.for_stmt(format!("{}.iter()", self_field), varn, |w| cb(w, &v_type));
     }
 
-    fn self_field_assign<S : Str>(&self, value: S) {
-        self.write_line(format!("{} = {};", self.self_field(), value.as_slice()));
+    fn self_field_assign<S : Str>(&mut self, value: S) {
+        let self_field = self.self_field();
+        self.write_line(format!("{} = {};", self_field, value.as_slice()));
     }
 
-    fn self_field_assign_some<S : Str>(&self, value: S) {
+    fn self_field_assign_some<S : Str>(&mut self, value: S) {
         assert!(!self.field().repeated);
-        self.self_field_assign(self.field().full_storage_type().wrap_value(value.as_slice()));
+        let full_storage_type = self.field().full_storage_type();
+        self.self_field_assign(full_storage_type.wrap_value(value.as_slice()));
     }
 
-    fn self_field_assign_default(&self) {
+    fn self_field_assign_default(&mut self) {
         let field = self.field();
         assert!(!field.repeated);
         if field.type_is_not_trivial() {
-            self.write_line(format!("{}.set_default();", self.self_field()));
+            let self_field = self.self_field();
+            self.write_line(format!("{}.set_default();", self_field));
         } else {
             self.self_field_assign_some(field.element_default_value_rust());
         }
         if field.is_oneof() {
             self.commented(|w| {
                 w.write_line(format!("{:?}", field.type_name));
+                let self_field_oneof = w.self_field_oneof();
                 w.write_line(
                     format!("{} = ::std::option::Option::Some({}({}))",
-                    w.self_field_oneof(),
+                    self_field_oneof,
                     field.variant_full_name(),
                     // TODO: default from .proto is not needed here
                     field.element_default_value_rust()));
@@ -1023,7 +1029,7 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn self_field_assign_value<S : Str>(&self, value: S, ty: &RustType) {
+    fn self_field_assign_value<S : Str>(&mut self, value: S, ty: &RustType) {
         if self.field().repeated {
             let converted = ty.into(&self.field().full_storage_type(), value.as_slice());
             self.self_field_assign(converted);
@@ -1035,9 +1041,10 @@ impl<'a> IndentWriter<'a> {
     }
 
     #[allow(dead_code)]
-    fn self_field_push<S : Str>(&self, value: S) {
+    fn self_field_push<S : Str>(&mut self, value: S) {
         assert!(self.field().repeated);
-        self.write_line(format!("{}.push({});", self.self_field(), value.as_slice()));
+        let self_field = self.self_field();
+        self.write_line(format!("{}.push({});", self_field, value.as_slice()));
     }
 
     fn self_field_vec_packed_fixed_data_size(&self) -> String {
@@ -1102,24 +1109,23 @@ impl<'a> IndentWriter<'a> {
         format!("self.{}", self.field().oneof.as_ref().unwrap().name)
     }
 
-    fn write_line<S : Str>(&self, line: S) {
-        let mut_writer: &mut Write = unsafe { mem::transmute(self.writer) };
+    fn write_line<S : Str>(&mut self, line: S) {
         (if line.as_slice().is_empty() {
-            mut_writer.write_all("\n".as_bytes())
+            self.writer.write_all("\n".as_bytes())
         } else {
             let s: String = [self.indent.as_slice(), line.as_slice(), "\n"].concat();
-            mut_writer.write_all(s.as_bytes())
+            self.writer.write_all(s.as_bytes())
         }).unwrap();
     }
 
     #[allow(dead_code)]
-    fn write_lines(&self, lines: &[String]) {
+    fn write_lines(&mut self, lines: &[String]) {
         for line in lines.iter() {
             self.write_line(line.to_string());
         }
     }
 
-    fn indented<F>(&self, cb: F)
+    fn indented<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         cb(&mut IndentWriter {
@@ -1132,7 +1138,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     #[allow(dead_code)]
-    fn commented<F>(&self, cb: F)
+    fn commented<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         cb(&mut IndentWriter {
@@ -1162,7 +1168,7 @@ impl<'a> IndentWriter<'a> {
         });
     }
 
-    fn block<S1 : Str, S2 : Str, F>(&self, first_line: S1, last_line: S2, cb: F)
+    fn block<S1 : Str, S2 : Str, F>(&mut self, first_line: S1, last_line: S2, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.write_line(first_line.as_slice());
@@ -1170,44 +1176,37 @@ impl<'a> IndentWriter<'a> {
         self.write_line(last_line.as_slice());
     }
 
-    fn expr_block<S : Str, F>(&self, prefix: S, cb: F)
+    fn expr_block<S : Str, F>(&mut self, prefix: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.block(format!("{} {{", prefix.as_slice()), "}", cb);
     }
 
-    fn stmt_block<S : Str, F>(&self, prefix: S, cb: F)
+    fn stmt_block<S : Str, F>(&mut self, prefix: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.block(format!("{} {{", prefix.as_slice()), "};", cb);
     }
 
-    fn unsafe_expr<F>(&self, cb: F)
+    fn unsafe_expr<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block("unsafe", cb);
     }
 
-    #[allow(dead_code)]
-    fn impl_block<S : Str, F>(&self, name: S, cb: F)
+    fn impl_self_block<S : Str, F>(&mut self, name: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("impl {}", name.as_slice()), cb);
     }
 
-    fn impl_self_block<S : Str, F>(&self, name: S, cb: F)
-        where F : Fn(&mut IndentWriter)
-    {
-        self.expr_block(format!("impl {}", name.as_slice()), cb);
-    }
-
-    fn impl_for_block<S1 : Str, S2 : Str, F>(&self, tr: S1, ty: S2, cb: F)
+    fn impl_for_block<S1 : Str, S2 : Str, F>(&mut self, tr: S1, ty: S2, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("impl {} for {}", tr.as_slice(), ty.as_slice()), cb);
     }
 
-    fn pub_struct<S : Str, F>(&self, name: S, cb: F)
+    fn pub_struct<S : Str, F>(&mut self, name: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("pub struct {}", name.as_slice()), cb);
@@ -1219,22 +1218,12 @@ impl<'a> IndentWriter<'a> {
         self.expr_block(format!("pub enum {}", name), cb);
     }
 
-    fn field_entry<S1 : Str, S2 : Str>(&self, name: S1, value: S2) {
+    fn field_entry<S1 : Str, S2 : Str>(&mut self, name: S1, value: S2) {
         self.write_line(format!("{}: {},", name.as_slice(), value.as_slice()));
     }
 
     fn field_decl<S : Str>(&mut self, name: S, field_type: &RustType) {
         self.field_entry(name, format!("{:?}", field_type));
-    }
-
-    #[allow(dead_code)]
-    fn fail<S : Str>(&self, reason: S) {
-        self.write_line(format!("panic!({});", reason.as_slice()));
-    }
-
-    #[allow(dead_code)]
-    fn todo(&self) {
-        self.fail("TODO");
     }
 
     fn derive(&mut self, derive: &[&str]) {
@@ -1247,7 +1236,7 @@ impl<'a> IndentWriter<'a> {
         self.write_line(format!("#[allow({})]", v.connect(",")));
     }
 
-    fn comment(&self, comment: &str) {
+    fn comment(&mut self, comment: &str) {
         if comment.is_empty() {
             self.write_line("//");
         } else {
@@ -1255,71 +1244,71 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn pub_fn<S : Str, F>(&self, sig: S, cb: F)
+    fn pub_fn<S : Str, F>(&mut self, sig: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("pub fn {}", sig.as_slice()), cb);
     }
 
-    fn def_fn<S : Str, F>(&self, sig: S, cb: F)
+    fn def_fn<S : Str, F>(&mut self, sig: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("fn {}", sig.as_slice()), cb);
     }
 
-    fn while_block<S : Str, F>(&self, cond: S, cb: F)
+    fn while_block<S : Str, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("while {}", cond.as_slice()), cb);
     }
 
-    fn if_stmt<S : Str, F>(&self, cond: S, cb: F)
+    fn if_stmt<S : Str, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.stmt_block(format!("if {}", cond.as_slice()), cb);
     }
 
-    fn if_let_stmt<F>(&self, decl: &str, expr: &str, cb: F)
+    fn if_let_stmt<F>(&mut self, decl: &str, expr: &str, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.if_stmt(format!("let {} = {}", decl, expr), cb);
     }
 
-    fn for_stmt<S1 : Str, S2 : Str, F>(&self, over: S1, varn: S2, cb: F)
+    fn for_stmt<S1 : Str, S2 : Str, F>(&mut self, over: S1, varn: S2, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.stmt_block(format!("for {} in {}", varn.as_slice(), over.as_slice()), cb)
     }
 
-    fn match_block<S : Str, F>(&self, value: S, cb: F)
+    fn match_block<S : Str, F>(&mut self, value: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.stmt_block(format!("match {}", value.as_slice()), cb);
     }
 
-    fn match_expr<S : Str, F>(&self, value: S, cb: F)
+    fn match_expr<S : Str, F>(&mut self, value: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.expr_block(format!("match {}", value.as_slice()), cb);
     }
 
-    fn case_block<S : Str, F>(&self, cond: S, cb: F)
+    fn case_block<S : Str, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.block(format!("{} => {{", cond.as_slice()), "},", cb);
     }
 
-    fn case_expr<S1 : Str, S2 : Str>(&self, cond: S1, body: S2) {
+    fn case_expr<S1 : Str, S2 : Str>(&mut self, cond: S1, body: S2) {
         self.write_line(format!("{} => {},", cond.as_slice(), body.as_slice()));
     }
 
-    fn clear_field_func(&self) -> String {
+    fn clear_field_func(&mut self) -> String {
         let mut r = "clear_".to_string();
         r.push_str(self.field.as_ref().unwrap().name.as_slice());
         r
     }
 
-    fn clear_field(&self) {
+    fn clear_field(&mut self) {
         let clear_expr = self.field().full_storage_type().clear(self.self_field().as_slice());
         self.write_line(format!("{};", clear_expr));
     }
@@ -1348,7 +1337,8 @@ fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
                 field.name));
     } else {
         w.assert_wire_type(wire_format::WireTypeLengthDelimited);
-        w.write_line(format!("let tmp = {}.set_default();", w.self_field()));
+        let self_field = w.self_field();
+        w.write_line(format!("let tmp = {}.set_default();", self_field));
         match field.field_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE =>
                 w.write_line(format!("try!(is.merge_message(tmp))")),
@@ -1429,15 +1419,18 @@ fn write_message_compute_size(w: &mut IndentWriter) {
                     match field_type_size(field.field_type) {
                         Some(s) => {
                             if field.repeated {
+                                let tag_size = w.field().tag_size();
+                                let self_field = w.self_field();
                                 w.write_line(format!(
                                         "my_size += {} * {}.len() as u32;",
-                                        (s + w.field().tag_size()) as isize,
-                                        w.self_field()));
+                                        (s + tag_size) as isize,
+                                        self_field));
                             } else {
                                 w.if_self_field_is_some(|w| {
+                                    let tag_size = w.field().tag_size();
                                     w.write_line(format!(
                                             "my_size += {};",
-                                            (s + w.field().tag_size()) as isize));
+                                            (s + tag_size) as isize));
                                 });
                             }
                         },
@@ -1446,9 +1439,10 @@ fn write_message_compute_size(w: &mut IndentWriter) {
                                 match field.field_type {
                                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
                                         w.write_line("let len = value.compute_size();");
+                                        let tag_size = w.field().tag_size();
                                         w.write_line(format!(
                                                 "my_size += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                                                w.field().tag_size() as usize));
+                                                tag_size));
                                     },
                                     FieldDescriptorProto_Type::TYPE_BYTES => {
                                         w.write_line(format!(
@@ -1493,17 +1487,19 @@ fn write_message_write_field(w: &mut IndentWriter) {
     fn write_value_lines(w: &mut IndentWriter, ty: &RustType) {
         match w.field().field_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                let number = w.field().number();
                 w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));",
-                        w.field().number(),
-                        wire_format::WireTypeLengthDelimited));
+                        number, wire_format::WireTypeLengthDelimited));
                 w.write_line(format!("try!(os.write_raw_varint32(v.get_cached_size()));"));
                 w.write_line(format!("try!(v.write_to_with_cached_sizes(os));"));
             }
             _ => {
                 let param_type = w.field().os_write_fn_param_type();
+                let os_write_fn_suffix = w.field().os_write_fn_suffix();
+                let number = w.field().number();
                 w.write_line(format!("try!(os.write_{}({}, {}));",
-                    w.field().os_write_fn_suffix(),
-                    w.field().number(),
+                    os_write_fn_suffix,
+                    number,
                     ty.into(&param_type, "v")));
             }
         }
@@ -1511,7 +1507,8 @@ fn write_message_write_field(w: &mut IndentWriter) {
 
     match w.field().repeat_mode {
         RepeatMode::Single => {
-            w.if_let_stmt("Some(v)", w.self_field_as_option().as_slice(), |w| {
+            let self_field_as_option = w.self_field_as_option();
+            w.if_let_stmt("Some(v)", self_field_as_option.as_slice(), |w| {
                 let option_type = w.field().as_option_type();
                 let v_type = option_type.elem_type();
                 write_value_lines(w, &v_type);
@@ -1519,14 +1516,16 @@ fn write_message_write_field(w: &mut IndentWriter) {
         },
         RepeatMode::RepeatPacked => {
             w.if_self_field_is_not_empty(|w| {
-                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", w.field().number(), wire_format::WireTypeLengthDelimited));
+                let number = w.field().number();
+                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
                 w.comment("TODO: Data size is computed again, it should be cached");
                 let data_size_expr = w.self_field_vec_packed_data_size();
                 w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
                 w.for_self_field("v", |w, v_type| {
                     let param_type = w.field().os_write_fn_param_type();
+                    let os_write_fn_suffix = w.field().os_write_fn_suffix();
                     w.write_line(format!("try!(os.write_{}_no_tag({}));",
-                        w.field().os_write_fn_suffix(), v_type.into(&param_type, "v")));
+                        os_write_fn_suffix, v_type.into(&param_type, "v")));
                 });
             });
         },
@@ -1588,15 +1587,19 @@ fn write_message_field_get(w: &mut IndentWriter) {
     };
     let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
     // TODO: 'a is not needed when function does not return a reference
-    w.pub_fn(format!("get_{}<'a>({}) -> {}", w.field().name, self_param, get_xxx_return_type_str),
+    let ref name = w.field().name;
+    w.pub_fn(format!("get_{}<'a>({}) -> {}", name, self_param, get_xxx_return_type_str),
     |w| {
         if !w.field().repeated {
             if w.field().field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
+                let self_field = w.self_field();
+                let ref field_type_name = w.field().type_name;
                 w.write_line(format!("{}.as_ref().unwrap_or_else(|| {:?}::default_instance())",
-                        w.self_field(), w.field().type_name));
+                        self_field, field_type_name));
             } else {
                 if get_xxx_return_type.is_ref() {
-                    w.match_expr(w.self_field_as_option(), |w| {
+                    let self_field_as_option = w.self_field_as_option();
+                    w.match_expr(self_field_as_option, |w| {
                         let option_type = w.field().as_option_type();
                         let v_type = option_type.elem_type();
                         let r_type = w.field().get_xxx_return_type();
@@ -1604,22 +1607,25 @@ fn write_message_field_get(w: &mut IndentWriter) {
                             "Some(v)",
                             v_type.into(&r_type, "v")
                         );
+                        let get_xxx_default_value_rust = w.field().get_xxx_default_value_rust();
                         w.case_expr(
                             "None",
-                            w.field().get_xxx_default_value_rust(),
+                            get_xxx_default_value_rust
                         );
                     });
                 } else {
                     assert!(!w.field().type_is_not_trivial());
+                    let get_xxx_default_value_rust = w.field().get_xxx_default_value_rust();
+                    let self_field = w.self_field();
                     w.write_line(format!(
-                            "{}.unwrap_or({})",
-                            w.self_field(), w.field().get_xxx_default_value_rust()));
+                            "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
                 }
             }
             if !field.is_oneof() {
             } else {
                 w.commented(|w| {
-                    w.match_expr(w.self_field_oneof(), |w| {
+                    let self_field_oneof = w.self_field_oneof();
+                    w.match_expr(self_field_oneof, |w| {
                         w.case_expr(format!(
                                 "::std::option::Option::Some({}(ref v))",
                                 field.variant_full_name()),
@@ -1630,19 +1636,23 @@ fn write_message_field_get(w: &mut IndentWriter) {
                 });
             }
         } else {
-            w.write_line(format!("{}.as_slice()", w.self_field()));
+            let self_field = w.self_field();
+            w.write_line(format!("{}.as_slice()", self_field));
         }
     });
 }
 
 fn write_message_field_has(w: &mut IndentWriter) {
     let field = w.field();
-    w.pub_fn(format!("has_{}(&self) -> bool", w.field().name), |w| {
-        w.write_line(w.self_field_is_some());
+    let ref name = w.field().name;
+    w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
+        let self_field_is_some = w.self_field_is_some();
+        w.write_line(self_field_is_some);
         if !field.is_oneof() {
         } else {
             w.commented(|w| {
-                w.match_expr(w.self_field_oneof(), |w| {
+                let self_field_oneof = w.self_field_oneof();
+                w.match_expr(self_field_oneof, |w| {
                     w.case_expr(format!(
                             "::std::option::Option::Some({}(..))",
                             field.variant_full_name()),
@@ -1658,12 +1668,14 @@ fn write_message_field_set(w: &mut IndentWriter) {
     let field = w.field();
     let set_xxx_param_type = w.field().set_xxx_param_type();
     w.comment("Param is passed by value, moved");
-    w.pub_fn(format!("set_{}(&mut self, v: {:?})", w.field().name, set_xxx_param_type), |w| {
+    let ref name = w.field().name;
+    w.pub_fn(format!("set_{}(&mut self, v: {:?})", name, set_xxx_param_type), |w| {
         w.self_field_assign_value("v", &set_xxx_param_type);
         if !field.is_oneof() {
         } else {
             w.commented(|w| {
-                w.write_line(format!("{} = {}(v)", w.self_field_oneof(), field.variant_full_name()));
+                let self_field_oneof = w.self_field_oneof();
+                w.write_line(format!("{} = {}(v)", self_field_oneof, field.variant_full_name()));
             });
         }
     });
@@ -1683,11 +1695,13 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
             w.if_self_field_is_none(|w| {
                 w.self_field_assign_default();
             });
-            w.write_line(format!("{}.as_mut().unwrap()", w.self_field()));
+            let self_field = w.self_field();
+            w.write_line(format!("{}.as_mut().unwrap()", self_field));
             if !field.is_oneof() {
             } else {
                 w.commented(|w| {
-                    w.match_expr(w.self_field_oneof(), |w| {
+                    let self_field_oneof = w.self_field_oneof();
+                    w.match_expr(self_field_oneof, |w| {
                         w.case_expr(format!(
                                 "::std::option::Option::Some({}(ref mut v))",
                                 field.variant_full_name()),
@@ -1697,7 +1711,8 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
                 });
             }
         } else {
-            w.write_line(format!("&mut {}", w.self_field()));
+            let self_field = w.self_field();
+            w.write_line(format!("&mut {}", self_field));
         }
     });
     w.write_line("");
@@ -1717,7 +1732,8 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
                 w.commented(|w| {
                     w.write_line(format!("if self.has_{}() {{", field.name));
                     w.indented(|w| {
-                        w.match_expr(format!("{}.take()", w.self_field_oneof()), |w| {
+                        let self_field_oneof = w.self_field_oneof();
+                        w.match_expr(format!("{}.take()", self_field_oneof), |w| {
                             w.case_expr(format!("{}(v)", field.variant_full_name()), "v");
                             w.case_expr("_", "panic!()");
                         });
@@ -1738,7 +1754,8 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
 }
 
 fn write_message_single_field_accessors(w: &mut IndentWriter) {
-    w.pub_fn(format!("{}(&mut self)", w.clear_field_func()), |w| {
+    let clear_field_func = w.clear_field_func();
+    w.pub_fn(format!("{}(&mut self)", clear_field_func), |w| {
         w.clear_field();
     });
 
@@ -1763,7 +1780,8 @@ fn write_message_single_field_accessors(w: &mut IndentWriter) {
 fn write_message_field_accessors(w: &mut IndentWriter) {
     w.fields(|w| {
         w.write_line("");
-        w.comment((w.field().reconstruct_def() + ";").as_slice());
+        let reconstruct_def = w.field().reconstruct_def();
+        w.comment((reconstruct_def + ";").as_slice());
         w.write_line("");
         write_message_single_field_accessors(w);
     });
@@ -1798,7 +1816,8 @@ fn write_message_merge_from(w: &mut IndentWriter) {
             w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
             w.match_block("field_number", |w| {
                 w.fields(|w| {
-                    w.case_block(w.field().number.to_string(), |w| {
+                    let number = w.field().number;
+                    w.case_block(number.to_string(), |w| {
                         write_merge_from_field(w);
                     });
                 });
@@ -1902,7 +1921,8 @@ fn write_message_impl_clear(w: &mut IndentWriter) {
     w.impl_for_block("::protobuf::Clear", msg.type_name.as_slice(), |w| {
         w.def_fn("clear(&mut self)", |w| {
             w.fields(|w| {
-                w.write_line(format!("self.{}();", w.clear_field_func()));
+                let clear_field_func = w.clear_field_func();
+                w.write_line(format!("self.{}();", clear_field_func));
             });
             w.write_line("self.unknown_fields.clear();");
         });
@@ -1914,7 +1934,8 @@ fn write_message_impl_partial_eq(w: &mut IndentWriter) {
     w.impl_for_block("::std::cmp::PartialEq", msg.type_name.as_slice(), |w| {
         w.def_fn(format!("eq(&self, other: &{}) -> bool", msg.type_name), |w| {
             w.fields(|w| {
-                w.write_line(format!("self.{field} == other.{field} &&", field=w.field().name));
+                let ref field_name = w.field().name;
+                w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
             });
             w.write_line("self.unknown_fields == other.unknown_fields");
         });
@@ -1970,7 +1991,8 @@ fn write_message(m2: &MessageWithScope, root_scope: &RootScope, w: &mut IndentWr
 
 fn write_enum_struct(w: &mut IndentWriter) {
     w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
-    w.expr_block(format!("pub enum {}", w.en().type_name), |w| {
+    let ref type_name = w.en().type_name;
+    w.expr_block(format!("pub enum {}", type_name), |w| {
         for value in w.en().values.iter() {
             w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
         }
@@ -1979,14 +2001,17 @@ fn write_enum_struct(w: &mut IndentWriter) {
 
 fn write_enum_impl_enum(w: &mut IndentWriter) {
     let en = w.en.unwrap();
-    w.impl_for_block("::protobuf::ProtobufEnum", w.en().type_name.as_slice(), |w| {
+    let ref type_name = w.en().type_name;
+    w.impl_for_block("::protobuf::ProtobufEnum", type_name.as_slice(), |w| {
         w.def_fn("value(&self) -> i32", |w| {
             w.write_line("*self as i32")
         });
         w.write_line("");
-        w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", w.en().type_name), |w| {
+        let ref type_name = w.en().type_name;
+        w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
             w.match_expr("value", |w| {
-                for value in w.en().values.iter() {
+                let values = w.en().values.clone();
+                for value in values.iter() {
                     w.write_line(format!("{} => ::std::option::Option::Some({}),",
                         value.number(), value.rust_name_outer()));
                 }
@@ -1995,9 +2020,11 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
         });
         if !en.lite_runtime {
             w.write_line("");
-            w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", w.en().type_name), |w| {
+            let ref type_name = w.en().type_name;
+            w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
                 w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                    w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", w.en().type_name));
+                    let ref type_name = w.en().type_name;
+                    w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
                 });
             });
         }
@@ -2005,7 +2032,8 @@ fn write_enum_impl_enum(w: &mut IndentWriter) {
 }
 
 fn write_enum_impl_copy(w: &mut IndentWriter) {
-    w.impl_for_block("::std::marker::Copy", w.en().type_name.as_slice(), |_w| {
+    let ref type_name = w.en().type_name;
+    w.impl_for_block("::std::marker::Copy", type_name.as_slice(), |_w| {
     });
 }
 
