@@ -110,7 +110,7 @@ impl RustType {
     fn default_value(&self) -> String {
         match *self {
             RustType::Ref(box RustType::Str)         => "\"\"".to_string(),
-            RustType::Ref(box RustType::Slice(..))   => "[].as_slice()".to_string(), // "&[]".to_string(),
+            RustType::Ref(box RustType::Slice(..))   => "&[]".to_string(),
             RustType::Signed(..)                     |
             RustType::Unsigned(..)                   => "0".to_string(),
             RustType::Float(..)                      => "0.".to_string(),
@@ -158,11 +158,11 @@ impl RustType {
             (&RustType::Ref(ref x), y) if **x == *y => format!("*{}", v),
             (&RustType::String, &RustType::Ref(box RustType::Str))                    |
             (&RustType::Ref(box RustType::String), &RustType::Ref(box RustType::Str)) =>
-                    format!("{}.as_slice()", v),
+                    format!("&{}", v),
             (&RustType::Vec(ref x), &RustType::Ref(box RustType::Slice(ref y))) if x == y =>
-                    format!("{}.as_slice()", v),
+                    format!("&{}", v),
             (&RustType::Ref(box RustType::Vec(ref x)), &RustType::Ref(box RustType::Slice(ref y))) if x == y =>
-                    format!("{}.as_slice()", v),
+                    format!("&{}", v),
             (&RustType::Enum(..), &RustType::Signed(32)) =>
                     format!("{} as i32", v),
             (&RustType::Ref(box RustType::Enum(..)), &RustType::Signed(32)) =>
@@ -1061,7 +1061,7 @@ impl<'a> IndentWriter<'a> {
             let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_data_size", zigzag_suffix)
         };
-        format!("::protobuf::rt::{}({}.as_slice())",
+        format!("::protobuf::rt::{}(&{})",
             fn_name, self.self_field())
     }
 
@@ -1091,7 +1091,7 @@ impl<'a> IndentWriter<'a> {
             let zigzag_suffix = if self.field().is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_size", zigzag_suffix)
         };
-        format!("::protobuf::rt::{}({}, {}.as_slice())",
+        format!("::protobuf::rt::{}({}, &{})",
             fn_name, self.field().number, self.self_field())
     }
 
@@ -1490,7 +1490,7 @@ fn write_message_field_get(w: &mut IndentWriter) {
             }
         } else {
             let self_field = w.self_field();
-            w.write_line(format!("{}.as_slice()", self_field));
+            w.write_line(format!("&{}", self_field));
         }
     });
 }
@@ -1735,12 +1735,12 @@ impl<'a> MessageContext<'a> {
                                         },
                                         FieldDescriptorProto_Type::TYPE_BYTES => {
                                             w.write_line(format!(
-                                                    "my_size += ::protobuf::rt::bytes_size({}, value.as_slice());",
+                                                    "my_size += ::protobuf::rt::bytes_size({}, &value);",
                                                     field.number as isize));
                                         },
                                         FieldDescriptorProto_Type::TYPE_STRING => {
                                             w.write_line(format!(
-                                                    "my_size += ::protobuf::rt::string_size({}, value.as_slice());",
+                                                    "my_size += ::protobuf::rt::string_size({}, &value);",
                                                     field.number as isize));
                                         },
                                         FieldDescriptorProto_Type::TYPE_ENUM => {
