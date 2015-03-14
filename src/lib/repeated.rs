@@ -1,10 +1,13 @@
 use std::vec;
 use std::slice;
+use std::borrow::Borrow;
 use std::default::Default;
 use std::iter::FromIterator;
 use std::iter::IntoIterator;
 use std::ops::Index;
 use std::ops::IndexMut;
+use std::ops::Deref;
+use std::ops::DerefMut;
 use std::cmp::Ordering;
 use std::fmt;
 
@@ -284,6 +287,28 @@ impl<T> AsSlice<T> for RepeatedField<T> {
     #[inline]
     fn as_slice<'a>(&'a self) -> &'a [T] {
         &self.vec[..self.len]
+    }
+}
+
+impl<T> Borrow<[T]> for RepeatedField<T> {
+    #[inline]
+    fn borrow(&self) -> &[T] {
+        &self.vec[..self.len]
+    }
+}
+
+impl<T> Deref for RepeatedField<T> {
+    type Target = [T];
+    #[inline]
+    fn deref(&self) -> &[T] {
+        &self.vec[..self.len]
+    }
+}
+
+impl<T> DerefMut for RepeatedField<T> {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut [T] {
+        &mut self.vec[..self.len]
     }
 }
 
