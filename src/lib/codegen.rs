@@ -18,6 +18,7 @@ use descriptorx::FileScope;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
 
+#[allow(dead_code)]
 #[derive(Clone,PartialEq,Eq)]
 enum RustType {
     Signed(usize),
@@ -424,7 +425,8 @@ impl Field {
             };
         let enum_default_value = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_ENUM => {
-                let e = Enum::parse(&root_scope.find_enum(field.field.get_type_name()));
+                let enum_with_scope = root_scope.find_enum(field.field.get_type_name());
+                let e = EnumContext::new(&enum_with_scope, root_scope);
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()
                 } else {
@@ -739,121 +741,12 @@ impl OneofInfo {
     }
 }
 
-#[derive(Clone)]
-struct MessageInfo {
-    proto_message: DescriptorProto,
-    pkg: String,
-    prefix: String,
-    type_name: String,
-    fields: Vec<Field>,
-    oneofs: Vec<OneofInfo>,
-    lite_runtime: bool,
-}
-
-impl MessageInfo {
-    fn parse(message: &MessageWithScope, root_scope: &RootScope) -> MessageInfo {
-        let fields: Vec<_> = message.fields().iter().map(|field| {
-            Field::parse(field, root_scope, message.get_package())
-        }).collect();
-        let oneofs = message.oneofs().iter().map(|oneof| {
-            OneofInfo::parse(oneof, &fields[..])
-        }).collect();
-        MessageInfo {
-            proto_message: message.message.clone(),
-            pkg: message.get_package().to_string(),
-            prefix: message.scope.rust_prefix(),
-            type_name: message.rust_name(),
-            fields: fields,
-            oneofs: oneofs,
-            lite_runtime:
-                message.get_file_descriptor().get_options().get_optimize_for()
-                    == FileOptions_OptimizeMode::LITE_RUNTIME,
-        }
-    }
-
-    fn required_fields<'a>(&'a self) -> Vec<&'a Field> {
-        let mut r = Vec::new();
-        for field in self.fields.iter() {
-            if field.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED {
-                r.push(field);
-            }
-        }
-        r
-    }
-}
-
-struct Enum {
-    //en: EnumWithScope<'a>,
-    type_name: String,
-    values: Vec<EnumValue>,
-    lite_runtime: bool,
-}
-
-#[derive(Clone)]
-struct EnumValue {
-    proto: EnumValueDescriptorProto,
-    prefix: String,
-    enum_rust_name: String,
-}
-
-impl Enum {
-    fn parse(en: &EnumWithScope) -> Enum {
-        Enum {
-            //en: en.clone(),
-            type_name: en.rust_name(),
-            values: en.en.get_value().iter()
-                .map(|p| EnumValue::parse(p, en.scope.rust_prefix().as_slice(), en.rust_name().as_slice()))
-                .collect(),
-            lite_runtime:
-                en.get_scope().get_file_descriptor().get_options().get_optimize_for()
-                    == FileOptions_OptimizeMode::LITE_RUNTIME,
-        }
-    }
-
-    fn value_by_name<'a>(&'a self, name: &str) -> &'a EnumValue {
-        self.values.iter().find(|v| v.name() == name).unwrap()
-    }
-}
-
-impl EnumValue {
-    fn parse(proto: &EnumValueDescriptorProto, prefix: &str, enum_rust_name: &str) -> EnumValue {
-        EnumValue {
-            proto: proto.clone(),
-            prefix: prefix.to_string(),
-            enum_rust_name: enum_rust_name.to_string(),
-        }
-    }
-
-    // value name
-    fn name<'a>(&'a self) -> &'a str {
-        self.proto.get_name()
-    }
-
-    // enum value
-    fn number(&self) -> i32 {
-        self.proto.get_number()
-    }
-
-    fn rust_name_inner(&self) -> String {
-        self.name().to_string()
-    }
-
-    fn rust_name_outer(&self) -> String {
-        let mut r = String::new();
-        r.push_str(self.enum_rust_name.as_slice());
-        r.push_str("::");
-        r.push_str(self.rust_name_inner().as_slice());
-        r
-    }
-}
 
 
 struct IndentWriter<'a> {
     writer: &'a mut (Write + 'a),
     indent: String,
-    msg: Option<&'a MessageInfo>,
     field: Option<&'a Field>,
-    en: Option<&'a Enum>,
 }
 
 impl<'a> IndentWriter<'a> {
@@ -861,85 +754,23 @@ impl<'a> IndentWriter<'a> {
         IndentWriter {
             writer: writer,
             indent: "".to_string(),
-            msg: None,
             field: None,
-            en: None,
         }
     }
 
-    fn bind_message<T, F>(&mut self, msg: &MessageInfo, cb: F) -> T
+    fn bind_field<T, F>(&mut self, field: &Field, cb: F) -> T
         where F : Fn(&mut IndentWriter) -> T
     {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: self.indent.to_string(),
-            msg: Some(msg),
-            field: None,
-            en: None,
-        })
-    }
-
-    fn bind_field<T, F>(&mut self, field: &'a Field, cb: F) -> T
-        where F : Fn(&mut IndentWriter) -> T
-    {
-        assert!(self.msg.is_some());
-        cb(&mut IndentWriter {
-            writer: self.writer,
-            indent: self.indent.to_string(),
-            msg: self.msg,
             field: Some(field),
-            en: None,
         })
     }
-
-    fn bind_enum<T, F>(&mut self, en: &Enum, cb: F) -> T
-        where F : Fn(&mut IndentWriter) -> T
-    {
-        cb(&mut IndentWriter {
-            writer: self.writer,
-            indent: self.indent.to_string(),
-            msg: None,
-            field: None,
-            en: Some(en),
-        })
-    }
-
-    fn fields<F>(&mut self, cb: F)
-        where F : Fn(&mut IndentWriter)
-    {
-        let fields = &self.msg.as_ref().unwrap().fields;
-        let iter = fields.iter();
-        for field in iter {
-            self.bind_field(field, |w| cb(w));
-        }
-    }
-
-    fn required_fields<F>(&mut self, cb: F)
-        where F : Fn(&mut IndentWriter)
-    {
-        let fields = &self.msg.as_ref().unwrap().required_fields();
-        let iter = fields.iter();
-        for field in iter {
-            self.bind_field(*field, |w| cb(w));
-        }
-    }
-    /*
-    fn fields(&'a self) -> FieldsIter<'a> {
-        FieldsIter { parent: self }
-    }
-    fn required_fields(&'a self) -> FieldsIter<'a> {
-        FieldsIter { parent: self }
-    }
-    */
-
 
     fn field(&self) -> &'a Field {
         assert!(self.field.is_some());
         self.field.unwrap()
-    }
-
-    fn en(&self) -> &'a Enum {
-        self.en.unwrap()
     }
 
     fn self_field(&self) -> String {
@@ -1131,9 +962,7 @@ impl<'a> IndentWriter<'a> {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: format!("{}    ", self.indent),
-            msg: self.msg,
             field: self.field,
-            en: self.en,
         });
     }
 
@@ -1144,9 +973,7 @@ impl<'a> IndentWriter<'a> {
         cb(&mut IndentWriter {
             writer: self.writer,
             indent: format!("// {}", self.indent),
-            msg: self.msg,
             field: self.field,
-            en: self.en,
         });
     }
 
@@ -1638,27 +1465,69 @@ fn write_message_oneof(oneof: &OneofInfo, w: &mut IndentWriter) {
     });
 }
 
+/// Message info for codegen
 struct MessageContext<'a> {
-    message_with_scope: &'a MessageWithScope<'a>,
+    message: &'a MessageWithScope<'a>,
     root_scope: &'a RootScope<'a>,
-    message: MessageInfo,
+    type_name: String,
+    fields: Vec<Field>,
+    oneofs: Vec<OneofInfo>,
+    lite_runtime: bool,
 }
 
 impl<'a> MessageContext<'a> {
-    fn new(message_with_scope: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>)
+    fn new(message: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>)
         -> MessageContext<'a>
     {
+        let fields: Vec<_> = message.fields().iter().map(|field| {
+            Field::parse(field, root_scope, message.get_package())
+        }).collect();
+        let oneofs = message.oneofs().iter().map(|oneof| {
+            OneofInfo::parse(oneof, &fields[..])
+        }).collect();
         MessageContext {
-            message_with_scope: message_with_scope,
+            message: message,
             root_scope: root_scope,
-            message: MessageInfo::parse(message_with_scope, root_scope),
+            type_name: message.rust_name(),
+            fields: fields,
+            oneofs: oneofs,
+            lite_runtime:
+                message.get_file_descriptor().get_options().get_optimize_for()
+                    == FileOptions_OptimizeMode::LITE_RUNTIME,
         }
     }
+
+    fn required_fields(&'a self) -> Vec<&'a Field> {
+        let mut r = Vec::new();
+        for field in self.fields.iter() {
+            if field.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED {
+                r.push(field);
+            }
+        }
+        r
+    }
+
+    fn each_field<F>(&self, w: &mut IndentWriter, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
+        for field in &self.fields {
+            w.bind_field(field, |w| cb(w));
+        }
+    }
+
+    fn each_required_field<F>(&self, w: &mut IndentWriter, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
+        for field in self.required_fields() {
+            w.bind_field(&field, |w| cb(w));
+        }
+    }
+
 
     fn write_write_to_with_cached_sizes(&self, w: &mut IndentWriter) {
         w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
             // To have access to its methods but not polute the name space.
-            w.fields(|w| {
+            self.each_field(w, |w| {
                 write_message_write_field(w);
             });
             w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
@@ -1673,14 +1542,14 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_default_instance(&self, w: &mut IndentWriter) {
-        w.pub_fn(format!("default_instance() -> &'static {}", self.message.type_name), |w| {
-            w.lazy_static_decl_get("instance", self.message.type_name.as_slice(), |w| {
-                w.expr_block(format!("{}", self.message.type_name), |w| {
-                    for field in &self.message.fields {
+        w.pub_fn(format!("default_instance() -> &'static {}", self.type_name), |w| {
+            w.lazy_static_decl_get("instance", self.type_name.as_slice(), |w| {
+                w.expr_block(format!("{}", self.type_name), |w| {
+                    for field in &self.fields {
                         let init = field.full_storage_type().default_value();
                         w.field_entry(field.name.to_string(), init);
                     }
-                    for oneof in &self.message.oneofs {
+                    for oneof in &self.oneofs {
                         w.commented(|w| {
                             let init = oneof.full_storage_type().default_value();
                             w.field_entry(oneof.name.to_string(), init);
@@ -1701,7 +1570,7 @@ impl<'a> MessageContext<'a> {
         w.def_fn("compute_size(&self) -> u32", |w| {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");
-            w.fields(|w| {
+            self.each_field(w, |w| {
                 let field = w.field();
                 match field.repeat_mode {
                     RepeatMode::Single | RepeatMode::RepeatRegular => {
@@ -1773,7 +1642,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_field_accessors(&self, w: &mut IndentWriter) {
-        w.fields(|w| {
+        self.each_field(w, |w| {
             w.write_line("");
             let reconstruct_def = w.field().reconstruct_def();
             w.comment((reconstruct_def + ";").as_slice());
@@ -1783,8 +1652,8 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_self(&self, w: &mut IndentWriter) {
-        w.impl_self_block(self.message.type_name.as_slice(), |w| {
-            w.pub_fn(format!("new() -> {}", self.message.type_name), |w| {
+        w.impl_self_block(self.type_name.as_slice(), |w| {
+            w.pub_fn(format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
             });
 
@@ -1809,7 +1678,7 @@ impl<'a> MessageContext<'a> {
             w.while_block("!try!(is.eof())", |w| {
                 w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
                 w.match_block("field_number", |w| {
-                    w.fields(|w| {
+                    self.each_field(w, |w| {
                         let number = w.field().number;
                         w.case_block(number.to_string(), |w| {
                             write_merge_from_field(w);
@@ -1826,18 +1695,17 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_descriptor_static(&self, w: &mut IndentWriter) {
-        let msg = w.msg.unwrap();
         w.allow(&["unused_unsafe", "unused_mut"]);
-        w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", msg.type_name), |w| {
+        w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
                 w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
-                for field in msg.fields.iter() {
+                for field in self.fields.iter() {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
                     w.indented(|w| {
                         w.write_line(format!("\"{}\",", field.name));
                         for f in field.make_accessor_fn_fn_params().iter() {
                             w.write_line(format!("{}::{}_{},",
-                                    msg.type_name,
+                                    self.type_name,
                                     f,
                                     field.name,
                                 ));
@@ -1845,9 +1713,10 @@ impl<'a> MessageContext<'a> {
                     });
                     w.write_line("));");
                 }
-                w.write_line(format!("::protobuf::reflect::MessageDescriptor::new::<{}>(", msg.type_name));
+                w.write_line(format!(
+                    "::protobuf::reflect::MessageDescriptor::new::<{}>(", self.type_name));
                 w.indented(|w| {
-                    w.write_line(format!("\"{}\",", msg.type_name));
+                    w.write_line(format!("\"{}\",", self.type_name));
                     w.write_line("fields,");
                     w.write_line("file_descriptor_proto()");
                 });
@@ -1857,10 +1726,9 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_message(&self, w: &mut IndentWriter) {
-        let msg = w.msg.unwrap();
-        w.impl_for_block("::protobuf::Message", msg.type_name.as_slice(), |w| {
+        w.impl_for_block("::protobuf::Message", self.type_name.as_slice(), |w| {
             w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
-                w.required_fields(|w| {
+                self.each_required_field(w, |w| {
                     w.if_self_field_is_none(|w| {
                         w.write_line("return false;");
                     });
@@ -1879,22 +1747,21 @@ impl<'a> MessageContext<'a> {
             self.write_unknown_fields(w);
             w.write_line("");
             w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
-                w.write_line(format!("::std::any::TypeId::of::<{}>()", msg.type_name));
+                w.write_line(format!("::std::any::TypeId::of::<{}>()", self.type_name));
             });
             w.write_line("");
             w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
-                w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)"); //, msg.type_name.as_slice());
+                w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)");
             });
         });
     }
 
     fn write_impl_message_static(&self, w: &mut IndentWriter) {
-        let msg = w.msg.unwrap();
-        w.impl_for_block("::protobuf::MessageStatic", msg.type_name.as_slice(), |w| {
-            w.def_fn(format!("new() -> {}", msg.type_name), |w| {
-                w.write_line(format!("{}::new()", msg.type_name));
+        w.impl_for_block("::protobuf::MessageStatic", self.type_name.as_slice(), |w| {
+            w.def_fn(format!("new() -> {}", self.type_name), |w| {
+                w.write_line(format!("{}::new()", self.type_name));
             });
-            if !msg.lite_runtime {
+            if !self.lite_runtime {
                 w.write_line("");
                 self.write_descriptor_static(w);
             }
@@ -1902,8 +1769,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_show(&self, w: &mut IndentWriter) {
-        let msg = w.msg.unwrap();
-        w.impl_for_block("::std::fmt::Debug", msg.type_name.as_slice(), |w| {
+        w.impl_for_block("::std::fmt::Debug", self.type_name.as_slice(), |w| {
             w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
                 w.write_line("::protobuf::text_format::fmt(self, f)");
             });
@@ -1911,10 +1777,9 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_clear(&self, w: &mut IndentWriter) {
-        let msg = w.msg.unwrap();
-        w.impl_for_block("::protobuf::Clear", msg.type_name.as_slice(), |w| {
+        w.impl_for_block("::protobuf::Clear", self.type_name.as_slice(), |w| {
             w.def_fn("clear(&mut self)", |w| {
-                w.fields(|w| {
+                self.each_field(w, |w| {
                     let clear_field_func = w.clear_field_func();
                     w.write_line(format!("self.{}();", clear_field_func));
                 });
@@ -1924,9 +1789,9 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_partial_eq(&self, w: &mut IndentWriter) {
-        w.impl_for_block("::std::cmp::PartialEq", self.message.type_name.as_slice(), |w| {
-            w.def_fn(format!("eq(&self, other: &{}) -> bool", self.message.type_name), |w| {
-                w.fields(|w| {
+        w.impl_for_block("::std::cmp::PartialEq", self.type_name.as_slice(), |w| {
+            w.def_fn(format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
+                self.each_field(w, |w| {
                     let ref field_name = w.field().name;
                     w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
                 });
@@ -1937,20 +1802,20 @@ impl<'a> MessageContext<'a> {
 
     fn write_struct(&self, w: &mut IndentWriter) {
         let mut derive = vec!["Clone", "Default"];
-        if self.message.lite_runtime {
+        if self.lite_runtime {
             derive.push("Debug");
         }
         w.derive(derive.as_slice());
-        w.pub_struct(self.message.type_name.as_slice(), |w| {
-            if !self.message.fields.is_empty() {
+        w.pub_struct(self.type_name.as_slice(), |w| {
+            if !self.fields.is_empty() {
                 w.comment("message fields");
-                for field in &self.message.fields {
+                for field in &self.fields {
                     w.field_decl(&field.name[..], &field.full_storage_type());
                 }
             }
-            if !self.message.oneofs.is_empty() {
+            if !self.oneofs.is_empty() {
                 w.comment("message oneof groups");
-                for oneof in &self.message.oneofs {
+                for oneof in &self.oneofs {
                     w.commented(|w| {
                         w.field_decl(&oneof.name[..], &oneof.full_storage_type());
                     });
@@ -1963,102 +1828,166 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write(&self, w: &mut IndentWriter) {
-        w.bind_message(&self.message, |w| {
-            self.write_struct(w);
-            for oneof in &self.message.oneofs {
-                w.write_line("");
-                write_message_oneof(&oneof, w);
-            }
+        self.write_struct(w);
+        for oneof in &self.oneofs {
             w.write_line("");
-            self.write_impl_self(w);
+            write_message_oneof(&oneof, w);
+        }
+        w.write_line("");
+        self.write_impl_self(w);
+        w.write_line("");
+        self.write_impl_message(w);
+        w.write_line("");
+        self.write_impl_message_static(w);
+        w.write_line("");
+        self.write_impl_clear(w);
+        w.write_line("");
+        self.write_impl_partial_eq(w);
+        if !self.lite_runtime {
             w.write_line("");
-            self.write_impl_message(w);
-            w.write_line("");
-            self.write_impl_message_static(w);
-            w.write_line("");
-            self.write_impl_clear(w);
-            w.write_line("");
-            self.write_impl_partial_eq(w);
-            if !self.message.lite_runtime {
-                w.write_line("");
-                self.write_impl_show(w);
-            }
+            self.write_impl_show(w);
+        }
 
-            let mut nested_prefix = self.message.type_name.to_string();
-            nested_prefix.push_str("_");
+        let mut nested_prefix = self.type_name.to_string();
+        nested_prefix.push_str("_");
 
-            for nested in self.message_with_scope.to_scope().get_messages().iter() {
-                w.write_line("");
-                MessageContext::new(nested, self.root_scope).write(w);
-            }
+        for nested in self.message.to_scope().get_messages().iter() {
+            w.write_line("");
+            MessageContext::new(nested, self.root_scope).write(w);
+        }
 
-            for enum_type in self.message_with_scope.to_scope().get_enums().iter() {
-                w.write_line("");
-                write_enum(enum_type, self.root_scope, w);
-            }
-        });
+        for enum_type in self.message.to_scope().get_enums().iter() {
+            w.write_line("");
+            EnumContext::new(enum_type, self.root_scope).write(w);
+        }
     }
 }
 
 
-fn write_enum_struct(w: &mut IndentWriter) {
-    w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
-    let ref type_name = w.en().type_name;
-    w.expr_block(format!("pub enum {}", type_name), |w| {
-        for value in w.en().values.iter() {
-            w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
-        }
-    });
+#[derive(Clone)]
+struct EnumValue {
+    proto: EnumValueDescriptorProto,
+    prefix: String,
+    enum_rust_name: String,
 }
 
-fn write_enum_impl_enum(w: &mut IndentWriter) {
-    let en = w.en.unwrap();
-    let ref type_name = w.en().type_name;
-    w.impl_for_block("::protobuf::ProtobufEnum", type_name.as_slice(), |w| {
-        w.def_fn("value(&self) -> i32", |w| {
-            w.write_line("*self as i32")
-        });
+impl EnumValue {
+    fn parse(proto: &EnumValueDescriptorProto, prefix: &str, enum_rust_name: &str) -> EnumValue {
+        EnumValue {
+            proto: proto.clone(),
+            prefix: prefix.to_string(),
+            enum_rust_name: enum_rust_name.to_string(),
+        }
+    }
+
+    // value name
+    fn name<'a>(&'a self) -> &'a str {
+        self.proto.get_name()
+    }
+
+    // enum value
+    fn number(&self) -> i32 {
+        self.proto.get_number()
+    }
+
+    fn rust_name_inner(&self) -> String {
+        self.name().to_string()
+    }
+
+    fn rust_name_outer(&self) -> String {
+        let mut r = String::new();
+        r.push_str(self.enum_rust_name.as_slice());
+        r.push_str("::");
+        r.push_str(self.rust_name_inner().as_slice());
+        r
+    }
+}
+
+
+struct EnumContext<'a> {
+    enum_with_scope: &'a EnumWithScope<'a>,
+    type_name: String,
+    values: Vec<EnumValue>,
+    lite_runtime: bool,
+}
+
+impl<'a> EnumContext<'a> {
+    fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumContext<'a> {
+        let rust_name = enum_with_scope.rust_name();
+        EnumContext {
+            enum_with_scope: enum_with_scope,
+            type_name: rust_name.clone(),
+            values: enum_with_scope.values().iter()
+                .map(|p| EnumValue::parse(p, enum_with_scope.scope.rust_prefix().as_slice(), rust_name.as_slice()))
+                .collect(),
+            lite_runtime:
+                enum_with_scope.get_scope().get_file_descriptor().get_options().get_optimize_for()
+                    == FileOptions_OptimizeMode::LITE_RUNTIME,
+        }
+    }
+
+    // find enum value by name
+    fn value_by_name(&'a self, name: &str) -> &'a EnumValue {
+        self.values.iter().find(|v| v.name() == name).unwrap()
+    }
+
+    fn write(&self, w: &mut IndentWriter) {
+        self.write_struct(w);
         w.write_line("");
-        let ref type_name = w.en().type_name;
-        w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
-            w.match_expr("value", |w| {
-                let values = w.en().values.clone();
-                for value in values.iter() {
-                    w.write_line(format!("{} => ::std::option::Option::Some({}),",
-                        value.number(), value.rust_name_outer()));
-                }
-                w.write_line(format!("_ => ::std::option::Option::None"));
-            });
+        self.write_impl_enum(w);
+        w.write_line("");
+        self.write_impl_copy(w);
+    }
+
+    fn write_struct(&self, w: &mut IndentWriter) {
+        w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
+        let ref type_name = self.type_name;
+        w.expr_block(format!("pub enum {}", type_name), |w| {
+            for value in self.values.iter() {
+                w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
+            }
         });
-        if !en.lite_runtime {
+    }
+
+    fn write_impl_enum(&self, w: &mut IndentWriter) {
+        let ref type_name = self.type_name;
+        w.impl_for_block("::protobuf::ProtobufEnum", type_name.as_slice(), |w| {
+            w.def_fn("value(&self) -> i32", |w| {
+                w.write_line("*self as i32")
+            });
             w.write_line("");
-            let ref type_name = w.en().type_name;
-            w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
-                w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                    let ref type_name = w.en().type_name;
-                    w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
+            let ref type_name = self.type_name;
+            w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
+                w.match_expr("value", |w| {
+                    let values = self.values.clone();
+                    for value in values.iter() {
+                        w.write_line(format!("{} => ::std::option::Option::Some({}),",
+                            value.number(), value.rust_name_outer()));
+                    }
+                    w.write_line(format!("_ => ::std::option::Option::None"));
                 });
             });
-        }
-    });
+            if !self.lite_runtime {
+                w.write_line("");
+                let ref type_name = self.type_name;
+                w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
+                    w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
+                        let ref type_name = self.type_name;
+                        w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
+                    });
+                });
+            }
+        });
+    }
+
+    fn write_impl_copy(&self, w: &mut IndentWriter) {
+        let ref type_name = self.type_name;
+        w.impl_for_block("::std::marker::Copy", type_name.as_slice(), |_w| {
+        });
+    }
+
 }
 
-fn write_enum_impl_copy(w: &mut IndentWriter) {
-    let ref type_name = w.en().type_name;
-    w.impl_for_block("::std::marker::Copy", type_name.as_slice(), |_w| {
-    });
-}
-
-fn write_enum(enum_with_scope: &EnumWithScope, _root_scope: &RootScope, w: &mut IndentWriter) {
-    let en = Enum::parse(enum_with_scope);
-    w.bind_enum(&en, |w| {
-        write_enum_struct(w);
-        w.write_line("");
-        write_enum_impl_enum(w);
-        w.write_line("");
-        write_enum_impl_copy(w);
-    });
-}
 
 fn proto_path_to_rust_base(path: &str) -> String {
     let without_dir = remove_to(path, '/');
@@ -2157,7 +2086,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             }
             for enum_type in scope.get_enums().iter() {
                 w.write_line("");
-                write_enum(enum_type, &root_scope, &mut w);
+                EnumContext::new(enum_type, &root_scope).write(&mut w);
             }
 
             if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {

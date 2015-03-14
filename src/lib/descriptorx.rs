@@ -45,7 +45,7 @@ pub struct FileScope<'a> {
 }
 
 impl<'a> FileScope<'a> {
-    #[allow(unused)]
+    #[allow(dead_code)]
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
         self.file_descriptor
     }
@@ -235,7 +235,7 @@ impl<'a> WithScope<'a> for MessageWithScope<'a> {
 }
 
 impl<'a> MessageWithScope<'a> {
-    #[allow(unused)]
+    #[allow(dead_code)]
     pub fn get_scope(&self) -> &Scope<'a> {
         &self.scope
     }
@@ -278,6 +278,11 @@ pub struct EnumWithScope<'a> {
 
 
 impl<'a> EnumWithScope<'a> {
+    // enum values
+    pub fn values(&'a self) -> &'a [EnumValueDescriptorProto] {
+        self.en.get_value()
+    }
+
     // For enums, the default value is the first value listed in the enum's type definition
     #[allow(dead_code)]
     pub fn default_value(&self) -> &'a EnumValueDescriptorProto {
