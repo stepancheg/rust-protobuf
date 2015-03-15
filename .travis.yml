@@ -1,10 +1,14 @@
+env:
+  - PROTOBUF_VERSION=2.6.1
+  - PROTOBUF_VERSION=3.0.0-alpha-2
+
 language: rust
 
 rust:
   - nightly
 
 before_install:
-  - sudo ./install-protobuf.sh
+  - sudo -E ./install-protobuf.sh
   - protoc --version
 
 script:
