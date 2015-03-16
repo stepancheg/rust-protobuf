@@ -430,7 +430,7 @@ impl Field {
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()
                 } else {
-                    e.values.into_iter().next().unwrap()
+                    e.values().into_iter().next().unwrap()
                 };
                 Some(ev)
             }
@@ -1894,9 +1894,8 @@ impl EnumValue {
 
 
 struct EnumContext<'a> {
-    _enum_with_scope: &'a EnumWithScope<'a>,
+    enum_with_scope: &'a EnumWithScope<'a>,
     type_name: String,
-    values: Vec<EnumValue>,
     lite_runtime: bool,
 }
 
@@ -1904,20 +1903,28 @@ impl<'a> EnumContext<'a> {
     fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumContext<'a> {
         let rust_name = enum_with_scope.rust_name();
         EnumContext {
-            _enum_with_scope: enum_with_scope,
+            enum_with_scope: enum_with_scope,
             type_name: rust_name.clone(),
-            values: enum_with_scope.values().iter()
-                .map(|p| EnumValue::parse(p, enum_with_scope.scope.rust_prefix().as_slice(), rust_name.as_slice()))
-                .collect(),
             lite_runtime:
                 enum_with_scope.get_scope().get_file_descriptor().get_options().get_optimize_for()
                     == FileOptions_OptimizeMode::LITE_RUNTIME,
         }
     }
 
+    fn values(&self) -> Vec<EnumValue> {
+        self.enum_with_scope.values().iter()
+            .map(|p| {
+                EnumValue::parse(
+                    p,
+                    self.enum_with_scope.scope.rust_prefix().as_slice(),
+                    self.type_name.as_slice())
+            })
+            .collect()
+    }
+
     // find enum value by name
-    fn value_by_name(&'a self, name: &str) -> &'a EnumValue {
-        self.values.iter().find(|v| v.name() == name).unwrap()
+    fn value_by_name(&'a self, name: &str) -> EnumValue {
+        self.values().into_iter().find(|v| v.name() == name).unwrap()
     }
 
     fn write(&self, w: &mut IndentWriter) {
@@ -1932,7 +1939,7 @@ impl<'a> EnumContext<'a> {
         w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
         let ref type_name = self.type_name;
         w.expr_block(format!("pub enum {}", type_name), |w| {
-            for value in self.values.iter() {
+            for value in self.values().iter() {
                 w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
             }
         });
@@ -1948,7 +1955,7 @@ impl<'a> EnumContext<'a> {
             let ref type_name = self.type_name;
             w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
                 w.match_expr("value", |w| {
-                    let values = self.values.clone();
+                    let values = self.values();
                     for value in values.iter() {
                         w.write_line(format!("{} => ::std::option::Option::Some({}),",
                             value.number(), value.rust_name_outer()));
