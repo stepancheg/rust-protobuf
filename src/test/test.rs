@@ -18,7 +18,7 @@ fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
     assert!(*msg == parsed);
 }
 
-fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
+pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let expected_bytes = decode_hex(hex);
     let expected_hex = encode_hex(expected_bytes.as_slice());
     let serialized = msg.write_to_bytes().unwrap();

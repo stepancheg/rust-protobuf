@@ -305,6 +305,7 @@ impl<'a> FieldWithContext<'a> {
 }
 
 
+#[derive(Clone)]
 pub struct OneofVariantWithContext<'a> {
     pub oneof: &'a OneofWithContext<'a>,
     pub field: &'a FieldDescriptorProto,
@@ -317,6 +318,7 @@ impl<'a> OneofVariantWithContext<'a> {
 }
 
 
+#[derive(Clone)]
 pub struct OneofWithContext<'a> {
     pub oneof: &'a OneofDescriptorProto,
     pub index: u32,
