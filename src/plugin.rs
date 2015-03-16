@@ -238,7 +238,6 @@ impl ::protobuf::MessageStatic for CodeGeneratorRequest {
         CodeGeneratorRequest::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -470,7 +469,6 @@ impl ::protobuf::MessageStatic for CodeGeneratorResponse {
         CodeGeneratorResponse::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -759,7 +757,6 @@ impl ::protobuf::MessageStatic for CodeGeneratorResponse_File {
         CodeGeneratorResponse_File::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,

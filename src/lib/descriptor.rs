@@ -133,7 +133,6 @@ impl ::protobuf::MessageStatic for FileDescriptorSet {
         FileDescriptorSet::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FileDescriptorSet>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -730,7 +729,6 @@ impl ::protobuf::MessageStatic for FileDescriptorProto {
         FileDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FileDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -1259,7 +1257,6 @@ impl ::protobuf::MessageStatic for DescriptorProto {
         DescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<DescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -1500,7 +1497,6 @@ impl ::protobuf::MessageStatic for DescriptorProto_ExtensionRange {
         DescriptorProto_ExtensionRange::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<DescriptorProto_ExtensionRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -2028,7 +2024,6 @@ impl ::protobuf::MessageStatic for FieldDescriptorProto {
         FieldDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FieldDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -2369,7 +2364,6 @@ impl ::protobuf::MessageStatic for OneofDescriptorProto {
         OneofDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<OneofDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -2640,7 +2634,6 @@ impl ::protobuf::MessageStatic for EnumDescriptorProto {
         EnumDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -2919,7 +2912,6 @@ impl ::protobuf::MessageStatic for EnumValueDescriptorProto {
         EnumValueDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumValueDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -3204,7 +3196,6 @@ impl ::protobuf::MessageStatic for ServiceDescriptorProto {
         ServiceDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<ServiceDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -3551,7 +3542,6 @@ impl ::protobuf::MessageStatic for MethodDescriptorProto {
         MethodDescriptorProto::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<MethodDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -4166,7 +4156,6 @@ impl ::protobuf::MessageStatic for FileOptions {
         FileOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FileOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -4550,7 +4539,6 @@ impl ::protobuf::MessageStatic for MessageOptions {
         MessageOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<MessageOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -4960,7 +4948,6 @@ impl ::protobuf::MessageStatic for FieldOptions {
         FieldOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<FieldOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -5275,7 +5262,6 @@ impl ::protobuf::MessageStatic for EnumOptions {
         EnumOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -5491,7 +5477,6 @@ impl ::protobuf::MessageStatic for EnumValueOptions {
         EnumValueOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<EnumValueOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -5700,7 +5685,6 @@ impl ::protobuf::MessageStatic for ServiceOptions {
         ServiceOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<ServiceOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -5909,7 +5893,6 @@ impl ::protobuf::MessageStatic for MethodOptions {
         MethodOptions::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<MethodOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -6339,7 +6322,6 @@ impl ::protobuf::MessageStatic for UninterpretedOption {
         UninterpretedOption::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<UninterpretedOption>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -6601,7 +6583,6 @@ impl ::protobuf::MessageStatic for UninterpretedOption_NamePart {
         UninterpretedOption_NamePart::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<UninterpretedOption_NamePart>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -6777,7 +6758,6 @@ impl ::protobuf::MessageStatic for SourceCodeInfo {
         SourceCodeInfo::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<SourceCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
@@ -7090,7 +7070,6 @@ impl ::protobuf::MessageStatic for SourceCodeInfo_Location {
         SourceCodeInfo_Location::new()
     }
 
-    #[allow(unused_unsafe,unused_mut)]
     fn descriptor_static(_: ::std::option::Option<SourceCodeInfo_Location>) -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
