@@ -18,7 +18,6 @@ use descriptorx::FileScope;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
 
-#[allow(dead_code)]
 #[derive(Clone,PartialEq,Eq)]
 enum RustType {
     Signed(u32),
