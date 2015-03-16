@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 set -ex
 
@@ -6,8 +6,6 @@ die() {
     echo "$@" >&2
     exit 1
 }
-
-set -ex
 
 test -n "$PROTOBUF_VERSION" || die "PROTOBUF_VERSION env var is undefined"
 
