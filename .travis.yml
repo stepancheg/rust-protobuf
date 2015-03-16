@@ -1,3 +1,5 @@
+sudo: false
+
 env:
   - PROTOBUF_VERSION=2.6.1
   - PROTOBUF_VERSION=3.0.0-alpha-2
@@ -8,11 +10,11 @@ rust:
   - nightly
 
 before_install:
-  - sudo -E ./install-protobuf.sh
-  - protoc --version
+  - ./install-protobuf.sh
+  - PATH=/home/travis/bin:$PATH protoc --version
 
 script:
   # Full rebuild with regenerate
-  - src/full-rebuild.sh
+  - PATH=/home/travis/bin:$PATH src/full-rebuild.sh
   # Test cargo configuration
   - cargo test
