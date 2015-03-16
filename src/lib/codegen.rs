@@ -21,9 +21,9 @@ use descriptorx::WithScope;
 #[allow(dead_code)]
 #[derive(Clone,PartialEq,Eq)]
 enum RustType {
-    Signed(usize),
-    Unsigned(usize),
-    Float(usize),
+    Signed(u32),
+    Unsigned(u32),
+    Float(u32),
     Bool,
     Vec(Box<RustType>),
     String,
