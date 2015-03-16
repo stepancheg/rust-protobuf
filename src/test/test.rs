@@ -264,3 +264,38 @@ fn test_invalid_tag() {
     let r = parse_from_bytes::<TestInvalidTag>(bytes.as_slice());
     assert!(r.is_err());
 }
+
+#[test]
+fn test_truncated_no_varint() {
+    // 08 is valid tag that should be followed by varint
+    let bytes = decode_hex("08");
+    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    assert!(r.is_err());
+}
+
+#[test]
+fn test_truncated_middle_of_varint() {
+    // 08 is field 1, wire type varint
+    // 96 is non-final byte of varint
+    let bytes = decode_hex("08 96");
+    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    assert!(r.is_err());
+}
+
+#[test]
+fn test_truncated_middle_of_length_delimited() {
+    // 0a is field 1, wire type length delimited
+    // 03 is length 3
+    let bytes = decode_hex("0a 03 10");
+    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    assert!(r.is_err());
+}
+
+#[test]
+fn test_truncated_repeated_packed() {
+    // 12 is field 2, wire type length delimited
+    // 04 is length 4
+    let bytes = decode_hex("12 04 10 20");
+    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    assert!(r.is_err());
+}

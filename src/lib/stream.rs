@@ -218,15 +218,15 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
-    pub fn push_limit(&mut self, limit: u32) -> u32 {
+    pub fn push_limit(&mut self, limit: u32) -> ProtobufResult<u32> {
         let old_limit = self.current_limit;
         let new_limit = self.pos() + limit;
         if new_limit > old_limit {
-            panic!("truncated message");
+            return Err(ProtobufError::WireError(format!("truncated message")));
         }
         self.current_limit = new_limit;
         self.recompute_buffer_size_after_limit();
-        old_limit
+        Ok(old_limit)
     }
 
     pub fn pop_limit(&mut self, old_limit: u32) {
@@ -394,7 +394,7 @@ impl<'a> CodedInputStream<'a> {
 
         target.reserve((len / 4) as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_double()));
         }
@@ -407,7 +407,7 @@ impl<'a> CodedInputStream<'a> {
 
         target.reserve((len / 4) as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_float()));
         }
@@ -417,7 +417,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_int64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_int64()));
         }
@@ -427,7 +427,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_int32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_int32()));
         }
@@ -437,7 +437,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_uint64_into(&mut self, target: &mut Vec<u64>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_uint64()));
         }
@@ -447,7 +447,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_uint32_into(&mut self, target: &mut Vec<u32>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_uint32()));
         }
@@ -457,7 +457,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_sint64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_sint64()));
         }
@@ -467,7 +467,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_sint32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_sint32()));
         }
@@ -480,7 +480,7 @@ impl<'a> CodedInputStream<'a> {
 
         target.reserve((len / 8) as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_fixed64()));
         }
@@ -493,7 +493,7 @@ impl<'a> CodedInputStream<'a> {
 
         target.reserve((len / 4) as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_fixed32()));
         }
@@ -506,7 +506,7 @@ impl<'a> CodedInputStream<'a> {
 
         target.reserve((len / 8) as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_sfixed64()));
         }
@@ -519,7 +519,7 @@ impl<'a> CodedInputStream<'a> {
 
         target.reserve((len / 4) as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_sfixed32()));
         }
@@ -533,7 +533,7 @@ impl<'a> CodedInputStream<'a> {
         // regular bool value is 1-byte size
         target.reserve(len as usize);
 
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_bool()));
         }
@@ -543,7 +543,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_repeated_packed_enum_into<E : ProtobufEnum>(&mut self, target: &mut Vec<E>) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_enum()));
         }
@@ -633,7 +633,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
-        let old_limit = self.push_limit(len);
+        let old_limit = try!(self.push_limit(len));
         try!(message.merge_from(self));
         self.pop_limit(old_limit);
         Ok(())
@@ -1100,7 +1100,7 @@ mod test {
     #[test]
     fn test_input_stream_limits() {
         test_read("aa bb cc", |is| {
-            let old_limit = is.push_limit(1);
+            let old_limit = is.push_limit(1).unwrap();
             assert_eq!(1, is.bytes_until_limit());
             assert_eq!([0xaa].as_slice(), is.read_raw_bytes(1).unwrap().as_slice());
             is.pop_limit(old_limit);
