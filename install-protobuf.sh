@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -ex
+
 die() {
     echo "$@" >&2
     exit 1
@@ -25,4 +27,4 @@ curl -sL https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION
 
 cd protobuf-$PROTOBUF_VERSION
 
-./configure --prefix=/usr && make && make install
+./configure --prefix=/usr && make -j2 && make install
