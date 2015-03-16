@@ -1,7 +1,5 @@
 // hex encoder and decoder used by rust-protobuf unittests
 
-#![allow(dead_code)]
-
 use std::char;
 
 fn decode_hex_digit(digit: char) -> u8 {

@@ -1,5 +1,4 @@
 #![feature(core)]
-#![feature(path)]
 
 extern crate protobuf;
 extern crate rand;

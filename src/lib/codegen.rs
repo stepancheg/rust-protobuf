@@ -18,7 +18,6 @@ use descriptorx::FileScope;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
 
-#[allow(dead_code)]
 #[derive(Clone,PartialEq,Eq)]
 enum RustType {
     Signed(usize),
@@ -871,13 +870,6 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    #[allow(dead_code)]
-    fn self_field_push<S : Str>(&mut self, value: S) {
-        assert!(self.field().repeated);
-        let self_field = self.self_field();
-        self.write_line(format!("{}.push({});", self_field, value.as_slice()));
-    }
-
     fn self_field_vec_packed_fixed_data_size(&self) -> String {
         assert!(self.field().is_fixed());
         format!("({}.len() * {}) as u32",
@@ -949,13 +941,6 @@ impl<'a> IndentWriter<'a> {
         }).unwrap();
     }
 
-    #[allow(dead_code)]
-    fn write_lines(&mut self, lines: &[String]) {
-        for line in lines.iter() {
-            self.write_line(line.to_string());
-        }
-    }
-
     fn indented<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
@@ -966,7 +951,6 @@ impl<'a> IndentWriter<'a> {
         });
     }
 
-    #[allow(dead_code)]
     fn commented<F>(&mut self, cb: F)
         where F : Fn(&mut IndentWriter)
     {
@@ -1056,11 +1040,6 @@ impl<'a> IndentWriter<'a> {
     fn derive(&mut self, derive: &[&str]) {
         let v: Vec<String> = derive.iter().map(|&s| s.to_string()).collect();
         self.write_line(format!("#[derive({})]", v.connect(",")));
-    }
-
-    fn allow(&mut self, what: &[&str]) {
-        let v: Vec<String> = what.iter().map(|&s| s.to_string()).collect();
-        self.write_line(format!("#[allow({})]", v.connect(",")));
     }
 
     fn comment(&mut self, comment: &str) {
@@ -1695,10 +1674,13 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_descriptor_static(&self, w: &mut IndentWriter) {
-        w.allow(&["unused_unsafe", "unused_mut"]);
         w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
-                w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
+                if self.fields.is_empty() {
+                    w.write_line(format!("let fields = ::std::vec::Vec::new();"));
+                } else {
+                    w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
+                }
                 for field in self.fields.iter() {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
                     w.indented(|w| {
@@ -1904,18 +1886,16 @@ impl EnumValue {
 }
 
 
-struct EnumContext<'a> {
-    enum_with_scope: &'a EnumWithScope<'a>,
+struct EnumContext {
     type_name: String,
     values: Vec<EnumValue>,
     lite_runtime: bool,
 }
 
-impl<'a> EnumContext<'a> {
-    fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumContext<'a> {
+impl<'a> EnumContext {
+    fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumContext {
         let rust_name = enum_with_scope.rust_name();
         EnumContext {
-            enum_with_scope: enum_with_scope,
             type_name: rust_name.clone(),
             values: enum_with_scope.values().iter()
                 .map(|p| EnumValue::parse(p, enum_with_scope.scope.rust_prefix().as_slice(), rust_name.as_slice()))
@@ -2000,7 +1980,6 @@ pub struct GenResult {
     pub content: Vec<u8>,
 }
 
-#[allow(missing_copy_implementations)]
 pub struct GenOptions {
     pub dummy: bool,
 }
