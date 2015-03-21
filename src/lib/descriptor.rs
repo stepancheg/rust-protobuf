@@ -86,6 +86,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.file.iter() {
@@ -607,6 +608,7 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -1150,6 +1152,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -1447,6 +1450,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.start.iter() {
@@ -1929,6 +1933,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -2320,6 +2325,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -2572,6 +2578,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -2853,6 +2860,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -3134,6 +3142,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -3477,6 +3486,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -4043,6 +4053,7 @@ impl ::protobuf::Message for FileOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.java_package.iter() {
@@ -4474,6 +4485,7 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.message_set_wire_format.is_some() {
@@ -4865,6 +4877,7 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.ctype.iter() {
@@ -5203,6 +5216,7 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.allow_alias.is_some() {
@@ -5424,6 +5438,7 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.deprecated.is_some() {
@@ -5632,6 +5647,7 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.deprecated.is_some() {
@@ -5840,6 +5856,7 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.deprecated.is_some() {
@@ -6239,6 +6256,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {
@@ -6533,6 +6551,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name_part.iter() {
@@ -6711,6 +6730,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.location.iter() {
@@ -6998,6 +7018,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.path.is_empty() {

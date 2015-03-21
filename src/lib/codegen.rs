@@ -1175,7 +1175,6 @@ impl<'a> IndentWriter<'a> {
         self.write_line(format!("#[derive({})]", v.connect(",")));
     }
 
-    #[allow(dead_code)]
     fn allow(&mut self, what: &[&str]) {
         let v: Vec<String> = what.iter().map(|&s| s.to_string()).collect();
         self.write_line(format!("#[allow({})]", v.connect(",")));
@@ -1207,16 +1206,35 @@ impl<'a> IndentWriter<'a> {
         self.expr_block(format!("while {}", cond.as_slice()), cb);
     }
 
+    // if ... { ... }
     fn if_stmt<S : Str, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.stmt_block(format!("if {}", cond.as_slice()), cb);
     }
 
+    // if ... {} else { ... }
+    fn if_else_stmt<S : Str, F>(&mut self, cond: S, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
+        self.write_line(format!("if {} {{", cond.as_slice()));
+        self.write_line("} else {");
+        self.indented(cb);
+        self.write_line("}");
+    }
+
+    // if let ... = ... { ... }
     fn if_let_stmt<F>(&mut self, decl: &str, expr: &str, cb: F)
         where F : Fn(&mut IndentWriter)
     {
         self.if_stmt(format!("let {} = {}", decl, expr), cb);
+    }
+
+    // if let ... = ... { } else { ... }
+    fn if_let_else_stmt<F>(&mut self, decl: &str, expr: &str, cb: F)
+        where F : Fn(&mut IndentWriter)
+    {
+        self.if_else_stmt(format!("let {} = {}", decl, expr), cb);
     }
 
     fn for_stmt<S1 : Str, S2 : Str, F>(&mut self, over: S1, varn: S2, cb: F)
@@ -1469,6 +1487,22 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
     |w| {
         if field.is_oneof() {
             let self_field_oneof = w.self_field_oneof();
+
+            // if oneof does not contain current field
+            w.if_let_else_stmt(&format!(
+                        "::std::option::Option::Some({}(_))",
+                        field.variant_path())[..], &self_field_oneof[..],
+            |w|
+            {
+                // initialize it with default value
+                w.write_line(format!(
+                    "{} = ::std::option::Option::Some({}({}));",
+                    self_field_oneof,
+                    field.variant_path(),
+                    field.element_default_value_rust()));
+            });
+
+            // extract field
             w.match_expr(self_field_oneof, |w| {
                 w.case_expr(format!(
                         "::std::option::Option::Some({}(ref mut v))",
@@ -1698,6 +1732,8 @@ impl<'a> MessageContext<'a> {
         // First appended element is size of self, and then nested message sizes.
         // in serialization order are appended recursively.");
         w.comment("Compute sizes of nested messages");
+        // there are unused variables in oneof
+        w.allow(&["unused_variables"]);
         w.def_fn("compute_size(&self) -> u32", |w| {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");

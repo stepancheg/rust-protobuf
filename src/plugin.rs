@@ -179,6 +179,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.file_to_generate.iter() {
@@ -416,6 +417,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.error.iter() {
@@ -701,6 +703,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.name.iter() {

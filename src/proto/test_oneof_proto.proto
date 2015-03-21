@@ -3,6 +3,7 @@ enum EnumForOneof {
 }
 
 message MessageForOneof {
+    optional int32 f = 1;
 }
 
 message TestOneof {

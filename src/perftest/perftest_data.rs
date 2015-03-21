@@ -84,6 +84,7 @@ impl ::protobuf::Message for Test1 {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.value.iter() {
@@ -249,6 +250,7 @@ impl ::protobuf::Message for TestRepeatedBool {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         my_size += 2 * self.values.len() as u32;
@@ -411,6 +413,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.values.is_empty() {
@@ -640,6 +643,7 @@ impl ::protobuf::Message for TestRepeatedMessages {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.messages1.iter() {
@@ -933,6 +937,7 @@ impl ::protobuf::Message for TestOptionalMessages {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.message1.iter() {
@@ -1238,6 +1243,7 @@ impl ::protobuf::Message for TestStrings {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.s1.iter() {
@@ -1579,6 +1585,7 @@ impl ::protobuf::Message for PerftestData {
     }
 
     // Compute sizes of nested messages
+    #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in self.test1.iter() {

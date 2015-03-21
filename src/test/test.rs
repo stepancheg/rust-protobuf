@@ -12,7 +12,7 @@ fn test_serialize_deserialize_length_delimited<M : Message + MessageStatic>(msg:
     assert!(*msg == parsed);
 }
 
-fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
+pub fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_to_bytes().unwrap();
     let parsed = parse_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
     assert!(*msg == parsed);
