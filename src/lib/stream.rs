@@ -281,7 +281,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
         let mut bytes = [0u32; 4];
-        for i in range(0, 4) {
+        for i in 0..4 {
             bytes[i] = try!(self.read_raw_byte()) as u32;
         }
         Ok(
@@ -294,7 +294,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
         let mut bytes = [0u64; 8];
-        for i in range(0, 8) {
+        for i in 0..8 {
             bytes[i] = try!(self.read_raw_byte()) as u64;
         }
         Ok(
