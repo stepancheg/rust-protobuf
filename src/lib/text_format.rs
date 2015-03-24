@@ -27,7 +27,7 @@ pub fn print_to(m: &Message, buf: &mut String) {
     let mut first = true;
     for f in d.fields().iter() {
         if f.is_repeated() {
-            for i in range(0, f.len_field(m)) {
+            for i in 0..f.len_field(m) {
                 if !first {
                     buf.push_str(" ");
                 }
