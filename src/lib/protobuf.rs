@@ -5,7 +5,6 @@
 #![feature(collections)]
 #![feature(core)]
 #![feature(io)]
-#![feature(std_misc)]
 #![feature(str_char)]
 
 
