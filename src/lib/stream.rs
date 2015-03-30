@@ -24,7 +24,7 @@ pub mod wire_format {
     pub use self::WireType::*;
 
     pub const TAG_TYPE_BITS: u32 = 3;
-    pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) as u32 - 1;
+    pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) - 1;
     // max possible tag number
     pub const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
 

@@ -44,7 +44,7 @@ struct GetSingularMessageImpl<M, N> {
 
 impl<M : Message, N : Message + 'static> GetSingularMessage<M> for GetSingularMessageImpl<M, N> {
     fn get_message<'a>(&self, m: &'a M) -> &'a Message {
-        (self.get)(m) as &Message
+        (self.get)(m)
     }
 }
 
@@ -79,7 +79,7 @@ impl<M : Message, N : Message + 'static> GetRepeatedMessage<M> for GetRepeatedMe
     }
 
     fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a Message {
-        &(self.get)(m)[index] as &Message
+        &(self.get)(m)[index]
     }
 }
 

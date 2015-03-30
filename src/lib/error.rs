@@ -27,7 +27,7 @@ impl Error for ProtobufError {
 
     fn cause(&self) -> Option<&Error> {
         match self {
-            &ProtobufError::IoError(ref e) => Some(e as &Error),
+            &ProtobufError::IoError(ref e) => Some(e),
             &ProtobufError::WireError(..) => None,
         }
     }
