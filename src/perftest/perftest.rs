@@ -1,4 +1,5 @@
 #![feature(core)]
+#![feature(slice_patterns)]
 
 extern crate protobuf;
 extern crate rand;
