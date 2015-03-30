@@ -7,6 +7,7 @@ use std::io::Read;
 use std::io::Write;
 use std::mem;
 use std::raw;
+use std::marker::Reflect;
 
 use clear::Clear;
 use reflect::MessageDescriptor;
@@ -37,7 +38,7 @@ pub trait MessageStatic : Message + Clone + Default + PartialEq {
 }
 
 
-pub trait Message : fmt::Debug + Clear {
+pub trait Message : fmt::Debug + Clear + Reflect {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
