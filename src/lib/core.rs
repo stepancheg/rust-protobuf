@@ -1,6 +1,7 @@
 // TODO: drop all panic!
 
 use std::any::TypeId;
+use std::marker::Reflect;
 use std::default::Default;
 use std::fmt;
 use std::io::Read;
@@ -37,7 +38,7 @@ pub trait MessageStatic : Message + Clone + Default + PartialEq {
 }
 
 
-pub trait Message : fmt::Debug + Clear {
+pub trait Message : Reflect + fmt::Debug + Clear {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
