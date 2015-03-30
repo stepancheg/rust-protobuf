@@ -152,7 +152,7 @@ impl RustType {
     }
 
     // expression to convert `v` of type `self` to type `target`
-    fn into(&self, target: &RustType, v: &str) -> String {
+    fn into_ty(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
             (x, y) if x == y                        => format!("{}", v),
             (&RustType::Ref(ref x), y) if **x == *y => format!("*{}", v),
@@ -766,7 +766,7 @@ impl Field {
                             t => t.clone(),
                         };
                         format!("::protobuf::rt::enum_size({}, {})",
-                                self.number as isize, var_type.into(&param_type, var))
+                                self.number as isize, var_type.into_ty(&param_type, var))
                     },
                     _ => {
                         let param_type = match var_type {
@@ -774,7 +774,7 @@ impl Field {
                             t => t.clone(),
                         };
                         format!("::protobuf::rt::value_size({}, {}, ::protobuf::wire_format::{:?})",
-                                self.number, var_type.into(&param_type, var), self.wire_type)
+                                self.number, var_type.into_ty(&param_type, var), self.wire_type)
                     }
                 }
             },
@@ -801,7 +801,7 @@ impl Field {
                     os,
                     os_write_fn_suffix,
                     number,
-                    ty.into(&param_type, var)));
+                    ty.into_ty(&param_type, var)));
             }
         }
     }
@@ -989,10 +989,10 @@ impl<'a> IndentWriter<'a> {
 
     fn self_field_assign_value<S : Str>(&mut self, value: S, ty: &RustType) {
         if self.field().repeated {
-            let converted = ty.into(&self.field().full_storage_type(), value.as_slice());
+            let converted = ty.into_ty(&self.field().full_storage_type(), value.as_slice());
             self.self_field_assign(converted);
         } else {
-            let converted = ty.into(&self.field().type_name, value.as_slice());
+            let converted = ty.into_ty(&self.field().type_name, value.as_slice());
             let wrapped = self.field().full_storage_type().wrap_value(converted.as_slice());
             self.self_field_assign(wrapped);
         }
@@ -1360,7 +1360,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
                     let param_type = w.field().os_write_fn_param_type();
                     let os_write_fn_suffix = w.field().os_write_fn_suffix();
                     w.write_line(format!("try!(os.write_{}_no_tag({}));",
-                        os_write_fn_suffix, v_type.into(&param_type, "v")));
+                        os_write_fn_suffix, v_type.into_ty(&param_type, "v")));
                 });
             });
         },
@@ -1398,7 +1398,7 @@ fn write_message_field_get(w: &mut IndentWriter) {
                         "::std::option::Option::Some({}({}))",
                         field.variant_path(),
                         refv),
-                    vtype.into(&get_xxx_return_type, "v"));
+                    vtype.into_ty(&get_xxx_return_type, "v"));
                 w.case_expr("_", field.get_xxx_default_value_rust());
             });
         } else if !w.field().repeated {
@@ -1416,7 +1416,7 @@ fn write_message_field_get(w: &mut IndentWriter) {
                         let r_type = w.field().get_xxx_return_type();
                         w.case_expr(
                             "Some(v)",
-                            v_type.into(&r_type, "v")
+                            v_type.into_ty(&r_type, "v")
                         );
                         let get_xxx_default_value_rust = w.field().get_xxx_default_value_rust();
                         w.case_expr(
