@@ -58,11 +58,11 @@ mod test {
 
     #[test]
     fn test_decode_hex() {
-        assert_eq!([].to_vec(), decode_hex(""));
-        assert_eq!([0x00u8].to_vec(), decode_hex("00"));
-        assert_eq!([0xffu8].to_vec(), decode_hex("ff"));
-        assert_eq!([0xabu8].to_vec(), decode_hex("AB"));
-        assert_eq!([0xfau8, 0x19].to_vec(), decode_hex("fa 19"));
+        assert_eq!(decode_hex(""), [].to_vec());
+        assert_eq!(decode_hex("00"), [0x00u8].to_vec());
+        assert_eq!(decode_hex("ff"), [0xffu8].to_vec());
+        assert_eq!(decode_hex("AB"), [0xabu8].to_vec());
+        assert_eq!(decode_hex("fa 19"), [0xfau8, 0x19].to_vec());
     }
 
     #[test]

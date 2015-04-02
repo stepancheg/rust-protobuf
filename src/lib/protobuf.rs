@@ -3,8 +3,8 @@
 
 // warnings
 #![feature(collections)]
+#![feature(convert)]
 #![feature(core)]
-#![feature(io)]
 #![feature(str_char)]
 
 
