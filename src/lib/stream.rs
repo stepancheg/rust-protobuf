@@ -199,9 +199,7 @@ impl<'a> CodedInputStream<'a> {
     fn refill_buffer_really(&mut self) -> ProtobufResult<()> {
         if !try!(self.refill_buffer()) {
             return Err(ProtobufError::IoError(io::Error::new(
-                io::ErrorKind::Other,
-                "unexpected EOF",
-                None)));
+                io::ErrorKind::Other, "unexpected EOF")));
         }
         Ok(())
     }

@@ -4,7 +4,7 @@ use std::fmt;
 
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
-#[derive(Debug,Eq,PartialEq)]
+#[derive(Debug)]
 pub enum ProtobufError {
     IoError(io::Error),
     WireError(String),
