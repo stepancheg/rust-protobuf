@@ -1,4 +1,5 @@
 #![feature(core)]
+#![feature(convert)]
 #![feature(slice_patterns)]
 
 extern crate protobuf;

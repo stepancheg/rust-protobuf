@@ -7,7 +7,7 @@ use protobuf::text_format::print_to_string;
 fn t<F : FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();
     setter(&mut m);
-    assert_eq!(expected, print_to_string(&m).as_slice());
+    assert_eq!(print_to_string(&m).as_slice(), expected);
 }
 
 #[test]
