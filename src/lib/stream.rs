@@ -54,6 +54,7 @@ pub mod wire_format {
         }
     }
 
+    #[derive(Clone)]
     pub struct Tag {
         field_number: u32,
         wire_type: WireType,

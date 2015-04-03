@@ -250,6 +250,7 @@ impl MessageDescriptor {
     }
 }
 
+#[derive(Clone)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
 }
