@@ -153,7 +153,7 @@ impl<'a> CodedInputStream<'a> {
         self.buffer.slice(self.buffer_pos as usize, self.buffer_size as usize)
     }
 
-    fn pos(&self) -> u32 {
+    pub fn pos(&self) -> u32 {
         self.total_bytes_retired + self.buffer_pos
     }
 
