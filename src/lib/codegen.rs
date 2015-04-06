@@ -78,6 +78,48 @@ impl RustType {
         }
     }
 
+    fn is_str(&self) -> bool {
+        match *self {
+            RustType::Str => true,
+            _ => false
+        }
+    }
+
+    fn is_string(&self) -> bool {
+        match *self {
+            RustType::String => true,
+            _ => false
+        }
+    }
+
+    fn is_slice(&self) -> bool {
+        match *self {
+            RustType::Slice(..) => true,
+            _ => false
+        }
+    }
+
+    fn is_message(&self) -> bool {
+        match *self {
+            RustType::Message(..) => true,
+            _ => false
+        }
+    }
+
+    fn is_enum(&self) -> bool {
+        match *self {
+            RustType::Enum(..) => true,
+            _ => false
+        }
+    }
+
+    fn is_u8(&self) -> bool {
+        match *self {
+            RustType::Unsigned(8) => true,
+            _ => false
+        }
+    }
+
     fn is_ref(&self) -> bool {
         match *self {
             RustType::Ref(..) => true,
@@ -110,8 +152,8 @@ impl RustType {
     // default value for type
     fn default_value(&self) -> String {
         match *self {
-            RustType::Ref(box RustType::Str)         => "\"\"".to_string(),
-            RustType::Ref(box RustType::Slice(..))   => "&[]".to_string(),
+            RustType::Ref(ref t) if t.is_str()       => "\"\"".to_string(),
+            RustType::Ref(ref t) if t.is_slice()     => "&[]".to_string(),
             RustType::Signed(..)                     |
             RustType::Unsigned(..)                   => "0".to_string(),
             RustType::Float(..)                      => "0.".to_string(),
@@ -123,7 +165,10 @@ impl RustType {
             RustType::SingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_string(),
             RustType::RepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
             RustType::Message(ref name)              => format!("{}::new()", name),
-            RustType::Ref(box RustType::Message(ref name)) => format!("{}::default_instance()", name),
+            RustType::Ref(ref m) if m.is_message()   => match **m {
+                RustType::Message(ref name) => format!("{}::default_instance()", name),
+                _ => unreachable!()
+            },
             RustType::Enum(..)                       =>
                 panic!("enum default value cannot be determined by type"),
             _ => panic!("cannot create default value for: {:?}", *self),
@@ -157,16 +202,21 @@ impl RustType {
         match (self, target) {
             (x, y) if x == y                        => format!("{}", v),
             (&RustType::Ref(ref x), y) if **x == *y => format!("*{}", v),
-            (&RustType::String, &RustType::Ref(box RustType::Str))                    |
-            (&RustType::Ref(box RustType::String), &RustType::Ref(box RustType::Str)) =>
+            (&RustType::String, &RustType::Ref(ref t)) if t.is_str() =>
                     format!("&{}", v),
-            (&RustType::Vec(ref x), &RustType::Ref(box RustType::Slice(ref y))) if x == y =>
+            (&RustType::Ref(ref t1), &RustType::Ref(ref t2)) if t1.is_string() && t2.is_str() =>
                     format!("&{}", v),
-            (&RustType::Ref(box RustType::Vec(ref x)), &RustType::Ref(box RustType::Slice(ref y))) if x == y =>
+            (&RustType::Vec(ref x), &RustType::Ref(ref t))
+                if match **t { RustType::Slice(ref y) => x == y, _ => false } =>
                     format!("&{}", v),
+            (&RustType::Ref(ref t1), &RustType::Ref(ref t2))
+                if match (&**t1, &**t2) {
+                    (&RustType::Vec(ref x), &RustType::Slice(ref y)) => x == y,
+                    _ => false
+                } => format!("&{}", v),
             (&RustType::Enum(..), &RustType::Signed(32)) =>
                     format!("{} as i32", v),
-            (&RustType::Ref(box RustType::Enum(..)), &RustType::Signed(32)) =>
+            (&RustType::Ref(ref t), &RustType::Signed(32)) if t.is_enum() =>
                     format!("*{} as i32", v),
             _ => panic!("cannot convert {:?} to {:?}", self, target),
         }
@@ -701,7 +751,7 @@ impl Field {
         let suffix = match &self.type_name {
             t if t.is_primitive()                     => format!("{:?}", t),
             &RustType::String                         => "string".to_string(),
-            &RustType::Vec(box RustType::Unsigned(8)) => "bytes".to_string(),
+            &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_string(),
             &RustType::Enum(..)                       => "enum".to_string(),
             &RustType::Message(..)                    => "message".to_string(),
             t => panic!("unexpected field type: {:?}", t),

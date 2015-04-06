@@ -1,5 +1,5 @@
 #![crate_type = "lib"]
-#![feature(box_patterns, alloc)]
+#![feature(alloc)]
 
 // warnings
 #![feature(collections)]
