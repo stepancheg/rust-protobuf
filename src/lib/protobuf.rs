@@ -3,7 +3,6 @@
 
 // warnings
 #![feature(collections)]
-#![feature(convert)]
 #![feature(core)]
 
 extern crate collections;

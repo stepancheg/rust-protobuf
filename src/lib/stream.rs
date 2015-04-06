@@ -756,7 +756,7 @@ impl<'a> CodedOutputStream<'a> {
         if self.position as usize == self.buffer.len() {
             try!(self.refresh_buffer());
         }
-        self.buffer.as_mut_slice()[self.position as usize] = byte;
+        self.buffer[self.position as usize] = byte;
         self.position += 1;
         Ok(())
     }
@@ -1101,9 +1101,9 @@ mod test {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1).unwrap();
             assert_eq!(1, is.bytes_until_limit());
-            assert_eq!(&[0xaa], is.read_raw_bytes(1).unwrap().as_slice());
+            assert_eq!(&[0xaa as u8], &is.read_raw_bytes(1).unwrap() as &[u8]);
             is.pop_limit(old_limit);
-            assert_eq!(&[0xbb, 0xcc], is.read_raw_bytes(2).unwrap().as_slice());
+            assert_eq!(&[0xbb as u8, 0xcc], &is.read_raw_bytes(2).unwrap() as &[u8]);
         });
     }
 
@@ -1117,7 +1117,7 @@ mod test {
             gen(&mut os).unwrap();
             os.flush().unwrap();
         }
-        assert_eq!(encode_hex(decode_hex(expected).as_slice()), encode_hex(v.as_slice()));
+        assert_eq!(encode_hex(&decode_hex(expected)), encode_hex(&v));
     }
 
     #[test]

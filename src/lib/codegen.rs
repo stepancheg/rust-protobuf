@@ -1636,7 +1636,7 @@ fn write_message_oneof(oneof: &OneofContext, w: &mut IndentWriter) {
     if false /* lite_runtime */ {
         derive.push("Debug");
     }
-    w.derive(derive.as_slice());
+    w.derive(&derive);
     w.pub_enum(&format!("{:?}", oneof.type_name)[..], |w| {
         for variant in oneof.variants() {
             w.write_line(format!("{}({:?}),", variant.field.name, variant.field.type_name));
@@ -2007,7 +2007,7 @@ impl<'a> MessageContext<'a> {
         if self.lite_runtime {
             derive.push("Debug");
         }
-        w.derive(derive.as_slice());
+        w.derive(&derive);
         w.pub_struct(&self.type_name, |w| {
             if !self.fields.is_empty() {
                 w.comment("message fields");

@@ -23,7 +23,7 @@ impl UnknownValue {
             UnknownValue::Fixed32(fixed32) => UnknownValueRef::Fixed32(fixed32),
             UnknownValue::Fixed64(fixed64) => UnknownValueRef::Fixed64(fixed64),
             UnknownValue::Varint(varint) => UnknownValueRef::Varint(varint),
-            UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(bytes.as_slice()),
+            UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(&bytes),
         }
     }
 }
@@ -99,7 +99,7 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
         }
         let length_delimited = self.length_delimited.next();
         if length_delimited.is_some() {
-            return Some(UnknownValueRef::LengthDelimited(length_delimited.unwrap().as_slice()))
+            return Some(UnknownValueRef::LengthDelimited(&length_delimited.unwrap()))
         }
         None
     }

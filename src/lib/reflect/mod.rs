@@ -92,7 +92,7 @@ impl FieldDescriptor {
     }
 
     pub fn get_rep_bytes_item<'a>(&self, m: &'a Message, index: usize) -> &'a [u8] {
-        self.get_rep_bytes(m)[index].as_slice()
+        &self.get_rep_bytes(m)[index]
     }
 
     pub fn get_u32(&self, m: &Message) -> u32 {
@@ -235,7 +235,7 @@ impl MessageDescriptor {
     }
 
     pub fn fields<'a>(&'a self) -> &'a [FieldDescriptor] {
-        self.fields.as_slice()
+        &self.fields
     }
 
     pub fn field_by_name<'a>(&'a self, name: &str) -> &'a FieldDescriptor {

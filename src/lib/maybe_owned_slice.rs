@@ -20,7 +20,7 @@ impl<'a, T : 'a> MaybeOwnedSlice<'a, T> {
     pub fn as_mut_slice<'b>(&'b mut self) -> &'b mut [T] {
         match *self {
             MaybeOwnedSlice::Ref(ref mut slice) => unsafe { mem::transmute(slice.as_ref()) },
-            MaybeOwnedSlice::Owned(ref mut vec) => vec.as_mut_slice(),
+            MaybeOwnedSlice::Owned(ref mut vec) => &mut *vec,
         }
     }
 
@@ -34,7 +34,7 @@ impl<'a, T : 'a> AsRef<[T]> for MaybeOwnedSlice<'a, T> {
     fn as_ref<'b>(&'b self) -> &'b [T] {
         match *self {
             MaybeOwnedSlice::Ref(slice) => slice,
-            MaybeOwnedSlice::Owned(ref vec) => vec.as_slice(),
+            MaybeOwnedSlice::Owned(ref vec) => &vec,
         }
     }
 }

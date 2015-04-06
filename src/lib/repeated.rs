@@ -76,7 +76,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
-        self.vec.as_mut_slice()
+        &mut self.vec
     }
 
     #[inline]

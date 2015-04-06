@@ -196,7 +196,7 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
 
         r += tag_size(number) * values.length_delimited.len() as u32;
         for bytes in values.length_delimited.iter() {
-            r += bytes_size_no_tag(bytes.as_slice());
+            r += bytes_size_no_tag(&bytes);
         }
     }
     r
