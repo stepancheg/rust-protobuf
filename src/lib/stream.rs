@@ -1,5 +1,5 @@
+use std;
 use std::mem;
-use std::num::Int;
 use std::io;
 use std::io::Read;
 use std::io::Write;
@@ -127,7 +127,7 @@ impl<'a> CodedInputStream<'a> {
             buffer_pos: 0,
             reader: Some(reader),
             total_bytes_retired: 0,
-            current_limit: Int::max_value(),
+            current_limit: std::u32::MAX,
             buffer_size_after_limit: 0,
         }
     }
@@ -1101,9 +1101,9 @@ mod test {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1).unwrap();
             assert_eq!(1, is.bytes_until_limit());
-            assert_eq!([0xaa].as_slice(), is.read_raw_bytes(1).unwrap().as_slice());
+            assert_eq!(&[0xaa], is.read_raw_bytes(1).unwrap().as_slice());
             is.pop_limit(old_limit);
-            assert_eq!([0xbb, 0xcc].as_slice(), is.read_raw_bytes(2).unwrap().as_slice());
+            assert_eq!(&[0xbb, 0xcc], is.read_raw_bytes(2).unwrap().as_slice());
         });
     }
 

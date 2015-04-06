@@ -80,7 +80,7 @@ impl FieldDescriptor {
     }
 
     pub fn get_rep_str_item<'a>(&self, m: &'a Message, index: usize) -> &'a str {
-        self.get_rep_str(m)[index].as_slice()
+        &self.get_rep_str(m)[index]
     }
 
     pub fn get_bytes<'a>(&self, m: &'a Message) -> &'a [u8] {

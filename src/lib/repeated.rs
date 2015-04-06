@@ -81,7 +81,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn slice<'a>(&'a self, start: usize, end: usize) -> &'a [T] {
-        &self.as_slice()[start..end]
+        &self.as_ref()[start..end]
     }
 
     #[inline]
@@ -91,7 +91,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn slice_from<'a>(&'a self, start: usize) -> &'a [T] {
-        &self.as_slice()[start..]
+        &self.as_ref()[start..]
     }
 
     #[inline]
@@ -101,7 +101,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn slice_to<'a>(&'a self, end: usize) -> &'a [T] {
-        &self.as_slice()[..end]
+        &self.as_ref()[..end]
     }
 
     #[inline]
@@ -111,7 +111,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn split_at<'a>(&'a self, mid: usize) -> (&'a [T], &'a [T]) {
-        self.as_slice().split_at(mid)
+        self.as_ref().split_at(mid)
     }
 
     #[inline]
@@ -121,12 +121,12 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn tail<'a>(&'a self) -> &'a [T] {
-        self.as_slice().tail()
+        self.as_ref().tail()
     }
 
     #[inline]
     pub fn last<'a>(&'a self) -> Option<&'a T> {
-        self.as_slice().last()
+        self.as_ref().last()
     }
 
     #[inline]
@@ -136,7 +136,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn init<'a>(&'a self) -> &'a [T] {
-        self.as_slice().init()
+        self.as_ref().init()
     }
 
     #[inline]
@@ -195,7 +195,7 @@ impl<T> RepeatedField<T> {
     #[deprecated = "use `foo[index]` instead"]
     #[inline]
     pub fn get<'a>(&'a self, index: usize) -> &'a T {
-        &self.as_slice()[index]
+        &self.as_ref()[index]
     }
 
     #[deprecated = "use `foo[index] = bar` instead"]
@@ -206,7 +206,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn iter<'a>(&'a self) -> slice::Iter<'a, T> {
-        self.as_slice().iter()
+        self.as_ref().iter()
     }
 
     #[inline]
@@ -254,7 +254,7 @@ impl<T : Clone> Clone for RepeatedField<T> {
     #[inline]
     fn clone(&self) -> RepeatedField<T> {
         RepeatedField {
-            vec: self.as_slice().to_vec(),
+            vec: self.to_vec(),
             len: self.len(),
         }
     }
@@ -270,7 +270,7 @@ impl<T> FromIterator<T> for RepeatedField<T> {
 impl<T : PartialEq> PartialEq for RepeatedField<T> {
     #[inline]
     fn eq(&self, other: &RepeatedField<T>) -> bool {
-        self.as_slice() == other.as_slice()
+        self.as_ref() == other.as_ref()
     }
 }
 
@@ -279,13 +279,13 @@ impl<T : Eq> Eq for RepeatedField<T> {}
 impl<T : PartialEq> RepeatedField<T> {
     #[inline]
     pub fn contains(&self, value: &T) -> bool {
-        self.as_slice().contains(value)
+        self.as_ref().contains(value)
     }
 }
 
-impl<T> AsSlice<T> for RepeatedField<T> {
+impl<T> AsRef<[T]> for RepeatedField<T> {
     #[inline]
-    fn as_slice<'a>(&'a self) -> &'a [T] {
+    fn as_ref<'a>(&'a self) -> &'a [T] {
         &self.vec[..self.len]
     }
 }
@@ -317,7 +317,7 @@ impl<T> Index<usize> for RepeatedField<T> {
 
     #[inline]
     fn index<'a>(&'a self, index: usize) -> &'a T {
-        &self.as_slice()[index]
+        &self.as_ref()[index]
     }
 }
 
@@ -331,6 +331,6 @@ impl<T> IndexMut<usize> for RepeatedField<T> {
 impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.as_slice().fmt(f)
+        self.as_ref().fmt(f)
     }
 }

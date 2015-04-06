@@ -1,6 +1,7 @@
 use std::collections::hash_map::HashMap;
 use std::fmt;
 use std::io::Write;
+use std::convert::AsRef;
 
 use descriptor::*;
 use misc::*;
@@ -342,9 +343,9 @@ fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> Stri
     } else {
         format!(".{}.", pkg)
     };
-    if field.get_type_name().starts_with(current_pkg_prefix.as_slice()) {
-        let mut tn = remove_prefix(field.get_type_name(), current_pkg_prefix.as_slice()).to_string();
-        match tn.as_slice().rfind('.') {
+    if field.get_type_name().starts_with(&current_pkg_prefix) {
+        let mut tn = remove_prefix(field.get_type_name(), &current_pkg_prefix).to_string();
+        match tn.rfind('.') {
             Some(pos) => { tn.truncate(pos + 1); tn }.replace(".", "_"),
             None => "".to_string(),
         }
@@ -361,8 +362,8 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
         } else {
             format!(".{}.", pkg)
         };
-        let name = (if field.get_type_name().starts_with(current_pkg_prefix.as_slice()) {
-            remove_prefix(field.get_type_name(), current_pkg_prefix.as_slice()).to_string()
+        let name = (if field.get_type_name().starts_with(&current_pkg_prefix) {
+            remove_prefix(field.get_type_name(), &current_pkg_prefix).to_string()
         } else {
             // TODO: package prefix
             remove_to(field.get_type_name(), '.').to_string()
@@ -722,7 +723,7 @@ impl Field {
         if self.is_oneof() {
             w.write_line(format!("self.{} = ::std::option::Option::None;", self.oneof.as_ref().unwrap().name));
         } else {
-            let clear_expr = self.full_storage_type().clear(w.self_field().as_slice());
+            let clear_expr = self.full_storage_type().clear(&w.self_field());
             w.write_line(format!("{};", clear_expr));
         }
     }
@@ -955,15 +956,15 @@ impl<'a> IndentWriter<'a> {
         self.for_stmt(format!("{}.iter()", self_field), varn, |w| cb(w, &v_type));
     }
 
-    fn self_field_assign<S : Str>(&mut self, value: S) {
+    fn self_field_assign<S : AsRef<str>>(&mut self, value: S) {
         let self_field = self.self_field();
-        self.write_line(format!("{} = {};", self_field, value.as_slice()));
+        self.write_line(format!("{} = {};", self_field, value.as_ref()));
     }
 
-    fn self_field_assign_some<S : Str>(&mut self, value: S) {
+    fn self_field_assign_some<S : AsRef<str>>(&mut self, value: S) {
         assert!(!self.field().repeated);
         let full_storage_type = self.field().full_storage_type();
-        self.self_field_assign(full_storage_type.wrap_value(value.as_slice()));
+        self.self_field_assign(full_storage_type.wrap_value(value.as_ref()));
     }
 
     fn self_field_assign_default(&mut self) {
@@ -987,13 +988,13 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn self_field_assign_value<S : Str>(&mut self, value: S, ty: &RustType) {
+    fn self_field_assign_value<S : AsRef<str>>(&mut self, value: S, ty: &RustType) {
         if self.field().repeated {
-            let converted = ty.into_target(&self.field().full_storage_type(), value.as_slice());
+            let converted = ty.into_target(&self.field().full_storage_type(), value.as_ref());
             self.self_field_assign(converted);
         } else {
-            let converted = ty.into_target(&self.field().type_name, value.as_slice());
-            let wrapped = self.field().full_storage_type().wrap_value(converted.as_slice());
+            let converted = ty.into_target(&self.field().type_name, value.as_ref());
+            let wrapped = self.field().full_storage_type().wrap_value(&converted);
             self.self_field_assign(wrapped);
         }
     }
@@ -1060,11 +1061,11 @@ impl<'a> IndentWriter<'a> {
         format!("self.{}", self.field().oneof.as_ref().unwrap().name)
     }
 
-    fn write_line<S : Str>(&mut self, line: S) {
-        (if line.as_slice().is_empty() {
+    fn write_line<S : AsRef<str>>(&mut self, line: S) {
+        (if line.as_ref().is_empty() {
             self.writer.write_all("\n".as_bytes())
         } else {
-            let s: String = [self.indent.as_slice(), line.as_slice(), "\n"].concat();
+            let s: String = [self.indent.as_ref(), line.as_ref(), "\n"].concat();
             self.writer.write_all(s.as_bytes())
         }).unwrap();
     }
@@ -1094,42 +1095,42 @@ impl<'a> IndentWriter<'a> {
         });
     }
 
-    fn lazy_static<S1 : Str, S2 : Str>(&mut self, name: S1, ty: S2) {
-        self.stmt_block(format!("static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy", name.as_slice(), ty.as_slice()), |w| {
+    fn lazy_static<S1 : AsRef<str>, S2 : AsRef<str>>(&mut self, name: S1, ty: S2) {
+        self.stmt_block(format!("static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy", name.as_ref(), ty.as_ref()), |w| {
             w.field_entry("lock", "::protobuf::lazy::ONCE_INIT");
-            w.field_entry("ptr", format!("0 as *const {}", ty.as_slice()));
+            w.field_entry("ptr", format!("0 as *const {}", ty.as_ref()));
         });
     }
 
-    fn lazy_static_decl_get<S1 : Str, S2 : Str, F>(&mut self, name: S1, ty: S2, init: F)
+    fn lazy_static_decl_get<S1 : AsRef<str>, S2 : AsRef<str>, F>(&mut self, name: S1, ty: S2, init: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.lazy_static(name.as_slice(), ty);
+        self.lazy_static(name.as_ref(), ty);
         self.unsafe_expr(|w| {
-            w.write_line(format!("{}.get(|| {{", name.as_slice()));
+            w.write_line(format!("{}.get(|| {{", name.as_ref()));
             w.indented(|w| init(w));
             w.write_line(format!("}})"));
         });
     }
 
-    fn block<S1 : Str, S2 : Str, F>(&mut self, first_line: S1, last_line: S2, cb: F)
+    fn block<S1 : AsRef<str>, S2 : AsRef<str>, F>(&mut self, first_line: S1, last_line: S2, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.write_line(first_line.as_slice());
+        self.write_line(first_line.as_ref());
         self.indented(cb);
-        self.write_line(last_line.as_slice());
+        self.write_line(last_line.as_ref());
     }
 
-    fn expr_block<S : Str, F>(&mut self, prefix: S, cb: F)
+    fn expr_block<S : AsRef<str>, F>(&mut self, prefix: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.block(format!("{} {{", prefix.as_slice()), "}", cb);
+        self.block(format!("{} {{", prefix.as_ref()), "}", cb);
     }
 
-    fn stmt_block<S : Str, F>(&mut self, prefix: S, cb: F)
+    fn stmt_block<S : AsRef<str>, F>(&mut self, prefix: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.block(format!("{} {{", prefix.as_slice()), "};", cb);
+        self.block(format!("{} {{", prefix.as_ref()), "};", cb);
     }
 
     fn unsafe_expr<F>(&mut self, cb: F)
@@ -1138,22 +1139,22 @@ impl<'a> IndentWriter<'a> {
         self.expr_block("unsafe", cb);
     }
 
-    fn impl_self_block<S : Str, F>(&mut self, name: S, cb: F)
+    fn impl_self_block<S : AsRef<str>, F>(&mut self, name: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("impl {}", name.as_slice()), cb);
+        self.expr_block(format!("impl {}", name.as_ref()), cb);
     }
 
-    fn impl_for_block<S1 : Str, S2 : Str, F>(&mut self, tr: S1, ty: S2, cb: F)
+    fn impl_for_block<S1 : AsRef<str>, S2 : AsRef<str>, F>(&mut self, tr: S1, ty: S2, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("impl {} for {}", tr.as_slice(), ty.as_slice()), cb);
+        self.expr_block(format!("impl {} for {}", tr.as_ref(), ty.as_ref()), cb);
     }
 
-    fn pub_struct<S : Str, F>(&mut self, name: S, cb: F)
+    fn pub_struct<S : AsRef<str>, F>(&mut self, name: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("pub struct {}", name.as_slice()), cb);
+        self.expr_block(format!("pub struct {}", name.as_ref()), cb);
     }
 
     fn pub_enum<F>(&mut self, name: &str, cb: F)
@@ -1162,11 +1163,11 @@ impl<'a> IndentWriter<'a> {
         self.expr_block(format!("pub enum {}", name), cb);
     }
 
-    fn field_entry<S1 : Str, S2 : Str>(&mut self, name: S1, value: S2) {
-        self.write_line(format!("{}: {},", name.as_slice(), value.as_slice()));
+    fn field_entry<S1 : AsRef<str>, S2 : AsRef<str>>(&mut self, name: S1, value: S2) {
+        self.write_line(format!("{}: {},", name.as_ref(), value.as_ref()));
     }
 
-    fn field_decl<S : Str>(&mut self, name: S, field_type: &RustType) {
+    fn field_decl<S : AsRef<str>>(&mut self, name: S, field_type: &RustType) {
         self.field_entry(name, format!("{:?}", field_type));
     }
 
@@ -1188,36 +1189,36 @@ impl<'a> IndentWriter<'a> {
         }
     }
 
-    fn pub_fn<S : Str, F>(&mut self, sig: S, cb: F)
+    fn pub_fn<S : AsRef<str>, F>(&mut self, sig: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("pub fn {}", sig.as_slice()), cb);
+        self.expr_block(format!("pub fn {}", sig.as_ref()), cb);
     }
 
-    fn def_fn<S : Str, F>(&mut self, sig: S, cb: F)
+    fn def_fn<S : AsRef<str>, F>(&mut self, sig: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("fn {}", sig.as_slice()), cb);
+        self.expr_block(format!("fn {}", sig.as_ref()), cb);
     }
 
-    fn while_block<S : Str, F>(&mut self, cond: S, cb: F)
+    fn while_block<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("while {}", cond.as_slice()), cb);
+        self.expr_block(format!("while {}", cond.as_ref()), cb);
     }
 
     // if ... { ... }
-    fn if_stmt<S : Str, F>(&mut self, cond: S, cb: F)
+    fn if_stmt<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.stmt_block(format!("if {}", cond.as_slice()), cb);
+        self.stmt_block(format!("if {}", cond.as_ref()), cb);
     }
 
     // if ... {} else { ... }
-    fn if_else_stmt<S : Str, F>(&mut self, cond: S, cb: F)
+    fn if_else_stmt<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.write_line(format!("if {} {{", cond.as_slice()));
+        self.write_line(format!("if {} {{", cond.as_ref()));
         self.write_line("} else {");
         self.indented(cb);
         self.write_line("}");
@@ -1237,37 +1238,37 @@ impl<'a> IndentWriter<'a> {
         self.if_else_stmt(format!("let {} = {}", decl, expr), cb);
     }
 
-    fn for_stmt<S1 : Str, S2 : Str, F>(&mut self, over: S1, varn: S2, cb: F)
+    fn for_stmt<S1 : AsRef<str>, S2 : AsRef<str>, F>(&mut self, over: S1, varn: S2, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.stmt_block(format!("for {} in {}", varn.as_slice(), over.as_slice()), cb)
+        self.stmt_block(format!("for {} in {}", varn.as_ref(), over.as_ref()), cb)
     }
 
-    fn match_block<S : Str, F>(&mut self, value: S, cb: F)
+    fn match_block<S : AsRef<str>, F>(&mut self, value: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.stmt_block(format!("match {}", value.as_slice()), cb);
+        self.stmt_block(format!("match {}", value.as_ref()), cb);
     }
 
-    fn match_expr<S : Str, F>(&mut self, value: S, cb: F)
+    fn match_expr<S : AsRef<str>, F>(&mut self, value: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.expr_block(format!("match {}", value.as_slice()), cb);
+        self.expr_block(format!("match {}", value.as_ref()), cb);
     }
 
-    fn case_block<S : Str, F>(&mut self, cond: S, cb: F)
+    fn case_block<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut IndentWriter)
     {
-        self.block(format!("{} => {{", cond.as_slice()), "},", cb);
+        self.block(format!("{} => {{", cond.as_ref()), "},", cb);
     }
 
-    fn case_expr<S1 : Str, S2 : Str>(&mut self, cond: S1, body: S2) {
-        self.write_line(format!("{} => {},", cond.as_slice(), body.as_slice()));
+    fn case_expr<S1 : AsRef<str>, S2 : AsRef<str>>(&mut self, cond: S1, body: S2) {
+        self.write_line(format!("{} => {},", cond.as_ref(), body.as_ref()));
     }
 
     fn clear_field_func(&mut self) -> String {
         let mut r = "clear_".to_string();
-        r.push_str(self.field.as_ref().unwrap().name.as_slice());
+        r.push_str(&self.field.as_ref().unwrap().name);
         r
     }
 
@@ -1343,7 +1344,7 @@ fn write_message_write_field(w: &mut IndentWriter) {
     match w.field().repeat_mode {
         RepeatMode::Single => {
             let self_field_as_option = w.self_field_as_option();
-            w.if_let_stmt("Some(v)", self_field_as_option.as_slice(), |w| {
+            w.if_let_stmt("Some(v)", &self_field_as_option, |w| {
                 let option_type = w.field().as_option_type();
                 let v_type = option_type.elem_type();
                 w.field().write_write_element(w, "os", "v", &v_type);
@@ -1710,7 +1711,7 @@ impl<'a> MessageContext<'a> {
 
     fn write_default_instance(&self, w: &mut IndentWriter) {
         w.pub_fn(format!("default_instance() -> &'static {}", self.type_name), |w| {
-            w.lazy_static_decl_get("instance", self.type_name.as_slice(), |w| {
+            w.lazy_static_decl_get("instance", &self.type_name, |w| {
                 w.expr_block(format!("{}", self.type_name), |w| {
                     for field in self.fields_except_oneof() {
                         let init = field.full_storage_type().default_value();
@@ -1788,14 +1789,14 @@ impl<'a> MessageContext<'a> {
         self.each_field(w, |w| {
             w.write_line("");
             let reconstruct_def = w.field().reconstruct_def();
-            w.comment((reconstruct_def + ";").as_slice());
+            w.comment(&(reconstruct_def + ";"));
             w.write_line("");
             write_message_single_field_accessors(w);
         });
     }
 
     fn write_impl_self(&self, w: &mut IndentWriter) {
-        w.impl_self_block(self.type_name.as_slice(), |w| {
+        w.impl_self_block(&self.type_name, |w| {
             w.pub_fn(format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
             });
@@ -1872,7 +1873,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_message(&self, w: &mut IndentWriter) {
-        w.impl_for_block("::protobuf::Message", self.type_name.as_slice(), |w| {
+        w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
             w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
                 self.each_required_field(w, |w| {
                     w.if_self_field_is_none(|w| {
@@ -1903,7 +1904,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_message_static(&self, w: &mut IndentWriter) {
-        w.impl_for_block("::protobuf::MessageStatic", self.type_name.as_slice(), |w| {
+        w.impl_for_block("::protobuf::MessageStatic", &self.type_name, |w| {
             w.def_fn(format!("new() -> {}", self.type_name), |w| {
                 w.write_line(format!("{}::new()", self.type_name));
             });
@@ -1915,7 +1916,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_show(&self, w: &mut IndentWriter) {
-        w.impl_for_block("::std::fmt::Debug", self.type_name.as_slice(), |w| {
+        w.impl_for_block("::std::fmt::Debug", &self.type_name, |w| {
             w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
                 w.write_line("::protobuf::text_format::fmt(self, f)");
             });
@@ -1923,7 +1924,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_impl_clear(&self, w: &mut IndentWriter) {
-        w.impl_for_block("::protobuf::Clear", self.type_name.as_slice(), |w| {
+        w.impl_for_block("::protobuf::Clear", &self.type_name, |w| {
             w.def_fn("clear(&mut self)", |w| {
                 // TODO: no need to clear oneof fields in loop
                 self.each_field(w, |w| {
@@ -1937,7 +1938,7 @@ impl<'a> MessageContext<'a> {
 
     // cannot use `#[derive(PartialEq)]` because of `cached_size` field
     fn write_impl_partial_eq(&self, w: &mut IndentWriter) {
-        w.impl_for_block("::std::cmp::PartialEq", self.type_name.as_slice(), |w| {
+        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
             w.def_fn(format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
                 self.each_field_except_oneof(w, |w| {
                     let ref field_name = w.field().name;
@@ -1957,7 +1958,7 @@ impl<'a> MessageContext<'a> {
             derive.push("Debug");
         }
         w.derive(derive.as_slice());
-        w.pub_struct(self.type_name.as_slice(), |w| {
+        w.pub_struct(&self.type_name, |w| {
             if !self.fields.is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
@@ -2045,9 +2046,9 @@ impl EnumValue {
 
     fn rust_name_outer(&self) -> String {
         let mut r = String::new();
-        r.push_str(self.enum_rust_name.as_slice());
+        r.push_str(&self.enum_rust_name);
         r.push_str("::");
-        r.push_str(self.rust_name_inner().as_slice());
+        r.push_str(&self.rust_name_inner());
         r
     }
 }
@@ -2076,8 +2077,8 @@ impl<'a> EnumContext<'a> {
             .map(|p| {
                 EnumValue::parse(
                     p,
-                    self.enum_with_scope.scope.rust_prefix().as_slice(),
-                    self.type_name.as_slice())
+                    &self.enum_with_scope.scope.rust_prefix(),
+                    &self.type_name)
             })
             .collect()
     }
@@ -2107,7 +2108,7 @@ impl<'a> EnumContext<'a> {
 
     fn write_impl_enum(&self, w: &mut IndentWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block("::protobuf::ProtobufEnum", type_name.as_slice(), |w| {
+        w.impl_for_block("::protobuf::ProtobufEnum", &type_name, |w| {
             w.def_fn("value(&self) -> i32", |w| {
                 w.write_line("*self as i32")
             });
@@ -2138,7 +2139,7 @@ impl<'a> EnumContext<'a> {
 
     fn write_impl_copy(&self, w: &mut IndentWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block("::std::marker::Copy", type_name.as_slice(), |_w| {
+        w.impl_for_block("::std::marker::Copy", &type_name, |_w| {
         });
     }
 
@@ -2198,7 +2199,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
     for file_name in files_to_generate.iter() {
         let file = file_descriptors.iter()
-            .find(|fd| fd.get_name() == file_name.as_slice())
+            .find(|fd| fd.get_name() == file_name)
             .expect("no descriptor for file");
         let base = proto_path_to_rust_base(file.get_name());
 
@@ -2221,14 +2222,15 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
             for dep in file.get_dependency().iter() {
                 // TODO: should use absolute paths in file instead of global uses
-                for message in files_map[dep.as_slice()].get_message_type().iter() {
+                let files = files_map[&dep as &str];
+                for message in files.get_message_type().iter() {
                     w.write_line(format!("use super::{}::{};",
-                        proto_path_to_rust_base(dep.as_slice()),
+                        proto_path_to_rust_base(&dep),
                         message.get_name()));
                 }
-                for en in files_map[dep.as_slice()].get_enum_type().iter() {
+                for en in files.get_enum_type().iter() {
                     w.write_line(format!("use super::{}::{};",
-                        proto_path_to_rust_base(dep.as_slice()),
+                        proto_path_to_rust_base(&dep),
                         en.get_name()));
                 }
             }

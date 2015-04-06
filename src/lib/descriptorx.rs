@@ -26,7 +26,7 @@ impl<'a> RootScope<'a> {
             .flat_map(|p| {
                 (if p.get_package().is_empty() {
                     p.find_enum(fqn1)
-                } else if fqn1.starts_with((p.get_package().to_string() + ".").as_slice()) {
+                } else if fqn1.starts_with(&(p.get_package().to_string() + ".")) {
                     let remaining = &fqn1[(p.get_package().len() + 1)..];
                     p.find_enum(remaining)
                 } else {
@@ -34,7 +34,7 @@ impl<'a> RootScope<'a> {
                 }).into_iter()
             })
             .next()
-            .expect(format!("enum not found by name: {}", fqn).as_slice())
+            .expect(&format!("enum not found by name: {}", fqn))
     }
 }
 
@@ -59,7 +59,7 @@ impl<'a> FileScope<'a> {
     fn find_enum(&self, name: &str) -> Option<EnumWithScope<'a>> {
         assert!(!name.starts_with("."));
         self.find_enums().into_iter()
-            .filter(|e| e.name_to_package().as_slice() == name)
+            .filter(|e| e.name_to_package() == name)
             .next()
     }
 
@@ -351,7 +351,7 @@ pub fn find_message_by_rust_name<'a>(fd: &'a FileDescriptorProto, rust_name: &st
     FileScope { file_descriptor: fd }
         .find_messages()
         .into_iter()
-        .find(|m| m.rust_name().as_slice() == rust_name)
+        .find(|m| m.rust_name() == rust_name)
         .unwrap()
 }
 
@@ -362,6 +362,6 @@ pub fn find_enum_by_rust_name<'a>(fd: &'a FileDescriptorProto, rust_name: &str)
     FileScope { file_descriptor: fd }
         .find_enums()
         .into_iter()
-        .find(|e| e.rust_name().as_slice() == rust_name)
+        .find(|e| e.rust_name() == rust_name)
         .unwrap()
 }

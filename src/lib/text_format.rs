@@ -55,35 +55,35 @@ pub fn print_to(m: &Message, buf: &mut String) {
                     FieldDescriptorProto_Type::TYPE_SINT32 |
                     FieldDescriptorProto_Type::TYPE_SFIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_i32(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_i32(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_INT64 |
                     FieldDescriptorProto_Type::TYPE_SINT64 |
                     FieldDescriptorProto_Type::TYPE_SFIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_i64(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_i64(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_UINT32 |
                     FieldDescriptorProto_Type::TYPE_FIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_u32(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_u32(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_UINT64 |
                     FieldDescriptorProto_Type::TYPE_FIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_u64(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_u64(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_BOOL => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_bool(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_bool(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_FLOAT => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_f32(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_f32(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_DOUBLE => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_rep_f64(m)[i].to_string().as_slice());
+                        buf.push_str(&f.get_rep_f64(m)[i].to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_GROUP => {
                         buf.push_str(": <TYPE_GROUP>");
@@ -119,35 +119,35 @@ pub fn print_to(m: &Message, buf: &mut String) {
                     FieldDescriptorProto_Type::TYPE_SINT32 |
                     FieldDescriptorProto_Type::TYPE_SFIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_i32(m).to_string().as_slice());
+                        buf.push_str(&f.get_i32(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_INT64 |
                     FieldDescriptorProto_Type::TYPE_SINT64 |
                     FieldDescriptorProto_Type::TYPE_SFIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_i64(m).to_string().as_slice());
+                        buf.push_str(&f.get_i64(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_UINT32 |
                     FieldDescriptorProto_Type::TYPE_FIXED32 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_u32(m).to_string().as_slice());
+                        buf.push_str(&f.get_u32(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_UINT64 |
                     FieldDescriptorProto_Type::TYPE_FIXED64 => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_u64(m).to_string().as_slice());
+                        buf.push_str(&f.get_u64(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_BOOL => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_bool(m).to_string().as_slice());
+                        buf.push_str(&f.get_bool(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_FLOAT => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_f32(m).to_string().as_slice());
+                        buf.push_str(&f.get_f32(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_DOUBLE => {
                         buf.push_str(": ");
-                        buf.push_str(f.get_f64(m).to_string().as_slice());
+                        buf.push_str(&f.get_f64(m).to_string());
                     },
                     FieldDescriptorProto_Type::TYPE_GROUP => {
                         buf.push_str(": <TYPE_GROUP>");
@@ -167,5 +167,5 @@ pub fn print_to_string(m: &Message) -> String {
 }
 
 pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
-    f.write_str(print_to_string(m).as_slice())
+    f.write_str(&print_to_string(m))
 }

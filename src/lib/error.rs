@@ -21,7 +21,7 @@ impl Error for ProtobufError {
         match self {
             // not sure that cause should be included in message
             &ProtobufError::IoError(ref e) => e.description(),
-            &ProtobufError::WireError(ref e) => e.as_slice(),
+            &ProtobufError::WireError(ref e) => &e,
         }
     }
 
