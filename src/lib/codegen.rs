@@ -2249,7 +2249,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
     for file_name in files_to_generate.iter() {
         let file = file_descriptors.iter()
-            .find(|fd| fd.get_name() == file_name)
+            .find(|fd| fd.get_name() == &file_name[..])
             .expect("no descriptor for file");
         let base = proto_path_to_rust_base(file.get_name());
 
