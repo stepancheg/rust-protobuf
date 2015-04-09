@@ -1,7 +1,6 @@
 // Functions used by generated protobuf code.
 // Should not be used by programs written by hands.
 
-use std::iter::AdditiveIterator;
 use std::default::Default;
 
 use core::*;
