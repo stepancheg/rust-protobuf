@@ -1,5 +1,4 @@
 #![crate_type = "lib"]
-#![feature(alloc)]
 
 // warnings
 #![feature(collections)]
