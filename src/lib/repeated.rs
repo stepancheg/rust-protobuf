@@ -121,7 +121,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn tail<'a>(&'a self) -> &'a [T] {
-        self.as_ref().tail()
+        &self.as_ref()[1..]
     }
 
     #[inline]
@@ -136,7 +136,8 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn init<'a>(&'a self) -> &'a [T] {
-        self.as_ref().init()
+        let s = self.as_ref();
+        &s[0..s.len() - 1]
     }
 
     #[inline]
