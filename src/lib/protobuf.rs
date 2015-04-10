@@ -4,8 +4,6 @@
 #![feature(collections)]
 #![feature(core)]
 
-extern crate collections;
-
 pub use unknown::UnknownFields;
 pub use unknown::UnknownValues;
 pub use unknown::UnknownValue;

@@ -574,10 +574,10 @@ impl<'a> CodedInputStream<'a> {
         while target.len() < count as usize {
             let rem = count - target.len() as u32;
             if rem <= self.remaining_in_buffer() {
-                target.push_all(self.buffer.slice(self.buffer_pos as usize, (self.buffer_pos + rem) as usize));
+                target.extend(self.buffer.slice(self.buffer_pos as usize, (self.buffer_pos + rem) as usize).iter().map(|x| *x));
                 self.buffer_pos += rem;
             } else {
-                target.push_all(self.remaining_in_buffer_slice());
+                target.extend(self.remaining_in_buffer_slice().iter().map(|x| *x));
                 self.buffer_pos = self.buffer_size;
                 try!(self.refill_buffer_really());
             }
