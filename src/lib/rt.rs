@@ -99,16 +99,16 @@ impl<E:ProtobufEnum> ProtobufVarint for E {
 
 // Size of serialized data, excluding length and tag
 pub fn vec_packed_varint_data_size<T : ProtobufVarint>(vec: &[T]) -> u32 {
-    vec.iter().map(|v| v.len_varint()).sum()
+    vec.iter().map(|v| v.len_varint()).fold(0, |a, i| a + i)
 }
 
 // Size of serialized data, excluding length and tag
 pub fn vec_packed_varint_zigzag_data_size<T : ProtobufVarintZigzag>(vec: &[T]) -> u32 {
-    vec.iter().map(|v| v.len_varint_zigzag()).sum()
+    vec.iter().map(|v| v.len_varint_zigzag()).fold(0, |a, i| a + i)
 }
 
 pub fn vec_packed_enum_data_size<E : ProtobufEnum>(vec: &[E]) -> u32 {
-    vec.iter().map(|e| compute_raw_varint32_size(e.value() as u32)).sum()
+    vec.iter().map(|e| compute_raw_varint32_size(e.value() as u32)).fold(0, |a, i| a + i)
 }
 
 // Size of serialized data with length prefix and tag
