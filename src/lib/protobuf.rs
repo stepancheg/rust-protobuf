@@ -2,7 +2,6 @@
 
 // warnings
 #![feature(collections)]
-#![feature(core)]
 
 pub use unknown::UnknownFields;
 pub use unknown::UnknownValues;

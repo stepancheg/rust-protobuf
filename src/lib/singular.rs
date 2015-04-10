@@ -1,4 +1,3 @@
-use std::slice;
 use std::option;
 use std::default::Default;
 use std::fmt;
@@ -71,25 +70,6 @@ impl<T> SingularField<T> {
     #[inline]
     pub fn get_mut_ref<'a>(&'a mut self) -> &'a mut T {
         self.as_mut().unwrap()
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [T] {
-        // XXX: workaround since returning &[] doesn't seem to work
-        let tmp: &[T] = &[];
-        match self.as_ref() {
-            Some(x) => slice::ref_slice(x),
-            None => tmp,
-        }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
-        match self.as_mut() {
-            //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(_) => panic!(),
-            None => &mut []
-        }
     }
 
     #[inline]
@@ -242,25 +222,6 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn get_mut_ref<'a>(&'a mut self) -> &'a mut T {
         self.as_mut().unwrap()
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [T] {
-        // XXX: workaround since returning &[] doesn't seem to work
-        let tmp: &[T] = &[];
-        match self.as_ref() {
-            Some(x) => slice::ref_slice(x),
-            None => tmp,
-        }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
-        match self.as_mut() {
-            //Some(x) => slice::mut_ref_slice(x), // doesn't work I have no idea why
-            Some(_) => panic!(),
-            None => &mut []
-        }
     }
 
     #[inline]
