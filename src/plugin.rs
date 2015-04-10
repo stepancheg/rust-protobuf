@@ -229,6 +229,10 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         ::std::any::TypeId::of::<CodeGeneratorRequest>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -459,6 +463,10 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<CodeGeneratorResponse>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -748,6 +756,10 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<CodeGeneratorResponse_File>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {

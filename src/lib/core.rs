@@ -1,13 +1,11 @@
 // TODO: drop all panic!
 
+use std::any::Any;
 use std::any::TypeId;
 use std::default::Default;
 use std::fmt;
 use std::io::Read;
 use std::io::Write;
-use std::mem;
-use std::raw;
-use std::marker::Reflect;
 
 use clear::Clear;
 use reflect::MessageDescriptor;
@@ -37,8 +35,7 @@ pub trait MessageStatic : Message + Clone + Default + PartialEq {
     }
 }
 
-
-pub trait Message : fmt::Debug + Clear + Reflect {
+pub trait Message : fmt::Debug + Clear + Any {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
@@ -125,9 +122,8 @@ pub trait Message : fmt::Debug + Clear + Reflect {
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
 
-    fn type_id(&self) -> TypeId {
-        panic!();
-    }
+    fn type_id(&self) -> TypeId;
+    fn as_any(&self) -> &Any;
 
     // Rust does not allow implementation of trait for trait:
     // impl<M : Message> fmt::Debug for M {
@@ -135,17 +131,13 @@ pub trait Message : fmt::Debug + Clear + Reflect {
     // }
 }
 
-pub fn message_is<M : 'static + Message>(m: &Message) -> bool {
+pub fn message_is<M : Message>(m: &Message) -> bool {
     TypeId::of::<M>() == m.type_id()
 }
 
-pub fn message_down_cast<'a, M : 'static + Message>(m: &'a Message) -> &'a M {
+pub fn message_down_cast<M : Message>(m: &Message) -> &M {
     assert!(message_is::<M>(m));
-    unsafe {
-        // TODO: really weird
-        let r: raw::TraitObject = mem::transmute(m);
-        mem::transmute(r.data)
-    }
+    m.as_any().downcast_ref::<M>().unwrap()
 }
 
 

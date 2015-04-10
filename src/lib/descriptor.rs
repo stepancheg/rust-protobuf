@@ -124,6 +124,10 @@ impl ::protobuf::Message for FileDescriptorSet {
         ::std::any::TypeId::of::<FileDescriptorSet>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -721,6 +725,10 @@ impl ::protobuf::Message for FileDescriptorProto {
         ::std::any::TypeId::of::<FileDescriptorProto>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -1250,6 +1258,10 @@ impl ::protobuf::Message for DescriptorProto {
         ::std::any::TypeId::of::<DescriptorProto>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -1489,6 +1501,10 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<DescriptorProto_ExtensionRange>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -2019,6 +2035,10 @@ impl ::protobuf::Message for FieldDescriptorProto {
         ::std::any::TypeId::of::<FieldDescriptorProto>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -2360,6 +2380,10 @@ impl ::protobuf::Message for OneofDescriptorProto {
         ::std::any::TypeId::of::<OneofDescriptorProto>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -2629,6 +2653,10 @@ impl ::protobuf::Message for EnumDescriptorProto {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<EnumDescriptorProto>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -2908,6 +2936,10 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<EnumValueDescriptorProto>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -3193,6 +3225,10 @@ impl ::protobuf::Message for ServiceDescriptorProto {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<ServiceDescriptorProto>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -3540,6 +3576,10 @@ impl ::protobuf::Message for MethodDescriptorProto {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<MethodDescriptorProto>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -4157,6 +4197,10 @@ impl ::protobuf::Message for FileOptions {
         ::std::any::TypeId::of::<FileOptions>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -4539,6 +4583,10 @@ impl ::protobuf::Message for MessageOptions {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<MessageOptions>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -4951,6 +4999,10 @@ impl ::protobuf::Message for FieldOptions {
         ::std::any::TypeId::of::<FieldOptions>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -5266,6 +5318,10 @@ impl ::protobuf::Message for EnumOptions {
         ::std::any::TypeId::of::<EnumOptions>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -5482,6 +5538,10 @@ impl ::protobuf::Message for EnumValueOptions {
         ::std::any::TypeId::of::<EnumValueOptions>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -5691,6 +5751,10 @@ impl ::protobuf::Message for ServiceOptions {
         ::std::any::TypeId::of::<ServiceOptions>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -5898,6 +5962,10 @@ impl ::protobuf::Message for MethodOptions {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<MethodOptions>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -6330,6 +6398,10 @@ impl ::protobuf::Message for UninterpretedOption {
         ::std::any::TypeId::of::<UninterpretedOption>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -6592,6 +6664,10 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         ::std::any::TypeId::of::<UninterpretedOption_NamePart>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -6766,6 +6842,10 @@ impl ::protobuf::Message for SourceCodeInfo {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<SourceCodeInfo>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -7079,6 +7159,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<SourceCodeInfo_Location>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
