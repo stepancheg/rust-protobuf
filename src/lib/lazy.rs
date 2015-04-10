@@ -1,6 +1,5 @@
 use std::mem;
 use std::sync;
-use std::boxed;
 
 pub struct Lazy<T> {
     pub lock: sync::Once,
@@ -11,12 +10,16 @@ impl<T> Lazy<T> {
     pub fn get<F>(&'static self, init: F) -> &'static T
         where F : Fn() -> T
     {
-        unsafe {
-            self.lock.call_once(|| {
-                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = boxed::into_raw(Box::new(init()));
-            });
-            mem::transmute(self.ptr)
-        }
+        self.lock.call_once(|| {
+            let mut vec = Vec::with_capacity(1);
+            vec.push(init());
+            let ptr = vec.as_mut_ptr();
+            unsafe {
+                mem::forget(vec);
+                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = ptr;
+            }
+        });
+        unsafe { mem::transmute(self.ptr) }
     }
 }
 
