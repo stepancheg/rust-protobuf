@@ -7,7 +7,7 @@ use protobuf::text_format::print_to_string;
 fn t<F : FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();
     setter(&mut m);
-    assert_eq!(print_to_string(&m).as_slice(), expected);
+    assert_eq!(&*print_to_string(&m), expected);
 }
 
 #[test]
@@ -48,7 +48,7 @@ fn test_repeated_one() {
     t("sfixed32_repeated: 99",    |m| m.mut_sfixed32_repeated().push(99));
     t("sfixed64_repeated: 99",    |m| m.mut_sfixed64_repeated().push(99));
     t("bool_repeated: false",     |m| m.mut_bool_repeated().push(false));
-    t("string_repeated: \"abc\"", |m| m.mut_string_repeated().push(String::from_str("abc")));
+    t("string_repeated: \"abc\"", |m| m.mut_string_repeated().push("abc".to_string()));
     t("bytes_repeated: \"def\"",  |m| m.mut_bytes_repeated().push(b"def".to_vec()));
     t("test_enum_repeated: DARK", |m| m.mut_test_enum_repeated().push(TestEnum::DARK));
     t("test_message_repeated {}", |m| { m.mut_test_message_repeated().push(Default::default()); });
@@ -72,5 +72,5 @@ fn test_complex_message() {
 fn test_show() {
     let mut m = TestTypes::new();
     m.set_bool_singular(true);
-    assert_eq!("bool_singular: true", format!("{:?}", m).as_slice());
+    assert_eq!("bool_singular: true", &*format!("{:?}", m));
 }

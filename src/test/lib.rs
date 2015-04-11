@@ -1,7 +1,3 @@
-#![feature(collections)]
-#![feature(core)]
-#![feature(convert)]
-
 extern crate protobuf;
 
 mod shrug;

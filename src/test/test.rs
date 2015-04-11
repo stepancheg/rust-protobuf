@@ -8,23 +8,23 @@ use protobuf::*;
 
 fn test_serialize_deserialize_length_delimited<M : Message + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
-    let parsed = parse_length_delimited_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
+    let parsed = parse_length_delimited_from_bytes::<M>(&serialized_bytes).unwrap();
     assert!(*msg == parsed);
 }
 
 pub fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_to_bytes().unwrap();
-    let parsed = parse_from_bytes::<M>(serialized_bytes.as_slice()).unwrap();
+    let parsed = parse_from_bytes::<M>(&serialized_bytes).unwrap();
     assert!(*msg == parsed);
 }
 
 pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let expected_bytes = decode_hex(hex);
-    let expected_hex = encode_hex(expected_bytes.as_slice());
+    let expected_hex = encode_hex(&expected_bytes);
     let serialized = msg.write_to_bytes().unwrap();
-    let serialized_hex = encode_hex(serialized.as_slice());
+    let serialized_hex = encode_hex(&serialized);
     assert_eq!(expected_hex, serialized_hex);
-    let parsed = parse_from_bytes::<M>(expected_bytes.as_slice()).unwrap();
+    let parsed = parse_from_bytes::<M>(&expected_bytes).unwrap();
     assert!(*msg == parsed);
 
     assert_eq!(expected_bytes.len(), msg.compute_size() as usize);
@@ -34,7 +34,7 @@ pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &
 
 fn test_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let bytes = decode_hex(hex);
-    let parsed = parse_from_bytes::<M>(bytes.as_slice()).unwrap();
+    let parsed = parse_from_bytes::<M>(&bytes).unwrap();
     assert!(*msg == parsed);
 }
 
@@ -104,7 +104,7 @@ fn test_read_missing_required() {
 #[test]
 #[should_panic]
 fn test_read_junk() {
-    parse_from_bytes::<Test1>(decode_hex("00").as_slice()).unwrap();
+    parse_from_bytes::<Test1>(&decode_hex("00")).unwrap();
 }
 
 #[test]
@@ -162,7 +162,7 @@ fn test_types_repeated() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(&[String::from_str("thirty two"), String::from_str("thirty three")]));
+    message.set_string_field(RepeatedField::from_slice(&["thirty two".to_string(), "thirty three".to_string()]));
     message.set_bytes_field(RepeatedField::from_slice(&[[33u8, 34].to_vec(), [35u8].to_vec()]));
     message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
     test_serialize_deserialize_no_hex(&message);
@@ -184,7 +184,7 @@ fn test_types_repeated_packed() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(&[String::from_str("thirty two"), String::from_str("thirty three")]));
+    message.set_string_field(RepeatedField::from_slice(&["thirty two".to_string(), "thirty three".to_string()]));
     message.set_bytes_field(RepeatedField::from_slice(&[[33u8, 34].to_vec(), [35u8].to_vec()]));
     message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
     test_serialize_deserialize_no_hex(&message);
@@ -261,7 +261,7 @@ fn test_lite_runtime() {
 fn test_invalid_tag() {
     // 01 is invalid tag, because field number for that tag would be 0
     let bytes = decode_hex("01 02 03");
-    let r = parse_from_bytes::<TestInvalidTag>(bytes.as_slice());
+    let r = parse_from_bytes::<TestInvalidTag>(&bytes);
     assert!(r.is_err());
 }
 
@@ -269,7 +269,7 @@ fn test_invalid_tag() {
 fn test_truncated_no_varint() {
     // 08 is valid tag that should be followed by varint
     let bytes = decode_hex("08");
-    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    let r = parse_from_bytes::<TestTruncated>(&bytes);
     assert!(r.is_err());
 }
 
@@ -278,7 +278,7 @@ fn test_truncated_middle_of_varint() {
     // 08 is field 1, wire type varint
     // 96 is non-final byte of varint
     let bytes = decode_hex("08 96");
-    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    let r = parse_from_bytes::<TestTruncated>(&bytes);
     assert!(r.is_err());
 }
 
@@ -287,7 +287,7 @@ fn test_truncated_middle_of_length_delimited() {
     // 0a is field 1, wire type length delimited
     // 03 is length 3
     let bytes = decode_hex("0a 03 10");
-    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    let r = parse_from_bytes::<TestTruncated>(&bytes);
     assert!(r.is_err());
 }
 
@@ -296,6 +296,6 @@ fn test_truncated_repeated_packed() {
     // 12 is field 2, wire type length delimited
     // 04 is length 4
     let bytes = decode_hex("12 04 10 20");
-    let r = parse_from_bytes::<TestTruncated>(bytes.as_slice());
+    let r = parse_from_bytes::<TestTruncated>(&bytes);
     assert!(r.is_err());
 }

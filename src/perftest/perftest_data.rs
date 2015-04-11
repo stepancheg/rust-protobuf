@@ -119,6 +119,10 @@ impl ::protobuf::Message for Test1 {
         ::std::any::TypeId::of::<Test1>()
     }
 
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
     }
@@ -281,6 +285,10 @@ impl ::protobuf::Message for TestRepeatedBool {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<TestRepeatedBool>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -451,6 +459,10 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<TestRepeatedPackedInt32>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -697,6 +709,10 @@ impl ::protobuf::Message for TestRepeatedMessages {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<TestRepeatedMessages>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -991,6 +1007,10 @@ impl ::protobuf::Message for TestOptionalMessages {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<TestOptionalMessages>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1288,6 +1308,10 @@ impl ::protobuf::Message for TestStrings {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<TestStrings>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -1666,6 +1690,10 @@ impl ::protobuf::Message for PerftestData {
 
     fn type_id(&self) -> ::std::any::TypeId {
         ::std::any::TypeId::of::<PerftestData>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
