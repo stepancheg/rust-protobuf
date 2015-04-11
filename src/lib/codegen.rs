@@ -19,6 +19,10 @@ use descriptorx::FileScope;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
 
+fn escape_default(s: &str) -> String {
+    s.chars().flat_map(|c| c.escape_default()).collect()
+}
+
 #[derive(Clone,PartialEq,Eq)]
 enum RustType {
     Signed(u32),
@@ -702,7 +706,7 @@ impl Field {
                 // For booleans, "true" or "false"
                 FieldDescriptorProto_Type::TYPE_BOOL     => format!("{}", proto_default),
                 // For strings, contains the default text contents (not escaped in any way)
-                FieldDescriptorProto_Type::TYPE_STRING   => format!("\"{}\"", proto_default.escape_default()),
+                FieldDescriptorProto_Type::TYPE_STRING   => format!("\"{}\"", escape_default(proto_default)),
                 // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
                 FieldDescriptorProto_Type::TYPE_BYTES    => format!("b\"{}\"", proto_default),
                 // TODO: resolve outer message prefix

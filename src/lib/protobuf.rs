@@ -1,8 +1,5 @@
 #![crate_type = "lib"]
 
-// warnings
-#![feature(collections)]
-
 pub use unknown::UnknownFields;
 pub use unknown::UnknownValues;
 pub use unknown::UnknownValue;
