@@ -12,23 +12,23 @@ fn t<F : FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
 
 #[test]
 fn test_singular() {
-    t("int32_singular: 99",       |m| m.set_int32_singular(99));
-    t("double_singular: 99",      |m| m.set_double_singular(99.0));
-    t("float_singular: 99",       |m| m.set_float_singular(99.0));
-    t("int32_singular: 99",       |m| m.set_int32_singular(99));
-    t("int64_singular: 99",       |m| m.set_int64_singular(99));
-    t("uint32_singular: 99",      |m| m.set_uint32_singular(99));
-    t("uint64_singular: 99",      |m| m.set_uint64_singular(99));
-    t("sint32_singular: 99",      |m| m.set_sint32_singular(99));
-    t("sint64_singular: 99",      |m| m.set_sint64_singular(99));
-    t("fixed32_singular: 99",     |m| m.set_fixed32_singular(99));
-    t("fixed64_singular: 99",     |m| m.set_fixed64_singular(99));
-    t("sfixed32_singular: 99",    |m| m.set_sfixed32_singular(99));
-    t("sfixed64_singular: 99",    |m| m.set_sfixed64_singular(99));
-    t("bool_singular: false",     |m| m.set_bool_singular(false));
-    t("string_singular: \"abc\"", |m| m.set_string_singular("abc".to_string()));
-    t("bytes_singular: \"def\"",  |m| m.set_bytes_singular(b"def".to_vec()));
-    t("test_enum_singular: DARK", |m| m.set_test_enum_singular(TestEnum::DARK));
+    t("int32_singular: 99",       |m| { m.set_int32_singular(99); });
+    t("double_singular: 99",      |m| { m.set_double_singular(99.0); });
+    t("float_singular: 99",       |m| { m.set_float_singular(99.0); });
+    t("int32_singular: 99",       |m| { m.set_int32_singular(99); });
+    t("int64_singular: 99",       |m| { m.set_int64_singular(99); });
+    t("uint32_singular: 99",      |m| { m.set_uint32_singular(99); });
+    t("uint64_singular: 99",      |m| { m.set_uint64_singular(99); });
+    t("sint32_singular: 99",      |m| { m.set_sint32_singular(99); });
+    t("sint64_singular: 99",      |m| { m.set_sint64_singular(99); });
+    t("fixed32_singular: 99",     |m| { m.set_fixed32_singular(99); });
+    t("fixed64_singular: 99",     |m| { m.set_fixed64_singular(99); });
+    t("sfixed32_singular: 99",    |m| { m.set_sfixed32_singular(99); });
+    t("sfixed64_singular: 99",    |m| { m.set_sfixed64_singular(99); });
+    t("bool_singular: false",     |m| { m.set_bool_singular(false); });
+    t("string_singular: \"abc\"", |m| { m.set_string_singular("abc".to_string()); });
+    t("bytes_singular: \"def\"",  |m| { m.set_bytes_singular(b"def".to_vec()); });
+    t("test_enum_singular: DARK", |m| { m.set_test_enum_singular(TestEnum::DARK); });
     t("test_message_singular {}", |m| { m.mut_test_message_singular(); });
 }
 
@@ -65,7 +65,7 @@ fn test_repeated_multiple() {
 
 #[test]
 fn test_complex_message() {
-    t("test_message_singular {value: 30}", |m| m.mut_test_message_singular().set_value(30));
+    t("test_message_singular {value: 30}", |m| { m.mut_test_message_singular().set_value(30); });
 }
 
 #[test]

@@ -1,11 +1,13 @@
 /// anything that can be cleared
 pub trait Clear {
-    fn clear(&mut self);
+    fn clear(&mut self) -> &mut Self
+        where Self: Sized;
 }
 
 impl<T> Clear for Option<T> {
-    fn clear(&mut self) {
+    fn clear(&mut self) -> &mut Self {
         self.take();
+        self
     }
 }
 
@@ -20,13 +22,15 @@ mod util {
 }
 
 impl Clear for String {
-    fn clear(&mut self) {
+    fn clear(&mut self) -> &mut Self {
         util::clear_string(self);
+        self
     }
 }
 
 impl<T> Clear for Vec<T> {
-    fn clear(&mut self) {
+    fn clear(&mut self) -> &mut Self {
         util::clear_vec(self);
+        self
     }
 }

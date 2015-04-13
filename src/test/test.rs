@@ -147,6 +147,62 @@ fn test_types_singular() {
 }
 
 #[test]
+fn test_set_clear_chaining() {
+    let mut message = TestTypesSingular::new();
+    message
+        .clear()
+        .set_double_field(19f64)
+        .set_float_field(20f32)
+        .set_int32_field(21)
+        .set_int64_field(-22)
+        .set_uint32_field(23)
+        .set_uint64_field(24)
+        .set_sint32_field(-25)
+        .set_sint64_field(26)
+        .set_fixed32_field(27)
+        .set_fixed64_field(28)
+        .set_sfixed32_field(-29)
+        .set_sfixed64_field(30)
+        .set_bool_field(true)
+        .set_string_field("thirty two".to_string())
+        .set_bytes_field([33u8, 34].to_vec())
+        .set_enum_field(TestEnumDescriptor::BLUE)
+        .clear_double_field()
+        .clear_float_field()
+        .clear_int32_field()
+        .clear_int64_field()
+        .clear_uint32_field()
+        .clear_uint64_field()
+        .clear_sint32_field()
+        .clear_sint64_field()
+        .clear_fixed32_field()
+        .clear_fixed64_field()
+        .clear_sfixed32_field()
+        .clear_sfixed64_field()
+        .clear_bool_field()
+        .clear_string_field()
+        .clear_bytes_field()
+        .clear_enum_field()
+        .set_double_field(19f64)
+        .set_float_field(20f32)
+        .set_int32_field(21)
+        .set_int64_field(-22)
+        .set_uint32_field(23)
+        .set_uint64_field(24)
+        .set_sint32_field(-25)
+        .set_sint64_field(26)
+        .set_fixed32_field(27)
+        .set_fixed64_field(28)
+        .set_sfixed32_field(-29)
+        .set_sfixed64_field(30)
+        .set_bool_field(true)
+        .set_string_field("thirty two".to_string())
+        .set_bytes_field([33u8, 34].to_vec())
+        .set_enum_field(TestEnumDescriptor::BLUE);
+    test_serialize_deserialize_no_hex(&message);
+}
+
+#[test]
 fn test_types_repeated() {
     let mut message = TestTypesRepeated::new();
     message.set_double_field([19f64, 20f64].to_vec());

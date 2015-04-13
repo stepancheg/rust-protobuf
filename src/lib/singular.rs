@@ -455,8 +455,9 @@ mod test {
         }
 
         impl Clear for Foo {
-            fn clear(&mut self) {
+            fn clear(&mut self) -> &mut Self {
                 self.b = 0;
+                self
             }
         }
 
