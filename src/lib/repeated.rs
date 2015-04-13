@@ -23,17 +23,13 @@ impl<T> RepeatedField<T> {
     fn len(&self) -> usize {
         self.len
     }
-
-    #[inline]
-    pub fn clear(&mut self) {
-        self.len = 0;
-    }
 }
 
 impl<T> Clear for RepeatedField<T> {
     #[inline]
-    fn clear(&mut self) {
+    fn clear(&mut self) -> &mut Self {
         self.len = 0;
+        self
     }
 }
 

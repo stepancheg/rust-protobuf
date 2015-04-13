@@ -160,10 +160,12 @@ impl UnknownFields {
 }
 
 impl Clear for UnknownFields {
-    fn clear(&mut self) {
+    fn clear(&mut self) -> &mut Self {
         if self.fields.is_some() {
             self.fields.as_mut().unwrap().clear();
         }
+
+        self
     }
 }
 

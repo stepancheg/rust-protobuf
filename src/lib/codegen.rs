@@ -1515,13 +1515,15 @@ fn write_message_field_set(w: &mut IndentWriter) {
     let set_xxx_param_type = w.field().set_xxx_param_type();
     w.comment("Param is passed by value, moved");
     let ref name = w.field().name;
-    w.pub_fn(format!("set_{}(&mut self, v: {:?})", name, set_xxx_param_type), |w| {
+    w.pub_fn(format!("set_{}(&mut self, v: {:?}) -> &mut Self", name, set_xxx_param_type), |w| {
         if !field.is_oneof() {
             w.self_field_assign_value("v", &set_xxx_param_type);
+            w.write_line("self");
         } else {
             let self_field_oneof = w.self_field_oneof();
-            w.write_line(format!("{} = ::std::option::Option::Some({}(v))",
+            w.write_line(format!("{} = ::std::option::Option::Some({}(v));",
                 self_field_oneof, field.variant_path()));
+            w.write_line("self");
         }
     });
 }
@@ -1609,8 +1611,9 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
 
 fn write_message_single_field_accessors(w: &mut IndentWriter) {
     let clear_field_func = w.clear_field_func();
-    w.pub_fn(format!("{}(&mut self)", clear_field_func), |w| {
+    w.pub_fn(format!("{}(&mut self) -> &mut Self", clear_field_func), |w| {
         w.field().write_clear(w);
+        w.write_line("self");
     });
 
     if !w.field().repeated {
@@ -1975,13 +1978,14 @@ impl<'a> MessageContext<'a> {
 
     fn write_impl_clear(&self, w: &mut IndentWriter) {
         w.impl_for_block("::protobuf::Clear", &self.type_name, |w| {
-            w.def_fn("clear(&mut self)", |w| {
+            w.def_fn("clear(&mut self) -> &mut Self", |w| {
                 // TODO: no need to clear oneof fields in loop
                 self.each_field(w, |w| {
                     let clear_field_func = w.clear_field_func();
                     w.write_line(format!("self.{}();", clear_field_func));
                 });
                 w.write_line("self.unknown_fields.clear();");
+                w.write_line("self");
             });
         });
     }
@@ -2270,6 +2274,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("");
             w.write_line("use protobuf::Message as Message_imported_for_functions;");
             w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
+            w.write_line("use protobuf::Clear as Clear_imported_for_functions;");
             for dep in file.get_dependency().iter() {
                 // TODO: should use absolute paths in file instead of global uses
                 let files = files_map[&dep as &str];
