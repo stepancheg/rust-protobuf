@@ -193,13 +193,13 @@ impl<T> RepeatedField<T> {
         self.vec.into_iter()
     }
 
-    #[deprecated = "use `foo[index]` instead"]
+    //#[deprecated = "use `foo[index]` instead"]
     #[inline]
     pub fn get<'a>(&'a self, index: usize) -> &'a T {
         &self.as_ref()[index]
     }
 
-    #[deprecated = "use `foo[index] = bar` instead"]
+    //#[deprecated = "use `foo[index] = bar` instead"]
     #[inline]
     pub fn get_mut<'a>(&'a mut self, index: usize) -> &'a mut T {
         &mut self.as_mut_slice()[index]
