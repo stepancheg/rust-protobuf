@@ -13,6 +13,8 @@ use std::fmt;
 
 use clear::Clear;
 
+use core::MessageStatic;
+
 pub struct RepeatedField<T> {
     vec: Vec<T>,
     len: usize,
@@ -323,3 +325,11 @@ impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
         self.as_ref().fmt(f)
     }
 }
+
+impl<T : MessageStatic> RepeatedField<T> {
+    #[inline]
+    pub fn create(&self) -> T {
+        MessageStatic::new()
+    }
+}
+
