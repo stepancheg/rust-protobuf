@@ -7,19 +7,15 @@ pub struct Lazy<T> {
 }
 
 impl<T> Lazy<T> {
-    pub fn get<F>(&'static self, init: F) -> &'static T
-        where F : Fn() -> T
+    pub fn get<F>(&'static mut self, init: F) -> &'static T
+        where F : FnOnce() -> T
     {
         self.lock.call_once(|| {
-            let mut vec = Vec::with_capacity(1);
-            vec.push(init());
-            let ptr = vec.as_mut_ptr();
             unsafe {
-                mem::forget(vec);
-                mem::transmute::<&Lazy<T>, &mut Lazy<T>>(self).ptr = ptr;
+                self.ptr = mem::transmute(Box::new(init()));
             }
         });
-        unsafe { mem::transmute(self.ptr) }
+        unsafe { &*self.ptr }
     }
 }
 
