@@ -1,10 +1,10 @@
 use std;
+use std::borrow::Cow;
 use std::mem;
 use std::io;
 use std::io::Read;
 use std::io::Write;
 
-use maybe_owned_slice::MaybeOwnedSlice;
 use core::Message;
 use core::MessageStatic;
 use core::ProtobufEnum;
@@ -107,7 +107,7 @@ pub mod wire_format {
 }
 
 pub struct CodedInputStream<'a> {
-    buffer: MaybeOwnedSlice<'a, u8>,
+    buffer: Cow<'a, [u8]>,
     buffer_size: u32,
     buffer_pos: u32,
     reader: Option<&'a mut (Read + 'a)>,
@@ -122,7 +122,7 @@ impl<'a> CodedInputStream<'a> {
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
         CodedInputStream {
-            buffer: MaybeOwnedSlice::from_vec(buffer),
+            buffer: Cow::Owned(buffer),
             buffer_size: 0,
             buffer_pos: 0,
             reader: Some(reader),
@@ -135,7 +135,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
         let len = bytes.len() as u32;
         CodedInputStream {
-            buffer: MaybeOwnedSlice::from_slice(bytes),
+            buffer: Cow::Borrowed(bytes),
             buffer_size: len,
             buffer_pos: 0,
             reader: None,
@@ -150,7 +150,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     fn remaining_in_buffer_slice<'b>(&'b self) -> &'b [u8] {
-        self.buffer.slice(self.buffer_pos as usize, self.buffer_size as usize)
+        &self.buffer[self.buffer_pos as usize..self.buffer_size as usize]
     }
 
     pub fn pos(&self) -> u32 {
@@ -182,7 +182,7 @@ impl<'a> CodedInputStream<'a> {
                     self.buffer_pos = 0;
                     self.buffer_size = 0;
 
-                    let r = reader.read(self.buffer.as_mut_slice());
+                    let r = reader.read(self.buffer.to_mut());
                     self.buffer_size = match r {
                         Err(e) => return Err(ProtobufError::IoError(e)),
                         Ok(x) if x == 0 => return Ok(false),
@@ -574,7 +574,8 @@ impl<'a> CodedInputStream<'a> {
         while target.len() < count as usize {
             let rem = count - target.len() as u32;
             if rem <= self.remaining_in_buffer() {
-                target.extend(self.buffer.slice(self.buffer_pos as usize, (self.buffer_pos + rem) as usize).iter().map(|x| *x));
+                target.extend(self.buffer[self.buffer_pos as usize..(self.buffer_pos + rem) as usize].iter().map(|x| *x));
+
                 self.buffer_pos += rem;
             } else {
                 target.extend(self.remaining_in_buffer_slice().iter().map(|x| *x));

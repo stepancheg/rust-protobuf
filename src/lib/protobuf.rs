@@ -41,7 +41,6 @@ pub mod hex;
 
 mod misc;
 mod zigzag;
-mod maybe_owned_slice;
 mod paginate;
 mod unknown;
 mod strx;
