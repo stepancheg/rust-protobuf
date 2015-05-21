@@ -52,7 +52,7 @@ plugin for protoc.
 3) Add `protoc-gen-rust` to $PATH:
 
 ```
-PATH="`pwd`/target:$PATH"
+PATH="`pwd`/target/debug:$PATH"
 ```
 
 4) Generate .rs files:
