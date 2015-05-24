@@ -1,0 +1,3 @@
+message Keywords {
+	optional int32 type = 1;
+}

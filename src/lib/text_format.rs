@@ -33,7 +33,7 @@ pub fn print_to(m: &Message, buf: &mut String) {
                 }
                 first = false;
                 buf.push_str(f.name());
-                match f.proto().get_field_type() {
+                match f.proto().get_type() {
                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
                         buf.push_str(" {");
                         print_to(f.get_rep_message_item(m, i), buf);
@@ -97,7 +97,7 @@ pub fn print_to(m: &Message, buf: &mut String) {
                 }
                 first = false;
                 buf.push_str(f.name());
-                match f.proto().get_field_type() {
+                match f.proto().get_type() {
                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
                         buf.push_str(" {");
                         print_to(f.get_message(m), buf);

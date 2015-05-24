@@ -374,7 +374,7 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
     if field.has_type_name() {
         field.get_type_name()
     } else {
-        type_protobuf_name(field.get_field_type())
+        type_protobuf_name(field.get_type())
     }
 }
 
@@ -422,13 +422,13 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
             // TODO: package prefix
             remove_to(field.get_type_name(), '.').to_string()
         }).replace(".", "_");
-        match field.get_field_type() {
+        match field.get_type() {
             FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(name),
             FieldDescriptorProto_Type::TYPE_ENUM    => RustType::Enum(name),
-            _ => panic!("unknown named type: {:?}", field.get_field_type()),
+            _ => panic!("unknown named type: {:?}", field.get_type()),
         }
-    } else if field.has_field_type() {
-        rust_name(field.get_field_type())
+    } else if field.has_type() {
+        rust_name(field.get_type())
     } else {
         panic!("neither type_name, nor field_type specified for field: {}", field.get_name());
     }
@@ -459,7 +459,6 @@ impl FieldOneofInfo {
 #[derive(Clone)]
 struct Field {
     proto_field: FieldDescriptorProto,
-    name: String,
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     type_scope_prefix: String,
@@ -480,10 +479,6 @@ impl Field {
             FieldDescriptorProto_Label::LABEL_OPTIONAL |
             FieldDescriptorProto_Label::LABEL_REQUIRED => false,
         };
-        let name = match field.field.get_name() {
-            "type" => "field_type".to_string(),
-            x => x.to_string(),
-        };
         let packed =
             if field.field.has_options() {
                 field.field.get_options().get_packed()
@@ -496,7 +491,7 @@ impl Field {
             } else {
                 RepeatMode::Single
             };
-        let enum_default_value = match field.field.get_field_type() {
+        let enum_default_value = match field.field.get_type() {
             FieldDescriptorProto_Type::TYPE_ENUM => {
                 let enum_with_scope = root_scope.find_enum(field.field.get_type_name());
                 let e = EnumContext::new(&enum_with_scope, root_scope);
@@ -511,9 +506,8 @@ impl Field {
         };
         Field {
             proto_field: field.field.clone(),
-            name: name,
-            field_type: field.field.get_field_type(),
-            wire_type: field_type_wire_type(field.field.get_field_type()),
+            field_type: field.field.get_type(),
+            wire_type: field_type_wire_type(field.field.get_type()),
             type_name: type_name,
             type_scope_prefix: field_type_name_scope_prefix(field.field, pkg),
             enum_default_value: enum_default_value,
@@ -521,9 +515,12 @@ impl Field {
             repeated: repeated,
             packed: packed,
             repeat_mode: repeat_mode,
-
             oneof: field.oneof().map(|oneof| FieldOneofInfo::parse(&oneof)),
         }
+    }
+
+    fn name(&self) -> &str {
+        self.proto_field.get_name()
     }
 
     fn number(&self) -> u32 {
@@ -540,13 +537,13 @@ impl Field {
 
     fn variant_path(&self) -> String {
         // TODO: should reuse code from OneofVariantContext
-        format!("{:?}::{}", self.oneof.as_ref().unwrap().type_name, self.name)
+        format!("{:?}::{}", self.oneof.as_ref().unwrap().type_name, self.name())
     }
 
     // type of field in struct
     fn full_storage_type(&self) -> RustType {
         if self.is_oneof() {
-            panic!("field is not oneof: {}", self.name);
+            panic!("field is not oneof: {}", self.name());
         }
         let c = Box::new(self.type_name.clone());
         if self.repeated {
@@ -878,7 +875,7 @@ impl<'a> OneofVariantContext<'a> {
             oneof: oneof,
             variant: variant,
             field: field.clone(),
-            path: format!("{:?}::{}", oneof.type_name, field.name),
+            path: format!("{:?}::{}", oneof.type_name, field.name()),
         }
     }
 
@@ -912,7 +909,7 @@ impl<'a> OneofContext<'a> {
         self.oneof.variants().into_iter()
             .map(|v| {
                 let field = self.message.fields.iter()
-                    .filter(|f| f.name == v.field_name())
+                    .filter(|f| f.name() == v.field_name())
                     .next()
                     .unwrap();
                 OneofVariantContext::parse(self, v, field)
@@ -958,7 +955,7 @@ impl<'a> IndentWriter<'a> {
     }
 
     fn self_field(&self) -> String {
-        format!("self.{}", self.field().name)
+        format!("self._{}", self.field().name())
     }
 
     fn self_field_is_some(&self) -> String {
@@ -1322,7 +1319,7 @@ impl<'a> IndentWriter<'a> {
 
     fn clear_field_func(&mut self) -> String {
         let mut r = "clear_".to_string();
-        r.push_str(&self.field.as_ref().unwrap().name);
+        r.push_str(&self.field.as_ref().unwrap().name());
         r
     }
 
@@ -1345,9 +1342,9 @@ fn write_merge_from_field_message_string_bytes(w: &mut IndentWriter) {
     let field = w.field();
     if field.repeated {
         w.write_line(format!(
-            "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+            "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self._{}));",
                 protobuf_name(field.field_type),
-                field.name));
+                field.name()));
     } else {
         w.assert_wire_type(wire_format::WireTypeLengthDelimited);
         let self_field = w.self_field();
@@ -1386,9 +1383,9 @@ fn write_merge_from_field(field: &Field, w: &mut IndentWriter) {
             },
             true => {
                 w.write_line(format!(
-                    "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+                    "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self._{}));",
                         protobuf_name(field.field_type),
-                        field.name));
+                        field.name()));
             },
         };
     }
@@ -1437,8 +1434,7 @@ fn write_message_field_get(w: &mut IndentWriter) {
     };
     let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
     // TODO: 'a is not needed when function does not return a reference
-    let ref name = field.name;
-    w.pub_fn(format!("get_{}<'a>({}) -> {}", name, self_param, get_xxx_return_type_str),
+    w.pub_fn(format!("get_{}<'a>({}) -> {}", field.name(), self_param, get_xxx_return_type_str),
     |w| {
         if field.is_oneof() {
             let self_field_oneof = w.self_field_oneof();
@@ -1496,7 +1492,7 @@ fn write_message_field_get(w: &mut IndentWriter) {
 
 fn write_message_field_has(w: &mut IndentWriter) {
     let field = w.field();
-    let ref name = w.field().name;
+    let name = w.field().name();
     w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
         if !field.is_oneof() {
             let self_field_is_some = w.self_field_is_some();
@@ -1518,7 +1514,7 @@ fn write_message_field_set(w: &mut IndentWriter) {
     let field = w.field();
     let set_xxx_param_type = w.field().set_xxx_param_type();
     w.comment("Param is passed by value, moved");
-    let ref name = w.field().name;
+    let name = w.field().name();
     w.pub_fn(format!("set_{}(&mut self, v: {:?})", name, set_xxx_param_type), |w| {
         if !field.is_oneof() {
             w.self_field_assign_value("v", &set_xxx_param_type);
@@ -1538,7 +1534,7 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
         w.comment("If field is not initialized, it is initialized with default value first.");
     }
     // TODO: 'a is not needed when function does not return a reference
-    w.pub_fn(format!("mut_{}<'a>(&'a mut self) -> {}", field.name, mut_xxx_return_type.mut_ref_str("a")),
+    w.pub_fn(format!("mut_{}<'a>(&'a mut self) -> {}", field.name(), mut_xxx_return_type.mut_ref_str("a")),
     |w| {
         if field.is_oneof() {
             let self_field_oneof = w.self_field_oneof();
@@ -1579,10 +1575,10 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
     w.write_line("");
     w.comment("Take field");
     let take_xxx_return_type = field.take_xxx_return_type();
-    w.pub_fn(format!("take_{}(&mut self) -> {:?}", field.name, take_xxx_return_type), |w| {
+    w.pub_fn(format!("take_{}(&mut self) -> {:?}", field.name(), take_xxx_return_type), |w| {
         if field.is_oneof() {
             // TODO: replace with if let
-            w.write_line(format!("if self.has_{}() {{", field.name));
+            w.write_line(format!("if self.has_{}() {{", field.name()));
             w.indented(|w| {
                 let self_field_oneof = w.self_field_oneof();
                 w.match_expr(format!("{}.take()", self_field_oneof), |w| {
@@ -1597,15 +1593,15 @@ fn write_message_field_mut_take(w: &mut IndentWriter) {
             w.write_line("}");
         } else if !field.repeated {
             if w.field().type_is_not_trivial() {
-                w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
-                    field.name, field.type_name.default_value()));
+                w.write_line(format!("self._{}.take().unwrap_or_else(|| {})",
+                    field.name(), field.type_name.default_value()));
             } else {
-                w.write_line(format!("self.{}.take().unwrap_or({})",
-                    field.name, field.element_default_value_rust()));
+                w.write_line(format!("self._{}.take().unwrap_or({})",
+                    field.name(), field.element_default_value_rust()));
             }
         } else {
-            w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
-                    field.name,
+            w.write_line(format!("::std::mem::replace(&mut self._{}, {})",
+                    field.name(),
                     take_xxx_return_type.default_value()));
         }
     });
@@ -1643,7 +1639,7 @@ fn write_message_oneof(oneof: &OneofContext, w: &mut IndentWriter) {
     w.derive(&derive);
     w.pub_enum(&format!("{:?}", oneof.type_name)[..], |w| {
         for variant in oneof.variants() {
-            w.write_line(format!("{}({:?}),", variant.field.name, variant.field.type_name));
+            w.write_line(format!("{}({:?}),", variant.field.name(), variant.field.type_name));
         }
     });
 }
@@ -1769,7 +1765,8 @@ impl<'a> MessageContext<'a> {
                 w.expr_block(format!("{}", self.type_name), |w| {
                     for field in self.fields_except_oneof() {
                         let init = field.full_storage_type().default_value();
-                        w.field_entry(field.name.to_string(), init);
+                        let n = format!("_{}", field.name());
+                        w.field_entry(n, init);
                     }
                     for oneof in self.oneofs() {
                         let init = oneof.full_storage_type().default_value();
@@ -1903,12 +1900,12 @@ impl<'a> MessageContext<'a> {
                 for field in self.fields.iter() {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
                     w.indented(|w| {
-                        w.write_line(format!("\"{}\",", field.name));
+                        w.write_line(format!("\"{}\",", field.name()));
                         for f in field.make_accessor_fn_fn_params().iter() {
                             w.write_line(format!("{}::{}_{},",
                                     self.type_name,
                                     f,
-                                    field.name,
+                                    field.name(),
                                 ));
                         }
                     });
@@ -1999,8 +1996,8 @@ impl<'a> MessageContext<'a> {
         w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
             w.def_fn(format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
                 self.each_field_except_oneof(w, |w| {
-                    let ref field_name = w.field().name;
-                    w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
+                    let field_name = w.field().name();
+                    w.write_line(format!("self._{field} == other._{field} &&", field=field_name));
                 });
                 for oneof in self.oneofs() {
                     w.write_line(format!("self.{oneof} == other.{oneof} &&", oneof=oneof.name()));
@@ -2020,7 +2017,8 @@ impl<'a> MessageContext<'a> {
             if !self.fields.is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
-                    w.field_decl(&field.name[..], &field.full_storage_type());
+                    let n = format!("_{}", field.name());
+                    w.field_decl(&n[..], &field.full_storage_type());
                 }
             }
             if !self.oneofs().is_empty() {
