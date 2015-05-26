@@ -11,7 +11,7 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[derive(Clone,Default)]
 pub struct Test1 {
     // message fields
-    value: ::std::option::Option<i32>,
+    _value: ::std::option::Option<i32>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -30,7 +30,7 @@ impl Test1 {
         unsafe {
             instance.get(|| {
                 Test1 {
-                    value: ::std::option::Option::None,
+                    _value: ::std::option::Option::None,
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -41,20 +41,20 @@ impl Test1 {
     // optional int32 value = 1;
 
     pub fn clear_value(&mut self) {
-        self.value = ::std::option::Option::None;
+        self._value = ::std::option::Option::None;
     }
 
     pub fn has_value(&self) -> bool {
-        self.value.is_some()
+        self._value.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: i32) {
-        self.value = ::std::option::Option::Some(v);
+        self._value = ::std::option::Option::Some(v);
     }
 
     pub fn get_value<'a>(&self) -> i32 {
-        self.value.unwrap_or(0)
+        self._value.unwrap_or(0)
     }
 }
 
@@ -72,7 +72,7 @@ impl ::protobuf::Message for Test1 {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
                     let tmp = try!(is.read_int32());
-                    self.value = ::std::option::Option::Some(tmp);
+                    self._value = ::std::option::Option::Some(tmp);
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -87,7 +87,7 @@ impl ::protobuf::Message for Test1 {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.value.iter() {
+        for value in self._value.iter() {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -96,7 +96,7 @@ impl ::protobuf::Message for Test1 {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.value {
+        if let Some(v) = self._value {
             try!(os.write_int32(1, v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
@@ -165,7 +165,7 @@ impl ::protobuf::Clear for Test1 {
 
 impl ::std::cmp::PartialEq for Test1 {
     fn eq(&self, other: &Test1) -> bool {
-        self.value == other.value &&
+        self._value == other._value &&
         self.unknown_fields == other.unknown_fields
     }
 }
@@ -179,7 +179,7 @@ impl ::std::fmt::Debug for Test1 {
 #[derive(Clone,Default)]
 pub struct TestRepeatedBool {
     // message fields
-    values: ::std::vec::Vec<bool>,
+    _values: ::std::vec::Vec<bool>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -198,7 +198,7 @@ impl TestRepeatedBool {
         unsafe {
             instance.get(|| {
                 TestRepeatedBool {
-                    values: ::std::vec::Vec::new(),
+                    _values: ::std::vec::Vec::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -209,26 +209,26 @@ impl TestRepeatedBool {
     // repeated bool values = 1;
 
     pub fn clear_values(&mut self) {
-        self.values.clear();
+        self._values.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_values(&mut self, v: ::std::vec::Vec<bool>) {
-        self.values = v;
+        self._values = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_values<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<bool> {
-        &mut self.values
+        &mut self._values
     }
 
     // Take field
     pub fn take_values(&mut self) -> ::std::vec::Vec<bool> {
-        ::std::mem::replace(&mut self.values, ::std::vec::Vec::new())
+        ::std::mem::replace(&mut self._values, ::std::vec::Vec::new())
     }
 
     pub fn get_values<'a>(&'a self) -> &'a [bool] {
-        &self.values
+        &self._values
     }
 }
 
@@ -242,7 +242,7 @@ impl ::protobuf::Message for TestRepeatedBool {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_repeated_bool_into(wire_type, is, &mut self.values));
+                    try!(::protobuf::rt::read_repeated_bool_into(wire_type, is, &mut self._values));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -257,14 +257,14 @@ impl ::protobuf::Message for TestRepeatedBool {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += 2 * self.values.len() as u32;
+        my_size += 2 * self._values.len() as u32;
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.values.iter() {
+        for v in self._values.iter() {
             try!(os.write_bool(1, *v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
@@ -332,7 +332,7 @@ impl ::protobuf::Clear for TestRepeatedBool {
 
 impl ::std::cmp::PartialEq for TestRepeatedBool {
     fn eq(&self, other: &TestRepeatedBool) -> bool {
-        self.values == other.values &&
+        self._values == other._values &&
         self.unknown_fields == other.unknown_fields
     }
 }
@@ -346,7 +346,7 @@ impl ::std::fmt::Debug for TestRepeatedBool {
 #[derive(Clone,Default)]
 pub struct TestRepeatedPackedInt32 {
     // message fields
-    values: ::std::vec::Vec<i32>,
+    _values: ::std::vec::Vec<i32>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -365,7 +365,7 @@ impl TestRepeatedPackedInt32 {
         unsafe {
             instance.get(|| {
                 TestRepeatedPackedInt32 {
-                    values: ::std::vec::Vec::new(),
+                    _values: ::std::vec::Vec::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -376,26 +376,26 @@ impl TestRepeatedPackedInt32 {
     // repeated int32 values = 1;
 
     pub fn clear_values(&mut self) {
-        self.values.clear();
+        self._values.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_values(&mut self, v: ::std::vec::Vec<i32>) {
-        self.values = v;
+        self._values = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_values<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
-        &mut self.values
+        &mut self._values
     }
 
     // Take field
     pub fn take_values(&mut self) -> ::std::vec::Vec<i32> {
-        ::std::mem::replace(&mut self.values, ::std::vec::Vec::new())
+        ::std::mem::replace(&mut self._values, ::std::vec::Vec::new())
     }
 
     pub fn get_values<'a>(&'a self) -> &'a [i32] {
-        &self.values
+        &self._values
     }
 }
 
@@ -409,7 +409,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.values));
+                    try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self._values));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -424,8 +424,8 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if !self.values.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.values);
+        if !self._values.is_empty() {
+            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self._values);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -433,11 +433,11 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.values.is_empty() {
+        if !self._values.is_empty() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
-            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.values)));
-            for v in self.values.iter() {
+            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self._values)));
+            for v in self._values.iter() {
                 try!(os.write_int32_no_tag(*v));
             };
         };
@@ -506,7 +506,7 @@ impl ::protobuf::Clear for TestRepeatedPackedInt32 {
 
 impl ::std::cmp::PartialEq for TestRepeatedPackedInt32 {
     fn eq(&self, other: &TestRepeatedPackedInt32) -> bool {
-        self.values == other.values &&
+        self._values == other._values &&
         self.unknown_fields == other.unknown_fields
     }
 }
@@ -520,9 +520,9 @@ impl ::std::fmt::Debug for TestRepeatedPackedInt32 {
 #[derive(Clone,Default)]
 pub struct TestRepeatedMessages {
     // message fields
-    messages1: ::protobuf::RepeatedField<TestRepeatedMessages>,
-    messages2: ::protobuf::RepeatedField<TestRepeatedMessages>,
-    messages3: ::protobuf::RepeatedField<TestRepeatedMessages>,
+    _messages1: ::protobuf::RepeatedField<TestRepeatedMessages>,
+    _messages2: ::protobuf::RepeatedField<TestRepeatedMessages>,
+    _messages3: ::protobuf::RepeatedField<TestRepeatedMessages>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -541,9 +541,9 @@ impl TestRepeatedMessages {
         unsafe {
             instance.get(|| {
                 TestRepeatedMessages {
-                    messages1: ::protobuf::RepeatedField::new(),
-                    messages2: ::protobuf::RepeatedField::new(),
-                    messages3: ::protobuf::RepeatedField::new(),
+                    _messages1: ::protobuf::RepeatedField::new(),
+                    _messages2: ::protobuf::RepeatedField::new(),
+                    _messages3: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -554,76 +554,76 @@ impl TestRepeatedMessages {
     // repeated .TestRepeatedMessages messages1 = 1;
 
     pub fn clear_messages1(&mut self) {
-        self.messages1.clear();
+        self._messages1.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_messages1(&mut self, v: ::protobuf::RepeatedField<TestRepeatedMessages>) {
-        self.messages1 = v;
+        self._messages1 = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_messages1<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
-        &mut self.messages1
+        &mut self._messages1
     }
 
     // Take field
     pub fn take_messages1(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
-        ::std::mem::replace(&mut self.messages1, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._messages1, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_messages1<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        &self.messages1
+        &self._messages1
     }
 
     // repeated .TestRepeatedMessages messages2 = 2;
 
     pub fn clear_messages2(&mut self) {
-        self.messages2.clear();
+        self._messages2.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_messages2(&mut self, v: ::protobuf::RepeatedField<TestRepeatedMessages>) {
-        self.messages2 = v;
+        self._messages2 = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_messages2<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
-        &mut self.messages2
+        &mut self._messages2
     }
 
     // Take field
     pub fn take_messages2(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
-        ::std::mem::replace(&mut self.messages2, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._messages2, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_messages2<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        &self.messages2
+        &self._messages2
     }
 
     // repeated .TestRepeatedMessages messages3 = 3;
 
     pub fn clear_messages3(&mut self) {
-        self.messages3.clear();
+        self._messages3.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_messages3(&mut self, v: ::protobuf::RepeatedField<TestRepeatedMessages>) {
-        self.messages3 = v;
+        self._messages3 = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_messages3<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
-        &mut self.messages3
+        &mut self._messages3
     }
 
     // Take field
     pub fn take_messages3(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
-        ::std::mem::replace(&mut self.messages3, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._messages3, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_messages3<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        &self.messages3
+        &self._messages3
     }
 }
 
@@ -637,13 +637,13 @@ impl ::protobuf::Message for TestRepeatedMessages {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.messages1));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._messages1));
                 },
                 2 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.messages2));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._messages2));
                 },
                 3 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.messages3));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._messages3));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -658,15 +658,15 @@ impl ::protobuf::Message for TestRepeatedMessages {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.messages1.iter() {
+        for value in self._messages1.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.messages2.iter() {
+        for value in self._messages2.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.messages3.iter() {
+        for value in self._messages3.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -676,17 +676,17 @@ impl ::protobuf::Message for TestRepeatedMessages {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.messages1.iter() {
+        for v in self._messages1.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.messages2.iter() {
+        for v in self._messages2.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.messages3.iter() {
+        for v in self._messages3.iter() {
             try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -766,9 +766,9 @@ impl ::protobuf::Clear for TestRepeatedMessages {
 
 impl ::std::cmp::PartialEq for TestRepeatedMessages {
     fn eq(&self, other: &TestRepeatedMessages) -> bool {
-        self.messages1 == other.messages1 &&
-        self.messages2 == other.messages2 &&
-        self.messages3 == other.messages3 &&
+        self._messages1 == other._messages1 &&
+        self._messages2 == other._messages2 &&
+        self._messages3 == other._messages3 &&
         self.unknown_fields == other.unknown_fields
     }
 }
@@ -782,9 +782,9 @@ impl ::std::fmt::Debug for TestRepeatedMessages {
 #[derive(Clone,Default)]
 pub struct TestOptionalMessages {
     // message fields
-    message1: ::protobuf::SingularPtrField<TestOptionalMessages>,
-    message2: ::protobuf::SingularPtrField<TestOptionalMessages>,
-    message3: ::protobuf::SingularPtrField<TestOptionalMessages>,
+    _message1: ::protobuf::SingularPtrField<TestOptionalMessages>,
+    _message2: ::protobuf::SingularPtrField<TestOptionalMessages>,
+    _message3: ::protobuf::SingularPtrField<TestOptionalMessages>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -803,9 +803,9 @@ impl TestOptionalMessages {
         unsafe {
             instance.get(|| {
                 TestOptionalMessages {
-                    message1: ::protobuf::SingularPtrField::none(),
-                    message2: ::protobuf::SingularPtrField::none(),
-                    message3: ::protobuf::SingularPtrField::none(),
+                    _message1: ::protobuf::SingularPtrField::none(),
+                    _message2: ::protobuf::SingularPtrField::none(),
+                    _message3: ::protobuf::SingularPtrField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -816,100 +816,100 @@ impl TestOptionalMessages {
     // optional .TestOptionalMessages message1 = 1;
 
     pub fn clear_message1(&mut self) {
-        self.message1.clear();
+        self._message1.clear();
     }
 
     pub fn has_message1(&self) -> bool {
-        self.message1.is_some()
+        self._message1.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_message1(&mut self, v: TestOptionalMessages) {
-        self.message1 = ::protobuf::SingularPtrField::some(v);
+        self._message1 = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_message1<'a>(&'a mut self) -> &'a mut TestOptionalMessages {
-        if self.message1.is_none() {
-            self.message1.set_default();
+        if self._message1.is_none() {
+            self._message1.set_default();
         };
-        self.message1.as_mut().unwrap()
+        self._message1.as_mut().unwrap()
     }
 
     // Take field
     pub fn take_message1(&mut self) -> TestOptionalMessages {
-        self.message1.take().unwrap_or_else(|| TestOptionalMessages::new())
+        self._message1.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
     pub fn get_message1<'a>(&'a self) -> &'a TestOptionalMessages {
-        self.message1.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
+        self._message1.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
 
     // optional .TestOptionalMessages message2 = 2;
 
     pub fn clear_message2(&mut self) {
-        self.message2.clear();
+        self._message2.clear();
     }
 
     pub fn has_message2(&self) -> bool {
-        self.message2.is_some()
+        self._message2.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_message2(&mut self, v: TestOptionalMessages) {
-        self.message2 = ::protobuf::SingularPtrField::some(v);
+        self._message2 = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_message2<'a>(&'a mut self) -> &'a mut TestOptionalMessages {
-        if self.message2.is_none() {
-            self.message2.set_default();
+        if self._message2.is_none() {
+            self._message2.set_default();
         };
-        self.message2.as_mut().unwrap()
+        self._message2.as_mut().unwrap()
     }
 
     // Take field
     pub fn take_message2(&mut self) -> TestOptionalMessages {
-        self.message2.take().unwrap_or_else(|| TestOptionalMessages::new())
+        self._message2.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
     pub fn get_message2<'a>(&'a self) -> &'a TestOptionalMessages {
-        self.message2.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
+        self._message2.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
 
     // optional .TestOptionalMessages message3 = 3;
 
     pub fn clear_message3(&mut self) {
-        self.message3.clear();
+        self._message3.clear();
     }
 
     pub fn has_message3(&self) -> bool {
-        self.message3.is_some()
+        self._message3.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_message3(&mut self, v: TestOptionalMessages) {
-        self.message3 = ::protobuf::SingularPtrField::some(v);
+        self._message3 = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_message3<'a>(&'a mut self) -> &'a mut TestOptionalMessages {
-        if self.message3.is_none() {
-            self.message3.set_default();
+        if self._message3.is_none() {
+            self._message3.set_default();
         };
-        self.message3.as_mut().unwrap()
+        self._message3.as_mut().unwrap()
     }
 
     // Take field
     pub fn take_message3(&mut self) -> TestOptionalMessages {
-        self.message3.take().unwrap_or_else(|| TestOptionalMessages::new())
+        self._message3.take().unwrap_or_else(|| TestOptionalMessages::new())
     }
 
     pub fn get_message3<'a>(&'a self) -> &'a TestOptionalMessages {
-        self.message3.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
+        self._message3.as_ref().unwrap_or_else(|| TestOptionalMessages::default_instance())
     }
 }
 
@@ -926,21 +926,21 @@ impl ::protobuf::Message for TestOptionalMessages {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = self.message1.set_default();
+                    let tmp = self._message1.set_default();
                     try!(is.merge_message(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = self.message2.set_default();
+                    let tmp = self._message2.set_default();
                     try!(is.merge_message(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = self.message3.set_default();
+                    let tmp = self._message3.set_default();
                     try!(is.merge_message(tmp))
                 },
                 _ => {
@@ -956,15 +956,15 @@ impl ::protobuf::Message for TestOptionalMessages {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.message1.iter() {
+        for value in self._message1.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.message2.iter() {
+        for value in self._message2.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.message3.iter() {
+        for value in self._message3.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -974,17 +974,17 @@ impl ::protobuf::Message for TestOptionalMessages {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.message1.as_ref() {
+        if let Some(v) = self._message1.as_ref() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        if let Some(v) = self.message2.as_ref() {
+        if let Some(v) = self._message2.as_ref() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        if let Some(v) = self.message3.as_ref() {
+        if let Some(v) = self._message3.as_ref() {
             try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -1067,9 +1067,9 @@ impl ::protobuf::Clear for TestOptionalMessages {
 
 impl ::std::cmp::PartialEq for TestOptionalMessages {
     fn eq(&self, other: &TestOptionalMessages) -> bool {
-        self.message1 == other.message1 &&
-        self.message2 == other.message2 &&
-        self.message3 == other.message3 &&
+        self._message1 == other._message1 &&
+        self._message2 == other._message2 &&
+        self._message3 == other._message3 &&
         self.unknown_fields == other.unknown_fields
     }
 }
@@ -1083,9 +1083,9 @@ impl ::std::fmt::Debug for TestOptionalMessages {
 #[derive(Clone,Default)]
 pub struct TestStrings {
     // message fields
-    s1: ::protobuf::SingularField<::std::string::String>,
-    s2: ::protobuf::SingularField<::std::string::String>,
-    s3: ::protobuf::SingularField<::std::string::String>,
+    _s1: ::protobuf::SingularField<::std::string::String>,
+    _s2: ::protobuf::SingularField<::std::string::String>,
+    _s3: ::protobuf::SingularField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -1104,9 +1104,9 @@ impl TestStrings {
         unsafe {
             instance.get(|| {
                 TestStrings {
-                    s1: ::protobuf::SingularField::none(),
-                    s2: ::protobuf::SingularField::none(),
-                    s3: ::protobuf::SingularField::none(),
+                    _s1: ::protobuf::SingularField::none(),
+                    _s2: ::protobuf::SingularField::none(),
+                    _s3: ::protobuf::SingularField::none(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -1117,34 +1117,34 @@ impl TestStrings {
     // optional string s1 = 1;
 
     pub fn clear_s1(&mut self) {
-        self.s1.clear();
+        self._s1.clear();
     }
 
     pub fn has_s1(&self) -> bool {
-        self.s1.is_some()
+        self._s1.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_s1(&mut self, v: ::std::string::String) {
-        self.s1 = ::protobuf::SingularField::some(v);
+        self._s1 = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_s1<'a>(&'a mut self) -> &'a mut ::std::string::String {
-        if self.s1.is_none() {
-            self.s1.set_default();
+        if self._s1.is_none() {
+            self._s1.set_default();
         };
-        self.s1.as_mut().unwrap()
+        self._s1.as_mut().unwrap()
     }
 
     // Take field
     pub fn take_s1(&mut self) -> ::std::string::String {
-        self.s1.take().unwrap_or_else(|| ::std::string::String::new())
+        self._s1.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_s1<'a>(&'a self) -> &'a str {
-        match self.s1.as_ref() {
+        match self._s1.as_ref() {
             Some(v) => &v,
             None => "",
         }
@@ -1153,34 +1153,34 @@ impl TestStrings {
     // optional string s2 = 2;
 
     pub fn clear_s2(&mut self) {
-        self.s2.clear();
+        self._s2.clear();
     }
 
     pub fn has_s2(&self) -> bool {
-        self.s2.is_some()
+        self._s2.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_s2(&mut self, v: ::std::string::String) {
-        self.s2 = ::protobuf::SingularField::some(v);
+        self._s2 = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_s2<'a>(&'a mut self) -> &'a mut ::std::string::String {
-        if self.s2.is_none() {
-            self.s2.set_default();
+        if self._s2.is_none() {
+            self._s2.set_default();
         };
-        self.s2.as_mut().unwrap()
+        self._s2.as_mut().unwrap()
     }
 
     // Take field
     pub fn take_s2(&mut self) -> ::std::string::String {
-        self.s2.take().unwrap_or_else(|| ::std::string::String::new())
+        self._s2.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_s2<'a>(&'a self) -> &'a str {
-        match self.s2.as_ref() {
+        match self._s2.as_ref() {
             Some(v) => &v,
             None => "",
         }
@@ -1189,34 +1189,34 @@ impl TestStrings {
     // optional string s3 = 3;
 
     pub fn clear_s3(&mut self) {
-        self.s3.clear();
+        self._s3.clear();
     }
 
     pub fn has_s3(&self) -> bool {
-        self.s3.is_some()
+        self._s3.is_some()
     }
 
     // Param is passed by value, moved
     pub fn set_s3(&mut self, v: ::std::string::String) {
-        self.s3 = ::protobuf::SingularField::some(v);
+        self._s3 = ::protobuf::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_s3<'a>(&'a mut self) -> &'a mut ::std::string::String {
-        if self.s3.is_none() {
-            self.s3.set_default();
+        if self._s3.is_none() {
+            self._s3.set_default();
         };
-        self.s3.as_mut().unwrap()
+        self._s3.as_mut().unwrap()
     }
 
     // Take field
     pub fn take_s3(&mut self) -> ::std::string::String {
-        self.s3.take().unwrap_or_else(|| ::std::string::String::new())
+        self._s3.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
     pub fn get_s3<'a>(&'a self) -> &'a str {
-        match self.s3.as_ref() {
+        match self._s3.as_ref() {
             Some(v) => &v,
             None => "",
         }
@@ -1236,21 +1236,21 @@ impl ::protobuf::Message for TestStrings {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = self.s1.set_default();
+                    let tmp = self._s1.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = self.s2.set_default();
+                    let tmp = self._s2.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
                     };
-                    let tmp = self.s3.set_default();
+                    let tmp = self._s3.set_default();
                     try!(is.read_string_into(tmp))
                 },
                 _ => {
@@ -1266,13 +1266,13 @@ impl ::protobuf::Message for TestStrings {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.s1.iter() {
+        for value in self._s1.iter() {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.s2.iter() {
+        for value in self._s2.iter() {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        for value in self.s3.iter() {
+        for value in self._s3.iter() {
             my_size += ::protobuf::rt::string_size(3, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -1281,13 +1281,13 @@ impl ::protobuf::Message for TestStrings {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.s1.as_ref() {
+        if let Some(v) = self._s1.as_ref() {
             try!(os.write_string(1, &v));
         };
-        if let Some(v) = self.s2.as_ref() {
+        if let Some(v) = self._s2.as_ref() {
             try!(os.write_string(2, &v));
         };
-        if let Some(v) = self.s3.as_ref() {
+        if let Some(v) = self._s3.as_ref() {
             try!(os.write_string(3, &v));
         };
         try!(os.write_unknown_fields(self.get_unknown_fields()));
@@ -1368,9 +1368,9 @@ impl ::protobuf::Clear for TestStrings {
 
 impl ::std::cmp::PartialEq for TestStrings {
     fn eq(&self, other: &TestStrings) -> bool {
-        self.s1 == other.s1 &&
-        self.s2 == other.s2 &&
-        self.s3 == other.s3 &&
+        self._s1 == other._s1 &&
+        self._s2 == other._s2 &&
+        self._s3 == other._s3 &&
         self.unknown_fields == other.unknown_fields
     }
 }
@@ -1384,12 +1384,12 @@ impl ::std::fmt::Debug for TestStrings {
 #[derive(Clone,Default)]
 pub struct PerftestData {
     // message fields
-    test1: ::protobuf::RepeatedField<Test1>,
-    test_repeated_bool: ::protobuf::RepeatedField<TestRepeatedBool>,
-    test_repeated_messages: ::protobuf::RepeatedField<TestRepeatedMessages>,
-    test_optional_messages: ::protobuf::RepeatedField<TestOptionalMessages>,
-    test_strings: ::protobuf::RepeatedField<TestStrings>,
-    test_repeated_packed_int32: ::protobuf::RepeatedField<TestRepeatedPackedInt32>,
+    _test1: ::protobuf::RepeatedField<Test1>,
+    _test_repeated_bool: ::protobuf::RepeatedField<TestRepeatedBool>,
+    _test_repeated_messages: ::protobuf::RepeatedField<TestRepeatedMessages>,
+    _test_optional_messages: ::protobuf::RepeatedField<TestOptionalMessages>,
+    _test_strings: ::protobuf::RepeatedField<TestStrings>,
+    _test_repeated_packed_int32: ::protobuf::RepeatedField<TestRepeatedPackedInt32>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -1408,12 +1408,12 @@ impl PerftestData {
         unsafe {
             instance.get(|| {
                 PerftestData {
-                    test1: ::protobuf::RepeatedField::new(),
-                    test_repeated_bool: ::protobuf::RepeatedField::new(),
-                    test_repeated_messages: ::protobuf::RepeatedField::new(),
-                    test_optional_messages: ::protobuf::RepeatedField::new(),
-                    test_strings: ::protobuf::RepeatedField::new(),
-                    test_repeated_packed_int32: ::protobuf::RepeatedField::new(),
+                    _test1: ::protobuf::RepeatedField::new(),
+                    _test_repeated_bool: ::protobuf::RepeatedField::new(),
+                    _test_repeated_messages: ::protobuf::RepeatedField::new(),
+                    _test_optional_messages: ::protobuf::RepeatedField::new(),
+                    _test_strings: ::protobuf::RepeatedField::new(),
+                    _test_repeated_packed_int32: ::protobuf::RepeatedField::new(),
                     unknown_fields: ::protobuf::UnknownFields::new(),
                     cached_size: ::std::cell::Cell::new(0),
                 }
@@ -1424,151 +1424,151 @@ impl PerftestData {
     // repeated .Test1 test1 = 1;
 
     pub fn clear_test1(&mut self) {
-        self.test1.clear();
+        self._test1.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_test1(&mut self, v: ::protobuf::RepeatedField<Test1>) {
-        self.test1 = v;
+        self._test1 = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_test1<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<Test1> {
-        &mut self.test1
+        &mut self._test1
     }
 
     // Take field
     pub fn take_test1(&mut self) -> ::protobuf::RepeatedField<Test1> {
-        ::std::mem::replace(&mut self.test1, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._test1, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test1<'a>(&'a self) -> &'a [Test1] {
-        &self.test1
+        &self._test1
     }
 
     // repeated .TestRepeatedBool test_repeated_bool = 2;
 
     pub fn clear_test_repeated_bool(&mut self) {
-        self.test_repeated_bool.clear();
+        self._test_repeated_bool.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_test_repeated_bool(&mut self, v: ::protobuf::RepeatedField<TestRepeatedBool>) {
-        self.test_repeated_bool = v;
+        self._test_repeated_bool = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_test_repeated_bool<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedBool> {
-        &mut self.test_repeated_bool
+        &mut self._test_repeated_bool
     }
 
     // Take field
     pub fn take_test_repeated_bool(&mut self) -> ::protobuf::RepeatedField<TestRepeatedBool> {
-        ::std::mem::replace(&mut self.test_repeated_bool, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._test_repeated_bool, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_repeated_bool<'a>(&'a self) -> &'a [TestRepeatedBool] {
-        &self.test_repeated_bool
+        &self._test_repeated_bool
     }
 
     // repeated .TestRepeatedMessages test_repeated_messages = 3;
 
     pub fn clear_test_repeated_messages(&mut self) {
-        self.test_repeated_messages.clear();
+        self._test_repeated_messages.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_test_repeated_messages(&mut self, v: ::protobuf::RepeatedField<TestRepeatedMessages>) {
-        self.test_repeated_messages = v;
+        self._test_repeated_messages = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_test_repeated_messages<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedMessages> {
-        &mut self.test_repeated_messages
+        &mut self._test_repeated_messages
     }
 
     // Take field
     pub fn take_test_repeated_messages(&mut self) -> ::protobuf::RepeatedField<TestRepeatedMessages> {
-        ::std::mem::replace(&mut self.test_repeated_messages, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._test_repeated_messages, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_repeated_messages<'a>(&'a self) -> &'a [TestRepeatedMessages] {
-        &self.test_repeated_messages
+        &self._test_repeated_messages
     }
 
     // repeated .TestOptionalMessages test_optional_messages = 4;
 
     pub fn clear_test_optional_messages(&mut self) {
-        self.test_optional_messages.clear();
+        self._test_optional_messages.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_test_optional_messages(&mut self, v: ::protobuf::RepeatedField<TestOptionalMessages>) {
-        self.test_optional_messages = v;
+        self._test_optional_messages = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_test_optional_messages<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestOptionalMessages> {
-        &mut self.test_optional_messages
+        &mut self._test_optional_messages
     }
 
     // Take field
     pub fn take_test_optional_messages(&mut self) -> ::protobuf::RepeatedField<TestOptionalMessages> {
-        ::std::mem::replace(&mut self.test_optional_messages, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._test_optional_messages, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_optional_messages<'a>(&'a self) -> &'a [TestOptionalMessages] {
-        &self.test_optional_messages
+        &self._test_optional_messages
     }
 
     // repeated .TestStrings test_strings = 5;
 
     pub fn clear_test_strings(&mut self) {
-        self.test_strings.clear();
+        self._test_strings.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_test_strings(&mut self, v: ::protobuf::RepeatedField<TestStrings>) {
-        self.test_strings = v;
+        self._test_strings = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_test_strings<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestStrings> {
-        &mut self.test_strings
+        &mut self._test_strings
     }
 
     // Take field
     pub fn take_test_strings(&mut self) -> ::protobuf::RepeatedField<TestStrings> {
-        ::std::mem::replace(&mut self.test_strings, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._test_strings, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_strings<'a>(&'a self) -> &'a [TestStrings] {
-        &self.test_strings
+        &self._test_strings
     }
 
     // repeated .TestRepeatedPackedInt32 test_repeated_packed_int32 = 6;
 
     pub fn clear_test_repeated_packed_int32(&mut self) {
-        self.test_repeated_packed_int32.clear();
+        self._test_repeated_packed_int32.clear();
     }
 
     // Param is passed by value, moved
     pub fn set_test_repeated_packed_int32(&mut self, v: ::protobuf::RepeatedField<TestRepeatedPackedInt32>) {
-        self.test_repeated_packed_int32 = v;
+        self._test_repeated_packed_int32 = v;
     }
 
     // Mutable pointer to the field.
     pub fn mut_test_repeated_packed_int32<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<TestRepeatedPackedInt32> {
-        &mut self.test_repeated_packed_int32
+        &mut self._test_repeated_packed_int32
     }
 
     // Take field
     pub fn take_test_repeated_packed_int32(&mut self) -> ::protobuf::RepeatedField<TestRepeatedPackedInt32> {
-        ::std::mem::replace(&mut self.test_repeated_packed_int32, ::protobuf::RepeatedField::new())
+        ::std::mem::replace(&mut self._test_repeated_packed_int32, ::protobuf::RepeatedField::new())
     }
 
     pub fn get_test_repeated_packed_int32<'a>(&'a self) -> &'a [TestRepeatedPackedInt32] {
-        &self.test_repeated_packed_int32
+        &self._test_repeated_packed_int32
     }
 }
 
@@ -1582,22 +1582,22 @@ impl ::protobuf::Message for PerftestData {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test1));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._test1));
                 },
                 2 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test_repeated_bool));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._test_repeated_bool));
                 },
                 3 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test_repeated_messages));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._test_repeated_messages));
                 },
                 4 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test_optional_messages));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._test_optional_messages));
                 },
                 5 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test_strings));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._test_strings));
                 },
                 6 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test_repeated_packed_int32));
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self._test_repeated_packed_int32));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1612,27 +1612,27 @@ impl ::protobuf::Message for PerftestData {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.test1.iter() {
+        for value in self._test1.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.test_repeated_bool.iter() {
+        for value in self._test_repeated_bool.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.test_repeated_messages.iter() {
+        for value in self._test_repeated_messages.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.test_optional_messages.iter() {
+        for value in self._test_optional_messages.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.test_strings.iter() {
+        for value in self._test_strings.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.test_repeated_packed_int32.iter() {
+        for value in self._test_repeated_packed_int32.iter() {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -1642,32 +1642,32 @@ impl ::protobuf::Message for PerftestData {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.test1.iter() {
+        for v in self._test1.iter() {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.test_repeated_bool.iter() {
+        for v in self._test_repeated_bool.iter() {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.test_repeated_messages.iter() {
+        for v in self._test_repeated_messages.iter() {
             try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.test_optional_messages.iter() {
+        for v in self._test_optional_messages.iter() {
             try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.test_strings.iter() {
+        for v in self._test_strings.iter() {
             try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.test_repeated_packed_int32.iter() {
+        for v in self._test_repeated_packed_int32.iter() {
             try!(os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -1762,12 +1762,12 @@ impl ::protobuf::Clear for PerftestData {
 
 impl ::std::cmp::PartialEq for PerftestData {
     fn eq(&self, other: &PerftestData) -> bool {
-        self.test1 == other.test1 &&
-        self.test_repeated_bool == other.test_repeated_bool &&
-        self.test_repeated_messages == other.test_repeated_messages &&
-        self.test_optional_messages == other.test_optional_messages &&
-        self.test_strings == other.test_strings &&
-        self.test_repeated_packed_int32 == other.test_repeated_packed_int32 &&
+        self._test1 == other._test1 &&
+        self._test_repeated_bool == other._test_repeated_bool &&
+        self._test_repeated_messages == other._test_repeated_messages &&
+        self._test_optional_messages == other._test_optional_messages &&
+        self._test_strings == other._test_strings &&
+        self._test_repeated_packed_int32 == other._test_repeated_packed_int32 &&
         self.unknown_fields == other.unknown_fields
     }
 }

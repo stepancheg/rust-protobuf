@@ -12,5 +12,7 @@ mod text_format_test;
 mod text_format_test_data;
 mod test_oneof;
 mod test_oneof_proto;
+mod keywords;
+mod keywords_test;
 
 mod test;
