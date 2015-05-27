@@ -2267,7 +2267,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             let mut os = VecWriter::new(&mut v);
             let mut w = IndentWriter::new(&mut os);
 
-            w.write_line("// This file is generated. Do not edit");
+            w.write_line("// This file is generated. Do not edit (@generated)");
 
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
