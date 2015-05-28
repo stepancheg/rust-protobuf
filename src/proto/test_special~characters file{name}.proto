@@ -2,8 +2,5 @@
 
 package special;
 
-import "test_なんでやねん.proto";
-
 message Outer {
-	optional Inner inner = 1;
 }
