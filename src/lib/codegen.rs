@@ -2203,11 +2203,28 @@ impl<'a> EnumContext<'a> {
 
 }
 
+// Copy-pasted from libsyntax.
+fn ident_start(c: char) -> bool {
+    (c >= 'a' && c <= 'z')
+        || (c >= 'A' && c <= 'Z')
+        || c == '_'
+}
+
+// Copy-pasted from libsyntax.
+fn ident_continue(c: char) -> bool {
+    (c >= 'a' && c <= 'z')
+        || (c >= 'A' && c <= 'Z')
+        || (c >= '0' && c <= '9')
+        || c == '_'
+}
 
 fn proto_path_to_rust_base(path: &str) -> String {
     let without_dir = remove_to(path, '/');
     let without_suffix = remove_suffix(without_dir, ".proto");
-    without_suffix.replace("-", "_")
+    without_suffix.chars().enumerate().map(|(i, c)| {
+        let valid = if i == 0 { ident_start(c) } else { ident_continue(c) };
+        if valid { c } else { '_' }
+    }).collect()
 }
 
 pub struct GenResult {

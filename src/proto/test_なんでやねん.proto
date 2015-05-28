@@ -1,0 +1,7 @@
+// More test that filenames are sanitized, even imports.
+
+package special;
+
+message Inner {
+	optional int32 foo = 1;
+}

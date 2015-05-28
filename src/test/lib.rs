@@ -12,5 +12,7 @@ mod text_format_test;
 mod text_format_test_data;
 mod test_oneof;
 mod test_oneof_proto;
+mod test_special_characters_file_name_;
+mod test_______;
 
 mod test;
