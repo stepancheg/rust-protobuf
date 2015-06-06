@@ -2289,6 +2289,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
             w.write_line("#![allow(non_camel_case_types)]");
+            w.write_line("#![allow(non_snake_case)]");
             w.write_line("#![allow(non_upper_case_globals)]");
             w.write_line("#![allow(unused_imports)]");
 
