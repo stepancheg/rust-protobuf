@@ -1830,8 +1830,7 @@ impl<'a> MessageContext<'a> {
                 };
             });
             self.write_match_each_oneof_variant(w, |w, variant, v, vtype| {
-                // TODO: unused variable v
-                variant.field.write_element_size(w, "v", vtype, "my_size");
+                variant.field.write_element_size(w, v, vtype, "my_size");
             });
             w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
             w.write_line("self.cached_size.set(my_size);");
