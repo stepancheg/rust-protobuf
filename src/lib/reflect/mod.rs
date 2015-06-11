@@ -179,6 +179,7 @@ impl<M : 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> 
 }
 
 pub struct MessageDescriptor {
+    full_name: String,
     proto: &'static DescriptorProto,
     factory: Box<MessageFactory + 'static>,
     fields: Vec<FieldDescriptor>,
@@ -212,7 +213,14 @@ impl MessageDescriptor {
             index_by_name.insert(f.get_name().to_string(), i);
         }
 
+        let mut full_name = file.get_package().to_string();
+        if full_name.len() > 0 {
+            full_name.push('.');
+        }
+        full_name.push_str(proto.message.get_name());
+
         MessageDescriptor {
+            full_name: full_name,
             proto: proto.message,
             factory: Box::new(MessageFactoryTyped::<M>::new()),
             fields: fields.into_iter()
@@ -232,6 +240,10 @@ impl MessageDescriptor {
 
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
+    }
+
+    pub fn full_name(&self) -> &str {
+        &self.full_name[..]
     }
 
     pub fn fields<'a>(&'a self) -> &'a [FieldDescriptor] {

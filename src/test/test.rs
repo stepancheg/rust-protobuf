@@ -209,6 +209,7 @@ fn test_message_descriptor() {
 
     let d = reflect::MessageDescriptor::for_type::<TestDescriptor>();
     assert_eq!("TestDescriptor", d.name());
+    assert_eq!("shrug.TestDescriptor", d.full_name());
 
     let mut t = TestDescriptor::new();
     t.set_stuff(55);
