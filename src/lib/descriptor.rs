@@ -1,4 +1,5 @@
 // This file is generated. Do not edit
+// @generated
 
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]

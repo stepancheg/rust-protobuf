@@ -2285,6 +2285,9 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
             w.write_line("// This file is generated. Do not edit");
 
+            // https://secure.phabricator.com/T784
+            w.write_line("// @generated");
+
             w.write_line("");
             w.write_line("#![allow(dead_code)]");
             w.write_line("#![allow(non_camel_case_types)]");
