@@ -2,6 +2,7 @@ use std::collections::hash_map::HashMap;
 use std::fmt;
 use std::io::Write;
 use std::convert::AsRef;
+use std::collections::HashSet;
 
 use descriptor::*;
 use misc::*;
@@ -2130,14 +2131,22 @@ impl<'a> EnumContext<'a> {
     }
 
     fn values(&self) -> Vec<EnumValue> {
-        self.enum_with_scope.values().iter()
-            .map(|p| {
+        let mut used = HashSet::new();
+        let mut r = Vec::new();
+        for p in self.enum_with_scope.values() {
+            // skipping non-unique enums
+            // TODO: should support it
+            if !used.insert(p.get_number()) {
+                continue;
+            }
+            r.push(
                 EnumValue::parse(
                     p,
                     &self.enum_with_scope.scope.rust_prefix(),
                     &self.type_name)
-            })
-            .collect()
+            );
+        }
+        r
     }
 
     // find enum value by name
