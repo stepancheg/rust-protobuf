@@ -2163,7 +2163,7 @@ impl<'a> EnumContext<'a> {
     }
 
     fn write_struct(&self, w: &mut IndentWriter) {
-        w.derive(&["Clone", "PartialEq", "Eq", "Debug"]);
+        w.derive(&["Clone", "PartialEq", "Eq", "Debug", "Hash"]);
         let ref type_name = self.type_name;
         w.expr_block(format!("pub enum {}", type_name), |w| {
             for value in self.values().iter() {
