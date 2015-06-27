@@ -76,7 +76,7 @@ impl<T> RepeatedField<T> {
 
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
-        &mut self.vec
+        &mut self.vec[..self.len]
     }
 
     #[inline]
@@ -321,5 +321,30 @@ impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.as_ref().fmt(f)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::RepeatedField;
+
+    #[test]
+    fn as_mut_slice() {
+        let mut v = RepeatedField::new();
+        v.push(10);
+        v.push(20);
+        v.clear();
+        assert_eq!(v.as_mut_slice(), &mut []);
+        v.push(30);
+        assert_eq!(v.as_mut_slice(), &mut [30]);
+    }
+
+    #[test]
+    fn push_default() {
+        let mut v = RepeatedField::new();
+        v.push("aa".to_string());
+        v.push("bb".to_string());
+        v.clear();
+        assert_eq!("".to_string(), *v.push_default());
     }
 }
