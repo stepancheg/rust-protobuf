@@ -2150,7 +2150,7 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug)]
+#[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
     TYPE_FLOAT = 2,
@@ -2217,7 +2217,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 impl ::std::marker::Copy for FieldDescriptorProto_Type {
 }
 
-#[derive(Clone,PartialEq,Eq,Debug)]
+#[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
     LABEL_REQUIRED = 2,
@@ -4332,7 +4332,7 @@ impl ::std::fmt::Debug for FileOptions {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug)]
+#[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
     CODE_SIZE = 2,
@@ -5099,7 +5099,7 @@ impl ::std::fmt::Debug for FieldOptions {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug)]
+#[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldOptions_CType {
     STRING = 0,
     CORD = 1,
