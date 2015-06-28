@@ -8,6 +8,7 @@ use descriptor::*;
 use misc::*;
 use stream::wire_format;
 use core::Message;
+use compiler_plugin;
 use rt;
 use paginate::PaginatableIterator;
 use strx::*;
@@ -2235,14 +2236,6 @@ fn proto_path_to_rust_base(path: &str) -> String {
     }).collect()
 }
 
-pub struct GenResult {
-    pub name: String,
-    pub content: Vec<u8>,
-}
-
-pub struct GenOptions {
-    pub dummy: bool,
-}
 
 fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut IndentWriter) {
     let fdp_bytes = file.write_to_bytes().unwrap();
@@ -2271,12 +2264,12 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut IndentWriter) 
     });
 }
 
-pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String], _: &GenOptions)
-        -> Vec<GenResult>
+pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String])
+        -> Vec<compiler_plugin::GenResult>
 {
     let root_scope = RootScope { file_descriptors: file_descriptors };
 
-    let mut results: Vec<GenResult> = Vec::new();
+    let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
     let files_map: HashMap<&str, &FileDescriptorProto> =
         file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
 
@@ -2339,7 +2332,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             }
         }
 
-        results.push(GenResult {
+        results.push(compiler_plugin::GenResult {
             name: {
                 let mut r = base.to_string();
                 r.push_str(".rs");
@@ -2351,3 +2344,6 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
     results
 }
 
+pub fn protoc_gen_rust_main() {
+    compiler_plugin::plugin_main(gen);
+}

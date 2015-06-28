@@ -23,11 +23,15 @@ pub use stream::wire_format;
 pub use error::ProtobufResult;
 pub use error::ProtobufError;
 
+// generated
+pub mod descriptor;
+pub mod plugin;
+
 pub mod core;
 pub mod rt;
 pub mod lazy;
-pub mod descriptor;
 pub mod codegen;
+pub mod compiler_plugin;
 pub mod repeated;
 pub mod singular;
 pub mod clear;

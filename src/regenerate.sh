@@ -5,6 +5,6 @@ PATH="$where_am_i/target/debug:$PATH"
 
 protoc --rust_out . -Iproto proto/google/protobuf/*.proto
 
-mv descriptor.rs lib/
+mv descriptor.rs plugin.rs lib/
 
 # vim: set ts=4 sw=4 et:
