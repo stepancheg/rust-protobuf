@@ -2,6 +2,8 @@ use std::vec;
 use std::slice;
 use std::borrow::Borrow;
 use std::default::Default;
+use std::hash::Hash;
+use std::hash::Hasher;
 use std::iter::FromIterator;
 use std::iter::IntoIterator;
 use std::ops::Index;
@@ -269,6 +271,12 @@ impl<T : PartialEq> RepeatedField<T> {
     #[inline]
     pub fn contains(&self, value: &T) -> bool {
         self.as_ref().contains(value)
+    }
+}
+
+impl<T : Hash> Hash for RepeatedField<T> {
+    fn hash<H : Hasher>(&self, state: &mut H) {
+        self.as_ref().hash(state);
     }
 }
 

@@ -1,3 +1,5 @@
+use std::hash::Hash;
+use std::hash::Hasher;
 use std::option;
 use std::default::Default;
 use std::fmt;
@@ -401,6 +403,19 @@ impl<T : PartialEq> PartialEq for SingularPtrField<T> {
 }
 
 impl<T : Eq> Eq for SingularPtrField<T> {}
+
+
+impl<T : Hash> Hash for SingularField<T> {
+    fn hash<H : Hasher>(&self, state: &mut H) {
+        self.as_ref().hash(state);
+    }
+}
+
+impl<T : Hash> Hash for SingularPtrField<T> {
+    fn hash<H : Hasher>(&self, state: &mut H) {
+        self.as_ref().hash(state);
+    }
+}
 
 
 #[cfg(test)]
