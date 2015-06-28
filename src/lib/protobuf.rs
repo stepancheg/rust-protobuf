@@ -30,6 +30,7 @@ pub mod plugin;
 pub mod core;
 pub mod rt;
 pub mod lazy;
+pub mod code_writer;
 pub mod codegen;
 pub mod compiler_plugin;
 pub mod repeated;
