@@ -1,7 +1,6 @@
 use std::io::Write;
 
-// TODO: should not use these declarations here
-use codegen::RustType;
+// TODO: should not use wire_format here
 use wire_format;
 
 pub struct CodeWriter<'a> {
@@ -121,8 +120,8 @@ impl<'a> CodeWriter<'a> {
         self.write_line(format!("{}: {},", name.as_ref(), value.as_ref()));
     }
 
-    pub fn field_decl<S : AsRef<str>>(&mut self, name: S, field_type: &RustType) {
-        self.field_entry(name, format!("{:?}", field_type));
+    pub fn field_decl<S : AsRef<str>>(&mut self, name: S, field_type: &str) {
+        self.field_entry(name, field_type);
     }
 
     pub fn derive(&mut self, derive: &[&str]) {

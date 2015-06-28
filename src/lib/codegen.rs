@@ -49,7 +49,7 @@ pub enum RustType {
     Oneof(String),
 }
 
-impl fmt::Debug for RustType {
+impl fmt::Display for RustType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -57,16 +57,16 @@ impl fmt::Debug for RustType {
             RustType::Unsigned(bits)     => write!(f, "u{}", bits),
             RustType::Float(bits)        => write!(f, "f{}", bits),
             RustType::Bool               => write!(f, "bool"),
-            RustType::Vec(ref param)     => write!(f, "::std::vec::Vec<{:?}>", **param),
+            RustType::Vec(ref param)     => write!(f, "::std::vec::Vec<{}>", **param),
             RustType::String             => write!(f, "::std::string::String"),
-            RustType::Slice(ref param)   => write!(f, "[{:?}]", **param),
+            RustType::Slice(ref param)   => write!(f, "[{}]", **param),
             RustType::Str                => write!(f, "str"),
-            RustType::Option(ref param)           => write!(f, "::std::option::Option<{:?}>", **param),
-            RustType::SingularField(ref param)    => write!(f, "::protobuf::SingularField<{:?}>", **param),
-            RustType::SingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{:?}>", **param),
-            RustType::RepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{:?}>", **param),
-            RustType::Uniq(ref param)             => write!(f, "::std::Box<{:?}>", **param),
-            RustType::Ref(ref param)              => write!(f, "&{:?}", **param),
+            RustType::Option(ref param)           => write!(f, "::std::option::Option<{}>", **param),
+            RustType::SingularField(ref param)    => write!(f, "::protobuf::SingularField<{}>", **param),
+            RustType::SingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", **param),
+            RustType::RepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", **param),
+            RustType::Uniq(ref param)             => write!(f, "::std::Box<{}>", **param),
+            RustType::Ref(ref param)              => write!(f, "&{}", **param),
             RustType::Message(ref name) |
             RustType::Enum(ref name)    |
             RustType::Oneof(ref name)   => write!(f, "{}", name),
@@ -136,15 +136,15 @@ impl RustType {
 
     fn ref_str(&self, lt: &str) -> String {
         match *self {
-            RustType::Ref(ref param) => format!("&'{} {:?}", lt, **param),
-            _ => panic!("not a ref: {:?}", *self),
+            RustType::Ref(ref param) => format!("&'{} {}", lt, **param),
+            _ => panic!("not a ref: {}", *self),
         }
     }
 
     fn mut_ref_str(&self, lt: &str) -> String {
         match *self {
-            RustType::Ref(ref param) => format!("&'{} mut {:?}", lt, **param),
-            _ => panic!("not a ref: {:?}", *self),
+            RustType::Ref(ref param) => format!("&'{} mut {}", lt, **param),
+            _ => panic!("not a ref: {}", *self),
         }
     }
 
@@ -152,7 +152,7 @@ impl RustType {
         if self.is_ref() {
             self.ref_str(lt)
         } else {
-            format!("{:?}", self)
+            format!("{}", self)
         }
     }
 
@@ -178,7 +178,7 @@ impl RustType {
             },
             RustType::Enum(..)                       =>
                 panic!("enum default value cannot be determined by type"),
-            _ => panic!("cannot create default value for: {:?}", *self),
+            _ => panic!("cannot create default value for: {}", *self),
         }
     }
 
@@ -190,7 +190,7 @@ impl RustType {
             RustType::RepeatedField(..) |
             RustType::SingularField(..) |
             RustType::SingularPtrField(..) => format!("{}.clear()", v),
-            ref ty => panic!("cannot clear type: {:?}", ty),
+            ref ty => panic!("cannot clear type: {}", ty),
         }
     }
 
@@ -200,7 +200,7 @@ impl RustType {
             RustType::Option(..)           => format!("::std::option::Option::Some({})", value),
             RustType::SingularField(..)    => format!("::protobuf::SingularField::some({})", value),
             RustType::SingularPtrField(..) => format!("::protobuf::SingularPtrField::some({})", value),
-            _ => panic!("not a wrapper type: {:?}", *self),
+            _ => panic!("not a wrapper type: {}", *self),
         }
     }
 
@@ -225,7 +225,7 @@ impl RustType {
                     format!("{} as i32", v),
             (&RustType::Ref(ref t), &RustType::Signed(32)) if t.is_enum() =>
                     format!("*{} as i32", v),
-            _ => panic!("cannot convert {:?} to {:?}", self, target),
+            _ => panic!("cannot convert {} to {}", self, target),
         }
     }
 
@@ -235,14 +235,14 @@ impl RustType {
             &RustType::Vec(ref p)           |
             &RustType::RepeatedField(ref p) => Box::new(RustType::Slice(p.clone())),
             &RustType::Message(ref p)       => Box::new(RustType::Message(p.clone())),
-            x => panic!("no ref type for {:?}", x),
+            x => panic!("no ref type for {}", x),
         })
     }
 
     fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),
-            x => panic!("cannot get elem type of {:?}", x),
+            x => panic!("cannot get elem type of {}", x),
         }
     }
 
@@ -254,7 +254,7 @@ impl RustType {
             &RustType::RepeatedField(ref ty)    |
             &RustType::SingularField(ref ty)    |
             &RustType::SingularPtrField(ref ty) => RustType::Ref(ty.clone()),
-            x => panic!("cannot iterate {:?}", x),
+            x => panic!("cannot iterate {}", x),
         }
     }
 }
@@ -543,7 +543,7 @@ impl Field {
 
     fn variant_path(&self) -> String {
         // TODO: should reuse code from OneofVariantContext
-        format!("{:?}::{}", self.oneof.as_ref().unwrap().type_name, self.name)
+        format!("{}::{}", self.oneof.as_ref().unwrap().type_name, self.name)
     }
 
     // type of field in struct
@@ -649,7 +649,7 @@ impl Field {
             r @ RustType::Option(..)       => r,
             RustType::SingularField(ty)    |
             RustType::SingularPtrField(ty) => RustType::Option(Box::new(RustType::Ref(ty))),
-            x => panic!("cannot convert {:?} to option", x),
+            x => panic!("cannot convert {} to option", x),
         }
     }
 
@@ -756,12 +756,12 @@ impl Field {
             false => "singular",
         };
         let suffix = match &self.type_name {
-            t if t.is_primitive()                     => format!("{:?}", t),
+            t if t.is_primitive()                     => format!("{}", t),
             &RustType::String                         => "string".to_string(),
             &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_string(),
             &RustType::Enum(..)                       => "enum".to_string(),
             &RustType::Message(..)                    => "message".to_string(),
-            t => panic!("unexpected field type: {:?}", t),
+            t => panic!("unexpected field type: {}", t),
         };
         format!("make_{}_{}_accessor", repeated_or_signular, suffix)
     }
@@ -1044,7 +1044,7 @@ impl<'a> OneofVariantContext<'a> {
             oneof: oneof,
             variant: variant,
             field: field.clone(),
-            path: format!("{:?}::{}", oneof.type_name, field.name),
+            path: format!("{}::{}", oneof.type_name, field.name),
         }
     }
 
@@ -1208,7 +1208,7 @@ fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
             if field.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
                 let self_field = field.self_field();
                 let ref field_type_name = field.type_name;
-                w.write_line(format!("{}.as_ref().unwrap_or_else(|| {:?}::default_instance())",
+                w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
                         self_field, field_type_name));
             } else {
                 if get_xxx_return_type.is_ref() {
@@ -1265,7 +1265,7 @@ fn write_message_field_set(w: &mut CodeWriter, field: &Field) {
     let set_xxx_param_type = field.set_xxx_param_type();
     w.comment("Param is passed by value, moved");
     let ref name = field.name;
-    w.pub_fn(format!("set_{}(&mut self, v: {:?})", name, set_xxx_param_type), |w| {
+    w.pub_fn(format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
         if !field.is_oneof() {
             field.write_self_field_assign_value(w, "v", &set_xxx_param_type);
         } else {
@@ -1324,7 +1324,7 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
     w.write_line("");
     w.comment("Take field");
     let take_xxx_return_type = field.take_xxx_return_type();
-    w.pub_fn(format!("take_{}(&mut self) -> {:?}", field.name, take_xxx_return_type), |w| {
+    w.pub_fn(format!("take_{}(&mut self) -> {}", field.name, take_xxx_return_type), |w| {
         if field.is_oneof() {
             // TODO: replace with if let
             w.write_line(format!("if self.has_{}() {{", field.name));
@@ -1386,9 +1386,9 @@ fn write_message_oneof(oneof: &OneofContext, w: &mut CodeWriter) {
         derive.push("Debug");
     }
     w.derive(&derive);
-    w.pub_enum(&format!("{:?}", oneof.type_name)[..], |w| {
+    w.pub_enum(&oneof.type_name.to_string(), |w| {
         for variant in oneof.variants() {
-            w.write_line(format!("{}({:?}),", variant.field.name, variant.field.type_name));
+            w.write_line(format!("{}({}),", variant.field.name, &variant.field.type_name.to_string()));
         }
     });
 }
@@ -1739,13 +1739,13 @@ impl<'a> MessageContext<'a> {
             if !self.fields.is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
-                    w.field_decl(&field.name[..], &field.full_storage_type());
+                    w.field_decl(&field.name[..], &field.full_storage_type().to_string());
                 }
             }
             if !self.oneofs().is_empty() {
                 w.comment("message oneof groups");
                 for oneof in self.oneofs() {
-                    w.field_decl(oneof.name(), &oneof.full_storage_type());
+                    w.field_decl(oneof.name(), &oneof.full_storage_type().to_string());
                 }
             }
             w.comment("special fields");
