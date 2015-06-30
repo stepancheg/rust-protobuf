@@ -1945,7 +1945,7 @@ fn ident_continue(c: char) -> bool {
         || c == '_'
 }
 
-fn proto_path_to_rust_base(path: &str) -> String {
+pub fn proto_path_to_rust_base(path: &str) -> String {
     let without_dir = remove_to(path, '/');
     let without_suffix = remove_suffix(without_dir, ".proto");
     without_suffix.chars().enumerate().map(|(i, c)| {
@@ -1992,9 +1992,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
         file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
 
     for file_name in files_to_generate.iter() {
-        let file = file_descriptors.iter()
-            .find(|fd| fd.get_name() == &file_name[..])
-            .expect("no descriptor for file");
+        let file = files_map[&file_name[..]];
         let base = proto_path_to_rust_base(file.get_name());
 
         let mut v = Vec::new();
