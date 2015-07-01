@@ -8,12 +8,14 @@ language: rust
 
 rust:
   - nightly
+  - beta
 
 before_install:
   - ./install-protobuf.sh
   - PATH=/home/travis/bin:$PATH protoc --version
 
 script:
+  - rustc --version
   # Full rebuild with regenerate
   - PATH=/home/travis/bin:$PATH src/full-rebuild.sh
   # Test cargo configuration
