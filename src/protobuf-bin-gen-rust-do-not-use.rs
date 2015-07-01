@@ -1,5 +1,4 @@
 #![crate_type = "bin"]
-#![feature(slice_patterns)]
 
 extern crate protobuf;
 
