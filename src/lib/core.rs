@@ -135,7 +135,7 @@ pub fn message_is<M : Message>(m: &Message) -> bool {
     TypeId::of::<M>() == m.type_id()
 }
 
-pub fn message_down_cast<M : Message>(m: &Message) -> &M {
+pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     assert!(message_is::<M>(m));
     m.as_any().downcast_ref::<M>().unwrap()
 }
