@@ -5,7 +5,6 @@ use std::convert::AsRef;
 use std::collections::HashSet;
 
 use descriptor::*;
-use misc::*;
 use stream::wire_format;
 use core::Message;
 use compiler_plugin;
@@ -1998,8 +1997,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
         let mut v = Vec::new();
 
         {
-            let mut os = VecWriter::new(&mut v);
-            let mut w = CodeWriter::new(&mut os);
+            let mut w = CodeWriter::new(&mut v);
 
             w.write_line("// This file is generated. Do not edit");
 

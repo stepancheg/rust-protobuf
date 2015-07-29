@@ -110,5 +110,7 @@ fn main() {
     runner.test("test_repeated_messages", test_data.get_test_repeated_messages());
     runner.test("test_optional_messages", test_data.get_test_optional_messages());
     runner.test("test_strings", test_data.get_test_strings());
+    runner.test("test_small_bytearrays", test_data.get_test_small_bytearrays());
+    runner.test("test_large_bytearrays", test_data.get_test_large_bytearrays());
     runner.check();
 }
