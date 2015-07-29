@@ -44,7 +44,6 @@ pub mod error;
 // used by test
 pub mod hex;
 
-mod misc;
 mod zigzag;
 mod paginate;
 mod unknown;

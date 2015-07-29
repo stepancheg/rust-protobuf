@@ -1,14 +1,13 @@
 use std;
-use std::borrow::Cow;
 use std::mem;
 use std::io;
-use std::io::Read;
+use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
+use std::slice;
 
 use core::Message;
 use core::MessageStatic;
 use core::ProtobufEnum;
-use misc::VecWriter;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
@@ -18,6 +17,10 @@ use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 use error::ProtobufResult;
 use error::ProtobufError;
+
+// If an input stream is constructed with a `Read`, we create a
+// `BufReader` with an internal buffer of this size.
+const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 
 pub mod wire_format {
     // TODO: temporary
@@ -106,138 +109,129 @@ pub mod wire_format {
 
 }
 
-pub struct CodedInputStream<'a> {
-    buffer: Cow<'a, [u8]>,
-    buffer_size: u32,
-    buffer_pos: u32,
-    reader: Option<&'a mut (Read + 'a)>,
-    total_bytes_retired: u32,
-    current_limit: u32,
-    buffer_size_after_limit: u32,
+enum InputSource<'a> {
+    BufRead(&'a mut BufRead),
+    Read(BufReader<&'a mut Read>),
+    Cursor(io::Cursor<&'a [u8]>),
 }
 
-impl<'a> CodedInputStream<'a> {
-    pub fn new(reader: &'a mut Read) -> CodedInputStream<'a> {
-        let buffer_len = 4096;
-        let mut buffer = Vec::with_capacity(buffer_len);
-        unsafe { buffer.set_len(buffer_len); }
-        CodedInputStream {
-            buffer: Cow::Owned(buffer),
-            buffer_size: 0,
-            buffer_pos: 0,
-            reader: Some(reader),
-            total_bytes_retired: 0,
-            current_limit: std::u32::MAX,
-            buffer_size_after_limit: 0,
-        }
-    }
-
-    pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
-        let len = bytes.len() as u32;
-        CodedInputStream {
-            buffer: Cow::Borrowed(bytes),
-            buffer_size: len,
-            buffer_pos: 0,
-            reader: None,
-            total_bytes_retired: 0,
-            current_limit: len,
-            buffer_size_after_limit: 0,
-        }
-    }
-
-    fn remaining_in_buffer(&self) -> u32 {
-        self.buffer_size - self.buffer_pos
-    }
-
-    fn remaining_in_buffer_slice<'b>(&'b self) -> &'b [u8] {
-        &self.buffer[self.buffer_pos as usize..self.buffer_size as usize]
-    }
-
-    pub fn pos(&self) -> u32 {
-        self.total_bytes_retired + self.buffer_pos
-    }
-
-    fn bytes_until_limit(&self) -> u32 {
-        self.current_limit - self.pos()
-    }
-
-    // Refill buffer if buffer is empty.
-    // Fails if buffer is not empty.
-    // Retuns Err if IO error occurred.
-    // Returns Ok(false) on EOF, or if limit reached.
-    // Otherwize returns Ok(true).
-    fn refill_buffer(&mut self) -> ProtobufResult<bool> {
-        if self.buffer_pos < self.buffer_size {
-            panic!("called when buffer is not empty");
-        }
-        if self.pos() == self.current_limit {
-            return Ok(false);
-        }
-        if self.reader.is_none() {
-            Ok(false)
-        } else {
-            match self.reader {
-                Some(ref mut reader) => {
-                    self.total_bytes_retired += self.buffer_size;
-                    self.buffer_pos = 0;
-                    self.buffer_size = 0;
-
-                    let r = reader.read(self.buffer.to_mut());
-                    self.buffer_size = match r {
-                        Err(e) => return Err(ProtobufError::IoError(e)),
-                        Ok(x) if x == 0 => return Ok(false),
-                        Ok(x) => x as u32,
-                    };
-                    assert!(self.buffer_size > 0);
+impl<'a> InputSource<'a> {
+    pub fn read(&mut self, target: &mut [u8]) -> ProtobufResult<()> {
+        let mut target = target;
+        let count = target.len();
+        let mut bread = 0;
+        while bread != count {
+            let res = match self {
+                &mut InputSource::BufRead(ref mut br) => br.read(&mut target[bread..]),
+                &mut InputSource::Read(ref mut br) => br.read(&mut target[bread..]),
+                &mut InputSource::Cursor(ref mut c) => c.read(&mut target[bread..]),
+            };
+            match res {
+                Err(e) => {
+                    return Err(ProtobufError::IoError(e));
                 },
-                None => panic!(),
+                Ok(x) if x == 0 => {
+                    return Err(ProtobufError::IoError(io::Error::new(
+                        io::ErrorKind::Other, "unexpected EOF")));
+                },
+                Ok(x) => {
+                    bread += x;
+                }
             }
-            self.recompute_buffer_size_after_limit();
-            Ok(true)
-        }
-    }
-
-    fn refill_buffer_really(&mut self) -> ProtobufResult<()> {
-        if !try!(self.refill_buffer()) {
-            return Err(ProtobufError::IoError(io::Error::new(
-                io::ErrorKind::Other, "unexpected EOF")));
         }
         Ok(())
     }
 
-    fn recompute_buffer_size_after_limit(&mut self) {
-        self.buffer_size += self.buffer_size_after_limit;
-        let buffer_end = self.total_bytes_retired + self.buffer_size;
-        if buffer_end > self.current_limit {
-            // limit is in current buffer
-            self.buffer_size_after_limit = buffer_end - self.current_limit;
-            self.buffer_size -= self.buffer_size_after_limit;
-        } else {
-            self.buffer_size_after_limit = 0;
+    pub fn eof(&mut self) -> ProtobufResult<bool> {
+        let res = match self {
+            &mut InputSource::BufRead(ref mut br) => br.fill_buf(),
+            &mut InputSource::Read(ref mut br) => br.fill_buf(),
+            &mut InputSource::Cursor(ref mut c) => c.fill_buf(),
+        };
+        match res {
+            Err(e) => Err(ProtobufError::IoError(e)),
+            Ok(buf) if buf.len() == 0 => Ok(true),
+            Ok(_) => Ok(false),
         }
+    }
+}
+
+pub struct CodedInputStream<'a> {
+    source: InputSource<'a>,
+    current_limit: u32,
+    pos: u32,
+}
+
+impl<'a> CodedInputStream<'a> {
+    pub fn new(reader: &'a mut Read) -> CodedInputStream<'a> {
+        CodedInputStream {
+            source: InputSource::Read(BufReader::with_capacity(
+                INPUT_STREAM_BUFFER_SIZE, reader)),
+            current_limit: std::u32::MAX,
+            pos: 0,
+        }
+    }
+
+    pub fn from_buffered_reader(buffered_reader: &'a mut BufRead) -> CodedInputStream<'a> {
+        CodedInputStream {
+            source: InputSource::BufRead(buffered_reader),
+            current_limit: std::u32::MAX,
+            pos: 0,
+        }
+    }
+
+    pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
+        let len = bytes.len();
+        CodedInputStream {
+            source: InputSource::Cursor(io::Cursor::new(bytes)),
+            current_limit: len as u32,
+            pos: 0,
+        }
+    }
+
+    pub fn pos(&self) -> u32 { self.pos }
+
+    pub fn bytes_until_limit(&self) -> u32 {
+        self.current_limit - self.pos
+    }
+
+    pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
+        try!(self.source.read(buf));
+        self.pos += buf.len() as u32;
+        Ok(())
+    }
+
+    pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
+        let mut r = 0u8;
+        let bytes: &mut [u8] = unsafe {
+            let p: *mut u8 = mem::transmute(&mut r);
+            slice::from_raw_parts_mut(p, mem::size_of::<u8>())
+        };
+        try!(self.read(bytes));
+        Ok(r)
     }
 
     pub fn push_limit(&mut self, limit: u32) -> ProtobufResult<u32> {
         let old_limit = self.current_limit;
-        let new_limit = self.pos() + limit;
+        let new_limit = self.pos + limit;
         if new_limit > old_limit {
             return Err(ProtobufError::WireError(format!("truncated message")));
         }
         self.current_limit = new_limit;
-        self.recompute_buffer_size_after_limit();
         Ok(old_limit)
     }
 
     pub fn pop_limit(&mut self, old_limit: u32) {
-        if self.bytes_until_limit() != 0 {
-            panic!("must pop only at current limit")
-        }
         self.current_limit = old_limit;
-        self.recompute_buffer_size_after_limit();
     }
 
     pub fn eof(&mut self) -> ProtobufResult<bool> {
-        return Ok(self.buffer_pos == self.buffer_size && !try!(self.refill_buffer()))
+        assert!(self.pos <= self.current_limit);
+        if self.pos == self.current_limit {
+            Ok(true)
+        } else {
+            self.source.eof()
+        }
     }
 
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
@@ -246,16 +240,6 @@ impl<'a> CodedInputStream<'a> {
             return Err(ProtobufError::WireError(format!("expecting EOF")));
         }
         Ok(())
-    }
-
-    pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
-        if self.buffer_pos == self.buffer_size {
-            try!(self.refill_buffer_really());
-        }
-        assert!(self.buffer_pos < self.buffer_size);
-        let r = self.buffer[self.buffer_pos as usize];
-        self.buffer_pos += 1;
-        Ok(r)
     }
 
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
@@ -278,34 +262,25 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_varint64().map(|v| v as u32)
     }
 
+
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
-        let mut bytes = [0u32; 4];
-        for i in 0..4 {
-            bytes[i] = try!(self.read_raw_byte()) as u32;
-        }
-        Ok(
-            (bytes[0]      ) |
-            (bytes[1] <<  8) |
-            (bytes[2] << 16) |
-            (bytes[3] << 24)
-        )
+        let mut r = 0u32;
+        let bytes: &mut [u8] = unsafe {
+            let p: *mut u8 = mem::transmute(&mut r);
+            slice::from_raw_parts_mut(p, mem::size_of::<u32>())
+        };
+        try!(self.read(bytes));
+        Ok(r.to_le())
     }
 
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
-        let mut bytes = [0u64; 8];
-        for i in 0..8 {
-            bytes[i] = try!(self.read_raw_byte()) as u64;
-        }
-        Ok(
-            (bytes[0]      ) |
-            (bytes[1] <<  8) |
-            (bytes[2] << 16) |
-            (bytes[3] << 24) |
-            (bytes[4] << 32) |
-            (bytes[5] << 40) |
-            (bytes[6] << 48) |
-            (bytes[7] << 56)
-        )
+        let mut r = 0u64;
+        let bytes: &mut [u8] = unsafe {
+            let p: *mut u8 = mem::transmute(&mut r);
+            slice::from_raw_parts_mut(p, mem::size_of::<u64>())
+        };
+        try!(self.read(bytes));
+        Ok(r.to_le())
     }
 
     pub fn read_tag(&mut self) -> ProtobufResult<wire_format::Tag> {
@@ -567,22 +542,13 @@ impl<'a> CodedInputStream<'a> {
         self.read_unknown(wire_type).map(|_| ())
     }
 
-    /// Read raw bytes into supplied vector. Vector must be empty.
+    /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
+    /// overwritten.
     pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
-        assert!(target.is_empty());
+        unsafe { target.set_len(0); }
         target.reserve(count as usize);
-        while target.len() < count as usize {
-            let rem = count - target.len() as u32;
-            if rem <= self.remaining_in_buffer() {
-                target.extend(self.buffer[self.buffer_pos as usize..(self.buffer_pos + rem) as usize].iter().map(|x| *x));
-
-                self.buffer_pos += rem;
-            } else {
-                target.extend(self.remaining_in_buffer_slice().iter().map(|x| *x));
-                self.buffer_pos = self.buffer_size;
-                try!(self.refill_buffer_really());
-            }
-        }
+        unsafe { target.set_len(count as usize); }
+        try!(self.read(target));
         Ok(())
     }
 
@@ -666,12 +632,11 @@ impl<'a> WithCodedOutputStream for &'a mut (Write + 'a) {
 }
 
 impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
-    fn with_coded_output_stream<T, F>(self, cb: F)
+    fn with_coded_output_stream<T, F>(mut self, cb: F)
             -> ProtobufResult<T>
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
-        let mut w = VecWriter::new(self);
-        (&mut w as &mut Write).with_coded_output_stream(cb)
+        (&mut self as &mut Write).with_coded_output_stream(cb)
     }
 }
 
@@ -695,9 +660,17 @@ impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
     {
         let mut is = CodedInputStream::new(self);
         let r = try!(cb(&mut is));
-        // reading from Reader requires all data to be read,
-        // because CodedInputStream caches data, and otherwize
-        // buffer would be discarded
+        try!(is.check_eof());
+        Ok(r)
+    }
+}
+
+impl<'a> WithCodedInputStream for &'a mut (BufRead + 'a) {
+    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
+    {
+        let mut is = CodedInputStream::from_buffered_reader(self);
+        let r = try!(cb(&mut is));
         try!(is.check_eof());
         Ok(r)
     }
@@ -1022,12 +995,11 @@ impl<'a> CodedOutputStream<'a> {
 mod test {
 
     use std::io;
-    use std::io::Read;
+    use std::io::{BufRead};
     use std::io::Write;
 
     use hex::encode_hex;
     use hex::decode_hex;
-    use misc::VecWriter;
     use error::ProtobufResult;
 
     use super::wire_format;
@@ -1040,7 +1012,7 @@ mod test {
         let d = decode_hex(hex);
         let len = d.len();
         let mut reader = io::Cursor::new(d);
-        let mut is = CodedInputStream::new(&mut reader as &mut Read);
+        let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut BufRead);
         assert_eq!(0, is.pos());
         callback(&mut is);
         assert!(is.eof().unwrap());
@@ -1102,9 +1074,11 @@ mod test {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1).unwrap();
             assert_eq!(1, is.bytes_until_limit());
-            assert_eq!(&[0xaa as u8], &is.read_raw_bytes(1).unwrap() as &[u8]);
+            let r1 = is.read_raw_bytes(1).unwrap();
+            assert_eq!(&[0xaa as u8], &r1[..]);
             is.pop_limit(old_limit);
-            assert_eq!(&[0xbb as u8, 0xcc], &is.read_raw_bytes(2).unwrap() as &[u8]);
+            let r2 = is.read_raw_bytes(2).unwrap();
+            assert_eq!(&[0xbb as u8, 0xcc], &r2[..]);
         });
     }
 
@@ -1113,8 +1087,7 @@ mod test {
     {
         let mut v = Vec::new();
         {
-            let mut writer = VecWriter::new(&mut v);
-            let mut os = CodedOutputStream::new(&mut writer as &mut Write);
+            let mut os = CodedOutputStream::new(&mut v as &mut Write);
             gen(&mut os).unwrap();
             os.flush().unwrap();
         }
