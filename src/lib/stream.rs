@@ -156,6 +156,8 @@ impl<'a> InputSource<'a> {
     }
 }
 
+const NO_LIMIT: u32 = std::u32::MAX;
+
 pub struct CodedInputStream<'a> {
     source: InputSource<'a>,
     current_limit: u32,
@@ -167,7 +169,7 @@ impl<'a> CodedInputStream<'a> {
         CodedInputStream {
             source: InputSource::Read(BufReader::with_capacity(
                 INPUT_STREAM_BUFFER_SIZE, reader)),
-            current_limit: std::u32::MAX,
+            current_limit: NO_LIMIT,
             pos: 0,
         }
     }
@@ -175,13 +177,14 @@ impl<'a> CodedInputStream<'a> {
     pub fn from_buffered_reader(buffered_reader: &'a mut BufRead) -> CodedInputStream<'a> {
         CodedInputStream {
             source: InputSource::BufRead(buffered_reader),
-            current_limit: std::u32::MAX,
+            current_limit: NO_LIMIT,
             pos: 0,
         }
     }
 
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
         let len = bytes.len();
+        assert!(len < NO_LIMIT as usize);
         CodedInputStream {
             source: InputSource::Cursor(io::Cursor::new(bytes)),
             current_limit: len as u32,
@@ -192,12 +195,19 @@ impl<'a> CodedInputStream<'a> {
     pub fn pos(&self) -> u32 { self.pos }
 
     pub fn bytes_until_limit(&self) -> u32 {
+        assert!(self.current_limit != NO_LIMIT);
         self.current_limit - self.pos
     }
 
     pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
+        assert!(buf.len() < NO_LIMIT as usize);
+        let new_pos = match self.pos.checked_add(buf.len() as u32) {
+            None | Some(NO_LIMIT) =>
+                return Err(ProtobufError::WireError(format!("u32 overflow"))),
+            Some(new_pos) => new_pos,
+        };
         try!(self.source.read(buf));
-        self.pos += buf.len() as u32;
+        self.pos = new_pos;
         Ok(())
     }
 
@@ -213,8 +223,11 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn push_limit(&mut self, limit: u32) -> ProtobufResult<u32> {
         let old_limit = self.current_limit;
-        let new_limit = self.pos + limit;
-        if new_limit > old_limit {
+        let new_limit = match self.pos.checked_add(limit) {
+            None | Some(NO_LIMIT) => return Err(ProtobufError::WireError(format!("corrupted stream"))),
+            Some(new_limit) => new_limit,
+        };
+        if old_limit != NO_LIMIT && new_limit > old_limit {
             return Err(ProtobufError::WireError(format!("truncated message")));
         }
         self.current_limit = new_limit;
@@ -227,10 +240,10 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn eof(&mut self) -> ProtobufResult<bool> {
         assert!(self.pos <= self.current_limit);
-        if self.pos == self.current_limit {
-            Ok(true)
-        } else {
+        if self.current_limit == NO_LIMIT {
             self.source.eof()
+        } else {
+            Ok(self.pos == self.current_limit)
         }
     }
 
