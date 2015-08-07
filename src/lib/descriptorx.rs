@@ -313,7 +313,10 @@ pub struct OneofVariantWithContext<'a> {
 
 impl<'a> OneofVariantWithContext<'a> {
     pub fn field_name(&self) -> &str {
-        self.field.get_name()
+        match self.field.get_name() {
+            "type" => "field_type",
+            x => x,
+        }
     }
 }
 
