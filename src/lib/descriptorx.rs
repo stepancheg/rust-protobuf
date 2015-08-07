@@ -327,7 +327,10 @@ pub struct OneofWithContext<'a> {
 
 impl<'a> OneofWithContext<'a> {
     pub fn name(&'a self) -> &'a str {
-        self.oneof.get_name()
+        match self.oneof.get_name() {
+            "type" => "field_type",
+            x => x,
+        }
     }
 
     // rust type name of enum
