@@ -7,3 +7,9 @@ message None { }
 message Some { }
 
 message Message { }
+
+message TestType {
+    oneof type {
+        string s = 1;
+    }
+}

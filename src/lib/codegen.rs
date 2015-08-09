@@ -1070,7 +1070,10 @@ impl<'a> OneofContext<'a> {
     }
 
     fn name(&self) -> &str {
-        self.oneof.oneof.get_name()
+        match self.oneof.oneof.get_name() {
+            "type" => "field_type",
+            x => x,
+        }
     }
 
     fn variants(&'a self) -> Vec<OneofVariantContext<'a>> {

@@ -313,7 +313,10 @@ pub struct OneofVariantWithContext<'a> {
 
 impl<'a> OneofVariantWithContext<'a> {
     pub fn field_name(&self) -> &str {
-        self.field.get_name()
+        match self.field.get_name() {
+            "type" => "field_type",
+            x => x,
+        }
     }
 }
 
@@ -327,7 +330,10 @@ pub struct OneofWithContext<'a> {
 
 impl<'a> OneofWithContext<'a> {
     pub fn name(&'a self) -> &'a str {
-        self.oneof.get_name()
+        match self.oneof.get_name() {
+            "type" => "field_type",
+            x => x,
+        }
     }
 
     // rust type name of enum
