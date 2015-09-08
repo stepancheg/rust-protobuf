@@ -64,9 +64,9 @@ mod test {
 
     #[test]
     fn test_encode_hex() {
-        assert_eq!("".to_string(), encode_hex(&[]));
-        assert_eq!("00".to_string(), encode_hex(&[0x00]));
-        assert_eq!("ab".to_string(), encode_hex(&[0xab]));
-        assert_eq!("01 a2 1a fe".to_string(), encode_hex(&[0x01, 0xa2, 0x1a, 0xfe]));
+        assert_eq!("".to_owned(), encode_hex(&[]));
+        assert_eq!("00".to_owned(), encode_hex(&[0x00]));
+        assert_eq!("ab".to_owned(), encode_hex(&[0xab]));
+        assert_eq!("01 a2 1a fe".to_owned(), encode_hex(&[0x01, 0xa2, 0x1a, 0xfe]));
     }
 }

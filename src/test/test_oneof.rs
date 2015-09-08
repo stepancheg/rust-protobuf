@@ -57,7 +57,7 @@ fn test_types() {
     t(|o| o.set_sfixed32_field(20));
     t(|o| o.set_sfixed64_field(21));
     t(|o| o.set_bool_field(true));
-    t(|o| o.set_string_field("asas".to_string()));
+    t(|o| o.set_string_field("asas".to_owned()));
     t(|o| o.set_bytes_field(vec![99, 100]));
     t(|o| o.set_enum_field(EnumForOneof::A));
     t(|o| o.mut_message_field().set_f(22));

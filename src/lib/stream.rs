@@ -203,7 +203,7 @@ impl<'a> CodedInputStream<'a> {
         assert!(buf.len() < NO_LIMIT as usize);
         let new_pos = match self.pos.checked_add(buf.len() as u32) {
             None | Some(NO_LIMIT) =>
-                return Err(ProtobufError::WireError(format!("u32 overflow"))),
+                return Err(ProtobufError::WireError("u32 overflow".to_owned())),
             Some(new_pos) => new_pos,
         };
         try!(self.source.read(buf));
@@ -224,11 +224,11 @@ impl<'a> CodedInputStream<'a> {
     pub fn push_limit(&mut self, limit: u32) -> ProtobufResult<u32> {
         let old_limit = self.current_limit;
         let new_limit = match self.pos.checked_add(limit) {
-            None | Some(NO_LIMIT) => return Err(ProtobufError::WireError(format!("corrupted stream"))),
+            None | Some(NO_LIMIT) => return Err(ProtobufError::WireError("corrupted stream".to_owned())),
             Some(new_limit) => new_limit,
         };
         if old_limit != NO_LIMIT && new_limit > old_limit {
-            return Err(ProtobufError::WireError(format!("truncated message")));
+            return Err(ProtobufError::WireError("truncated message".to_owned()));
         }
         self.current_limit = new_limit;
         Ok(old_limit)
@@ -250,7 +250,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
         let eof = try!(self.eof());
         if !eof {
-            return Err(ProtobufError::WireError(format!("expecting EOF")));
+            return Err(ProtobufError::WireError("expecting EOF".to_owned()));
         }
         Ok(())
     }
@@ -604,7 +604,7 @@ impl<'a> CodedInputStream<'a> {
 
         let s = match String::from_utf8(vec) {
             Ok(t) => t,
-            Err(_) => return Err(ProtobufError::WireError(format!("invalid UTF-8 string on wire"))),
+            Err(_) => return Err(ProtobufError::WireError("invalid UTF-8 string on wire".to_owned())),
         };
         mem::replace(target, s);
         Ok(())
