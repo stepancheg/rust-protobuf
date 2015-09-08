@@ -158,18 +158,18 @@ impl RustType {
     // default value for type
     fn default_value(&self) -> String {
         match *self {
-            RustType::Ref(ref t) if t.is_str()       => "\"\"".to_string(),
-            RustType::Ref(ref t) if t.is_slice()     => "&[]".to_string(),
+            RustType::Ref(ref t) if t.is_str()       => "\"\"".to_owned(),
+            RustType::Ref(ref t) if t.is_slice()     => "&[]".to_owned(),
             RustType::Signed(..)                     |
-            RustType::Unsigned(..)                   => "0".to_string(),
-            RustType::Float(..)                      => "0.".to_string(),
-            RustType::Bool(..)                       => "false".to_string(),
-            RustType::Vec(..)                        => "::std::vec::Vec::new()".to_string(),
-            RustType::String                         => "::std::string::String::new()".to_string(),
-            RustType::Option(..)                     => "::std::option::Option::None".to_string(),
-            RustType::SingularField(..)              => "::protobuf::SingularField::none()".to_string(),
-            RustType::SingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_string(),
-            RustType::RepeatedField(..)              => "::protobuf::RepeatedField::new()".to_string(),
+            RustType::Unsigned(..)                   => "0".to_owned(),
+            RustType::Float(..)                      => "0.".to_owned(),
+            RustType::Bool(..)                       => "false".to_owned(),
+            RustType::Vec(..)                        => "::std::vec::Vec::new()".to_owned(),
+            RustType::String                         => "::std::string::String::new()".to_owned(),
+            RustType::Option(..)                     => "::std::option::Option::None".to_owned(),
+            RustType::SingularField(..)              => "::protobuf::SingularField::none()".to_owned(),
+            RustType::SingularPtrField(..)           => "::protobuf::SingularPtrField::none()".to_owned(),
+            RustType::RepeatedField(..)              => "::protobuf::RepeatedField::new()".to_owned(),
             RustType::Message(ref name)              => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message()   => match **m {
                 RustType::Message(ref name) => format!("{}::default_instance()", name),
@@ -392,10 +392,10 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
 
 fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> String {
     if !field.has_type_name() {
-        return "".to_string();
+        return String::new();
     }
     let current_pkg_prefix = if pkg.is_empty() {
-        ".".to_string()
+        ".".to_owned()
     } else {
         format!(".{}.", pkg)
     };
@@ -403,18 +403,18 @@ fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> Stri
         let mut tn = remove_prefix(field.get_type_name(), &current_pkg_prefix).to_string();
         match tn.rfind('.') {
             Some(pos) => { tn.truncate(pos + 1); tn }.replace(".", "_"),
-            None => "".to_string(),
+            None => String::new(),
         }
     } else {
         // TODO: package prefix
-        "".to_string()
+        String::new()
     }
 }
 
 fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
     if field.has_type_name() {
         let current_pkg_prefix = if pkg.is_empty() {
-            ".".to_string()
+            ".".to_owned()
         } else {
             format!(".{}.", pkg)
         };
@@ -483,7 +483,7 @@ impl Field {
             FieldDescriptorProto_Label::LABEL_REQUIRED => false,
         };
         let name = match field.field.get_name() {
-            "type" => "field_type".to_string(),
+            "type" => "field_type".to_owned(),
             x => x.to_string(),
         };
         let packed =
@@ -756,10 +756,10 @@ impl Field {
         };
         let suffix = match &self.type_name {
             t if t.is_primitive()                     => format!("{}", t),
-            &RustType::String                         => "string".to_string(),
-            &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_string(),
-            &RustType::Enum(..)                       => "enum".to_string(),
-            &RustType::Message(..)                    => "message".to_string(),
+            &RustType::String                         => "string".to_owned(),
+            &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_owned(),
+            &RustType::Enum(..)                       => "enum".to_owned(),
+            &RustType::Message(..)                    => "message".to_owned(),
             t => panic!("unexpected field type: {}", t),
         };
         format!("make_{}_{}_accessor", repeated_or_signular, suffix)
@@ -969,7 +969,7 @@ impl Field {
     fn self_field_vec_packed_varint_data_size(&self) -> String {
         assert!(!self.is_fixed());
         let fn_name = if self.is_enum() {
-            "vec_packed_enum_data_size".to_string()
+            "vec_packed_enum_data_size".to_owned()
         } else {
             let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_data_size", zigzag_suffix)
@@ -999,7 +999,7 @@ impl Field {
         // zero is filtered outside
         assert!(!self.is_fixed());
         let fn_name = if self.is_enum() {
-            "vec_packed_enum_size".to_string()
+            "vec_packed_enum_size".to_owned()
         } else {
             let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_size", zigzag_suffix)
@@ -1492,7 +1492,7 @@ impl<'a> MessageContext<'a> {
                 w.expr_block(format!("{}", self.type_name), |w| {
                     for field in self.fields_except_oneof() {
                         let init = field.full_storage_type().default_value();
-                        w.field_entry(field.name.to_string(), init);
+                        w.field_entry(field.name.to_owned(), init);
                     }
                     for oneof in self.oneofs() {
                         let init = oneof.full_storage_type().default_value();
@@ -1593,9 +1593,9 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
-        w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
+        w.def_fn("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>".to_owned(), |w| {
             w.while_block("!try!(is.eof())", |w| {
-                w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
+                w.write_line("let (field_number, wire_type) = try!(is.read_tag_unpack());".to_owned());
                 w.match_block("field_number", |w| {
                     for f in &self.fields {
                         let number = f.number;
@@ -1617,9 +1617,9 @@ impl<'a> MessageContext<'a> {
         w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
                 if self.fields.is_empty() {
-                    w.write_line(format!("let fields = ::std::vec::Vec::new();"));
+                    w.write_line("let fields = ::std::vec::Vec::new();".to_owned());
                 } else {
-                    w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
+                    w.write_line("let mut fields = ::std::vec::Vec::new();".to_owned());
                 }
                 for field in self.fields.iter() {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
@@ -1649,7 +1649,7 @@ impl<'a> MessageContext<'a> {
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
-            w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
+            w.def_fn("is_initialized(&self) -> bool".to_owned(), |w| {
                 for f in self.required_fields() {
                     f.write_if_self_field_is_none(w, |w| {
                         w.write_line("return false;");
@@ -1908,7 +1908,7 @@ impl<'a> EnumContext<'a> {
                         w.write_line(format!("{} => ::std::option::Option::Some({}),",
                             value.number(), value.rust_name_outer()));
                     }
-                    w.write_line(format!("_ => ::std::option::Option::None"));
+                    w.write_line("_ => ::std::option::Option::None".to_owned());
                 });
             });
             if !self.lite_runtime {

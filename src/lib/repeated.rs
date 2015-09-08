@@ -350,9 +350,9 @@ mod test {
     #[test]
     fn push_default() {
         let mut v = RepeatedField::new();
-        v.push("aa".to_string());
-        v.push("bb".to_string());
+        v.push("aa".to_owned());
+        v.push("bb".to_owned());
         v.clear();
-        assert_eq!("".to_string(), *v.push_default());
+        assert_eq!("".to_owned(), *v.push_default());
     }
 }

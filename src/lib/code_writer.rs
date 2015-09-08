@@ -12,7 +12,7 @@ impl<'a> CodeWriter<'a> {
     pub fn new(writer: &'a mut Write) -> CodeWriter<'a> {
         CodeWriter {
             writer: writer,
-            indent: "".to_string(),
+            indent: String::new(),
         }
     }
 
@@ -62,7 +62,7 @@ impl<'a> CodeWriter<'a> {
         self.unsafe_expr(|w| {
             w.write_line(format!("{}.get(|| {{", name.as_ref()));
             w.indented(|w| init(w));
-            w.write_line(format!("}})"));
+            w.write_line("})");
         });
     }
 
@@ -221,7 +221,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn error_wire_type(&mut self, _wire_type: wire_format::WireType) {
         // TODO: write wire type
-        let message = "\"unexpected wire type\".to_string()";
+        let message = "\"unexpected wire type\".to_owned()";
         self.write_line(format!(
                 "return ::std::result::Result::Err(::protobuf::ProtobufError::WireError({}));",
                 message));

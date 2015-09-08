@@ -168,7 +168,7 @@ impl<'a> Scope<'a> {
 
     pub fn prefix(&self) -> String {
         if self.path.is_empty() {
-            "".to_string()
+            String::new()
         } else {
             let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
             let mut r = v.connect(".");

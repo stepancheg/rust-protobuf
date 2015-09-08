@@ -26,7 +26,7 @@ fn test_singular() {
     t("sfixed32_singular: 99",    |m| m.set_sfixed32_singular(99));
     t("sfixed64_singular: 99",    |m| m.set_sfixed64_singular(99));
     t("bool_singular: false",     |m| m.set_bool_singular(false));
-    t("string_singular: \"abc\"", |m| m.set_string_singular("abc".to_string()));
+    t("string_singular: \"abc\"", |m| m.set_string_singular("abc".to_owned()));
     t("bytes_singular: \"def\"",  |m| m.set_bytes_singular(b"def".to_vec()));
     t("test_enum_singular: DARK", |m| m.set_test_enum_singular(TestEnum::DARK));
     t("test_message_singular {}", |m| { m.mut_test_message_singular(); });
@@ -48,7 +48,7 @@ fn test_repeated_one() {
     t("sfixed32_repeated: 99",    |m| m.mut_sfixed32_repeated().push(99));
     t("sfixed64_repeated: 99",    |m| m.mut_sfixed64_repeated().push(99));
     t("bool_repeated: false",     |m| m.mut_bool_repeated().push(false));
-    t("string_repeated: \"abc\"", |m| m.mut_string_repeated().push("abc".to_string()));
+    t("string_repeated: \"abc\"", |m| m.mut_string_repeated().push("abc".to_owned()));
     t("bytes_repeated: \"def\"",  |m| m.mut_bytes_repeated().push(b"def".to_vec()));
     t("test_enum_repeated: DARK", |m| m.mut_test_enum_repeated().push(TestEnum::DARK));
     t("test_message_repeated {}", |m| { m.mut_test_message_repeated().push(Default::default()); });
