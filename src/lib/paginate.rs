@@ -1,4 +1,4 @@
-pub trait PaginatableIterator {
+pub trait PaginatableIterator : Sized {
     fn paginate(self, page: usize) -> Paginate<Self>;
 }
 
