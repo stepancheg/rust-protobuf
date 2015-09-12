@@ -315,6 +315,7 @@ impl<'a> OneofVariantWithContext<'a> {
     pub fn field_name(&self) -> &str {
         match self.field.get_name() {
             "type" => "field_type",
+            "box" => "field_box",
             x => x,
         }
     }
@@ -332,6 +333,7 @@ impl<'a> OneofWithContext<'a> {
     pub fn name(&'a self) -> &'a str {
         match self.oneof.get_name() {
             "type" => "field_type",
+            "box" => "field_box",
             x => x,
         }
     }
