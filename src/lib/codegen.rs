@@ -484,6 +484,7 @@ impl Field {
         };
         let name = match field.field.get_name() {
             "type" => "field_type".to_string(),
+            "box" => "field_box".to_string(),
             x => x.to_string(),
         };
         let packed =
@@ -1072,6 +1073,7 @@ impl<'a> OneofContext<'a> {
     fn name(&self) -> &str {
         match self.oneof.oneof.get_name() {
             "type" => "field_type",
+            "box" => "field_box",
             x => x,
         }
     }
