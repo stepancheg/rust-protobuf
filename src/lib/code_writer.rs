@@ -126,12 +126,12 @@ impl<'a> CodeWriter<'a> {
 
     pub fn derive(&mut self, derive: &[&str]) {
         let v: Vec<String> = derive.iter().map(|&s| s.to_string()).collect();
-        self.write_line(format!("#[derive({})]", v.connect(",")));
+        self.write_line(format!("#[derive({})]", v.join(",")));
     }
 
     pub fn allow(&mut self, what: &[&str]) {
         let v: Vec<String> = what.iter().map(|&s| s.to_string()).collect();
-        self.write_line(format!("#[allow({})]", v.connect(",")));
+        self.write_line(format!("#[allow({})]", v.join(",")));
     }
 
     pub fn comment(&mut self, comment: &str) {

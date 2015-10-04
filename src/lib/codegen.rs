@@ -1966,7 +1966,7 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
         let fdp_bytes_str = groups.iter()
                 .map(|&b| format!("0x{:02x}", *b))
                 .collect::<Vec<String>>()
-                .connect(", ");
+                .join(", ");
         w.write_line(format!("    {},", fdp_bytes_str));
     }
     w.write_line("];");

@@ -171,7 +171,7 @@ impl<'a> Scope<'a> {
             "".to_string()
         } else {
             let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
-            let mut r = v.connect(".");
+            let mut r = v.join(".");
             r.push_str(".");
             r
         }
