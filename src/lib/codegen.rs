@@ -25,10 +25,10 @@ fn escape_default(s: &str) -> String {
     s.chars().flat_map(|c| c.escape_default()).collect()
 }
 
+// Represent subset of rust types used by codegen
 #[derive(Clone,PartialEq,Eq)]
 pub enum RustType {
-    Signed(u32),
-    Unsigned(u32),
+    Int(bool, u32),
     Float(u32),
     Bool,
     Vec(Box<RustType>),
@@ -52,8 +52,8 @@ impl fmt::Display for RustType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            RustType::Signed(bits)       => write!(f, "i{}", bits),
-            RustType::Unsigned(bits)     => write!(f, "u{}", bits),
+            RustType::Int(true, bits)    => write!(f, "i{}", bits),
+            RustType::Int(false, bits)   => write!(f, "u{}", bits),
             RustType::Float(bits)        => write!(f, "f{}", bits),
             RustType::Bool               => write!(f, "bool"),
             RustType::Vec(ref param)     => write!(f, "::std::vec::Vec<{}>", **param),
@@ -76,8 +76,7 @@ impl fmt::Display for RustType {
 impl RustType {
     fn is_primitive(&self) -> bool {
         match *self {
-            RustType::Signed(..)   |
-            RustType::Unsigned(..) |
+            RustType::Int(..)      |
             RustType::Float(..)    |
             RustType::Bool         => true,
             _                      => false,
@@ -121,7 +120,7 @@ impl RustType {
 
     fn is_u8(&self) -> bool {
         match *self {
-            RustType::Unsigned(8) => true,
+            RustType::Int(false, 8) => true,
             _ => false
         }
     }
@@ -160,8 +159,7 @@ impl RustType {
         match *self {
             RustType::Ref(ref t) if t.is_str()       => "\"\"".to_string(),
             RustType::Ref(ref t) if t.is_slice()     => "&[]".to_string(),
-            RustType::Signed(..)                     |
-            RustType::Unsigned(..)                   => "0".to_string(),
+            RustType::Int(..)                        => "0".to_string(),
             RustType::Float(..)                      => "0.".to_string(),
             RustType::Bool(..)                       => "false".to_string(),
             RustType::Vec(..)                        => "::std::vec::Vec::new()".to_string(),
@@ -181,6 +179,7 @@ impl RustType {
         }
     }
 
+    /// Emit a code to clear a variable `v`
     fn clear(&self, v: &str) -> String {
         match *self {
             RustType::Option(..) => format!("{} = ::std::option::Option::None", v),
@@ -220,22 +219,23 @@ impl RustType {
                     (&RustType::Vec(ref x), &RustType::Slice(ref y)) => x == y,
                     _ => false
                 } => format!("&{}", v),
-            (&RustType::Enum(..), &RustType::Signed(32)) =>
+            (&RustType::Enum(..), &RustType::Int(true, 32)) =>
                     format!("{} as i32", v),
-            (&RustType::Ref(ref t), &RustType::Signed(32)) if t.is_enum() =>
+            (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() =>
                     format!("*{} as i32", v),
             _ => panic!("cannot convert {} to {}", self, target),
         }
     }
 
+    /// Type to view data of this type
     fn ref_type(&self) -> RustType {
-        RustType::Ref(match self {
-            &RustType::String               => Box::new(RustType::Str),
+        RustType::Ref(Box::new(match self {
+            &RustType::String               => RustType::Str,
             &RustType::Vec(ref p)           |
-            &RustType::RepeatedField(ref p) => Box::new(RustType::Slice(p.clone())),
-            &RustType::Message(ref p)       => Box::new(RustType::Message(p.clone())),
+            &RustType::RepeatedField(ref p) => RustType::Slice(p.clone()),
+            &RustType::Message(ref p)       => RustType::Message(p.clone()),
             x => panic!("no ref type for {}", x),
-        })
+        }))
     }
 
     fn elem_type(&self) -> RustType {
@@ -263,19 +263,19 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
         FieldDescriptorProto_Type::TYPE_DOUBLE   => RustType::Float(64),
         FieldDescriptorProto_Type::TYPE_FLOAT    => RustType::Float(32),
-        FieldDescriptorProto_Type::TYPE_INT32    => RustType::Signed(32),
-        FieldDescriptorProto_Type::TYPE_INT64    => RustType::Signed(64),
-        FieldDescriptorProto_Type::TYPE_UINT32   => RustType::Unsigned(32),
-        FieldDescriptorProto_Type::TYPE_UINT64   => RustType::Unsigned(64),
-        FieldDescriptorProto_Type::TYPE_SINT32   => RustType::Signed(32),
-        FieldDescriptorProto_Type::TYPE_SINT64   => RustType::Signed(64),
-        FieldDescriptorProto_Type::TYPE_FIXED32  => RustType::Unsigned(32),
-        FieldDescriptorProto_Type::TYPE_FIXED64  => RustType::Unsigned(64),
-        FieldDescriptorProto_Type::TYPE_SFIXED32 => RustType::Signed(32),
-        FieldDescriptorProto_Type::TYPE_SFIXED64 => RustType::Signed(64),
+        FieldDescriptorProto_Type::TYPE_INT32    => RustType::Int(true, 32),
+        FieldDescriptorProto_Type::TYPE_INT64    => RustType::Int(true, 64),
+        FieldDescriptorProto_Type::TYPE_UINT32   => RustType::Int(false, 32),
+        FieldDescriptorProto_Type::TYPE_UINT64   => RustType::Int(false, 64),
+        FieldDescriptorProto_Type::TYPE_SINT32   => RustType::Int(true, 32),
+        FieldDescriptorProto_Type::TYPE_SINT64   => RustType::Int(true, 64),
+        FieldDescriptorProto_Type::TYPE_FIXED32  => RustType::Int(false, 32),
+        FieldDescriptorProto_Type::TYPE_FIXED64  => RustType::Int(false, 64),
+        FieldDescriptorProto_Type::TYPE_SFIXED32 => RustType::Int(true, 32),
+        FieldDescriptorProto_Type::TYPE_SFIXED64 => RustType::Int(true, 64),
         FieldDescriptorProto_Type::TYPE_BOOL     => RustType::Bool,
         FieldDescriptorProto_Type::TYPE_STRING   => RustType::String,
-        FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(Box::new(RustType::Unsigned(8))),
+        FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(Box::new(RustType::Int(false, 8))),
         FieldDescriptorProto_Type::TYPE_ENUM     |
         FieldDescriptorProto_Type::TYPE_GROUP    |
         FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!("there is no rust name for {:?}", field_type),
@@ -465,7 +465,10 @@ struct Field {
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     type_scope_prefix: String,
-    type_name: RustType,
+    /// Rust type for field collection element,
+    /// i. e. collection element type for repeated
+    /// and contained type for optional field.
+    elem_type: RustType,
     enum_default_value: Option<EnumValue>,
     number: u32,
     repeated: bool,
@@ -476,7 +479,7 @@ struct Field {
 
 impl Field {
     fn parse(field: &FieldWithContext, root_scope: &RootScope, pkg: &str) -> Field {
-        let type_name = field_type_name(field.field, pkg);
+        let elem_type = field_type_name(field.field, pkg);
         let repeated = match field.field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
             FieldDescriptorProto_Label::LABEL_OPTIONAL |
@@ -517,7 +520,7 @@ impl Field {
             name: name,
             field_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
-            type_name: type_name,
+            elem_type: elem_type,
             type_scope_prefix: field_type_name_scope_prefix(field.field, pkg),
             enum_default_value: enum_default_value,
             number: field.field.get_number() as u32,
@@ -551,7 +554,7 @@ impl Field {
         if self.is_oneof() {
             panic!("field is not oneof: {}", self.name);
         }
-        let c = Box::new(self.type_name.clone());
+        let c = Box::new(self.elem_type.clone());
         if self.repeated {
             if self.type_is_not_trivial() {
                 RustType::RepeatedField(c)
@@ -591,9 +594,9 @@ impl Field {
             FieldDescriptorProto_Type::TYPE_STRING =>
                 RustType::Ref(Box::new(RustType::Str)),
             FieldDescriptorProto_Type::TYPE_BYTES  =>
-                RustType::Ref(Box::new(RustType::Slice(Box::new(RustType::Unsigned(8))))),
+                RustType::Ref(Box::new(RustType::Slice(Box::new(RustType::Int(false, 8))))),
             FieldDescriptorProto_Type::TYPE_ENUM   =>
-                RustType::Signed(32),
+                RustType::Int(true, 32),
             t => rust_name(t),
         }
     }
@@ -603,7 +606,7 @@ impl Field {
         if self.repeated {
             self.full_storage_type()
         } else {
-            self.type_name.clone()
+            self.elem_type.clone()
         }
     }
 
@@ -617,17 +620,17 @@ impl Field {
         RustType::Ref(Box::new(if self.repeated {
             self.full_storage_type()
         } else {
-            self.type_name.clone()
+            self.elem_type.clone()
         }))
     }
 
     // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
         match self.repeated {
-            true => RustType::Ref(Box::new(RustType::Slice(Box::new(self.type_name.clone())))),
+            true => RustType::Ref(Box::new(RustType::Slice(Box::new(self.elem_type.clone())))),
             false => match self.type_is_not_trivial() {
-                true => self.type_name.ref_type(),
-                false => self.type_name.clone(),
+                true => self.elem_type.ref_type(),
+                false => self.elem_type.clone(),
             }
         }
     }
@@ -732,7 +735,7 @@ impl Field {
     // default to be assigned to field
     fn element_default_value_rust(&self) -> String {
         assert!(!self.repeated);
-        self.default_value_from_proto().unwrap_or_else(|| self.type_name.default_value())
+        self.default_value_from_proto().unwrap_or_else(|| self.elem_type.default_value())
     }
 
     fn reconstruct_def(&self) -> String {
@@ -755,7 +758,7 @@ impl Field {
             true  => "repeated",
             false => "singular",
         };
-        let suffix = match &self.type_name {
+        let suffix = match &self.elem_type {
             t if t.is_primitive()                     => format!("{}", t),
             &RustType::String                         => "string".to_string(),
             &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_string(),
@@ -955,7 +958,7 @@ impl Field {
             let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
             self.write_self_field_assign(w, converted);
         } else {
-            let converted = ty.into_target(&self.type_name, value.as_ref());
+            let converted = ty.into_target(&self.elem_type, value.as_ref());
             let wrapped = self.full_storage_type().wrap_value(&converted);
             self.write_self_field_assign(w, wrapped);
         }
@@ -1197,9 +1200,9 @@ fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
             w.match_expr(self_field_oneof, |w| {
                 let (refv, vtype) =
                     if field.type_is_not_trivial() {
-                        ("ref v", field.type_name.ref_type())
+                        ("ref v", field.elem_type.ref_type())
                     } else {
-                        ("v", field.type_name.clone())
+                        ("v", field.elem_type.clone())
                     };
                 w.case_expr(format!(
                         "::std::option::Option::Some({}({}))",
@@ -1211,7 +1214,7 @@ fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
         } else if !field.repeated {
             if field.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
                 let self_field = field.self_field();
-                let ref field_type_name = field.type_name;
+                let ref field_type_name = field.elem_type;
                 w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
                         self_field, field_type_name));
             } else {
@@ -1347,7 +1350,7 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
         } else if !field.repeated {
             if field.type_is_not_trivial() {
                 w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
-                    field.name, field.type_name.default_value()));
+                    field.name, field.elem_type.default_value()));
             } else {
                 w.write_line(format!("self.{}.take().unwrap_or({})",
                     field.name, field.element_default_value_rust()));
@@ -1392,7 +1395,7 @@ fn write_message_oneof(oneof: &OneofContext, w: &mut CodeWriter) {
     w.derive(&derive);
     w.pub_enum(&oneof.type_name.to_string(), |w| {
         for variant in oneof.variants() {
-            w.write_line(format!("{}({}),", variant.field.name, &variant.field.type_name.to_string()));
+            w.write_line(format!("{}({}),", variant.field.name, &variant.field.elem_type.to_string()));
         }
     });
 }
@@ -1455,9 +1458,9 @@ impl<'a> MessageContext<'a> {
                         let ref field = variant.field;
                         let (refv, vtype) =
                             if field.type_is_not_trivial() {
-                                ("ref v", field.type_name.ref_type())
+                                ("ref v", field.elem_type.ref_type())
                             } else {
-                                ("v", field.type_name.clone())
+                                ("v", field.elem_type.clone())
                             };
                         w.case_block(format!("&{}({})", variant.path(), refv), |w| {
                             cb(w, &variant, "v", &vtype);
