@@ -2,7 +2,7 @@ use protobuf::*;
 
 use test::*;
 
-use test_oneof_proto::*;
+use pb_test_oneof_proto::*;
 
 #[test]
 fn test_simple() {

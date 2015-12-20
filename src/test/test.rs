@@ -1,8 +1,8 @@
 use protobuf::hex::encode_hex;
 use protobuf::hex::decode_hex;
 
-use shrug::*;
-use test_lite_runtime;
+use pb_shrug::*;
+use pb_test_lite_runtime;
 
 use protobuf::*;
 
@@ -194,7 +194,7 @@ fn test_types_repeated_packed() {
 fn test_file_descriptor_proto() {
     let p: &'static descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());
-    assert_eq!("proto/shrug.proto", p.get_name());
+    assert_eq!("proto/pb_shrug.proto", p.get_name());
 }
 
 #[test]
@@ -250,7 +250,7 @@ fn test_default_value() {
 
 #[test]
 fn test_lite_runtime() {
-    let mut m = test_lite_runtime::TestLiteRuntime::new();
+    let mut m = pb_test_lite_runtime::TestLiteRuntime::new();
     m.set_v(10);
     test_serialize_deserialize("08 0a", &m);
 

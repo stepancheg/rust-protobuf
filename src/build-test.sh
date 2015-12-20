@@ -5,10 +5,12 @@ cargo build
 where_am_i=$(cd `dirname $0`/..; pwd)
 PATH="$where_am_i/target/debug:$PATH"
 
-protoc --rust_out test proto/shrug.proto
-protoc --rust_out test proto/test-sanitize-file-name.proto
-protoc --rust_out test proto/text_format_test_data.proto
-protoc --rust_out test -I proto proto/test_*.proto
+rm -f test/pb_*
+
+protoc --rust_out test proto/pb_shrug.proto
+protoc --rust_out test proto/pb_test-sanitize-file-name.proto
+protoc --rust_out test proto/pb_text_format_test_data.proto
+protoc --rust_out test -I proto proto/pb_test_*.proto
 
 cd test
 
