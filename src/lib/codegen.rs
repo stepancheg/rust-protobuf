@@ -161,7 +161,7 @@ impl RustType {
             RustType::Ref(ref t) if t.is_slice()     => "&[]".to_string(),
             RustType::Int(..)                        => "0".to_string(),
             RustType::Float(..)                      => "0.".to_string(),
-            RustType::Bool(..)                       => "false".to_string(),
+            RustType::Bool                           => "false".to_string(),
             RustType::Vec(..)                        => "::std::vec::Vec::new()".to_string(),
             RustType::String                         => "::std::string::String::new()".to_string(),
             RustType::Option(..)                     => "::std::option::Option::None".to_string(),
