@@ -64,7 +64,7 @@ impl<'a> FileScope<'a> {
     }
 
     // find all enums in given file descriptor
-    fn find_enums(&self) -> Vec<EnumWithScope<'a>> {
+    pub fn find_enums(&self) -> Vec<EnumWithScope<'a>> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
@@ -75,7 +75,7 @@ impl<'a> FileScope<'a> {
     }
 
     // find all messages in given file descriptor
-    fn find_messages(&self) -> Vec<MessageWithScope<'a>> {
+    pub fn find_messages(&self) -> Vec<MessageWithScope<'a>> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {

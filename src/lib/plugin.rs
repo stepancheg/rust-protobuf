@@ -27,6 +27,13 @@ use super::descriptor::ServiceOptions;
 use super::descriptor::MethodOptions;
 use super::descriptor::UninterpretedOption;
 use super::descriptor::SourceCodeInfo;
+use super::descriptor::DescriptorProto_ExtensionRange;
+use super::descriptor::UninterpretedOption_NamePart;
+use super::descriptor::SourceCodeInfo_Location;
+use super::descriptor::FieldDescriptorProto_Type;
+use super::descriptor::FieldDescriptorProto_Label;
+use super::descriptor::FileOptions_OptimizeMode;
+use super::descriptor::FieldOptions_CType;
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorRequest {

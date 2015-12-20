@@ -2024,16 +2024,17 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
             w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
             for dep in file.get_dependency().iter() {
                 // TODO: should use absolute paths in file instead of global uses
-                let files = files_map[&dep as &str];
-                for message in files.get_message_type().iter() {
+                let imported_file = files_map[&dep as &str];
+                let imported_file_scope = FileScope { file_descriptor: imported_file };
+                for message in imported_file_scope.find_messages() {
                     w.write_line(format!("use super::{}::{};",
                         proto_path_to_rust_base(&dep),
-                        message.get_name()));
+                        message.rust_name()));
                 }
-                for en in files.get_enum_type().iter() {
+                for en in imported_file_scope.find_enums().iter() {
                     w.write_line(format!("use super::{}::{};",
                         proto_path_to_rust_base(&dep),
-                        en.get_name()));
+                        en.rust_name()));
                 }
             }
 
