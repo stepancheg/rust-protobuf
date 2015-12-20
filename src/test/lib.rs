@@ -2,8 +2,8 @@ extern crate protobuf;
 
 mod pb_shrug;
 mod pb_test_ident;
-mod pb_test_import;
-mod pb_test_import_imported;
+mod pb_test_import_root;
+mod pb_test_import_root_imported;
 mod pb_test_lite_runtime;
 mod pb_test_nonunique_enum;
 mod pb_test_root;

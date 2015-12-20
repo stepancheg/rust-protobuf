@@ -1,4 +1,4 @@
-import "pb_test_import_imported.proto";
+import "pb_test_import_root_imported.proto";
 
 message ContainsImported {
     optional ImportedMessage imported_message = 1;
