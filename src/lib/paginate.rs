@@ -11,7 +11,7 @@ impl<T, U : Iterator<Item = T>> PaginatableIterator for U {
     }
 }
 
-struct Paginate<I> {
+pub struct Paginate<I> {
     iter: I,
     page: usize,
 }
