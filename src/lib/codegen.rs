@@ -411,7 +411,7 @@ fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> Stri
     }
 }
 
-fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
+fn field_type_name(field: &FieldDescriptorProto, root_scope: &RootScope, pkg: &str) -> RustType {
     if field.has_type_name() {
         let current_pkg_prefix = if pkg.is_empty() {
             ".".to_string()
@@ -419,10 +419,11 @@ fn field_type_name(field: &FieldDescriptorProto, pkg: &str) -> RustType {
             format!(".{}.", pkg)
         };
         let name = (if field.get_type_name().starts_with(&current_pkg_prefix) {
+            // TODO: find a descriptor
             remove_prefix(field.get_type_name(), &current_pkg_prefix).to_string()
         } else {
-            // TODO: package prefix
-            remove_to(field.get_type_name(), '.').to_string()
+            let message_or_enum = root_scope.find_message_or_enum(field.get_type_name());
+            message_or_enum.rust_name()
         }).replace(".", "_");
         match field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(name),
@@ -479,7 +480,7 @@ struct Field {
 
 impl Field {
     fn parse(field: &FieldWithContext, root_scope: &RootScope, pkg: &str) -> Field {
-        let elem_type = field_type_name(field.field, pkg);
+        let elem_type = field_type_name(field.field, root_scope, pkg);
         let repeated = match field.field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
             FieldDescriptorProto_Label::LABEL_OPTIONAL |

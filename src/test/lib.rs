@@ -4,6 +4,8 @@ mod pb_shrug;
 mod pb_test_ident;
 mod pb_test_import_nested;
 mod pb_test_import_nested_imported;
+mod pb_test_import_pkg_nested;
+mod pb_test_import_pkg_nested_imported;
 mod pb_test_import_root;
 mod pb_test_import_root_imported;
 mod pb_test_lite_runtime;

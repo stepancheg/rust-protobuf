@@ -1,0 +1,8 @@
+import "pb_test_import_pkg_nested_imported.proto";
+
+package foo.bar;
+
+message ContainsImportedNested {
+    optional foo.baz.ContainerForNested.NestedMessage m = 1;
+    optional foo.baz.ContainerForNested.NestedEnum e = 2;
+}

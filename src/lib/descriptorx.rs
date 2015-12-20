@@ -20,15 +20,22 @@ impl<'a> RootScope<'a> {
     }
 
     pub fn find_enum(&'a self, fqn: &str) -> EnumWithScope<'a> {
+        match self.find_message_or_enum(fqn) {
+            MessageOrEnumWithScope::Enum(e) => e,
+            _ => panic!("not an enum: {}", fqn),
+        }
+    }
+
+    pub fn find_message_or_enum(&'a self, fqn: &str) -> MessageOrEnumWithScope<'a> {
         assert!(fqn.starts_with("."));
         let fqn1 = &fqn[1..];
         self.packages().into_iter()
             .flat_map(|p| {
                 (if p.get_package().is_empty() {
-                    p.find_enum(fqn1)
+                    p.find_message_or_enum(fqn1)
                 } else if fqn1.starts_with(&(p.get_package().to_string() + ".")) {
                     let remaining = &fqn1[(p.get_package().len() + 1)..];
-                    p.find_enum(remaining)
+                    p.find_message_or_enum(remaining)
                 } else {
                     None
                 }).into_iter()
@@ -63,6 +70,13 @@ impl<'a> FileScope<'a> {
             .next()
     }
 
+    fn find_message_or_enum(&self, name: &str) -> Option<MessageOrEnumWithScope<'a>> {
+        assert!(!name.starts_with("."));
+        self.find_messages_and_enums().into_iter()
+            .filter(|e| e.name_to_package() == name)
+            .next()
+    }
+
     // find all enums in given file descriptor
     pub fn find_enums(&self) -> Vec<EnumWithScope<'a>> {
         let mut r = Vec::new();
@@ -85,6 +99,16 @@ impl<'a> FileScope<'a> {
         r
     }
 
+    // find all messages and enums in given file descriptor
+    pub fn find_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
+        let mut r = Vec::new();
+
+        self.to_scope().walk_scopes(|scope| {
+            r.extend(scope.get_messages_and_enums());
+        });
+
+        r
+    }
 }
 
 
@@ -140,6 +164,13 @@ impl<'a> Scope<'a> {
                 en: e,
             }
         }).collect()
+    }
+
+    // get messages and enums with attached scopes in this scope
+    pub fn get_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
+        self.get_messages().into_iter().map(|m| MessageOrEnumWithScope::Message(m))
+            .chain(self.get_enums().into_iter().map(|m| MessageOrEnumWithScope::Enum(m)))
+            .collect()
     }
 
     // nested scopes, i. e. scopes of nested messages
@@ -281,6 +312,28 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
 
     fn get_name(&self) -> &'a str {
         self.en.get_name()
+    }
+}
+
+
+pub enum MessageOrEnumWithScope<'a> {
+    Message(MessageWithScope<'a>),
+    Enum(EnumWithScope<'a>),
+}
+
+impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
+    fn get_scope(&self) -> &Scope<'a> {
+        match self {
+            &MessageOrEnumWithScope::Message(ref m) => m.get_scope(),
+            &MessageOrEnumWithScope::Enum(ref e) => e.get_scope(),
+        }
+    }
+
+    fn get_name(&self) -> &'a str {
+        match self {
+            &MessageOrEnumWithScope::Message(ref m) => m.get_name(),
+            &MessageOrEnumWithScope::Enum(ref e) => e.get_name(),
+        }
     }
 }
 
