@@ -1905,6 +1905,7 @@ impl<'a> EnumContext<'a> {
             w.def_fn("value(&self) -> i32", |w| {
                 w.write_line("*self as i32")
             });
+
             w.write_line("");
             let ref type_name = self.type_name;
             w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
@@ -1917,6 +1918,19 @@ impl<'a> EnumContext<'a> {
                     w.write_line(format!("_ => ::std::option::Option::None"));
                 });
             });
+
+            w.write_line("");
+            w.def_fn(format!("values() -> &'static [Self]"), |w| {
+                w.write_line(format!("static values: &'static [{}] = &[", type_name));
+                w.indented(|w| {
+                    for value in self.values() {
+                        w.write_line(format!("{},", value.rust_name_outer()));
+                    }
+                });
+                w.write_line("];");
+                w.write_line("values");
+            });
+
             if !self.lite_runtime {
                 w.write_line("");
                 let ref type_name = self.type_name;

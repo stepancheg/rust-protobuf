@@ -146,6 +146,10 @@ pub trait ProtobufEnum : Eq + Sized {
 
     fn from_i32(v: i32) -> Option<Self>;
 
+    fn values() -> &'static [Self] {
+        panic!();
+    }
+
     fn descriptor(&self) -> &'static EnumValueDescriptor {
         self.enum_descriptor().value_by_number(self.value())
     }
