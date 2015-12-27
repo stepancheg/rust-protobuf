@@ -26,21 +26,34 @@ fn print_str_to(s: &str, buf: &mut String) {
     print_bytes_to(s.as_bytes(), buf);
 }
 
-pub fn print_to(m: &Message, buf: &mut String) {
+fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
+    if pretty && indent > 0 {
+        for _ in 0..indent {
+            buf.push_str("  ");
+        }
+    }
+}
+
+fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize) {
     let d = m.descriptor();
     let mut first = true;
     for f in d.fields().iter() {
         if f.is_repeated() {
             for i in 0..f.len_field(m) {
-                if !first {
+                if !first && !pretty {
                     buf.push_str(" ");
                 }
+                do_indent(buf, pretty, indent);
                 first = false;
                 buf.push_str(f.name());
                 match f.proto().get_field_type() {
                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
                         buf.push_str(" {");
-                        print_to(f.get_rep_message_item(m, i), buf);
+                        if pretty {
+                            buf.push_str("\n");
+                        }
+                        print_to_internal(f.get_rep_message_item(m, i), buf, pretty, indent+1);
+                        do_indent(buf, pretty, indent);
                         buf.push_str("}");
                     },
                     FieldDescriptorProto_Type::TYPE_ENUM => {
@@ -93,18 +106,26 @@ pub fn print_to(m: &Message, buf: &mut String) {
                         buf.push_str(": <TYPE_GROUP>");
                     }
                 }
+                if pretty {
+                    buf.push_str("\n");
+                }
             }
         } else {
             if f.has_field(m) {
-                if !first {
+                if !first && !pretty {
                     buf.push_str(" ");
                 }
+                do_indent(buf, pretty, indent);
                 first = false;
                 buf.push_str(f.name());
                 match f.proto().get_field_type() {
                     FieldDescriptorProto_Type::TYPE_MESSAGE => {
                         buf.push_str(" {");
-                        print_to(f.get_message(m), buf);
+                        if pretty {
+                            buf.push_str("\n");
+                        }
+                        print_to_internal(f.get_message(m), buf, pretty, indent+1);
+                        do_indent(buf, pretty, indent);
                         buf.push_str("}");
                     },
                     FieldDescriptorProto_Type::TYPE_ENUM => {
@@ -157,6 +178,9 @@ pub fn print_to(m: &Message, buf: &mut String) {
                         buf.push_str(": <TYPE_GROUP>");
                     }
                 }
+                if pretty {
+                    buf.push_str("\n");
+                }
             }
         }
     }
@@ -164,12 +188,21 @@ pub fn print_to(m: &Message, buf: &mut String) {
     // TODO: unknown fields
 }
 
-pub fn print_to_string(m: &Message) -> String {
+pub fn print_to(m: &Message, buf: &mut String) {
+    print_to_internal(m, buf, false, 0)
+}
+
+fn print_to_string_internal(m: &Message, pretty: bool) -> String {
     let mut r = String::new();
-    print_to(m, &mut r);
+    print_to_internal(m, &mut r, pretty, 0);
     r.to_string()
 }
 
+pub fn print_to_string(m: &Message) -> String {
+    print_to_string_internal(m, false)
+}
+
 pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
-    f.write_str(&print_to_string(m))
+    let pretty = f.alternate();
+    f.write_str(&print_to_string_internal(m, pretty))
 }
