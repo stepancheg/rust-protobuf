@@ -5,7 +5,7 @@ use descriptor::*;
 fn print_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push('"');
     for &b in bytes.iter() {
-        if b < 0x20 || b >= 0x80 {
+        if b < 0x20 || b >= 0x7f {
             buf.push('\\');
             buf.push((b'0' + ((b >> 6) & 3)) as char);
             buf.push((b'0' + ((b >> 3) & 7)) as char);

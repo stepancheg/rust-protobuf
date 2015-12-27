@@ -78,6 +78,6 @@ fn test_show() {
 #[test]
 fn test_string_escaped() {
     let mut m = TestTypes::new();
-    m.set_string_singular("quote\"newline\nbackslash\\".to_string());
-    assert_eq!("string_singular: \"quote\\\"newline\\012backslash\\\\\"", &*format!("{:?}", m));
+    m.set_string_singular("quote\"newline\nbackslash\\del\x7f".to_string());
+    assert_eq!("string_singular: \"quote\\\"newline\\012backslash\\\\del\\177\"", &*format!("{:?}", m));
 }
