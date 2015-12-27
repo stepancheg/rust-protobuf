@@ -10,6 +10,8 @@ fn print_bytes_to(bytes: &[u8], buf: &mut String) {
             buf.push((b'0' + ((b >> 6) & 3)) as char);
             buf.push((b'0' + ((b >> 3) & 7)) as char);
             buf.push((b'0' + (b & 7)) as char);
+        } else if b == b'"' {
+            buf.push_str("\\\"");
         } else {
             buf.push(b as char);
         }

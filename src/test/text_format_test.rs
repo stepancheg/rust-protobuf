@@ -74,3 +74,10 @@ fn test_show() {
     m.set_bool_singular(true);
     assert_eq!("bool_singular: true", &*format!("{:?}", m));
 }
+
+#[test]
+fn test_string_escaped() {
+    let mut m = TestTypes::new();
+    m.set_string_singular("quote\"newline\n".to_string());
+    assert_eq!("string_singular: \"quote\\\"newline\\012\"", &*format!("{:?}", m));
+}
