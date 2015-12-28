@@ -1,4 +1,5 @@
 use std::fmt;
+use std::fmt::Write;
 use core::Message;
 use reflect::FieldDescriptor;
 use reflect::EnumValueDescriptor;
@@ -153,6 +154,7 @@ impl FieldDescriptor {
 
 }
 
+#[allow(unused_must_use)] // because write!(..) to String need to to be checked
 fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize) {
     let d = m.descriptor();
     let mut first = true;
@@ -189,36 +191,29 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
                 FieldDescriptorProto_Type::TYPE_INT32 |
                 FieldDescriptorProto_Type::TYPE_SINT32 |
                 FieldDescriptorProto_Type::TYPE_SFIXED32 => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_i32_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_i32_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_INT64 |
                 FieldDescriptorProto_Type::TYPE_SINT64 |
                 FieldDescriptorProto_Type::TYPE_SFIXED64 => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_i64_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_i64_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_UINT32 |
                 FieldDescriptorProto_Type::TYPE_FIXED32 => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_u32_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_u32_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_UINT64 |
                 FieldDescriptorProto_Type::TYPE_FIXED64 => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_u64_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_u64_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_BOOL => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_bool_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_bool_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_FLOAT => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_f32_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_f32_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_DOUBLE => {
-                    buf.push_str(": ");
-                    buf.push_str(&f.get_rep_f64_item_x(m, i).to_string());
+                    write!(buf, ": {}", f.get_rep_f64_item_x(m, i));
                 },
                 FieldDescriptorProto_Type::TYPE_GROUP => {
                     buf.push_str(": <TYPE_GROUP>");
