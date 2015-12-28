@@ -81,3 +81,15 @@ fn test_string_escaped() {
     m.set_string_singular("quote\"newline\nbackslash\\del\x7f".to_string());
     assert_eq!("string_singular: \"quote\\\"newline\\012backslash\\\\del\\177\"", &*format!("{:?}", m));
 }
+
+#[test]
+fn test_pretty() {
+    let mut tm = TestMessage::new();
+    tm.set_value(23);
+    let mut m = TestTypes::new();
+    m.set_test_message_singular(tm);
+    m.set_string_singular("abc".to_string());
+    m.mut_string_repeated().push("def".to_string());
+    m.mut_string_repeated().push("ghi".to_string());
+    assert_eq!("string_singular: \"abc\"\ntest_message_singular {\n  value: 23\n}\nstring_repeated: \"def\"\nstring_repeated: \"ghi\"\n", &*format!("{:#?}", m));
+}
