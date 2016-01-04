@@ -46,6 +46,8 @@ pub enum RustType {
     Enum(String),
     // oneof enum
     Oneof(String),
+    // group
+    Group,
 }
 
 impl fmt::Display for RustType {
@@ -69,6 +71,7 @@ impl fmt::Display for RustType {
             RustType::Message(ref name) |
             RustType::Enum(ref name)    |
             RustType::Oneof(ref name)   => write!(f, "{}", name),
+            RustType::Group             => write!(f, "<group>"),
         }
     }
 }
@@ -321,7 +324,7 @@ fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
         FieldDescriptorProto_Type::TYPE_BYTES    => "bytes",
         FieldDescriptorProto_Type::TYPE_ENUM     => "enum",
         FieldDescriptorProto_Type::TYPE_MESSAGE  => "message",
-        FieldDescriptorProto_Type::TYPE_GROUP    => panic!()
+        FieldDescriptorProto_Type::TYPE_GROUP    => "group",
     }
 }
 
@@ -345,7 +348,7 @@ fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::W
         FieldDescriptorProto_Type::TYPE_STRING   => WireTypeLengthDelimited,
         FieldDescriptorProto_Type::TYPE_BYTES    => WireTypeLengthDelimited,
         FieldDescriptorProto_Type::TYPE_MESSAGE  => WireTypeLengthDelimited,
-        FieldDescriptorProto_Type::TYPE_GROUP    => panic!()
+        FieldDescriptorProto_Type::TYPE_GROUP    => WireTypeLengthDelimited, // not true
     }
 }
 
@@ -428,6 +431,7 @@ fn field_type_name(field: &FieldDescriptorProto, root_scope: &RootScope, pkg: &s
         match field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(name),
             FieldDescriptorProto_Type::TYPE_ENUM    => RustType::Enum(name),
+            FieldDescriptorProto_Type::TYPE_GROUP   => RustType::Group,
             _ => panic!("unknown named type: {:?}", field.get_field_type()),
         }
     } else if field.has_field_type() {
@@ -1435,17 +1439,27 @@ impl<'a> MessageContext<'a> {
     }
 
     fn required_fields(&'a self) -> Vec<&'a Field> {
-        let mut r = Vec::new();
-        for field in self.fields.iter() {
-            if field.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED {
-                r.push(field);
-            }
-        }
-        r
+        self.fields_except_group().into_iter()
+            .filter(|f| f.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED)
+            .collect()
     }
 
     fn fields_except_oneof(&'a self) -> Vec<&'a Field> {
-        self.fields.iter().filter(|f| !f.is_oneof()).collect()
+        self.fields.iter()
+            .filter(|f| !f.is_oneof())
+            .collect()
+    }
+
+    fn fields_except_group(&'a self) -> Vec<&'a Field> {
+        self.fields.iter()
+            .filter(|f| f.field_type != FieldDescriptorProto_Type::TYPE_GROUP)
+            .collect()
+    }
+
+    fn fields_except_oneof_and_group(&'a self) -> Vec<&'a Field> {
+        self.fields.iter()
+            .filter(|f| !f.is_oneof() && f.field_type != FieldDescriptorProto_Type::TYPE_GROUP)
+            .collect()
     }
 
 
@@ -1475,7 +1489,7 @@ impl<'a> MessageContext<'a> {
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
         w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
             // To have access to its methods but not polute the name space.
-            for f in self.fields_except_oneof() {
+            for f in self.fields_except_oneof_and_group() {
                 write_message_write_field(w, f);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
@@ -1496,7 +1510,7 @@ impl<'a> MessageContext<'a> {
         w.pub_fn(format!("default_instance() -> &'static {}", self.type_name), |w| {
             w.lazy_static_decl_get("instance", &self.type_name, |w| {
                 w.expr_block(format!("{}", self.type_name), |w| {
-                    for field in self.fields_except_oneof() {
+                    for field in self.fields_except_oneof_and_group() {
                         let init = field.full_storage_type().default_value();
                         w.field_entry(field.name.to_string(), init);
                     }
@@ -1521,7 +1535,7 @@ impl<'a> MessageContext<'a> {
         w.def_fn("compute_size(&self) -> u32", |w| {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");
-            for field in self.fields_except_oneof() {
+            for field in self.fields_except_oneof_and_group() {
                 match field.repeat_mode {
                     RepeatMode::Single | RepeatMode::RepeatRegular => {
                         match field_type_size(field.field_type) {
@@ -1567,7 +1581,7 @@ impl<'a> MessageContext<'a> {
     }
 
     fn write_field_accessors(&self, w: &mut CodeWriter) {
-        for f in &self.fields {
+        for f in self.fields_except_group() {
             w.write_line("");
             let reconstruct_def = f.reconstruct_def();
             w.comment(&(reconstruct_def + ";"));
@@ -1603,7 +1617,7 @@ impl<'a> MessageContext<'a> {
             w.while_block("!try!(is.eof())", |w| {
                 w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
                 w.match_block("field_number", |w| {
-                    for f in &self.fields {
+                    for f in &self.fields_except_group() {
                         let number = f.number;
                         w.case_block(number.to_string(), |w| {
                             write_merge_from_field(w, f);
@@ -1622,12 +1636,13 @@ impl<'a> MessageContext<'a> {
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
         w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
-                if self.fields.is_empty() {
+                let fields = self.fields_except_group();
+                if fields.is_empty() {
                     w.write_line(format!("let fields = ::std::vec::Vec::new();"));
                 } else {
                     w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
                 }
-                for field in self.fields.iter() {
+                for field in fields {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
                     w.indented(|w| {
                         w.write_line(format!("\"{}\",", field.name));
@@ -1712,7 +1727,7 @@ impl<'a> MessageContext<'a> {
         w.impl_for_block("::protobuf::Clear", &self.type_name, |w| {
             w.def_fn("clear(&mut self)", |w| {
                 // TODO: no need to clear oneof fields in loop
-                for f in &self.fields {
+                for f in self.fields_except_group() {
                     let clear_field_func = f.clear_field_func();
                     w.write_line(format!("self.{}();", clear_field_func));
                 }
@@ -1725,7 +1740,7 @@ impl<'a> MessageContext<'a> {
     fn write_impl_partial_eq(&self, w: &mut CodeWriter) {
         w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
             w.def_fn(format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
-                for f in self.fields_except_oneof() {
+                for f in self.fields_except_oneof_and_group() {
                     let ref field_name = f.name;
                     w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
                 }
@@ -1744,10 +1759,14 @@ impl<'a> MessageContext<'a> {
         }
         w.derive(&derive);
         w.pub_struct(&self.type_name, |w| {
-            if !self.fields.is_empty() {
+            if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
-                    w.field_decl(&field.name[..], &field.full_storage_type().to_string());
+                    if field.field_type == FieldDescriptorProto_Type::TYPE_GROUP {
+                        w.comment(&format!("{}: <group>", &field.name));
+                    } else {
+                        w.field_decl(&field.name, &field.full_storage_type().to_string());
+                    }
                 }
             }
             if !self.oneofs().is_empty() {

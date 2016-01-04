@@ -2,6 +2,7 @@ extern crate protobuf;
 
 mod pb_shrug;
 mod pb_test_enum_values;
+mod pb_test_group;
 mod pb_test_ident;
 mod pb_test_import_nested;
 mod pb_test_import_nested_imported;
