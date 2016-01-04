@@ -9,7 +9,7 @@ cd $(dirname $0)
 # Build again with regenerated descriptor.proto
 ./rebuild.sh
 
-./build-test.sh
+./test.sh
 
 rm -f perftest/Cargo.lock
 ./perftest/build-perftest-rust.sh
