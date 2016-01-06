@@ -1,0 +1,3 @@
+package nonunique_2;
+
+message Nonunique {}
