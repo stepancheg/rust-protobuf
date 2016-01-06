@@ -7,6 +7,7 @@ use descriptor::EnumValueDescriptorProto;
 use descriptor::FieldDescriptorProto;
 use descriptor::OneofDescriptorProto;
 
+use rust;
 
 pub struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
@@ -353,6 +354,15 @@ impl<'a> FieldWithContext<'a> {
             Some(self.message.oneof_by_index(self.field.get_oneof_index() as u32))
         } else {
             None
+        }
+    }
+
+    // field name in generated code
+    pub fn rust_name(&self) -> String {
+        if rust::is_rust_keyword(self.field.get_name()) {
+            format!("field_{}", self.field.get_name())
+        } else {
+            self.field.get_name().to_string()
         }
     }
 }

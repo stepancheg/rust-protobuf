@@ -12,4 +12,6 @@ message TestType {
     oneof type {
         string s = 1;
     }
+    repeated string struct = 2;
+    repeated uint32 ref = 3;
 }

@@ -44,3 +44,7 @@ message TestTypes {
     repeated TestEnum test_enum_repeated = 46;
     repeated TestMessage test_message_repeated = 47;
 }
+
+message TestTextFormatRustIdentifier {
+    optional bool const = 1;
+}

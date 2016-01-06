@@ -2075,7 +2075,7 @@ impl ::protobuf::MessageStatic for FieldDescriptorProto {
                     FieldDescriptorProto::get_label,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_enum_accessor(
-                    "field_type",
+                    "type",
                     FieldDescriptorProto::has_field_type,
                     FieldDescriptorProto::get_field_type,
                 ));

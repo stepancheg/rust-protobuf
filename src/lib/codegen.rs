@@ -466,7 +466,8 @@ impl FieldOneofInfo {
 #[derive(Clone)]
 struct Field {
     proto_field: FieldDescriptorProto,
-    name: String,
+    // field name in generated code
+    rust_name: String,
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     type_scope_prefix: String,
@@ -489,11 +490,6 @@ impl Field {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
             FieldDescriptorProto_Label::LABEL_OPTIONAL |
             FieldDescriptorProto_Label::LABEL_REQUIRED => false,
-        };
-        let name = match field.field.get_name() {
-            "type" => "field_type".to_string(),
-            "box" => "field_box".to_string(),
-            x => x.to_string(),
         };
         let packed =
             if field.field.has_options() {
@@ -522,7 +518,7 @@ impl Field {
         };
         Field {
             proto_field: field.field.clone(),
-            name: name,
+            rust_name: field.rust_name(),
             field_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             elem_type: elem_type,
@@ -551,13 +547,13 @@ impl Field {
 
     fn variant_path(&self) -> String {
         // TODO: should reuse code from OneofVariantContext
-        format!("{}::{}", self.oneof.as_ref().unwrap().type_name, self.name)
+        format!("{}::{}", self.oneof.as_ref().unwrap().type_name, self.rust_name)
     }
 
     // type of field in struct
     fn full_storage_type(&self) -> RustType {
         if self.is_oneof() {
-            panic!("field is not oneof: {}", self.name);
+            panic!("field is not oneof: {}", self.proto_field.get_name());
         }
         let c = Box::new(self.elem_type.clone());
         if self.repeated {
@@ -873,7 +869,7 @@ impl Field {
     }
 
     fn self_field(&self) -> String {
-        format!("self.{}", self.name)
+        format!("self.{}", self.rust_name)
     }
 
     fn self_field_is_some(&self) -> String {
@@ -1032,7 +1028,7 @@ impl Field {
     }
 
     fn clear_field_func(&self) -> String {
-        format!("clear_{}", self.name)
+        format!("clear_{}", self.rust_name)
     }
 
 }
@@ -1052,7 +1048,7 @@ impl<'a> OneofVariantContext<'a> {
             oneof: oneof,
             variant: variant,
             field: field.clone(),
-            path: format!("{}::{}", oneof.type_name, field.name),
+            path: format!("{}::{}", oneof.type_name, field.rust_name),
         }
     }
 
@@ -1090,7 +1086,7 @@ impl<'a> OneofContext<'a> {
         self.oneof.variants().into_iter()
             .map(|v| {
                 let field = self.message.fields.iter()
-                    .filter(|f| f.name == v.field_name())
+                    .filter(|f| f.proto_field.get_name() == v.field_name())
                     .next()
                     .unwrap();
                 OneofVariantContext::parse(self, v, field)
@@ -1109,7 +1105,7 @@ fn write_merge_from_field_message_string_bytes(w: &mut CodeWriter, field: &Field
         w.write_line(format!(
             "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
                 protobuf_name(field.field_type),
-                field.name));
+                field.rust_name));
     } else {
         w.assert_wire_type(wire_format::WireTypeLengthDelimited);
         let self_field = field.self_field();
@@ -1150,7 +1146,7 @@ fn write_merge_from_field(w: &mut CodeWriter, field: &Field) {
                 w.write_line(format!(
                     "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
                         protobuf_name(field.field_type),
-                        field.name));
+                        field.rust_name));
             },
         };
     }
@@ -1197,7 +1193,7 @@ fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
     };
     let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
     // TODO: 'a is not needed when function does not return a reference
-    let ref name = field.name;
+    let ref name = field.rust_name;
     w.pub_fn(format!("get_{}<'a>({}) -> {}", name, self_param, get_xxx_return_type_str),
     |w| {
         if field.is_oneof() {
@@ -1255,7 +1251,7 @@ fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
 }
 
 fn write_message_field_has(w: &mut CodeWriter, field: &Field) {
-    let ref name = field.name;
+    let ref name = field.rust_name;
     w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
         if !field.is_oneof() {
             let self_field_is_some = field.self_field_is_some();
@@ -1276,7 +1272,7 @@ fn write_message_field_has(w: &mut CodeWriter, field: &Field) {
 fn write_message_field_set(w: &mut CodeWriter, field: &Field) {
     let set_xxx_param_type = field.set_xxx_param_type();
     w.comment("Param is passed by value, moved");
-    let ref name = field.name;
+    let ref name = field.rust_name;
     w.pub_fn(format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
         if !field.is_oneof() {
             field.write_self_field_assign_value(w, "v", &set_xxx_param_type);
@@ -1295,7 +1291,7 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
         w.comment("If field is not initialized, it is initialized with default value first.");
     }
     // TODO: 'a is not needed when function does not return a reference
-    w.pub_fn(format!("mut_{}<'a>(&'a mut self) -> {}", field.name, mut_xxx_return_type.mut_ref_str("a")),
+    w.pub_fn(format!("mut_{}<'a>(&'a mut self) -> {}", field.rust_name, mut_xxx_return_type.mut_ref_str("a")),
     |w| {
         if field.is_oneof() {
             let self_field_oneof = field.self_field_oneof();
@@ -1336,10 +1332,10 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
     w.write_line("");
     w.comment("Take field");
     let take_xxx_return_type = field.take_xxx_return_type();
-    w.pub_fn(format!("take_{}(&mut self) -> {}", field.name, take_xxx_return_type), |w| {
+    w.pub_fn(format!("take_{}(&mut self) -> {}", field.rust_name, take_xxx_return_type), |w| {
         if field.is_oneof() {
             // TODO: replace with if let
-            w.write_line(format!("if self.has_{}() {{", field.name));
+            w.write_line(format!("if self.has_{}() {{", field.rust_name));
             w.indented(|w| {
                 let self_field_oneof = field.self_field_oneof();
                 w.match_expr(format!("{}.take()", self_field_oneof), |w| {
@@ -1355,14 +1351,14 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
         } else if !field.repeated {
             if field.type_is_not_trivial() {
                 w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
-                    field.name, field.elem_type.default_value()));
+                    field.rust_name, field.elem_type.default_value()));
             } else {
                 w.write_line(format!("self.{}.take().unwrap_or({})",
-                    field.name, field.element_default_value_rust()));
+                    field.rust_name, field.element_default_value_rust()));
             }
         } else {
             w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
-                    field.name,
+                    field.rust_name,
                     take_xxx_return_type.default_value()));
         }
     });
@@ -1400,7 +1396,7 @@ fn write_message_oneof(oneof: &OneofContext, w: &mut CodeWriter) {
     w.derive(&derive);
     w.pub_enum(&oneof.type_name.to_string(), |w| {
         for variant in oneof.variants() {
-            w.write_line(format!("{}({}),", variant.field.name, &variant.field.elem_type.to_string()));
+            w.write_line(format!("{}({}),", variant.field.rust_name, &variant.field.elem_type.to_string()));
         }
     });
 }
@@ -1512,7 +1508,7 @@ impl<'a> MessageContext<'a> {
                 w.expr_block(format!("{}", self.type_name), |w| {
                     for field in self.fields_except_oneof_and_group() {
                         let init = field.full_storage_type().default_value();
-                        w.field_entry(field.name.to_string(), init);
+                        w.field_entry(field.rust_name.to_string(), init);
                     }
                     for oneof in self.oneofs() {
                         let init = oneof.full_storage_type().default_value();
@@ -1645,12 +1641,12 @@ impl<'a> MessageContext<'a> {
                 for field in fields {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
                     w.indented(|w| {
-                        w.write_line(format!("\"{}\",", field.name));
+                        w.write_line(format!("\"{}\",", field.proto_field.get_name()));
                         for f in field.make_accessor_fn_fn_params().iter() {
                             w.write_line(format!("{}::{}_{},",
                                     self.type_name,
                                     f,
-                                    field.name,
+                                    field.rust_name,
                                 ));
                         }
                     });
@@ -1741,8 +1737,8 @@ impl<'a> MessageContext<'a> {
         w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
             w.def_fn(format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
                 for f in self.fields_except_oneof_and_group() {
-                    let ref field_name = f.name;
-                    w.write_line(format!("self.{field} == other.{field} &&", field=field_name));
+                    let ref field_rust_name = f.rust_name;
+                    w.write_line(format!("self.{field} == other.{field} &&", field=field_rust_name));
                 }
                 for oneof in self.oneofs() {
                     w.write_line(format!("self.{oneof} == other.{oneof} &&", oneof=oneof.name()));
@@ -1763,9 +1759,9 @@ impl<'a> MessageContext<'a> {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
                     if field.field_type == FieldDescriptorProto_Type::TYPE_GROUP {
-                        w.comment(&format!("{}: <group>", &field.name));
+                        w.comment(&format!("{}: <group>", &field.rust_name));
                     } else {
-                        w.field_decl(&field.name, &field.full_storage_type().to_string());
+                        w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
                     }
                 }
             }

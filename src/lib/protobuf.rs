@@ -49,6 +49,7 @@ mod paginate;
 mod unknown;
 mod strx;
 mod descriptorx;
+mod rust;
 
 // so `use protobuf::*` could work in descriptor mod
 mod protobuf {

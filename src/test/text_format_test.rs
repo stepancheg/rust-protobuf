@@ -93,3 +93,10 @@ fn test_pretty() {
     m.mut_string_repeated().push("ghi".to_string());
     assert_eq!("string_singular: \"abc\"\ntest_message_singular {\n  value: 23\n}\nstring_repeated: \"def\"\nstring_repeated: \"ghi\"\n", &*format!("{:#?}", m));
 }
+
+#[test]
+fn test_rust_identifier() {
+    let mut m = TestTextFormatRustIdentifier::new();
+    m.set_field_const(true);
+    assert_eq!("const: true", &*format!("{:?}", m));
+}
