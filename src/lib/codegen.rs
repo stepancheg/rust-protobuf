@@ -394,27 +394,6 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     }
 }
 
-fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> String {
-    if !field.has_type_name() {
-        return "".to_string();
-    }
-    let current_pkg_prefix = if pkg.is_empty() {
-        ".".to_string()
-    } else {
-        format!(".{}.", pkg)
-    };
-    if field.get_type_name().starts_with(&current_pkg_prefix) {
-        let mut tn = remove_prefix(field.get_type_name(), &current_pkg_prefix).to_string();
-        match tn.rfind('.') {
-            Some(pos) => { tn.truncate(pos + 1); tn }.replace(".", "_"),
-            None => "".to_string(),
-        }
-    } else {
-        // TODO: package prefix
-        "".to_string()
-    }
-}
-
 fn field_type_name(field: &FieldDescriptorProto, root_scope: &RootScope) -> RustType {
     if field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         RustType::Group
@@ -462,7 +441,6 @@ struct FieldGen {
     rust_name: String,
     field_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
-    type_scope_prefix: String,
     /// Rust type for field collection element,
     /// i. e. collection element type for repeated
     /// and contained type for optional field.
@@ -476,7 +454,7 @@ struct FieldGen {
 }
 
 impl FieldGen {
-    fn parse(field: &FieldWithContext, root_scope: &RootScope, pkg: &str) -> FieldGen {
+    fn parse(field: &FieldWithContext, root_scope: &RootScope) -> FieldGen {
         let elem_type = field_type_name(field.field, root_scope);
         let repeated = match field.field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
@@ -514,7 +492,6 @@ impl FieldGen {
             field_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             elem_type: elem_type,
-            type_scope_prefix: field_type_name_scope_prefix(field.field, pkg),
             enum_default_value: enum_default_value,
             number: field.field.get_number() as u32,
             repeated: repeated,
@@ -1407,7 +1384,7 @@ impl<'a> MessageGen<'a> {
         -> MessageGen<'a>
     {
         let fields: Vec<_> = message.fields().iter().map(|field| {
-            FieldGen::parse(field, root_scope, message.get_package())
+            FieldGen::parse(field, root_scope)
         }).collect();
         MessageGen {
             message: message,
