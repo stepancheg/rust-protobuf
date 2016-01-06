@@ -12,6 +12,7 @@ use rt;
 use code_writer::CodeWriter;
 use paginate::PaginatableIterator;
 use strx::*;
+use descriptorx::proto_path_to_rust_mod;
 use descriptorx::EnumWithScope;
 use descriptorx::MessageWithScope;
 use descriptorx::FieldWithContext;
@@ -414,7 +415,7 @@ fn field_type_name_scope_prefix(field: &FieldDescriptorProto, pkg: &str) -> Stri
     }
 }
 
-fn field_type_name(field: &FieldDescriptorProto, root_scope: &RootScope, pkg: &str) -> RustType {
+fn field_type_name(field: &FieldDescriptorProto, root_scope: &RootScope) -> RustType {
     if field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         RustType::Group
     } else if field.has_type_name() {
@@ -455,7 +456,7 @@ impl FieldOneofInfo {
 }
 
 #[derive(Clone)]
-struct Field {
+struct FieldGen {
     proto_field: FieldDescriptorProto,
     // field name in generated code
     rust_name: String,
@@ -474,9 +475,9 @@ struct Field {
     oneof: Option<FieldOneofInfo>,
 }
 
-impl Field {
-    fn parse(field: &FieldWithContext, root_scope: &RootScope, pkg: &str) -> Field {
-        let elem_type = field_type_name(field.field, root_scope, pkg);
+impl FieldGen {
+    fn parse(field: &FieldWithContext, root_scope: &RootScope, pkg: &str) -> FieldGen {
+        let elem_type = field_type_name(field.field, root_scope);
         let repeated = match field.field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
             FieldDescriptorProto_Label::LABEL_OPTIONAL |
@@ -497,7 +498,7 @@ impl Field {
         let enum_default_value = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_ENUM => {
                 let enum_with_scope = root_scope.find_enum(field.field.get_type_name());
-                let e = EnumContext::new(&enum_with_scope, root_scope);
+                let e = EnumGen::new(&enum_with_scope, root_scope);
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()
                 } else {
@@ -507,7 +508,7 @@ impl Field {
             }
             _ => None,
         };
-        Field {
+        FieldGen {
             proto_field: field.field.clone(),
             rust_name: field.rust_name(),
             field_type: field.field.get_field_type(),
@@ -537,7 +538,7 @@ impl Field {
     }
 
     fn variant_path(&self) -> String {
-        // TODO: should reuse code from OneofVariantContext
+        // TODO: should reuse code from OneofVariantGen
         format!("{}::{}", self.oneof.as_ref().unwrap().type_name, self.rust_name)
     }
 
@@ -1026,16 +1027,16 @@ impl Field {
 
 
 #[derive(Clone)]
-struct OneofVariantContext<'a> {
-    oneof: &'a OneofContext<'a>,
+struct OneofVariantGen<'a> {
+    oneof: &'a OneofGen<'a>,
     variant: OneofVariantWithContext<'a>,
-    field: Field,
+    field: FieldGen,
     path: String,
 }
 
-impl<'a> OneofVariantContext<'a> {
-    fn parse(oneof: &'a OneofContext<'a>, variant: OneofVariantWithContext<'a>, field: &'a Field) -> OneofVariantContext<'a> {
-        OneofVariantContext {
+impl<'a> OneofVariantGen<'a> {
+    fn parse(oneof: &'a OneofGen<'a>, variant: OneofVariantWithContext<'a>, field: &'a FieldGen) -> OneofVariantGen<'a> {
+        OneofVariantGen {
             oneof: oneof,
             variant: variant,
             field: field.clone(),
@@ -1049,16 +1050,16 @@ impl<'a> OneofVariantContext<'a> {
 }
 
 #[derive(Clone)]
-struct OneofContext<'a> {
-    message: &'a MessageContext<'a>,
+struct OneofGen<'a> {
+    message: &'a MessageGen<'a>,
     oneof: OneofWithContext<'a>,
     type_name: RustType,
 }
 
-impl<'a> OneofContext<'a> {
-    fn parse(message: &'a MessageContext, oneof: OneofWithContext<'a>) -> OneofContext<'a> {
+impl<'a> OneofGen<'a> {
+    fn parse(message: &'a MessageGen, oneof: OneofWithContext<'a>) -> OneofGen<'a> {
         let rust_name = oneof.rust_name();
-        OneofContext {
+        OneofGen {
             message: message,
             oneof: oneof,
             type_name: RustType::Oneof(rust_name),
@@ -1073,14 +1074,14 @@ impl<'a> OneofContext<'a> {
         }
     }
 
-    fn variants(&'a self) -> Vec<OneofVariantContext<'a>> {
+    fn variants(&'a self) -> Vec<OneofVariantGen<'a>> {
         self.oneof.variants().into_iter()
             .map(|v| {
                 let field = self.message.fields.iter()
                     .filter(|f| f.proto_field.get_name() == v.field_name())
                     .next()
                     .unwrap();
-                OneofVariantContext::parse(self, v, field)
+                OneofVariantGen::parse(self, v, field)
             })
             .collect()
     }
@@ -1091,7 +1092,7 @@ impl<'a> OneofContext<'a> {
 }
 
 
-fn write_merge_from_field_message_string_bytes(w: &mut CodeWriter, field: &Field) {
+fn write_merge_from_field_message_string_bytes(w: &mut CodeWriter, field: &FieldGen) {
     if field.repeated {
         w.write_line(format!(
             "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
@@ -1105,7 +1106,7 @@ fn write_merge_from_field_message_string_bytes(w: &mut CodeWriter, field: &Field
     }
 }
 
-fn write_merge_from_oneof(field: &Field, w: &mut CodeWriter) {
+fn write_merge_from_oneof(field: &FieldGen, w: &mut CodeWriter) {
     w.assert_wire_type(field.wire_type);
     // TODO: split long line
     w.write_line(format!("self.{} = ::std::option::Option::Some({}(try!({})));",
@@ -1114,7 +1115,7 @@ fn write_merge_from_oneof(field: &Field, w: &mut CodeWriter) {
         field.field_type.read("is")));
 }
 
-fn write_merge_from_field(w: &mut CodeWriter, field: &Field) {
+fn write_merge_from_field(w: &mut CodeWriter, field: &FieldGen) {
     if field.is_oneof() {
         write_merge_from_oneof(field, w);
     } else if field.type_is_not_trivial() {
@@ -1143,7 +1144,7 @@ fn write_merge_from_field(w: &mut CodeWriter, field: &Field) {
     }
 }
 
-fn write_message_write_field(w: &mut CodeWriter, field: &Field) {
+fn write_message_write_field(w: &mut CodeWriter, field: &FieldGen) {
     match field.repeat_mode {
         RepeatMode::Single => {
             let self_field_as_option = field.self_field_as_option();
@@ -1176,7 +1177,7 @@ fn write_message_write_field(w: &mut CodeWriter, field: &Field) {
     };
 }
 
-fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
+fn write_message_field_get(w: &mut CodeWriter, field: &FieldGen) {
     let get_xxx_return_type = field.get_xxx_return_type();
     let self_param = match get_xxx_return_type.is_ref() {
         true  => "&'a self",
@@ -1241,7 +1242,7 @@ fn write_message_field_get(w: &mut CodeWriter, field: &Field) {
     });
 }
 
-fn write_message_field_has(w: &mut CodeWriter, field: &Field) {
+fn write_message_field_has(w: &mut CodeWriter, field: &FieldGen) {
     let ref name = field.rust_name;
     w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
         if !field.is_oneof() {
@@ -1260,7 +1261,7 @@ fn write_message_field_has(w: &mut CodeWriter, field: &Field) {
     });
 }
 
-fn write_message_field_set(w: &mut CodeWriter, field: &Field) {
+fn write_message_field_set(w: &mut CodeWriter, field: &FieldGen) {
     let set_xxx_param_type = field.set_xxx_param_type();
     w.comment("Param is passed by value, moved");
     let ref name = field.rust_name;
@@ -1275,7 +1276,7 @@ fn write_message_field_set(w: &mut CodeWriter, field: &Field) {
     });
 }
 
-fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
+fn write_message_field_mut_take(w: &mut CodeWriter, field: &FieldGen) {
     let mut_xxx_return_type = field.mut_xxx_return_type();
     w.comment("Mutable pointer to the field.");
     if !field.repeated {
@@ -1355,7 +1356,7 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &Field) {
     });
 }
 
-fn write_message_single_field_accessors(w: &mut CodeWriter, field: &Field) {
+fn write_message_single_field_accessors(w: &mut CodeWriter, field: &FieldGen) {
     let clear_field_func = field.clear_field_func();
     w.pub_fn(format!("{}(&mut self)", clear_field_func), |w| {
         field.write_clear(w);
@@ -1379,7 +1380,7 @@ fn write_message_single_field_accessors(w: &mut CodeWriter, field: &Field) {
     write_message_field_get(w, field);
 }
 
-fn write_message_oneof(oneof: &OneofContext, w: &mut CodeWriter) {
+fn write_message_oneof(oneof: &OneofGen, w: &mut CodeWriter) {
     let mut derive = vec!["Clone", "PartialEq"];
     if false /* lite_runtime */ {
         derive.push("Debug");
@@ -1393,22 +1394,22 @@ fn write_message_oneof(oneof: &OneofContext, w: &mut CodeWriter) {
 }
 
 /// Message info for codegen
-struct MessageContext<'a> {
+struct MessageGen<'a> {
     message: &'a MessageWithScope<'a>,
     root_scope: &'a RootScope<'a>,
     type_name: String,
-    fields: Vec<Field>,
+    fields: Vec<FieldGen>,
     lite_runtime: bool,
 }
 
-impl<'a> MessageContext<'a> {
+impl<'a> MessageGen<'a> {
     fn new(message: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>)
-        -> MessageContext<'a>
+        -> MessageGen<'a>
     {
         let fields: Vec<_> = message.fields().iter().map(|field| {
-            Field::parse(field, root_scope, message.get_package())
+            FieldGen::parse(field, root_scope, message.get_package())
         }).collect();
-        MessageContext {
+        MessageGen {
             message: message,
             root_scope: root_scope,
             type_name: message.rust_name(),
@@ -1419,31 +1420,31 @@ impl<'a> MessageContext<'a> {
         }
     }
 
-    fn oneofs(&'a self) -> Vec<OneofContext<'a>> {
+    fn oneofs(&'a self) -> Vec<OneofGen<'a>> {
         self.message.oneofs().into_iter().map(|oneof| {
-            OneofContext::parse(self, oneof)
+            OneofGen::parse(self, oneof)
         }).collect()
     }
 
-    fn required_fields(&'a self) -> Vec<&'a Field> {
+    fn required_fields(&'a self) -> Vec<&'a FieldGen> {
         self.fields_except_group().into_iter()
             .filter(|f| f.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED)
             .collect()
     }
 
-    fn fields_except_oneof(&'a self) -> Vec<&'a Field> {
+    fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
             .filter(|f| !f.is_oneof())
             .collect()
     }
 
-    fn fields_except_group(&'a self) -> Vec<&'a Field> {
+    fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
             .filter(|f| f.field_type != FieldDescriptorProto_Type::TYPE_GROUP)
             .collect()
     }
 
-    fn fields_except_oneof_and_group(&'a self) -> Vec<&'a Field> {
+    fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
             .filter(|f| !f.is_oneof() && f.field_type != FieldDescriptorProto_Type::TYPE_GROUP)
             .collect()
@@ -1451,7 +1452,7 @@ impl<'a> MessageContext<'a> {
 
 
     fn write_match_each_oneof_variant<F>(&self, w: &mut CodeWriter, cb: F)
-        where F: Fn(&mut CodeWriter, &OneofVariantContext, &str, &RustType)
+        where F: Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType)
     {
         for oneof in self.oneofs() {
             w.if_let_stmt("::std::option::Option::Some(ref v)", &format!("self.{}", oneof.name())[..], |w| {
@@ -1794,12 +1795,12 @@ impl<'a> MessageContext<'a> {
 
         for nested in self.message.to_scope().get_messages().iter() {
             w.write_line("");
-            MessageContext::new(nested, self.root_scope).write(w);
+            MessageGen::new(nested, self.root_scope).write(w);
         }
 
         for enum_type in self.message.to_scope().get_enums().iter() {
             w.write_line("");
-            EnumContext::new(enum_type, self.root_scope).write(w);
+            EnumGen::new(enum_type, self.root_scope).write(w);
         }
     }
 }
@@ -1845,16 +1846,16 @@ impl EnumValue {
 }
 
 
-struct EnumContext<'a> {
+struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
     type_name: String,
     lite_runtime: bool,
 }
 
-impl<'a> EnumContext<'a> {
-    fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumContext<'a> {
+impl<'a> EnumGen<'a> {
+    fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumGen<'a> {
         let rust_name = enum_with_scope.rust_name();
-        EnumContext {
+        EnumGen {
             enum_with_scope: enum_with_scope,
             type_name: rust_name.clone(),
             lite_runtime:
@@ -1958,30 +1959,6 @@ impl<'a> EnumContext<'a> {
 
 }
 
-// Copy-pasted from libsyntax.
-fn ident_start(c: char) -> bool {
-    (c >= 'a' && c <= 'z')
-        || (c >= 'A' && c <= 'Z')
-        || c == '_'
-}
-
-// Copy-pasted from libsyntax.
-fn ident_continue(c: char) -> bool {
-    (c >= 'a' && c <= 'z')
-        || (c >= 'A' && c <= 'Z')
-        || (c >= '0' && c <= '9')
-        || c == '_'
-}
-
-pub fn proto_path_to_rust_base(path: &str) -> String {
-    let without_dir = remove_to(path, '/');
-    let without_suffix = remove_suffix(without_dir, ".proto");
-    without_suffix.chars().enumerate().map(|(i, c)| {
-        let valid = if i == 0 { ident_start(c) } else { ident_continue(c) };
-        if valid { c } else { '_' }
-    }).collect()
-}
-
 
 fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     let fdp_bytes = file.write_to_bytes().unwrap();
@@ -2010,6 +1987,72 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     });
 }
 
+fn gen_file(
+    file: &FileDescriptorProto,
+    files_map: &HashMap<&str, &FileDescriptorProto>,
+    root_scope: &RootScope,
+)
+    -> compiler_plugin::GenResult
+{
+    let mut v = Vec::new();
+
+    {
+        let mut w = CodeWriter::new(&mut v);
+
+        w.write_line("// This file is generated. Do not edit");
+
+        // https://secure.phabricator.com/T784
+        w.write_line("// @generated");
+
+        w.write_line("");
+        w.write_line("#![allow(dead_code)]");
+        w.write_line("#![allow(non_camel_case_types)]");
+        w.write_line("#![allow(non_snake_case)]");
+        w.write_line("#![allow(non_upper_case_globals)]");
+        w.write_line("#![allow(unused_imports)]");
+
+        w.write_line("");
+        w.write_line("use protobuf::Message as Message_imported_for_functions;");
+        w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
+        for dep in file.get_dependency().iter() {
+            // TODO: should use absolute paths in file instead of global uses
+            let imported_file = files_map[&dep as &str];
+            let imported_file_scope = FileScope { file_descriptor: imported_file };
+            for message in imported_file_scope.find_messages() {
+                w.write_line(format!("use super::{}::{};",
+                    proto_path_to_rust_mod(&dep),
+                    message.rust_name()));
+            }
+            for en in imported_file_scope.find_enums().iter() {
+                w.write_line(format!("use super::{}::{};",
+                    proto_path_to_rust_mod(&dep),
+                    en.rust_name()));
+            }
+        }
+
+        let scope = FileScope { file_descriptor: file } .to_scope();
+
+        for message in scope.get_messages().iter() {
+            w.write_line("");
+            MessageGen::new(message, &root_scope).write(&mut w);
+        }
+        for enum_type in scope.get_enums().iter() {
+            w.write_line("");
+            EnumGen::new(enum_type, &root_scope).write(&mut w);
+        }
+
+        if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {
+            w.write_line("");
+            write_file_descriptor_data(file, &mut w);
+        }
+    }
+
+    compiler_plugin::GenResult {
+        name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
+        content: v,
+    }
+}
+
 pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String])
         -> Vec<compiler_plugin::GenResult>
 {
@@ -2021,69 +2064,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
     for file_name in files_to_generate.iter() {
         let file = files_map[&file_name[..]];
-        let base = proto_path_to_rust_base(file.get_name());
-
-        let mut v = Vec::new();
-
-        {
-            let mut w = CodeWriter::new(&mut v);
-
-            w.write_line("// This file is generated. Do not edit");
-
-            // https://secure.phabricator.com/T784
-            w.write_line("// @generated");
-
-            w.write_line("");
-            w.write_line("#![allow(dead_code)]");
-            w.write_line("#![allow(non_camel_case_types)]");
-            w.write_line("#![allow(non_snake_case)]");
-            w.write_line("#![allow(non_upper_case_globals)]");
-            w.write_line("#![allow(unused_imports)]");
-
-            w.write_line("");
-            w.write_line("use protobuf::Message as Message_imported_for_functions;");
-            w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
-            for dep in file.get_dependency().iter() {
-                // TODO: should use absolute paths in file instead of global uses
-                let imported_file = files_map[&dep as &str];
-                let imported_file_scope = FileScope { file_descriptor: imported_file };
-                for message in imported_file_scope.find_messages() {
-                    w.write_line(format!("use super::{}::{};",
-                        proto_path_to_rust_base(&dep),
-                        message.rust_name()));
-                }
-                for en in imported_file_scope.find_enums().iter() {
-                    w.write_line(format!("use super::{}::{};",
-                        proto_path_to_rust_base(&dep),
-                        en.rust_name()));
-                }
-            }
-
-            let scope = FileScope { file_descriptor: file } .to_scope();
-
-            for message in scope.get_messages().iter() {
-                w.write_line("");
-                MessageContext::new(message, &root_scope).write(&mut w);
-            }
-            for enum_type in scope.get_enums().iter() {
-                w.write_line("");
-                EnumContext::new(enum_type, &root_scope).write(&mut w);
-            }
-
-            if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {
-                w.write_line("");
-                write_file_descriptor_data(file, &mut w);
-            }
-        }
-
-        results.push(compiler_plugin::GenResult {
-            name: {
-                let mut r = base.to_string();
-                r.push_str(".rs");
-                r
-            },
-            content: v,
-        });
+        results.push(gen_file(file, &files_map, &root_scope));
     }
     results
 }
