@@ -7,8 +7,9 @@ env:
 language: rust
 
 rust:
-  - nightly
+  - stable
   - beta
+  - nightly
 
 before_install:
   - ./install-protobuf.sh
