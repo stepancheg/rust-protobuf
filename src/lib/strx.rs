@@ -26,12 +26,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
-    fn test_remove_prefix_fail() {
-        remove_prefix("aaa", "bbb");
-    }
-
-    #[test]
     fn test_remove_suffix() {
         assert_eq!("bbb", remove_suffix("bbbaaa", "aaa"));
     }
