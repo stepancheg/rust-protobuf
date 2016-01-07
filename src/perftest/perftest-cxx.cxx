@@ -41,12 +41,12 @@ void test(const char* name, const RepeatedPtrField<M>& data) {
     std::mt19937 rng;
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, data.size() - 1);
 
-    RepeatedPtrField<M> randomData;
+    std::vector<M> randomData;
 
     auto totalSize = 0;
     while (totalSize < 1000000) {
         const auto& item = data.Get(dist(rng));
-        *randomData.Add() = item;
+        randomData.push_back(item);
         totalSize += item.ByteSize();
     }
 
@@ -55,9 +55,9 @@ void test(const char* name, const RepeatedPtrField<M>& data) {
         StringOutputStream ss(&s);
         CodedOutputStream os(&ss);
         for (int i = 0; i < randomData.size(); ++i) {
-            auto size = randomData.Get(i).ByteSize();
+            auto size = randomData[i].ByteSize();
             os.WriteVarint32(size);
-            randomData.Get(i).SerializeWithCachedSizes(&os);
+            randomData[i].SerializeWithCachedSizes(&os);
         }
     });
 
