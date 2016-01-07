@@ -91,13 +91,6 @@ impl<'a> FileScope<'a> {
         }
     }
 
-    fn find_enum(&self, name: &str) -> Option<EnumWithScope<'a>> {
-        assert!(!name.starts_with("."));
-        self.find_enums().into_iter()
-            .filter(|e| e.name_to_package() == name)
-            .next()
-    }
-
     fn find_message_or_enum(&self, name: &str) -> Option<MessageOrEnumWithScope<'a>> {
         assert!(!name.starts_with("."));
         self.find_messages_and_enums().into_iter()
@@ -150,10 +143,6 @@ pub struct Scope<'a> {
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
         self.file_scope.file_descriptor
-    }
-
-    fn get_package(&self) -> &'a str {
-        self.file_scope.file_descriptor.get_package()
     }
 
     // get message descriptors in this scope
@@ -252,11 +241,6 @@ pub trait WithScope<'a> {
     // message or enum name
     fn get_name(&self) -> &'a str;
 
-    // package name of this descriptor
-    fn get_package(&self) -> &'a str {
-        self.get_scope().get_package()
-    }
-
     fn name_to_package(&self) -> String {
         let mut r = self.get_scope().prefix();
         r.push_str(self.get_name());
@@ -330,6 +314,11 @@ impl<'a> EnumWithScope<'a> {
     // enum values
     pub fn values(&'a self) -> &'a [EnumValueDescriptorProto] {
         self.en.get_value()
+    }
+
+    // find enum value by name
+    pub fn value_by_name(&'a self, name: &str) -> &'a EnumValueDescriptorProto {
+        self.en.get_value().into_iter().find(|v| v.get_name() == name).unwrap()
     }
 }
 

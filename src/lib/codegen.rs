@@ -11,7 +11,6 @@ use compiler_plugin;
 use rt;
 use code_writer::CodeWriter;
 use paginate::PaginatableIterator;
-use strx::*;
 use descriptorx::proto_path_to_rust_mod;
 use descriptorx::EnumWithScope;
 use descriptorx::MessageWithScope;
@@ -394,21 +393,31 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     }
 }
 
-fn field_type_name(field: &FieldDescriptorProto, root_scope: &RootScope) -> RustType {
-    if field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
+fn field_type_name(field: &FieldWithContext, root_scope: &RootScope) -> RustType {
+    if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         RustType::Group
-    } else if field.has_type_name() {
-        let message_or_enum = root_scope.find_message_or_enum(field.get_type_name());
-        let name = message_or_enum.rust_name();
-        match field.get_field_type() {
-            FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(name),
-            FieldDescriptorProto_Type::TYPE_ENUM    => RustType::Enum(name),
-            _ => panic!("unknown named type: {:?}", field.get_field_type()),
+    } else if field.field.has_type_name() {
+        let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
+        let rust_name =
+            if message_or_enum.get_scope().get_file_descriptor().get_name() ==
+                field.message.get_scope().get_file_descriptor().get_name()
+            {
+                // field type is a message or enum declared in the same file
+                message_or_enum.rust_name()
+            } else {
+                format!("super::{}::{}",
+                    proto_path_to_rust_mod(message_or_enum.get_scope().get_file_descriptor().get_name()),
+                    message_or_enum.rust_name())
+            };
+        match field.field.get_field_type() {
+            FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(rust_name),
+            FieldDescriptorProto_Type::TYPE_ENUM    => RustType::Enum(rust_name),
+            _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
         }
-    } else if field.has_field_type() {
-        rust_name(field.get_field_type())
+    } else if field.field.has_field_type() {
+        rust_name(field.field.get_field_type())
     } else {
-        panic!("neither type_name, nor field_type specified for field: {}", field.get_name());
+        panic!("neither type_name, nor field_type specified for field: {}", field.field.get_name());
     }
 }
 
@@ -445,7 +454,7 @@ struct FieldGen {
     /// i. e. collection element type for repeated
     /// and contained type for optional field.
     elem_type: RustType,
-    enum_default_value: Option<EnumValue>,
+    enum_default_value: Option<EnumValueGen>,
     number: u32,
     repeated: bool,
     packed: bool,
@@ -455,7 +464,7 @@ struct FieldGen {
 
 impl FieldGen {
     fn parse(field: &FieldWithContext, root_scope: &RootScope) -> FieldGen {
-        let elem_type = field_type_name(field.field, root_scope);
+        let elem_type = field_type_name(field, root_scope);
         let repeated = match field.field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
             FieldDescriptorProto_Label::LABEL_OPTIONAL |
@@ -476,7 +485,7 @@ impl FieldGen {
         let enum_default_value = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_ENUM => {
                 let enum_with_scope = root_scope.find_enum(field.field.get_type_name());
-                let e = EnumGen::new(&enum_with_scope, root_scope);
+                let e = EnumGen::new(&enum_with_scope, field.message.get_scope().get_file_descriptor());
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()
                 } else {
@@ -1777,24 +1786,22 @@ impl<'a> MessageGen<'a> {
 
         for enum_type in self.message.to_scope().get_enums().iter() {
             w.write_line("");
-            EnumGen::new(enum_type, self.root_scope).write(w);
+            EnumGen::new(enum_type, self.message.get_scope().get_file_descriptor()).write(w);
         }
     }
 }
 
 
 #[derive(Clone)]
-struct EnumValue {
+struct EnumValueGen {
     proto: EnumValueDescriptorProto,
-    prefix: String,
     enum_rust_name: String,
 }
 
-impl EnumValue {
-    fn parse(proto: &EnumValueDescriptorProto, prefix: &str, enum_rust_name: &str) -> EnumValue {
-        EnumValue {
+impl EnumValueGen {
+    fn parse(proto: &EnumValueDescriptorProto, enum_rust_name: &str) -> EnumValueGen {
+        EnumValueGen {
             proto: proto.clone(),
-            prefix: prefix.to_string(),
             enum_rust_name: enum_rust_name.to_string(),
         }
     }
@@ -1830,18 +1837,28 @@ struct EnumGen<'a> {
 }
 
 impl<'a> EnumGen<'a> {
-    fn new(enum_with_scope: &'a EnumWithScope<'a>, _root_scope: &RootScope) -> EnumGen<'a> {
-        let rust_name = enum_with_scope.rust_name();
+    fn new(enum_with_scope: &'a EnumWithScope<'a>, current_file: &FileDescriptorProto) -> EnumGen<'a> {
+        let rust_name =
+            if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
+                current_file.get_name()
+            {
+                // field type is a message or enum declared in the same file
+                enum_with_scope.rust_name()
+            } else {
+                format!("super::{}::{}",
+                    proto_path_to_rust_mod(enum_with_scope.get_scope().get_file_descriptor().get_name()),
+                    enum_with_scope.rust_name())
+            };
         EnumGen {
             enum_with_scope: enum_with_scope,
-            type_name: rust_name.clone(),
+            type_name: rust_name,
             lite_runtime:
                 enum_with_scope.get_scope().get_file_descriptor().get_options().get_optimize_for()
                     == FileOptions_OptimizeMode::LITE_RUNTIME,
         }
     }
 
-    fn values(&self) -> Vec<EnumValue> {
+    fn values(&self) -> Vec<EnumValueGen> {
         let mut used = HashSet::new();
         let mut r = Vec::new();
         for p in self.enum_with_scope.values() {
@@ -1851,9 +1868,8 @@ impl<'a> EnumGen<'a> {
                 continue;
             }
             r.push(
-                EnumValue::parse(
+                EnumValueGen::parse(
                     p,
-                    &self.enum_with_scope.scope.rust_prefix(),
                     &self.type_name)
             );
         }
@@ -1861,8 +1877,10 @@ impl<'a> EnumGen<'a> {
     }
 
     // find enum value by name
-    fn value_by_name(&'a self, name: &str) -> EnumValue {
-        self.values().into_iter().find(|v| v.name() == name).unwrap()
+    fn value_by_name(&'a self, name: &str) -> EnumValueGen {
+        EnumValueGen::parse(
+            self.enum_with_scope.value_by_name(name),
+            &self.type_name)
     }
 
     fn write(&self, w: &mut CodeWriter) {
@@ -1966,7 +1984,7 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
 
 fn gen_file(
     file: &FileDescriptorProto,
-    files_map: &HashMap<&str, &FileDescriptorProto>,
+    _files_map: &HashMap<&str, &FileDescriptorProto>,
     root_scope: &RootScope,
 )
     -> compiler_plugin::GenResult
@@ -1991,21 +2009,6 @@ fn gen_file(
         w.write_line("");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
-        for dep in file.get_dependency().iter() {
-            // TODO: should use absolute paths in file instead of global uses
-            let imported_file = files_map[&dep as &str];
-            let imported_file_scope = FileScope { file_descriptor: imported_file };
-            for message in imported_file_scope.find_messages() {
-                w.write_line(format!("use super::{}::{};",
-                    proto_path_to_rust_mod(&dep),
-                    message.rust_name()));
-            }
-            for en in imported_file_scope.find_enums().iter() {
-                w.write_line(format!("use super::{}::{};",
-                    proto_path_to_rust_mod(&dep),
-                    en.rust_name()));
-            }
-        }
 
         let scope = FileScope { file_descriptor: file } .to_scope();
 
@@ -2015,7 +2018,7 @@ fn gen_file(
         }
         for enum_type in scope.get_enums().iter() {
             w.write_line("");
-            EnumGen::new(enum_type, &root_scope).write(&mut w);
+            EnumGen::new(enum_type, file).write(&mut w);
         }
 
         if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {

@@ -9,38 +9,13 @@
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-use super::descriptor::FileDescriptorSet;
-use super::descriptor::FileDescriptorProto;
-use super::descriptor::DescriptorProto;
-use super::descriptor::FieldDescriptorProto;
-use super::descriptor::OneofDescriptorProto;
-use super::descriptor::EnumDescriptorProto;
-use super::descriptor::EnumValueDescriptorProto;
-use super::descriptor::ServiceDescriptorProto;
-use super::descriptor::MethodDescriptorProto;
-use super::descriptor::FileOptions;
-use super::descriptor::MessageOptions;
-use super::descriptor::FieldOptions;
-use super::descriptor::EnumOptions;
-use super::descriptor::EnumValueOptions;
-use super::descriptor::ServiceOptions;
-use super::descriptor::MethodOptions;
-use super::descriptor::UninterpretedOption;
-use super::descriptor::SourceCodeInfo;
-use super::descriptor::DescriptorProto_ExtensionRange;
-use super::descriptor::UninterpretedOption_NamePart;
-use super::descriptor::SourceCodeInfo_Location;
-use super::descriptor::FieldDescriptorProto_Type;
-use super::descriptor::FieldDescriptorProto_Label;
-use super::descriptor::FileOptions_OptimizeMode;
-use super::descriptor::FieldOptions_CType;
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorRequest {
     // message fields
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
-    proto_file: ::protobuf::RepeatedField<FileDescriptorProto>,
+    proto_file: ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
@@ -137,21 +112,21 @@ impl CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_proto_file(&mut self, v: ::protobuf::RepeatedField<FileDescriptorProto>) {
+    pub fn set_proto_file(&mut self, v: ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto>) {
         self.proto_file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
+    pub fn mut_proto_file<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
         &mut self.proto_file
     }
 
     // Take field
-    pub fn take_proto_file(&mut self) -> ::protobuf::RepeatedField<FileDescriptorProto> {
+    pub fn take_proto_file(&mut self) -> ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
         ::std::mem::replace(&mut self.proto_file, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_proto_file<'a>(&'a self) -> &'a [FileDescriptorProto] {
+    pub fn get_proto_file<'a>(&'a self) -> &'a [super::descriptor::FileDescriptorProto] {
         &self.proto_file
     }
 }
