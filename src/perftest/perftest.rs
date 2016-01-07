@@ -30,6 +30,8 @@ fn measure_and_print<R, F: FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
 }
 
 fn run_test<M : Message + MessageStatic>(name: &str, data: &[M]) {
+    assert!(data.len() > 0, "empty string for test: {}", name);
+
     let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40][..]);
     let mut random_data: Vec<M> = Vec::new();
 
