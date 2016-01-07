@@ -12,18 +12,10 @@ pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
     &s[..(s.len() - suffix.len())]
 }
 
-pub fn remove_prefix<'s>(s: &'s str, prefix: &str) -> &'s str {
-    if !s.starts_with(prefix) {
-        panic!();
-    }
-    &s[prefix.len()..]
-}
-
 #[cfg(test)]
 mod test {
 
     use super::remove_to;
-    use super::remove_prefix;
     use super::remove_suffix;
 
     #[test]
@@ -31,11 +23,6 @@ mod test {
         assert_eq!("aaa", remove_to("aaa", '.'));
         assert_eq!("bbb", remove_to("aaa.bbb", '.'));
         assert_eq!("ccc", remove_to("aaa.bbb.ccc", '.'));
-    }
-
-    #[test]
-    fn test_remove_prefix() {
-        assert_eq!("aaa", remove_prefix("bbbaaa", "bbb"));
     }
 
     #[test]
