@@ -2,7 +2,7 @@ sudo: false
 
 env:
   - PROTOBUF_VERSION=2.6.1
-  - PROTOBUF_VERSION=3.0.0-alpha-3
+  - PROTOBUF_VERSION=3.0.0-beta-2
 
 language: rust
 
