@@ -925,25 +925,13 @@ impl ::protobuf::Message for TestOptionalMessages {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.message1.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.message1));
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.message2.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.message2));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.message3.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.message3));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1235,25 +1223,13 @@ impl ::protobuf::Message for TestStrings {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.s1.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.s1));
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.s2.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.s2));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.s3.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.s3));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1460,11 +1436,7 @@ impl ::protobuf::Message for TestBytes {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.b1.set_default();
-                    try!(is.read_bytes_into(tmp))
+                    try!(::protobuf::rt::read_singular_bytes_into(wire_type, is, &mut self.b1));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));

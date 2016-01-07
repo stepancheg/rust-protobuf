@@ -286,19 +286,6 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
 }
 
 impl FieldDescriptorProto_Type {
-    fn merge(&self, is: &str, var: &str) -> String {
-        match *self {
-            FieldDescriptorProto_Type::TYPE_MESSAGE =>
-                format!("{}.merge_message({})", is, var),
-            FieldDescriptorProto_Type::TYPE_STRING =>
-                format!("{}.read_string_into({})", is, var),
-            FieldDescriptorProto_Type::TYPE_BYTES =>
-                format!("{}.read_bytes_into({})", is, var),
-            _ =>
-                panic!("unknown type: {:?}", *self),
-        }
-    }
-
     fn read(&self, is: &str) -> String {
         format!("{}.read_{}()", is, protobuf_name(*self))
     }
@@ -1079,17 +1066,15 @@ impl<'a> OneofGen<'a> {
 
 
 fn write_merge_from_field_message_string_bytes(w: &mut CodeWriter, field: &FieldGen) {
-    if field.repeated {
-        w.write_line(format!(
-            "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
-                protobuf_name(field.field_type),
-                field.rust_name));
-    } else {
-        w.assert_wire_type(wire_format::WireTypeLengthDelimited);
-        let self_field = field.self_field();
-        w.write_line(format!("let tmp = {}.set_default();", self_field));
-        w.write_line(format!("try!({})", field.field_type.merge("is", "tmp")));
-    }
+    let singular_or_repeated = match field.repeated {
+        true  => "repeated",
+        false => "singular",
+    };
+    w.write_line(format!(
+        "try!(::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{}));",
+            singular_or_repeated,
+            protobuf_name(field.field_type),
+            field.rust_name));
 }
 
 fn write_merge_from_oneof(field: &FieldGen, w: &mut CodeWriter) {

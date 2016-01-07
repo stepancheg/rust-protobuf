@@ -13,6 +13,8 @@ use stream::wire_format::WireTypeLengthDelimited;
 use stream::wire_format::WireTypeVarint;
 use error::ProtobufError;
 use error::ProtobufResult;
+use singular::SingularField;
+use singular::SingularPtrField;
 use repeated::RepeatedField;
 use stream::CodedInputStream;
 
@@ -356,6 +358,19 @@ pub fn read_repeated_string_into(
     }
 }
 
+pub fn read_singular_string_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<String>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.set_default();
+            is.read_string_into(tmp)
+        },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
 pub fn read_repeated_bytes_into(
     wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Vec<u8>>)
         -> ProtobufResult<()>
@@ -363,6 +378,19 @@ pub fn read_repeated_bytes_into(
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.push_default();
+            is.read_bytes_into(tmp)
+        },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}
+
+pub fn read_singular_bytes_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Vec<u8>>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.set_default();
             is.read_bytes_into(tmp)
         },
         _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
@@ -382,3 +410,15 @@ pub fn read_repeated_message_into<M : Message + Default>(
     }
 }
 
+pub fn read_singular_message_into<M : Message + Default>(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularPtrField<M>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.set_default();
+            is.merge_message(tmp)
+        },
+        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+    }
+}

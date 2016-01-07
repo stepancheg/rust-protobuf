@@ -556,18 +556,10 @@ impl ::protobuf::Message for FileDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.package.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.package));
                 },
                 3 => {
                     try!(::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.dependency));
@@ -591,18 +583,10 @@ impl ::protobuf::Message for FileDescriptorProto {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.extension));
                 },
                 8 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 9 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.source_code_info.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_code_info));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1121,11 +1105,7 @@ impl ::protobuf::Message for DescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 2 => {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.field));
@@ -1146,11 +1126,7 @@ impl ::protobuf::Message for DescriptorProto {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.oneof_decl));
                 },
                 7 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -1879,11 +1855,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -1907,25 +1879,13 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     self.field_type = ::std::option::Option::Some(tmp);
                 },
                 6 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.type_name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.type_name));
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.extendee.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.extendee));
                 },
                 7 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.default_value.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.default_value));
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -1935,11 +1895,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     self.oneof_index = ::std::option::Option::Some(tmp);
                 },
                 8 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -2364,11 +2320,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -2611,21 +2563,13 @@ impl ::protobuf::Message for EnumDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 2 => {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.value));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -2893,11 +2837,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -2907,11 +2847,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                     self.number = ::std::option::Option::Some(tmp);
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -3183,21 +3119,13 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 2 => {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.method));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -3520,32 +3448,16 @@ impl ::protobuf::Message for MethodDescriptorProto {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.input_type.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.input_type));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.output_type.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.output_type));
                 },
                 4 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.options.set_default();
-                    try!(is.merge_message(tmp))
+                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -4039,18 +3951,10 @@ impl ::protobuf::Message for FileOptions {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.java_package.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.java_package));
                 },
                 8 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.java_outer_classname.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.java_outer_classname));
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -4081,11 +3985,7 @@ impl ::protobuf::Message for FileOptions {
                     self.optimize_for = ::std::option::Option::Some(tmp);
                 },
                 11 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.go_package.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.go_package));
                 },
                 16 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -4943,11 +4843,7 @@ impl ::protobuf::Message for FieldOptions {
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 9 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.experimental_map_key.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.experimental_map_key));
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -6326,11 +6222,7 @@ impl ::protobuf::Message for UninterpretedOption {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.name));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.identifier_value.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.identifier_value));
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -6354,18 +6246,10 @@ impl ::protobuf::Message for UninterpretedOption {
                     self.double_value = ::std::option::Option::Some(tmp);
                 },
                 7 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.string_value.set_default();
-                    try!(is.read_bytes_into(tmp))
+                    try!(::protobuf::rt::read_singular_bytes_into(wire_type, is, &mut self.string_value));
                 },
                 8 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.aggregate_value.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.aggregate_value));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
@@ -6653,11 +6537,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.name_part.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name_part));
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
@@ -7128,18 +7008,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                     try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.span));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.leading_comments.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments));
                 },
                 4 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::ProtobufError::WireError("unexpected wire type".to_string()));
-                    };
-                    let tmp = self.trailing_comments.set_default();
-                    try!(is.read_string_into(tmp))
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments));
                 },
                 _ => {
                     let unknown = try!(is.read_unknown(wire_type));
