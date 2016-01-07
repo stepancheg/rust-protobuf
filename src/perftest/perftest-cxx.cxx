@@ -110,5 +110,7 @@ int main() {
     test("test_repeated_messages", perftestData.test_repeated_messages());
     test("test_optional_messages", perftestData.test_optional_messages());
     test("test_strings", perftestData.test_strings());
+    test("test_small_bytearrays", perftestData.test_small_bytearrays());
+    test("test_large_bytearrays", perftestData.test_large_bytearrays());
     return 0;
 }
