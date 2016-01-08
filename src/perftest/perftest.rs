@@ -29,61 +29,62 @@ fn measure_and_print<R, F: FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
     r
 }
 
-fn run_test<M : Message + MessageStatic>(name: &str, data: &[M]) {
-    assert!(data.len() > 0, "empty string for test: {}", name);
-
-    let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40][..]);
-    let mut random_data: Vec<M> = Vec::new();
-
-    let mut total_size = 0;
-    while total_size < 1000000 {
-        let ref item = data[rng.gen_range(0, data.len())];
-        random_data.push(item.clone());
-        total_size += item.compute_size();
-    }
-
-    let mut buf = Vec::new();
-    measure_and_print(&format!("{}: write", name), random_data.len() as u64, || {
-        for m in random_data.iter() {
-            m.write_length_delimited_to_writer(&mut buf).unwrap();
-        }
-    });
-
-    let read_data = measure_and_print(&format!("{}: read", name), random_data.len() as u64, || {
-        let mut r = Vec::new();
-        let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-        while !coded_input_stream.eof().unwrap() {
-            r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream).unwrap());
-        }
-        r
-    });
-
-    assert_eq!(random_data, read_data);
-
-    let merged = measure_and_print(&format!("{}: read reuse", name), random_data.len() as u64, || {
-        let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-        let mut msg: M = Default::default();
-        let mut count = 0;
-        while !coded_input_stream.eof().unwrap() {
-            msg.clear();
-            coded_input_stream.merge_message(&mut msg).unwrap();
-            count += 1;
-        }
-        count
-    });
-
-    assert_eq!(random_data.len(), merged);
-}
-
 struct TestRunner {
+    data_size: u32,
     selected: Option<String>,
     any_matched: bool,
 }
 
 impl TestRunner {
+    fn run_test<M : Message + MessageStatic>(&self, name: &str, data: &[M]) {
+        assert!(data.len() > 0, "empty string for test: {}", name);
+
+        let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40][..]);
+        let mut random_data: Vec<M> = Vec::new();
+
+        let mut total_size = 0;
+        while total_size < self.data_size {
+            let ref item = data[rng.gen_range(0, data.len())];
+            random_data.push(item.clone());
+            total_size += item.compute_size();
+        }
+
+        let mut buf = Vec::new();
+        measure_and_print(&format!("{}: write", name), random_data.len() as u64, || {
+            for m in random_data.iter() {
+                m.write_length_delimited_to_writer(&mut buf).unwrap();
+            }
+        });
+
+        let read_data = measure_and_print(&format!("{}: read", name), random_data.len() as u64, || {
+            let mut r = Vec::new();
+            let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
+            while !coded_input_stream.eof().unwrap() {
+                r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream).unwrap());
+            }
+            r
+        });
+
+        assert_eq!(random_data, read_data);
+
+        let merged = measure_and_print(&format!("{}: read reuse", name), random_data.len() as u64, || {
+            let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
+            let mut msg: M = Default::default();
+            let mut count = 0;
+            while !coded_input_stream.eof().unwrap() {
+                msg.clear();
+                coded_input_stream.merge_message(&mut msg).unwrap();
+                count += 1;
+            }
+            count
+        });
+
+        assert_eq!(random_data.len(), merged);
+    }
+
     fn test<M : Message + MessageStatic>(&mut self, name: &str, data: &[M]) {
         if self.selected.as_ref().map(|s| *s == name).unwrap_or(true) {
-            run_test(name, data);
+            self.run_test(name, data);
             self.any_matched = true;
         }
     }
@@ -98,10 +99,15 @@ impl TestRunner {
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
-    if args.len() > 2 { panic!("usage: {} <test>", args[0]) }
-    let selected = args.into_iter().nth(1);
+    if args.len() > 3 { panic!("usage: {} [data_size] [test]", args[0]) }
+    let data_size = args.iter().nth(1).map(|x| x.parse().unwrap()).unwrap_or(1000000);
+    let selected = args.iter().nth(2).cloned();
 
-    let mut runner = TestRunner { selected: selected, any_matched: false };
+    let mut runner = TestRunner {
+        selected: selected,
+        any_matched: false,
+        data_size: data_size,
+    };
 
     let mut is = File::open(&Path::new("perftest_data.pbbin")).unwrap();
     let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is).unwrap();

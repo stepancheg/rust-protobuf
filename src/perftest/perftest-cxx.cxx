@@ -36,81 +36,91 @@ void measure_and_print(const std::string& name, unsigned iter, TFunc func) {
     printf("%s: %u ns per iter\n", name.c_str(), (unsigned) ns_per_iter);
 }
 
-template <typename M>
-void test(const char* name, const RepeatedPtrField<M>& data) {
-    std::mt19937 rng;
-    std::uniform_int_distribution<std::mt19937::result_type> dist(0, data.size() - 1);
+struct TestRunner {
+    uint32_t data_size = 1000000;
 
-    std::vector<M> randomData;
+    template <typename M>
+    void test(const char* name, const RepeatedPtrField<M>& data) {
+        std::mt19937 rng;
+        std::uniform_int_distribution<std::mt19937::result_type> dist(0, data.size() - 1);
 
-    auto totalSize = 0;
-    while (totalSize < 1000000) {
-        const auto& item = data.Get(dist(rng));
-        randomData.push_back(item);
-        totalSize += item.ByteSize();
+        std::vector<M> randomData;
+
+        auto totalSize = 0;
+        while (totalSize < data_size) {
+            const auto& item = data.Get(dist(rng));
+            randomData.push_back(item);
+            totalSize += item.ByteSize();
+        }
+
+        std::string s;
+        measure_and_print(std::string() + name + " write", randomData.size(), [&] () {
+            StringOutputStream ss(&s);
+            CodedOutputStream os(&ss);
+            for (int i = 0; i < randomData.size(); ++i) {
+                auto size = randomData[i].ByteSize();
+                os.WriteVarint32(size);
+                randomData[i].SerializeWithCachedSizes(&os);
+            }
+        });
+
+        RepeatedPtrField<M> readData;
+
+        measure_and_print(std::string() + name + " read", randomData.size(), [&] () {
+            CodedInputStream is((const uint8*) s.data(), s.size());
+            while (is.BytesUntilLimit() > 0) {
+                uint32 length;
+                bool okLength = is.ReadVarint32(&length);
+                VERIFY(okLength);
+                auto oldLimit = is.PushLimit(length);
+                bool okReadMsg = readData.Add()->MergeFromCodedStream(&is);
+                VERIFY(okReadMsg);
+                is.PopLimit(oldLimit);
+            }
+        });
+
+        // TODO: compare content
+        VERIFY(randomData.size() == readData.size());
+
+        auto count = 0;
+        measure_and_print(std::string() + name + " read reuse", randomData.size(), [&] () {
+            M msg;
+            CodedInputStream is((const uint8*) s.data(), s.size());
+            while (is.BytesUntilLimit() > 0) {
+                msg.Clear();
+                uint32 length;
+                bool okLength = is.ReadVarint32(&length);
+                VERIFY(okLength);
+                auto oldLimit = is.PushLimit(length);
+                bool okReadMsg = msg.MergeFromCodedStream(&is);
+                VERIFY(okReadMsg);
+                is.PopLimit(oldLimit);
+                count += 1;
+            }
+        });
+
+        VERIFY(randomData.size() == count);
     }
+};
 
-    std::string s;
-    measure_and_print(std::string() + name + " write", randomData.size(), [&] () {
-        StringOutputStream ss(&s);
-        CodedOutputStream os(&ss);
-        for (int i = 0; i < randomData.size(); ++i) {
-            auto size = randomData[i].ByteSize();
-            os.WriteVarint32(size);
-            randomData[i].SerializeWithCachedSizes(&os);
-        }
-    });
-
-    RepeatedPtrField<M> readData;
-
-    measure_and_print(std::string() + name + " read", randomData.size(), [&] () {
-        CodedInputStream is((const uint8*) s.data(), s.size());
-        while (is.BytesUntilLimit() > 0) {
-            uint32 length;
-            bool okLength = is.ReadVarint32(&length);
-            VERIFY(okLength);
-            auto oldLimit = is.PushLimit(length);
-            bool okReadMsg = readData.Add()->MergeFromCodedStream(&is);
-            VERIFY(okReadMsg);
-            is.PopLimit(oldLimit);
-        }
-    });
-
-    // TODO: compare content
-    VERIFY(randomData.size() == readData.size());
-
-    auto count = 0;
-    measure_and_print(std::string() + name + " read reuse", randomData.size(), [&] () {
-        M msg;
-        CodedInputStream is((const uint8*) s.data(), s.size());
-        while (is.BytesUntilLimit() > 0) {
-            msg.Clear();
-            uint32 length;
-            bool okLength = is.ReadVarint32(&length);
-            VERIFY(okLength);
-            auto oldLimit = is.PushLimit(length);
-            bool okReadMsg = msg.MergeFromCodedStream(&is);
-            VERIFY(okReadMsg);
-            is.PopLimit(oldLimit);
-            count += 1;
-        }
-    });
-
-    VERIFY(randomData.size() == count);
-}
-
-int main() {
+int main(int argc, char* argv[]) {
     std::ifstream is("perftest_data.pbbin");
     PerftestData perftestData;
     bool ok = perftestData.ParsePartialFromIstream(&is);
     VERIFY(ok);
-    test("test1", perftestData.test1());
-    test("test_repeated_bool", perftestData.test_repeated_bool());
-    test("test_repeated_packed_int32", perftestData.test_repeated_packed_int32());
-    test("test_repeated_messages", perftestData.test_repeated_messages());
-    test("test_optional_messages", perftestData.test_optional_messages());
-    test("test_strings", perftestData.test_strings());
-    test("test_small_bytearrays", perftestData.test_small_bytearrays());
-    test("test_large_bytearrays", perftestData.test_large_bytearrays());
+    TestRunner runner;
+
+    if (argc > 1) {
+        runner.data_size = atoi(argv[1]);
+    }
+
+    runner.test("test1", perftestData.test1());
+    runner.test("test_repeated_bool", perftestData.test_repeated_bool());
+    runner.test("test_repeated_packed_int32", perftestData.test_repeated_packed_int32());
+    runner.test("test_repeated_messages", perftestData.test_repeated_messages());
+    runner.test("test_optional_messages", perftestData.test_optional_messages());
+    runner.test("test_strings", perftestData.test_strings());
+    runner.test("test_small_bytearrays", perftestData.test_small_bytearrays());
+    runner.test("test_large_bytearrays", perftestData.test_large_bytearrays());
     return 0;
 }
