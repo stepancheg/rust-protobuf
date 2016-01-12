@@ -150,8 +150,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -388,8 +387,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -666,8 +664,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
                     try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }

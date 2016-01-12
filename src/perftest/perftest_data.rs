@@ -77,8 +77,7 @@ impl ::protobuf::Message for Test1 {
                     self.value = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -247,8 +246,7 @@ impl ::protobuf::Message for TestRepeatedBool {
                     try!(::protobuf::rt::read_repeated_bool_into(wire_type, is, &mut self.values));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -414,8 +412,7 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
                     try!(::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.values));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -648,8 +645,7 @@ impl ::protobuf::Message for TestRepeatedMessages {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.messages3));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -934,8 +930,7 @@ impl ::protobuf::Message for TestOptionalMessages {
                     try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.message3));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -1232,8 +1227,7 @@ impl ::protobuf::Message for TestStrings {
                     try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.s3));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -1439,8 +1433,7 @@ impl ::protobuf::Message for TestBytes {
                     try!(::protobuf::rt::read_singular_bytes_into(wire_type, is, &mut self.b1));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }
@@ -1819,8 +1812,7 @@ impl ::protobuf::Message for PerftestData {
                     try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.test_large_bytearrays));
                 },
                 _ => {
-                    let unknown = try!(is.read_unknown(wire_type));
-                    self.mut_unknown_fields().add_value(field_number, unknown);
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
                 },
             };
         }

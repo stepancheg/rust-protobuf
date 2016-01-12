@@ -1583,8 +1583,7 @@ impl<'a> MessageGen<'a> {
                         });
                     }
                     w.case_block("_", |w| {
-                        w.write_line("let unknown = try!(is.read_unknown(wire_type));");
-                        w.write_line("self.mut_unknown_fields().add_value(field_number, unknown);");
+                        w.write_line("try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));");
                     });
                 });
             });

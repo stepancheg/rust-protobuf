@@ -422,3 +422,32 @@ pub fn read_singular_message_into<M : Message + Default>(
         _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
     }
 }
+
+fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
+    loop {
+        let (_, wire_type) = try!(is.read_tag_unpack());
+        if wire_type == wire_format::WireTypeEndGroup {
+            return Ok(());
+        }
+        try!(is.skip_field(wire_type));
+    }
+}
+
+// Handle unknown field in generated code.
+// Either store a value in unknown, or skip a group.
+pub fn read_unknown_or_skip_group(
+    field_number: u32, wire_type: WireType,
+    is: &mut CodedInputStream,
+    unknown_fields: &mut UnknownFields,
+)
+    -> ProtobufResult<()>
+{
+    match wire_type {
+        wire_format::WireTypeStartGroup => skip_group(is),
+        _ => {
+            let unknown = try!(is.read_unknown(wire_type));
+            unknown_fields.add_value(field_number, unknown);
+            Ok(())
+        }
+    }
+}
