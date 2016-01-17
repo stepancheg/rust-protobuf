@@ -2017,6 +2017,9 @@ fn gen_file(
     }
 }
 
+// This function is also used externally by cargo plugin
+// https://github.com/plietar/rust-protobuf-build
+// So be careful changing its signature.
 pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String])
         -> Vec<compiler_plugin::GenResult>
 {
