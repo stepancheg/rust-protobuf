@@ -30,32 +30,19 @@ On Ubuntu, protobuf-compiler package can be installed:
 apt-get install protobuf-compiler
 ```
 
-1) Checkout rust-protobuf sources:
+1) Install `protoc-gen-rust` program (which is `protoc` plugin)
+
+It can be installed either from source or with `cargo install protobuf` command.
+
+2) Add `protoc-gen-rust` to $PATH
+
+If you installed it with cargo, it should be
 
 ```
-git clone git@github.com:stepancheg/rust-protobuf.git -b <branch>
+PATH="$HOME/.cargo/bin:$PATH"
 ```
 
-Where branch is:
-  * `master` compatible rust master
-  * `rust-M.N` compatible with rust version M.N.*, e.g. `rust-0.11` for rust 0.11.0
-
-2) Compile the project:
-
-```
-cargo build
-```
-
-`protoc-gen-rust` binary is generated in `target/` folder. `protoc-gen-rust` is a rust
-plugin for protoc.
-
-3) Add `protoc-gen-rust` to $PATH:
-
-```
-PATH="`pwd`/target/debug:$PATH"
-```
-
-4) Generate .rs files:
+3) Generate .rs files:
 
 ```
 protoc --rust_out . foo.proto
@@ -63,18 +50,13 @@ protoc --rust_out . foo.proto
 
 This will generate .rs files in current directory.
 
-Same procedure is used to regenerate .rs files for rust-protobuf
-itself, see `./regerate.sh`.
-
-5) Add rust-protobuf as dependency to your project `Cargo.toml`:
+4) Add rust-protobuf as dependency to your project `Cargo.toml`:
 
 ```
 [dependencies.protobuf]
-
-git = "https://github.com/stepancheg/rust-protobuf.git"
 ```
 
-6) Include generated files into your project .rs file:
+5) Include generated files into your project .rs file:
 
 ```
 extern crate protobuf; // depend on rust-protobuf runtime
