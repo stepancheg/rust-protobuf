@@ -12,7 +12,6 @@ rust-protobuf
 * Generate rust code
 * Has runtime library for generated code
   (Coded{Input|Output}Stream impl)
-* Incomplete and unstable
 
 ## How to use rust-protobuf
 
