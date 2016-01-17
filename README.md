@@ -23,11 +23,14 @@ On OS X [Homebrew](https://github.com/mxcl/homebrew) can be used:
 brew install protobuf
 ```
 
-On Ubuntu, protobuf-compiler package can be installed:
+On Ubuntu, `protobuf-compiler` package can be installed:
 
 ```
 apt-get install protobuf-compiler
 ```
+
+Protobuf is needed only for code generation, `rust-protobuf` runtime
+does not use `protobuf` library.
 
 1) Install `protoc-gen-rust` program (which is `protoc` plugin)
 
