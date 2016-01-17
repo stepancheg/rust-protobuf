@@ -223,9 +223,9 @@ impl RustType {
                     _ => false
                 } => format!("&{}", v),
             (&RustType::Enum(..), &RustType::Int(true, 32)) =>
-                    format!("{} as i32", v),
+                    format!("{}.value()", v),
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() =>
-                    format!("*{} as i32", v),
+                    format!("{}.value()", v),
             _ => panic!("cannot convert {} to {}", self, target),
         }
     }
@@ -476,7 +476,7 @@ impl FieldGen {
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()
                 } else {
-                    e.values().into_iter().next().unwrap()
+                    e.values_unique().into_iter().next().unwrap()
                 };
                 Some(ev)
             }
@@ -1842,7 +1842,23 @@ impl<'a> EnumGen<'a> {
         }
     }
 
-    fn values(&self) -> Vec<EnumValueGen> {
+    fn allow_alias(&self) -> bool {
+        self.enum_with_scope.en.get_options().get_allow_alias()
+    }
+
+    fn values_all(&self) -> Vec<EnumValueGen> {
+        let mut r = Vec::new();
+        for p in self.enum_with_scope.values() {
+            r.push(
+                EnumValueGen::parse(
+                    p,
+                    &self.type_name)
+            );
+        }
+        r
+    }
+
+    fn values_unique(&self) -> Vec<EnumValueGen> {
         let mut used = HashSet::new();
         let mut r = Vec::new();
         for p in self.enum_with_scope.values() {
@@ -1876,11 +1892,30 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
+        // TODO: generate eq when allow_alias
         w.derive(&["Clone", "PartialEq", "Eq", "Debug", "Hash"]);
         let ref type_name = self.type_name;
         w.expr_block(format!("pub enum {}", type_name), |w| {
-            for value in self.values().iter() {
-                w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
+            for value in self.values_all().iter() {
+                if self.allow_alias() {
+                    w.write_line(format!("{}, // {}", value.rust_name_inner(), value.number()));
+                } else {
+                    w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
+                }
+            }
+        });
+    }
+
+    fn write_fn_value(&self, w: &mut CodeWriter) {
+        w.def_fn("value(&self) -> i32", |w| {
+            if self.allow_alias() {
+                w.match_expr("*self", |w| {
+                    for value in self.values_all().iter() {
+                        w.case_expr(value.rust_name_outer(), format!("{}", value.number()));
+                    }
+                });
+            } else {
+                w.write_line("*self as i32")
             }
         });
     }
@@ -1888,15 +1923,13 @@ impl<'a> EnumGen<'a> {
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
         w.impl_for_block("::protobuf::ProtobufEnum", &type_name, |w| {
-            w.def_fn("value(&self) -> i32", |w| {
-                w.write_line("*self as i32")
-            });
+            self.write_fn_value(w);
 
             w.write_line("");
             let ref type_name = self.type_name;
             w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
                 w.match_expr("value", |w| {
-                    let values = self.values();
+                    let values = self.values_unique();
                     for value in values.iter() {
                         w.write_line(format!("{} => ::std::option::Option::Some({}),",
                             value.number(), value.rust_name_outer()));
@@ -1909,7 +1942,7 @@ impl<'a> EnumGen<'a> {
             w.def_fn(format!("values() -> &'static [Self]"), |w| {
                 w.write_line(format!("static values: &'static [{}] = &[", type_name));
                 w.indented(|w| {
-                    for value in self.values() {
+                    for value in self.values_all() {
                         w.write_line(format!("{},", value.rust_name_outer()));
                     }
                 });

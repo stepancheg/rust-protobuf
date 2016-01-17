@@ -874,6 +874,12 @@ impl<'a> CodedOutputStream<'a> {
         self.write_int32_no_tag(value)
     }
 
+    pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> ProtobufResult<()>
+        where E : ProtobufEnum
+    {
+        self.write_enum_no_tag(value.value())
+    }
+
     pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> ProtobufResult<()> {
         match unknown {
             UnknownValueRef::Fixed64(fixed64) => self.write_raw_little_endian64(fixed64),
@@ -953,6 +959,12 @@ impl<'a> CodedOutputStream<'a> {
         try!(self.write_tag(field_number, wire_format::WireTypeVarint));
         try!(self.write_enum_no_tag(value));
         Ok(())
+    }
+
+    pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> ProtobufResult<()>
+        where E : ProtobufEnum
+    {
+        self.write_enum(field_number, value.value())
     }
 
     pub fn write_unknown(&mut self, field_number: u32, value: UnknownValueRef) -> ProtobufResult<()> {

@@ -1946,10 +1946,10 @@ impl ::protobuf::Message for FieldDescriptorProto {
             try!(os.write_int32(3, v));
         };
         if let Some(v) = self.label {
-            try!(os.write_enum(4, v as i32));
+            try!(os.write_enum(4, v.value()));
         };
         if let Some(v) = self.field_type {
-            try!(os.write_enum(5, v as i32));
+            try!(os.write_enum(5, v.value()));
         };
         if let Some(v) = self.type_name.as_ref() {
             try!(os.write_string(6, &v));
@@ -4079,7 +4079,7 @@ impl ::protobuf::Message for FileOptions {
             try!(os.write_bool(27, v));
         };
         if let Some(v) = self.optimize_for {
-            try!(os.write_enum(9, v as i32));
+            try!(os.write_enum(9, v.value()));
         };
         if let Some(v) = self.go_package.as_ref() {
             try!(os.write_string(11, &v));
@@ -4884,7 +4884,7 @@ impl ::protobuf::Message for FieldOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.ctype {
-            try!(os.write_enum(1, v as i32));
+            try!(os.write_enum(1, v.value()));
         };
         if let Some(v) = self.packed {
             try!(os.write_bool(2, v));

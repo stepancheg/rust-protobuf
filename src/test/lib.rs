@@ -26,3 +26,4 @@ mod test;
 mod text_format_test;
 mod test_oneof;
 mod test_enum_values;
+mod test_enum_alias;
