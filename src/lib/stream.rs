@@ -1026,6 +1026,7 @@ mod test {
     use hex::encode_hex;
     use hex::decode_hex;
     use error::ProtobufResult;
+    use error::ProtobufError;
 
     use super::wire_format;
     use super::CodedInputStream;
@@ -1065,6 +1066,24 @@ mod test {
         test_read("96 01", |reader| {
             assert_eq!(150, reader.read_raw_varint64().unwrap());
         });
+
+        {
+            let d = decode_hex("96 97");
+            let mut is = CodedInputStream::from_bytes(&d);
+            let result = is.read_raw_varint32();
+            match result {
+                // TODO: make unexpected EOF an enum variant
+                Err(ProtobufError::IoError(..)) => (),
+                _ => panic!(),
+            }
+        }
+
+        {
+            let d = decode_hex("95 01 98");
+            let mut is = CodedInputStream::from_bytes(&d);
+            assert_eq!(149, is.read_raw_varint32().unwrap());
+            assert_eq!(2, is.pos());
+        }
     }
 
     #[test]
