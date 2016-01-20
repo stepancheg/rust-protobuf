@@ -6,7 +6,7 @@ rust-protobuf
 [![crates.io version](https://img.shields.io/crates/v/protobuf.svg)](https://crates.io/crates/protobuf)
 [![License](https://img.shields.io/crates/l/protobuf.svg)](https://github.com/stepancheg/rust-protobuf/blob/master/LICENSE.txt)
 
-[Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](http://www.rust-lang.org/).
+[Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](https://www.rust-lang.org/).
 
 * Written in pure rust
 * Generate rust code
@@ -17,7 +17,7 @@ rust-protobuf
 
 0) Install protobuf for `protoc` binary.
 
-On OS X [Homebrew](https://github.com/mxcl/homebrew) can be used:
+On OS X [Homebrew](https://github.com/Homebrew/homebrew) can be used:
 
 ```
 brew install protobuf
