@@ -259,12 +259,13 @@ impl<'a> CodedInputStream<'a> {
         let mut r: u64 = 0;
         let mut i = 0;
         loop {
-            let b = try!(self.read_raw_byte());
-            // Stop undefined behaviour
-            if i <= 9 {
-                r = r | (((b & 0x7f) as u64) << (i * 7));
-                i += 1;
+            if i == 10 {
+                return Err(ProtobufError::WireError(format!("invalid varint")));
             }
+            let b = try!(self.read_raw_byte());
+            // TODO: may overflow if i == 9
+            r = r | (((b & 0x7f) as u64) << (i * 7));
+            i += 1;
             if b < 0x80 {
                 return Ok(r);
             }
@@ -1022,6 +1023,7 @@ mod test {
     use std::io;
     use std::io::{BufRead};
     use std::io::Write;
+    use std::fmt::Debug;
 
     use hex::encode_hex;
     use hex::decode_hex;
@@ -1032,17 +1034,35 @@ mod test {
     use super::CodedInputStream;
     use super::CodedOutputStream;
 
-    fn test_read<F>(hex: &str, mut callback: F)
+    fn test_read_partial<F>(hex: &str, mut callback: F)
         where F : FnMut(&mut CodedInputStream)
     {
         let d = decode_hex(hex);
-        let len = d.len();
         let mut reader = io::Cursor::new(d);
         let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut BufRead);
         assert_eq!(0, is.pos());
         callback(&mut is);
-        assert!(is.eof().unwrap());
-        assert_eq!(len as u32, is.pos());
+    }
+
+    fn test_read<F>(hex: &str, mut callback: F)
+        where F : FnMut(&mut CodedInputStream)
+    {
+        let len = decode_hex(hex).len();
+        test_read_partial(hex, |reader| {
+            callback(reader);
+            assert!(reader.eof().unwrap());
+            assert_eq!(len as u32, reader.pos());
+        });
+    }
+
+    fn test_read_v<F, V>(hex: &str, v: V, mut callback: F)
+        where
+            F : FnMut(&mut CodedInputStream) -> ProtobufResult<V>,
+            V : PartialEq + Debug,
+    {
+        test_read(hex, |reader| {
+            assert_eq!(v, callback(reader).unwrap());
+        });
     }
 
     #[test]
@@ -1053,51 +1073,74 @@ mod test {
     }
 
     #[test]
-    fn test_input_stream_read_varint() {
-        test_read("07", |reader| {
-            assert_eq!(7, reader.read_raw_varint32().unwrap());
-        });
-        test_read("07", |reader| {
-            assert_eq!(7, reader.read_raw_varint64().unwrap());
-        });
-        test_read("96 01", |reader| {
-            assert_eq!(150, reader.read_raw_varint32().unwrap());
-        });
-        test_read("96 01", |reader| {
-            assert_eq!(150, reader.read_raw_varint64().unwrap());
-        });
+    fn test_input_stream_read_raw_varint() {
+        test_read_v("07", 7, |reader| reader.read_raw_varint32());
+        test_read_v("07", 7, |reader| reader.read_raw_varint64());
 
-        {
-            let d = decode_hex("96 97");
-            let mut is = CodedInputStream::from_bytes(&d);
-            let result = is.read_raw_varint32();
+        test_read_v("96 01", 150, |reader| reader.read_raw_varint32());
+        test_read_v("96 01", 150, |reader| reader.read_raw_varint64());
+
+        test_read_v("ff ff ff ff ff ff ff ff ff 01", 0xffffffffffffffff,
+            |reader| reader.read_raw_varint64());
+
+        test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| reader.read_raw_varint32());
+        test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| reader.read_raw_varint64());
+    }
+
+    #[test]
+    fn test_input_stream_read_raw_vaint_malformed() {
+        // varint cannot have length > 10
+        test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
+            let result = reader.read_raw_varint64();
+            match result {
+                // TODO: make an enum variant
+                Err(ProtobufError::WireError(..)) => (),
+                _ => panic!(),
+            }
+        });
+        test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
+            let result = reader.read_raw_varint32();
+            match result {
+                // TODO: make an enum variant
+                Err(ProtobufError::WireError(..)) => (),
+                _ => panic!(),
+            }
+        });
+    }
+
+    #[test]
+    fn test_input_stream_read_raw_varint_unexpected_eof() {
+        test_read_partial("96 97", |reader| {
+            let result = reader.read_raw_varint32();
             match result {
                 // TODO: make unexpected EOF an enum variant
                 Err(ProtobufError::IoError(..)) => (),
                 _ => panic!(),
             }
-        }
-
-        {
-            let d = decode_hex("95 01 98");
-            let mut is = CodedInputStream::from_bytes(&d);
-            assert_eq!(149, is.read_raw_varint32().unwrap());
-            assert_eq!(2, is.pos());
-        }
+        });
     }
 
     #[test]
-    fn test_output_input_stream_read_float() {
-        test_read("95 73 13 61", |is| {
-            assert_eq!(17e19, is.read_float().unwrap());
+    fn test_input_stream_read_raw_varint_pos() {
+        test_read_partial("95 01 98", |reader| {
+            assert_eq!(149, reader.read_raw_varint32().unwrap());
+            assert_eq!(2, reader.pos());
         });
+    }
+
+    #[test]
+    fn test_input_stream_read_int32() {
+        test_read_v("02", 2, |reader| reader.read_int32());
+    }
+
+    #[test]
+    fn test_input_stream_read_float() {
+        test_read_v("95 73 13 61", 17e19, |is| is.read_float());
     }
 
     #[test]
     fn test_input_stream_read_double() {
-        test_read("40 d5 ab 68 b3 07 3d 46", |is| {
-            assert_eq!(23e29, is.read_double().unwrap());
-        });
+        test_read_v("40 d5 ab 68 b3 07 3d 46", 23e29, |is| is.read_double());
     }
 
     #[test]
@@ -1164,12 +1207,32 @@ mod test {
         test_write("96 01", |os| {
             os.write_raw_varint32(150)
         });
+        test_write("ff ff ff ff 0f", |os| {
+            os.write_raw_varint32(0xffffffff)
+        });
     }
 
     #[test]
     fn test_output_stream_write_raw_varint64() {
         test_write("96 01", |os| {
             os.write_raw_varint64(150)
+        });
+        test_write("ff ff ff ff ff ff ff ff ff 01", |os| {
+            os.write_raw_varint64(0xffffffffffffffff)
+        });
+    }
+
+    #[test]
+    fn test_output_stream_write_int32_no_tag() {
+        test_write("ff ff ff ff ff ff ff ff ff 01", |os| {
+            os.write_int32_no_tag(-1)
+        });
+    }
+
+    #[test]
+    fn test_output_stream_write_int64_no_tag() {
+        test_write("ff ff ff ff ff ff ff ff ff 01", |os| {
+            os.write_int64_no_tag(-1)
         });
     }
 
