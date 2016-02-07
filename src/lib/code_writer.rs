@@ -219,17 +219,15 @@ impl<'a> CodeWriter<'a> {
         self.write_line(format!("{} => {},", cond.as_ref(), body.as_ref()));
     }
 
-    pub fn error_wire_type(&mut self, _wire_type: wire_format::WireType) {
-        // TODO: write wire type
-        let message = "\"unexpected wire type\".to_string()";
+    pub fn error_unexpected_wire_type(&mut self, wire_type: &str) {
         self.write_line(format!(
-                "return ::std::result::Result::Err(::protobuf::ProtobufError::WireError({}));",
-                message));
+                "return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type({}));",
+                wire_type));
     }
 
     pub fn assert_wire_type(&mut self, wire_type: wire_format::WireType) {
         self.if_stmt(format!("wire_type != ::protobuf::wire_format::{:?}", wire_type), |w| {
-            w.error_wire_type(wire_type);
+            w.error_unexpected_wire_type("wire_type");
         });
     }
 }

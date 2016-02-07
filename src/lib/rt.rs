@@ -210,7 +210,7 @@ pub fn read_repeated_int32_into(wire_type: WireType, is: &mut CodedInputStream, 
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_int32_into(target),
         WireTypeVarint => { target.push(try!(is.read_int32())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -220,7 +220,7 @@ pub fn read_repeated_int64_into(wire_type: WireType, is: &mut CodedInputStream, 
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_int64_into(target),
         WireTypeVarint => { target.push(try!(is.read_int64())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -230,7 +230,7 @@ pub fn read_repeated_uint32_into(wire_type: WireType, is: &mut CodedInputStream,
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_uint32_into(target),
         WireTypeVarint => { target.push(try!(is.read_uint32())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -240,7 +240,7 @@ pub fn read_repeated_uint64_into(wire_type: WireType, is: &mut CodedInputStream,
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_uint64_into(target),
         WireTypeVarint => { target.push(try!(is.read_uint64())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -250,7 +250,7 @@ pub fn read_repeated_sint32_into(wire_type: WireType, is: &mut CodedInputStream,
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sint32_into(target),
         WireTypeVarint => { target.push(try!(is.read_sint32())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -260,7 +260,7 @@ pub fn read_repeated_sint64_into(wire_type: WireType, is: &mut CodedInputStream,
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sint64_into(target),
         WireTypeVarint => { target.push(try!(is.read_sint64())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -270,7 +270,7 @@ pub fn read_repeated_fixed32_into(wire_type: WireType, is: &mut CodedInputStream
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_fixed32_into(target),
         WireTypeFixed32 => { target.push(try!(is.read_fixed32())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -280,7 +280,7 @@ pub fn read_repeated_fixed64_into(wire_type: WireType, is: &mut CodedInputStream
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_fixed64_into(target),
         WireTypeFixed64 => { target.push(try!(is.read_fixed64())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -290,7 +290,7 @@ pub fn read_repeated_sfixed32_into(wire_type: WireType, is: &mut CodedInputStrea
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sfixed32_into(target),
         WireTypeFixed32 => { target.push(try!(is.read_sfixed32())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -300,7 +300,7 @@ pub fn read_repeated_sfixed64_into(wire_type: WireType, is: &mut CodedInputStrea
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sfixed64_into(target),
         WireTypeFixed64 => { target.push(try!(is.read_sfixed64())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -310,7 +310,7 @@ pub fn read_repeated_double_into(wire_type: WireType, is: &mut CodedInputStream,
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_double_into(target),
         WireTypeFixed64 => { target.push(try!(is.read_double())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -320,7 +320,7 @@ pub fn read_repeated_float_into(wire_type: WireType, is: &mut CodedInputStream, 
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_float_into(target),
         WireTypeFixed32 => { target.push(try!(is.read_float())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -330,7 +330,7 @@ pub fn read_repeated_bool_into(wire_type: WireType, is: &mut CodedInputStream, t
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_bool_into(target),
         WireTypeVarint => { target.push(try!(is.read_bool())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -341,7 +341,7 @@ pub fn read_repeated_enum_into<E : ProtobufEnum>(
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
         WireTypeVarint => { target.push(try!(is.read_enum())); Ok(()) },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -354,7 +354,7 @@ pub fn read_repeated_string_into(
             let tmp = target.push_default();
             is.read_string_into(tmp)
         },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -367,7 +367,7 @@ pub fn read_singular_string_into(
             let tmp = target.set_default();
             is.read_string_into(tmp)
         },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -380,7 +380,7 @@ pub fn read_repeated_bytes_into(
             let tmp = target.push_default();
             is.read_bytes_into(tmp)
         },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -393,7 +393,7 @@ pub fn read_singular_bytes_into(
             let tmp = target.set_default();
             is.read_bytes_into(tmp)
         },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -406,7 +406,7 @@ pub fn read_repeated_message_into<M : Message + Default>(
             let tmp = target.push_default();
             is.merge_message(tmp)
         },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -419,7 +419,7 @@ pub fn read_singular_message_into<M : Message + Default>(
             let tmp = target.set_default();
             is.merge_message(tmp)
         },
-        _ => Err(ProtobufError::WireError("unexpected wire type".to_string())),
+        _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
@@ -450,4 +450,13 @@ pub fn read_unknown_or_skip_group(
             Ok(())
         }
     }
+}
+
+
+/// Create an error for unexpected wire type.
+///
+/// Function is used in generated code, so error types can be changed,
+/// but this function remains unchanged.
+pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
+    ProtobufError::WireError(format!("unexpected wire type {:?}", wire_type))
 }
