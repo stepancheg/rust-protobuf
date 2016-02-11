@@ -1562,11 +1562,11 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
-        w.def_fn("get_unknown_fields<'s>(&'s self) -> &'s ::protobuf::UnknownFields", |w| {
+        w.def_fn("get_unknown_fields(&self) -> &::protobuf::UnknownFields", |w| {
             w.write_line("&self.unknown_fields");
         });
         w.write_line("");
-        w.def_fn("mut_unknown_fields<'s>(&'s mut self) -> &'s mut ::protobuf::UnknownFields", |w| {
+        w.def_fn("mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields", |w| {
             w.write_line("&mut self.unknown_fields");
         });
     }
