@@ -19,6 +19,9 @@ pub struct FileDescriptorSet {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for FileDescriptorSet {}
+
 impl FileDescriptorSet {
     pub fn new() -> FileDescriptorSet {
         ::std::default::Default::default()
@@ -199,6 +202,9 @@ pub struct FileDescriptorProto {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for FileDescriptorProto {}
 
 impl FileDescriptorProto {
     pub fn new() -> FileDescriptorProto {
@@ -845,6 +851,9 @@ pub struct DescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for DescriptorProto {}
+
 impl DescriptorProto {
     pub fn new() -> DescriptorProto {
         ::std::default::Default::default()
@@ -1343,6 +1352,9 @@ pub struct DescriptorProto_ExtensionRange {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for DescriptorProto_ExtensionRange {}
+
 impl DescriptorProto_ExtensionRange {
     pub fn new() -> DescriptorProto_ExtensionRange {
         ::std::default::Default::default()
@@ -1557,6 +1569,9 @@ pub struct FieldDescriptorProto {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for FieldDescriptorProto {}
 
 impl FieldDescriptorProto {
     pub fn new() -> FieldDescriptorProto {
@@ -2247,6 +2262,9 @@ pub struct OneofDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for OneofDescriptorProto {}
+
 impl OneofDescriptorProto {
     pub fn new() -> OneofDescriptorProto {
         ::std::default::Default::default()
@@ -2428,6 +2446,9 @@ pub struct EnumDescriptorProto {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for EnumDescriptorProto {}
 
 impl EnumDescriptorProto {
     pub fn new() -> EnumDescriptorProto {
@@ -2708,6 +2729,9 @@ pub struct EnumValueDescriptorProto {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for EnumValueDescriptorProto {}
+
 impl EnumValueDescriptorProto {
     pub fn new() -> EnumValueDescriptorProto {
         ::std::default::Default::default()
@@ -2982,6 +3006,9 @@ pub struct ServiceDescriptorProto {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for ServiceDescriptorProto {}
 
 impl ServiceDescriptorProto {
     pub fn new() -> ServiceDescriptorProto {
@@ -3262,6 +3289,9 @@ pub struct MethodDescriptorProto {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for MethodDescriptorProto {}
 
 impl MethodDescriptorProto {
     pub fn new() -> MethodDescriptorProto {
@@ -3612,6 +3642,9 @@ pub struct FileOptions {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for FileOptions {}
 
 impl FileOptions {
     pub fn new() -> FileOptions {
@@ -4312,6 +4345,9 @@ pub struct MessageOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for MessageOptions {}
+
 impl MessageOptions {
     pub fn new() -> MessageOptions {
         ::std::default::Default::default()
@@ -4608,6 +4644,9 @@ pub struct FieldOptions {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for FieldOptions {}
 
 impl FieldOptions {
     pub fn new() -> FieldOptions {
@@ -5081,6 +5120,9 @@ pub struct EnumOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for EnumOptions {}
+
 impl EnumOptions {
     pub fn new() -> EnumOptions {
         ::std::default::Default::default()
@@ -5333,6 +5375,9 @@ pub struct EnumValueOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for EnumValueOptions {}
+
 impl EnumValueOptions {
     pub fn new() -> EnumValueOptions {
         ::std::default::Default::default()
@@ -5545,6 +5590,9 @@ pub struct ServiceOptions {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for ServiceOptions {}
+
 impl ServiceOptions {
     pub fn new() -> ServiceOptions {
         ::std::default::Default::default()
@@ -5756,6 +5804,9 @@ pub struct MethodOptions {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for MethodOptions {}
 
 impl MethodOptions {
     pub fn new() -> MethodOptions {
@@ -5973,6 +6024,9 @@ pub struct UninterpretedOption {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for UninterpretedOption {}
 
 impl UninterpretedOption {
     pub fn new() -> UninterpretedOption {
@@ -6425,6 +6479,9 @@ pub struct UninterpretedOption_NamePart {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for UninterpretedOption_NamePart {}
+
 impl UninterpretedOption_NamePart {
     pub fn new() -> UninterpretedOption_NamePart {
         ::std::default::Default::default()
@@ -6651,6 +6708,9 @@ pub struct SourceCodeInfo {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for SourceCodeInfo {}
+
 impl SourceCodeInfo {
     pub fn new() -> SourceCodeInfo {
         ::std::default::Default::default()
@@ -6824,6 +6884,9 @@ pub struct SourceCodeInfo_Location {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for SourceCodeInfo_Location {}
 
 impl SourceCodeInfo_Location {
     pub fn new() -> SourceCodeInfo_Location {

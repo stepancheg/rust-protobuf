@@ -104,6 +104,10 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(format!("impl {} for {}", tr.as_ref(), ty.as_ref()), cb);
     }
 
+    pub fn unsafe_impl(&mut self, what: &str, for_what: &str) {
+        self.write_line(format!("unsafe impl {} for {} {{}}", what, for_what));
+    }
+
     pub fn pub_struct<S : AsRef<str>, F>(&mut self, name: S, cb: F)
         where F : Fn(&mut CodeWriter)
     {

@@ -19,6 +19,9 @@ pub struct Test1 {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for Test1 {}
+
 impl Test1 {
     pub fn new() -> Test1 {
         ::std::default::Default::default()
@@ -186,6 +189,9 @@ pub struct TestRepeatedBool {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for TestRepeatedBool {}
+
 impl TestRepeatedBool {
     pub fn new() -> TestRepeatedBool {
         ::std::default::Default::default()
@@ -351,6 +357,9 @@ pub struct TestRepeatedPackedInt32 {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for TestRepeatedPackedInt32 {}
 
 impl TestRepeatedPackedInt32 {
     pub fn new() -> TestRepeatedPackedInt32 {
@@ -526,6 +535,9 @@ pub struct TestRepeatedMessages {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for TestRepeatedMessages {}
 
 impl TestRepeatedMessages {
     pub fn new() -> TestRepeatedMessages {
@@ -787,6 +799,9 @@ pub struct TestOptionalMessages {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for TestOptionalMessages {}
 
 impl TestOptionalMessages {
     pub fn new() -> TestOptionalMessages {
@@ -1076,6 +1091,9 @@ pub struct TestStrings {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for TestStrings {}
+
 impl TestStrings {
     pub fn new() -> TestStrings {
         ::std::default::Default::default()
@@ -1362,6 +1380,9 @@ pub struct TestBytes {
     cached_size: ::std::cell::Cell<u32>,
 }
 
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for TestBytes {}
+
 impl TestBytes {
     pub fn new() -> TestBytes {
         ::std::default::Default::default()
@@ -1548,6 +1569,9 @@ pub struct PerftestData {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::std::cell::Cell<u32>,
 }
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for PerftestData {}
 
 impl PerftestData {
     pub fn new() -> PerftestData {

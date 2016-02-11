@@ -1741,10 +1741,24 @@ impl<'a> MessageGen<'a> {
 
     fn write(&self, w: &mut CodeWriter) {
         self.write_struct(w);
+
+        // Cell<u32> (which stores cached size) is not Sync
+        // so messages do not implicitly implement sync.
+        // `cached_size` could be of type `AtomicUsize`, which could be updated
+        // with `Ordering::Relaxed`, however:
+        // * usize is twice as large as u32 on 64-bit, and rust has no `AtomicU32`
+        // * there's small performance degradation when using `AtomicUsize`, which is
+        //   probably related to https://github.com/rust-lang/rust/pull/30962
+        // Anyway, `cached_size` is always read after updated from the same thread
+        // so even in theory the code is incorrect, `u32` write is atomic on all platforms.
+        w.write_line("");
+        w.comment("see codegen.rs for the explanation why impl Sync explicitly");
+        w.unsafe_impl("::std::marker::Sync", &self.type_name);
         for oneof in self.oneofs() {
             w.write_line("");
             write_message_oneof(&oneof, w);
         }
+
         w.write_line("");
         self.write_impl_self(w);
         w.write_line("");
