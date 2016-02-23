@@ -44,6 +44,9 @@ pub mod error;
 // used by test
 pub mod hex;
 
+// used by rust-grpc
+pub use descriptorx::proto_path_to_rust_mod;
+
 mod zigzag;
 mod paginate;
 mod unknown;
