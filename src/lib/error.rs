@@ -8,6 +8,7 @@ pub type ProtobufResult<T> = Result<T, ProtobufError>;
 pub enum ProtobufError {
     IoError(io::Error),
     WireError(String),
+    FieldError(String),
 }
 
 impl fmt::Display for ProtobufError {
@@ -22,6 +23,7 @@ impl Error for ProtobufError {
             // not sure that cause should be included in message
             &ProtobufError::IoError(ref e) => e.description(),
             &ProtobufError::WireError(ref e) => &e,
+            &ProtobufError::FieldError(ref e) => &e,
         }
     }
 
@@ -29,6 +31,7 @@ impl Error for ProtobufError {
         match self {
             &ProtobufError::IoError(ref e) => Some(e),
             &ProtobufError::WireError(..) => None,
+	    &ProtobufError::FieldError(..) => None,
         }
     }
 }

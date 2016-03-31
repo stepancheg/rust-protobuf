@@ -13,6 +13,7 @@
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
+use error::{ProtobufResult, ProtobufError};
 
 #[derive(Clone,Default)]
 pub struct FileDescriptorSet {
@@ -74,8 +75,8 @@ impl FileDescriptorSet {
 }
 
 impl ::protobuf::Message for FileDescriptorSet {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -556,8 +557,8 @@ impl FileDescriptorProto {
 }
 
 impl ::protobuf::Message for FileDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1107,8 +1108,8 @@ impl DescriptorProto {
 }
 
 impl ::protobuf::Message for DescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1421,8 +1422,8 @@ impl DescriptorProto_ExtensionRange {
 }
 
 impl ::protobuf::Message for DescriptorProto_ExtensionRange {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1861,8 +1862,8 @@ impl FieldDescriptorProto {
 }
 
 impl ::protobuf::Message for FieldDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2328,8 +2329,8 @@ impl OneofDescriptorProto {
 }
 
 impl ::protobuf::Message for OneofDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2573,8 +2574,8 @@ impl EnumDescriptorProto {
 }
 
 impl ::protobuf::Message for EnumDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2849,8 +2850,8 @@ impl EnumValueDescriptorProto {
 }
 
 impl ::protobuf::Message for EnumValueDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3133,8 +3134,8 @@ impl ServiceDescriptorProto {
 }
 
 impl ::protobuf::Message for ServiceDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3464,8 +3465,8 @@ impl MethodDescriptorProto {
 }
 
 impl ::protobuf::Message for MethodDescriptorProto {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3969,8 +3970,8 @@ impl FileOptions {
 }
 
 impl ::protobuf::Message for FileOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -4460,8 +4461,8 @@ impl MessageOptions {
 }
 
 impl ::protobuf::Message for MessageOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -4837,8 +4838,8 @@ impl FieldOptions {
 }
 
 impl ::protobuf::Message for FieldOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5215,8 +5216,8 @@ impl EnumOptions {
 }
 
 impl ::protobuf::Message for EnumOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5450,8 +5451,8 @@ impl EnumValueOptions {
 }
 
 impl ::protobuf::Message for EnumValueOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5665,8 +5666,8 @@ impl ServiceOptions {
 }
 
 impl ::protobuf::Message for ServiceOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5880,8 +5881,8 @@ impl MethodOptions {
 }
 
 impl ::protobuf::Message for MethodOptions {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6251,8 +6252,8 @@ impl UninterpretedOption {
 }
 
 impl ::protobuf::Message for UninterpretedOption {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6565,14 +6566,14 @@ impl UninterpretedOption_NamePart {
 }
 
 impl ::protobuf::Message for UninterpretedOption_NamePart {
-    fn is_initialized(&self) -> bool {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         if self.name_part.is_none() {
-            return false;
+            return Err(ProtobufError::FieldError("name_part_error".to_owned()));
         };
         if self.is_extension.is_none() {
-            return false;
+            return Err(ProtobufError::FieldError("is_extension_error".to_owned()));
         };
-        true
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6763,8 +6764,8 @@ impl SourceCodeInfo {
 }
 
 impl ::protobuf::Message for SourceCodeInfo {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -7040,8 +7041,8 @@ impl SourceCodeInfo_Location {
 }
 
 impl ::protobuf::Message for SourceCodeInfo_Location {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {

@@ -622,7 +622,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_message<M : Message + MessageStatic>(&mut self) -> ProtobufResult<M> {
         let mut r: M = MessageStatic::new();
         try!(self.merge_message(&mut r));
-        r.check_initialized();
+        try!(r.check_initialized());
         Ok(r)
     }
 }

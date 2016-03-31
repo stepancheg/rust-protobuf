@@ -68,8 +68,8 @@ impl Test1 {
 }
 
 impl ::protobuf::Message for Test1 {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -244,8 +244,8 @@ impl TestRepeatedBool {
 }
 
 impl ::protobuf::Message for TestRepeatedBool {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -413,8 +413,8 @@ impl TestRepeatedPackedInt32 {
 }
 
 impl ::protobuf::Message for TestRepeatedPackedInt32 {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -643,8 +643,8 @@ impl TestRepeatedMessages {
 }
 
 impl ::protobuf::Message for TestRepeatedMessages {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -931,8 +931,8 @@ impl TestOptionalMessages {
 }
 
 impl ::protobuf::Message for TestOptionalMessages {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1231,8 +1231,8 @@ impl TestStrings {
 }
 
 impl ::protobuf::Message for TestStrings {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1446,8 +1446,8 @@ impl TestBytes {
 }
 
 impl ::protobuf::Message for TestBytes {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1807,8 +1807,8 @@ impl PerftestData {
 }
 
 impl ::protobuf::Message for PerftestData {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()>> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
