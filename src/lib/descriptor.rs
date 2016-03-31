@@ -13,7 +13,7 @@
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-use error::{ProtobufResult, ProtobufError};
+use protobuf::{ProtobufResult, ProtobufError};
 
 #[derive(Clone,Default)]
 pub struct FileDescriptorSet {
@@ -6568,10 +6568,10 @@ impl UninterpretedOption_NamePart {
 impl ::protobuf::Message for UninterpretedOption_NamePart {
     fn is_initialized(&self) -> ProtobufResult<()> {
         if self.name_part.is_none() {
-            return Err(ProtobufError::FieldError("name_part_error".to_owned()));
+            return Err(ProtobufError::FieldError("UninterpretedOption_NamePart_name_part_field_error".to_owned()))
         };
         if self.is_extension.is_none() {
-            return Err(ProtobufError::FieldError("is_extension_error".to_owned()));
+            return Err(ProtobufError::FieldError("UninterpretedOption_NamePart_is_extension_field_error".to_owned()))
         };
         Ok(())
     }

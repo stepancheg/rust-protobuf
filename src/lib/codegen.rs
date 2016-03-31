@@ -2044,7 +2044,7 @@ fn gen_file(
         w.write_line("");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
-        w.write_line("use protobuf::error::{ProtobufResult, ProtobufError};");
+        w.write_line("use protobuf::{ProtobufResult, ProtobufError};");
 
         let scope = FileScope { file_descriptor: file } .to_scope();
 

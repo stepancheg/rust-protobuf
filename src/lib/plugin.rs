@@ -13,7 +13,7 @@
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-use error::ProtobufResult;
+use protobuf::{ProtobufResult, ProtobufError};
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorRequest {

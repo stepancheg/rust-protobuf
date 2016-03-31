@@ -13,6 +13,7 @@
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
+use protobuf::{ProtobufResult, ProtobufError};
 
 #[derive(Clone,Default)]
 pub struct Test1 {
@@ -68,7 +69,7 @@ impl Test1 {
 }
 
 impl ::protobuf::Message for Test1 {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -244,7 +245,7 @@ impl TestRepeatedBool {
 }
 
 impl ::protobuf::Message for TestRepeatedBool {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -413,7 +414,7 @@ impl TestRepeatedPackedInt32 {
 }
 
 impl ::protobuf::Message for TestRepeatedPackedInt32 {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -643,7 +644,7 @@ impl TestRepeatedMessages {
 }
 
 impl ::protobuf::Message for TestRepeatedMessages {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -931,7 +932,7 @@ impl TestOptionalMessages {
 }
 
 impl ::protobuf::Message for TestOptionalMessages {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -1231,7 +1232,7 @@ impl TestStrings {
 }
 
 impl ::protobuf::Message for TestStrings {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -1446,7 +1447,7 @@ impl TestBytes {
 }
 
 impl ::protobuf::Message for TestBytes {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
@@ -1807,7 +1808,7 @@ impl PerftestData {
 }
 
 impl ::protobuf::Message for PerftestData {
-    fn is_initialized(&self) -> ProtobufResult<()>> {
+    fn is_initialized(&self) -> ProtobufResult<()> {
         Ok(())
     }
 
