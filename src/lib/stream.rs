@@ -1016,6 +1016,12 @@ impl<'a> CodedOutputStream<'a> {
     }
 }
 
+impl<'a> Drop for CodedOutputStream<'a> {
+    fn drop(&mut self) {
+        self.flush().unwrap();
+    }
+}
+
 
 #[cfg(test)]
 mod test {
@@ -1262,5 +1268,15 @@ mod test {
         test_write("f1 e2 d3 c4 b5 a6 07 f8", |os| {
             os.write_raw_little_endian64(0xf807a6b5c4d3e2f1)
         });
+    }
+
+    #[test]
+    fn test_drop_output_stream_flushes() {
+        let mut v = Vec::new();
+        {
+            let mut os = CodedOutputStream::new(&mut v as &mut Write);
+            os.write_int32_no_tag(1).unwrap();
+        }
+        assert!(v.len() == 1);
     }
 }
