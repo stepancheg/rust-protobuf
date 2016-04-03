@@ -5,6 +5,8 @@
 #![allow(unknown_lints)]
 #![allow(clippy)]
 
+#![cfg_attr(rustfmt, rustfmt_skip)]
+
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
