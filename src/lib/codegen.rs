@@ -2035,6 +2035,8 @@ fn gen_file(
         w.write_line("#![allow(unknown_lints)]");
         w.write_line("#![allow(clippy)]");
         w.write_line("");
+        w.write_line("#![cfg_attr(rustfmt, rustfmt_skip)]");
+        w.write_line("");
         w.write_line("#![allow(dead_code)]");
         w.write_line("#![allow(non_camel_case_types)]");
         w.write_line("#![allow(non_snake_case)]");
