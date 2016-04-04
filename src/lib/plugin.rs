@@ -15,6 +15,7 @@
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
+use protobuf::{ProtobufResult, ProtobufError};
 
 #[derive(Clone,Default)]
 pub struct CodeGeneratorRequest {
@@ -141,8 +142,8 @@ impl CodeGeneratorRequest {
 }
 
 impl ::protobuf::Message for CodeGeneratorRequest {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -384,8 +385,8 @@ impl CodeGeneratorResponse {
 }
 
 impl ::protobuf::Message for CodeGeneratorResponse {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
@@ -661,8 +662,8 @@ impl CodeGeneratorResponse_File {
 }
 
 impl ::protobuf::Message for CodeGeneratorResponse_File {
-    fn is_initialized(&self) -> bool {
-        true
+    fn is_initialized(&self) -> ProtobufResult<()> {
+        Ok(())
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {

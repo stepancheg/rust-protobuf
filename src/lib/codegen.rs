@@ -1628,13 +1628,13 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
-            w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
+            w.def_fn(format!("is_initialized(&self) -> ProtobufResult<()>"), |w| {
                 for f in self.required_fields() {
                     f.write_if_self_field_is_none(w, |w| {
-                        w.write_line("return false;");
+                        w.write_line(format!("return Err(ProtobufError::FieldError(\"{}_{}_field_error\".to_owned()))", self.type_name, &f.self_field()[5..]));
                     });
                 }
-                w.write_line("true");
+                w.write_line("Ok(())");
             });
             w.write_line("");
             self.write_merge_from(w);
@@ -2046,6 +2046,7 @@ fn gen_file(
         w.write_line("");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
+        w.write_line("use protobuf::{ProtobufResult, ProtobufError};");
 
         let scope = FileScope { file_descriptor: file } .to_scope();
 
