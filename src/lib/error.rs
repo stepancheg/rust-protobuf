@@ -8,6 +8,15 @@ pub type ProtobufResult<T> = Result<T, ProtobufError>;
 pub enum ProtobufError {
     IoError(io::Error),
     WireError(String),
+    MessageNotInitialized { message: &'static str },
+}
+
+impl ProtobufError {
+    pub fn message_not_initialized(message: &'static str) -> ProtobufError {
+        ProtobufError::MessageNotInitialized {
+            message: message
+        }
+    }
 }
 
 impl fmt::Display for ProtobufError {
@@ -22,6 +31,7 @@ impl Error for ProtobufError {
             // not sure that cause should be included in message
             &ProtobufError::IoError(ref e) => e.description(),
             &ProtobufError::WireError(ref e) => &e,
+            &ProtobufError::MessageNotInitialized { .. } => "not all message fields set",
         }
     }
 
@@ -29,6 +39,7 @@ impl Error for ProtobufError {
         match self {
             &ProtobufError::IoError(ref e) => Some(e),
             &ProtobufError::WireError(..) => None,
+            &ProtobufError::MessageNotInitialized { .. } => None,
         }
     }
 }

@@ -17,6 +17,7 @@ use stream::WithCodedOutputStream;
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
 use stream::with_coded_output_stream_to_bytes;
+use error::ProtobufError;
 use error::ProtobufResult;
 
 
@@ -57,7 +58,7 @@ pub trait Message : fmt::Debug + Clear + Any {
     fn get_cached_size(&self) -> u32;
 
     fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        self.check_initialized();
+        try!(self.check_initialized());
 
         // cache sizes
         self.compute_size();
@@ -83,9 +84,12 @@ pub trait Message : fmt::Debug + Clear + Any {
         self.merge_from(&mut is)
     }
 
-    fn check_initialized(&self) {
-        // TODO: report which fields are not initialized
-        assert!(self.is_initialized());
+    fn check_initialized(&self) -> ProtobufResult<()> {
+        if !self.is_initialized() {
+            Err((ProtobufError::message_not_initialized(self.descriptor().name())))
+        } else {
+            Ok(())
+        }
     }
 
     fn write_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
@@ -167,7 +171,7 @@ pub trait ProtobufEnum : Eq + Sized {
 pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     let mut r: M = MessageStatic::new();
     try!(r.merge_from(is));
-    r.check_initialized();
+    try!(r.check_initialized());
     Ok(r)
 }
 
