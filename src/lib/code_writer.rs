@@ -114,6 +114,12 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(format!("pub struct {}", name.as_ref()), cb);
     }
 
+    pub fn pub_trait<F>(&mut self, name: &str, cb: F)
+        where F : Fn(&mut CodeWriter)
+    {
+        self.expr_block(format!("pub trait {}", name), cb);
+    }
+
     pub fn pub_enum<F>(&mut self, name: &str, cb: F)
         where F : Fn(&mut CodeWriter)
     {
