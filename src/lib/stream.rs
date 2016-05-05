@@ -3,6 +3,7 @@ use std::mem;
 use std::io;
 use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
+use std::ptr;
 use std::slice;
 
 use core::Message;
@@ -750,8 +751,17 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
+        if bytes.len() <= self.buffer.len() - self.position as usize {
+            // TODO: use `copy_from_slice` as soon as rust 1.9 released
+            unsafe {
+                let dest = &mut self.buffer[self.position as usize..];
+                ptr::copy_nonoverlapping(bytes.as_ptr(), dest.as_mut_ptr(), bytes.len());
+                self.position += bytes.len() as u32;
+                return Ok(());
+            }
+        }
+
         try!(self.refresh_buffer());
-        // TODO: write into buffer if enough capacity
         match self.writer {
             Some(ref mut writer) => try!(writer.write_all(bytes).map_err(|e| ProtobufError::IoError(e))),
             None => panic!()
@@ -1023,6 +1033,7 @@ mod test {
     use std::io;
     use std::io::{BufRead};
     use std::io::Write;
+    use std::iter::repeat;
     use std::fmt::Debug;
 
     use hex::encode_hex;
@@ -1199,6 +1210,15 @@ mod test {
     fn test_output_stream_write_raw_bytes() {
         test_write("00 ab", |os| {
             os.write_raw_bytes(&[0x00, 0xab])
+        });
+
+        let expected = repeat("01 02 03 04").take(2048).collect::<Vec<_>>().join(" ");
+        test_write(&expected, |os| {
+            for _ in 0..2048 {
+                try!(os.write_raw_bytes(&[0x01, 0x02, 0x03, 0x04]));
+            }
+
+            Ok(())
         });
     }
 
