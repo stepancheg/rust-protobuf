@@ -704,7 +704,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 
 pub struct CodedOutputStream<'a> {
-    buffer: Vec<u8>,
+    buffer: Box<[u8]>,
     // within buffer
     position: u32,
     writer: Option<&'a mut (Write + 'a)>,
@@ -716,7 +716,7 @@ impl<'a> CodedOutputStream<'a> {
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
         CodedOutputStream {
-            buffer: buffer,
+            buffer: buffer.into_boxed_slice(),
             position: 0,
             writer: Some(writer),
         }
