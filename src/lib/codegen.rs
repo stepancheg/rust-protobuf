@@ -135,28 +135,6 @@ impl RustType {
         }
     }
 
-    fn ref_str(&self, lt: &str) -> String {
-        match *self {
-            RustType::Ref(ref param) => format!("&'{} {}", lt, **param),
-            _ => panic!("not a ref: {}", *self),
-        }
-    }
-
-    fn mut_ref_str(&self, lt: &str) -> String {
-        match *self {
-            RustType::Ref(ref param) => format!("&'{} mut {}", lt, **param),
-            _ => panic!("not a ref: {}", *self),
-        }
-    }
-
-    fn ref_str_safe(&self, lt: &str) -> String {
-        if self.is_ref() {
-            self.ref_str(lt)
-        } else {
-            format!("{}", self)
-        }
-    }
-
     // default value for type
     fn default_value(&self) -> String {
         match *self {
@@ -1150,14 +1128,18 @@ fn write_message_write_field(w: &mut CodeWriter, field: &FieldGen) {
 
 fn write_message_field_get(w: &mut CodeWriter, field: &FieldGen) {
     let get_xxx_return_type = field.get_xxx_return_type();
-    let self_param = match get_xxx_return_type.is_ref() {
-        true  => "&'a self",
-        false => "&self",
+    let fn_def = match get_xxx_return_type {
+        RustType::Ref(ref param) => {
+            if param.is_ref() {
+                format!("get_{}<'a>(&'a self) -> &'a {}", field.rust_name, **param)
+            } else {
+                format!("get_{}(&self) -> &{}", field.rust_name, **param)
+            }
+        },
+        _ => format!("get_{}(&self) -> {}", field.rust_name, get_xxx_return_type),
     };
-    let get_xxx_return_type_str = get_xxx_return_type.ref_str_safe("a");
-    // TODO: 'a is not needed when function does not return a reference
-    let ref name = field.rust_name;
-    w.pub_fn(format!("get_{}<'a>({}) -> {}", name, self_param, get_xxx_return_type_str),
+        
+    w.pub_fn(fn_def,
     |w| {
         if field.is_oneof() {
             let self_field_oneof = field.self_field_oneof();
@@ -1253,8 +1235,17 @@ fn write_message_field_mut_take(w: &mut CodeWriter, field: &FieldGen) {
     if !field.repeated {
         w.comment("If field is not initialized, it is initialized with default value first.");
     }
-    // TODO: 'a is not needed when function does not return a reference
-    w.pub_fn(format!("mut_{}<'a>(&'a mut self) -> {}", field.rust_name, mut_xxx_return_type.mut_ref_str("a")),
+    let fn_def = match mut_xxx_return_type {
+        RustType::Ref(ref param) => {
+            if param.is_ref() {
+                format!("mut_{}<'a>(&'a mut self) -> &'a mut {}", field.rust_name, **param)
+            } else {
+                format!("mut_{}(&mut self) -> &mut {}", field.rust_name, **param)
+            }
+        },
+        _ => panic!("not a ref: {}", mut_xxx_return_type),
+    };
+    w.pub_fn(fn_def,
     |w| {
         if field.is_oneof() {
             let self_field_oneof = field.self_field_oneof();
