@@ -61,7 +61,7 @@ impl FileDescriptorSet {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FileDescriptorProto> {
+    pub fn mut_file(&mut self) -> &mut ::protobuf::RepeatedField<FileDescriptorProto> {
         &mut self.file
     }
 
@@ -70,7 +70,7 @@ impl FileDescriptorSet {
         ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_file<'a>(&'a self) -> &'a [FileDescriptorProto] {
+    pub fn get_file(&self) -> &[FileDescriptorProto] {
         &self.file
     }
 }
@@ -260,7 +260,7 @@ impl FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -272,7 +272,7 @@ impl FileDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -296,7 +296,7 @@ impl FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_package<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_package(&mut self) -> &mut ::std::string::String {
         if self.package.is_none() {
             self.package.set_default();
         };
@@ -308,7 +308,7 @@ impl FileDescriptorProto {
         self.package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_package<'a>(&'a self) -> &'a str {
+    pub fn get_package(&self) -> &str {
         match self.package.as_ref() {
             Some(v) => &v,
             None => "",
@@ -327,7 +327,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_dependency(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
         &mut self.dependency
     }
 
@@ -336,7 +336,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.dependency, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_dependency<'a>(&'a self) -> &'a [::std::string::String] {
+    pub fn get_dependency(&self) -> &[::std::string::String] {
         &self.dependency
     }
 
@@ -352,7 +352,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_public_dependency<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_public_dependency(&mut self) -> &mut ::std::vec::Vec<i32> {
         &mut self.public_dependency
     }
 
@@ -361,7 +361,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.public_dependency, ::std::vec::Vec::new())
     }
 
-    pub fn get_public_dependency<'a>(&'a self) -> &'a [i32] {
+    pub fn get_public_dependency(&self) -> &[i32] {
         &self.public_dependency
     }
 
@@ -377,7 +377,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_weak_dependency<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_weak_dependency(&mut self) -> &mut ::std::vec::Vec<i32> {
         &mut self.weak_dependency
     }
 
@@ -386,7 +386,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.weak_dependency, ::std::vec::Vec::new())
     }
 
-    pub fn get_weak_dependency<'a>(&'a self) -> &'a [i32] {
+    pub fn get_weak_dependency(&self) -> &[i32] {
         &self.weak_dependency
     }
 
@@ -402,7 +402,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_message_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
+    pub fn mut_message_type(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.message_type
     }
 
@@ -411,7 +411,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.message_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_message_type<'a>(&'a self) -> &'a [DescriptorProto] {
+    pub fn get_message_type(&self) -> &[DescriptorProto] {
         &self.message_type
     }
 
@@ -427,7 +427,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+    pub fn mut_enum_type(&mut self) -> &mut ::protobuf::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -436,7 +436,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enum_type<'a>(&'a self) -> &'a [EnumDescriptorProto] {
+    pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
         &self.enum_type
     }
 
@@ -452,7 +452,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_service<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
+    pub fn mut_service(&mut self) -> &mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
         &mut self.service
     }
 
@@ -461,7 +461,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.service, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_service<'a>(&'a self) -> &'a [ServiceDescriptorProto] {
+    pub fn get_service(&self) -> &[ServiceDescriptorProto] {
         &self.service
     }
 
@@ -477,7 +477,7 @@ impl FileDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_extension(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -486,7 +486,7 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension<'a>(&'a self) -> &'a [FieldDescriptorProto] {
+    pub fn get_extension(&self) -> &[FieldDescriptorProto] {
         &self.extension
     }
 
@@ -507,7 +507,7 @@ impl FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut FileOptions {
+    pub fn mut_options(&mut self) -> &mut FileOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -519,7 +519,7 @@ impl FileDescriptorProto {
         self.options.take().unwrap_or_else(|| FileOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a FileOptions {
+    pub fn get_options(&self) -> &FileOptions {
         self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
     }
 
@@ -540,7 +540,7 @@ impl FileDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_code_info<'a>(&'a mut self) -> &'a mut SourceCodeInfo {
+    pub fn mut_source_code_info(&mut self) -> &mut SourceCodeInfo {
         if self.source_code_info.is_none() {
             self.source_code_info.set_default();
         };
@@ -552,7 +552,7 @@ impl FileDescriptorProto {
         self.source_code_info.take().unwrap_or_else(|| SourceCodeInfo::new())
     }
 
-    pub fn get_source_code_info<'a>(&'a self) -> &'a SourceCodeInfo {
+    pub fn get_source_code_info(&self) -> &SourceCodeInfo {
         self.source_code_info.as_ref().unwrap_or_else(|| SourceCodeInfo::default_instance())
     }
 }
@@ -905,7 +905,7 @@ impl DescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -917,7 +917,7 @@ impl DescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -936,7 +936,7 @@ impl DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_field<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_field(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.field
     }
 
@@ -945,7 +945,7 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.field, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_field<'a>(&'a self) -> &'a [FieldDescriptorProto] {
+    pub fn get_field(&self) -> &[FieldDescriptorProto] {
         &self.field
     }
 
@@ -961,7 +961,7 @@ impl DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_extension(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
@@ -970,7 +970,7 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension<'a>(&'a self) -> &'a [FieldDescriptorProto] {
+    pub fn get_extension(&self) -> &[FieldDescriptorProto] {
         &self.extension
     }
 
@@ -986,7 +986,7 @@ impl DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto> {
+    pub fn mut_nested_type(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto> {
         &mut self.nested_type
     }
 
@@ -995,7 +995,7 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.nested_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_nested_type<'a>(&'a self) -> &'a [DescriptorProto] {
+    pub fn get_nested_type(&self) -> &[DescriptorProto] {
         &self.nested_type
     }
 
@@ -1011,7 +1011,7 @@ impl DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+    pub fn mut_enum_type(&mut self) -> &mut ::protobuf::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
@@ -1020,7 +1020,7 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enum_type<'a>(&'a self) -> &'a [EnumDescriptorProto] {
+    pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
         &self.enum_type
     }
 
@@ -1036,7 +1036,7 @@ impl DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension_range<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
+    pub fn mut_extension_range(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
         &mut self.extension_range
     }
 
@@ -1045,7 +1045,7 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.extension_range, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension_range<'a>(&'a self) -> &'a [DescriptorProto_ExtensionRange] {
+    pub fn get_extension_range(&self) -> &[DescriptorProto_ExtensionRange] {
         &self.extension_range
     }
 
@@ -1061,7 +1061,7 @@ impl DescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_oneof_decl<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<OneofDescriptorProto> {
+    pub fn mut_oneof_decl(&mut self) -> &mut ::protobuf::RepeatedField<OneofDescriptorProto> {
         &mut self.oneof_decl
     }
 
@@ -1070,7 +1070,7 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.oneof_decl, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_oneof_decl<'a>(&'a self) -> &'a [OneofDescriptorProto] {
+    pub fn get_oneof_decl(&self) -> &[OneofDescriptorProto] {
         &self.oneof_decl
     }
 
@@ -1091,7 +1091,7 @@ impl DescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut MessageOptions {
+    pub fn mut_options(&mut self) -> &mut MessageOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -1103,7 +1103,7 @@ impl DescriptorProto {
         self.options.take().unwrap_or_else(|| MessageOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a MessageOptions {
+    pub fn get_options(&self) -> &MessageOptions {
         self.options.as_ref().unwrap_or_else(|| MessageOptions::default_instance())
     }
 }
@@ -1398,7 +1398,7 @@ impl DescriptorProto_ExtensionRange {
         self.start = ::std::option::Option::Some(v);
     }
 
-    pub fn get_start<'a>(&self) -> i32 {
+    pub fn get_start(&self) -> i32 {
         self.start.unwrap_or(0)
     }
 
@@ -1417,7 +1417,7 @@ impl DescriptorProto_ExtensionRange {
         self.end = ::std::option::Option::Some(v);
     }
 
-    pub fn get_end<'a>(&self) -> i32 {
+    pub fn get_end(&self) -> i32 {
         self.end.unwrap_or(0)
     }
 }
@@ -1625,7 +1625,7 @@ impl FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -1637,7 +1637,7 @@ impl FieldDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -1659,7 +1659,7 @@ impl FieldDescriptorProto {
         self.number = ::std::option::Option::Some(v);
     }
 
-    pub fn get_number<'a>(&self) -> i32 {
+    pub fn get_number(&self) -> i32 {
         self.number.unwrap_or(0)
     }
 
@@ -1678,7 +1678,7 @@ impl FieldDescriptorProto {
         self.label = ::std::option::Option::Some(v);
     }
 
-    pub fn get_label<'a>(&self) -> FieldDescriptorProto_Label {
+    pub fn get_label(&self) -> FieldDescriptorProto_Label {
         self.label.unwrap_or(FieldDescriptorProto_Label::LABEL_OPTIONAL)
     }
 
@@ -1697,7 +1697,7 @@ impl FieldDescriptorProto {
         self.field_type = ::std::option::Option::Some(v);
     }
 
-    pub fn get_field_type<'a>(&self) -> FieldDescriptorProto_Type {
+    pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
         self.field_type.unwrap_or(FieldDescriptorProto_Type::TYPE_DOUBLE)
     }
 
@@ -1718,7 +1718,7 @@ impl FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_type_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_type_name(&mut self) -> &mut ::std::string::String {
         if self.type_name.is_none() {
             self.type_name.set_default();
         };
@@ -1730,7 +1730,7 @@ impl FieldDescriptorProto {
         self.type_name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_type_name<'a>(&'a self) -> &'a str {
+    pub fn get_type_name(&self) -> &str {
         match self.type_name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -1754,7 +1754,7 @@ impl FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_extendee<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_extendee(&mut self) -> &mut ::std::string::String {
         if self.extendee.is_none() {
             self.extendee.set_default();
         };
@@ -1766,7 +1766,7 @@ impl FieldDescriptorProto {
         self.extendee.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_extendee<'a>(&'a self) -> &'a str {
+    pub fn get_extendee(&self) -> &str {
         match self.extendee.as_ref() {
             Some(v) => &v,
             None => "",
@@ -1790,7 +1790,7 @@ impl FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_default_value<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_default_value(&mut self) -> &mut ::std::string::String {
         if self.default_value.is_none() {
             self.default_value.set_default();
         };
@@ -1802,7 +1802,7 @@ impl FieldDescriptorProto {
         self.default_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_default_value<'a>(&'a self) -> &'a str {
+    pub fn get_default_value(&self) -> &str {
         match self.default_value.as_ref() {
             Some(v) => &v,
             None => "",
@@ -1824,7 +1824,7 @@ impl FieldDescriptorProto {
         self.oneof_index = ::std::option::Option::Some(v);
     }
 
-    pub fn get_oneof_index<'a>(&self) -> i32 {
+    pub fn get_oneof_index(&self) -> i32 {
         self.oneof_index.unwrap_or(0)
     }
 
@@ -1845,7 +1845,7 @@ impl FieldDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut FieldOptions {
+    pub fn mut_options(&mut self) -> &mut FieldOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -1857,7 +1857,7 @@ impl FieldDescriptorProto {
         self.options.take().unwrap_or_else(|| FieldOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a FieldOptions {
+    pub fn get_options(&self) -> &FieldOptions {
         self.options.as_ref().unwrap_or_else(|| FieldOptions::default_instance())
     }
 }
@@ -2309,7 +2309,7 @@ impl OneofDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2321,7 +2321,7 @@ impl OneofDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -2496,7 +2496,7 @@ impl EnumDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2508,7 +2508,7 @@ impl EnumDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -2527,7 +2527,7 @@ impl EnumDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_value<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
+    pub fn mut_value(&mut self) -> &mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
         &mut self.value
     }
 
@@ -2536,7 +2536,7 @@ impl EnumDescriptorProto {
         ::std::mem::replace(&mut self.value, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_value<'a>(&'a self) -> &'a [EnumValueDescriptorProto] {
+    pub fn get_value(&self) -> &[EnumValueDescriptorProto] {
         &self.value
     }
 
@@ -2557,7 +2557,7 @@ impl EnumDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut EnumOptions {
+    pub fn mut_options(&mut self) -> &mut EnumOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -2569,7 +2569,7 @@ impl EnumDescriptorProto {
         self.options.take().unwrap_or_else(|| EnumOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a EnumOptions {
+    pub fn get_options(&self) -> &EnumOptions {
         self.options.as_ref().unwrap_or_else(|| EnumOptions::default_instance())
     }
 }
@@ -2778,7 +2778,7 @@ impl EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -2790,7 +2790,7 @@ impl EnumValueDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -2812,7 +2812,7 @@ impl EnumValueDescriptorProto {
         self.number = ::std::option::Option::Some(v);
     }
 
-    pub fn get_number<'a>(&self) -> i32 {
+    pub fn get_number(&self) -> i32 {
         self.number.unwrap_or(0)
     }
 
@@ -2833,7 +2833,7 @@ impl EnumValueDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut EnumValueOptions {
+    pub fn mut_options(&mut self) -> &mut EnumValueOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -2845,7 +2845,7 @@ impl EnumValueDescriptorProto {
         self.options.take().unwrap_or_else(|| EnumValueOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a EnumValueOptions {
+    pub fn get_options(&self) -> &EnumValueOptions {
         self.options.as_ref().unwrap_or_else(|| EnumValueOptions::default_instance())
     }
 }
@@ -3056,7 +3056,7 @@ impl ServiceDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -3068,7 +3068,7 @@ impl ServiceDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3087,7 +3087,7 @@ impl ServiceDescriptorProto {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_method<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<MethodDescriptorProto> {
+    pub fn mut_method(&mut self) -> &mut ::protobuf::RepeatedField<MethodDescriptorProto> {
         &mut self.method
     }
 
@@ -3096,7 +3096,7 @@ impl ServiceDescriptorProto {
         ::std::mem::replace(&mut self.method, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_method<'a>(&'a self) -> &'a [MethodDescriptorProto] {
+    pub fn get_method(&self) -> &[MethodDescriptorProto] {
         &self.method
     }
 
@@ -3117,7 +3117,7 @@ impl ServiceDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut ServiceOptions {
+    pub fn mut_options(&mut self) -> &mut ServiceOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -3129,7 +3129,7 @@ impl ServiceDescriptorProto {
         self.options.take().unwrap_or_else(|| ServiceOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a ServiceOptions {
+    pub fn get_options(&self) -> &ServiceOptions {
         self.options.as_ref().unwrap_or_else(|| ServiceOptions::default_instance())
     }
 }
@@ -3340,7 +3340,7 @@ impl MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
         };
@@ -3352,7 +3352,7 @@ impl MethodDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a str {
+    pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3376,7 +3376,7 @@ impl MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_input_type<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_input_type(&mut self) -> &mut ::std::string::String {
         if self.input_type.is_none() {
             self.input_type.set_default();
         };
@@ -3388,7 +3388,7 @@ impl MethodDescriptorProto {
         self.input_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_input_type<'a>(&'a self) -> &'a str {
+    pub fn get_input_type(&self) -> &str {
         match self.input_type.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3412,7 +3412,7 @@ impl MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_output_type<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_output_type(&mut self) -> &mut ::std::string::String {
         if self.output_type.is_none() {
             self.output_type.set_default();
         };
@@ -3424,7 +3424,7 @@ impl MethodDescriptorProto {
         self.output_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_output_type<'a>(&'a self) -> &'a str {
+    pub fn get_output_type(&self) -> &str {
         match self.output_type.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3448,7 +3448,7 @@ impl MethodDescriptorProto {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_options<'a>(&'a mut self) -> &'a mut MethodOptions {
+    pub fn mut_options(&mut self) -> &mut MethodOptions {
         if self.options.is_none() {
             self.options.set_default();
         };
@@ -3460,7 +3460,7 @@ impl MethodDescriptorProto {
         self.options.take().unwrap_or_else(|| MethodOptions::new())
     }
 
-    pub fn get_options<'a>(&'a self) -> &'a MethodOptions {
+    pub fn get_options(&self) -> &MethodOptions {
         self.options.as_ref().unwrap_or_else(|| MethodOptions::default_instance())
     }
 }
@@ -3701,7 +3701,7 @@ impl FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_package<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_java_package(&mut self) -> &mut ::std::string::String {
         if self.java_package.is_none() {
             self.java_package.set_default();
         };
@@ -3713,7 +3713,7 @@ impl FileOptions {
         self.java_package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_java_package<'a>(&'a self) -> &'a str {
+    pub fn get_java_package(&self) -> &str {
         match self.java_package.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3737,7 +3737,7 @@ impl FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_java_outer_classname<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_java_outer_classname(&mut self) -> &mut ::std::string::String {
         if self.java_outer_classname.is_none() {
             self.java_outer_classname.set_default();
         };
@@ -3749,7 +3749,7 @@ impl FileOptions {
         self.java_outer_classname.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_java_outer_classname<'a>(&'a self) -> &'a str {
+    pub fn get_java_outer_classname(&self) -> &str {
         match self.java_outer_classname.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3771,7 +3771,7 @@ impl FileOptions {
         self.java_multiple_files = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_multiple_files<'a>(&self) -> bool {
+    pub fn get_java_multiple_files(&self) -> bool {
         self.java_multiple_files.unwrap_or(false)
     }
 
@@ -3790,7 +3790,7 @@ impl FileOptions {
         self.java_generate_equals_and_hash = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_generate_equals_and_hash<'a>(&self) -> bool {
+    pub fn get_java_generate_equals_and_hash(&self) -> bool {
         self.java_generate_equals_and_hash.unwrap_or(false)
     }
 
@@ -3809,7 +3809,7 @@ impl FileOptions {
         self.java_string_check_utf8 = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_string_check_utf8<'a>(&self) -> bool {
+    pub fn get_java_string_check_utf8(&self) -> bool {
         self.java_string_check_utf8.unwrap_or(false)
     }
 
@@ -3828,7 +3828,7 @@ impl FileOptions {
         self.optimize_for = ::std::option::Option::Some(v);
     }
 
-    pub fn get_optimize_for<'a>(&self) -> FileOptions_OptimizeMode {
+    pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
         self.optimize_for.unwrap_or(FileOptions_OptimizeMode::SPEED)
     }
 
@@ -3849,7 +3849,7 @@ impl FileOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_go_package<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_go_package(&mut self) -> &mut ::std::string::String {
         if self.go_package.is_none() {
             self.go_package.set_default();
         };
@@ -3861,7 +3861,7 @@ impl FileOptions {
         self.go_package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_go_package<'a>(&'a self) -> &'a str {
+    pub fn get_go_package(&self) -> &str {
         match self.go_package.as_ref() {
             Some(v) => &v,
             None => "",
@@ -3883,7 +3883,7 @@ impl FileOptions {
         self.cc_generic_services = ::std::option::Option::Some(v);
     }
 
-    pub fn get_cc_generic_services<'a>(&self) -> bool {
+    pub fn get_cc_generic_services(&self) -> bool {
         self.cc_generic_services.unwrap_or(false)
     }
 
@@ -3902,7 +3902,7 @@ impl FileOptions {
         self.java_generic_services = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_generic_services<'a>(&self) -> bool {
+    pub fn get_java_generic_services(&self) -> bool {
         self.java_generic_services.unwrap_or(false)
     }
 
@@ -3921,7 +3921,7 @@ impl FileOptions {
         self.py_generic_services = ::std::option::Option::Some(v);
     }
 
-    pub fn get_py_generic_services<'a>(&self) -> bool {
+    pub fn get_py_generic_services(&self) -> bool {
         self.py_generic_services.unwrap_or(false)
     }
 
@@ -3940,7 +3940,7 @@ impl FileOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -3956,7 +3956,7 @@ impl FileOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -3965,7 +3965,7 @@ impl FileOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -4393,7 +4393,7 @@ impl MessageOptions {
         self.message_set_wire_format = ::std::option::Option::Some(v);
     }
 
-    pub fn get_message_set_wire_format<'a>(&self) -> bool {
+    pub fn get_message_set_wire_format(&self) -> bool {
         self.message_set_wire_format.unwrap_or(false)
     }
 
@@ -4412,7 +4412,7 @@ impl MessageOptions {
         self.no_standard_descriptor_accessor = ::std::option::Option::Some(v);
     }
 
-    pub fn get_no_standard_descriptor_accessor<'a>(&self) -> bool {
+    pub fn get_no_standard_descriptor_accessor(&self) -> bool {
         self.no_standard_descriptor_accessor.unwrap_or(false)
     }
 
@@ -4431,7 +4431,7 @@ impl MessageOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -4447,7 +4447,7 @@ impl MessageOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4456,7 +4456,7 @@ impl MessageOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -4696,7 +4696,7 @@ impl FieldOptions {
         self.ctype = ::std::option::Option::Some(v);
     }
 
-    pub fn get_ctype<'a>(&self) -> FieldOptions_CType {
+    pub fn get_ctype(&self) -> FieldOptions_CType {
         self.ctype.unwrap_or(FieldOptions_CType::STRING)
     }
 
@@ -4715,7 +4715,7 @@ impl FieldOptions {
         self.packed = ::std::option::Option::Some(v);
     }
 
-    pub fn get_packed<'a>(&self) -> bool {
+    pub fn get_packed(&self) -> bool {
         self.packed.unwrap_or(false)
     }
 
@@ -4734,7 +4734,7 @@ impl FieldOptions {
         self.lazy = ::std::option::Option::Some(v);
     }
 
-    pub fn get_lazy<'a>(&self) -> bool {
+    pub fn get_lazy(&self) -> bool {
         self.lazy.unwrap_or(false)
     }
 
@@ -4753,7 +4753,7 @@ impl FieldOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -4774,7 +4774,7 @@ impl FieldOptions {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_experimental_map_key<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_experimental_map_key(&mut self) -> &mut ::std::string::String {
         if self.experimental_map_key.is_none() {
             self.experimental_map_key.set_default();
         };
@@ -4786,7 +4786,7 @@ impl FieldOptions {
         self.experimental_map_key.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_experimental_map_key<'a>(&'a self) -> &'a str {
+    pub fn get_experimental_map_key(&self) -> &str {
         match self.experimental_map_key.as_ref() {
             Some(v) => &v,
             None => "",
@@ -4808,7 +4808,7 @@ impl FieldOptions {
         self.weak = ::std::option::Option::Some(v);
     }
 
-    pub fn get_weak<'a>(&self) -> bool {
+    pub fn get_weak(&self) -> bool {
         self.weak.unwrap_or(false)
     }
 
@@ -4824,7 +4824,7 @@ impl FieldOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -4833,7 +4833,7 @@ impl FieldOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -5167,7 +5167,7 @@ impl EnumOptions {
         self.allow_alias = ::std::option::Option::Some(v);
     }
 
-    pub fn get_allow_alias<'a>(&self) -> bool {
+    pub fn get_allow_alias(&self) -> bool {
         self.allow_alias.unwrap_or(false)
     }
 
@@ -5186,7 +5186,7 @@ impl EnumOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -5202,7 +5202,7 @@ impl EnumOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5211,7 +5211,7 @@ impl EnumOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -5421,7 +5421,7 @@ impl EnumValueOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -5437,7 +5437,7 @@ impl EnumValueOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5446,7 +5446,7 @@ impl EnumValueOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -5636,7 +5636,7 @@ impl ServiceOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -5652,7 +5652,7 @@ impl ServiceOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5661,7 +5661,7 @@ impl ServiceOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -5851,7 +5851,7 @@ impl MethodOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated<'a>(&self) -> bool {
+    pub fn get_deprecated(&self) -> bool {
         self.deprecated.unwrap_or(false)
     }
 
@@ -5867,7 +5867,7 @@ impl MethodOptions {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
@@ -5876,7 +5876,7 @@ impl MethodOptions {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_uninterpreted_option<'a>(&'a self) -> &'a [UninterpretedOption] {
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
 }
@@ -6073,7 +6073,7 @@ impl UninterpretedOption {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_name<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
+    pub fn mut_name(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
         &mut self.name
     }
 
@@ -6082,7 +6082,7 @@ impl UninterpretedOption {
         ::std::mem::replace(&mut self.name, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_name<'a>(&'a self) -> &'a [UninterpretedOption_NamePart] {
+    pub fn get_name(&self) -> &[UninterpretedOption_NamePart] {
         &self.name
     }
 
@@ -6103,7 +6103,7 @@ impl UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_identifier_value<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_identifier_value(&mut self) -> &mut ::std::string::String {
         if self.identifier_value.is_none() {
             self.identifier_value.set_default();
         };
@@ -6115,7 +6115,7 @@ impl UninterpretedOption {
         self.identifier_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_identifier_value<'a>(&'a self) -> &'a str {
+    pub fn get_identifier_value(&self) -> &str {
         match self.identifier_value.as_ref() {
             Some(v) => &v,
             None => "",
@@ -6137,7 +6137,7 @@ impl UninterpretedOption {
         self.positive_int_value = ::std::option::Option::Some(v);
     }
 
-    pub fn get_positive_int_value<'a>(&self) -> u64 {
+    pub fn get_positive_int_value(&self) -> u64 {
         self.positive_int_value.unwrap_or(0)
     }
 
@@ -6156,7 +6156,7 @@ impl UninterpretedOption {
         self.negative_int_value = ::std::option::Option::Some(v);
     }
 
-    pub fn get_negative_int_value<'a>(&self) -> i64 {
+    pub fn get_negative_int_value(&self) -> i64 {
         self.negative_int_value.unwrap_or(0)
     }
 
@@ -6175,7 +6175,7 @@ impl UninterpretedOption {
         self.double_value = ::std::option::Option::Some(v);
     }
 
-    pub fn get_double_value<'a>(&self) -> f64 {
+    pub fn get_double_value(&self) -> f64 {
         self.double_value.unwrap_or(0.)
     }
 
@@ -6196,7 +6196,7 @@ impl UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_string_value<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<u8> {
+    pub fn mut_string_value(&mut self) -> &mut ::std::vec::Vec<u8> {
         if self.string_value.is_none() {
             self.string_value.set_default();
         };
@@ -6208,7 +6208,7 @@ impl UninterpretedOption {
         self.string_value.take().unwrap_or_else(|| ::std::vec::Vec::new())
     }
 
-    pub fn get_string_value<'a>(&'a self) -> &'a [u8] {
+    pub fn get_string_value(&self) -> &[u8] {
         match self.string_value.as_ref() {
             Some(v) => &v,
             None => &[],
@@ -6232,7 +6232,7 @@ impl UninterpretedOption {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_aggregate_value<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_aggregate_value(&mut self) -> &mut ::std::string::String {
         if self.aggregate_value.is_none() {
             self.aggregate_value.set_default();
         };
@@ -6244,7 +6244,7 @@ impl UninterpretedOption {
         self.aggregate_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_aggregate_value<'a>(&'a self) -> &'a str {
+    pub fn get_aggregate_value(&self) -> &str {
         match self.aggregate_value.as_ref() {
             Some(v) => &v,
             None => "",
@@ -6527,7 +6527,7 @@ impl UninterpretedOption_NamePart {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name_part<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_name_part(&mut self) -> &mut ::std::string::String {
         if self.name_part.is_none() {
             self.name_part.set_default();
         };
@@ -6539,7 +6539,7 @@ impl UninterpretedOption_NamePart {
         self.name_part.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name_part<'a>(&'a self) -> &'a str {
+    pub fn get_name_part(&self) -> &str {
         match self.name_part.as_ref() {
             Some(v) => &v,
             None => "",
@@ -6561,7 +6561,7 @@ impl UninterpretedOption_NamePart {
         self.is_extension = ::std::option::Option::Some(v);
     }
 
-    pub fn get_is_extension<'a>(&self) -> bool {
+    pub fn get_is_extension(&self) -> bool {
         self.is_extension.unwrap_or(false)
     }
 }
@@ -6750,7 +6750,7 @@ impl SourceCodeInfo {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_location<'a>(&'a mut self) -> &'a mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
+    pub fn mut_location(&mut self) -> &mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
         &mut self.location
     }
 
@@ -6759,7 +6759,7 @@ impl SourceCodeInfo {
         ::std::mem::replace(&mut self.location, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_location<'a>(&'a self) -> &'a [SourceCodeInfo_Location] {
+    pub fn get_location(&self) -> &[SourceCodeInfo_Location] {
         &self.location
     }
 }
@@ -6930,7 +6930,7 @@ impl SourceCodeInfo_Location {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_path<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_path(&mut self) -> &mut ::std::vec::Vec<i32> {
         &mut self.path
     }
 
@@ -6939,7 +6939,7 @@ impl SourceCodeInfo_Location {
         ::std::mem::replace(&mut self.path, ::std::vec::Vec::new())
     }
 
-    pub fn get_path<'a>(&'a self) -> &'a [i32] {
+    pub fn get_path(&self) -> &[i32] {
         &self.path
     }
 
@@ -6955,7 +6955,7 @@ impl SourceCodeInfo_Location {
     }
 
     // Mutable pointer to the field.
-    pub fn mut_span<'a>(&'a mut self) -> &'a mut ::std::vec::Vec<i32> {
+    pub fn mut_span(&mut self) -> &mut ::std::vec::Vec<i32> {
         &mut self.span
     }
 
@@ -6964,7 +6964,7 @@ impl SourceCodeInfo_Location {
         ::std::mem::replace(&mut self.span, ::std::vec::Vec::new())
     }
 
-    pub fn get_span<'a>(&'a self) -> &'a [i32] {
+    pub fn get_span(&self) -> &[i32] {
         &self.span
     }
 
@@ -6985,7 +6985,7 @@ impl SourceCodeInfo_Location {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_leading_comments<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_leading_comments(&mut self) -> &mut ::std::string::String {
         if self.leading_comments.is_none() {
             self.leading_comments.set_default();
         };
@@ -6997,7 +6997,7 @@ impl SourceCodeInfo_Location {
         self.leading_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_leading_comments<'a>(&'a self) -> &'a str {
+    pub fn get_leading_comments(&self) -> &str {
         match self.leading_comments.as_ref() {
             Some(v) => &v,
             None => "",
@@ -7021,7 +7021,7 @@ impl SourceCodeInfo_Location {
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_trailing_comments<'a>(&'a mut self) -> &'a mut ::std::string::String {
+    pub fn mut_trailing_comments(&mut self) -> &mut ::std::string::String {
         if self.trailing_comments.is_none() {
             self.trailing_comments.set_default();
         };
@@ -7033,7 +7033,7 @@ impl SourceCodeInfo_Location {
         self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_trailing_comments<'a>(&'a self) -> &'a str {
+    pub fn get_trailing_comments(&self) -> &str {
         match self.trailing_comments.as_ref() {
             Some(v) => &v,
             None => "",
