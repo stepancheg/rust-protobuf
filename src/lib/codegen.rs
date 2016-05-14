@@ -1,6 +1,5 @@
 use std::collections::hash_map::HashMap;
 use std::fmt;
-use std::io::Write;
 use std::convert::AsRef;
 use std::collections::HashSet;
 
@@ -523,7 +522,7 @@ impl FieldGen {
         self.full_storage_type().iter_elem_type()
     }
 
-    // suffix `xxx` as in `os.write_xxx_no_tag(..)`
+    // suffix `xxx` as in `w.write_xxx_no_tag(..)`
     fn os_write_fn_suffix(&self) -> &str {
         match self.field_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => "message",
@@ -532,7 +531,7 @@ impl FieldGen {
         }
     }
 
-    // type of `v` in `os.write_xxx_no_tag(v)`
+    // type of `v` in `w.write_xxx_no_tag(v)`
     fn os_write_fn_param_type(&self) -> RustType {
         match self.field_type {
             FieldDescriptorProto_Type::TYPE_STRING =>
@@ -1100,27 +1099,27 @@ fn write_message_write_field(w: &mut CodeWriter, field: &FieldGen) {
             w.if_let_stmt("Some(v)", &self_field_as_option, |w| {
                 let option_type = field.as_option_type();
                 let v_type = option_type.elem_type();
-                field.write_write_element(w, "os", "v", &v_type);
+                field.write_write_element(w, "w", "v", &v_type);
             });
         },
         RepeatMode::RepeatPacked => {
             field.write_if_self_field_is_not_empty(w, |w| {
                 let number = field.number();
-                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
+                w.write_line(format!("try!(w.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
                 w.comment("TODO: Data size is computed again, it should be cached");
                 let data_size_expr = field.self_field_vec_packed_data_size();
-                w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
+                w.write_line(format!("try!(w.write_raw_varint32({}));", data_size_expr));
                 field.write_for_self_field(w, "v", |w, v_type| {
                     let param_type = field.os_write_fn_param_type();
                     let os_write_fn_suffix = field.os_write_fn_suffix();
-                    w.write_line(format!("try!(os.write_{}_no_tag({}));",
+                    w.write_line(format!("try!(w.write_{}_no_tag({}));",
                         os_write_fn_suffix, v_type.into_target(&param_type, "v")));
                 });
             });
         },
         RepeatMode::RepeatRegular => {
             field.write_for_self_field(w, "v", |w, v_type| {
-                field.write_write_element(w, "os", "v", v_type);
+                field.write_write_element(w, "w", "v", v_type);
             });
         },
     };
@@ -1422,15 +1421,15 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
-        w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
+        w.def_fn("write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write", |w| {
             // To have access to its methods but not polute the name space.
             for f in self.fields_except_oneof_and_group() {
                 write_message_write_field(w, f);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
-                variant.field.write_write_element(w, "os", v, v_type);
+                variant.field.write_write_element(w, "w", v, v_type);
             });
-            w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
+            w.write_line("try!(w.write_unknown_fields(self.get_unknown_fields()));");
             w.write_line("::std::result::Result::Ok(())");
         });
     }
@@ -2020,6 +2019,7 @@ fn gen_file(
         w.write_line("#![allow(unused_imports)]");
 
         w.write_line("");
+        w.write_line("use protobuf::CodedOutputStream;");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
 

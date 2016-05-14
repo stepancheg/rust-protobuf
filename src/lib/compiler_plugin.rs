@@ -24,5 +24,5 @@ pub fn plugin_main(
         r.set_content(str::from_utf8(file.content.as_ref()).unwrap().to_string());
         r
     }).collect());
-    resp.write_to_writer(&mut stdout()).unwrap();
+    resp.write_to(&mut stdout()).unwrap();
 }
