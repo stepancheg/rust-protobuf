@@ -13,6 +13,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_imports)]
 
+use protobuf::CodedOutputStream;
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
@@ -105,11 +106,11 @@ impl ::protobuf::Message for Test1 {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if let Some(v) = self.value {
-            try!(os.write_int32(1, v));
+            try!(w.write_int32(1, v));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -275,11 +276,11 @@ impl ::protobuf::Message for TestRepeatedBool {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         for v in self.values.iter() {
-            try!(os.write_bool(1, *v));
+            try!(w.write_bool(1, *v));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -446,16 +447,16 @@ impl ::protobuf::Message for TestRepeatedPackedInt32 {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if !self.values.is_empty() {
-            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
-            try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.values)));
+            try!(w.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.values)));
             for v in self.values.iter() {
-                try!(os.write_int32_no_tag(*v));
+                try!(w.write_int32_no_tag(*v));
             };
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -691,23 +692,23 @@ impl ::protobuf::Message for TestRepeatedMessages {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         for v in self.messages1.iter() {
-            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.messages2.iter() {
-            try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.messages3.iter() {
-            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -979,23 +980,23 @@ impl ::protobuf::Message for TestOptionalMessages {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if let Some(v) = self.message1.as_ref() {
-            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         if let Some(v) = self.message2.as_ref() {
-            try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         if let Some(v) = self.message3.as_ref() {
-            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -1276,17 +1277,17 @@ impl ::protobuf::Message for TestStrings {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if let Some(v) = self.s1.as_ref() {
-            try!(os.write_string(1, &v));
+            try!(w.write_string(1, &v));
         };
         if let Some(v) = self.s2.as_ref() {
-            try!(os.write_string(2, &v));
+            try!(w.write_string(2, &v));
         };
         if let Some(v) = self.s3.as_ref() {
-            try!(os.write_string(3, &v));
+            try!(w.write_string(3, &v));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -1479,11 +1480,11 @@ impl ::protobuf::Message for TestBytes {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if let Some(v) = self.b1.as_ref() {
-            try!(os.write_bytes(1, &v));
+            try!(w.write_bytes(1, &v));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -1890,48 +1891,48 @@ impl ::protobuf::Message for PerftestData {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         for v in self.test1.iter() {
-            try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_repeated_bool.iter() {
-            try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_repeated_messages.iter() {
-            try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_optional_messages.iter() {
-            try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_strings.iter() {
-            try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_repeated_packed_int32.iter() {
-            try!(os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_small_bytearrays.iter() {
-            try!(os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
         for v in self.test_large_bytearrays.iter() {
-            try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 

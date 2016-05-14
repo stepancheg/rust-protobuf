@@ -52,7 +52,7 @@ impl TestRunner {
         let mut buf = Vec::new();
         measure_and_print(&format!("{}: write", name), random_data.len() as u64, || {
             for m in random_data.iter() {
-                m.write_length_delimited_to_writer(&mut buf).unwrap();
+                m.write_length_delimited_to(&mut buf).unwrap();
             }
         });
 

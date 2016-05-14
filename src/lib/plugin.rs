@@ -13,6 +13,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_imports)]
 
+use protobuf::CodedOutputStream;
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
@@ -185,19 +186,19 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         for v in self.file_to_generate.iter() {
-            try!(os.write_string(1, &v));
+            try!(w.write_string(1, &v));
         };
         if let Some(v) = self.parameter.as_ref() {
-            try!(os.write_string(2, &v));
+            try!(w.write_string(2, &v));
         };
         for v in self.proto_file.iter() {
-            try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -422,16 +423,16 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if let Some(v) = self.error.as_ref() {
-            try!(os.write_string(1, &v));
+            try!(w.write_string(1, &v));
         };
         for v in self.file.iter() {
-            try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            try!(w.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
+            try!(w.write_raw_varint32(v.get_cached_size()));
+            try!(v.write_to_with_cached_sizes(w));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 
@@ -704,17 +705,17 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes<W>(&self, w: &mut W) -> ::protobuf::ProtobufResult<()> where W: ::std::io::Write {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, &v));
+            try!(w.write_string(1, &v));
         };
         if let Some(v) = self.insertion_point.as_ref() {
-            try!(os.write_string(2, &v));
+            try!(w.write_string(2, &v));
         };
         if let Some(v) = self.content.as_ref() {
-            try!(os.write_string(15, &v));
+            try!(w.write_string(15, &v));
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        try!(w.write_unknown_fields(self.get_unknown_fields()));
         ::std::result::Result::Ok(())
     }
 

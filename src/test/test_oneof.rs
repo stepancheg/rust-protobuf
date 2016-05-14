@@ -1,5 +1,3 @@
-use protobuf::*;
-
 use test::*;
 
 use pb_test_oneof_proto::*;
