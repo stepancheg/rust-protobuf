@@ -702,71 +702,27 @@ impl<'a> WithCodedInputStream for &'a [u8] {
     }
 }
 
-
 pub struct CodedOutputStream<'a> {
-    buffer: Box<[u8]>,
-    // within buffer
-    position: u32,
-    writer: Option<&'a mut (Write + 'a)>,
+    writer: &'a mut Write,
 }
 
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
-        let buffer_len = 4096;
-        let mut buffer = Vec::with_capacity(buffer_len);
-        unsafe { buffer.set_len(buffer_len); }
         CodedOutputStream {
-            buffer: buffer.into_boxed_slice(),
-            position: 0,
-            writer: Some(writer),
+            writer: writer,
         }
-    }
-
-    fn refresh_buffer(&mut self) -> ProtobufResult<()> {
-        match self.writer {
-            Some(ref mut writer) => {
-                try!(writer.write_all(&self.buffer[0..self.position as usize])
-                    .map_err(|e| ProtobufError::IoError(e)));
-            },
-            None => panic!()
-        };
-        self.position = 0;
-        Ok(())
     }
 
     pub fn flush(&mut self) -> ProtobufResult<()> {
-        if self.writer.is_some() {
-            try!(self.refresh_buffer());
-        }
-        Ok(())
+        self.writer.flush().map_err(ProtobufError::IoError)
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
-        if self.position as usize == self.buffer.len() {
-            try!(self.refresh_buffer());
-        }
-        self.buffer[self.position as usize] = byte;
-        self.position += 1;
-        Ok(())
+        self.writer.write_all(&[byte]).map_err(ProtobufError::IoError)
     }
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        if bytes.len() <= self.buffer.len() - self.position as usize {
-            // TODO: use `copy_from_slice` as soon as rust 1.9 released
-            unsafe {
-                let dest = &mut self.buffer[self.position as usize..];
-                ptr::copy_nonoverlapping(bytes.as_ptr(), dest.as_mut_ptr(), bytes.len());
-                self.position += bytes.len() as u32;
-                return Ok(());
-            }
-        }
-
-        try!(self.refresh_buffer());
-        match self.writer {
-            Some(ref mut writer) => try!(writer.write_all(bytes).map_err(|e| ProtobufError::IoError(e))),
-            None => panic!()
-        };
-        Ok(())
+        self.writer.write_all(bytes).map_err(ProtobufError::IoError)
     }
 
     pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) -> ProtobufResult<()> {
