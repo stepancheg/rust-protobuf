@@ -1,7 +1,7 @@
 use protobuf::hex::encode_hex;
 use protobuf::hex::decode_hex;
 
-use pb_shrug::*;
+use pb_basic::*;
 use pb_test_lite_runtime;
 
 use protobuf::*;
@@ -194,7 +194,7 @@ fn test_types_repeated_packed() {
 fn test_file_descriptor_proto() {
     let p: &'static descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());
-    assert_eq!("proto/pb_shrug.proto", p.get_name());
+    assert_eq!("proto/pb_basic.proto", p.get_name());
 }
 
 #[test]
@@ -209,7 +209,7 @@ fn test_message_descriptor() {
 
     let d = reflect::MessageDescriptor::for_type::<TestDescriptor>();
     assert_eq!("TestDescriptor", d.name());
-    assert_eq!("shrug.TestDescriptor", d.full_name());
+    assert_eq!("basic.TestDescriptor", d.full_name());
 
     let mut t = TestDescriptor::new();
     t.set_stuff(55);
