@@ -632,6 +632,33 @@ impl FieldGen {
         }
     }
 
+    fn defaut_value_from_proto_float(&self) -> String {
+        let type_name = match self.field_type {
+            FieldDescriptorProto_Type::TYPE_FLOAT  => "f32",
+            FieldDescriptorProto_Type::TYPE_DOUBLE => "f64",
+            _ => unreachable!()
+        };
+        let proto_default = self.proto_field.get_default_value();
+
+        fn parse_special_float(s: &str) -> Option<&'static str> {
+            if s == "nan" {
+                Some("NAN")
+            } else if s == "inf" {
+                Some("INFINITY")
+            } else if s == "-inf" {
+                Some("NEG_INFINITY")
+            } else {
+                None
+            }
+        }
+
+        match parse_special_float(proto_default) {
+            Some(special) => format!("::std::{}::{}", type_name, special),
+            // hope it is decimal float
+            None          => format!("{}{}", proto_default, type_name),
+        }
+    }
+
     fn default_value_from_proto(&self) -> Option<String> {
         assert!(!self.repeated);
         if self.enum_default_value.is_some() {
@@ -640,8 +667,8 @@ impl FieldGen {
             let proto_default = self.proto_field.get_default_value();
             Some(match self.field_type {
                 // For numeric types, contains the original text representation of the value
-                FieldDescriptorProto_Type::TYPE_DOUBLE   => format!("{}f64", proto_default),
-                FieldDescriptorProto_Type::TYPE_FLOAT    => format!("{}f32", proto_default),
+                FieldDescriptorProto_Type::TYPE_DOUBLE   |
+                FieldDescriptorProto_Type::TYPE_FLOAT    => self.defaut_value_from_proto_float(),
                 FieldDescriptorProto_Type::TYPE_INT32    |
                 FieldDescriptorProto_Type::TYPE_SINT32   |
                 FieldDescriptorProto_Type::TYPE_SFIXED32 => format!("{}i32", proto_default),

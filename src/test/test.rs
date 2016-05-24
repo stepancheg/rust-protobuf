@@ -1,3 +1,6 @@
+use std::f32;
+use std::f64;
+
 use protobuf::hex::encode_hex;
 use protobuf::hex::decode_hex;
 
@@ -227,7 +230,7 @@ fn test_enum_descriptor() {
 }
 
 #[test]
-fn test_default_value() {
+fn test_default_value_simple() {
     let d = TestDefaultValues::new();
     assert_eq!(1.0, d.get_double_field());
     assert_eq!(2.0, d.get_float_field());
@@ -246,6 +249,17 @@ fn test_default_value() {
     assert_eq!(b"cde\n33", d.get_bytes_field());
     assert_eq!(EnumForDefaultValue::TWO, d.get_enum_field());
     assert_eq!(EnumForDefaultValue::ONE, d.get_enum_field_without_default());
+}
+
+#[test]
+fn test_default_value_extreme() {
+    let d = TestExtremeDefaultValues::new();
+    assert_eq!(f64::INFINITY, d.get_inf_double());
+    assert_eq!(f64::NEG_INFINITY, d.get_neg_inf_double());
+    assert!(d.get_nan_double().is_nan());
+    assert_eq!(f32::INFINITY, d.get_inf_float());
+    assert_eq!(f32::NEG_INFINITY, d.get_neg_inf_float());
+    assert!(d.get_nan_float().is_nan());
 }
 
 #[test]

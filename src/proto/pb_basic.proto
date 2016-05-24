@@ -124,6 +124,7 @@ enum EnumForDefaultValue {
 message TestDefaultValues {
     optional double double_field = 1             [default =  1];
     optional float float_field = 2               [default =  2];
+
     optional int32 int32_field = 3               [default =  3];
     optional int64 int64_field = 4               [default =  4];
     optional uint32 uint32_field = 5             [default =  5];
@@ -139,6 +140,16 @@ message TestDefaultValues {
     optional bytes bytes_field = 15              [default = "cde\n33"];
     optional EnumForDefaultValue enum_field = 16 [default = TWO];
     optional EnumForDefaultValue enum_field_without_default = 17;
+}
+
+message TestExtremeDefaultValues {
+    // Text for nonfinite floating-point values.
+    optional double inf_double = 14 [default = inf];
+    optional double neg_inf_double = 15 [default = -inf];
+    optional double nan_double = 16 [default = nan];
+    optional float inf_float = 17 [default = inf];
+    optional float neg_inf_float = 18 [default = -inf];
+    optional float nan_float = 19 [default = nan];
 }
 
 message TestInvalidTag {
