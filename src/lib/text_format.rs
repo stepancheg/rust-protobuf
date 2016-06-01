@@ -13,7 +13,6 @@ fn print_bytes_to(bytes: &[u8], buf: &mut String) {
             b'\r' => buf.push_str(r"\r"),
             b'\t' => buf.push_str(r"\t"),
             b'"' => buf.push_str("\\\""),
-            b'\'' => buf.push_str(r"\'"),
             b'\\' => buf.push_str(r"\\"),
             b'\x20'...b'\x7e' => buf.push(c as char),
             _ => {
@@ -263,7 +262,7 @@ mod test {
     fn test_print_to_bytes() {
         assert_eq!("\"ab\"", escape(b"ab"));
         assert_eq!("\"a\\\\023\"", escape(b"a\\023"));
-        assert_eq!("\"a\\r\\n\\t \\'\\\"\\\\\"", escape(b"a\r\n\t '\"\\"));
+        assert_eq!("\"a\\r\\n\\t '\\\"\\\\\"", escape(b"a\r\n\t '\"\\"));
         assert_eq!("\"\\342\\235\\244\\360\\237\\220\\267\"", escape("❤🐷".as_bytes()));
     }
 }
