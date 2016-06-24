@@ -84,6 +84,13 @@ impl ::protobuf::Message for FileDescriptorSet {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -563,6 +570,25 @@ impl FileDescriptorProto {
 
 impl ::protobuf::Message for FileDescriptorProto {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.package.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
+        if self.source_code_info.is_none() {
+            return false;
+        };
         true
     }
 
@@ -1117,6 +1143,19 @@ impl ::protobuf::Message for DescriptorProto {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -1428,6 +1467,19 @@ impl DescriptorProto_ExtensionRange {
 
 impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.start.is_none() {
+            return false;
+        };
+        if self.end.is_none() {
+            return false;
+        };
         true
     }
 
@@ -1868,6 +1920,40 @@ impl FieldDescriptorProto {
 
 impl ::protobuf::Message for FieldDescriptorProto {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.number.is_none() {
+            return false;
+        };
+        if self.label.is_none() {
+            return false;
+        };
+        if self.field_type.is_none() {
+            return false;
+        };
+        if self.type_name.is_none() {
+            return false;
+        };
+        if self.extendee.is_none() {
+            return false;
+        };
+        if self.default_value.is_none() {
+            return false;
+        };
+        if self.oneof_index.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
         true
     }
 
@@ -2338,6 +2424,16 @@ impl ::protobuf::Message for OneofDescriptorProto {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -2580,6 +2676,19 @@ impl EnumDescriptorProto {
 
 impl ::protobuf::Message for EnumDescriptorProto {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
         true
     }
 
@@ -2856,6 +2965,22 @@ impl EnumValueDescriptorProto {
 
 impl ::protobuf::Message for EnumValueDescriptorProto {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.number.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
         true
     }
 
@@ -3140,6 +3265,19 @@ impl ServiceDescriptorProto {
 
 impl ::protobuf::Message for ServiceDescriptorProto {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
         true
     }
 
@@ -3471,6 +3609,25 @@ impl MethodDescriptorProto {
 
 impl ::protobuf::Message for MethodDescriptorProto {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.input_type.is_none() {
+            return false;
+        };
+        if self.output_type.is_none() {
+            return false;
+        };
+        if self.options.is_none() {
+            return false;
+        };
         true
     }
 
@@ -3979,6 +4136,46 @@ impl ::protobuf::Message for FileOptions {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.java_package.is_none() {
+            return false;
+        };
+        if self.java_outer_classname.is_none() {
+            return false;
+        };
+        if self.java_multiple_files.is_none() {
+            return false;
+        };
+        if self.java_generate_equals_and_hash.is_none() {
+            return false;
+        };
+        if self.java_string_check_utf8.is_none() {
+            return false;
+        };
+        if self.optimize_for.is_none() {
+            return false;
+        };
+        if self.go_package.is_none() {
+            return false;
+        };
+        if self.cc_generic_services.is_none() {
+            return false;
+        };
+        if self.java_generic_services.is_none() {
+            return false;
+        };
+        if self.py_generic_services.is_none() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -4470,6 +4667,22 @@ impl ::protobuf::Message for MessageOptions {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.message_set_wire_format.is_none() {
+            return false;
+        };
+        if self.no_standard_descriptor_accessor.is_none() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -4844,6 +5057,31 @@ impl FieldOptions {
 
 impl ::protobuf::Message for FieldOptions {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.ctype.is_none() {
+            return false;
+        };
+        if self.packed.is_none() {
+            return false;
+        };
+        if self.lazy.is_none() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
+        if self.experimental_map_key.is_none() {
+            return false;
+        };
+        if self.weak.is_none() {
+            return false;
+        };
         true
     }
 
@@ -5225,6 +5463,19 @@ impl ::protobuf::Message for EnumOptions {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.allow_alias.is_none() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -5460,6 +5711,16 @@ impl ::protobuf::Message for EnumValueOptions {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -5675,6 +5936,16 @@ impl ::protobuf::Message for ServiceOptions {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -5887,6 +6158,16 @@ impl MethodOptions {
 
 impl ::protobuf::Message for MethodOptions {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.deprecated.is_none() {
+            return false;
+        };
         true
     }
 
@@ -6261,6 +6542,31 @@ impl ::protobuf::Message for UninterpretedOption {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.identifier_value.is_none() {
+            return false;
+        };
+        if self.positive_int_value.is_none() {
+            return false;
+        };
+        if self.negative_int_value.is_none() {
+            return false;
+        };
+        if self.double_value.is_none() {
+            return false;
+        };
+        if self.string_value.is_none() {
+            return false;
+        };
+        if self.aggregate_value.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -6581,6 +6887,13 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -6770,6 +7083,13 @@ impl SourceCodeInfo {
 
 impl ::protobuf::Message for SourceCodeInfo {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
         true
     }
 
@@ -7047,6 +7367,19 @@ impl SourceCodeInfo_Location {
 
 impl ::protobuf::Message for SourceCodeInfo_Location {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.leading_comments.is_none() {
+            return false;
+        };
+        if self.trailing_comments.is_none() {
+            return false;
+        };
         true
     }
 

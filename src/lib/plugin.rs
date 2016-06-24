@@ -149,6 +149,16 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         true
     }
 
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.parameter.is_none() {
+            return false;
+        };
+        true
+    }
+
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
         while !try!(is.eof()) {
             let (field_number, wire_type) = try!(is.read_tag_unpack());
@@ -389,6 +399,16 @@ impl CodeGeneratorResponse {
 
 impl ::protobuf::Message for CodeGeneratorResponse {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.error.is_none() {
+            return false;
+        };
         true
     }
 
@@ -666,6 +686,22 @@ impl CodeGeneratorResponse_File {
 
 impl ::protobuf::Message for CodeGeneratorResponse_File {
     fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn is_complete(&self) -> bool {
+        if !self.is_initialized() {
+            return false;
+        };
+        if self.name.is_none() {
+            return false;
+        };
+        if self.insertion_point.is_none() {
+            return false;
+        };
+        if self.content.is_none() {
+            return false;
+        };
         true
     }
 

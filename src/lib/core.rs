@@ -47,6 +47,9 @@ pub trait Message : fmt::Debug + Clear + Any {
     fn is_initialized(&self) -> bool;
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
+    // all required and optional fields set
+    fn is_complete(&self) -> bool;
+
     // sizes of this messages (and nested messages) must be cached
     // by calling `compute_size` prior to this call
     fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()>;
