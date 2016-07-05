@@ -62,7 +62,7 @@ impl ProtobufVarint for u32 {
 impl ProtobufVarint for i64 {
     fn len_varint(&self) -> u32 {
         // same as length of u64
-        (*self as u64).len_varint()
+        ((*self).abs() as u64).len_varint()
     }
 }
 
@@ -459,4 +459,20 @@ pub fn read_unknown_or_skip_group(
 /// but this function remains unchanged.
 pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
     ProtobufError::WireError(format!("unexpected wire type {:?}", wire_type))
+}
+
+#[cfg(test)]
+mod test {
+
+  use super::ProtobufVarint;
+
+  #[test]
+  fn test_varint_length() {
+    // Number 1 should be represented with one byte no matter the sign or the type size
+    assert_eq!(1u64.len_varint(), 1);
+    assert_eq!(1u32.len_varint(), 1);
+    assert_eq!((-1i32).len_varint(), 1);
+    assert_eq!((-1i64).len_varint(), 1);
+  }
+
 }
