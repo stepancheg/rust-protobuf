@@ -985,8 +985,8 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_unknown_fields(&mut self, fields: &UnknownFields) -> ProtobufResult<()> {
-        for (number, values) in fields.iter() {
-            for value in values.iter() {
+        for (number, values) in fields {
+            for value in values {
                 try!(self.write_unknown(number, value));
             }
         }

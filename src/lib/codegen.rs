@@ -888,7 +888,7 @@ impl FieldGen {
     {
         let v_type = self.full_storage_iter_elem_type();
         let self_field = self.self_field();
-        w.for_stmt(format!("{}.iter()", self_field), varn, |w| cb(w, &v_type));
+        w.for_stmt(format!("&{}", self_field), varn, |w| cb(w, &v_type));
     }
 
     fn write_self_field_assign<S : AsRef<str>>(&self, w: &mut CodeWriter, value: S) {
@@ -1607,7 +1607,7 @@ impl<'a> MessageGen<'a> {
                     w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
                     w.indented(|w| {
                         w.write_line(format!("\"{}\",", field.proto_field.get_name()));
-                        for f in field.make_accessor_fn_fn_params().iter() {
+                        for f in field.make_accessor_fn_fn_params() {
                             w.write_line(format!("{}::{}_{},",
                                     self.type_name,
                                     f,
@@ -1780,12 +1780,12 @@ impl<'a> MessageGen<'a> {
         let mut nested_prefix = self.type_name.to_string();
         nested_prefix.push_str("_");
 
-        for nested in self.message.to_scope().get_messages().iter() {
+        for nested in &self.message.to_scope().get_messages() {
             w.write_line("");
             MessageGen::new(nested, self.root_scope).write(w);
         }
 
-        for enum_type in self.message.to_scope().get_enums().iter() {
+        for enum_type in &self.message.to_scope().get_enums() {
             w.write_line("");
             EnumGen::new(enum_type, self.message.get_scope().get_file_descriptor()).write(w);
         }
@@ -1913,7 +1913,7 @@ impl<'a> EnumGen<'a> {
         w.derive(&["Clone", "PartialEq", "Eq", "Debug", "Hash"]);
         let ref type_name = self.type_name;
         w.expr_block(format!("pub enum {}", type_name), |w| {
-            for value in self.values_all().iter() {
+            for value in self.values_all() {
                 if self.allow_alias() {
                     w.write_line(format!("{}, // {}", value.rust_name_inner(), value.number()));
                 } else {
@@ -1927,7 +1927,7 @@ impl<'a> EnumGen<'a> {
         w.def_fn("value(&self) -> i32", |w| {
             if self.allow_alias() {
                 w.match_expr("*self", |w| {
-                    for value in self.values_all().iter() {
+                    for value in self.values_all() {
                         w.case_expr(value.rust_name_outer(), format!("{}", value.number()));
                     }
                 });
@@ -1947,7 +1947,7 @@ impl<'a> EnumGen<'a> {
             w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
                 w.match_expr("value", |w| {
                     let values = self.values_unique();
-                    for value in values.iter() {
+                    for value in values {
                         w.write_line(format!("{} => ::std::option::Option::Some({}),",
                             value.number(), value.rust_name_outer()));
                     }
@@ -2056,11 +2056,11 @@ fn gen_file(
 
         let scope = FileScope { file_descriptor: file } .to_scope();
 
-        for message in scope.get_messages().iter() {
+        for message in &scope.get_messages() {
             w.write_line("");
             MessageGen::new(message, &root_scope).write(&mut w);
         }
-        for enum_type in scope.get_enums().iter() {
+        for enum_type in &scope.get_enums() {
             w.write_line("");
             EnumGen::new(enum_type, file).write(&mut w);
         }
@@ -2089,7 +2089,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
     let files_map: HashMap<&str, &FileDescriptorProto> =
         file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
 
-    for file_name in files_to_generate.iter() {
+    for file_name in files_to_generate {
         let file = files_map[&file_name[..]];
         results.push(gen_file(file, &files_map, &root_scope));
     }

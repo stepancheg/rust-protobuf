@@ -258,6 +258,15 @@ impl<T> FromIterator<T> for RepeatedField<T> {
     }
 }
 
+impl<'a, T> IntoIterator for &'a RepeatedField<T> {
+    type Item = &'a T;
+    type IntoIter = slice::Iter<'a, T>;
+
+    fn into_iter(self) -> slice::Iter<'a, T> {
+        self.iter()
+    }
+}
+
 impl<T : PartialEq> PartialEq for RepeatedField<T> {
     #[inline]
     fn eq(&self, other: &RepeatedField<T>) -> bool {

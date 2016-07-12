@@ -186,17 +186,17 @@ pub fn string_size(field_number: u32, s: &str) -> u32 {
 
 pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
     let mut r = 0;
-    for (number, values) in unknown_fields.iter() {
+    for (number, values) in unknown_fields {
         r += (tag_size(number) + 4) * values.fixed32.len() as u32;
         r += (tag_size(number) + 8) * values.fixed64.len() as u32;
 
         r += tag_size(number) * values.varint.len() as u32;
-        for varint in values.varint.iter() {
+        for varint in &values.varint {
             r += varint.len_varint();
         }
 
         r += tag_size(number) * values.length_delimited.len() as u32;
-        for bytes in values.length_delimited.iter() {
+        for bytes in &values.length_delimited {
             r += bytes_size_no_tag(&bytes);
         }
     }

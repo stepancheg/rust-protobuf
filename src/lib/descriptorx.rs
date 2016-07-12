@@ -202,7 +202,7 @@ impl<'a> Scope<'a> {
     fn walk_scopes_impl<F : FnMut(&Scope<'a>)>(&self, callback: &mut F) {
         (*callback)(self);
 
-        for nested in self.nested_scopes().iter() {
+        for nested in self.nested_scopes() {
             nested.walk_scopes_impl(callback);
         }
     }

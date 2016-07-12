@@ -74,6 +74,15 @@ impl UnknownValues {
     }
 }
 
+impl<'a> IntoIterator for &'a UnknownValues {
+    type Item = UnknownValueRef<'a>;
+    type IntoIter = UnknownValuesIter<'a>;
+
+    fn into_iter(self) -> UnknownValuesIter<'a> {
+        self.iter()
+    }
+}
+
 pub struct UnknownValuesIter<'o> {
     fixed32: slice::Iter<'o, u32>,
     fixed64: slice::Iter<'o, u64>,
@@ -152,8 +161,8 @@ impl UnknownFields {
         self.find_field(&number).add_value(value);
     }
 
-    pub fn iter<'s>(&'s self) -> UnknownFieldIter<'s> {
-        UnknownFieldIter {
+    pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
+        UnknownFieldsIter {
             entries: self.fields.as_ref().map(|m| m.iter())
         }
     }
@@ -167,11 +176,20 @@ impl Clear for UnknownFields {
     }
 }
 
-pub struct UnknownFieldIter<'s> {
+impl<'a> IntoIterator for &'a UnknownFields {
+    type Item = (u32, &'a UnknownValues);
+    type IntoIter = UnknownFieldsIter<'a>;
+
+    fn into_iter(self) -> UnknownFieldsIter<'a> {
+        self.iter()
+    }
+}
+
+pub struct UnknownFieldsIter<'s> {
     entries: Option<hash_map::Iter<'s, u32, UnknownValues>>,
 }
 
-impl<'s> Iterator for UnknownFieldIter<'s> {
+impl<'s> Iterator for UnknownFieldsIter<'s> {
     type Item = (u32, &'s UnknownValues);
 
     fn next(&mut self) -> Option<(u32, &'s UnknownValues)> {

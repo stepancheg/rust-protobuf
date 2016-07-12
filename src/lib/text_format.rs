@@ -160,7 +160,7 @@ impl FieldDescriptor {
 fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize) {
     let d = m.descriptor();
     let mut first = true;
-    for f in d.fields().iter() {
+    for f in d.fields() {
         for i in 0..f.len_field_x(m) {
             if !first && !pretty {
                 buf.push_str(" ");

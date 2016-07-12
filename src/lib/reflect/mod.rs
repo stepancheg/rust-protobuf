@@ -202,7 +202,7 @@ impl MessageDescriptor {
         let proto = find_message_by_rust_name(file, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
-        for field_proto in proto.message.get_field().iter() {
+        for field_proto in proto.message.get_field() {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 

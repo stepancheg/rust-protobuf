@@ -1,11 +1,11 @@
 #![crate_type = "lib"]
 
 pub use unknown::UnknownFields;
-pub use unknown::UnknownValues;
+pub use unknown::UnknownFieldsIter;
 pub use unknown::UnknownValue;
 pub use unknown::UnknownValueRef;
+pub use unknown::UnknownValues;
 pub use unknown::UnknownValuesIter;
-pub use unknown::UnknownFieldIter;
 pub use repeated::RepeatedField;
 pub use singular::SingularField;
 pub use singular::SingularPtrField;
@@ -66,11 +66,11 @@ mod protobuf {
     pub use text_format;
     pub use lazy;
     pub use unknown::UnknownFields;
-    pub use unknown::UnknownValues;
+    pub use unknown::UnknownFieldsIter;
     pub use unknown::UnknownValue;
     pub use unknown::UnknownValueRef;
+    pub use unknown::UnknownValues;
     pub use unknown::UnknownValuesIter;
-    pub use unknown::UnknownFieldIter;
     pub use repeated::RepeatedField;
     pub use singular::SingularField;
     pub use singular::SingularPtrField;

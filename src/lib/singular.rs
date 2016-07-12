@@ -417,6 +417,24 @@ impl<T : Hash> Hash for SingularPtrField<T> {
     }
 }
 
+impl<'a, T> IntoIterator for &'a SingularField<T> {
+    type Item = &'a T;
+    type IntoIter = option::IntoIter<&'a T>;
+
+    fn into_iter(self) -> option::IntoIter<&'a T> {
+        self.iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a SingularPtrField<T> {
+    type Item = &'a T;
+    type IntoIter = option::IntoIter<&'a T>;
+
+    fn into_iter(self) -> option::IntoIter<&'a T> {
+        self.iter()
+    }
+}
+
 
 #[cfg(test)]
 mod test {

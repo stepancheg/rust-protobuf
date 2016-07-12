@@ -103,7 +103,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.file.iter() {
+        for value in &self.file {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -113,7 +113,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.file.iter() {
+        for v in &self.file {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -615,42 +615,42 @@ impl ::protobuf::Message for FileDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.package.iter() {
+        for value in &self.package {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        for value in self.dependency.iter() {
+        for value in &self.dependency {
             my_size += ::protobuf::rt::string_size(3, &value);
         };
-        for value in self.public_dependency.iter() {
+        for value in &self.public_dependency {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.weak_dependency.iter() {
+        for value in &self.weak_dependency {
             my_size += ::protobuf::rt::value_size(11, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.message_type.iter() {
+        for value in &self.message_type {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.enum_type.iter() {
+        for value in &self.enum_type {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.service.iter() {
+        for value in &self.service {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.extension.iter() {
+        for value in &self.extension {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.source_code_info.iter() {
+        for value in &self.source_code_info {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -666,31 +666,31 @@ impl ::protobuf::Message for FileDescriptorProto {
         if let Some(v) = self.package.as_ref() {
             try!(os.write_string(2, &v));
         };
-        for v in self.dependency.iter() {
+        for v in &self.dependency {
             try!(os.write_string(3, &v));
         };
-        for v in self.public_dependency.iter() {
+        for v in &self.public_dependency {
             try!(os.write_int32(10, *v));
         };
-        for v in self.weak_dependency.iter() {
+        for v in &self.weak_dependency {
             try!(os.write_int32(11, *v));
         };
-        for v in self.message_type.iter() {
+        for v in &self.message_type {
             try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.enum_type.iter() {
+        for v in &self.enum_type {
             try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.service.iter() {
+        for v in &self.service {
             try!(os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.extension.iter() {
+        for v in &self.extension {
             try!(os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -1157,34 +1157,34 @@ impl ::protobuf::Message for DescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.field.iter() {
+        for value in &self.field {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.extension.iter() {
+        for value in &self.extension {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.nested_type.iter() {
+        for value in &self.nested_type {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.enum_type.iter() {
+        for value in &self.enum_type {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.extension_range.iter() {
+        for value in &self.extension_range {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.oneof_decl.iter() {
+        for value in &self.oneof_decl {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -1197,32 +1197,32 @@ impl ::protobuf::Message for DescriptorProto {
         if let Some(v) = self.name.as_ref() {
             try!(os.write_string(1, &v));
         };
-        for v in self.field.iter() {
+        for v in &self.field {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.extension.iter() {
+        for v in &self.extension {
             try!(os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.nested_type.iter() {
+        for v in &self.nested_type {
             try!(os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.enum_type.iter() {
+        for v in &self.enum_type {
             try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.extension_range.iter() {
+        for v in &self.extension_range {
             try!(os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
         };
-        for v in self.oneof_decl.iter() {
+        for v in &self.oneof_decl {
             try!(os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -1461,10 +1461,10 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.start.iter() {
+        for value in &self.start {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.end.iter() {
+        for value in &self.end {
             my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -1930,31 +1930,31 @@ impl ::protobuf::Message for FieldDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.number.iter() {
+        for value in &self.number {
             my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.label.iter() {
+        for value in &self.label {
             my_size += ::protobuf::rt::enum_size(4, *value);
         };
-        for value in self.field_type.iter() {
+        for value in &self.field_type {
             my_size += ::protobuf::rt::enum_size(5, *value);
         };
-        for value in self.type_name.iter() {
+        for value in &self.type_name {
             my_size += ::protobuf::rt::string_size(6, &value);
         };
-        for value in self.extendee.iter() {
+        for value in &self.extendee {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        for value in self.default_value.iter() {
+        for value in &self.default_value {
             my_size += ::protobuf::rt::string_size(7, &value);
         };
-        for value in self.oneof_index.iter() {
+        for value in &self.oneof_index {
             my_size += ::protobuf::rt::value_size(9, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -2357,7 +2357,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -2608,14 +2608,14 @@ impl ::protobuf::Message for EnumDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.value.iter() {
+        for value in &self.value {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -2628,7 +2628,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
         if let Some(v) = self.name.as_ref() {
             try!(os.write_string(1, &v));
         };
-        for v in self.value.iter() {
+        for v in &self.value {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -2888,13 +2888,13 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.number.iter() {
+        for value in &self.number {
             my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -3168,14 +3168,14 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.method.iter() {
+        for value in &self.method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -3188,7 +3188,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         if let Some(v) = self.name.as_ref() {
             try!(os.write_string(1, &v));
         };
-        for v in self.method.iter() {
+        for v in &self.method {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -3502,16 +3502,16 @@ impl ::protobuf::Message for MethodDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.input_type.iter() {
+        for value in &self.input_type {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        for value in self.output_type.iter() {
+        for value in &self.output_type {
             my_size += ::protobuf::rt::string_size(3, &value);
         };
-        for value in self.options.iter() {
+        for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -4063,10 +4063,10 @@ impl ::protobuf::Message for FileOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.java_package.iter() {
+        for value in &self.java_package {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.java_outer_classname.iter() {
+        for value in &self.java_outer_classname {
             my_size += ::protobuf::rt::string_size(8, &value);
         };
         if self.java_multiple_files.is_some() {
@@ -4078,10 +4078,10 @@ impl ::protobuf::Message for FileOptions {
         if self.java_string_check_utf8.is_some() {
             my_size += 3;
         };
-        for value in self.optimize_for.iter() {
+        for value in &self.optimize_for {
             my_size += ::protobuf::rt::enum_size(9, *value);
         };
-        for value in self.go_package.iter() {
+        for value in &self.go_package {
             my_size += ::protobuf::rt::string_size(11, &value);
         };
         if self.cc_generic_services.is_some() {
@@ -4096,7 +4096,7 @@ impl ::protobuf::Message for FileOptions {
         if self.deprecated.is_some() {
             my_size += 3;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -4139,7 +4139,7 @@ impl ::protobuf::Message for FileOptions {
         if let Some(v) = self.deprecated {
             try!(os.write_bool(23, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -4519,7 +4519,7 @@ impl ::protobuf::Message for MessageOptions {
         if self.deprecated.is_some() {
             my_size += 2;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -4538,7 +4538,7 @@ impl ::protobuf::Message for MessageOptions {
         if let Some(v) = self.deprecated {
             try!(os.write_bool(3, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -4904,7 +4904,7 @@ impl ::protobuf::Message for FieldOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.ctype.iter() {
+        for value in &self.ctype {
             my_size += ::protobuf::rt::enum_size(1, *value);
         };
         if self.packed.is_some() {
@@ -4916,13 +4916,13 @@ impl ::protobuf::Message for FieldOptions {
         if self.deprecated.is_some() {
             my_size += 2;
         };
-        for value in self.experimental_map_key.iter() {
+        for value in &self.experimental_map_key {
             my_size += ::protobuf::rt::string_size(9, &value);
         };
         if self.weak.is_some() {
             my_size += 2;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -4950,7 +4950,7 @@ impl ::protobuf::Message for FieldOptions {
         if let Some(v) = self.weak {
             try!(os.write_bool(10, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -5264,7 +5264,7 @@ impl ::protobuf::Message for EnumOptions {
         if self.deprecated.is_some() {
             my_size += 2;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -5280,7 +5280,7 @@ impl ::protobuf::Message for EnumOptions {
         if let Some(v) = self.deprecated {
             try!(os.write_bool(3, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -5489,7 +5489,7 @@ impl ::protobuf::Message for EnumValueOptions {
         if self.deprecated.is_some() {
             my_size += 2;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -5502,7 +5502,7 @@ impl ::protobuf::Message for EnumValueOptions {
         if let Some(v) = self.deprecated {
             try!(os.write_bool(1, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -5704,7 +5704,7 @@ impl ::protobuf::Message for ServiceOptions {
         if self.deprecated.is_some() {
             my_size += 3;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -5717,7 +5717,7 @@ impl ::protobuf::Message for ServiceOptions {
         if let Some(v) = self.deprecated {
             try!(os.write_bool(33, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -5919,7 +5919,7 @@ impl ::protobuf::Message for MethodOptions {
         if self.deprecated.is_some() {
             my_size += 3;
         };
-        for value in self.uninterpreted_option.iter() {
+        for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -5932,7 +5932,7 @@ impl ::protobuf::Message for MethodOptions {
         if let Some(v) = self.deprecated {
             try!(os.write_bool(33, v));
         };
-        for v in self.uninterpreted_option.iter() {
+        for v in &self.uninterpreted_option {
             try!(os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -6310,26 +6310,26 @@ impl ::protobuf::Message for UninterpretedOption {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in self.identifier_value.iter() {
+        for value in &self.identifier_value {
             my_size += ::protobuf::rt::string_size(3, &value);
         };
-        for value in self.positive_int_value.iter() {
+        for value in &self.positive_int_value {
             my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in self.negative_int_value.iter() {
+        for value in &self.negative_int_value {
             my_size += ::protobuf::rt::value_size(5, *value, ::protobuf::wire_format::WireTypeVarint);
         };
         if self.double_value.is_some() {
             my_size += 9;
         };
-        for value in self.string_value.iter() {
+        for value in &self.string_value {
             my_size += ::protobuf::rt::bytes_size(7, &value);
         };
-        for value in self.aggregate_value.iter() {
+        for value in &self.aggregate_value {
             my_size += ::protobuf::rt::string_size(8, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -6338,7 +6338,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.name.iter() {
+        for v in &self.name {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -6607,7 +6607,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name_part.iter() {
+        for value in &self.name_part {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
         if self.is_extension.is_some() {
@@ -6792,7 +6792,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.location.iter() {
+        for value in &self.location {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -6802,7 +6802,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.location.iter() {
+        for v in &self.location {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -7084,10 +7084,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         if !self.span.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
         };
-        for value in self.leading_comments.iter() {
+        for value in &self.leading_comments {
             my_size += ::protobuf::rt::string_size(3, &value);
         };
-        for value in self.trailing_comments.iter() {
+        for value in &self.trailing_comments {
             my_size += ::protobuf::rt::string_size(4, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -7100,7 +7100,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             try!(os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
             try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path)));
-            for v in self.path.iter() {
+            for v in &self.path {
                 try!(os.write_int32_no_tag(*v));
             };
         };
@@ -7108,7 +7108,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
             // TODO: Data size is computed again, it should be cached
             try!(os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.span)));
-            for v in self.span.iter() {
+            for v in &self.span {
                 try!(os.write_int32_no_tag(*v));
             };
         };

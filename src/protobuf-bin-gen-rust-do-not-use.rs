@@ -21,7 +21,7 @@ fn write_file(bin: &str) {
         .collect();
     let results = gen(fds.get_file(), &file_names);
 
-    for r in results.iter() {
+    for r in &results {
         let mut file_writer = File::create(&Path::new(&r.name)).unwrap();
         file_writer.write(&r.content).unwrap();
     }

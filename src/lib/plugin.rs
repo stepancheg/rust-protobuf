@@ -174,13 +174,13 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.file_to_generate.iter() {
+        for value in &self.file_to_generate {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.parameter.iter() {
+        for value in &self.parameter {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        for value in self.proto_file.iter() {
+        for value in &self.proto_file {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -190,13 +190,13 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        for v in self.file_to_generate.iter() {
+        for v in &self.file_to_generate {
             try!(os.write_string(1, &v));
         };
         if let Some(v) = self.parameter.as_ref() {
             try!(os.write_string(2, &v));
         };
-        for v in self.proto_file.iter() {
+        for v in &self.proto_file {
             try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -414,10 +414,10 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.error.iter() {
+        for value in &self.error {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.file.iter() {
+        for value in &self.file {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -430,7 +430,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         if let Some(v) = self.error.as_ref() {
             try!(os.write_string(1, &v));
         };
-        for v in self.file.iter() {
+        for v in &self.file {
             try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
             try!(os.write_raw_varint32(v.get_cached_size()));
             try!(v.write_to_with_cached_sizes(os));
@@ -694,13 +694,13 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in self.name.iter() {
+        for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in self.insertion_point.iter() {
+        for value in &self.insertion_point {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        for value in self.content.iter() {
+        for value in &self.content {
             my_size += ::protobuf::rt::string_size(15, &value);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
