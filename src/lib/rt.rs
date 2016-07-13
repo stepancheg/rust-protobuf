@@ -160,6 +160,16 @@ pub fn value_size<T : ProtobufVarint>(field_number: u32, value: T, wt: WireType)
     tag_size(field_number) + value_size_no_tag(value, wt)
 }
 
+/// Length of value when encoded with zigzag encoding
+pub fn value_varint_zigzag_size_no_tag<T : ProtobufVarintZigzag>(value: T) -> u32 {
+    value.len_varint_zigzag()
+}
+
+/// Length of value when encoding with zigzag encoding with tag
+pub fn value_varint_zigzag_size<T : ProtobufVarintZigzag>(field_number: u32, value: T) -> u32 {
+    tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
+}
+
 fn enum_size_no_tag<E : ProtobufEnum>(value: E) -> u32 {
     value.value().len_varint()
 }

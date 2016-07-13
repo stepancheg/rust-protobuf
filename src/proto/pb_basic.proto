@@ -158,3 +158,8 @@ message TestInvalidTag {
 message TestTruncated {
     repeated fixed32 ints = 2 [packed=true];
 }
+
+message TestBugSint {
+    optional sint32 s32 = 1;
+    optional sint64 s64 = 2;
+}

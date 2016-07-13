@@ -267,6 +267,15 @@ impl FieldDescriptorProto_Type {
     fn read(&self, is: &str) -> String {
         format!("{}.read_{}()", is, protobuf_name(*self))
     }
+
+    /// True if self is signed integer with zigzag encoding
+    fn is_s_varint(&self) -> bool {
+        match *self {
+            FieldDescriptorProto_Type::TYPE_SINT32 |
+            FieldDescriptorProto_Type::TYPE_SINT64 => true,
+            _ => false,
+        }
+    }
 }
 
 // protobuf type name for protobuf base type
@@ -805,8 +814,13 @@ impl FieldGen {
                             &RustType::Ref(ref t) => (**t).clone(),
                             t => t.clone(),
                         };
-                        format!("::protobuf::rt::value_size({}, {}, ::protobuf::wire_format::{:?})",
-                                self.number, var_type.into_target(&param_type, var), self.wire_type)
+                        if self.field_type.is_s_varint() {
+                            format!("::protobuf::rt::value_varint_zigzag_size({}, {})",
+                                    self.number, var_type.into_target(&param_type, var))
+                        } else {
+                            format!("::protobuf::rt::value_size({}, {}, ::protobuf::wire_format::{:?})",
+                                    self.number, var_type.into_target(&param_type, var), self.wire_type)
+                        }
                     }
                 }
             },

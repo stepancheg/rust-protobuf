@@ -314,3 +314,17 @@ fn test_truncated_repeated_packed() {
     let r = parse_from_bytes::<TestTruncated>(&bytes);
     assert!(r.is_err());
 }
+
+#[test]
+fn test_bug_sint() {
+    {
+        let mut x = TestBugSint::new();
+        x.set_s32(-1);
+        test_serialize_deserialize("08 01", &x);
+    }
+    {
+        let mut x = TestBugSint::new();
+        x.set_s64(-2);
+        test_serialize_deserialize("10 03", &x);
+    }
+}
