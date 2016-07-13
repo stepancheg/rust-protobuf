@@ -1,6 +1,5 @@
 use std::collections::hash_map::HashMap;
 use std::fmt;
-use std::io::Write;
 use std::convert::AsRef;
 use std::collections::HashSet;
 
@@ -1420,6 +1419,12 @@ impl<'a> MessageGen<'a> {
             .collect()
     }
 
+    fn optional_fields(&'a self) -> Vec<&'a FieldGen> {
+        self.fields_except_oneof_and_group().into_iter()
+            .filter(|f| f.proto_field.get_label() == FieldDescriptorProto_Label::LABEL_OPTIONAL)
+            .collect()
+    }
+
     fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
             .filter(|f| !f.is_oneof())
@@ -1647,6 +1652,18 @@ impl<'a> MessageGen<'a> {
         w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
             w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
                 for f in self.required_fields() {
+                    f.write_if_self_field_is_none(w, |w| {
+                        w.write_line("return false;");
+                    });
+                }
+                w.write_line("true");
+            });
+            w.write_line("");
+            w.def_fn(format!("is_complete(&self) -> bool"), |w| {
+                w.if_stmt("!self.is_initialized()", |w| {
+                    w.write_line("return false;");
+                });
+                for f in self.optional_fields() {
                     f.write_if_self_field_is_none(w, |w| {
                         w.write_line("return false;");
                     });
