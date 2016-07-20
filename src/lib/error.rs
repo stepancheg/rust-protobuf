@@ -43,3 +43,9 @@ impl Error for ProtobufError {
         }
     }
 }
+
+impl From<io::Error> for ProtobufError {
+    fn from(err: io::Error) -> Self {
+        ProtobufError::IoError(err)
+    }
+}
