@@ -127,17 +127,14 @@ impl<'a> InputSource<'a> {
                 &mut InputSource::Read(ref mut br) => br.read(&mut target[bread..]),
                 &mut InputSource::Cursor(ref mut c) => c.read(&mut target[bread..]),
             };
-            match res {
-                Err(e) => {
-                    return Err(ProtobufError::IoError(e));
-                },
-                Ok(x) if x == 0 => {
+            match try!(res) {
+                0 => {
                     return Err(ProtobufError::IoError(io::Error::new(
                         io::ErrorKind::Other, "unexpected EOF")));
                 },
-                Ok(x) => {
+                x => {
                     bread += x;
-                }
+                },
             }
         }
         Ok(())
@@ -149,11 +146,7 @@ impl<'a> InputSource<'a> {
             &mut InputSource::Read(ref mut br) => br.fill_buf(),
             &mut InputSource::Cursor(ref mut c) => c.fill_buf(),
         };
-        match res {
-            Err(e) => Err(ProtobufError::IoError(e)),
-            Ok(buf) if buf.len() == 0 => Ok(true),
-            Ok(_) => Ok(false),
-        }
+        Ok(try!(res).len() == 0)
     }
 }
 
@@ -725,8 +718,7 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.writer {
             Some(ref mut writer) => {
-                try!(writer.write_all(&self.buffer[0..self.position as usize])
-                    .map_err(|e| ProtobufError::IoError(e)));
+                try!(writer.write_all(&self.buffer[0..self.position as usize]));
             },
             None => panic!()
         };
@@ -763,7 +755,7 @@ impl<'a> CodedOutputStream<'a> {
 
         try!(self.refresh_buffer());
         match self.writer {
-            Some(ref mut writer) => try!(writer.write_all(bytes).map_err(|e| ProtobufError::IoError(e))),
+            Some(ref mut writer) => try!(writer.write_all(bytes)),
             None => panic!()
         };
         Ok(())
