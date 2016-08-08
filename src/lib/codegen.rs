@@ -2035,8 +2035,15 @@ fn gen_file(
     _files_map: &HashMap<&str, &FileDescriptorProto>,
     root_scope: &RootScope,
 )
-    -> compiler_plugin::GenResult
+    -> Option<compiler_plugin::GenResult>
 {
+    let scope = FileScope { file_descriptor: file } .to_scope();
+
+    if scope.get_messages().is_empty() && scope.get_enums().is_empty() {
+        // protoc generates empty file descriptors for directories: skip them
+        return None;
+    }
+
     let mut v = Vec::new();
 
     {
@@ -2068,8 +2075,6 @@ fn gen_file(
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
 
-        let scope = FileScope { file_descriptor: file } .to_scope();
-
         for message in &scope.get_messages() {
             w.write_line("");
             MessageGen::new(message, &root_scope).write(&mut w);
@@ -2085,10 +2090,10 @@ fn gen_file(
         }
     }
 
-    compiler_plugin::GenResult {
+    Some(compiler_plugin::GenResult {
         name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
         content: v,
-    }
+    })
 }
 
 // This function is also used externally by cargo plugin
@@ -2105,7 +2110,7 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
 
     for file_name in files_to_generate {
         let file = files_map[&file_name[..]];
-        results.push(gen_file(file, &files_map, &root_scope));
+        results.extend(gen_file(file, &files_map, &root_scope));
     }
     results
 }
