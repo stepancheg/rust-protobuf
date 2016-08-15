@@ -2049,27 +2049,7 @@ fn gen_file(
     {
         let mut w = CodeWriter::new(&mut v);
 
-        w.write_line("// This file is generated. Do not edit");
-
-        // https://secure.phabricator.com/T784
-        w.write_line("// @generated");
-
-        w.write_line("");
-        w.comment("https://github.com/Manishearth/rust-clippy/issues/702");
-        w.write_line("#![allow(unknown_lints)]");
-        w.write_line("#![allow(clippy)]");
-        w.write_line("");
-        w.write_line("#![cfg_attr(rustfmt, rustfmt_skip)]");
-        w.write_line("");
-        w.write_line("#![allow(box_pointers)]");
-        w.write_line("#![allow(dead_code)]");
-        w.write_line("#![allow(non_camel_case_types)]");
-        w.write_line("#![allow(non_snake_case)]");
-        w.write_line("#![allow(non_upper_case_globals)]");
-        w.write_line("#![allow(trivial_casts)]");
-        w.write_line("#![allow(unsafe_code)]");
-        w.write_line("#![allow(unused_imports)]");
-        w.write_line("#![allow(unused_results)]");
+        w.write_generated();
 
         w.write_line("");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
