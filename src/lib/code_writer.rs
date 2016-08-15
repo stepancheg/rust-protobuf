@@ -144,6 +144,12 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(format!("pub enum {}", name), cb);
     }
 
+    pub fn pub_trait<F>(&mut self, name: &str, cb: F)
+        where F : Fn(&mut CodeWriter)
+    {
+        self.expr_block(format!("pub trait {}", name), cb);
+    }
+
     pub fn field_entry<S1 : AsRef<str>, S2 : AsRef<str>>(&mut self, name: S1, value: S2) {
         self.write_line(format!("{}: {},", name.as_ref(), value.as_ref()));
     }

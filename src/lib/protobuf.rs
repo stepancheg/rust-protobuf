@@ -45,18 +45,18 @@ pub mod error;
 pub mod hex;
 
 // used by rust-grpc
-pub use descriptorx::proto_path_to_rust_mod;
+pub mod descriptorx;
 
 mod zigzag;
 mod paginate;
 mod unknown;
 mod strx;
-mod descriptorx;
 mod rust;
 
 // so `use protobuf::*` could work in descriptor mod
 mod protobuf {
     pub use descriptor;
+    pub use descriptorx;
     pub use codegen;
     pub use reflect;
     pub use core::*;
