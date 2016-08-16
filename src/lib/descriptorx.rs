@@ -47,6 +47,7 @@ impl<'a> RootScope<'a> {
             .collect()
     }
 
+    // find enum by fully qualified name
     pub fn find_enum(&'a self, fqn: &str) -> EnumWithScope<'a> {
         match self.find_message_or_enum(fqn) {
             MessageOrEnumWithScope::Enum(e) => e,
@@ -54,6 +55,15 @@ impl<'a> RootScope<'a> {
         }
     }
 
+    // find message by fully qualified name
+    pub fn find_message(&'a self, fqn: &str) -> MessageWithScope<'a> {
+        match self.find_message_or_enum(fqn) {
+            MessageOrEnumWithScope::Message(m) => m,
+            _ => panic!("not a message: {}", fqn),
+        }
+    }
+
+    // find message or enum by fully qualified name
     pub fn find_message_or_enum(&'a self, fqn: &str) -> MessageOrEnumWithScope<'a> {
         assert!(fqn.starts_with("."));
         let fqn1 = &fqn[1..];
@@ -252,6 +262,13 @@ pub trait WithScope<'a> {
         let mut r = self.get_scope().rust_prefix();
         r.push_str(self.get_name());
         r
+    }
+
+    // fully-qualified name of this type
+    fn rust_fq_name(&self) -> String {
+        format!("{}::{}",
+            proto_path_to_rust_mod(self.get_scope().get_file_descriptor().get_name()),
+            self.rust_name())
     }
 }
 

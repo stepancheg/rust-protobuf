@@ -176,6 +176,10 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
+    pub fn fn_def(&mut self, sig: &str) {
+        self.write_line(format!("fn {};", sig));
+    }
+
     pub fn pub_fn<S : AsRef<str>, F>(&mut self, sig: S, cb: F)
         where F : Fn(&mut CodeWriter)
     {

@@ -379,9 +379,7 @@ fn field_type_name(field: &FieldWithContext, root_scope: &RootScope) -> RustType
                 // field type is a message or enum declared in the same file
                 message_or_enum.rust_name()
             } else {
-                format!("super::{}::{}",
-                    proto_path_to_rust_mod(message_or_enum.get_scope().get_file_descriptor().get_name()),
-                    message_or_enum.rust_name())
+                format!("super::{}", message_or_enum.rust_fq_name())
             };
         match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(rust_name),
