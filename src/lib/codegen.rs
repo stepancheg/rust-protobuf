@@ -14,6 +14,7 @@ use paginate::PaginatableIterator;
 use descriptorx::proto_path_to_rust_mod;
 use descriptorx::EnumWithScope;
 use descriptorx::MessageWithScope;
+use descriptorx::ServiceWithScope;
 use descriptorx::FieldWithContext;
 use descriptorx::OneofWithContext;
 use descriptorx::OneofVariantWithContext;
@@ -393,6 +394,21 @@ fn field_type_name(field: &FieldWithContext, root_scope: &RootScope) -> RustType
     } else {
         panic!("neither type_name, nor field_type specified for field: {}", field.field.get_name());
     }
+}
+
+fn service_method_type_name(service: &ServiceWithScope, type_name: &str, root_scope: &RootScope) -> RustType {
+    let message = root_scope.find_message(type_name);
+    let rust_name =
+        if message.get_scope().get_file_descriptor().get_name() ==
+            service.get_scope().get_file_descriptor().get_name()
+        {
+            // type is a message declared in the same file
+            message.rust_name()
+        } else {
+            format!("super::{}::{}", proto_path_to_rust_mod(message.get_scope().get_file_descriptor().get_name()), message.rust_name())
+        };
+
+    RustType::Message(rust_name)
 }
 
 #[derive(Clone,PartialEq,Eq)]
@@ -2003,6 +2019,45 @@ impl<'a> EnumGen<'a> {
 }
 
 
+struct ServiceGen<'a> {
+    service: &'a ServiceWithScope<'a>,
+    root_scope: &'a RootScope<'a>,
+    type_name: String,
+}
+
+impl<'a> ServiceGen<'a> { 
+    fn new(service: &'a ServiceWithScope<'a>, root_scope: &'a RootScope<'a>)
+        -> ServiceGen<'a>
+    {
+        ServiceGen {
+            service: service,
+            root_scope: root_scope,
+            type_name: service.rust_name(),
+        }
+    }
+
+    fn write(&self, w: &mut CodeWriter) {
+        self.write_trait(w);
+    }
+
+    fn write_trait(&self, w: &mut CodeWriter) {
+        let ref type_name = self.type_name;
+        w.pub_trait(type_name, |w| {
+            for (i, method) in self.service.methods().iter().enumerate() {
+                if i > 0 {
+                    w.write_line("");
+                }
+
+                w.write_line(format!("fn {} (req: {}) -> ::protobuf::ProtobufResult<{}>;", 
+                    method.rust_name(), 
+                    service_method_type_name(self.service, method.request_type(), self.root_scope), 
+                    service_method_type_name(self.service,method.response_type(), self.root_scope)));
+            }
+        });
+    }
+}
+
+
 fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     let fdp_bytes = file.write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
@@ -2062,6 +2117,10 @@ fn gen_file(
         for enum_type in &scope.get_enums() {
             w.write_line("");
             EnumGen::new(enum_type, file).write(&mut w);
+        }
+        for service in scope.get_services().iter() {
+            w.write_line("");
+            ServiceGen::new(service, &root_scope).write(&mut w);
         }
 
         if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {

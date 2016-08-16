@@ -4,6 +4,8 @@ use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
+use descriptor::ServiceDescriptorProto;
+use descriptor::MethodDescriptorProto;
 use descriptor::FieldDescriptorProto;
 use descriptor::OneofDescriptorProto;
 
@@ -45,6 +47,13 @@ impl<'a> RootScope<'a> {
         self.file_descriptors.iter()
             .map(|fd| FileScope { file_descriptor: fd })
             .collect()
+    }
+
+    pub fn find_message(&'a self, fqn: &str) -> MessageWithScope<'a> {
+        match self.find_message_or_enum(fqn) {
+            MessageOrEnumWithScope::Message(m) => m,
+            _ => panic!("not an message: {}", fqn),
+        }
     }
 
     pub fn find_enum(&'a self, fqn: &str) -> EnumWithScope<'a> {
@@ -163,6 +172,15 @@ impl<'a> Scope<'a> {
         }
     }
 
+    // get service descriptors in this scope
+    fn get_service_descriptors(&self) -> &'a [ServiceDescriptorProto] {
+        if self.path.is_empty() {
+            self.file_scope.file_descriptor.get_service()
+        } else {
+            ::std::default::Default::default()
+        }
+    }
+
     // get messages with attached scopes in this scope
     pub fn get_messages(&self) -> Vec<MessageWithScope<'a>> {
         self.get_message_descriptors().iter().map(|m| {
@@ -187,6 +205,18 @@ impl<'a> Scope<'a> {
     pub fn get_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
         self.get_messages().into_iter().map(|m| MessageOrEnumWithScope::Message(m))
             .chain(self.get_enums().into_iter().map(|m| MessageOrEnumWithScope::Enum(m)))
+            .collect()
+    }
+
+    pub fn get_services(&self) -> Vec<ServiceWithScope<'a>> {
+        self.get_service_descriptors()
+            .iter()
+            .map(|s| {
+                ServiceWithScope {
+                    scope: self.clone(),
+                    service: s,
+                }
+            })
             .collect()
     }
 
@@ -351,6 +381,65 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
             &MessageOrEnumWithScope::Message(ref m) => m.get_name(),
             &MessageOrEnumWithScope::Enum(ref e) => e.get_name(),
         }
+    }
+}
+
+
+#[derive(Clone)]
+pub struct ServiceWithScope<'a> {
+    pub scope: Scope<'a>,
+    pub service: &'a ServiceDescriptorProto,
+}
+
+impl<'a> ServiceWithScope<'a> {
+    // service methods
+    pub fn methods(&'a self) -> Vec<MethodWithContext<'a>> {
+        self.service
+            .get_method()
+            .iter()
+            .map(|m| {
+                MethodWithContext {
+                    method: m,
+                    service: self,
+                }
+            })
+            .collect()
+    }
+}
+
+impl<'a> WithScope<'a> for ServiceWithScope<'a> {
+    fn get_scope(&self) -> &Scope<'a> {
+        &self.scope
+    }
+
+    fn get_name(&self) -> &'a str {
+        self.service.get_name()
+    }
+}
+
+
+#[derive(Clone)]
+pub struct MethodWithContext<'a> {
+    pub method: &'a MethodDescriptorProto,
+    pub service: &'a ServiceWithScope<'a>,
+}
+
+impl<'a> MethodWithContext<'a> {
+    // method name in generated code
+    pub fn rust_name(&self) -> String {
+        if rust::is_rust_keyword(self.method.get_name()) {
+            format!("method_{}", self.method.get_name())
+        } else {
+            self.method.get_name().to_string()
+        }
+    }
+
+    pub fn request_type(&self) -> &'a str {
+        self.method.get_input_type()
+    }
+
+    pub fn response_type(&self) -> &'a str {
+        self.method.get_output_type()
     }
 }
 
