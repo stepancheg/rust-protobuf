@@ -3,6 +3,6 @@
 cd $(dirname $0)
 
 set -x
-git checkout ./plugin.rs ./lib/descriptor.rs ./lib/shrug.rs
+git checkout lib/plugin.rs lib/descriptor.rs
 
 # vim: set ts=4 sw=4 et:
