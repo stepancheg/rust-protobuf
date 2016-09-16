@@ -777,23 +777,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_element_size(&self, w: &mut CodeWriter, item_var: &str, item_var_type: &RustType, sum_var: &str) {
-        assert!(self.repeat_mode != RepeatMode::RepeatPacked);
-        match self.proto_type {
-            FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                w.write_line(format!("let len = {}.compute_size();", item_var));
-                let tag_size = self.tag_size();
-                w.write_line(format!(
-                        "{} += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                        sum_var, tag_size));
-            },
-            _ => {
-                w.write_line(format!(
-                        "{} += {};", sum_var, self.element_size(item_var, item_var_type)));
-            },
-        }
-    }
-
     // expression that returns size of data is variable
     fn element_size(&self, var: &str, var_type: &RustType) -> String {
         assert!(self.repeat_mode != RepeatMode::RepeatPacked);
@@ -888,6 +871,7 @@ impl<'a> FieldGen<'a> {
     fn write_if_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
         where F : Fn(&mut CodeWriter)
     {
+        assert!(!self.repeated);
         let self_field_is_some = self.self_field_is_some();
         w.if_stmt(self_field_is_some, cb);
     }
@@ -895,6 +879,7 @@ impl<'a> FieldGen<'a> {
     fn write_if_self_field_is_not_empty<F>(&self, w: &mut CodeWriter, cb: F)
         where F : Fn(&mut CodeWriter)
     {
+        assert!(self.repeated);
         let self_field_is_not_empty = self.self_field_is_not_empty();
         w.if_stmt(self_field_is_not_empty, cb);
     }
@@ -1006,16 +991,6 @@ impl<'a> FieldGen<'a> {
             fn_name, self.number, self.self_field())
     }
 
-    fn self_field_vec_packed_size(&self) -> String {
-        assert!(self.packed);
-        // zero is filtered outside
-        if self.is_fixed() {
-            self.self_field_vec_packed_fixed_size()
-        } else {
-            self.self_field_vec_packed_varint_size()
-        }
-    }
-
     fn self_field_oneof(&self) -> String {
         format!("self.{}", self.oneof.as_ref().unwrap().name)
     }
@@ -1105,6 +1080,72 @@ impl<'a> FieldGen<'a> {
                 });
             },
         };
+    }
+
+    fn self_field_vec_packed_size(&self) -> String {
+        assert!(self.packed);
+        // zero is filtered outside
+        if self.is_fixed() {
+            self.self_field_vec_packed_fixed_size()
+        } else {
+            self.self_field_vec_packed_varint_size()
+        }
+    }
+
+    fn write_element_size(&self, w: &mut CodeWriter, item_var: &str, item_var_type: &RustType, sum_var: &str) {
+        assert!(self.repeat_mode != RepeatMode::RepeatPacked);
+        match self.proto_type {
+            FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                w.write_line(format!("let len = {}.compute_size();", item_var));
+                let tag_size = self.tag_size();
+                w.write_line(format!(
+                        "{} += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
+                        sum_var, tag_size));
+            },
+            _ => {
+                w.write_line(format!(
+                        "{} += {};", sum_var, self.element_size(item_var, item_var_type)));
+            },
+        }
+    }
+
+    fn write_message_compute_field_size(&self, var: &str, w: &mut CodeWriter) {
+        match self.repeat_mode {
+            RepeatMode::Single | RepeatMode::RepeatRegular => {
+                match field_type_size(self.proto_type) {
+                    Some(s) => {
+                        if self.repeated {
+                            let tag_size = self.tag_size();
+                            let self_field = self.self_field();
+                            w.write_line(format!(
+                                "{} += {} * {}.len() as u32;",
+                                var,
+                                (s + tag_size) as isize,
+                                self_field));
+                        } else {
+                            self.write_if_self_field_is_some(w, |w| {
+                                let tag_size = self.tag_size();
+                                w.write_line(format!(
+                                    "{} += {};",
+                                    var,
+                                    (s + tag_size) as isize));
+                            });
+                        }
+                    },
+                    None => {
+                        self.write_for_self_field(w, "value", |w, value_type| {
+                            self.write_element_size(w, "value", value_type, var);
+                        });
+                    },
+                };
+            },
+            RepeatMode::RepeatPacked => {
+                self.write_if_self_field_is_not_empty(w, |w| {
+                    let size_expr = self.self_field_vec_packed_size();
+                    w.write_line(format!("{} += {};", var, size_expr));
+                });
+            },
+        }
     }
 
     fn write_message_field_get(&self, w: &mut CodeWriter) {
@@ -1531,40 +1572,7 @@ impl<'a> MessageGen<'a> {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");
             for field in self.fields_except_oneof_and_group() {
-                match field.repeat_mode {
-                    RepeatMode::Single | RepeatMode::RepeatRegular => {
-                        match field_type_size(field.proto_type) {
-                            Some(s) => {
-                                if field.repeated {
-                                    let tag_size = field.tag_size();
-                                    let self_field = field.self_field();
-                                    w.write_line(format!(
-                                            "my_size += {} * {}.len() as u32;",
-                                            (s + tag_size) as isize,
-                                            self_field));
-                                } else {
-                                    field.write_if_self_field_is_some(w, |w| {
-                                        let tag_size = field.tag_size();
-                                        w.write_line(format!(
-                                                "my_size += {};",
-                                                (s + tag_size) as isize));
-                                    });
-                                }
-                            },
-                            None => {
-                                field.write_for_self_field(w, "value", |w, value_type| {
-                                    field.write_element_size(w, "value", value_type, "my_size");
-                                });
-                            },
-                        };
-                    },
-                    RepeatMode::RepeatPacked => {
-                        field.write_if_self_field_is_not_empty(w, |w| {
-                            let size_expr = field.self_field_vec_packed_size();
-                            w.write_line(format!("my_size += {};", size_expr));
-                        });
-                    },
-                };
+                field.write_message_compute_field_size("my_size", w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v, vtype| {
                 variant.field.write_element_size(w, v, vtype, "my_size");
