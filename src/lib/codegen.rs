@@ -416,7 +416,8 @@ impl FieldOneofInfo {
 }
 
 #[derive(Clone)]
-struct FieldGen {
+struct FieldGen<'a> {
+    root_scope: &'a RootScope<'a>,
     proto_field: FieldDescriptorProto,
     // field name in generated code
     rust_name: String,
@@ -434,8 +435,8 @@ struct FieldGen {
     oneof: Option<FieldOneofInfo>,
 }
 
-impl FieldGen {
-    fn parse(field: &FieldWithContext, root_scope: &RootScope) -> FieldGen {
+impl<'a> FieldGen<'a> {
+    fn parse(field: &FieldWithContext, root_scope: &'a RootScope<'a>) -> FieldGen<'a> {
         let elem_type = field_type_name(field, root_scope);
         let repeated = match field.field.get_label() {
             FieldDescriptorProto_Label::LABEL_REPEATED => true,
@@ -468,6 +469,7 @@ impl FieldGen {
             _ => None,
         };
         FieldGen {
+            root_scope: root_scope,
             proto_field: field.field.clone(),
             rust_name: field.rust_name(),
             field_type: field.field.get_field_type(),
@@ -1013,6 +1015,290 @@ impl FieldGen {
         format!("clear_{}", self.rust_name)
     }
 
+    fn write_merge_from_field_message_string_bytes(&self, w: &mut CodeWriter) {
+        let singular_or_repeated = match self.repeated {
+            true  => "repeated",
+            false => "singular",
+        };
+        w.write_line(format!(
+            "try!(::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{}));",
+                singular_or_repeated,
+                protobuf_name(self.field_type),
+                self.rust_name));
+    }
+
+    fn write_merge_from_oneof(&self, w: &mut CodeWriter) {
+        w.assert_wire_type(self.wire_type);
+        // TODO: split long line
+        w.write_line(format!("self.{} = ::std::option::Option::Some({}(try!({})));",
+            self.oneof.as_ref().unwrap().name,
+            self.variant_path(),
+            self.field_type.read("is")));
+    }
+
+    fn write_merge_from_field(&self, w: &mut CodeWriter) {
+        if self.is_oneof() {
+            self.write_merge_from_oneof(w);
+        } else if self.type_is_not_trivial() {
+            self.write_merge_from_field_message_string_bytes(w);
+        } else {
+            if self.is_oneof() {
+                w.todo("oneof");
+                return;
+            }
+            let wire_type = field_type_wire_type(self.field_type);
+            let read_proc = format!("try!(is.read_{}())", protobuf_name(self.field_type));
+
+            match self.repeated {
+                false => {
+                    w.assert_wire_type(wire_type);
+                    w.write_line(format!("let tmp = {};", read_proc));
+                    self.write_self_field_assign_some(w, "tmp");
+                },
+                true => {
+                    w.write_line(format!(
+                        "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+                            protobuf_name(self.field_type),
+                            self.rust_name));
+                },
+            };
+        }
+    }
+
+    fn write_message_write_field(&self, w: &mut CodeWriter) {
+        match self.repeat_mode {
+            RepeatMode::Single => {
+                let self_field_as_option = self.self_field_as_option();
+                w.if_let_stmt("Some(v)", &self_field_as_option, |w| {
+                    let option_type = self.as_option_type();
+                    let v_type = option_type.elem_type();
+                    self.write_write_element(w, "os", "v", &v_type);
+                });
+            },
+            RepeatMode::RepeatPacked => {
+                self.write_if_self_field_is_not_empty(w, |w| {
+                    let number = self.number();
+                    w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
+                    w.comment("TODO: Data size is computed again, it should be cached");
+                    let data_size_expr = self.self_field_vec_packed_data_size();
+                    w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
+                    self.write_for_self_field(w, "v", |w, v_type| {
+                        let param_type = self.os_write_fn_param_type();
+                        let os_write_fn_suffix = self.os_write_fn_suffix();
+                        w.write_line(format!("try!(os.write_{}_no_tag({}));",
+                            os_write_fn_suffix, v_type.into_target(&param_type, "v")));
+                    });
+                });
+            },
+            RepeatMode::RepeatRegular => {
+                self.write_for_self_field(w, "v", |w, v_type| {
+                    self.write_write_element(w, "os", "v", v_type);
+                });
+            },
+        };
+    }
+
+    fn write_message_field_get(&self, w: &mut CodeWriter) {
+        let get_xxx_return_type = self.get_xxx_return_type();
+        let fn_def = format!("get_{}(&self) -> {}",  self.rust_name, get_xxx_return_type);
+
+        w.pub_fn(fn_def,
+        |w| {
+            if self.is_oneof() {
+                let self_field_oneof = self.self_field_oneof();
+                w.match_expr(self_field_oneof, |w| {
+                    let (refv, vtype) =
+                        if self.type_is_not_trivial() {
+                            ("ref v", self.elem_type.ref_type())
+                        } else {
+                            ("v", self.elem_type.clone())
+                        };
+                    w.case_expr(format!(
+                            "::std::option::Option::Some({}({}))",
+                            self.variant_path(),
+                            refv),
+                        vtype.into_target(&get_xxx_return_type, "v"));
+                    w.case_expr("_", self.get_xxx_default_value_rust());
+                });
+            } else if !self.repeated {
+                if self.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
+                    let self_field = self.self_field();
+                    let ref field_type_name = self.elem_type;
+                    w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
+                            self_field, field_type_name));
+                } else {
+                    if get_xxx_return_type.is_ref() {
+                        let self_field_as_option = self.self_field_as_option();
+                        w.match_expr(self_field_as_option, |w| {
+                            let option_type = self.as_option_type();
+                            let v_type = option_type.elem_type();
+                            let r_type = self.get_xxx_return_type();
+                            w.case_expr(
+                                "Some(v)",
+                                v_type.into_target(&r_type, "v")
+                            );
+                            let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                            w.case_expr(
+                                "None",
+                                get_xxx_default_value_rust
+                            );
+                        });
+                    } else {
+                        assert!(!self.type_is_not_trivial());
+                        let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                        let self_field = self.self_field();
+                        w.write_line(format!(
+                                "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
+                    }
+                }
+            } else {
+                let self_field = self.self_field();
+                w.write_line(format!("&{}", self_field));
+            }
+        });
+    }
+
+    fn write_message_field_has(&self, w: &mut CodeWriter) {
+        let ref name = self.rust_name;
+        w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
+            if !self.is_oneof() {
+                let self_field_is_some = self.self_field_is_some();
+                w.write_line(self_field_is_some);
+            } else {
+                let self_field_oneof = self.self_field_oneof();
+                w.match_expr(self_field_oneof, |w| {
+                    w.case_expr(format!(
+                            "::std::option::Option::Some({}(..))",
+                            self.variant_path()),
+                        "true");
+                    w.case_expr("_", "false");
+                });
+            }
+        });
+    }
+
+    fn write_message_field_set(&self, w: &mut CodeWriter) {
+        let set_xxx_param_type = self.set_xxx_param_type();
+        w.comment("Param is passed by value, moved");
+        let ref name = self.rust_name;
+        w.pub_fn(format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
+            if !self.is_oneof() {
+                self.write_self_field_assign_value(w, "v", &set_xxx_param_type);
+            } else {
+                let self_field_oneof = self.self_field_oneof();
+                w.write_line(format!("{} = ::std::option::Option::Some({}(v))",
+                    self_field_oneof, self.variant_path()));
+            }
+        });
+    }
+
+    fn write_message_field_mut_take(&self, w: &mut CodeWriter) {
+        let mut_xxx_return_type = self.mut_xxx_return_type();
+        w.comment("Mutable pointer to the field.");
+        if !self.repeated {
+            w.comment("If field is not initialized, it is initialized with default value first.");
+        }
+        let fn_def = match mut_xxx_return_type {
+            RustType::Ref(ref param) => format!("mut_{}(&mut self) -> &mut {}", self.rust_name, **param),
+            _ => panic!("not a ref: {}", mut_xxx_return_type),
+        };
+        w.pub_fn(fn_def,
+        |w| {
+            if self.is_oneof() {
+                let self_field_oneof = self.self_field_oneof();
+
+                // if oneof does not contain current field
+                w.if_let_else_stmt(&format!(
+                            "::std::option::Option::Some({}(_))",
+                            self.variant_path())[..], &self_field_oneof[..],
+                |w|
+                {
+                    // initialize it with default value
+                    w.write_line(format!(
+                        "{} = ::std::option::Option::Some({}({}));",
+                        self_field_oneof,
+                        self.variant_path(),
+                        self.element_default_value_rust()));
+                });
+
+                // extract field
+                w.match_expr(self_field_oneof, |w| {
+                    w.case_expr(format!(
+                            "::std::option::Option::Some({}(ref mut v))",
+                            self.variant_path()),
+                        "v");
+                    w.case_expr("_", "panic!()");
+                });
+            } else if !self.repeated {
+                self.write_if_self_field_is_none(w, |w| {
+                    self.write_self_field_assign_default(w);
+                });
+                let self_field = self.self_field();
+                w.write_line(format!("{}.as_mut().unwrap()", self_field));
+            } else {
+                let self_field = self.self_field();
+                w.write_line(format!("&mut {}", self_field));
+            }
+        });
+        w.write_line("");
+        w.comment("Take field");
+        let take_xxx_return_type = self.take_xxx_return_type();
+        w.pub_fn(format!("take_{}(&mut self) -> {}", self.rust_name, take_xxx_return_type), |w| {
+            if self.is_oneof() {
+                // TODO: replace with if let
+                w.write_line(format!("if self.has_{}() {{", self.rust_name));
+                w.indented(|w| {
+                    let self_field_oneof = self.self_field_oneof();
+                    w.match_expr(format!("{}.take()", self_field_oneof), |w| {
+                        w.case_expr(format!("::std::option::Option::Some({}(v))", self.variant_path()), "v");
+                        w.case_expr("_", "panic!()");
+                    });
+                });
+                w.write_line("} else {");
+                w.indented(|w| {
+                    w.write_line(self.element_default_value_rust());
+                });
+                w.write_line("}");
+            } else if !self.repeated {
+                if self.type_is_not_trivial() {
+                    w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
+                        self.rust_name, self.elem_type.default_value()));
+                } else {
+                    w.write_line(format!("self.{}.take().unwrap_or({})",
+                        self.rust_name, self.element_default_value_rust()));
+                }
+            } else {
+                w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
+                        self.rust_name,
+                        take_xxx_return_type.default_value()));
+            }
+        });
+    }
+
+    fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
+        let clear_field_func = self.clear_field_func();
+        w.pub_fn(format!("{}(&mut self)", clear_field_func), |w| {
+            self.write_clear(w);
+        });
+
+        if !self.repeated {
+            w.write_line("");
+            self.write_message_field_has(w);
+        }
+
+        w.write_line("");
+        self.write_message_field_set(w);
+
+        // mut_xxx() are pointless for primitive types
+        if self.type_is_not_trivial() || self.repeated {
+            w.write_line("");
+            self.write_message_field_mut_take(w);
+        }
+
+        w.write_line("");
+        self.write_message_field_get(w);
+    }
+
 }
 
 
@@ -1020,7 +1306,7 @@ impl FieldGen {
 struct OneofVariantGen<'a> {
     oneof: &'a OneofGen<'a>,
     variant: OneofVariantWithContext<'a>,
-    field: FieldGen,
+    field: FieldGen<'a>,
     path: String,
 }
 
@@ -1081,291 +1367,6 @@ impl<'a> OneofGen<'a> {
     }
 }
 
-
-fn write_merge_from_field_message_string_bytes(w: &mut CodeWriter, field: &FieldGen) {
-    let singular_or_repeated = match field.repeated {
-        true  => "repeated",
-        false => "singular",
-    };
-    w.write_line(format!(
-        "try!(::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{}));",
-            singular_or_repeated,
-            protobuf_name(field.field_type),
-            field.rust_name));
-}
-
-fn write_merge_from_oneof(field: &FieldGen, w: &mut CodeWriter) {
-    w.assert_wire_type(field.wire_type);
-    // TODO: split long line
-    w.write_line(format!("self.{} = ::std::option::Option::Some({}(try!({})));",
-        field.oneof.as_ref().unwrap().name,
-        field.variant_path(),
-        field.field_type.read("is")));
-}
-
-fn write_merge_from_field(w: &mut CodeWriter, field: &FieldGen) {
-    if field.is_oneof() {
-        write_merge_from_oneof(field, w);
-    } else if field.type_is_not_trivial() {
-        write_merge_from_field_message_string_bytes(w, field);
-    } else {
-        if field.is_oneof() {
-            w.todo("oneof");
-            return;
-        }
-        let wire_type = field_type_wire_type(field.field_type);
-        let read_proc = format!("try!(is.read_{}())", protobuf_name(field.field_type));
-
-        match field.repeated {
-            false => {
-                w.assert_wire_type(wire_type);
-                w.write_line(format!("let tmp = {};", read_proc));
-                field.write_self_field_assign_some(w, "tmp");
-            },
-            true => {
-                w.write_line(format!(
-                    "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
-                        protobuf_name(field.field_type),
-                        field.rust_name));
-            },
-        };
-    }
-}
-
-fn write_message_write_field(w: &mut CodeWriter, field: &FieldGen) {
-    match field.repeat_mode {
-        RepeatMode::Single => {
-            let self_field_as_option = field.self_field_as_option();
-            w.if_let_stmt("Some(v)", &self_field_as_option, |w| {
-                let option_type = field.as_option_type();
-                let v_type = option_type.elem_type();
-                field.write_write_element(w, "os", "v", &v_type);
-            });
-        },
-        RepeatMode::RepeatPacked => {
-            field.write_if_self_field_is_not_empty(w, |w| {
-                let number = field.number();
-                w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
-                w.comment("TODO: Data size is computed again, it should be cached");
-                let data_size_expr = field.self_field_vec_packed_data_size();
-                w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
-                field.write_for_self_field(w, "v", |w, v_type| {
-                    let param_type = field.os_write_fn_param_type();
-                    let os_write_fn_suffix = field.os_write_fn_suffix();
-                    w.write_line(format!("try!(os.write_{}_no_tag({}));",
-                        os_write_fn_suffix, v_type.into_target(&param_type, "v")));
-                });
-            });
-        },
-        RepeatMode::RepeatRegular => {
-            field.write_for_self_field(w, "v", |w, v_type| {
-                field.write_write_element(w, "os", "v", v_type);
-            });
-        },
-    };
-}
-
-fn write_message_field_get(w: &mut CodeWriter, field: &FieldGen) {
-    let get_xxx_return_type = field.get_xxx_return_type();
-    let fn_def = format!("get_{}(&self) -> {}",  field.rust_name, get_xxx_return_type);
-
-    w.pub_fn(fn_def,
-    |w| {
-        if field.is_oneof() {
-            let self_field_oneof = field.self_field_oneof();
-            w.match_expr(self_field_oneof, |w| {
-                let (refv, vtype) =
-                    if field.type_is_not_trivial() {
-                        ("ref v", field.elem_type.ref_type())
-                    } else {
-                        ("v", field.elem_type.clone())
-                    };
-                w.case_expr(format!(
-                        "::std::option::Option::Some({}({}))",
-                        field.variant_path(),
-                        refv),
-                    vtype.into_target(&get_xxx_return_type, "v"));
-                w.case_expr("_", field.get_xxx_default_value_rust());
-            });
-        } else if !field.repeated {
-            if field.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                let self_field = field.self_field();
-                let ref field_type_name = field.elem_type;
-                w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
-                        self_field, field_type_name));
-            } else {
-                if get_xxx_return_type.is_ref() {
-                    let self_field_as_option = field.self_field_as_option();
-                    w.match_expr(self_field_as_option, |w| {
-                        let option_type = field.as_option_type();
-                        let v_type = option_type.elem_type();
-                        let r_type = field.get_xxx_return_type();
-                        w.case_expr(
-                            "Some(v)",
-                            v_type.into_target(&r_type, "v")
-                        );
-                        let get_xxx_default_value_rust = field.get_xxx_default_value_rust();
-                        w.case_expr(
-                            "None",
-                            get_xxx_default_value_rust
-                        );
-                    });
-                } else {
-                    assert!(!field.type_is_not_trivial());
-                    let get_xxx_default_value_rust = field.get_xxx_default_value_rust();
-                    let self_field = field.self_field();
-                    w.write_line(format!(
-                            "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
-                }
-            }
-        } else {
-            let self_field = field.self_field();
-            w.write_line(format!("&{}", self_field));
-        }
-    });
-}
-
-fn write_message_field_has(w: &mut CodeWriter, field: &FieldGen) {
-    let ref name = field.rust_name;
-    w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
-        if !field.is_oneof() {
-            let self_field_is_some = field.self_field_is_some();
-            w.write_line(self_field_is_some);
-        } else {
-            let self_field_oneof = field.self_field_oneof();
-            w.match_expr(self_field_oneof, |w| {
-                w.case_expr(format!(
-                        "::std::option::Option::Some({}(..))",
-                        field.variant_path()),
-                    "true");
-                w.case_expr("_", "false");
-            });
-        }
-    });
-}
-
-fn write_message_field_set(w: &mut CodeWriter, field: &FieldGen) {
-    let set_xxx_param_type = field.set_xxx_param_type();
-    w.comment("Param is passed by value, moved");
-    let ref name = field.rust_name;
-    w.pub_fn(format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
-        if !field.is_oneof() {
-            field.write_self_field_assign_value(w, "v", &set_xxx_param_type);
-        } else {
-            let self_field_oneof = field.self_field_oneof();
-            w.write_line(format!("{} = ::std::option::Option::Some({}(v))",
-                self_field_oneof, field.variant_path()));
-        }
-    });
-}
-
-fn write_message_field_mut_take(w: &mut CodeWriter, field: &FieldGen) {
-    let mut_xxx_return_type = field.mut_xxx_return_type();
-    w.comment("Mutable pointer to the field.");
-    if !field.repeated {
-        w.comment("If field is not initialized, it is initialized with default value first.");
-    }
-    let fn_def = match mut_xxx_return_type {
-        RustType::Ref(ref param) => format!("mut_{}(&mut self) -> &mut {}", field.rust_name, **param),
-        _ => panic!("not a ref: {}", mut_xxx_return_type),
-    };
-    w.pub_fn(fn_def,
-    |w| {
-        if field.is_oneof() {
-            let self_field_oneof = field.self_field_oneof();
-
-            // if oneof does not contain current field
-            w.if_let_else_stmt(&format!(
-                        "::std::option::Option::Some({}(_))",
-                        field.variant_path())[..], &self_field_oneof[..],
-            |w|
-            {
-                // initialize it with default value
-                w.write_line(format!(
-                    "{} = ::std::option::Option::Some({}({}));",
-                    self_field_oneof,
-                    field.variant_path(),
-                    field.element_default_value_rust()));
-            });
-
-            // extract field
-            w.match_expr(self_field_oneof, |w| {
-                w.case_expr(format!(
-                        "::std::option::Option::Some({}(ref mut v))",
-                        field.variant_path()),
-                    "v");
-                w.case_expr("_", "panic!()");
-            });
-        } else if !field.repeated {
-            field.write_if_self_field_is_none(w, |w| {
-                field.write_self_field_assign_default(w);
-            });
-            let self_field = field.self_field();
-            w.write_line(format!("{}.as_mut().unwrap()", self_field));
-        } else {
-            let self_field = field.self_field();
-            w.write_line(format!("&mut {}", self_field));
-        }
-    });
-    w.write_line("");
-    w.comment("Take field");
-    let take_xxx_return_type = field.take_xxx_return_type();
-    w.pub_fn(format!("take_{}(&mut self) -> {}", field.rust_name, take_xxx_return_type), |w| {
-        if field.is_oneof() {
-            // TODO: replace with if let
-            w.write_line(format!("if self.has_{}() {{", field.rust_name));
-            w.indented(|w| {
-                let self_field_oneof = field.self_field_oneof();
-                w.match_expr(format!("{}.take()", self_field_oneof), |w| {
-                    w.case_expr(format!("::std::option::Option::Some({}(v))", field.variant_path()), "v");
-                    w.case_expr("_", "panic!()");
-                });
-            });
-            w.write_line("} else {");
-            w.indented(|w| {
-                w.write_line(field.element_default_value_rust());
-            });
-            w.write_line("}");
-        } else if !field.repeated {
-            if field.type_is_not_trivial() {
-                w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
-                    field.rust_name, field.elem_type.default_value()));
-            } else {
-                w.write_line(format!("self.{}.take().unwrap_or({})",
-                    field.rust_name, field.element_default_value_rust()));
-            }
-        } else {
-            w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
-                    field.rust_name,
-                    take_xxx_return_type.default_value()));
-        }
-    });
-}
-
-fn write_message_single_field_accessors(w: &mut CodeWriter, field: &FieldGen) {
-    let clear_field_func = field.clear_field_func();
-    w.pub_fn(format!("{}(&mut self)", clear_field_func), |w| {
-        field.write_clear(w);
-    });
-
-    if !field.repeated {
-        w.write_line("");
-        write_message_field_has(w, field);
-    }
-
-    w.write_line("");
-    write_message_field_set(w, field);
-
-    // mut_xxx() are pointless for primitive types
-    if field.type_is_not_trivial() || field.repeated {
-        w.write_line("");
-        write_message_field_mut_take(w, field);
-    }
-
-    w.write_line("");
-    write_message_field_get(w, field);
-}
-
 fn write_message_oneof(oneof: &OneofGen, w: &mut CodeWriter) {
     let mut derive = vec!["Clone", "PartialEq"];
     if false /* lite_runtime */ {
@@ -1384,7 +1385,7 @@ struct MessageGen<'a> {
     message: &'a MessageWithScope<'a>,
     root_scope: &'a RootScope<'a>,
     type_name: String,
-    fields: Vec<FieldGen>,
+    fields: Vec<FieldGen<'a>>,
     lite_runtime: bool,
 }
 
@@ -1464,7 +1465,7 @@ impl<'a> MessageGen<'a> {
         w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
             // To have access to its methods but not polute the name space.
             for f in self.fields_except_oneof_and_group() {
-                write_message_write_field(w, f);
+                f.write_message_write_field(w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
                 variant.field.write_write_element(w, "os", v, v_type);
@@ -1560,7 +1561,7 @@ impl<'a> MessageGen<'a> {
             let reconstruct_def = f.reconstruct_def();
             w.comment(&(reconstruct_def + ";"));
             w.write_line("");
-            write_message_single_field_accessors(w, f);
+            f.write_message_single_field_accessors(w);
         }
     }
 
@@ -1594,7 +1595,7 @@ impl<'a> MessageGen<'a> {
                     for f in &self.fields_except_group() {
                         let number = f.number;
                         w.case_block(number.to_string(), |w| {
-                            write_merge_from_field(w, f);
+                            f.write_merge_from_field(w);
                         });
                     }
                     w.case_block("_", |w| {

@@ -84,6 +84,23 @@ impl<'a> RootScope<'a> {
 }
 
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum Syntax {
+    PROTO2,
+    PROTO3,
+}
+
+impl Syntax {
+    pub fn parse(s: &str) -> Self {
+        match s {
+            "proto2" => Syntax::PROTO2,
+            "proto3" => Syntax::PROTO3,
+            _ => panic!("unsupported syntax value: {:?}", s),
+        }
+    }
+}
+
+
 #[derive(Clone)]
 pub struct FileScope<'a> {
     pub file_descriptor: &'a FileDescriptorProto,
@@ -92,6 +109,10 @@ pub struct FileScope<'a> {
 impl<'a> FileScope<'a> {
     fn get_package(&self) -> &'a str {
         self.file_descriptor.get_package()
+    }
+
+    pub fn syntax(&self) -> Syntax {
+        Syntax::parse(self.file_descriptor.get_syntax())
     }
 
     pub fn to_scope(&self) -> Scope<'a> {
