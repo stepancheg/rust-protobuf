@@ -80,4 +80,3 @@ Have a look at generated files, used internally in rust-protobuf:
 * Deal better with namespaces
 * Protobuf reflection
 * Extensions
-* Generate stubs for services
