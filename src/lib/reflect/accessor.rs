@@ -365,6 +365,24 @@ pub fn make_singular_u32_accessor<M : Message + 'static>(
     })
 }
 
+fn const_true<T>(_: &T) -> bool {
+    true
+}
+
+pub fn make_singular_u32_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> u32,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
+            get: SingularGet::U32(get),
+        },
+    })
+}
+
 pub fn make_singular_i32_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
@@ -375,6 +393,20 @@ pub fn make_singular_i32_accessor<M : Message + 'static>(
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
+            get: SingularGet::I32(get),
+        },
+    })
+}
+
+pub fn make_singular_i32_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> i32,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
             get: SingularGet::I32(get),
         },
     })
@@ -395,6 +427,20 @@ pub fn make_singular_u64_accessor<M : Message + 'static>(
     })
 }
 
+pub fn make_singular_u64_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> u64,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
+            get: SingularGet::U64(get),
+        },
+    })
+}
+
 pub fn make_singular_i64_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
@@ -405,6 +451,20 @@ pub fn make_singular_i64_accessor<M : Message + 'static>(
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
+            get: SingularGet::I64(get),
+        },
+    })
+}
+
+pub fn make_singular_i64_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> i64,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
             get: SingularGet::I64(get),
         },
     })
@@ -425,6 +485,20 @@ pub fn make_singular_f32_accessor<M : Message + 'static>(
     })
 }
 
+pub fn make_singular_f32_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> f32,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
+            get: SingularGet::F32(get),
+        },
+    })
+}
+
 pub fn make_singular_f64_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
@@ -435,6 +509,20 @@ pub fn make_singular_f64_accessor<M : Message + 'static>(
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
+            get: SingularGet::F64(get),
+        },
+    })
+}
+
+pub fn make_singular_f64_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> f64,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
             get: SingularGet::F64(get),
         },
     })
@@ -451,6 +539,53 @@ pub fn make_singular_bool_accessor<M : Message + 'static>(
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::Bool(get),
+        },
+    })
+}
+
+pub fn make_singular_bool_accessor_proto3<M : Message + 'static>(
+        name: &'static str,
+        get: fn(&M) -> bool,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
+            get: SingularGet::Bool(get),
+        },
+    })
+}
+
+pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
+        name: &'static str,
+        has: fn(&M) -> bool,
+        get: fn(&M) -> E,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: has,
+            get: SingularGet::Enum(
+                Box::new(GetSingularEnumImpl { get: get }),
+            ),
+        },
+    })
+}
+
+pub fn make_singular_enum_accessor_proto3<M : Message + 'static, E : ProtobufEnum + 'static>(
+        name: &'static str,
+        get: fn(&M) -> E,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
+            get: SingularGet::Enum(
+                Box::new(GetSingularEnumImpl { get: get }),
+            ),
         },
     })
 }
@@ -481,23 +616,6 @@ pub fn make_singular_bytes_accessor<M : Message + 'static>(
         fns: FieldAccessorFunctions::Singular {
             has: has,
             get: SingularGet::Bytes(get),
-        },
-    })
-}
-
-pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
-        name: &'static str,
-        has: fn(&M) -> bool,
-        get: fn(&M) -> E,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: has,
-            get: SingularGet::Enum(
-                Box::new(GetSingularEnumImpl { get: get }),
-            ),
         },
     })
 }

@@ -20,6 +20,7 @@ use descriptorx::OneofVariantWithContext;
 use descriptorx::FileScope;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
+use descriptorx::Syntax;
 
 fn escape_default(s: &str) -> String {
     s.chars().flat_map(|c| c.escape_default()).collect()
@@ -418,6 +419,7 @@ impl FieldOneofInfo {
 #[derive(Clone)]
 struct FieldGen<'a> {
     root_scope: &'a RootScope<'a>,
+    syntax: Syntax,
     proto_field: FieldDescriptorProto,
     // field name in generated code
     rust_name: String,
@@ -470,6 +472,7 @@ impl<'a> FieldGen<'a> {
         };
         FieldGen {
             root_scope: root_scope,
+            syntax: field.message.get_scope().file_scope.syntax(),
             proto_field: field.field.clone(),
             rust_name: field.rust_name(),
             field_type: field.field.get_field_type(),
@@ -746,13 +749,19 @@ impl<'a> FieldGen<'a> {
             &RustType::Message(..)                    => "message".to_string(),
             t => panic!("unexpected field type: {}", t),
         };
-        format!("make_{}_{}_accessor", repeated_or_signular, suffix)
+
+        let proto3 = match self.syntax == Syntax::PROTO3 && !self.repeated && !self.type_is_not_trivial() {
+            true  => "_proto3",
+            false => "",
+        };
+
+        format!("make_{}_{}_accessor{}", repeated_or_signular, suffix, proto3)
     }
 
     // accessor function function params
     fn make_accessor_fn_fn_params(&self) -> Vec<&'static str> {
         let mut r = Vec::new();
-        if !self.repeated {
+        if self.has_has() {
             r.push("has");
         }
         r.push("get");
@@ -1158,9 +1167,20 @@ impl<'a> FieldGen<'a> {
         });
     }
 
+    fn has_has(&self) -> bool {
+        if self.repeated {
+            false
+        } else {
+            self.syntax == Syntax::PROTO2 || self.type_is_not_trivial()
+        }
+    }
+
+    fn has_name(&self) -> String {
+        format!("has_{}", self.rust_name)
+    }
+
     fn write_message_field_has(&self, w: &mut CodeWriter) {
-        let ref name = self.rust_name;
-        w.pub_fn(format!("has_{}(&self) -> bool", name), |w| {
+        w.pub_fn(format!("{}(&self) -> bool", self.has_name()), |w| {
             if !self.is_oneof() {
                 let self_field_is_some = self.self_field_is_some();
                 w.write_line(self_field_is_some);
@@ -1246,7 +1266,7 @@ impl<'a> FieldGen<'a> {
         w.pub_fn(format!("take_{}(&mut self) -> {}", self.rust_name, take_xxx_return_type), |w| {
             if self.is_oneof() {
                 // TODO: replace with if let
-                w.write_line(format!("if self.has_{}() {{", self.rust_name));
+                w.write_line(format!("if self.{}() {{", self.has_name()));
                 w.indented(|w| {
                     let self_field_oneof = self.self_field_oneof();
                     w.match_expr(format!("{}.take()", self_field_oneof), |w| {
@@ -1281,7 +1301,7 @@ impl<'a> FieldGen<'a> {
             self.write_clear(w);
         });
 
-        if !self.repeated {
+        if self.has_has() {
             w.write_line("");
             self.write_message_field_has(w);
         }
