@@ -7,8 +7,10 @@ tmp*
 *.rlib
 *.bin
 *.so
-src/test/pb_*
-src/test/lib
+src/test2/pb_*
+src/test2/lib
+src/test3/pb_*
+src/test3/lib
 protobuf-bin-gen-rust
 protoc-gen-rust
 shrug.rs
