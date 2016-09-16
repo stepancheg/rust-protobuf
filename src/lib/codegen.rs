@@ -423,7 +423,7 @@ struct FieldGen<'a> {
     proto_field: FieldDescriptorProto,
     // field name in generated code
     rust_name: String,
-    field_type: FieldDescriptorProto_Type,
+    proto_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     /// Rust type for field collection element,
     /// i. e. collection element type for repeated
@@ -475,7 +475,7 @@ impl<'a> FieldGen<'a> {
             syntax: field.message.get_scope().file_scope.syntax(),
             proto_field: field.field.clone(),
             rust_name: field.rust_name(),
-            field_type: field.field.get_field_type(),
+            proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             elem_type: elem_type,
             enum_default_value: enum_default_value,
@@ -518,10 +518,10 @@ impl<'a> FieldGen<'a> {
                 RustType::Vec(c)
             }
         } else {
-            if self.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
+            if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
                 RustType::SingularPtrField(c)
-            } else if self.field_type == FieldDescriptorProto_Type::TYPE_STRING ||
-                    self.field_type == FieldDescriptorProto_Type::TYPE_BYTES
+            } else if self.proto_type == FieldDescriptorProto_Type::TYPE_STRING ||
+                    self.proto_type == FieldDescriptorProto_Type::TYPE_BYTES
             {
                 RustType::SingularField(c)
             } else {
@@ -537,7 +537,7 @@ impl<'a> FieldGen<'a> {
 
     // suffix `xxx` as in `os.write_xxx_no_tag(..)`
     fn os_write_fn_suffix(&self) -> &str {
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => "message",
             FieldDescriptorProto_Type::TYPE_ENUM    => "enum",
             ty => protobuf_name(ty),
@@ -546,7 +546,7 @@ impl<'a> FieldGen<'a> {
 
     // type of `v` in `os.write_xxx_no_tag(v)`
     fn os_write_fn_param_type(&self) -> RustType {
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_STRING =>
                 RustType::Ref(Box::new(RustType::Str)),
             FieldDescriptorProto_Type::TYPE_BYTES  =>
@@ -614,12 +614,12 @@ impl<'a> FieldGen<'a> {
 
     // fixed size type?
     fn is_fixed(&self) -> bool {
-        field_type_size(self.field_type).is_some()
+        field_type_size(self.proto_type).is_some()
     }
 
     // must use zigzag encoding?
     fn is_zigzag(&self) -> bool {
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_SINT32 |
             FieldDescriptorProto_Type::TYPE_SINT64 => true,
             _ => false,
@@ -628,7 +628,7 @@ impl<'a> FieldGen<'a> {
 
     // data is enum
     fn is_enum(&self) -> bool {
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_ENUM => true,
             _ => false,
         }
@@ -636,7 +636,7 @@ impl<'a> FieldGen<'a> {
 
     // data is stored in heap
     fn type_is_not_trivial(&self) -> bool {
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE |
             FieldDescriptorProto_Type::TYPE_STRING |
             FieldDescriptorProto_Type::TYPE_BYTES => true,
@@ -645,7 +645,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn defaut_value_from_proto_float(&self) -> String {
-        let type_name = match self.field_type {
+        let type_name = match self.proto_type {
             FieldDescriptorProto_Type::TYPE_FLOAT  => "f32",
             FieldDescriptorProto_Type::TYPE_DOUBLE => "f64",
             _ => unreachable!()
@@ -677,7 +677,7 @@ impl<'a> FieldGen<'a> {
             Some(self.enum_default_value.as_ref().unwrap().rust_name_outer())
         } else if self.proto_field.has_default_value() {
             let proto_default = self.proto_field.get_default_value();
-            Some(match self.field_type {
+            Some(match self.proto_type {
                 // For numeric types, contains the original text representation of the value
                 FieldDescriptorProto_Type::TYPE_DOUBLE   |
                 FieldDescriptorProto_Type::TYPE_FLOAT    => self.defaut_value_from_proto_float(),
@@ -702,7 +702,7 @@ impl<'a> FieldGen<'a> {
                 FieldDescriptorProto_Type::TYPE_GROUP    |
                 FieldDescriptorProto_Type::TYPE_ENUM     => unreachable!(),
                 FieldDescriptorProto_Type::TYPE_MESSAGE  =>
-                    panic!("default value is not implemented for type: {:?}", self.field_type)
+                    panic!("default value is not implemented for type: {:?}", self.proto_type)
             })
         } else {
             None
@@ -779,7 +779,7 @@ impl<'a> FieldGen<'a> {
 
     fn write_element_size(&self, w: &mut CodeWriter, item_var: &str, item_var_type: &RustType, sum_var: &str) {
         assert!(self.repeat_mode != RepeatMode::RepeatPacked);
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
                 w.write_line(format!("let len = {}.compute_size();", item_var));
                 let tag_size = self.tag_size();
@@ -797,12 +797,12 @@ impl<'a> FieldGen<'a> {
     // expression that returns size of data is variable
     fn element_size(&self, var: &str, var_type: &RustType) -> String {
         assert!(self.repeat_mode != RepeatMode::RepeatPacked);
-        match field_type_size(self.field_type) {
+        match field_type_size(self.proto_type) {
             Some(data_size) => {
                 format!("{}", data_size + self.tag_size())
             },
             None => {
-                match self.field_type {
+                match self.proto_type {
                     FieldDescriptorProto_Type::TYPE_MESSAGE => panic!("not a single-liner"),
                     FieldDescriptorProto_Type::TYPE_BYTES => {
                         format!("::protobuf::rt::bytes_size({}, &{})", self.number as isize, var)
@@ -823,7 +823,7 @@ impl<'a> FieldGen<'a> {
                             &RustType::Ref(ref t) => (**t).clone(),
                             t => t.clone(),
                         };
-                        if self.field_type.is_s_varint() {
+                        if self.proto_type.is_s_varint() {
                             format!("::protobuf::rt::value_varint_zigzag_size({}, {})",
                                     self.number, var_type.into_target(&param_type, var))
                         } else {
@@ -839,7 +839,7 @@ impl<'a> FieldGen<'a> {
     // output code that writes single element to stream
     fn write_write_element(&self, w: &mut CodeWriter, os: &str, var: &str, ty: &RustType) {
         assert!(self.repeat_mode != RepeatMode::RepeatPacked);
-        match self.field_type {
+        match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
                 w.write_line(format!("try!({}.write_tag({}, ::protobuf::wire_format::{:?}));",
                         os, self.number, wire_format::WireTypeLengthDelimited));
@@ -961,7 +961,7 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_fixed_data_size(&self) -> String {
         assert!(self.is_fixed());
         format!("({}.len() * {}) as u32",
-            self.self_field(), field_type_size(self.field_type).unwrap())
+            self.self_field(), field_type_size(self.proto_type).unwrap())
     }
 
     fn self_field_vec_packed_varint_data_size(&self) -> String {
@@ -1031,9 +1031,9 @@ impl<'a> FieldGen<'a> {
         };
         w.write_line(format!(
             "try!(::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{}));",
-                singular_or_repeated,
-                protobuf_name(self.field_type),
-                self.rust_name));
+            singular_or_repeated,
+            protobuf_name(self.proto_type),
+            self.rust_name));
     }
 
     fn write_merge_from_oneof(&self, w: &mut CodeWriter) {
@@ -1042,7 +1042,7 @@ impl<'a> FieldGen<'a> {
         w.write_line(format!("self.{} = ::std::option::Option::Some({}(try!({})));",
             self.oneof.as_ref().unwrap().name,
             self.variant_path(),
-            self.field_type.read("is")));
+            self.proto_type.read("is")));
     }
 
     fn write_merge_from_field(&self, w: &mut CodeWriter) {
@@ -1055,8 +1055,8 @@ impl<'a> FieldGen<'a> {
                 w.todo("oneof");
                 return;
             }
-            let wire_type = field_type_wire_type(self.field_type);
-            let read_proc = format!("try!(is.read_{}())", protobuf_name(self.field_type));
+            let wire_type = field_type_wire_type(self.proto_type);
+            let read_proc = format!("try!(is.read_{}())", protobuf_name(self.proto_type));
 
             match self.repeated {
                 false => {
@@ -1067,8 +1067,8 @@ impl<'a> FieldGen<'a> {
                 true => {
                     w.write_line(format!(
                         "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
-                            protobuf_name(self.field_type),
-                            self.rust_name));
+                        protobuf_name(self.proto_type),
+                        self.rust_name));
                 },
             };
         }
@@ -1130,7 +1130,7 @@ impl<'a> FieldGen<'a> {
                     w.case_expr("_", self.get_xxx_default_value_rust());
                 });
             } else if !self.repeated {
-                if self.field_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
+                if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
                     let self_field = self.self_field();
                     let ref field_type_name = self.elem_type;
                     w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
@@ -1447,13 +1447,13 @@ impl<'a> MessageGen<'a> {
 
     fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
-            .filter(|f| f.field_type != FieldDescriptorProto_Type::TYPE_GROUP)
+            .filter(|f| f.proto_type != FieldDescriptorProto_Type::TYPE_GROUP)
             .collect()
     }
 
     fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
-            .filter(|f| !f.is_oneof() && f.field_type != FieldDescriptorProto_Type::TYPE_GROUP)
+            .filter(|f| !f.is_oneof() && f.proto_type != FieldDescriptorProto_Type::TYPE_GROUP)
             .collect()
     }
 
@@ -1533,7 +1533,7 @@ impl<'a> MessageGen<'a> {
             for field in self.fields_except_oneof_and_group() {
                 match field.repeat_mode {
                     RepeatMode::Single | RepeatMode::RepeatRegular => {
-                        match field_type_size(field.field_type) {
+                        match field_type_size(field.proto_type) {
                             Some(s) => {
                                 if field.repeated {
                                     let tag_size = field.tag_size();
@@ -1756,7 +1756,7 @@ impl<'a> MessageGen<'a> {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
-                    if field.field_type == FieldDescriptorProto_Type::TYPE_GROUP {
+                    if field.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
                         w.comment(&format!("{}: <group>", &field.rust_name));
                     } else {
                         w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
