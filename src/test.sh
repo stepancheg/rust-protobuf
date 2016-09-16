@@ -5,14 +5,25 @@ cargo build
 where_am_i=$(cd `dirname $0`/..; pwd)
 PATH="$where_am_i/target/debug:$PATH"
 
-rm -f test2/pb_*
+run_test() {
+    name=$1
+    rm -f $name/pb_*
 
-protoc --rust_out test2 test2-proto/pb_basic.proto
-protoc --rust_out test2 test2-proto/pb_test-sanitize-file-name.proto
-protoc --rust_out test2 test2-proto/pb_text_format_test_data.proto
-protoc --rust_out test2 -I test2-proto test2-proto/pb_test_*.proto
+    protoc --rust_out $name -I $name-proto $name-proto/*.proto
 
-cd test2
+    (
+        cd $name
 
-rustc --test -L ../../target/debug lib.rs
-./lib
+        rustc --test -L ../../target/debug lib.rs
+        ./lib
+    )
+}
+
+run_test test2
+
+protoc_ver=$(protoc --version)
+case "$protoc_ver" in
+    "libprotoc 3"*) run_test test3 ;;
+    *) echo "skipping tests for protobuf 3, because protoc version is ${protoc_ver}" ;;
+esac
+
