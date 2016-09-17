@@ -8,6 +8,7 @@ tmp*
 *.bin
 *.so
 src/test/v*/pb_*.rs
+src/test/v*/*_pb.rs
 src/test/lib
 protobuf-bin-gen-rust
 protoc-gen-rust

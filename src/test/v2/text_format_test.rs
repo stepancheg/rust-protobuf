@@ -1,6 +1,6 @@
 use std::default::Default;
 
-use super::pb_text_format_test_data::*;
+use super::text_format_test_data_pb::*;
 
 use protobuf::text_format::print_to_string;
 

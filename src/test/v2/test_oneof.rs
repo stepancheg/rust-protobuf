@@ -1,6 +1,6 @@
 use test::*;
 
-use super::pb_test_oneof_proto::*;
+use super::test_oneof_pb::*;
 
 #[test]
 fn test_simple() {

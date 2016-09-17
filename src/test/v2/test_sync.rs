@@ -4,7 +4,7 @@ use std::sync::Arc;
 use protobuf::CodedInputStream;
 use protobuf::Message;
 
-use super::pb_basic::*;
+use super::test_basic_pb::*;
 
 // test messages are sync
 #[test]

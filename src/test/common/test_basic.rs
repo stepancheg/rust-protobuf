@@ -4,7 +4,7 @@ use protobuf::*;
 
 use test::*;
 
-use super::pb_basic::*;
+use super::test_basic_pb::*;
 
 #[test]
 fn test1() {
@@ -150,7 +150,7 @@ fn test_types_repeated_packed() {
 fn test_file_descriptor_proto() {
     let p: &'static descriptor::FileDescriptorProto = file_descriptor_proto();
     assert!(p.has_name());
-    assert_eq!("pb_basic.proto", p.get_name());
+    assert_eq!("test_basic_pb.proto", p.get_name());
 }
 
 #[test]

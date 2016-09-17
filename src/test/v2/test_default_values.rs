@@ -1,7 +1,7 @@
 use std::f32;
 use std::f64;
 
-use super::pb_test_default_values::*;
+use super::test_default_values_pb::*;
 
 #[test]
 fn test_default_value_simple() {

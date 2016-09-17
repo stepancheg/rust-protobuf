@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-import "pb_test_import_root_imported.proto";
+import "test_import_root_imported_pb.proto";
 
 message ContainsImported {
     optional ImportedMessage imported_message = 1;

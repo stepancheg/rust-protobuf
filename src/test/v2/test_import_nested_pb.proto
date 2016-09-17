@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-import "pb_test_import_nested_imported.proto";
+import "test_import_nested_imported_pb.proto";
 
 message ContainsImportedNested {
     optional ContainerForNested.NestedMessage m = 1;

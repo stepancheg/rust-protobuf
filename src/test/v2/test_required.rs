@@ -1,6 +1,6 @@
 use protobuf::*;
 
-use super::pb_test_required::*;
+use super::test_required_pb::*;
 
 
 #[test]

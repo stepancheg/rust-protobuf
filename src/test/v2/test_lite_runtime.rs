@@ -1,10 +1,10 @@
 use test::*;
 
-use super::pb_test_lite_runtime;
+use super::test_lite_runtime_pb::*;
 
 #[test]
 fn test_lite_runtime() {
-    let mut m = pb_test_lite_runtime::TestLiteRuntime::new();
+    let mut m = TestLiteRuntime::new();
     m.set_v(10);
     test_serialize_deserialize("08 0a", &m);
 
