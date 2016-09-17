@@ -177,8 +177,8 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         for value in &self.file_to_generate {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        for value in &self.parameter {
-            my_size += ::protobuf::rt::string_size(2, &value);
+        if let Some(v) = self.parameter.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
         };
         for value in &self.proto_file {
             let len = value.compute_size();
@@ -414,8 +414,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.error {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.error.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
         for value in &self.file {
             let len = value.compute_size();
@@ -694,14 +694,14 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.insertion_point {
-            my_size += ::protobuf::rt::string_size(2, &value);
+        if let Some(v) = self.insertion_point.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
         };
-        for value in &self.content {
-            my_size += ::protobuf::rt::string_size(15, &value);
+        if let Some(v) = self.content.as_ref() {
+            my_size += ::protobuf::rt::string_size(15, &v);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);

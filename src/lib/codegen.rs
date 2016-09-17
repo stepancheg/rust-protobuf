@@ -512,7 +512,7 @@ impl<'a> FieldGen<'a> {
         }
         let c = Box::new(self.elem_type.clone());
         if self.repeated {
-            if self.type_is_not_trivial() {
+            if !self.elem_type_is_copy() {
                 RustType::RepeatedField(c)
             } else {
                 RustType::Vec(c)
@@ -584,9 +584,9 @@ impl<'a> FieldGen<'a> {
     fn get_xxx_return_type(&self) -> RustType {
         match self.repeated {
             true => RustType::Ref(Box::new(RustType::Slice(Box::new(self.elem_type.clone())))),
-            false => match self.type_is_not_trivial() {
-                true => self.elem_type.ref_type(),
-                false => self.elem_type.clone(),
+            false => match self.elem_type_is_copy() {
+                true  => self.elem_type.clone(),
+                false => self.elem_type.ref_type(),
             }
         }
     }
@@ -634,13 +634,13 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    // data is stored in heap
-    fn type_is_not_trivial(&self) -> bool {
+    // elem data is not stored in heap
+    fn elem_type_is_copy(&self) -> bool {
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE |
             FieldDescriptorProto_Type::TYPE_STRING |
-            FieldDescriptorProto_Type::TYPE_BYTES => true,
-            _ => false,
+            FieldDescriptorProto_Type::TYPE_BYTES => false,
+            _ => true,
         }
     }
 
@@ -750,7 +750,7 @@ impl<'a> FieldGen<'a> {
             t => panic!("unexpected field type: {}", t),
         };
 
-        let proto3 = match self.syntax == Syntax::PROTO3 && !self.repeated && !self.type_is_not_trivial() {
+        let proto3 = match self.syntax == Syntax::PROTO3 && !self.repeated && self.elem_type_is_copy() {
             true  => "_proto3",
             false => "",
         };
@@ -868,12 +868,16 @@ impl<'a> FieldGen<'a> {
         format!("{}{}", self.self_field(), self.as_option())
     }
 
-    fn write_if_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
-        where F : Fn(&mut CodeWriter)
+    fn write_if_let_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
+        where F : Fn(&str, &RustType, &mut CodeWriter)
     {
         assert!(!self.repeated);
-        let self_field_is_some = self.self_field_is_some();
-        w.if_stmt(self_field_is_some, cb);
+        let var = "v";
+        w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
+            let option_type = self.as_option_type();
+            let v_type = option_type.elem_type();
+            cb(var, &v_type, w);
+        });
     }
 
     fn write_if_self_field_is_not_empty<F>(&self, w: &mut CodeWriter, cb: F)
@@ -891,6 +895,7 @@ impl<'a> FieldGen<'a> {
         w.if_stmt(self_field_is_none, cb)
     }
 
+    // repeated or singular
     fn write_for_self_field<F>(&self, w: &mut CodeWriter, varn: &str, cb: F)
         where F : Fn(&mut CodeWriter, &RustType)
     {
@@ -921,7 +926,7 @@ impl<'a> FieldGen<'a> {
                 // TODO: default from .proto is not needed here
                 self.element_default_value_rust()));
         } else {
-            if self.type_is_not_trivial() {
+            if !self.elem_type_is_copy() {
                 let self_field = self.self_field();
                 w.write_line(format!("{}.set_default();", self_field));
             } else {
@@ -1023,7 +1028,7 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_field(&self, w: &mut CodeWriter) {
         if self.is_oneof() {
             self.write_merge_from_oneof(w);
-        } else if self.type_is_not_trivial() {
+        } else if !self.elem_type_is_copy() {
             self.write_merge_from_field_message_string_bytes(w);
         } else {
             if self.is_oneof() {
@@ -1047,39 +1052,6 @@ impl<'a> FieldGen<'a> {
                 },
             };
         }
-    }
-
-    fn write_message_write_field(&self, w: &mut CodeWriter) {
-        match self.repeat_mode {
-            RepeatMode::Single => {
-                let self_field_as_option = self.self_field_as_option();
-                w.if_let_stmt("Some(v)", &self_field_as_option, |w| {
-                    let option_type = self.as_option_type();
-                    let v_type = option_type.elem_type();
-                    self.write_write_element(w, "os", "v", &v_type);
-                });
-            },
-            RepeatMode::RepeatPacked => {
-                self.write_if_self_field_is_not_empty(w, |w| {
-                    let number = self.number();
-                    w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
-                    w.comment("TODO: Data size is computed again, it should be cached");
-                    let data_size_expr = self.self_field_vec_packed_data_size();
-                    w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
-                    self.write_for_self_field(w, "v", |w, v_type| {
-                        let param_type = self.os_write_fn_param_type();
-                        let os_write_fn_suffix = self.os_write_fn_suffix();
-                        w.write_line(format!("try!(os.write_{}_no_tag({}));",
-                            os_write_fn_suffix, v_type.into_target(&param_type, "v")));
-                    });
-                });
-            },
-            RepeatMode::RepeatRegular => {
-                self.write_for_self_field(w, "v", |w, v_type| {
-                    self.write_write_element(w, "os", "v", v_type);
-                });
-            },
-        };
     }
 
     fn self_field_vec_packed_size(&self) -> String {
@@ -1109,32 +1081,68 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_message_compute_field_size(&self, var: &str, w: &mut CodeWriter) {
+    fn write_message_write_field(&self, w: &mut CodeWriter) {
         match self.repeat_mode {
-            RepeatMode::Single | RepeatMode::RepeatRegular => {
-                match field_type_size(self.proto_type) {
-                    Some(s) => {
-                        if self.repeated {
-                            let tag_size = self.tag_size();
-                            let self_field = self.self_field();
-                            w.write_line(format!(
-                                "{} += {} * {}.len() as u32;",
-                                var,
-                                (s + tag_size) as isize,
-                                self_field));
-                        } else {
-                            self.write_if_self_field_is_some(w, |w| {
+            RepeatMode::Single => {
+                self.write_if_let_self_field_is_some(w, |v, v_type, w| {
+                    self.write_write_element(w, "os", v, &v_type);
+                });
+            },
+            RepeatMode::RepeatRegular => {
+                self.write_for_self_field(w, "v", |w, v_type| {
+                    self.write_write_element(w, "os", "v", v_type);
+                });
+            },
+            RepeatMode::RepeatPacked => {
+                self.write_if_self_field_is_not_empty(w, |w| {
+                    let number = self.number();
+                    w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
+                    w.comment("TODO: Data size is computed again, it should be cached");
+                    let data_size_expr = self.self_field_vec_packed_data_size();
+                    w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
+                    self.write_for_self_field(w, "v", |w, v_type| {
+                        let param_type = self.os_write_fn_param_type();
+                        let os_write_fn_suffix = self.os_write_fn_suffix();
+                        w.write_line(format!("try!(os.write_{}_no_tag({}));",
+                            os_write_fn_suffix, v_type.into_target(&param_type, "v")));
+                    });
+                });
+            },
+        };
+    }
+
+    fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
+        match self.repeat_mode {
+            RepeatMode::Single => {
+                self.write_if_let_self_field_is_some(w, |v, v_type, w| {
+                    match field_type_size(self.proto_type) {
+                        Some(s) => {
                                 let tag_size = self.tag_size();
                                 w.write_line(format!(
                                     "{} += {};",
-                                    var,
+                                    sum_var,
                                     (s + tag_size) as isize));
-                            });
-                        }
+                        },
+                        None => {
+                            self.write_element_size(w, v, v_type, sum_var);
+                        },
+                    };
+                });
+            }
+            RepeatMode::RepeatRegular => {
+                match field_type_size(self.proto_type) {
+                    Some(s) => {
+                        let tag_size = self.tag_size();
+                        let self_field = self.self_field();
+                        w.write_line(format!(
+                            "{} += {} * {}.len() as u32;",
+                            sum_var,
+                            (s + tag_size) as isize,
+                            self_field));
                     },
                     None => {
                         self.write_for_self_field(w, "value", |w, value_type| {
-                            self.write_element_size(w, "value", value_type, var);
+                            self.write_element_size(w, "value", value_type, sum_var);
                         });
                     },
                 };
@@ -1142,7 +1150,7 @@ impl<'a> FieldGen<'a> {
             RepeatMode::RepeatPacked => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let size_expr = self.self_field_vec_packed_size();
-                    w.write_line(format!("{} += {};", var, size_expr));
+                    w.write_line(format!("{} += {};", sum_var, size_expr));
                 });
             },
         }
@@ -1158,7 +1166,7 @@ impl<'a> FieldGen<'a> {
                 let self_field_oneof = self.self_field_oneof();
                 w.match_expr(self_field_oneof, |w| {
                     let (refv, vtype) =
-                        if self.type_is_not_trivial() {
+                        if !self.elem_type_is_copy() {
                             ("ref v", self.elem_type.ref_type())
                         } else {
                             ("v", self.elem_type.clone())
@@ -1194,7 +1202,7 @@ impl<'a> FieldGen<'a> {
                             );
                         });
                     } else {
-                        assert!(!self.type_is_not_trivial());
+                        assert!(self.elem_type_is_copy());
                         let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
                         let self_field = self.self_field();
                         w.write_line(format!(
@@ -1212,7 +1220,7 @@ impl<'a> FieldGen<'a> {
         if self.repeated {
             false
         } else {
-            self.syntax == Syntax::PROTO2 || self.type_is_not_trivial()
+            self.syntax == Syntax::PROTO2 || !self.elem_type_is_copy()
         }
     }
 
@@ -1321,7 +1329,7 @@ impl<'a> FieldGen<'a> {
                 });
                 w.write_line("}");
             } else if !self.repeated {
-                if self.type_is_not_trivial() {
+                if !self.elem_type_is_copy() {
                     w.write_line(format!("self.{}.take().unwrap_or_else(|| {})",
                         self.rust_name, self.elem_type.default_value()));
                 } else {
@@ -1351,7 +1359,7 @@ impl<'a> FieldGen<'a> {
         self.write_message_field_set(w);
 
         // mut_xxx() are pointless for primitive types
-        if self.type_is_not_trivial() || self.repeated {
+        if !self.elem_type_is_copy() || self.repeated {
             w.write_line("");
             self.write_message_field_mut_take(w);
         }
@@ -1508,7 +1516,7 @@ impl<'a> MessageGen<'a> {
                     for variant in oneof.variants() {
                         let ref field = variant.field;
                         let (refv, vtype) =
-                            if field.type_is_not_trivial() {
+                            if !field.elem_type_is_copy() {
                                 ("ref v", field.elem_type.ref_type())
                             } else {
                                 ("v", field.elem_type.clone())

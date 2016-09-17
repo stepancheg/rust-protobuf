@@ -34,3 +34,12 @@ pub fn test_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
     let parsed = parse_from_bytes::<M>(&bytes).unwrap();
     assert!(*msg == parsed);
 }
+
+pub fn test_serialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
+    let hex = encode_hex(&decode_hex(hex));
+
+    let serialized = msg.write_to_bytes().unwrap();
+    let serialized_hex = encode_hex(&serialized);
+
+    assert_eq!(serialized_hex, hex);
+}

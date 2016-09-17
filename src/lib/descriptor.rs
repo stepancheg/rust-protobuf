@@ -656,11 +656,11 @@ impl ::protobuf::Message for FileDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.package {
-            my_size += ::protobuf::rt::string_size(2, &value);
+        if let Some(v) = self.package.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
         };
         for value in &self.dependency {
             my_size += ::protobuf::rt::string_size(3, &value);
@@ -687,16 +687,16 @@ impl ::protobuf::Message for FileDescriptorProto {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.source_code_info {
-            let len = value.compute_size();
+        if let Some(v) = self.source_code_info.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.syntax {
-            my_size += ::protobuf::rt::string_size(12, &value);
+        if let Some(v) = self.syntax.as_ref() {
+            my_size += ::protobuf::rt::string_size(12, &v);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -1271,8 +1271,8 @@ impl ::protobuf::Message for DescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
         for value in &self.field {
             let len = value.compute_size();
@@ -1298,8 +1298,8 @@ impl ::protobuf::Message for DescriptorProto {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.reserved_range {
@@ -1602,11 +1602,11 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.start {
-            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.end {
-            my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.end {
+            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -1813,11 +1813,11 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.start {
-            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.end {
-            my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.end {
+            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2323,35 +2323,35 @@ impl ::protobuf::Message for FieldDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.number {
-            my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.number {
+            my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.label {
-            my_size += ::protobuf::rt::enum_size(4, *value);
+        if let Some(v) = self.label {
+            my_size += ::protobuf::rt::enum_size(4, v);
         };
-        for value in &self.field_type {
-            my_size += ::protobuf::rt::enum_size(5, *value);
+        if let Some(v) = self.field_type {
+            my_size += ::protobuf::rt::enum_size(5, v);
         };
-        for value in &self.type_name {
-            my_size += ::protobuf::rt::string_size(6, &value);
+        if let Some(v) = self.type_name.as_ref() {
+            my_size += ::protobuf::rt::string_size(6, &v);
         };
-        for value in &self.extendee {
-            my_size += ::protobuf::rt::string_size(2, &value);
+        if let Some(v) = self.extendee.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
         };
-        for value in &self.default_value {
-            my_size += ::protobuf::rt::string_size(7, &value);
+        if let Some(v) = self.default_value.as_ref() {
+            my_size += ::protobuf::rt::string_size(7, &v);
         };
-        for value in &self.oneof_index {
-            my_size += ::protobuf::rt::value_size(9, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.oneof_index {
+            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.json_name {
-            my_size += ::protobuf::rt::string_size(10, &value);
+        if let Some(v) = self.json_name.as_ref() {
+            my_size += ::protobuf::rt::string_size(10, &v);
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -2801,11 +2801,11 @@ impl ::protobuf::Message for OneofDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -3068,15 +3068,15 @@ impl ::protobuf::Message for EnumDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
         for value in &self.value {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -3348,14 +3348,14 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.number {
-            my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.number {
+            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -3628,15 +3628,15 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
         for value in &self.method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -4018,23 +4018,23 @@ impl ::protobuf::Message for MethodDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.input_type {
-            my_size += ::protobuf::rt::string_size(2, &value);
+        if let Some(v) = self.input_type.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
         };
-        for value in &self.output_type {
-            my_size += ::protobuf::rt::string_size(3, &value);
+        if let Some(v) = self.output_type.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
         };
-        for value in &self.options {
-            let len = value.compute_size();
+        if let Some(v) = self.options.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.client_streaming.is_some() {
+        if let Some(v) = self.client_streaming {
             my_size += 2;
         };
-        if self.server_streaming.is_some() {
+        if let Some(v) = self.server_streaming {
             my_size += 2;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -4715,47 +4715,47 @@ impl ::protobuf::Message for FileOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.java_package {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.java_package.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.java_outer_classname {
-            my_size += ::protobuf::rt::string_size(8, &value);
+        if let Some(v) = self.java_outer_classname.as_ref() {
+            my_size += ::protobuf::rt::string_size(8, &v);
         };
-        if self.java_multiple_files.is_some() {
+        if let Some(v) = self.java_multiple_files {
             my_size += 2;
         };
-        if self.java_generate_equals_and_hash.is_some() {
+        if let Some(v) = self.java_generate_equals_and_hash {
             my_size += 3;
         };
-        if self.java_string_check_utf8.is_some() {
+        if let Some(v) = self.java_string_check_utf8 {
             my_size += 3;
         };
-        for value in &self.optimize_for {
-            my_size += ::protobuf::rt::enum_size(9, *value);
+        if let Some(v) = self.optimize_for {
+            my_size += ::protobuf::rt::enum_size(9, v);
         };
-        for value in &self.go_package {
-            my_size += ::protobuf::rt::string_size(11, &value);
+        if let Some(v) = self.go_package.as_ref() {
+            my_size += ::protobuf::rt::string_size(11, &v);
         };
-        if self.cc_generic_services.is_some() {
+        if let Some(v) = self.cc_generic_services {
             my_size += 3;
         };
-        if self.java_generic_services.is_some() {
+        if let Some(v) = self.java_generic_services {
             my_size += 3;
         };
-        if self.py_generic_services.is_some() {
+        if let Some(v) = self.py_generic_services {
             my_size += 3;
         };
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 3;
         };
-        if self.cc_enable_arenas.is_some() {
+        if let Some(v) = self.cc_enable_arenas {
             my_size += 3;
         };
-        for value in &self.objc_class_prefix {
-            my_size += ::protobuf::rt::string_size(36, &value);
+        if let Some(v) = self.objc_class_prefix.as_ref() {
+            my_size += ::protobuf::rt::string_size(36, &v);
         };
-        for value in &self.csharp_namespace {
-            my_size += ::protobuf::rt::string_size(37, &value);
+        if let Some(v) = self.csharp_namespace.as_ref() {
+            my_size += ::protobuf::rt::string_size(37, &v);
         };
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -5229,16 +5229,16 @@ impl ::protobuf::Message for MessageOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.message_set_wire_format.is_some() {
+        if let Some(v) = self.message_set_wire_format {
             my_size += 2;
         };
-        if self.no_standard_descriptor_accessor.is_some() {
+        if let Some(v) = self.no_standard_descriptor_accessor {
             my_size += 2;
         };
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 2;
         };
-        if self.map_entry.is_some() {
+        if let Some(v) = self.map_entry {
             my_size += 2;
         };
         for value in &self.uninterpreted_option {
@@ -5623,22 +5623,22 @@ impl ::protobuf::Message for FieldOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.ctype {
-            my_size += ::protobuf::rt::enum_size(1, *value);
+        if let Some(v) = self.ctype {
+            my_size += ::protobuf::rt::enum_size(1, v);
         };
-        if self.packed.is_some() {
+        if let Some(v) = self.packed {
             my_size += 2;
         };
-        for value in &self.jstype {
-            my_size += ::protobuf::rt::enum_size(6, *value);
+        if let Some(v) = self.jstype {
+            my_size += ::protobuf::rt::enum_size(6, v);
         };
-        if self.lazy.is_some() {
+        if let Some(v) = self.lazy {
             my_size += 2;
         };
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 2;
         };
-        if self.weak.is_some() {
+        if let Some(v) = self.weak {
             my_size += 2;
         };
         for value in &self.uninterpreted_option {
@@ -6197,10 +6197,10 @@ impl ::protobuf::Message for EnumOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.allow_alias.is_some() {
+        if let Some(v) = self.allow_alias {
             my_size += 2;
         };
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 2;
         };
         for value in &self.uninterpreted_option {
@@ -6425,7 +6425,7 @@ impl ::protobuf::Message for EnumValueOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 2;
         };
         for value in &self.uninterpreted_option {
@@ -6640,7 +6640,7 @@ impl ::protobuf::Message for ServiceOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 3;
         };
         for value in &self.uninterpreted_option {
@@ -6855,7 +6855,7 @@ impl ::protobuf::Message for MethodOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.deprecated.is_some() {
+        if let Some(v) = self.deprecated {
             my_size += 3;
         };
         for value in &self.uninterpreted_option {
@@ -7253,23 +7253,23 @@ impl ::protobuf::Message for UninterpretedOption {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        for value in &self.identifier_value {
-            my_size += ::protobuf::rt::string_size(3, &value);
+        if let Some(v) = self.identifier_value.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
         };
-        for value in &self.positive_int_value {
-            my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.positive_int_value {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.negative_int_value {
-            my_size += ::protobuf::rt::value_size(5, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.negative_int_value {
+            my_size += ::protobuf::rt::value_size(5, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        if self.double_value.is_some() {
+        if let Some(v) = self.double_value {
             my_size += 9;
         };
-        for value in &self.string_value {
-            my_size += ::protobuf::rt::bytes_size(7, &value);
+        if let Some(v) = self.string_value.as_ref() {
+            my_size += ::protobuf::rt::bytes_size(7, &v);
         };
-        for value in &self.aggregate_value {
-            my_size += ::protobuf::rt::string_size(8, &value);
+        if let Some(v) = self.aggregate_value.as_ref() {
+            my_size += ::protobuf::rt::string_size(8, &v);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -7546,10 +7546,10 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.name_part {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.name_part.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        if self.is_extension.is_some() {
+        if let Some(v) = self.is_extension {
             my_size += 2;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -8053,11 +8053,11 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         if !self.span.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
         };
-        for value in &self.leading_comments {
-            my_size += ::protobuf::rt::string_size(3, &value);
+        if let Some(v) = self.leading_comments.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
         };
-        for value in &self.trailing_comments {
-            my_size += ::protobuf::rt::string_size(4, &value);
+        if let Some(v) = self.trailing_comments.as_ref() {
+            my_size += ::protobuf::rt::string_size(4, &v);
         };
         for value in &self.leading_detached_comments {
             my_size += ::protobuf::rt::string_size(6, &value);
@@ -8552,14 +8552,14 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         if !self.path.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
         };
-        for value in &self.source_file {
-            my_size += ::protobuf::rt::string_size(2, &value);
+        if let Some(v) = self.source_file.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
         };
-        for value in &self.begin {
-            my_size += ::protobuf::rt::value_size(3, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.begin {
+            my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.end {
-            my_size += ::protobuf::rt::value_size(4, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.end {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
