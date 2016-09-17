@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 enum TestEnum {
     DARK = 1;
     LIGHT = 2;

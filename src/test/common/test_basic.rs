@@ -1,45 +1,10 @@
-use std::f32;
-use std::f64;
-
-use protobuf::hex::encode_hex;
 use protobuf::hex::decode_hex;
-
-use super::pb_basic::*;
-use super::pb_test_lite_runtime;
 
 use protobuf::*;
 
-fn test_serialize_deserialize_length_delimited<M : Message + MessageStatic>(msg: &M) {
-    let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
-    let parsed = parse_length_delimited_from_bytes::<M>(&serialized_bytes).unwrap();
-    assert!(*msg == parsed);
-}
+use test::*;
 
-pub fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
-    let serialized_bytes = msg.write_to_bytes().unwrap();
-    let parsed = parse_from_bytes::<M>(&serialized_bytes).unwrap();
-    assert!(*msg == parsed);
-}
-
-pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
-    let expected_bytes = decode_hex(hex);
-    let expected_hex = encode_hex(&expected_bytes);
-    let serialized = msg.write_to_bytes().unwrap();
-    let serialized_hex = encode_hex(&serialized);
-    assert_eq!(expected_hex, serialized_hex);
-    let parsed = parse_from_bytes::<M>(&expected_bytes).unwrap();
-    assert!(*msg == parsed);
-
-    assert_eq!(expected_bytes.len(), msg.compute_size() as usize);
-
-    test_serialize_deserialize_length_delimited(msg);
-}
-
-fn test_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
-    let bytes = decode_hex(hex);
-    let parsed = parse_from_bytes::<M>(&bytes).unwrap();
-    assert!(*msg == parsed);
-}
+use super::pb_basic::*;
 
 #[test]
 fn test1() {
@@ -90,18 +55,6 @@ fn test_read_packed_expect_unpacked() {
 #[test]
 fn test_empty() {
     test_serialize_deserialize("", &TestEmpty::new());
-}
-
-#[test]
-#[should_panic]
-fn test_write_missing_required() {
-    TestRequired::new().write_to_bytes().unwrap();
-}
-
-#[test]
-#[should_panic]
-fn test_read_missing_required() {
-    parse_from_bytes::<TestRequired>(&[]).unwrap();
 }
 
 #[test]
@@ -227,49 +180,6 @@ fn test_enum_descriptor() {
     assert_eq!("TestEnumDescriptor", d.name());
     assert_eq!("TestEnumDescriptor", reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name());
     assert_eq!("GREEN", d.value_by_name("GREEN").name());
-}
-
-#[test]
-fn test_default_value_simple() {
-    let d = TestDefaultValues::new();
-    assert_eq!(1.0, d.get_double_field());
-    assert_eq!(2.0, d.get_float_field());
-    assert_eq!(3, d.get_int32_field());
-    assert_eq!(4, d.get_int64_field());
-    assert_eq!(5, d.get_uint32_field());
-    assert_eq!(6, d.get_uint64_field());
-    assert_eq!(7, d.get_sint32_field());
-    assert_eq!(8, d.get_sint64_field());
-    assert_eq!(9, d.get_fixed32_field());
-    assert_eq!(10, d.get_fixed64_field());
-    assert_eq!(11, d.get_sfixed32_field());
-    assert_eq!(12, d.get_sfixed64_field());
-    assert_eq!(true, d.get_bool_field());
-    assert_eq!("abc\n22", d.get_string_field());
-    assert_eq!(b"cde\n33", d.get_bytes_field());
-    assert_eq!(EnumForDefaultValue::TWO, d.get_enum_field());
-    assert_eq!(EnumForDefaultValue::ONE, d.get_enum_field_without_default());
-}
-
-#[test]
-fn test_default_value_extreme() {
-    let d = TestExtremeDefaultValues::new();
-    assert_eq!(f64::INFINITY, d.get_inf_double());
-    assert_eq!(f64::NEG_INFINITY, d.get_neg_inf_double());
-    assert!(d.get_nan_double().is_nan());
-    assert_eq!(f32::INFINITY, d.get_inf_float());
-    assert_eq!(f32::NEG_INFINITY, d.get_neg_inf_float());
-    assert!(d.get_nan_float().is_nan());
-}
-
-#[test]
-fn test_lite_runtime() {
-    let mut m = pb_test_lite_runtime::TestLiteRuntime::new();
-    m.set_v(10);
-    test_serialize_deserialize("08 0a", &m);
-
-    // test it doesn't crash
-    format!("{:?}", m);
 }
 
 #[test]

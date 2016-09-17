@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 // More test that filenames are sanitized, even imports.
 
 package special;

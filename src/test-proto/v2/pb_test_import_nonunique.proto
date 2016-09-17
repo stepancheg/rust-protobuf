@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 import "pb_test_import_nonunique_1.proto";
 import "pb_test_import_nonunique_2.proto";
 

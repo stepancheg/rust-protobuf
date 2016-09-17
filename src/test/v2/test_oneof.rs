@@ -1,6 +1,4 @@
-use protobuf::*;
-
-use super::test::*;
+use test::*;
 
 use super::pb_test_oneof_proto::*;
 
