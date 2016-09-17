@@ -1,8 +1,8 @@
 use protobuf::*;
 
-use test::*;
+use super::test::*;
 
-use pb_test_oneof_proto::*;
+use super::pb_test_oneof_proto::*;
 
 #[test]
 fn test_simple() {

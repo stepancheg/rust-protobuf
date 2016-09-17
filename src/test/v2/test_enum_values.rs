@@ -1,6 +1,6 @@
 use protobuf::*;
 
-use pb_test_enum_values::*;
+use super::pb_test_enum_values::*;
 
 #[test]
 fn test_enum_values() {

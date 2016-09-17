@@ -1,8 +1,8 @@
-use pb_test_enum_alias::*;
-
 use protobuf::ProtobufEnum;
 
-use test::*;
+use super::pb_test_enum_alias::*;
+
+use super::test::*;
 
 #[test]
 fn test_enum() {

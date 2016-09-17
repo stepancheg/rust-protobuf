@@ -4,8 +4,8 @@ use std::f64;
 use protobuf::hex::encode_hex;
 use protobuf::hex::decode_hex;
 
-use pb_basic::*;
-use pb_test_lite_runtime;
+use super::pb_basic::*;
+use super::pb_test_lite_runtime;
 
 use protobuf::*;
 
