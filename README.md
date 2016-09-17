@@ -74,6 +74,10 @@ Have a look at generated files, used internally in rust-protobuf:
   for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/src/proto/google/protobuf/descriptor.proto)
   (that is part of Google protobuf)
 
+## Rustdoc
+
+docs.rs hosts [rustdoc for protobuf](https://docs.rs/protobuf/*/protobuf/).
+
 ## TODO
 
 * Implement some rust-specific options
