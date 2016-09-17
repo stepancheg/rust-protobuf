@@ -14,6 +14,7 @@ use paginate::PaginatableIterator;
 use descriptorx::proto_path_to_rust_mod;
 use descriptorx::EnumWithScope;
 use descriptorx::MessageWithScope;
+use descriptorx::MessageOrEnumWithScope;
 use descriptorx::FieldWithContext;
 use descriptorx::OneofWithContext;
 use descriptorx::OneofVariantWithContext;
@@ -44,7 +45,7 @@ pub enum RustType {
     Ref(Box<RustType>),
     Message(String),
     // protobuf enum, not any enum
-    Enum(String),
+    Enum(String, String),
     // oneof enum
     Oneof(String),
     // group
@@ -70,7 +71,7 @@ impl fmt::Display for RustType {
             RustType::Uniq(ref param)             => write!(f, "::std::Box<{}>", **param),
             RustType::Ref(ref param)              => write!(f, "&{}", **param),
             RustType::Message(ref name) |
-            RustType::Enum(ref name)    |
+            RustType::Enum(ref name, _)    |
             RustType::Oneof(ref name)   => write!(f, "{}", name),
             RustType::Group             => write!(f, "<group>"),
         }
@@ -155,8 +156,8 @@ impl RustType {
                 RustType::Message(ref name) => format!("{}::default_instance()", name),
                 _ => unreachable!()
             },
-            RustType::Enum(..)                       =>
-                panic!("enum default value cannot be determined by type"),
+            // Note: default value of enum type may not be equal to default value of field
+            RustType::Enum(ref name, ref default)    => format!("{}::{}", name, default),
             _ => panic!("cannot create default value for: {}", *self),
         }
     }
@@ -170,6 +171,10 @@ impl RustType {
             RustType::RepeatedField(..) |
             RustType::SingularField(..) |
             RustType::SingularPtrField(..) => format!("{}.clear()", v),
+            RustType::Bool      |
+            RustType::Float(..) |
+            RustType::Int(..)   |
+            RustType::Enum(..)  => format!("{} = {}", v, self.default_value()),
             ref ty => panic!("cannot clear type: {}", ty),
         }
     }
@@ -382,9 +387,11 @@ fn field_type_name(field: &FieldWithContext, root_scope: &RootScope) -> RustType
             } else {
                 format!("super::{}", message_or_enum.rust_fq_name())
             };
-        match field.field.get_field_type() {
-            FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::Message(rust_name),
-            FieldDescriptorProto_Type::TYPE_ENUM    => RustType::Enum(rust_name),
+        match (field.field.get_field_type(), message_or_enum) {
+            (FieldDescriptorProto_Type::TYPE_MESSAGE, MessageOrEnumWithScope::Message(..)) =>
+                RustType::Message(rust_name),
+            (FieldDescriptorProto_Type::TYPE_ENUM, MessageOrEnumWithScope::Enum(e)) =>
+                RustType::Enum(rust_name, e.values()[0].get_name().to_owned()),
             _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
         }
     } else if field.field.has_field_type() {
@@ -510,22 +517,24 @@ impl<'a> FieldGen<'a> {
         if self.is_oneof() {
             panic!("field is not oneof: {}", self.proto_field.get_name());
         }
-        let c = Box::new(self.elem_type.clone());
+        let c = self.elem_type.clone();
         if self.repeated {
             if !self.elem_type_is_copy() {
-                RustType::RepeatedField(c)
+                RustType::RepeatedField(Box::new(c.clone()))
             } else {
-                RustType::Vec(c)
+                RustType::Vec(Box::new(c.clone()))
             }
         } else {
             if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                RustType::SingularPtrField(c)
+                RustType::SingularPtrField(Box::new(c.clone()))
             } else if self.proto_type == FieldDescriptorProto_Type::TYPE_STRING ||
                     self.proto_type == FieldDescriptorProto_Type::TYPE_BYTES
             {
-                RustType::SingularField(c)
+                    RustType::SingularField(Box::new(c.clone()))
+            } else if self.syntax == Syntax::PROTO3 {
+                c.clone()
             } else {
-                RustType::Option(c)
+                RustType::Option(Box::new(c.clone()))
             }
         }
     }
@@ -872,12 +881,18 @@ impl<'a> FieldGen<'a> {
         where F : Fn(&str, &RustType, &mut CodeWriter)
     {
         assert!(!self.repeated);
-        let var = "v";
-        w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
-            let option_type = self.as_option_type();
-            let v_type = option_type.elem_type();
-            cb(var, &v_type, w);
-        });
+        if self.syntax == Syntax::PROTO3 && self.elem_type_is_copy() {
+            w.if_stmt(format!("{} != {}", self.self_field(), self.full_storage_type().default_value()), |w| {
+                cb(&self.self_field(), &self.full_storage_type(), w);
+            });
+        } else {
+            let var = "v";
+            w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
+                let option_type = self.as_option_type();
+                let v_type = option_type.elem_type();
+                cb(var, &v_type, w);
+            });
+        }
     }
 
     fn write_if_self_field_is_not_empty<F>(&self, w: &mut CodeWriter, cb: F)
@@ -912,7 +927,29 @@ impl<'a> FieldGen<'a> {
     fn write_self_field_assign_some<S : AsRef<str>>(&self, w: &mut CodeWriter, value: S) {
         assert!(!self.repeated);
         let full_storage_type = self.full_storage_type();
-        self.write_self_field_assign(w, full_storage_type.wrap_value(value.as_ref()));
+        if self.elem_type_is_copy() && self.syntax == Syntax::PROTO3 {
+            self.write_self_field_assign(w, value);
+        } else {
+            self.write_self_field_assign(w, full_storage_type.wrap_value(value.as_ref()));
+        }
+    }
+
+    fn write_self_field_assign_value<S : AsRef<str>>(&self,
+        w: &mut CodeWriter, value: S, ty: &RustType)
+    {
+        if self.repeated {
+            let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
+            self.write_self_field_assign(w, converted);
+        } else {
+            let converted = ty.into_target(&self.elem_type, value.as_ref());
+            let wrapped =
+                if self.syntax == Syntax::PROTO3 && self.elem_type_is_copy() {
+                    converted
+                } else {
+                    self.full_storage_type().wrap_value(&converted)
+                };
+            self.write_self_field_assign(w, wrapped);
+        }
     }
 
     fn write_self_field_assign_default(&self, w: &mut CodeWriter) {
@@ -932,19 +969,6 @@ impl<'a> FieldGen<'a> {
             } else {
                 self.write_self_field_assign_some(w, self.element_default_value_rust());
             }
-        }
-    }
-
-    fn write_self_field_assign_value<S : AsRef<str>>(&self,
-        w: &mut CodeWriter, value: S, ty: &RustType)
-    {
-        if self.repeated {
-            let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
-            self.write_self_field_assign(w, converted);
-        } else {
-            let converted = ty.into_target(&self.elem_type, value.as_ref());
-            let wrapped = self.full_storage_type().wrap_value(&converted);
-            self.write_self_field_assign(w, wrapped);
         }
     }
 
@@ -1085,7 +1109,7 @@ impl<'a> FieldGen<'a> {
         match self.repeat_mode {
             RepeatMode::Single => {
                 self.write_if_let_self_field_is_some(w, |v, v_type, w| {
-                    self.write_write_element(w, "os", v, &v_type);
+                    self.write_write_element(w, "os", v, v_type);
                 });
             },
             RepeatMode::RepeatRegular => {
@@ -1156,6 +1180,48 @@ impl<'a> FieldGen<'a> {
         }
     }
 
+    fn write_message_field_get_singular(&self, w: &mut CodeWriter) {
+        assert!(!self.is_oneof());
+        assert!(!self.repeated);
+
+        let get_xxx_return_type = self.get_xxx_return_type();
+
+        if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
+            let self_field = self.self_field();
+            let ref field_type_name = self.elem_type;
+            w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
+                    self_field, field_type_name));
+        } else {
+            if get_xxx_return_type.is_ref() {
+                let self_field_as_option = self.self_field_as_option();
+                w.match_expr(self_field_as_option, |w| {
+                    let option_type = self.as_option_type();
+                    let v_type = option_type.elem_type();
+                    let r_type = self.get_xxx_return_type();
+                    w.case_expr(
+                        "Some(v)",
+                        v_type.into_target(&r_type, "v")
+                    );
+                    let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                    w.case_expr(
+                        "None",
+                        get_xxx_default_value_rust
+                    );
+                });
+            } else {
+                assert!(self.elem_type_is_copy());
+                let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                let self_field = self.self_field();
+                if self.syntax == Syntax::PROTO3 && self.elem_type_is_copy() {
+                    w.write_line(&self_field);
+                } else {
+                    w.write_line(format!(
+                        "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
+                }
+            }
+        }
+    }
+
     fn write_message_field_get(&self, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
         let fn_def = format!("get_{}(&self) -> {}",  self.rust_name, get_xxx_return_type);
@@ -1179,36 +1245,7 @@ impl<'a> FieldGen<'a> {
                     w.case_expr("_", self.get_xxx_default_value_rust());
                 });
             } else if !self.repeated {
-                if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                    let self_field = self.self_field();
-                    let ref field_type_name = self.elem_type;
-                    w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
-                            self_field, field_type_name));
-                } else {
-                    if get_xxx_return_type.is_ref() {
-                        let self_field_as_option = self.self_field_as_option();
-                        w.match_expr(self_field_as_option, |w| {
-                            let option_type = self.as_option_type();
-                            let v_type = option_type.elem_type();
-                            let r_type = self.get_xxx_return_type();
-                            w.case_expr(
-                                "Some(v)",
-                                v_type.into_target(&r_type, "v")
-                            );
-                            let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
-                            w.case_expr(
-                                "None",
-                                get_xxx_default_value_rust
-                            );
-                        });
-                    } else {
-                        assert!(self.elem_type_is_copy());
-                        let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
-                        let self_field = self.self_field();
-                        w.write_line(format!(
-                                "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
-                    }
-                }
+                self.write_message_field_get_singular(w);
             } else {
                 let self_field = self.self_field();
                 w.write_line(format!("&{}", self_field));
@@ -1955,6 +1992,10 @@ impl<'a> EnumGen<'a> {
         self.write_impl_enum(w);
         w.write_line("");
         self.write_impl_copy(w);
+        if self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3 {
+            w.write_line("");
+            self.write_impl_default(w);
+        }
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
@@ -2030,11 +2071,20 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_copy(&self, w: &mut CodeWriter) {
-        let ref type_name = self.type_name;
-        w.impl_for_block("::std::marker::Copy", &type_name, |_w| {
+        w.impl_for_block("::std::marker::Copy", &self.type_name, |_w| {
         });
     }
 
+    fn write_impl_default(&self, w: &mut CodeWriter) {
+        assert!(self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3);
+        w.impl_for_block("::std::default::Default", &self.type_name, |w| {
+            w.def_fn("default() -> Self", |w| {
+                w.write_line(&format!("{}::{}",
+                    &self.type_name,
+                    &self.enum_with_scope.values()[0].get_name()))
+            });
+        });
+    }
 }
 
 
