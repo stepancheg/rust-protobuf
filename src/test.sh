@@ -16,17 +16,16 @@ case "$protoc_ver" in
         ;;
 esac
 
-rm -f test/*/pb_*
+rm -f test/*/pb_*.rs
 
-protoc --rust_out test/v2 -I test-proto/v2 test-proto/v2/*.proto
+protoc --rust_out test/v2 -I test/v2 test/v2/*.proto
 if $HAS_PROTO3; then
-    protoc --rust_out test/v3 -I test-proto/v3 test-proto/v3/*.proto
+    protoc --rust_out test/v3 -I test/v3 test/v3/*.proto
 else
     # Because `#[cfg(nonexistent)]` still requires module files to exist
-    for f in test-proto/v3/*.proto; do
+    for f in test/v3/*.proto; do
         f=${f%.proto}
-        f=${f##*/}
-        cat < /dev/null > test/v3/$f.rs
+        cat < /dev/null > $f.rs
     done
 fi
 
