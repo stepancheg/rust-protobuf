@@ -12,7 +12,6 @@ src/test/lib
 protobuf-bin-gen-rust
 protoc-gen-rust
 shrug.rs
-test_root.rs
 src/perftest/perftest
 src/perftest/perftest-cxx
 src/perftest/perftest_proto.rs
