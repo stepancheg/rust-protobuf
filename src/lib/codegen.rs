@@ -1,7 +1,6 @@
 use std::collections::hash_map::HashMap;
 use std::fmt;
 use std::io::Write;
-use std::convert::AsRef;
 use std::collections::HashSet;
 
 use descriptor::*;
@@ -925,20 +924,20 @@ impl<'a> FieldGen<'a> {
     {
         let v_type = self.full_storage_iter_elem_type();
         let self_field = self.self_field();
-        w.for_stmt(format!("&{}", self_field), varn, |w| cb(w, &v_type));
+        w.for_stmt(&format!("&{}", self_field), varn, |w| cb(w, &v_type));
     }
 
-    fn write_self_field_assign<S : AsRef<str>>(&self, w: &mut CodeWriter, value: S) {
+    fn write_self_field_assign(&self, w: &mut CodeWriter, value: &str) {
         let self_field = self.self_field();
-        w.write_line(format!("{} = {};", self_field, value.as_ref()));
+        w.write_line(&format!("{} = {};", self_field, value));
     }
 
-    fn write_self_field_assign_some<S : AsRef<str>>(&self, w: &mut CodeWriter, value: S) {
+    fn write_self_field_assign_some(&self, w: &mut CodeWriter, value: &str) {
         let full_storage_type = self.full_storage_type();
         match self.kind {
             FieldKind::Repeated { .. } => panic!(),
             FieldKind::Single { presence_flag: true } => {
-                self.write_self_field_assign(w, full_storage_type.wrap_value(value.as_ref()));
+                self.write_self_field_assign(w, &full_storage_type.wrap_value(value.as_ref()));
             }
             FieldKind::Single { presence_flag: false } => {
                 self.write_self_field_assign(w, value);
@@ -946,13 +945,13 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_self_field_assign_value<S : AsRef<str>>(&self,
-        w: &mut CodeWriter, value: S, ty: &RustType)
+    fn write_self_field_assign_value(&self,
+        w: &mut CodeWriter, value: &str, ty: &RustType)
     {
         match self.kind {
             FieldKind::Repeated { .. } => {
                 let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
-                self.write_self_field_assign(w, converted);
+                self.write_self_field_assign(w, &converted);
             }
             FieldKind::Single { presence_flag } => {
                 let converted = ty.into_target(&self.elem_type, value.as_ref());
@@ -962,7 +961,7 @@ impl<'a> FieldGen<'a> {
                     } else {
                         self.full_storage_type().wrap_value(&converted)
                     };
-                self.write_self_field_assign(w, wrapped);
+                self.write_self_field_assign(w, &wrapped);
             }
         }
     }
@@ -982,7 +981,7 @@ impl<'a> FieldGen<'a> {
                 let self_field = self.self_field();
                 w.write_line(format!("{}.set_default();", self_field));
             } else {
-                self.write_self_field_assign_some(w, self.element_default_value_rust());
+                self.write_self_field_assign_some(w, &self.element_default_value_rust());
             }
         }
     }
@@ -1655,14 +1654,14 @@ impl<'a> MessageGen<'a> {
     fn write_default_instance(&self, w: &mut CodeWriter) {
         w.pub_fn(format!("default_instance() -> &'static {}", self.type_name), |w| {
             w.lazy_static_decl_get("instance", &self.type_name, |w| {
-                w.expr_block(format!("{}", self.type_name), |w| {
+                w.expr_block(&format!("{}", self.type_name), |w| {
                     for field in self.fields_except_oneof_and_group() {
                         let init = field.full_storage_type().default_value();
-                        w.field_entry(field.rust_name.to_string(), init);
+                        w.field_entry(&field.rust_name, &init);
                     }
                     for oneof in self.oneofs() {
                         let init = oneof.full_storage_type().default_value();
-                        w.field_entry(oneof.name(), init);
+                        w.field_entry(oneof.name(), &init);
                     }
                     w.field_entry("unknown_fields", "::protobuf::UnknownFields::new()");
                     w.field_entry("cached_size", "::std::cell::Cell::new(0)");
@@ -2067,7 +2066,7 @@ impl<'a> EnumGen<'a> {
         // TODO: generate eq when allow_alias
         w.derive(&["Clone", "PartialEq", "Eq", "Debug", "Hash"]);
         let ref type_name = self.type_name;
-        w.expr_block(format!("pub enum {}", type_name), |w| {
+        w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
                 if self.allow_alias() {
                     w.write_line(format!("{}, // {}", value.rust_name_inner(), value.number()));
