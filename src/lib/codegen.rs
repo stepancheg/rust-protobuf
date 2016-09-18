@@ -1,6 +1,5 @@
 use std::collections::hash_map::HashMap;
 use std::fmt;
-use std::io::Write;
 use std::collections::HashSet;
 
 use descriptor::*;
