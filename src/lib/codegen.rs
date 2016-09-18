@@ -458,11 +458,10 @@ impl<'a> FieldGen<'a> {
             FieldDescriptorProto_Label::LABEL_OPTIONAL |
             FieldDescriptorProto_Label::LABEL_REQUIRED => false,
         };
-        let packed = field.field.get_options().get_packed();
         let repeat_mode =
             if repeated {
                 FieldKind::Repeated {
-                    packed: packed
+                    packed: field.field.get_options().get_packed()
                 }
             } else {
                 FieldKind::Single {
