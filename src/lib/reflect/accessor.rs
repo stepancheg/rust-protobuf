@@ -369,7 +369,7 @@ fn const_true<T>(_: &T) -> bool {
     true
 }
 
-pub fn make_singular_u32_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_u32_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> u32,
     ) -> Box<FieldAccessor + 'static>
@@ -398,7 +398,7 @@ pub fn make_singular_i32_accessor<M : Message + 'static>(
     })
 }
 
-pub fn make_singular_i32_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_i32_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> i32,
     ) -> Box<FieldAccessor + 'static>
@@ -427,7 +427,7 @@ pub fn make_singular_u64_accessor<M : Message + 'static>(
     })
 }
 
-pub fn make_singular_u64_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_u64_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> u64,
     ) -> Box<FieldAccessor + 'static>
@@ -456,7 +456,7 @@ pub fn make_singular_i64_accessor<M : Message + 'static>(
     })
 }
 
-pub fn make_singular_i64_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_i64_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> i64,
     ) -> Box<FieldAccessor + 'static>
@@ -485,7 +485,7 @@ pub fn make_singular_f32_accessor<M : Message + 'static>(
     })
 }
 
-pub fn make_singular_f32_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_f32_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> f32,
     ) -> Box<FieldAccessor + 'static>
@@ -514,7 +514,7 @@ pub fn make_singular_f64_accessor<M : Message + 'static>(
     })
 }
 
-pub fn make_singular_f64_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_f64_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> f64,
     ) -> Box<FieldAccessor + 'static>
@@ -543,7 +543,7 @@ pub fn make_singular_bool_accessor<M : Message + 'static>(
     })
 }
 
-pub fn make_singular_bool_accessor_proto3<M : Message + 'static>(
+pub fn make_singular_proto3_bool_accessor<M : Message + 'static>(
         name: &'static str,
         get: fn(&M) -> bool,
     ) -> Box<FieldAccessor + 'static>
@@ -574,7 +574,7 @@ pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'st
     })
 }
 
-pub fn make_singular_enum_accessor_proto3<M : Message + 'static, E : ProtobufEnum + 'static>(
+pub fn make_singular_proto3_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
         name: &'static str,
         get: fn(&M) -> E,
     ) -> Box<FieldAccessor + 'static>
@@ -605,6 +605,20 @@ pub fn make_singular_string_accessor<M : Message + 'static>(
     })
 }
 
+pub fn make_singular_proto3_string_accessor<M : Message + 'static>(
+        name: &'static str,
+        get: for<'a> fn(&'a M) -> &'a str,
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
+            get: SingularGet::String(get),
+        },
+    })
+}
+
 pub fn make_singular_bytes_accessor<M : Message + 'static>(
         name: &'static str,
         has: fn(&M) -> bool,
@@ -615,6 +629,20 @@ pub fn make_singular_bytes_accessor<M : Message + 'static>(
         name: name,
         fns: FieldAccessorFunctions::Singular {
             has: has,
+            get: SingularGet::Bytes(get),
+        },
+    })
+}
+
+pub fn make_singular_proto3_bytes_accessor<M : Message + 'static>(
+        name: &'static str,
+        get: for<'a> fn(&'a M) -> &'a [u8],
+    ) -> Box<FieldAccessor + 'static>
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Singular {
+            has: const_true,
             get: SingularGet::Bytes(get),
         },
     })

@@ -381,6 +381,18 @@ pub fn read_singular_string_into(
     }
 }
 
+pub fn read_singular_proto3_string_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut String)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            is.read_string_into(target)
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
 pub fn read_repeated_bytes_into(
     wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Vec<u8>>)
         -> ProtobufResult<()>
@@ -402,6 +414,18 @@ pub fn read_singular_bytes_into(
         WireTypeLengthDelimited => {
             let tmp = target.set_default();
             is.read_bytes_into(tmp)
+        },
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+pub fn read_singular_proto3_bytes_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u8>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            is.read_bytes_into(target)
         },
         _ => Err(unexpected_wire_type(wire_type)),
     }
