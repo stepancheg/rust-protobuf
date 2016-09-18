@@ -1823,8 +1823,8 @@ impl<'a> MessageGen<'a> {
                 }
             }
             w.comment("special fields");
-            w.field_entry("unknown_fields", "::protobuf::UnknownFields");
-            w.field_entry("cached_size", "::std::cell::Cell<u32>");
+            w.field_decl("unknown_fields", "::protobuf::UnknownFields");
+            w.field_decl("cached_size", "::std::cell::Cell<u32>");
         });
     }
 
