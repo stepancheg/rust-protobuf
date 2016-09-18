@@ -269,6 +269,15 @@ fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     }
 }
 
+fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
+    match field_type {
+        FieldDescriptorProto_Type::TYPE_MESSAGE |
+        FieldDescriptorProto_Type::TYPE_STRING |
+        FieldDescriptorProto_Type::TYPE_BYTES => false,
+        _ => true,
+    }
+}
+
 impl FieldDescriptorProto_Type {
     fn read(&self, is: &str) -> String {
         format!("{}.read_{}()", is, protobuf_name(*self))
@@ -402,10 +411,9 @@ fn field_type_name(field: &FieldWithContext, root_scope: &RootScope) -> RustType
 }
 
 #[derive(Clone,PartialEq,Eq)]
-enum RepeatMode {
-    Single,
-    RepeatRegular,
-    RepeatPacked,
+enum FieldKind {
+    Single { presence_flag: bool },
+    Repeated { packed: bool },
 }
 
 #[derive(Clone)]
@@ -438,7 +446,7 @@ struct FieldGen<'a> {
     elem_type: RustType,
     enum_default_value: Option<EnumValueGen>,
     number: u32,
-    repeat_mode: RepeatMode,
+    kind: FieldKind,
     oneof: Option<FieldOneofInfo>,
 }
 
@@ -453,9 +461,15 @@ impl<'a> FieldGen<'a> {
         let packed = field.field.get_options().get_packed();
         let repeat_mode =
             if repeated {
-                if packed { RepeatMode::RepeatPacked } else { RepeatMode::RepeatRegular }
+                FieldKind::Repeated {
+                    packed: packed
+                }
             } else {
-                RepeatMode::Single
+                FieldKind::Single {
+                    presence_flag:
+                        field.message.scope.file_scope.syntax() == Syntax::PROTO2 ||
+                            !type_is_copy(field.field.get_field_type())
+                }
             };
         let enum_default_value = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_ENUM => {
@@ -480,7 +494,7 @@ impl<'a> FieldGen<'a> {
             elem_type: elem_type,
             enum_default_value: enum_default_value,
             number: field.field.get_number() as u32,
-            repeat_mode: repeat_mode,
+            kind: repeat_mode,
 
             oneof: field.oneof().map(|oneof| FieldOneofInfo::parse(&oneof)),
         }
@@ -499,10 +513,9 @@ impl<'a> FieldGen<'a> {
     }
 
     fn is_repeated(&self) -> bool {
-        match self.repeat_mode {
-            RepeatMode::RepeatPacked |
-            RepeatMode::RepeatRegular => true,
-            RepeatMode::Single => false,
+        match self.kind {
+            FieldKind::Repeated { .. } => true,
+            FieldKind::Single { .. } => false,
         }
     }
 
@@ -517,23 +530,27 @@ impl<'a> FieldGen<'a> {
             panic!("field is not oneof: {}", self.proto_field.get_name());
         }
         let c = self.elem_type.clone();
-        if self.is_repeated() {
-            if !self.elem_type_is_copy() {
-                RustType::RepeatedField(Box::new(c.clone()))
-            } else {
-                RustType::Vec(Box::new(c.clone()))
+        match self.kind {
+            FieldKind::Repeated { .. } => {
+                if !self.elem_type_is_copy() {
+                    RustType::RepeatedField(Box::new(c.clone()))
+                } else {
+                    RustType::Vec(Box::new(c.clone()))
+                }
             }
-        } else {
-            if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                RustType::SingularPtrField(Box::new(c.clone()))
-            } else if self.proto_type == FieldDescriptorProto_Type::TYPE_STRING ||
-                    self.proto_type == FieldDescriptorProto_Type::TYPE_BYTES
-            {
-                    RustType::SingularField(Box::new(c.clone()))
-            } else if self.syntax == Syntax::PROTO3 {
+            FieldKind::Single { presence_flag: true } => {
+                if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
+                    RustType::SingularPtrField(Box::new(c.clone()))
+                } else if self.proto_type == FieldDescriptorProto_Type::TYPE_STRING ||
+                        self.proto_type == FieldDescriptorProto_Type::TYPE_BYTES
+                {
+                        RustType::SingularField(Box::new(c.clone()))
+                } else {
+                    RustType::Option(Box::new(c.clone()))
+                }
+            }
+            FieldKind::Single { presence_flag: false } => {
                 c.clone()
-            } else {
-                RustType::Option(Box::new(c.clone()))
             }
         }
     }
@@ -644,12 +661,7 @@ impl<'a> FieldGen<'a> {
 
     // elem data is not stored in heap
     fn elem_type_is_copy(&self) -> bool {
-        match self.proto_type {
-            FieldDescriptorProto_Type::TYPE_MESSAGE |
-            FieldDescriptorProto_Type::TYPE_STRING |
-            FieldDescriptorProto_Type::TYPE_BYTES => false,
-            _ => true,
-        }
+        type_is_copy(self.proto_type)
     }
 
     fn defaut_value_from_proto_float(&self) -> String {
@@ -787,7 +799,7 @@ impl<'a> FieldGen<'a> {
 
     // expression that returns size of data is variable
     fn element_size(&self, var: &str, var_type: &RustType) -> String {
-        assert!(self.repeat_mode != RepeatMode::RepeatPacked);
+        assert!(self.kind != FieldKind::Repeated { packed: true });
         match field_type_size(self.proto_type) {
             Some(data_size) => {
                 format!("{}", data_size + self.tag_size())
@@ -829,7 +841,7 @@ impl<'a> FieldGen<'a> {
 
     // output code that writes single element to stream
     fn write_write_element(&self, w: &mut CodeWriter, os: &str, var: &str, ty: &RustType) {
-        assert!(self.repeat_mode != RepeatMode::RepeatPacked);
+        assert!(self.kind != FieldKind::Repeated { packed: true });
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
                 w.write_line(format!("try!({}.write_tag({}, ::protobuf::wire_format::{:?}));",
@@ -879,18 +891,21 @@ impl<'a> FieldGen<'a> {
     fn write_if_let_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
         where F : Fn(&str, &RustType, &mut CodeWriter)
     {
-        assert!(!self.is_repeated());
-        if self.syntax == Syntax::PROTO3 && self.elem_type_is_copy() {
-            w.if_stmt(format!("{} != {}", self.self_field(), self.full_storage_type().default_value()), |w| {
-                cb(&self.self_field(), &self.full_storage_type(), w);
-            });
-        } else {
-            let var = "v";
-            w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
-                let option_type = self.as_option_type();
-                let v_type = option_type.elem_type();
-                cb(var, &v_type, w);
-            });
+        match self.kind {
+            FieldKind::Repeated { .. } => panic!(),
+            FieldKind::Single { presence_flag: true } => {
+                let var = "v";
+                w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
+                    let option_type = self.as_option_type();
+                    let v_type = option_type.elem_type();
+                    cb(var, &v_type, w);
+                });
+            }
+            FieldKind::Single { presence_flag: false } => {
+                w.if_stmt(format!("{} != {}", self.self_field(), self.full_storage_type().default_value()), |w| {
+                    cb(&self.self_field(), &self.full_storage_type(), w);
+                });
+            }
         }
     }
 
@@ -924,30 +939,36 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_self_field_assign_some<S : AsRef<str>>(&self, w: &mut CodeWriter, value: S) {
-        assert!(!self.is_repeated());
         let full_storage_type = self.full_storage_type();
-        if self.elem_type_is_copy() && self.syntax == Syntax::PROTO3 {
-            self.write_self_field_assign(w, value);
-        } else {
-            self.write_self_field_assign(w, full_storage_type.wrap_value(value.as_ref()));
+        match self.kind {
+            FieldKind::Repeated { .. } => panic!(),
+            FieldKind::Single { presence_flag: true } => {
+                self.write_self_field_assign(w, full_storage_type.wrap_value(value.as_ref()));
+            }
+            FieldKind::Single { presence_flag: false } => {
+                self.write_self_field_assign(w, value);
+            }
         }
     }
 
     fn write_self_field_assign_value<S : AsRef<str>>(&self,
         w: &mut CodeWriter, value: S, ty: &RustType)
     {
-        if self.is_repeated() {
-            let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
-            self.write_self_field_assign(w, converted);
-        } else {
-            let converted = ty.into_target(&self.elem_type, value.as_ref());
-            let wrapped =
-                if self.syntax == Syntax::PROTO3 && self.elem_type_is_copy() {
-                    converted
-                } else {
-                    self.full_storage_type().wrap_value(&converted)
-                };
-            self.write_self_field_assign(w, wrapped);
+        match self.kind {
+            FieldKind::Repeated { .. } => {
+                let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
+                self.write_self_field_assign(w, converted);
+            }
+            FieldKind::Single { presence_flag } => {
+                let converted = ty.into_target(&self.elem_type, value.as_ref());
+                let wrapped =
+                    if !presence_flag {
+                        converted
+                    } else {
+                        self.full_storage_type().wrap_value(&converted)
+                    };
+                self.write_self_field_assign(w, wrapped);
+            }
         }
     }
 
@@ -1078,8 +1099,8 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_vec_packed_size(&self) -> String {
-        match self.repeat_mode {
-            RepeatMode::RepeatPacked => {
+        match self.kind {
+            FieldKind::Repeated { packed: true } => {
                 // zero is filtered outside
                 if self.is_fixed() {
                     self.self_field_vec_packed_fixed_size()
@@ -1094,7 +1115,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_element_size(&self, w: &mut CodeWriter, item_var: &str, item_var_type: &RustType, sum_var: &str) {
-        assert!(self.repeat_mode != RepeatMode::RepeatPacked);
+        assert!(self.kind != FieldKind::Repeated { packed: true });
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
                 w.write_line(format!("let len = {}.compute_size();", item_var));
@@ -1111,18 +1132,18 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_write_field(&self, w: &mut CodeWriter) {
-        match self.repeat_mode {
-            RepeatMode::Single => {
+        match self.kind {
+            FieldKind::Single { .. } => {
                 self.write_if_let_self_field_is_some(w, |v, v_type, w| {
                     self.write_write_element(w, "os", v, v_type);
                 });
             },
-            RepeatMode::RepeatRegular => {
+            FieldKind::Repeated { packed: false } => {
                 self.write_for_self_field(w, "v", |w, v_type| {
                     self.write_write_element(w, "os", "v", v_type);
                 });
             },
-            RepeatMode::RepeatPacked => {
+            FieldKind::Repeated { packed: true } => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.number();
                     w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
@@ -1141,8 +1162,8 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
-        match self.repeat_mode {
-            RepeatMode::Single => {
+        match self.kind {
+            FieldKind::Single { .. } => {
                 self.write_if_let_self_field_is_some(w, |v, v_type, w| {
                     match field_type_size(self.proto_type) {
                         Some(s) => {
@@ -1158,7 +1179,7 @@ impl<'a> FieldGen<'a> {
                     };
                 });
             }
-            RepeatMode::RepeatRegular => {
+            FieldKind::Repeated { packed: false } => {
                 match field_type_size(self.proto_type) {
                     Some(s) => {
                         let tag_size = self.tag_size();
@@ -1176,7 +1197,7 @@ impl<'a> FieldGen<'a> {
                     },
                 };
             },
-            RepeatMode::RepeatPacked => {
+            FieldKind::Repeated { packed: true } => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let size_expr = self.self_field_vec_packed_size();
                     w.write_line(format!("{} += {};", sum_var, size_expr));
@@ -1217,11 +1238,15 @@ impl<'a> FieldGen<'a> {
                 assert!(self.elem_type_is_copy());
                 let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
                 let self_field = self.self_field();
-                if self.syntax == Syntax::PROTO3 && self.elem_type_is_copy() {
-                    w.write_line(&self_field);
-                } else {
-                    w.write_line(format!(
-                        "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
+                match self.kind {
+                    FieldKind::Repeated { .. } => panic!(),
+                    FieldKind::Single { presence_flag: true } => {
+                        w.write_line(format!(
+                            "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
+                    }
+                    FieldKind::Single { presence_flag: false } => {
+                        w.write_line(&self_field);
+                    }
                 }
             }
         }
