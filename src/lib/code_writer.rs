@@ -161,7 +161,11 @@ impl<'a> CodeWriter<'a> {
     }
 
     pub fn field_decl(&mut self, name: &str, field_type: &str) {
-        self.field_entry(name, field_type);
+        self.write_line(&format!("{}: {},", name, field_type));
+    }
+
+    pub fn pub_field_decl(&mut self, name: &str, field_type: &str) {
+        self.write_line(&format!("pub {}: {},", name, field_type));
     }
 
     pub fn derive(&mut self, derive: &[&str]) {

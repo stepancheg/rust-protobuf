@@ -1875,7 +1875,14 @@ impl<'a> MessageGen<'a> {
                     if field.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
                         w.comment(&format!("{}: <group>", &field.rust_name));
                     } else {
-                        w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
+                        match field.kind {
+                            FieldKind::Repeated { .. } | FieldKind::Single { presence_flag: true } => {
+                                w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
+                            }
+                            FieldKind::Single { presence_flag: false } => {
+                                w.pub_field_decl(&field.rust_name, &field.full_storage_type().to_string());
+                            }
+                        }
                     }
                 }
             }
