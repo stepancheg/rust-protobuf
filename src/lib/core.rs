@@ -145,7 +145,7 @@ pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
 }
 
 
-pub trait ProtobufEnum : Eq + Sized {
+pub trait ProtobufEnum : Eq + Sized + Copy {
     fn value(&self) -> i32;
 
     fn from_i32(v: i32) -> Option<Self>;

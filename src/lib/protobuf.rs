@@ -40,6 +40,7 @@ pub mod reflect;
 pub mod text_format;
 pub mod stream;
 pub mod error;
+pub mod types;
 
 // used by test
 pub mod hex;

@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+message TestMap {
+    map<string, uint32> m = 1;
+}

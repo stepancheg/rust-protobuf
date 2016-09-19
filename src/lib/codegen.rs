@@ -32,6 +32,7 @@ pub enum RustType {
     Float(u32),
     Bool,
     Vec(Box<RustType>),
+    HashMap(Box<RustType>, Box<RustType>),
     String,
     Slice(Box<RustType>),
     Str,
@@ -59,6 +60,8 @@ impl fmt::Display for RustType {
             RustType::Float(bits)        => write!(f, "f{}", bits),
             RustType::Bool               => write!(f, "bool"),
             RustType::Vec(ref param)     => write!(f, "::std::vec::Vec<{}>", **param),
+            RustType::HashMap(ref key, ref value) =>
+                write!(f, "::std::collections::HashMap<{}, {}>", **key, **value),
             RustType::String             => write!(f, "::std::string::String"),
             RustType::Slice(ref param)   => write!(f, "[{}]", **param),
             RustType::Str                => write!(f, "str"),
@@ -412,6 +415,7 @@ fn field_type_name(field: &FieldWithContext, root_scope: &RootScope) -> RustType
 enum FieldKind {
     Single { presence_flag: bool },
     Repeated { packed: bool },
+    Map,
 }
 
 #[derive(Clone)]
@@ -509,9 +513,23 @@ impl<'a> FieldGen<'a> {
         self.oneof.is_some()
     }
 
-    fn is_repeated(&self) -> bool {
+    fn is_singular(&self) -> bool {
+        match self.kind {
+            FieldKind::Single { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn is_repeated_not_map(&self) -> bool {
         match self.kind {
             FieldKind::Repeated { .. } => true,
+            FieldKind::Single { .. } | FieldKind::Map => false,
+        }
+    }
+
+    fn is_repeated_or_map(&self) -> bool {
+        match self.kind {
+            FieldKind::Repeated { .. } | FieldKind::Map => true,
             FieldKind::Single { .. } => false,
         }
     }
@@ -534,6 +552,10 @@ impl<'a> FieldGen<'a> {
                 } else {
                     RustType::Vec(Box::new(c.clone()))
                 }
+            }
+            FieldKind::Map { .. } => {
+                // TODO
+                RustType::RepeatedField(Box::new(c.clone()))
             }
             FieldKind::Single { presence_flag: true } => {
                 if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
@@ -581,10 +603,10 @@ impl<'a> FieldGen<'a> {
 
     // for field `foo`, type of param of `fn set_foo(..)`
     fn set_xxx_param_type(&self) -> RustType {
-        if self.is_repeated() {
-            self.full_storage_type()
-        } else {
-            self.elem_type.clone()
+        match self.kind {
+            FieldKind::Single { .. } => self.elem_type.clone(),
+            FieldKind::Repeated { .. } |
+            FieldKind::Map             => self.full_storage_type(),
         }
     }
 
@@ -595,20 +617,25 @@ impl<'a> FieldGen<'a> {
 
     // for field `foo`, return type of `fn mut_foo(..)`
     fn mut_xxx_return_type(&self) -> RustType {
-        RustType::Ref(Box::new(if self.is_repeated() {
-            self.full_storage_type()
-        } else {
-            self.elem_type.clone()
+        RustType::Ref(Box::new(match self.kind {
+            FieldKind::Single { .. } => self.elem_type.clone(),
+            FieldKind::Repeated { ..} |
+            FieldKind::Map            => self.full_storage_type()
         }))
     }
 
     // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
-        match self.is_repeated() {
-            true => RustType::Ref(Box::new(RustType::Slice(Box::new(self.elem_type.clone())))),
-            false => match self.elem_type_is_copy() {
-                true  => self.elem_type.clone(),
-                false => self.elem_type.ref_type(),
+        match self.kind {
+            FieldKind::Single { .. } => {
+                match self.elem_type_is_copy() {
+                    true => self.elem_type.clone(),
+                    false => self.elem_type.ref_type(),
+                }
+            }
+            FieldKind::Repeated { .. } |
+            FieldKind::Map             => {
+                RustType::Ref(Box::new(RustType::Slice(Box::new(self.elem_type.clone()))))
             }
         }
     }
@@ -616,7 +643,7 @@ impl<'a> FieldGen<'a> {
     // suffix to convert field value to option
     // like `.as_ref()` in `self.xx.as_ref()`
     fn as_option(&self) -> &'static str {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         match self.full_storage_type() {
             RustType::Option(..) => "",
             _                    => ".as_ref()"
@@ -625,7 +652,7 @@ impl<'a> FieldGen<'a> {
 
     // type of expression returned by `as_option()`
     fn as_option_type(&self) -> RustType {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         match self.full_storage_type() {
             r @ RustType::Option(..)       => r,
             RustType::SingularField(ty)    |
@@ -689,7 +716,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn default_value_from_proto(&self) -> Option<String> {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         if self.enum_default_value.is_some() {
             Some(self.enum_default_value.as_ref().unwrap().rust_name_outer())
         } else if self.proto_field.has_default_value() {
@@ -728,13 +755,13 @@ impl<'a> FieldGen<'a> {
 
     // default value to be returned from fn get_xxx
     fn get_xxx_default_value_rust(&self) -> String {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         self.default_value_from_proto().unwrap_or_else(|| self.get_xxx_return_type().default_value())
     }
 
     // default to be assigned to field
     fn element_default_value_rust(&self) -> String {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         self.default_value_from_proto().unwrap_or_else(|| self.elem_type.default_value())
     }
 
@@ -756,6 +783,7 @@ impl<'a> FieldGen<'a> {
     fn make_accessor_fn(&self) -> String {
         let repeated_or_singular = match self.kind {
             FieldKind::Repeated { .. } => "repeated",
+            FieldKind::Map => "repeated", // TODO
             FieldKind::Single { presence_flag: true } => "singular",
             FieldKind::Single { presence_flag: false } => "singular_proto3",
         };
@@ -862,17 +890,17 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_is_some(&self) -> String {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         format!("{}.is_some()", self.self_field())
     }
 
     fn self_field_is_not_empty(&self) -> String {
-        assert!(self.is_repeated());
+        assert!(self.is_repeated_or_map());
         format!("!{}.is_empty()", self.self_field())
     }
 
     fn self_field_is_none(&self) -> String {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         format!("{}.is_none()", self.self_field())
     }
 
@@ -885,7 +913,7 @@ impl<'a> FieldGen<'a> {
         where F : Fn(&str, &RustType, &mut CodeWriter)
     {
         match self.kind {
-            FieldKind::Repeated { .. } => panic!(),
+            FieldKind::Repeated { .. } | FieldKind::Map => panic!(),
             FieldKind::Single { presence_flag: true } => {
                 let var = "v";
                 w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
@@ -905,7 +933,7 @@ impl<'a> FieldGen<'a> {
     fn write_if_self_field_is_not_empty<F>(&self, w: &mut CodeWriter, cb: F)
         where F : Fn(&mut CodeWriter)
     {
-        assert!(self.is_repeated());
+        assert!(self.is_repeated_or_map());
         let self_field_is_not_empty = self.self_field_is_not_empty();
         w.if_stmt(self_field_is_not_empty, cb);
     }
@@ -934,7 +962,7 @@ impl<'a> FieldGen<'a> {
     fn write_self_field_assign_some(&self, w: &mut CodeWriter, value: &str) {
         let full_storage_type = self.full_storage_type();
         match self.kind {
-            FieldKind::Repeated { .. } => panic!(),
+            FieldKind::Repeated { .. } | FieldKind::Map => panic!(),
             FieldKind::Single { presence_flag: true } => {
                 self.write_self_field_assign(w, &full_storage_type.wrap_value(value.as_ref()));
             }
@@ -948,7 +976,7 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter, value: &str, ty: &RustType)
     {
         match self.kind {
-            FieldKind::Repeated { .. } => {
+            FieldKind::Repeated { .. } | FieldKind::Map => {
                 let converted = ty.into_target(&self.full_storage_type(), value.as_ref());
                 self.write_self_field_assign(w, &converted);
             }
@@ -966,7 +994,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_self_field_assign_default(&self, w: &mut CodeWriter) {
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
         if self.is_oneof() {
             let self_field_oneof = self.self_field_oneof();
             w.write_line(
@@ -1004,7 +1032,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_vec_packed_data_size(&self) -> String {
-        assert!(self.is_repeated());
+        assert!(self.is_repeated_not_map());
         if self.is_fixed() {
             self.self_field_vec_packed_fixed_data_size()
         } else {
@@ -1044,6 +1072,7 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_field_message_string_bytes(&self, w: &mut CodeWriter) {
         let singular_or_repeated = match self.kind {
             FieldKind::Repeated { .. } => "repeated",
+            FieldKind::Map { .. } => "repeated", // TODO
             FieldKind::Single { presence_flag: true } => "singular",
             FieldKind::Single { presence_flag: false } => "singular_proto3",
         };
@@ -1076,19 +1105,22 @@ impl<'a> FieldGen<'a> {
             let wire_type = field_type_wire_type(self.proto_type);
             let read_proc = format!("try!(is.read_{}())", protobuf_name(self.proto_type));
 
-            match self.is_repeated() {
-                false => {
+            match self.kind {
+                FieldKind::Single { .. } => {
                     w.assert_wire_type(wire_type);
                     w.write_line(format!("let tmp = {};", read_proc));
                     self.write_self_field_assign_some(w, "tmp");
-                },
-                true => {
+                }
+                FieldKind::Repeated { .. } => {
                     w.write_line(format!(
                         "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
                         protobuf_name(self.proto_type),
                         self.rust_name));
-                },
-            };
+                }
+                FieldKind::Map => {
+                    w.todo("map");
+                }
+            }
         }
     }
 
@@ -1137,6 +1169,9 @@ impl<'a> FieldGen<'a> {
                     self.write_write_element(w, "os", "v", v_type);
                 });
             },
+            FieldKind::Map => {
+                w.todo("map");
+            }
             FieldKind::Repeated { packed: true } => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.number();
@@ -1191,6 +1226,9 @@ impl<'a> FieldGen<'a> {
                     },
                 };
             },
+            FieldKind::Map => {
+                w.todo("map");
+            }
             FieldKind::Repeated { packed: true } => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let size_expr = self.self_field_vec_packed_size();
@@ -1202,7 +1240,7 @@ impl<'a> FieldGen<'a> {
 
     fn write_message_field_get_singular(&self, w: &mut CodeWriter) {
         assert!(!self.is_oneof());
-        assert!(!self.is_repeated());
+        assert!(self.is_singular());
 
         let get_xxx_return_type = self.get_xxx_return_type();
 
@@ -1215,7 +1253,7 @@ impl<'a> FieldGen<'a> {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
             let self_field = self.self_field();
             match self.kind {
-                FieldKind::Repeated { .. } => panic!(),
+                FieldKind::Repeated { .. } | FieldKind::Map => panic!(),
                 FieldKind::Single { presence_flag: true } => {
                     if get_xxx_return_type.is_ref() {
                         let self_field_as_option = self.self_field_as_option();
@@ -1266,26 +1304,31 @@ impl<'a> FieldGen<'a> {
                             refv),
                         vtype.into_target(&get_xxx_return_type, "v"));
                     w.case_expr("_", self.get_xxx_default_value_rust());
-                });
-            } else if !self.is_repeated() {
-                self.write_message_field_get_singular(w);
+                })
             } else {
-                let self_field = self.self_field();
-                w.write_line(format!("&{}", self_field));
+                match self.kind {
+                    FieldKind::Single { .. } => {
+                        self.write_message_field_get_singular(w);
+                    }
+                    FieldKind::Repeated { .. } | FieldKind::Map => {
+                        let self_field = self.self_field();
+                        w.write_line(format!("&{}", self_field));
+                    }
+                }
             }
         });
     }
 
     fn has_has(&self) -> bool {
         match self.kind {
-            FieldKind::Repeated { .. } => false,
+            FieldKind::Repeated { .. } | FieldKind::Map => false,
             FieldKind::Single { presence_flag } => presence_flag,
         }
     }
 
     fn has_mut(&self) -> bool {
         match self.kind {
-            FieldKind::Repeated { .. } => true,
+            FieldKind::Repeated { .. } | FieldKind::Map => true,
             // TODO: string should be public, and mut is not needed
             FieldKind::Single { .. } => !self.elem_type_is_copy(),
         }
@@ -1293,7 +1336,7 @@ impl<'a> FieldGen<'a> {
 
     fn has_take(&self) -> bool {
         match self.kind {
-            FieldKind::Repeated { .. } => true,
+            FieldKind::Repeated { .. } | FieldKind::Map => true,
             FieldKind::Single { presence_flag: true } => !self.elem_type_is_copy(),
             // TODO: string should be public, and mut is not needed
             FieldKind::Single { presence_flag: false } => !self.elem_type_is_copy(),
@@ -1341,7 +1384,7 @@ impl<'a> FieldGen<'a> {
     fn write_message_field_mut(&self, w: &mut CodeWriter) {
         let mut_xxx_return_type = self.mut_xxx_return_type();
         w.comment("Mutable pointer to the field.");
-        if !self.is_repeated() {
+        if self.is_singular() {
             w.comment("If field is not initialized, it is initialized with default value first.");
         }
         let fn_def = match mut_xxx_return_type {
@@ -1378,7 +1421,7 @@ impl<'a> FieldGen<'a> {
 
             } else {
                 match self.kind {
-                    FieldKind::Repeated { .. } => {
+                    FieldKind::Repeated { .. } | FieldKind::Map => {
                         let self_field = self.self_field();
                         w.write_line(&format!("&mut {}", self_field));
                     }
@@ -1418,7 +1461,7 @@ impl<'a> FieldGen<'a> {
                 w.write_line("}");
             } else {
                 match self.kind {
-                    FieldKind::Repeated { .. } => {
+                    FieldKind::Repeated { .. } | FieldKind::Map => {
                         w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
                             self.rust_name,
                             take_xxx_return_type.default_value()));
@@ -1876,7 +1919,9 @@ impl<'a> MessageGen<'a> {
                         w.comment(&format!("{}: <group>", &field.rust_name));
                     } else {
                         match field.kind {
-                            FieldKind::Repeated { .. } | FieldKind::Single { presence_flag: true } => {
+                            FieldKind::Repeated { .. }                |
+                            FieldKind::Map                            |
+                            FieldKind::Single { presence_flag: true } => {
                                 w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
                             }
                             FieldKind::Single { presence_flag: false } => {

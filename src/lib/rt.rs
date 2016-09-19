@@ -2,6 +2,8 @@
 // Should not be used by programs written by hands.
 
 use std::default::Default;
+use std::hash::Hash;
+use std::collections::HashMap;
 
 use core::*;
 use zigzag::*;
@@ -17,6 +19,8 @@ use singular::SingularField;
 use singular::SingularPtrField;
 use repeated::RepeatedField;
 use stream::CodedInputStream;
+use stream::CodedOutputStream;
+use types::*;
 
 use unknown::UnknownFields;
 
@@ -493,4 +497,87 @@ pub fn read_unknown_or_skip_group(
 /// but this function remains unchanged.
 pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
     ProtobufError::WireError(format!("unexpected wire type {:?}", wire_type))
+}
+
+
+
+pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Value>) -> u32
+    where
+        K : ProtobufType, V : ProtobufType,
+        K::Value : Eq + Hash,
+{
+    let mut sum = 0;
+    for (k, v) in map.iter() {
+        let entry_len = 1 + K::compute_size(k) + 1 + V::compute_size(v);
+        sum += tag_size(field_number) + compute_raw_varint32_size(entry_len) + entry_len
+    }
+    sum
+}
+
+pub fn write_map<K, V>(
+    field_number: u32,
+    map: &HashMap<K::Value, V::Value>,
+    os: &mut CodedOutputStream)
+        -> ProtobufResult<()>
+    where
+        K : ProtobufType, V : ProtobufType,
+        K::Value : Eq + Hash,
+{
+    for (k, v) in map.iter() {
+        let entry_len = 1 + K::cached_size(k) + 1 + V::cached_size(v);
+        try!(os.write_tag(field_number, WireType::WireTypeLengthDelimited));
+        try!(os.write_raw_varint32(entry_len));
+        try!(K::write(1, k, os));
+        try!(V::write(2, v, os));
+    }
+    Ok(())
+}
+
+pub fn read_map_into<K, V>(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut HashMap<K::Value, V::Value>)
+        -> ProtobufResult<()>
+    where
+        K : ProtobufType, V : ProtobufType,
+        K::Value : Eq + Hash,
+{
+    if wire_type != WireType::WireTypeLengthDelimited {
+        return Err(unexpected_wire_type(wire_type));
+    }
+
+    let mut key = None;
+    let mut value = None;
+
+    let len = try!(is.read_raw_varint32());
+    let old_limit = try!(is.push_limit(len));
+    while !try!(is.eof()) {
+        let (field_number, wire_type) = try!(is.read_tag_unpack());
+        match field_number {
+            1 => {
+                if wire_type != K::wire_type() {
+                    return Err(unexpected_wire_type(wire_type));
+                }
+                key = Some(try!(K::read(is)));
+            },
+            2 => {
+                if wire_type != V::wire_type() {
+                    return Err(unexpected_wire_type(wire_type));
+                }
+                value = Some(try!(V::read(is)));
+            },
+            _ => try!(is.skip_field(wire_type)),
+        }
+    }
+    is.pop_limit(old_limit);
+
+    match (key, value) {
+        (None, _) => return Err(ProtobufError::WireError(format!("map key is not set"))),
+        (_, None) => return Err(ProtobufError::WireError(format!("map value is not set"))),
+        (Some(key), Some(value)) => {
+            target.insert(key, value);
+        }
+    }
+
+    Ok(())
 }
