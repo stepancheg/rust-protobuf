@@ -8,9 +8,10 @@ use core::Message;
 use core::MessageStatic;
 use wire_format::WireType;
 use rt;
+use reflect::ProtobufValue;
 
 pub trait ProtobufType {
-    type Value;
+    type Value : ProtobufValue + 'static;
 
     fn wire_type() -> WireType;
 
@@ -304,7 +305,47 @@ impl ProtobufType for ProtobufTypeBool {
     }
 }
 
-impl<E : ProtobufEnum> ProtobufType for ProtobufTypeEnum<E> {
+impl ProtobufType for ProtobufTypeString {
+    type Value = String;
+
+    fn wire_type() -> WireType {
+        WireType::WireTypeLengthDelimited
+    }
+
+    fn read(is: &mut CodedInputStream) -> ProtobufResult<String> {
+        is.read_string()
+    }
+
+    fn compute_size(value: &String) -> u32 {
+        rt::string_size_no_tag(&value)
+    }
+
+    fn write(field_number: u32, value: &String, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+        os.write_string(field_number, &value)
+    }
+}
+
+impl ProtobufType for ProtobufTypeBytes {
+    type Value = Vec<u8>;
+
+    fn wire_type() -> WireType {
+        WireType::WireTypeLengthDelimited
+    }
+
+    fn read(is: &mut CodedInputStream) -> ProtobufResult<Vec<u8>> {
+        is.read_bytes()
+    }
+
+    fn compute_size(value: &Vec<u8>) -> u32 {
+        rt::bytes_size_no_tag(&value)
+    }
+
+    fn write(field_number: u32, value: &Vec<u8>, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+        os.write_bytes(field_number, &value)
+    }
+}
+
+impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
     type Value = E;
 
     fn wire_type() -> WireType {
@@ -324,7 +365,7 @@ impl<E : ProtobufEnum> ProtobufType for ProtobufTypeEnum<E> {
     }
 }
 
-impl<M : Message + MessageStatic> ProtobufType for ProtobufTypeMessage<M> {
+impl<M : Message + MessageStatic + ProtobufValue> ProtobufType for ProtobufTypeMessage<M> {
     type Value = M;
 
     fn wire_type() -> WireType {

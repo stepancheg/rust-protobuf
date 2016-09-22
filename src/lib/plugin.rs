@@ -290,6 +290,12 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct CodeGeneratorResponse {
     // message fields
@@ -515,6 +521,12 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse {
 impl ::std::fmt::Debug for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -806,6 +818,12 @@ impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
 impl ::std::fmt::Debug for CodeGeneratorResponse_File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse_File {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 

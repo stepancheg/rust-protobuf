@@ -1,7 +1,15 @@
+use std::hash::Hash;
+use std::collections::HashMap;
+
 use core::Message;
 use core::ProtobufEnum;
 use core::message_down_cast;
 use reflect::EnumValueDescriptor;
+use types::*;
+
+use super::value::ProtobufValue;
+
+use super::map::ProtobufMap;
 
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
@@ -153,6 +161,7 @@ impl<M : Message> RepeatedGet<M> {
 enum FieldAccessorFunctions<M> {
     Singular { has: fn(&M) -> bool, get: SingularGet<M> },
     Repeated(RepeatedGet<M>),
+    Map { get: Box<GetProtobufMap<M>> },
 }
 
 struct FieldAccessorImpl<M> {
@@ -789,5 +798,52 @@ pub fn make_repeated_message_accessor<M : Message + 'static, F : Message + 'stat
         fns: FieldAccessorFunctions::Repeated(RepeatedGet::Message(
             Box::new(GetRepeatedMessageImpl { get: get }),
         )),
+    })
+}
+
+trait GetProtobufMap<M>
+    where
+        M : Message + 'static,
+{
+    fn get_map<'a>(&self, &'a M) -> &'a ProtobufMap;
+}
+
+struct GetProtobufMapImpl<M, K, V>
+    where
+        M : Message + 'static,
+        K : ProtobufType,
+        V : ProtobufType,
+        <K as ProtobufType>::Value : Hash + Eq,
+{
+    get: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
+}
+
+impl<M, K, V> GetProtobufMap<M> for GetProtobufMapImpl<M, K, V>
+    where
+        M : Message + 'static,
+        K : ProtobufType,
+        V : ProtobufType,
+        <K as ProtobufType>::Value : Hash + Eq,
+{
+    fn get_map<'a>(&self, m: &'a M) -> &'a ProtobufMap
+    {
+        (self.get)(m) as &ProtobufMap
+    }
+}
+
+pub fn make_map_accessor<M, K, V>(
+    name: &'static str,
+    get_map: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
+    _mut_map: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>)
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    K : ProtobufType + 'static,
+    V : ProtobufType + 'static,
+    <K as ProtobufType>::Value : Hash + Eq,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Map { get: Box::new(GetProtobufMapImpl::<M, K, V> { get: get_map }) },
     })
 }

@@ -21,22 +21,7 @@ use error::ProtobufError;
 use error::ProtobufResult;
 
 
-// For some reason Rust doesn't allow conversion of &Foo to &Message it
-// Message contains static functions. So static functions must be placed
-// into separate place. For me it looks like unnecessary complication.
-//
-// See https://github.com/rust-lang/rust/commit/cd31e6ff for details.
-pub trait MessageStatic : Message + Clone + Default + PartialEq {
-    fn new() -> Self;
-
-    // http://stackoverflow.com/q/20342436/15018
-    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
-        panic!("descriptor_static is not implemented for message, \
-            LITE_RUNTIME must be used");
-    }
-}
-
-pub trait Message : fmt::Debug + Clear + Any {
+pub trait Message : fmt::Debug + Clear + Any + 'static {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
@@ -135,6 +120,23 @@ pub trait Message : fmt::Debug + Clear + Any {
     // }
 }
 
+// For some reason Rust doesn't allow conversion of &Foo to &Message it
+// Message contains static functions. So static functions must be placed
+// into separate place.
+//
+// See https://github.com/rust-lang/rust/commit/cd31e6ff for details.
+pub trait MessageStatic : Message + Clone + Default + PartialEq /* + ProtobufValue */ {
+    fn new() -> Self;
+
+    // http://stackoverflow.com/q/20342436/15018
+    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
+        panic!("descriptor_static is not implemented for message, \
+            LITE_RUNTIME must be used");
+    }
+}
+
+
+
 pub fn message_is<M : Message>(m: &Message) -> bool {
     TypeId::of::<M>() == m.type_id()
 }
@@ -145,7 +147,7 @@ pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
 }
 
 
-pub trait ProtobufEnum : Eq + Sized + Copy {
+pub trait ProtobufEnum : Eq + Sized + Copy + 'static /* + ProtobufValue */ {
     fn value(&self) -> i32;
 
     fn from_i32(v: i32) -> Option<Self>;

@@ -147,6 +147,7 @@ impl RustType {
             RustType::Float(..)                      => "0.".to_string(),
             RustType::Bool                           => "false".to_string(),
             RustType::Vec(..)                        => "::std::vec::Vec::new()".to_string(),
+            RustType::HashMap(..)                    => "::std::collections::HashMap::new()".to_string(),
             RustType::String                         => "::std::string::String::new()".to_string(),
             RustType::Option(..)                     => "::std::option::Option::None".to_string(),
             RustType::SingularField(..)              => "::protobuf::SingularField::none()".to_string(),
@@ -169,9 +170,10 @@ impl RustType {
             RustType::Option(..) => format!("{} = ::std::option::Option::None", v),
             RustType::Vec(..) |
             RustType::String |
-            RustType::RepeatedField(..) |
-            RustType::SingularField(..) |
-            RustType::SingularPtrField(..) => format!("{}.clear()", v),
+            RustType::RepeatedField(..)    |
+            RustType::SingularField(..)    |
+            RustType::SingularPtrField(..) |
+            RustType::HashMap(..)          => format!("{}.clear()", v),
             RustType::Bool      |
             RustType::Float(..) |
             RustType::Int(..)   |
@@ -386,6 +388,13 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
 #[derive(Clone,Debug)]
 struct EntryKeyValue(GenProtobufType, GenProtobufType);
 
+fn capitalize(s: &str) -> String {
+    if s.is_empty() {
+        return String::new();
+    }
+    s[..1].to_uppercase() + &s[1..]
+}
+
 #[derive(Clone,Debug)]
 enum GenProtobufType {
     Primitive(FieldDescriptorProto_Type),
@@ -418,6 +427,22 @@ impl GenProtobufType {
             GenProtobufType::Enum(ref name, ref default_value) => {
                 RustType::Enum(name.clone(), default_value.clone())
             }
+        }
+    }
+
+    /// implementation of ProtobufType trait
+    fn lib_protobuf_type(&self) -> String {
+        match *self {
+            GenProtobufType::Primitive(t) => {
+                format!("::protobuf::types::ProtobufType{}", capitalize(protobuf_name(t)))
+            },
+            GenProtobufType::Message(ref name) => {
+                format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
+            },
+            GenProtobufType::Enum(ref name, _) => {
+                format!("::protobuf::types::ProtobufTypeMessage<{}>", name)
+            },
+            GenProtobufType::Group => unreachable!(),
         }
     }
 }
@@ -576,7 +601,7 @@ impl<'a> FieldGen<'a> {
         let kind =
             if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
                 match (elem, true) {
-                    (FieldElem::Message(name, Some(key_value)), false) =>
+                    (FieldElem::Message(name, Some(key_value)), true) =>
                         FieldKind::Map(MapField {
                             name: name,
                             key: key_value.0.clone(),
@@ -799,7 +824,7 @@ impl<'a> FieldGen<'a> {
                 RustType::Ref(Box::new(RustType::Slice(Box::new(elem.rust_type()))))
             }
             FieldKind::Map(..) => {
-                panic!("TODO");
+                RustType::Ref(Box::new(self.full_storage_type()))
             }
         }
     }
@@ -943,30 +968,39 @@ impl<'a> FieldGen<'a> {
             self.proto_field.get_number())
     }
 
-    // name of function in protobuf::reflect::accessor
+    // name of function in `protobuf::reflect::accessor`
     // that generates accessor for this field
-    fn make_accessor_fn(&self) -> String {
-        let repeated_or_singular = match self.kind {
-            FieldKind::Repeated(..) => "repeated",
-            FieldKind::Map(..) => "repeated", // TODO
-            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) |
-            FieldKind::Oneof(..)                                                   => {
-                "singular"
+    fn make_accessor_fn_name_and_type_params(&self) -> String {
+        match self.kind {
+            FieldKind::Map(MapField { ref key, ref value, .. }) => {
+                format!("make_map_accessor::<_, {}, {}>",
+                    key.lib_protobuf_type(),
+                    value.lib_protobuf_type())
             },
-            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
-                "singular_proto3"
-            },
-        };
-        let suffix = match &self.elem().rust_type() {
-            t if t.is_primitive()                     => format!("{}", t),
-            &RustType::String                         => "string".to_string(),
-            &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_string(),
-            &RustType::Enum(..)                       => "enum".to_string(),
-            &RustType::Message(..)                    => "message".to_string(),
-            t => panic!("unexpected field type: {}", t),
-        };
+            _ => {
+                let repeated_or_singular = match self.kind {
+                    FieldKind::Repeated(..) => "repeated",
+                    FieldKind::Map(..) => unreachable!(),
+                    FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) |
+                    FieldKind::Oneof(..)                                                   => {
+                        "singular"
+                    },
+                    FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
+                        "singular_proto3"
+                    },
+                };
+                let suffix = match &self.elem().rust_type() {
+                    t if t.is_primitive()                     => format!("{}", t),
+                    &RustType::String                         => "string".to_string(),
+                    &RustType::Vec(ref t) if t.is_u8()        => "bytes".to_string(),
+                    &RustType::Enum(..)                       => "enum".to_string(),
+                    &RustType::Message(..)                    => "message".to_string(),
+                    t => panic!("unexpected field type: {}", t),
+                };
 
-        format!("make_{}_{}_accessor", repeated_or_singular, suffix)
+                format!("make_{}_{}_accessor", repeated_or_singular, suffix)
+            }
+        }
     }
 
     // accessor function function params
@@ -976,6 +1010,9 @@ impl<'a> FieldGen<'a> {
             r.push("has");
         }
         r.push("get");
+        if let FieldKind::Map(..) = self.kind {
+            r.push("mut");
+        }
         r
     }
 
@@ -1272,35 +1309,36 @@ impl<'a> FieldGen<'a> {
                              self.proto_type.read("is")));
     }
 
-    fn write_merge_from_field(&self, w: &mut CodeWriter) {
-        if self.is_oneof() {
-            self.write_merge_from_oneof(w);
-        } else if !self.elem_type_is_copy() {
-            self.write_merge_from_field_message_string_bytes(w);
-        } else {
-            if self.is_oneof() {
-                w.todo("oneof");
-                return;
-            }
-            let wire_type = field_type_wire_type(self.proto_type);
-            let read_proc = format!("try!(is.read_{}())", protobuf_name(self.proto_type));
+    fn write_merge_from_map(&self, w: &mut CodeWriter) {
+        w.todo("map");
+    }
 
-            match self.kind {
-                FieldKind::Singular(..) => {
-                    w.assert_wire_type(wire_type);
-                    w.write_line(format!("let tmp = {};", read_proc));
-                    self.write_self_field_assign_some(w, "tmp");
+    fn write_merge_from_field(&self, w: &mut CodeWriter) {
+        match self.kind {
+            FieldKind::Oneof(..) => self.write_merge_from_oneof(w),
+            FieldKind::Map(..) => self.write_merge_from_map(w),
+            _ => {
+                if !self.elem_type_is_copy() {
+                    self.write_merge_from_field_message_string_bytes(w);
+                } else {
+                    let wire_type = field_type_wire_type(self.proto_type);
+                    let read_proc = format!("try!(is.read_{}())", protobuf_name(self.proto_type));
+
+                    match self.kind {
+                        FieldKind::Singular(..) => {
+                            w.assert_wire_type(wire_type);
+                            w.write_line(format!("let tmp = {};", read_proc));
+                            self.write_self_field_assign_some(w, "tmp");
+                        }
+                        FieldKind::Repeated(..) => {
+                            w.write_line(format!(
+                                "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+                                protobuf_name(self.proto_type),
+                                self.rust_name));
+                        }
+                        _ => unreachable!(),
+                    }
                 }
-                FieldKind::Repeated(..) => {
-                    w.write_line(format!(
-                        "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
-                        protobuf_name(self.proto_type),
-                        self.rust_name));
-                }
-                FieldKind::Map(..) => {
-                    w.todo("map");
-                }
-                FieldKind::Oneof(..) => unreachable!(),
             }
         }
     }
@@ -1978,7 +2016,8 @@ impl<'a> MessageGen<'a> {
                     w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
                 }
                 for field in fields {
-                    w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(", field.make_accessor_fn()));
+                    w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(",
+                        field.make_accessor_fn_name_and_type_params()));
                     w.indented(|w| {
                         w.write_line(format!("\"{}\",", field.proto_field.get_name()));
                         for f in field.make_accessor_fn_fn_params() {
@@ -2048,6 +2087,16 @@ impl<'a> MessageGen<'a> {
                 self.write_descriptor_static(w);
             }
         });
+    }
+
+    fn write_impl_value(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
+            if !self.lite_runtime {
+                w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
+                    w.write_line("::protobuf::reflect::ProtobufValueRef::Message(self)")
+                })
+            }
+        })
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
@@ -2159,6 +2208,8 @@ impl<'a> MessageGen<'a> {
         if !self.lite_runtime {
             w.write_line("");
             self.write_impl_show(w);
+            w.write_line("");
+            self.write_impl_value(w);
         }
 
         let mut nested_prefix = self.type_name.to_string();
@@ -2294,6 +2345,10 @@ impl<'a> EnumGen<'a> {
             w.write_line("");
             self.write_impl_default(w);
         }
+        if !self.lite_runtime {
+            w.write_line("");
+            self.write_impl_value(w);
+        }
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
@@ -2366,6 +2421,16 @@ impl<'a> EnumGen<'a> {
                 });
             }
         });
+    }
+
+    fn write_impl_value(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
+            if !self.lite_runtime {
+                w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
+                    w.write_line("::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())")
+                })
+            }
+        })
     }
 
     fn write_impl_copy(&self, w: &mut CodeWriter) {

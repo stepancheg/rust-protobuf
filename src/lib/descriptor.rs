@@ -194,6 +194,12 @@ impl ::std::fmt::Debug for FileDescriptorSet {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for FileDescriptorSet {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct FileDescriptorProto {
     // message fields
@@ -899,6 +905,12 @@ impl ::std::fmt::Debug for FileDescriptorProto {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for FileDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct DescriptorProto {
     // message fields
@@ -1493,6 +1505,12 @@ impl ::std::fmt::Debug for DescriptorProto {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for DescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct DescriptorProto_ExtensionRange {
     // message fields
@@ -1704,6 +1722,12 @@ impl ::std::fmt::Debug for DescriptorProto_ExtensionRange {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ExtensionRange {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct DescriptorProto_ReservedRange {
     // message fields
@@ -1912,6 +1936,12 @@ impl ::std::cmp::PartialEq for DescriptorProto_ReservedRange {
 impl ::std::fmt::Debug for DescriptorProto_ReservedRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ReservedRange {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -2532,6 +2562,12 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
@@ -2623,6 +2659,12 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
 impl ::std::marker::Copy for FieldDescriptorProto_Type {
 }
 
+impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Type {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
+}
+
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
@@ -2667,6 +2709,12 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
 }
 
 impl ::std::marker::Copy for FieldDescriptorProto_Label {
+}
+
+impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
 }
 
 #[derive(Clone,Default)]
@@ -2903,6 +2951,12 @@ impl ::std::cmp::PartialEq for OneofDescriptorProto {
 impl ::std::fmt::Debug for OneofDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for OneofDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -3188,6 +3242,12 @@ impl ::std::fmt::Debug for EnumDescriptorProto {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for EnumDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct EnumValueDescriptorProto {
     // message fields
@@ -3463,6 +3523,12 @@ impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
 impl ::std::fmt::Debug for EnumValueDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for EnumValueDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -3745,6 +3811,12 @@ impl ::std::cmp::PartialEq for ServiceDescriptorProto {
 impl ::std::fmt::Debug for ServiceDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for ServiceDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -4172,6 +4244,12 @@ impl ::std::cmp::PartialEq for MethodDescriptorProto {
 impl ::std::fmt::Debug for MethodDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for MethodDescriptorProto {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -4988,6 +5066,12 @@ impl ::std::fmt::Debug for FileOptions {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for FileOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
@@ -5032,6 +5116,12 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
 }
 
 impl ::std::marker::Copy for FileOptions_OptimizeMode {
+}
+
+impl ::protobuf::reflect::ProtobufValue for FileOptions_OptimizeMode {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
 }
 
 #[derive(Clone,Default)]
@@ -5369,6 +5459,12 @@ impl ::std::cmp::PartialEq for MessageOptions {
 impl ::std::fmt::Debug for MessageOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for MessageOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -5792,6 +5888,12 @@ impl ::std::fmt::Debug for FieldOptions {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for FieldOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldOptions_CType {
     STRING = 0,
@@ -5838,6 +5940,12 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
 impl ::std::marker::Copy for FieldOptions_CType {
 }
 
+impl ::protobuf::reflect::ProtobufValue for FieldOptions_CType {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
+}
+
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum FieldOptions_JSType {
     JS_NORMAL = 0,
@@ -5882,6 +5990,12 @@ impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
 }
 
 impl ::std::marker::Copy for FieldOptions_JSType {
+}
+
+impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
 }
 
 #[derive(Clone,Default)]
@@ -6055,6 +6169,12 @@ impl ::std::cmp::PartialEq for OneofOptions {
 impl ::std::fmt::Debug for OneofOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for OneofOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -6314,6 +6434,12 @@ impl ::std::fmt::Debug for EnumOptions {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for EnumOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct EnumValueOptions {
     // message fields
@@ -6526,6 +6652,12 @@ impl ::std::cmp::PartialEq for EnumValueOptions {
 impl ::std::fmt::Debug for EnumValueOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for EnumValueOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -6744,6 +6876,12 @@ impl ::std::fmt::Debug for ServiceOptions {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for ServiceOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct MethodOptions {
     // message fields
@@ -6956,6 +7094,12 @@ impl ::std::cmp::PartialEq for MethodOptions {
 impl ::std::fmt::Debug for MethodOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for MethodOptions {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -7418,6 +7562,12 @@ impl ::std::fmt::Debug for UninterpretedOption {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for UninterpretedOption {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct UninterpretedOption_NamePart {
     // message fields
@@ -7648,6 +7798,12 @@ impl ::std::fmt::Debug for UninterpretedOption_NamePart {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for UninterpretedOption_NamePart {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct SourceCodeInfo {
     // message fields
@@ -7819,6 +7975,12 @@ impl ::std::cmp::PartialEq for SourceCodeInfo {
 impl ::std::fmt::Debug for SourceCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -8195,6 +8357,12 @@ impl ::std::fmt::Debug for SourceCodeInfo_Location {
     }
 }
 
+impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo_Location {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 #[derive(Clone,Default)]
 pub struct GeneratedCodeInfo {
     // message fields
@@ -8366,6 +8534,12 @@ impl ::std::cmp::PartialEq for GeneratedCodeInfo {
 impl ::std::fmt::Debug for GeneratedCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -8678,6 +8852,12 @@ impl ::std::cmp::PartialEq for GeneratedCodeInfo_Annotation {
 impl ::std::fmt::Debug for GeneratedCodeInfo_Annotation {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo_Annotation {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 

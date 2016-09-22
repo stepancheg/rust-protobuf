@@ -17,6 +17,11 @@ use reflect::accessor::FieldAccessor;
 
 
 pub mod accessor;
+mod map;
+pub mod value;
+
+pub use self::value::ProtobufValue;
+pub use self::value::ProtobufValueRef;
 
 
 pub struct FieldDescriptor {
