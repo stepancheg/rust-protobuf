@@ -182,6 +182,7 @@ pub fn enum_size<E : ProtobufEnum>(field_number: u32, value: E) -> u32 {
     tag_size(field_number) + enum_size_no_tag(value)
 }
 
+// TODO: not used in generated code
 pub fn bytes_size_no_tag(bytes: &[u8]) -> u32 {
     compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u32
 }
@@ -190,6 +191,7 @@ pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u32 {
     tag_size(field_number) + bytes_size_no_tag(bytes)
 }
 
+// TODO: not used in generated code
 pub fn string_size_no_tag(s: &str) -> u32 {
     bytes_size_no_tag(s.as_bytes())
 }
