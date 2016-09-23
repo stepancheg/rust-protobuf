@@ -7,9 +7,11 @@ use core::message_down_cast;
 use reflect::EnumValueDescriptor;
 use types::*;
 
-use super::value::ProtobufValue;
+use repeated::RepeatedField;
 
-use super::map::ProtobufMap;
+use super::map::ReflectMap;
+use super::repeated::ReflectRepeated;
+use super::ReflectFieldRef;
 
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
@@ -39,6 +41,8 @@ pub trait FieldAccessor {
     fn get_rep_f32_generic<'a>(&self, m: &'a Message) -> &'a [f32];
     fn get_f64_generic(&self, m: &Message) -> f64;
     fn get_rep_f64_generic<'a>(&self, m: &'a Message) -> &'a [f64];
+
+    fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a>;
 }
 
 
@@ -158,11 +162,21 @@ impl<M : Message> RepeatedGet<M> {
     }
 }
 
+trait FieldAccessor2<M, R: ?Sized>
+    where
+        M : Message + 'static,
+{
+    fn get_field<'a>(&self, &'a M) -> &'a R;
+    fn mut_field<'a>(&self, &'a mut M) -> &'a mut R;
+}
+
 enum FieldAccessorFunctions<M> {
     Singular { has: fn(&M) -> bool, get: SingularGet<M> },
     Repeated(RepeatedGet<M>),
-    Map { get: Box<GetProtobufMap<M>> },
+    Map(Box<FieldAccessor2<M, ReflectMap>>),
+    RepeatedField(Box<FieldAccessor2<M, ReflectRepeated>>),
 }
+
 
 struct FieldAccessorImpl<M> {
     name: &'static str,
@@ -352,6 +366,17 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
         match self.fns {
             FieldAccessorFunctions::Repeated(RepeatedGet::Bool(get)) => get(message_down_cast(m)),
             _ => panic!(),
+        }
+    }
+
+    fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
+        match self.fns {
+            FieldAccessorFunctions::RepeatedField(ref accessor2) =>
+                ReflectFieldRef::Repeated(accessor2.get_field(message_down_cast(m))),
+            FieldAccessorFunctions::Map(ref accessor2) =>
+                ReflectFieldRef::Map(accessor2.get_field(message_down_cast(m))),
+            _ =>
+                ReflectFieldRef::Other,
         }
     }
 }
@@ -801,40 +826,127 @@ pub fn make_repeated_message_accessor<M : Message + 'static, F : Message + 'stat
     })
 }
 
-trait GetProtobufMap<M>
+
+
+struct VecAccessor<M, V>
     where
         M : Message + 'static,
+        V : ProtobufType,
 {
-    fn get_map<'a>(&self, &'a M) -> &'a ProtobufMap;
+    get_vec: for<'a> fn(&'a M) -> &'a Vec<V::Value>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::Value>,
 }
 
-struct GetProtobufMapImpl<M, K, V>
+impl<M, V> FieldAccessor2<M, ReflectRepeated> for VecAccessor<M, V>
+    where
+        M : Message + 'static,
+        V : ProtobufType,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
+        (self.get_vec)(m) as &ReflectRepeated
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectRepeated {
+        (self.mut_vec)(m) as &mut ReflectRepeated
+    }
+}
+
+
+
+pub fn make_vec_accessor<M, V>(
+    name: &'static str,
+    get_vec: for<'a> fn(&'a M) -> &'a Vec<V::Value>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::Value>)
+        -> Box<FieldAccessor + 'static>
+    where
+        M : Message + 'static,
+        V : ProtobufType + 'static,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::RepeatedField(Box::new(VecAccessor::<M, V> {
+            get_vec: get_vec,
+            mut_vec: mut_vec,
+        })),
+    })
+}
+
+
+struct RepeatedFieldAccessor<M, V>
+    where
+        M : Message + 'static,
+        V : ProtobufType,
+{
+    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::Value>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::Value>,
+}
+
+impl<M, V> FieldAccessor2<M, ReflectRepeated> for RepeatedFieldAccessor<M, V>
+    where
+        M : Message + 'static,
+        V : ProtobufType,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
+        (self.get_vec)(m) as &ReflectRepeated
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectRepeated {
+        (self.mut_vec)(m) as &mut ReflectRepeated
+    }
+}
+
+
+pub fn make_repeated_field_accessor<M, V>(
+    name: &'static str,
+    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::Value>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::Value>)
+        -> Box<FieldAccessor + 'static>
+    where
+        M : Message + 'static,
+        V : ProtobufType + 'static,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::RepeatedField(Box::new(RepeatedFieldAccessor::<M, V> {
+            get_vec: get_vec,
+            mut_vec: mut_vec,
+        })),
+    })
+}
+
+
+
+struct MapAccessor<M, K, V>
     where
         M : Message + 'static,
         K : ProtobufType,
         V : ProtobufType,
         <K as ProtobufType>::Value : Hash + Eq,
 {
-    get: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
+    get_map: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
+    mut_map: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>,
 }
 
-impl<M, K, V> GetProtobufMap<M> for GetProtobufMapImpl<M, K, V>
+impl<M, K, V> FieldAccessor2<M, ReflectMap> for MapAccessor<M, K, V>
     where
         M : Message + 'static,
         K : ProtobufType,
         V : ProtobufType,
         <K as ProtobufType>::Value : Hash + Eq,
 {
-    fn get_map<'a>(&self, m: &'a M) -> &'a ProtobufMap
-    {
-        (self.get)(m) as &ProtobufMap
+    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectMap {
+        (self.get_map)(m) as &ReflectMap
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectMap {
+        (self.mut_map)(m) as &mut ReflectMap
     }
 }
 
 pub fn make_map_accessor<M, K, V>(
     name: &'static str,
     get_map: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
-    _mut_map: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>)
+    mut_map: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>)
         -> Box<FieldAccessor + 'static>
 where
     M : Message + 'static,
@@ -844,6 +956,9 @@ where
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Map { get: Box::new(GetProtobufMapImpl::<M, K, V> { get: get_map }) },
+        fns: FieldAccessorFunctions::Map(Box::new(MapAccessor::<M, K, V> {
+            get_map: get_map,
+            mut_map: mut_map,
+        })),
     })
 }

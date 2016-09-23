@@ -18,7 +18,11 @@ use reflect::accessor::FieldAccessor;
 
 pub mod accessor;
 mod map;
-pub mod value;
+mod repeated;
+mod value;
+
+use self::repeated::ReflectRepeated;
+use self::map::ReflectMap;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueRef;
@@ -154,6 +158,10 @@ impl FieldDescriptor {
 
     pub fn get_rep_f64<'a>(&self, m: &'a Message) -> &'a [f64] {
         self.accessor.get_rep_f64_generic(m)
+    }
+
+    pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
+        self.accessor.get_reflect(m)
     }
 }
 
@@ -327,4 +335,11 @@ impl EnumDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.values[index]
     }
+}
+
+
+pub enum ReflectFieldRef<'a> {
+    Repeated(&'a ReflectRepeated),
+    Map(&'a ReflectMap),
+    Other,
 }

@@ -509,14 +509,14 @@ pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Valu
         K::Value : Eq + Hash,
 {
     let mut sum = 0;
-    for (k, v) in map.iter() {
+    for (k, v) in map {
         let entry_len = 1 + K::compute_size(k) + 1 + V::compute_size(v);
         sum += tag_size(field_number) + compute_raw_varint32_size(entry_len) + entry_len
     }
     sum
 }
 
-pub fn write_map<K, V>(
+pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
     map: &HashMap<K::Value, V::Value>,
     os: &mut CodedOutputStream)
@@ -525,12 +525,15 @@ pub fn write_map<K, V>(
         K : ProtobufType, V : ProtobufType,
         K::Value : Eq + Hash,
 {
-    for (k, v) in map.iter() {
-        let entry_len = 1 + K::cached_size(k) + 1 + V::cached_size(v);
+    for (k, v) in map {
+        let key_tag_size = 1;
+        let value_tag_size = 1;
+        let entry_len = key_tag_size + K::get_cached_size(k)
+            + value_tag_size + V::get_cached_size(v);
         try!(os.write_tag(field_number, WireType::WireTypeLengthDelimited));
         try!(os.write_raw_varint32(entry_len));
-        try!(K::write(1, k, os));
-        try!(V::write(2, v, os));
+        try!(K::write_with_cached_size(1, k, os));
+        try!(V::write_with_cached_size(2, v, os));
     }
     Ok(())
 }

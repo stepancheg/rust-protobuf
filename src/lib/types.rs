@@ -20,11 +20,11 @@ pub trait ProtobufType {
     fn compute_size(value: &Self::Value) -> u32;
 
     #[inline]
-    fn cached_size(value: &Self::Value) -> u32 {
+    fn get_cached_size(value: &Self::Value) -> u32 {
         Self::compute_size(value)
     }
 
-    fn write(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()>;
+    fn write_with_cached_size(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()>;
 }
 
 pub struct ProtobufTypeFloat;
@@ -60,7 +60,7 @@ impl ProtobufType for ProtobufTypeFloat {
         4
     }
 
-    fn write(field_number: u32, value: &f32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &f32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_float(field_number, *value)
     }
 }
@@ -80,7 +80,7 @@ impl ProtobufType for ProtobufTypeDouble {
         8
     }
 
-    fn write(field_number: u32, value: &f64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &f64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_double(field_number, *value)
     }
 }
@@ -100,7 +100,7 @@ impl ProtobufType for ProtobufTypeInt32 {
         rt::compute_raw_varint32_size(*value as u32)
     }
 
-    fn write(field_number: u32, value: &i32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &i32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_int32(field_number, *value)
     }
 }
@@ -120,7 +120,7 @@ impl ProtobufType for ProtobufTypeInt64 {
         rt::compute_raw_varint64_size(*value as u64)
     }
 
-    fn write(field_number: u32, value: &i64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &i64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_int64(field_number, *value)
     }
 }
@@ -140,7 +140,7 @@ impl ProtobufType for ProtobufTypeUint32 {
         rt::compute_raw_varint32_size(*value)
     }
 
-    fn write(field_number: u32, value: &u32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &u32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_uint32(field_number, *value)
     }
 }
@@ -160,7 +160,7 @@ impl ProtobufType for ProtobufTypeUint64 {
         rt::compute_raw_varint64_size(*value)
     }
 
-    fn write(field_number: u32, value: &u64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &u64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_uint64(field_number, *value)
     }
 }
@@ -180,7 +180,7 @@ impl ProtobufType for ProtobufTypeSint32 {
         rt::value_varint_zigzag_size_no_tag(*value)
     }
 
-    fn write(field_number: u32, value: &i32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &i32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_sint32(field_number, *value)
     }
 }
@@ -200,7 +200,7 @@ impl ProtobufType for ProtobufTypeSint64 {
         rt::value_varint_zigzag_size_no_tag(*value)
     }
 
-    fn write(field_number: u32, value: &i64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &i64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_sint64(field_number, *value)
     }
 }
@@ -220,7 +220,7 @@ impl ProtobufType for ProtobufTypeFixed32 {
         4
     }
 
-    fn write(field_number: u32, value: &u32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &u32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_fixed32(field_number, *value)
     }
 }
@@ -240,7 +240,7 @@ impl ProtobufType for ProtobufTypeFixed64 {
         8
     }
 
-    fn write(field_number: u32, value: &u64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &u64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_fixed64(field_number, *value)
     }
 }
@@ -260,7 +260,7 @@ impl ProtobufType for ProtobufTypeSfixed32 {
         4
     }
 
-    fn write(field_number: u32, value: &i32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &i32, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_sfixed32(field_number, *value)
     }
 }
@@ -280,7 +280,7 @@ impl ProtobufType for ProtobufTypeSfixed64 {
         8
     }
 
-    fn write(field_number: u32, value: &i64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &i64, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_sfixed64(field_number, *value)
     }
 }
@@ -300,7 +300,7 @@ impl ProtobufType for ProtobufTypeBool {
         1
     }
 
-    fn write(field_number: u32, value: &bool, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &bool, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_bool(field_number, *value)
     }
 }
@@ -320,7 +320,7 @@ impl ProtobufType for ProtobufTypeString {
         rt::string_size_no_tag(&value)
     }
 
-    fn write(field_number: u32, value: &String, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &String, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_string(field_number, &value)
     }
 }
@@ -340,7 +340,7 @@ impl ProtobufType for ProtobufTypeBytes {
         rt::bytes_size_no_tag(&value)
     }
 
-    fn write(field_number: u32, value: &Vec<u8>, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &Vec<u8>, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_bytes(field_number, &value)
     }
 }
@@ -360,7 +360,7 @@ impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
         rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
     }
 
-    fn write(field_number: u32, value: &E, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(field_number: u32, value: &E, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         os.write_enum_obj(field_number, *value)
     }
 }
@@ -380,11 +380,14 @@ impl<M : Message + MessageStatic + ProtobufValue> ProtobufType for ProtobufTypeM
         value.compute_size()
     }
 
-    fn cached_size(value: &M) -> u32 {
+    fn get_cached_size(value: &M) -> u32 {
         value.get_cached_size()
     }
 
-    fn write(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        os.write_message(field_number, value)
+    fn write_with_cached_size(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+        try!(os.write_tag(field_number, WireType::WireTypeLengthDelimited));
+        try!(os.write_raw_varint32(value.get_cached_size()));
+        try!(value.write_to_with_cached_sizes(os));
+        Ok(())
     }
 }

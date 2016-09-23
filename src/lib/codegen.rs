@@ -695,6 +695,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
+    #[allow(dead_code)]
     fn repeated(&self) -> &RepeatedField {
         match self.kind {
             FieldKind::Repeated(ref repeated) => &repeated,
@@ -706,6 +707,13 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Singular(ref singular) => &singular,
             _ => panic!("not a singular field: {}", self.reconstruct_def()),
+        }
+    }
+
+    fn map(&self) -> &MapField {
+        match self.kind {
+            FieldKind::Map(ref map) => &map,
+            _ => panic!("not a map field: {}", self.reconstruct_def()),
         }
     }
 
@@ -1281,6 +1289,7 @@ impl<'a> FieldGen<'a> {
         format!("clear_{}", self.rust_name)
     }
 
+
     fn write_merge_from_field_message_string_bytes(&self, w: &mut CodeWriter) {
         let singular_or_repeated = match self.kind {
             FieldKind::Repeated(..) => "repeated",
@@ -1310,7 +1319,11 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_merge_from_map(&self, w: &mut CodeWriter) {
-        w.todo("map");
+        let &MapField { ref key, ref value, .. } = self.map();
+        w.write_line(&format!("try!(::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {}));",
+            key.lib_protobuf_type(),
+            value.lib_protobuf_type(),
+            self.self_field()));
     }
 
     fn write_merge_from_field(&self, w: &mut CodeWriter) {
@@ -1404,8 +1417,12 @@ impl<'a> FieldGen<'a> {
                     });
                 });
             },
-            FieldKind::Map(..) => {
-                w.todo("map");
+            FieldKind::Map(MapField { ref key, ref value, .. }) => {
+                w.write_line(&format!("try!(::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os));",
+                    key.lib_protobuf_type(),
+                    value.lib_protobuf_type(),
+                    self.number,
+                    self.self_field()));
             }
             FieldKind::Oneof(..) => unreachable!(),
         };
@@ -1418,7 +1435,7 @@ impl<'a> FieldGen<'a> {
                     match field_type_size(self.proto_type) {
                         Some(s) => {
                                 let tag_size = self.tag_size();
-                                w.write_line(format!(
+                                w.write_line(&format!(
                                     "{} += {};",
                                     sum_var,
                                     (s + tag_size) as isize));
@@ -1434,7 +1451,7 @@ impl<'a> FieldGen<'a> {
                     Some(s) => {
                         let tag_size = self.tag_size();
                         let self_field = self.self_field();
-                        w.write_line(format!(
+                        w.write_line(&format!(
                             "{} += {} * {}.len() as u32;",
                             sum_var,
                             (s + tag_size) as isize,
@@ -1447,8 +1464,13 @@ impl<'a> FieldGen<'a> {
                     },
                 };
             },
-            FieldKind::Map(..) => {
-                w.todo("map");
+            FieldKind::Map(MapField { ref key, ref value, .. }) => {
+                w.write_line(&format!("{} += ::protobuf::rt::compute_map_size::<{}, {}>({}, &{});",
+                    sum_var,
+                    key.lib_protobuf_type(),
+                    value.lib_protobuf_type(),
+                    self.number,
+                    self.self_field()));
             }
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
                 self.write_if_self_field_is_not_empty(w, |w| {
@@ -2216,8 +2238,11 @@ impl<'a> MessageGen<'a> {
         nested_prefix.push_str("_");
 
         for nested in &self.message.to_scope().get_messages() {
-            w.write_line("");
-            MessageGen::new(nested, self.root_scope).write(w);
+            // ignore map entries, because they are not used in map fields
+            if nested.map_entry().is_none() {
+                w.write_line("");
+                MessageGen::new(nested, self.root_scope).write(w);
+            }
         }
 
         for enum_type in &self.message.to_scope().get_enums() {
@@ -2504,8 +2529,11 @@ fn gen_file(
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
 
         for message in &scope.get_messages() {
-            w.write_line("");
-            MessageGen::new(message, &root_scope).write(&mut w);
+            // ignore map entries, because they are not used in map fields
+            if message.map_entry().is_none() {
+                w.write_line("");
+                MessageGen::new(message, &root_scope).write(&mut w);
+            }
         }
         for enum_type in &scope.get_enums() {
             w.write_line("");
