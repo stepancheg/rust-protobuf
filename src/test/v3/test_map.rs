@@ -1,3 +1,5 @@
+use protobuf::text_format::print_to_string;
+
 use super::test_map_pb::*;
 
 use test::*;
@@ -14,4 +16,15 @@ fn test_map() {
     map.mut_m().insert("sixty six".to_owned(), 66);
     // cannot (easily) test hex, because order is not specified
     test_serialize_deserialize_no_hex(&map);
+}
+
+#[test]
+fn text_format() {
+    let mut map = TestMap::new();
+
+    assert_eq!(&*print_to_string(&map), "");
+
+    map.mut_m().insert("two".to_owned(), 2);
+
+    assert_eq!(&*print_to_string(&map), "m {key: \"two\" value: 2}")
 }

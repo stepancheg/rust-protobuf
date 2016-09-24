@@ -4,6 +4,7 @@ use core::Message;
 use reflect::FieldDescriptor;
 use reflect::EnumValueDescriptor;
 use reflect::ReflectFieldRef;
+use reflect::ProtobufValueRef;
 use descriptor::*;
 
 fn print_bytes_to(bytes: &[u8], buf: &mut String) {
@@ -155,80 +156,146 @@ impl FieldDescriptor {
         }
     }
 
+    fn get_rep_item_x<'a>(&self, m: &'a Message, index: usize) -> ProtobufValueRef<'a> {
+        match self.proto().get_field_type() {
+            FieldDescriptorProto_Type::TYPE_MESSAGE =>
+                ProtobufValueRef::Message(self.get_rep_message_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_ENUM =>
+                ProtobufValueRef::Enum(self.get_rep_enum_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_STRING =>
+                ProtobufValueRef::String(self.get_rep_str_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_BYTES =>
+                ProtobufValueRef::Bytes(self.get_rep_bytes_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_INT32 |
+            FieldDescriptorProto_Type::TYPE_SINT32 |
+            FieldDescriptorProto_Type::TYPE_SFIXED32 =>
+                ProtobufValueRef::I32(self.get_rep_i32_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_INT64 |
+            FieldDescriptorProto_Type::TYPE_SINT64 |
+            FieldDescriptorProto_Type::TYPE_SFIXED64 =>
+                ProtobufValueRef::I64(self.get_rep_i64_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_UINT32 |
+            FieldDescriptorProto_Type::TYPE_FIXED32 =>
+                ProtobufValueRef::U32(self.get_rep_u32_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_UINT64 |
+            FieldDescriptorProto_Type::TYPE_FIXED64 =>
+                ProtobufValueRef::U64(self.get_rep_u64_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_BOOL =>
+                ProtobufValueRef::Bool(self.get_rep_bool_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_FLOAT =>
+                ProtobufValueRef::F32(self.get_rep_f32_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_DOUBLE =>
+                ProtobufValueRef::F64(self.get_rep_f64_item_x(m, index)),
+            FieldDescriptorProto_Type::TYPE_GROUP =>
+                unimplemented!(),
+        }
+
+    }
 }
 
-#[allow(unused_must_use)] // because write!(..) to String need to to be checked
+fn print_start_field(buf: &mut String, pretty: bool, indent: usize, first: &mut bool,
+    field_name: &str)
+{
+    if !*first && !pretty {
+        buf.push_str(" ");
+    }
+    do_indent(buf, pretty, indent);
+    *first = false;
+    buf.push_str(field_name);
+}
+
+fn print_end_field(buf: &mut String, pretty: bool) {
+    if pretty {
+        buf.push_str("\n");
+    }
+}
+
+fn print_field(buf: &mut String, pretty: bool, indent: usize, first: &mut bool,
+    field_name: &str, value: ProtobufValueRef)
+{
+    print_start_field(buf, pretty, indent, first, field_name);
+
+    match value {
+        ProtobufValueRef::Message(m) => {
+            buf.push_str(" {");
+            if pretty {
+                buf.push_str("\n");
+            }
+            print_to_internal(m, buf, pretty, indent + 1);
+            do_indent(buf, pretty, indent);
+            buf.push_str("}");
+        }
+        ProtobufValueRef::Enum(e) => {
+            buf.push_str(": ");
+            buf.push_str(e.name());
+        }
+        ProtobufValueRef::String(s) => {
+            buf.push_str(": ");
+            print_str_to(s, buf);
+        }
+        ProtobufValueRef::Bytes(b) => {
+            buf.push_str(": ");
+            print_bytes_to(b, buf);
+        },
+        ProtobufValueRef::I32(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+        ProtobufValueRef::I64(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+        ProtobufValueRef::U32(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+        ProtobufValueRef::U64(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+        ProtobufValueRef::Bool(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+        ProtobufValueRef::F32(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+        ProtobufValueRef::F64(v) => {
+            write!(buf, ": {}", v).unwrap();
+        },
+    }
+
+    print_end_field(buf, pretty);
+}
+
 fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize) {
     let d = m.descriptor();
     let mut first = true;
     for f in d.fields() {
         match f.get_reflect(m) {
-            ReflectFieldRef::Map(..) => unimplemented!(),
-            ReflectFieldRef::Repeated(..) => unimplemented!(),
-            ReflectFieldRef::Other => {
-                for i in 0..f.len_field_x(m) {
-                    if !first && !pretty {
-                        buf.push_str(" ");
-                    }
-                    do_indent(buf, pretty, indent);
-                    first = false;
-                    buf.push_str(f.name());
-                    match f.proto().get_field_type() {
-                        FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                            buf.push_str(" {");
-                            if pretty {
-                                buf.push_str("\n");
-                            }
-                            print_to_internal(f.get_rep_message_item_x(m, i), buf, pretty, indent + 1);
-                            do_indent(buf, pretty, indent);
-                            buf.push_str("}");
-                        },
-                        FieldDescriptorProto_Type::TYPE_ENUM => {
-                            buf.push_str(": ");
-                            buf.push_str(f.get_rep_enum_item_x(m, i).name());
-                        },
-                        FieldDescriptorProto_Type::TYPE_STRING => {
-                            buf.push_str(": ");
-                            print_str_to(f.get_rep_str_item_x(m, i), buf);
-                        },
-                        FieldDescriptorProto_Type::TYPE_BYTES => {
-                            buf.push_str(": ");
-                            print_bytes_to(f.get_rep_bytes_item_x(m, i), buf);
-                        },
-                        FieldDescriptorProto_Type::TYPE_INT32 |
-                        FieldDescriptorProto_Type::TYPE_SINT32 |
-                        FieldDescriptorProto_Type::TYPE_SFIXED32 => {
-                            write!(buf, ": {}", f.get_rep_i32_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_INT64 |
-                        FieldDescriptorProto_Type::TYPE_SINT64 |
-                        FieldDescriptorProto_Type::TYPE_SFIXED64 => {
-                            write!(buf, ": {}", f.get_rep_i64_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_UINT32 |
-                        FieldDescriptorProto_Type::TYPE_FIXED32 => {
-                            write!(buf, ": {}", f.get_rep_u32_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_UINT64 |
-                        FieldDescriptorProto_Type::TYPE_FIXED64 => {
-                            write!(buf, ": {}", f.get_rep_u64_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_BOOL => {
-                            write!(buf, ": {}", f.get_rep_bool_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_FLOAT => {
-                            write!(buf, ": {}", f.get_rep_f32_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_DOUBLE => {
-                            write!(buf, ": {}", f.get_rep_f64_item_x(m, i));
-                        },
-                        FieldDescriptorProto_Type::TYPE_GROUP => {
-                            buf.push_str(": <TYPE_GROUP>");
-                        }
-                    }
+            ReflectFieldRef::Map(map) => {
+                for (k, v) in map {
+                    print_start_field(buf, pretty, indent, &mut first, f.name());
+                    buf.push_str(" {");
                     if pretty {
                         buf.push_str("\n");
                     }
+
+                    let mut entry_first = true;
+
+                    print_field(buf, pretty, indent + 1, &mut entry_first, "key", k.as_ref());
+                    print_field(buf, pretty, indent + 1, &mut entry_first, "value", v.as_ref());
+                    do_indent(buf, pretty, indent);
+                    buf.push_str("}");
+                    print_end_field(buf, pretty);
+                }
+            },
+            ReflectFieldRef::Repeated(repeated) => {
+                // TODO: do not print zeros for v3
+                for v in repeated {
+                    print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
+                }
+            },
+            ReflectFieldRef::Other => {
+                for i in 0..f.len_field_x(m) {
+                    let v = f.get_rep_item_x(m, i);
+                    print_field(buf, pretty, indent, &mut first, f.name(), v);
+
                 }
             }
         }

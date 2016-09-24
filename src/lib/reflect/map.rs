@@ -49,3 +49,12 @@ impl<'a> Iterator for ReflectMapIter<'a> {
         self.imp.next()
     }
 }
+
+impl<'a> IntoIterator for &'a ReflectMap {
+    type IntoIter = ReflectMapIter<'a>;
+    type Item = (&'a ProtobufValue, &'a ProtobufValue);
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.reflect_iter()
+    }
+}

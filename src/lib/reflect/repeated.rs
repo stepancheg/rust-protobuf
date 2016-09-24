@@ -64,3 +64,12 @@ impl<'a> Iterator for ReflectRepeatedIter<'a> {
         self.imp.next()
     }
 }
+
+impl<'a> IntoIterator for &'a ReflectRepeated {
+    type IntoIter = ReflectRepeatedIter<'a>;
+    type Item = &'a ProtobufValue;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.reflect_iter()
+    }
+}
