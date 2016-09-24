@@ -9,8 +9,7 @@ fn test_enum() {
     assert_eq!(10, EnumWithAlias::A.value());
     assert_eq!(10, EnumWithAlias::A_AGAIN.value());
     assert_eq!(&[EnumWithAlias::A, EnumWithAlias::B, EnumWithAlias::A_AGAIN], EnumWithAlias::values());
-    // broken now
-    //assert_eq!(EnumWithAlias::A, EnumWithAlias::A_AGAIN);
+    assert_eq!(EnumWithAlias::A, EnumWithAlias::A_AGAIN);
 }
 
 #[test]

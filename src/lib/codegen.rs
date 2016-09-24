@@ -2362,6 +2362,12 @@ impl<'a> EnumGen<'a> {
 
     fn write(&self, w: &mut CodeWriter) {
         self.write_struct(w);
+        if self.allow_alias() {
+            w.write_line("");
+            self.write_impl_eq(w);
+            w.write_line("");
+            self.write_impl_hash(w);
+        }
         w.write_line("");
         self.write_impl_enum(w);
         w.write_line("");
@@ -2377,8 +2383,19 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
-        // TODO: generate eq when allow_alias
-        w.derive(&["Clone", "PartialEq", "Eq", "Debug", "Hash"]);
+        let mut derive = Vec::new();
+        derive.push("Clone");
+        if !self.allow_alias() {
+            derive.push("PartialEq");
+        }
+        derive.push("Eq");
+        derive.push("Debug");
+        if !self.allow_alias() {
+            derive.push("Hash");
+        } else {
+            w.comment("Note: you cannot use pattern matching for enums with allow_alias option");
+        }
+        w.derive(&derive);
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
@@ -2460,6 +2477,24 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_copy(&self, w: &mut CodeWriter) {
         w.impl_for_block("::std::marker::Copy", &self.type_name, |_w| {
+        });
+    }
+
+    fn write_impl_eq(&self, w: &mut CodeWriter) {
+        assert!(self.allow_alias());
+        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
+            w.def_fn("eq(&self, other: &Self) -> bool", |w| {
+                w.write_line("self.value() == other.value()");
+            });
+        });
+    }
+
+    fn write_impl_hash(&self, w: &mut CodeWriter) {
+        assert!(self.allow_alias());
+        w.impl_for_block("::std::hash::Hash", &self.type_name, |w| {
+            w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
+                w.write_line("state.write_i32(self.value())");
+            });
         });
     }
 
