@@ -1,25 +1,13 @@
-use std::collections::hash_map::HashMap;
 use std::fmt;
-use std::collections::HashSet;
 
+use wire_format;
 use descriptor::*;
-use stream::wire_format;
-use core::Message;
-use compiler_plugin;
+use descriptorx::*;
 use rt;
-use code_writer::CodeWriter;
-use paginate::PaginatableIterator;
-use descriptorx::proto_path_to_rust_mod;
-use descriptorx::EnumWithScope;
-use descriptorx::MessageWithScope;
-use descriptorx::MessageOrEnumWithScope;
-use descriptorx::FieldWithContext;
-use descriptorx::OneofWithContext;
-use descriptorx::OneofVariantWithContext;
-use descriptorx::FileScope;
-use descriptorx::RootScope;
-use descriptorx::WithScope;
-use descriptorx::Syntax;
+use code_writer::*;
+
+use super::enums::*;
+
 
 fn escape_default(s: &str) -> String {
     s.chars().flat_map(|c| c.escape_default()).collect()
@@ -40,7 +28,7 @@ pub enum RustType {
     SingularField(Box<RustType>),
     SingularPtrField(Box<RustType>),
     RepeatedField(Box<RustType>),
-    Uniq(Box<RustType>),
+    _Uniq(Box<RustType>),
     Ref(Box<RustType>),
     Message(String),
     // protobuf enum, not any enum
@@ -69,7 +57,7 @@ impl fmt::Display for RustType {
             RustType::SingularField(ref param)    => write!(f, "::protobuf::SingularField<{}>", **param),
             RustType::SingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", **param),
             RustType::RepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", **param),
-            RustType::Uniq(ref param)             => write!(f, "::std::Box<{}>", **param),
+            RustType::_Uniq(ref param)             => write!(f, "::std::Box<{}>", **param),
             RustType::Ref(ref param)              => write!(f, "&{}", **param),
             RustType::Message(ref name) |
             RustType::Enum(ref name, _)    |
@@ -248,6 +236,7 @@ impl RustType {
     }
 }
 
+
 // rust type for protobuf base type
 fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
@@ -385,6 +374,7 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     }
 }
 
+
 #[derive(Clone,Debug)]
 struct EntryKeyValue(GenProtobufType, GenProtobufType);
 
@@ -502,9 +492,13 @@ struct MapField {
 
 #[derive(Clone)]
 enum FieldKind {
+    // optional or required
     Singular(SingularField),
+    // repeated except map
     Repeated(RepeatedField),
+    // map
     Map(MapField),
+    // part of oneof
     Oneof(OneofField),
 }
 
@@ -1831,7 +1825,7 @@ fn write_message_oneof(oneof: &OneofGen, w: &mut CodeWriter) {
 }
 
 /// Message info for codegen
-struct MessageGen<'a> {
+pub struct MessageGen<'a> {
     message: &'a MessageWithScope<'a>,
     root_scope: &'a RootScope<'a>,
     type_name: String,
@@ -1840,7 +1834,7 @@ struct MessageGen<'a> {
 }
 
 impl<'a> MessageGen<'a> {
-    fn new(message: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>)
+    pub fn new(message: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>)
         -> MessageGen<'a>
     {
         let fields: Vec<_> = message.fields().iter().map(|field| {
@@ -2194,7 +2188,7 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write(&self, w: &mut CodeWriter) {
+    pub fn write(&self, w: &mut CodeWriter) {
         self.write_struct(w);
 
         // Cell<u32> (which stores cached size) is not Sync
@@ -2247,362 +2241,4 @@ impl<'a> MessageGen<'a> {
             EnumGen::new(enum_type, self.message.get_scope().get_file_descriptor()).write(w);
         }
     }
-}
-
-
-#[derive(Clone)]
-struct EnumValueGen {
-    proto: EnumValueDescriptorProto,
-    enum_rust_name: String,
-}
-
-impl EnumValueGen {
-    fn parse(proto: &EnumValueDescriptorProto, enum_rust_name: &str) -> EnumValueGen {
-        EnumValueGen {
-            proto: proto.clone(),
-            enum_rust_name: enum_rust_name.to_string(),
-        }
-    }
-
-    // value name
-    fn name<'a>(&'a self) -> &'a str {
-        self.proto.get_name()
-    }
-
-    // enum value
-    fn number(&self) -> i32 {
-        self.proto.get_number()
-    }
-
-    fn rust_name_inner(&self) -> String {
-        self.name().to_string()
-    }
-
-    fn rust_name_outer(&self) -> String {
-        let mut r = String::new();
-        r.push_str(&self.enum_rust_name);
-        r.push_str("::");
-        r.push_str(&self.rust_name_inner());
-        r
-    }
-}
-
-
-struct EnumGen<'a> {
-    enum_with_scope: &'a EnumWithScope<'a>,
-    type_name: String,
-    lite_runtime: bool,
-}
-
-impl<'a> EnumGen<'a> {
-    fn new(enum_with_scope: &'a EnumWithScope<'a>, current_file: &FileDescriptorProto) -> EnumGen<'a> {
-        let rust_name =
-            if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
-                current_file.get_name()
-            {
-                // field type is a message or enum declared in the same file
-                enum_with_scope.rust_name()
-            } else {
-                format!("super::{}::{}",
-                    proto_path_to_rust_mod(enum_with_scope.get_scope().get_file_descriptor().get_name()),
-                    enum_with_scope.rust_name())
-            };
-        EnumGen {
-            enum_with_scope: enum_with_scope,
-            type_name: rust_name,
-            lite_runtime:
-                enum_with_scope.get_scope().get_file_descriptor().get_options().get_optimize_for()
-                    == FileOptions_OptimizeMode::LITE_RUNTIME,
-        }
-    }
-
-    fn allow_alias(&self) -> bool {
-        self.enum_with_scope.en.get_options().get_allow_alias()
-    }
-
-    fn values_all(&self) -> Vec<EnumValueGen> {
-        let mut r = Vec::new();
-        for p in self.enum_with_scope.values() {
-            r.push(
-                EnumValueGen::parse(
-                    p,
-                    &self.type_name)
-            );
-        }
-        r
-    }
-
-    fn values_unique(&self) -> Vec<EnumValueGen> {
-        let mut used = HashSet::new();
-        let mut r = Vec::new();
-        for p in self.enum_with_scope.values() {
-            // skipping non-unique enums
-            // TODO: should support it
-            if !used.insert(p.get_number()) {
-                continue;
-            }
-            r.push(
-                EnumValueGen::parse(
-                    p,
-                    &self.type_name)
-            );
-        }
-        r
-    }
-
-    // find enum value by name
-    fn value_by_name(&'a self, name: &str) -> EnumValueGen {
-        EnumValueGen::parse(
-            self.enum_with_scope.value_by_name(name),
-            &self.type_name)
-    }
-
-    fn write(&self, w: &mut CodeWriter) {
-        self.write_struct(w);
-        if self.allow_alias() {
-            w.write_line("");
-            self.write_impl_eq(w);
-            w.write_line("");
-            self.write_impl_hash(w);
-        }
-        w.write_line("");
-        self.write_impl_enum(w);
-        w.write_line("");
-        self.write_impl_copy(w);
-        if self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3 {
-            w.write_line("");
-            self.write_impl_default(w);
-        }
-        if !self.lite_runtime {
-            w.write_line("");
-            self.write_impl_value(w);
-        }
-    }
-
-    fn write_struct(&self, w: &mut CodeWriter) {
-        let mut derive = Vec::new();
-        derive.push("Clone");
-        if !self.allow_alias() {
-            derive.push("PartialEq");
-        }
-        derive.push("Eq");
-        derive.push("Debug");
-        if !self.allow_alias() {
-            derive.push("Hash");
-        } else {
-            w.comment("Note: you cannot use pattern matching for enums with allow_alias option");
-        }
-        w.derive(&derive);
-        let ref type_name = self.type_name;
-        w.expr_block(&format!("pub enum {}", type_name), |w| {
-            for value in self.values_all() {
-                if self.allow_alias() {
-                    w.write_line(&format!("{}, // {}", value.rust_name_inner(), value.number()));
-                } else {
-                    w.write_line(&format!("{} = {},", value.rust_name_inner(), value.number()));
-                }
-            }
-        });
-    }
-
-    fn write_fn_value(&self, w: &mut CodeWriter) {
-        w.def_fn("value(&self) -> i32", |w| {
-            if self.allow_alias() {
-                w.match_expr("*self", |w| {
-                    for value in self.values_all() {
-                        w.case_expr(value.rust_name_outer(), format!("{}", value.number()));
-                    }
-                });
-            } else {
-                w.write_line("*self as i32")
-            }
-        });
-    }
-
-    fn write_impl_enum(&self, w: &mut CodeWriter) {
-        let ref type_name = self.type_name;
-        w.impl_for_block("::protobuf::ProtobufEnum", &type_name, |w| {
-            self.write_fn_value(w);
-
-            w.write_line("");
-            let ref type_name = self.type_name;
-            w.def_fn(&format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
-                w.match_expr("value", |w| {
-                    let values = self.values_unique();
-                    for value in values {
-                        w.write_line(&format!("{} => ::std::option::Option::Some({}),",
-                            value.number(), value.rust_name_outer()));
-                    }
-                    w.write_line(&format!("_ => ::std::option::Option::None"));
-                });
-            });
-
-            w.write_line("");
-            w.def_fn(&format!("values() -> &'static [Self]"), |w| {
-                w.write_line(&format!("static values: &'static [{}] = &[", type_name));
-                w.indented(|w| {
-                    for value in self.values_all() {
-                        w.write_line(&format!("{},", value.rust_name_outer()));
-                    }
-                });
-                w.write_line("];");
-                w.write_line("values");
-            });
-
-            if !self.lite_runtime {
-                w.write_line("");
-                let ref type_name = self.type_name;
-                w.def_fn(&format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
-                    w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                        let ref type_name = self.type_name;
-                        w.write_line(&format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
-                    });
-                });
-            }
-        });
-    }
-
-    fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            if !self.lite_runtime {
-                w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
-                    w.write_line("::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())")
-                })
-            }
-        })
-    }
-
-    fn write_impl_copy(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::marker::Copy", &self.type_name, |_w| {
-        });
-    }
-
-    fn write_impl_eq(&self, w: &mut CodeWriter) {
-        assert!(self.allow_alias());
-        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
-            w.def_fn("eq(&self, other: &Self) -> bool", |w| {
-                w.write_line("self.value() == other.value()");
-            });
-        });
-    }
-
-    fn write_impl_hash(&self, w: &mut CodeWriter) {
-        assert!(self.allow_alias());
-        w.impl_for_block("::std::hash::Hash", &self.type_name, |w| {
-            w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
-                w.write_line("state.write_i32(self.value())");
-            });
-        });
-    }
-
-    fn write_impl_default(&self, w: &mut CodeWriter) {
-        assert!(self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3);
-        w.impl_for_block("::std::default::Default", &self.type_name, |w| {
-            w.def_fn("default() -> Self", |w| {
-                w.write_line(&format!("{}::{}",
-                    &self.type_name,
-                    &self.enum_with_scope.values()[0].get_name()))
-            });
-        });
-    }
-}
-
-
-fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
-    let fdp_bytes = file.write_to_bytes().unwrap();
-    w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
-    for groups in fdp_bytes.iter().paginate(16) {
-        let fdp_bytes_str = groups.iter()
-                .map(|&b| format!("0x{:02x}", *b))
-                .collect::<Vec<String>>()
-                .join(", ");
-        w.write_line(&format!("    {},", fdp_bytes_str));
-    }
-    w.write_line("];");
-    w.write_line("");
-    w.lazy_static("file_descriptor_proto_lazy", "::protobuf::descriptor::FileDescriptorProto");
-    w.write_line("");
-    w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
-        w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
-    });
-    w.write_line("");
-    w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-        w.unsafe_expr(|w| {
-            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line("parse_descriptor_proto()");
-            });
-        });
-    });
-}
-
-fn gen_file(
-    file: &FileDescriptorProto,
-    _files_map: &HashMap<&str, &FileDescriptorProto>,
-    root_scope: &RootScope,
-)
-    -> Option<compiler_plugin::GenResult>
-{
-    let scope = FileScope { file_descriptor: file } .to_scope();
-
-    if scope.get_messages().is_empty() && scope.get_enums().is_empty() {
-        // protoc generates empty file descriptors for directories: skip them
-        return None;
-    }
-
-    let mut v = Vec::new();
-
-    {
-        let mut w = CodeWriter::new(&mut v);
-
-        w.write_generated();
-
-        w.write_line("");
-        w.write_line("use protobuf::Message as Message_imported_for_functions;");
-        w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
-
-        for message in &scope.get_messages() {
-            // ignore map entries, because they are not used in map fields
-            if message.map_entry().is_none() {
-                w.write_line("");
-                MessageGen::new(message, &root_scope).write(&mut w);
-            }
-        }
-        for enum_type in &scope.get_enums() {
-            w.write_line("");
-            EnumGen::new(enum_type, file).write(&mut w);
-        }
-
-        if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {
-            w.write_line("");
-            write_file_descriptor_data(file, &mut w);
-        }
-    }
-
-    Some(compiler_plugin::GenResult {
-        name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
-        content: v,
-    })
-}
-
-// This function is also used externally by cargo plugin
-// https://github.com/plietar/rust-protobuf-build
-// So be careful changing its signature.
-pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String])
-        -> Vec<compiler_plugin::GenResult>
-{
-    let root_scope = RootScope { file_descriptors: file_descriptors };
-
-    let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
-    let files_map: HashMap<&str, &FileDescriptorProto> =
-        file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
-
-    for file_name in files_to_generate {
-        let file = files_map[&file_name[..]];
-        results.extend(gen_file(file, &files_map, &root_scope));
-    }
-    results
-}
-
-pub fn protoc_gen_rust_main() {
-    compiler_plugin::plugin_main(gen);
 }
