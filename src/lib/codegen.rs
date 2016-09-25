@@ -1633,49 +1633,46 @@ impl<'a> FieldGen<'a> {
         };
         w.pub_fn(fn_def,
         |w| {
-            if self.is_oneof() {
-                let self_field_oneof = self.self_field_oneof();
+            match self.kind {
+                FieldKind::Repeated(..) | FieldKind::Map(..) => {
+                    let self_field = self.self_field();
+                    w.write_line(&format!("&mut {}", self_field));
+                }
+                FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
+                    self.write_if_self_field_is_none(w, |w| {
+                        self.write_self_field_assign_default(w);
+                    });
+                    let self_field = self.self_field();
+                    w.write_line(&format!("{}.as_mut().unwrap()", self_field));
+                }
+                FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
+                    w.write_line(&format!("&mut {}", self.self_field()))
+                }
+                FieldKind::Oneof(..) => {
+                    let self_field_oneof = self.self_field_oneof();
 
-                // if oneof does not contain current field
-                w.if_let_else_stmt(&format!(
-                            "::std::option::Option::Some({}(_))",
-                            self.variant_path())[..], &self_field_oneof[..],
-                |w|
-                {
-                    // initialize it with default value
-                    w.write_line(format!(
-                        "{} = ::std::option::Option::Some({}({}));",
-                        self_field_oneof,
-                        self.variant_path(),
-                        self.element_default_value_rust()));
-                });
+                    // if oneof does not contain current field
+                    w.if_let_else_stmt(&format!(
+                                "::std::option::Option::Some({}(_))",
+                                self.variant_path())[..], &self_field_oneof[..],
+                    |w|
+                    {
+                        // initialize it with default value
+                        w.write_line(format!(
+                            "{} = ::std::option::Option::Some({}({}));",
+                            self_field_oneof,
+                            self.variant_path(),
+                            self.element_default_value_rust()));
+                    });
 
-                // extract field
-                w.match_expr(self_field_oneof, |w| {
-                    w.case_expr(format!(
-                            "::std::option::Option::Some({}(ref mut v))",
-                            self.variant_path()),
-                        "v");
-                    w.case_expr("_", "panic!()");
-                });
-
-            } else {
-                match self.kind {
-                    FieldKind::Repeated(..) | FieldKind::Map(..) => {
-                        let self_field = self.self_field();
-                        w.write_line(&format!("&mut {}", self_field));
-                    }
-                    FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
-                        self.write_if_self_field_is_none(w, |w| {
-                            self.write_self_field_assign_default(w);
-                        });
-                        let self_field = self.self_field();
-                        w.write_line(&format!("{}.as_mut().unwrap()", self_field));
-                    }
-                    FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
-                        w.write_line(&format!("&mut {}", self.self_field()))
-                    }
-                    FieldKind::Oneof(..) => unreachable!(),
+                    // extract field
+                    w.match_expr(self_field_oneof, |w| {
+                        w.case_expr(format!(
+                                "::std::option::Option::Some({}(ref mut v))",
+                                self.variant_path()),
+                            "v");
+                        w.case_expr("_", "panic!()");
+                    });
                 }
             }
         });
