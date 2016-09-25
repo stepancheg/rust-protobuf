@@ -45,15 +45,7 @@ impl CodeGeneratorRequest {
             ptr: 0 as *const CodeGeneratorRequest,
         };
         unsafe {
-            instance.get(|| {
-                CodeGeneratorRequest {
-                    file_to_generate: ::protobuf::RepeatedField::new(),
-                    parameter: ::protobuf::SingularField::none(),
-                    proto_file: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(CodeGeneratorRequest::new)
         }
     }
 
@@ -346,14 +338,7 @@ impl CodeGeneratorResponse {
             ptr: 0 as *const CodeGeneratorResponse,
         };
         unsafe {
-            instance.get(|| {
-                CodeGeneratorResponse {
-                    error: ::protobuf::SingularField::none(),
-                    file: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(CodeGeneratorResponse::new)
         }
     }
 
@@ -598,15 +583,7 @@ impl CodeGeneratorResponse_File {
             ptr: 0 as *const CodeGeneratorResponse_File,
         };
         unsafe {
-            instance.get(|| {
-                CodeGeneratorResponse_File {
-                    name: ::protobuf::SingularField::none(),
-                    insertion_point: ::protobuf::SingularField::none(),
-                    content: ::protobuf::SingularField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(CodeGeneratorResponse_File::new)
         }
     }
 

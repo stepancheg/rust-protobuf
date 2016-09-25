@@ -43,13 +43,7 @@ impl FileDescriptorSet {
             ptr: 0 as *const FileDescriptorSet,
         };
         unsafe {
-            instance.get(|| {
-                FileDescriptorSet {
-                    file: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(FileDescriptorSet::new)
         }
     }
 
@@ -243,24 +237,7 @@ impl FileDescriptorProto {
             ptr: 0 as *const FileDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                FileDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    package: ::protobuf::SingularField::none(),
-                    dependency: ::protobuf::RepeatedField::new(),
-                    public_dependency: ::std::vec::Vec::new(),
-                    weak_dependency: ::std::vec::Vec::new(),
-                    message_type: ::protobuf::RepeatedField::new(),
-                    enum_type: ::protobuf::RepeatedField::new(),
-                    service: ::protobuf::RepeatedField::new(),
-                    extension: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    source_code_info: ::protobuf::SingularPtrField::none(),
-                    syntax: ::protobuf::SingularField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(FileDescriptorProto::new)
         }
     }
 
@@ -1055,22 +1032,7 @@ impl DescriptorProto {
             ptr: 0 as *const DescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                DescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    field: ::protobuf::RepeatedField::new(),
-                    extension: ::protobuf::RepeatedField::new(),
-                    nested_type: ::protobuf::RepeatedField::new(),
-                    enum_type: ::protobuf::RepeatedField::new(),
-                    extension_range: ::protobuf::RepeatedField::new(),
-                    oneof_decl: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    reserved_range: ::protobuf::RepeatedField::new(),
-                    reserved_name: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(DescriptorProto::new)
         }
     }
 
@@ -1735,14 +1697,7 @@ impl DescriptorProto_ExtensionRange {
             ptr: 0 as *const DescriptorProto_ExtensionRange,
         };
         unsafe {
-            instance.get(|| {
-                DescriptorProto_ExtensionRange {
-                    start: ::std::option::Option::None,
-                    end: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(DescriptorProto_ExtensionRange::new)
         }
     }
 
@@ -1968,14 +1923,7 @@ impl DescriptorProto_ReservedRange {
             ptr: 0 as *const DescriptorProto_ReservedRange,
         };
         unsafe {
-            instance.get(|| {
-                DescriptorProto_ReservedRange {
-                    start: ::std::option::Option::None,
-                    end: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(DescriptorProto_ReservedRange::new)
         }
     }
 
@@ -2209,22 +2157,7 @@ impl FieldDescriptorProto {
             ptr: 0 as *const FieldDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                FieldDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    number: ::std::option::Option::None,
-                    label: ::std::option::Option::None,
-                    field_type: ::std::option::Option::None,
-                    type_name: ::protobuf::SingularField::none(),
-                    extendee: ::protobuf::SingularField::none(),
-                    default_value: ::protobuf::SingularField::none(),
-                    oneof_index: ::std::option::Option::None,
-                    json_name: ::protobuf::SingularField::none(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(FieldDescriptorProto::new)
         }
     }
 
@@ -3053,14 +2986,7 @@ impl OneofDescriptorProto {
             ptr: 0 as *const OneofDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                OneofDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(OneofDescriptorProto::new)
         }
     }
 
@@ -3313,15 +3239,7 @@ impl EnumDescriptorProto {
             ptr: 0 as *const EnumDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                EnumDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    value: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(EnumDescriptorProto::new)
         }
     }
 
@@ -3626,15 +3544,7 @@ impl EnumValueDescriptorProto {
             ptr: 0 as *const EnumValueDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                EnumValueDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    number: ::std::option::Option::None,
-                    options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(EnumValueDescriptorProto::new)
         }
     }
 
@@ -3934,15 +3844,7 @@ impl ServiceDescriptorProto {
             ptr: 0 as *const ServiceDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                ServiceDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    method: ::protobuf::RepeatedField::new(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(ServiceDescriptorProto::new)
         }
     }
 
@@ -4250,18 +4152,7 @@ impl MethodDescriptorProto {
             ptr: 0 as *const MethodDescriptorProto,
         };
         unsafe {
-            instance.get(|| {
-                MethodDescriptorProto {
-                    name: ::protobuf::SingularField::none(),
-                    input_type: ::protobuf::SingularField::none(),
-                    output_type: ::protobuf::SingularField::none(),
-                    options: ::protobuf::SingularPtrField::none(),
-                    client_streaming: ::std::option::Option::None,
-                    server_streaming: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(MethodDescriptorProto::new)
         }
     }
 
@@ -4740,27 +4631,7 @@ impl FileOptions {
             ptr: 0 as *const FileOptions,
         };
         unsafe {
-            instance.get(|| {
-                FileOptions {
-                    java_package: ::protobuf::SingularField::none(),
-                    java_outer_classname: ::protobuf::SingularField::none(),
-                    java_multiple_files: ::std::option::Option::None,
-                    java_generate_equals_and_hash: ::std::option::Option::None,
-                    java_string_check_utf8: ::std::option::Option::None,
-                    optimize_for: ::std::option::Option::None,
-                    go_package: ::protobuf::SingularField::none(),
-                    cc_generic_services: ::std::option::Option::None,
-                    java_generic_services: ::std::option::Option::None,
-                    py_generic_services: ::std::option::Option::None,
-                    deprecated: ::std::option::Option::None,
-                    cc_enable_arenas: ::std::option::Option::None,
-                    objc_class_prefix: ::protobuf::SingularField::none(),
-                    csharp_namespace: ::protobuf::SingularField::none(),
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(FileOptions::new)
         }
     }
 
@@ -5722,17 +5593,7 @@ impl MessageOptions {
             ptr: 0 as *const MessageOptions,
         };
         unsafe {
-            instance.get(|| {
-                MessageOptions {
-                    message_set_wire_format: ::std::option::Option::None,
-                    no_standard_descriptor_accessor: ::std::option::Option::None,
-                    deprecated: ::std::option::Option::None,
-                    map_entry: ::std::option::Option::None,
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(MessageOptions::new)
         }
     }
 
@@ -6109,19 +5970,7 @@ impl FieldOptions {
             ptr: 0 as *const FieldOptions,
         };
         unsafe {
-            instance.get(|| {
-                FieldOptions {
-                    ctype: ::std::option::Option::None,
-                    packed: ::std::option::Option::None,
-                    jstype: ::std::option::Option::None,
-                    lazy: ::std::option::Option::None,
-                    deprecated: ::std::option::Option::None,
-                    weak: ::std::option::Option::None,
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(FieldOptions::new)
         }
     }
 
@@ -6690,13 +6539,7 @@ impl OneofOptions {
             ptr: 0 as *const OneofOptions,
         };
         unsafe {
-            instance.get(|| {
-                OneofOptions {
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(OneofOptions::new)
         }
     }
 
@@ -6881,15 +6724,7 @@ impl EnumOptions {
             ptr: 0 as *const EnumOptions,
         };
         unsafe {
-            instance.get(|| {
-                EnumOptions {
-                    allow_alias: ::std::option::Option::None,
-                    deprecated: ::std::option::Option::None,
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(EnumOptions::new)
         }
     }
 
@@ -7167,14 +7002,7 @@ impl EnumValueOptions {
             ptr: 0 as *const EnumValueOptions,
         };
         unsafe {
-            instance.get(|| {
-                EnumValueOptions {
-                    deprecated: ::std::option::Option::None,
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(EnumValueOptions::new)
         }
     }
 
@@ -7405,14 +7233,7 @@ impl ServiceOptions {
             ptr: 0 as *const ServiceOptions,
         };
         unsafe {
-            instance.get(|| {
-                ServiceOptions {
-                    deprecated: ::std::option::Option::None,
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(ServiceOptions::new)
         }
     }
 
@@ -7643,14 +7464,7 @@ impl MethodOptions {
             ptr: 0 as *const MethodOptions,
         };
         unsafe {
-            instance.get(|| {
-                MethodOptions {
-                    deprecated: ::std::option::Option::None,
-                    uninterpreted_option: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(MethodOptions::new)
         }
     }
 
@@ -7886,19 +7700,7 @@ impl UninterpretedOption {
             ptr: 0 as *const UninterpretedOption,
         };
         unsafe {
-            instance.get(|| {
-                UninterpretedOption {
-                    name: ::protobuf::RepeatedField::new(),
-                    identifier_value: ::protobuf::SingularField::none(),
-                    positive_int_value: ::std::option::Option::None,
-                    negative_int_value: ::std::option::Option::None,
-                    double_value: ::std::option::Option::None,
-                    string_value: ::protobuf::SingularField::none(),
-                    aggregate_value: ::protobuf::SingularField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(UninterpretedOption::new)
         }
     }
 
@@ -8403,14 +8205,7 @@ impl UninterpretedOption_NamePart {
             ptr: 0 as *const UninterpretedOption_NamePart,
         };
         unsafe {
-            instance.get(|| {
-                UninterpretedOption_NamePart {
-                    name_part: ::protobuf::SingularField::none(),
-                    is_extension: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(UninterpretedOption_NamePart::new)
         }
     }
 
@@ -8654,13 +8449,7 @@ impl SourceCodeInfo {
             ptr: 0 as *const SourceCodeInfo,
         };
         unsafe {
-            instance.get(|| {
-                SourceCodeInfo {
-                    location: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(SourceCodeInfo::new)
         }
     }
 
@@ -8847,17 +8636,7 @@ impl SourceCodeInfo_Location {
             ptr: 0 as *const SourceCodeInfo_Location,
         };
         unsafe {
-            instance.get(|| {
-                SourceCodeInfo_Location {
-                    path: ::std::vec::Vec::new(),
-                    span: ::std::vec::Vec::new(),
-                    leading_comments: ::protobuf::SingularField::none(),
-                    trailing_comments: ::protobuf::SingularField::none(),
-                    leading_detached_comments: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(SourceCodeInfo_Location::new)
         }
     }
 
@@ -9265,13 +9044,7 @@ impl GeneratedCodeInfo {
             ptr: 0 as *const GeneratedCodeInfo,
         };
         unsafe {
-            instance.get(|| {
-                GeneratedCodeInfo {
-                    annotation: ::protobuf::RepeatedField::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(GeneratedCodeInfo::new)
         }
     }
 
@@ -9457,16 +9230,7 @@ impl GeneratedCodeInfo_Annotation {
             ptr: 0 as *const GeneratedCodeInfo_Annotation,
         };
         unsafe {
-            instance.get(|| {
-                GeneratedCodeInfo_Annotation {
-                    path: ::std::vec::Vec::new(),
-                    source_file: ::protobuf::SingularField::none(),
-                    begin: ::std::option::Option::None,
-                    end: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(GeneratedCodeInfo_Annotation::new)
         }
     }
 

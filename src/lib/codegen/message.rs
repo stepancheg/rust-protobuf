@@ -2033,20 +2033,10 @@ impl<'a> MessageGen<'a> {
 
     fn write_default_instance(&self, w: &mut CodeWriter) {
         w.pub_fn(&format!("default_instance() -> &'static {}", self.type_name), |w| {
-            w.lazy_static_decl_get("instance", &self.type_name, |w| {
-                w.expr_block(&format!("{}", self.type_name), |w| {
-                    for field in self.fields_except_oneof_and_group() {
-                        let init = field.full_storage_type().default_value();
-                        w.field_entry(&field.rust_name, &init);
-                    }
-                    for oneof in self.oneofs() {
-                        let init = oneof.full_storage_type().default_value();
-                        w.field_entry(oneof.name(), &init);
-                    }
-                    w.field_entry("unknown_fields", "::protobuf::UnknownFields::new()");
-                    w.field_entry("cached_size", "::std::cell::Cell::new(0)");
-                });
-            });
+            w.lazy_static_decl_get_simple(
+                "instance",
+                &self.type_name,
+                &format!("{}::new", self.type_name));
         });
     }
 
