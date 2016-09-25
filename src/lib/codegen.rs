@@ -1026,10 +1026,10 @@ impl<'a> FieldGen<'a> {
 
     fn write_clear(&self, w: &mut CodeWriter) {
         if self.is_oneof() {
-            w.write_line(format!("self.{} = ::std::option::Option::None;", self.oneof().oneof_name));
+            w.write_line(&format!("self.{} = ::std::option::Option::None;", self.oneof().oneof_name));
         } else {
             let clear_expr = self.full_storage_type().clear(&self.self_field());
-            w.write_line(format!("{};", clear_expr));
+            w.write_line(&format!("{};", clear_expr));
         }
     }
 
@@ -1084,18 +1084,18 @@ impl<'a> FieldGen<'a> {
 
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                w.write_line(format!("try!({}.write_tag({}, ::protobuf::wire_format::{:?}));",
+                w.write_line(&format!("try!({}.write_tag({}, ::protobuf::wire_format::{:?}));",
                         os, self.number, wire_format::WireTypeLengthDelimited));
-                w.write_line(format!("try!({}.write_raw_varint32({}.get_cached_size()));",
+                w.write_line(&format!("try!({}.write_raw_varint32({}.get_cached_size()));",
                         os, var));
-                w.write_line(format!("try!({}.write_to_with_cached_sizes({}));",
+                w.write_line(&format!("try!({}.write_to_with_cached_sizes({}));",
                         var, os));
             }
             _ => {
                 let param_type = self.os_write_fn_param_type();
                 let os_write_fn_suffix = self.os_write_fn_suffix();
                 let number = self.number();
-                w.write_line(format!("try!({}.write_{}({}, {}));",
+                w.write_line(&format!("try!({}.write_{}({}, {}));",
                     os,
                     os_write_fn_suffix,
                     number,
@@ -1226,7 +1226,7 @@ impl<'a> FieldGen<'a> {
         } else {
             if !self.elem_type_is_copy() {
                 let self_field = self.self_field();
-                w.write_line(format!("{}.set_default();", self_field));
+                w.write_line(&format!("{}.set_default();", self_field));
             } else {
                 self.write_self_field_assign_some(w, &self.element_default_value_rust());
             }
@@ -1302,7 +1302,7 @@ impl<'a> FieldGen<'a> {
             },
             FieldKind::Oneof(..) => unreachable!(),
         };
-        w.write_line(format!(
+        w.write_line(&format!(
             "try!(::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{}));",
             singular_or_repeated,
             protobuf_name(self.proto_type),
@@ -1312,7 +1312,7 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_oneof(&self, w: &mut CodeWriter) {
         w.assert_wire_type(self.wire_type);
         // TODO: split long line
-        w.write_line(format!("self.{} = ::std::option::Option::Some({}(try!({})));",
+        w.write_line(&format!("self.{} = ::std::option::Option::Some({}(try!({})));",
                              self.oneof().oneof_name,
                              self.variant_path(),
                              self.proto_type.read("is")));
@@ -1340,11 +1340,11 @@ impl<'a> FieldGen<'a> {
                     match self.kind {
                         FieldKind::Singular(..) => {
                             w.assert_wire_type(wire_type);
-                            w.write_line(format!("let tmp = {};", read_proc));
+                            w.write_line(&format!("let tmp = {};", read_proc));
                             self.write_self_field_assign_some(w, "tmp");
                         }
                         FieldKind::Repeated(..) => {
-                            w.write_line(format!(
+                            w.write_line(&format!(
                                 "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
                                 protobuf_name(self.proto_type),
                                 self.rust_name));
@@ -1377,14 +1377,14 @@ impl<'a> FieldGen<'a> {
 
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                w.write_line(format!("let len = {}.compute_size();", item_var));
+                w.write_line(&format!("let len = {}.compute_size();", item_var));
                 let tag_size = self.tag_size();
-                w.write_line(format!(
+                w.write_line(&format!(
                         "{} += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
                         sum_var, tag_size));
             },
             _ => {
-                w.write_line(format!(
+                w.write_line(&format!(
                         "{} += {};", sum_var, self.element_size(item_var, item_var_type)));
             },
         }
@@ -1405,14 +1405,14 @@ impl<'a> FieldGen<'a> {
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.number();
-                    w.write_line(format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
+                    w.write_line(&format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
                     w.comment("TODO: Data size is computed again, it should be cached");
                     let data_size_expr = self.self_field_vec_packed_data_size();
-                    w.write_line(format!("try!(os.write_raw_varint32({}));", data_size_expr));
+                    w.write_line(&format!("try!(os.write_raw_varint32({}));", data_size_expr));
                     self.write_for_self_field(w, "v", |w, v_type| {
                         let param_type = self.os_write_fn_param_type();
                         let os_write_fn_suffix = self.os_write_fn_suffix();
-                        w.write_line(format!("try!(os.write_{}_no_tag({}));",
+                        w.write_line(&format!("try!(os.write_{}_no_tag({}));",
                             os_write_fn_suffix, v_type.into_target(&param_type, "v")));
                     });
                 });
@@ -1475,7 +1475,7 @@ impl<'a> FieldGen<'a> {
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let size_expr = self.self_field_vec_packed_size();
-                    w.write_line(format!("{} += {};", sum_var, size_expr));
+                    w.write_line(&format!("{} += {};", sum_var, size_expr));
                 });
             },
             FieldKind::Oneof(..) => unreachable!(),
@@ -1488,7 +1488,7 @@ impl<'a> FieldGen<'a> {
         if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
             let self_field = self.self_field();
             let ref field_type_name = self.elem().rust_type();
-            w.write_line(format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
+            w.write_line(&format!("{}.as_ref().unwrap_or_else(|| {}::default_instance())",
                     self_field, field_type_name));
         } else {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
@@ -1512,7 +1512,7 @@ impl<'a> FieldGen<'a> {
                             );
                         });
                     } else {
-                        w.write_line(format!(
+                        w.write_line(&format!(
                             "{}.unwrap_or({})", self_field, get_xxx_default_value_rust));
                     }
                 }
@@ -1527,7 +1527,7 @@ impl<'a> FieldGen<'a> {
         let get_xxx_return_type = self.get_xxx_return_type();
         let fn_def = format!("get_{}(&self) -> {}",  self.rust_name, get_xxx_return_type);
 
-        w.pub_fn(fn_def,
+        w.pub_fn(&fn_def,
         |w| {
             match self.kind {
                 FieldKind::Oneof(OneofField { ref elem, .. }) => {
@@ -1552,7 +1552,7 @@ impl<'a> FieldGen<'a> {
                 }
                 FieldKind::Repeated(..) | FieldKind::Map(..) => {
                     let self_field = self.self_field();
-                    w.write_line(format!("&{}", self_field));
+                    w.write_line(&format!("&{}", self_field));
                 }
             }
         });
@@ -1589,7 +1589,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_has(&self, w: &mut CodeWriter) {
-        w.pub_fn(format!("{}(&self) -> bool", self.has_name()), |w| {
+        w.pub_fn(&format!("{}(&self) -> bool", self.has_name()), |w| {
             if !self.is_oneof() {
                 let self_field_is_some = self.self_field_is_some();
                 w.write_line(self_field_is_some);
@@ -1610,12 +1610,12 @@ impl<'a> FieldGen<'a> {
         let set_xxx_param_type = self.set_xxx_param_type();
         w.comment("Param is passed by value, moved");
         let ref name = self.rust_name;
-        w.pub_fn(format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
+        w.pub_fn(&format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
             if !self.is_oneof() {
                 self.write_self_field_assign_value(w, "v", &set_xxx_param_type);
             } else {
                 let self_field_oneof = self.self_field_oneof();
-                w.write_line(format!("{} = ::std::option::Option::Some({}(v))",
+                w.write_line(&format!("{} = ::std::option::Option::Some({}(v))",
                     self_field_oneof, self.variant_path()));
             }
         });
@@ -1631,7 +1631,7 @@ impl<'a> FieldGen<'a> {
             RustType::Ref(ref param) => format!("mut_{}(&mut self) -> &mut {}", self.rust_name, **param),
             _ => panic!("not a ref: {}", mut_xxx_return_type),
         };
-        w.pub_fn(fn_def,
+        w.pub_fn(&fn_def,
         |w| {
             match self.kind {
                 FieldKind::Repeated(..) | FieldKind::Map(..) => {
@@ -1658,7 +1658,7 @@ impl<'a> FieldGen<'a> {
                     |w|
                     {
                         // initialize it with default value
-                        w.write_line(format!(
+                        w.write_line(&format!(
                             "{} = ::std::option::Option::Some({}({}));",
                             self_field_oneof,
                             self.variant_path(),
@@ -1681,11 +1681,11 @@ impl<'a> FieldGen<'a> {
     fn write_message_field_take(&self, w: &mut CodeWriter) {
         let take_xxx_return_type = self.take_xxx_return_type();
         w.comment("Take field");
-        w.pub_fn(format!("take_{}(&mut self) -> {}", self.rust_name, take_xxx_return_type), |w| {
+        w.pub_fn(&format!("take_{}(&mut self) -> {}", self.rust_name, take_xxx_return_type), |w| {
             match self.kind {
                 FieldKind::Oneof(..) => {
                     // TODO: replace with if let
-                    w.write_line(format!("if self.{}() {{", self.has_name()));
+                    w.write_line(&format!("if self.{}() {{", self.has_name()));
                     w.indented(|w| {
                         let self_field_oneof = self.self_field_oneof();
                         w.match_expr(format!("{}.take()", self_field_oneof), |w| {
@@ -1700,7 +1700,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line("}");
                 }
                 FieldKind::Repeated(..) | FieldKind::Map(..) => {
-                    w.write_line(format!("::std::mem::replace(&mut self.{}, {})",
+                    w.write_line(&format!("::std::mem::replace(&mut self.{}, {})",
                         self.rust_name,
                         take_xxx_return_type.default_value()));
 
@@ -1724,7 +1724,7 @@ impl<'a> FieldGen<'a> {
 
     fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
         let clear_field_func = self.clear_field_func();
-        w.pub_fn(format!("{}(&mut self)", clear_field_func), |w| {
+        w.pub_fn(&format!("{}(&mut self)", clear_field_func), |w| {
             self.write_clear(w);
         });
 
@@ -1825,7 +1825,7 @@ fn write_message_oneof(oneof: &OneofGen, w: &mut CodeWriter) {
     w.derive(&derive);
     w.pub_enum(&oneof.type_name.to_string(), |w| {
         for variant in oneof.variants() {
-            w.write_line(format!("{}({}),", variant.field.rust_name, &variant.field.elem().rust_type().to_string()));
+            w.write_line(&format!("{}({}),", variant.field.rust_name, &variant.field.elem().rust_type().to_string()));
         }
     });
 }
@@ -1933,7 +1933,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_default_instance(&self, w: &mut CodeWriter) {
-        w.pub_fn(format!("default_instance() -> &'static {}", self.type_name), |w| {
+        w.pub_fn(&format!("default_instance() -> &'static {}", self.type_name), |w| {
             w.lazy_static_decl_get("instance", &self.type_name, |w| {
                 w.expr_block(&format!("{}", self.type_name), |w| {
                     for field in self.fields_except_oneof_and_group() {
@@ -1985,7 +1985,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
         w.impl_self_block(&self.type_name, |w| {
-            w.pub_fn(format!("new() -> {}", self.type_name), |w| {
+            w.pub_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
             });
 
@@ -2006,9 +2006,9 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
-        w.def_fn(format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
+        w.def_fn(&format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
             w.while_block("!try!(is.eof())", |w| {
-                w.write_line(format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
+                w.write_line(&format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
                 w.match_block("field_number", |w| {
                     for f in &self.fields_except_group() {
                         let number = f.number;
@@ -2026,21 +2026,21 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
-        w.def_fn(format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
+        w.def_fn(&format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
                 let fields = self.fields_except_group();
                 if fields.is_empty() {
-                    w.write_line(format!("let fields = ::std::vec::Vec::new();"));
+                    w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
                 } else {
-                    w.write_line(format!("let mut fields = ::std::vec::Vec::new();"));
+                    w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
                 }
                 for field in fields {
-                    w.write_line(format!("fields.push(::protobuf::reflect::accessor::{}(",
+                    w.write_line(&format!("fields.push(::protobuf::reflect::accessor::{}(",
                         field.make_accessor_fn_name_and_type_params()));
                     w.indented(|w| {
-                        w.write_line(format!("\"{}\",", field.proto_field.get_name()));
+                        w.write_line(&format!("\"{}\",", field.proto_field.get_name()));
                         for f in field.make_accessor_fn_fn_params() {
-                            w.write_line(format!("{}::{}_{},",
+                            w.write_line(&format!("{}::{}_{},",
                                     self.type_name,
                                     f,
                                     field.rust_name,
@@ -2049,10 +2049,10 @@ impl<'a> MessageGen<'a> {
                     });
                     w.write_line("));");
                 }
-                w.write_line(format!(
+                w.write_line(&format!(
                     "::protobuf::reflect::MessageDescriptor::new::<{}>(", self.type_name));
                 w.indented(|w| {
-                    w.write_line(format!("\"{}\",", self.type_name));
+                    w.write_line(&format!("\"{}\",", self.type_name));
                     w.write_line("fields,");
                     w.write_line("file_descriptor_proto()");
                 });
@@ -2063,7 +2063,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
-            w.def_fn(format!("is_initialized(&self) -> bool"), |w| {
+            w.def_fn(&format!("is_initialized(&self) -> bool"), |w| {
                 for f in self.required_fields() {
                     f.write_if_self_field_is_none(w, |w| {
                         w.write_line("return false;");
@@ -2083,7 +2083,7 @@ impl<'a> MessageGen<'a> {
             self.write_unknown_fields(w);
             w.write_line("");
             w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
-                w.write_line(format!("::std::any::TypeId::of::<{}>()", self.type_name));
+                w.write_line(&format!("::std::any::TypeId::of::<{}>()", self.type_name));
             });
             w.write_line("");
             w.def_fn("as_any(&self) -> &::std::any::Any", |w| {
@@ -2098,8 +2098,8 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_message_static(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::MessageStatic", &self.type_name, |w| {
-            w.def_fn(format!("new() -> {}", self.type_name), |w| {
-                w.write_line(format!("{}::new()", self.type_name));
+            w.def_fn(&format!("new() -> {}", self.type_name), |w| {
+                w.write_line(&format!("{}::new()", self.type_name));
             });
             if !self.lite_runtime {
                 w.write_line("");
@@ -2132,7 +2132,7 @@ impl<'a> MessageGen<'a> {
                 // TODO: no need to clear oneof fields in loop
                 for f in self.fields_except_group() {
                     let clear_field_func = f.clear_field_func();
-                    w.write_line(format!("self.{}();", clear_field_func));
+                    w.write_line(&format!("self.{}();", clear_field_func));
                 }
                 w.write_line("self.unknown_fields.clear();");
             });
@@ -2142,13 +2142,13 @@ impl<'a> MessageGen<'a> {
     // cannot use `#[derive(PartialEq)]` because of `cached_size` field
     fn write_impl_partial_eq(&self, w: &mut CodeWriter) {
         w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
-            w.def_fn(format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
+            w.def_fn(&format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
                 for f in self.fields_except_oneof_and_group() {
                     let ref field_rust_name = f.rust_name;
-                    w.write_line(format!("self.{field} == other.{field} &&", field=field_rust_name));
+                    w.write_line(&format!("self.{field} == other.{field} &&", field=field_rust_name));
                 }
                 for oneof in self.oneofs() {
-                    w.write_line(format!("self.{oneof} == other.{oneof} &&", oneof=oneof.name()));
+                    w.write_line(&format!("self.{oneof} == other.{oneof} &&", oneof=oneof.name()));
                 }
                 w.write_line("self.unknown_fields == other.unknown_fields");
             });
@@ -2397,9 +2397,9 @@ impl<'a> EnumGen<'a> {
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
                 if self.allow_alias() {
-                    w.write_line(format!("{}, // {}", value.rust_name_inner(), value.number()));
+                    w.write_line(&format!("{}, // {}", value.rust_name_inner(), value.number()));
                 } else {
-                    w.write_line(format!("{} = {},", value.rust_name_inner(), value.number()));
+                    w.write_line(&format!("{} = {},", value.rust_name_inner(), value.number()));
                 }
             }
         });
@@ -2426,23 +2426,23 @@ impl<'a> EnumGen<'a> {
 
             w.write_line("");
             let ref type_name = self.type_name;
-            w.def_fn(format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
+            w.def_fn(&format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
                 w.match_expr("value", |w| {
                     let values = self.values_unique();
                     for value in values {
-                        w.write_line(format!("{} => ::std::option::Option::Some({}),",
+                        w.write_line(&format!("{} => ::std::option::Option::Some({}),",
                             value.number(), value.rust_name_outer()));
                     }
-                    w.write_line(format!("_ => ::std::option::Option::None"));
+                    w.write_line(&format!("_ => ::std::option::Option::None"));
                 });
             });
 
             w.write_line("");
-            w.def_fn(format!("values() -> &'static [Self]"), |w| {
-                w.write_line(format!("static values: &'static [{}] = &[", type_name));
+            w.def_fn(&format!("values() -> &'static [Self]"), |w| {
+                w.write_line(&format!("static values: &'static [{}] = &[", type_name));
                 w.indented(|w| {
                     for value in self.values_all() {
-                        w.write_line(format!("{},", value.rust_name_outer()));
+                        w.write_line(&format!("{},", value.rust_name_outer()));
                     }
                 });
                 w.write_line("];");
@@ -2452,10 +2452,10 @@ impl<'a> EnumGen<'a> {
             if !self.lite_runtime {
                 w.write_line("");
                 let ref type_name = self.type_name;
-                w.def_fn(format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
+                w.def_fn(&format!("enum_descriptor_static(_: Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
                     w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
                         let ref type_name = self.type_name;
-                        w.write_line(format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
+                        w.write_line(&format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
                     });
                 });
             }
@@ -2516,7 +2516,7 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
                 .map(|&b| format!("0x{:02x}", *b))
                 .collect::<Vec<String>>()
                 .join(", ");
-        w.write_line(format!("    {},", fdp_bytes_str));
+        w.write_line(&format!("    {},", fdp_bytes_str));
     }
     w.write_line("];");
     w.write_line("");

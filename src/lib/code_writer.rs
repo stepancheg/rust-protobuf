@@ -190,13 +190,13 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("fn {};", sig));
     }
 
-    pub fn fb_block<F>(&mut self, public: bool, sig: &str, cb: F)
+    pub fn fn_block<F>(&mut self, public: bool, sig: &str, cb: F)
         where F : Fn(&mut CodeWriter)
     {
         if public {
-            self.expr_block(&format!("pub fn {}", sig.as_ref()), cb);
+            self.expr_block(&format!("pub fn {}", sig), cb);
         } else {
-            self.expr_block(&format!("fn {}", sig.as_ref()), cb);
+            self.expr_block(&format!("fn {}", sig), cb);
         }
     }
 
