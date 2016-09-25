@@ -11,7 +11,7 @@ use rt;
 use reflect::ProtobufValue;
 
 pub trait ProtobufType {
-    type Value : ProtobufValue + 'static;
+    type Value : ProtobufValue + Clone + 'static;
 
     fn wire_type() -> WireType;
 

@@ -1,14 +1,35 @@
+use std::any::Any;
+
 use ::core::*;
 use super::*;
 
-pub trait ProtobufValue : 'static {
-    fn as_ref(&self) -> ProtobufValueRef {
-        panic!("descriptor_static is not implemented for message, \
-            LITE_RUNTIME must be used");
+pub trait ProtobufValue : Any + 'static {
+    fn as_ref(&self) -> ProtobufValueRef;
+
+    fn as_any(&self) -> &Any {
+        unimplemented!()
     }
 
     fn is_non_zero(&self) -> bool {
         self.as_ref().is_non_zero()
+    }
+
+    fn as_ref_copy(&self) -> ProtobufValueRef<'static>
+        //where Self : Copy // TODO
+    {
+        match self.as_ref() {
+            ProtobufValueRef::Bool(v) => ProtobufValueRef::Bool(v),
+            ProtobufValueRef::U32(v) => ProtobufValueRef::U32(v),
+            ProtobufValueRef::U64(v) => ProtobufValueRef::U64(v),
+            ProtobufValueRef::I32(v) => ProtobufValueRef::I32(v),
+            ProtobufValueRef::I64(v) => ProtobufValueRef::I64(v),
+            ProtobufValueRef::F32(v) => ProtobufValueRef::F32(v),
+            ProtobufValueRef::F64(v) => ProtobufValueRef::F64(v),
+            ProtobufValueRef::Enum(v) => ProtobufValueRef::Enum(v),
+            ProtobufValueRef::String(..)  |
+            ProtobufValueRef::Bytes(..)   |
+            ProtobufValueRef::Message(..) => unreachable!(),
+        }
     }
 }
 
@@ -57,6 +78,12 @@ impl ProtobufValue for bool {
 impl ProtobufValue for String {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::String(*&self)
+    }
+}
+
+impl ProtobufValue for str {
+    fn as_ref(&self) -> ProtobufValueRef {
+        ProtobufValueRef::String(self)
     }
 }
 
