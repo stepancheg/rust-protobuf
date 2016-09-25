@@ -7,3 +7,6 @@ mod test_zeros_are_not_written;
 
 mod test_map_pb;
 mod test_map;
+
+mod test_enum_alias_pb;
+mod test_enum_alias;

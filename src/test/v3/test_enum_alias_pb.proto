@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 package test_enum_alias;
 
@@ -11,5 +11,5 @@ enum EnumWithAlias {
 }
 
 message TestEnumWithAlias {
-    optional EnumWithAlias en = 1;
+    EnumWithAlias en = 1;
 }
