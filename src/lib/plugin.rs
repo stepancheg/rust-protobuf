@@ -82,6 +82,14 @@ impl CodeGeneratorRequest {
         &self.file_to_generate
     }
 
+    fn get_file_to_generate_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
+        &self.file_to_generate
+    }
+
+    fn mut_file_to_generate_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+        &mut self.file_to_generate
+    }
+
     // optional string parameter = 2;
 
     pub fn clear_parameter(&mut self) {
@@ -141,6 +149,14 @@ impl CodeGeneratorRequest {
 
     pub fn get_proto_file(&self) -> &[super::descriptor::FileDescriptorProto] {
         &self.proto_file
+    }
+
+    fn get_proto_file_for_reflect(&self) -> &::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
+        &self.proto_file
+    }
+
+    fn mut_proto_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
+        &mut self.proto_file
     }
 }
 
@@ -243,18 +259,20 @@ impl ::protobuf::MessageStatic for CodeGeneratorRequest {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_to_generate",
-                    CodeGeneratorRequest::get_file_to_generate,
+                    CodeGeneratorRequest::get_file_to_generate_for_reflect,
+                    CodeGeneratorRequest::mut_file_to_generate_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
                     "parameter",
                     CodeGeneratorRequest::has_parameter,
                     CodeGeneratorRequest::get_parameter,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::descriptor::FileDescriptorProto>>(
                     "proto_file",
-                    CodeGeneratorRequest::get_proto_file,
+                    CodeGeneratorRequest::get_proto_file_for_reflect,
+                    CodeGeneratorRequest::mut_proto_file_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
                     "CodeGeneratorRequest",
@@ -391,6 +409,14 @@ impl CodeGeneratorResponse {
     pub fn get_file(&self) -> &[CodeGeneratorResponse_File] {
         &self.file
     }
+
+    fn get_file_for_reflect(&self) -> &::protobuf::RepeatedField<CodeGeneratorResponse_File> {
+        &self.file
+    }
+
+    fn mut_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
+        &mut self.file
+    }
 }
 
 impl ::protobuf::Message for CodeGeneratorResponse {
@@ -488,9 +514,10 @@ impl ::protobuf::MessageStatic for CodeGeneratorResponse {
                     CodeGeneratorResponse::has_error,
                     CodeGeneratorResponse::get_error,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
-                    CodeGeneratorResponse::get_file,
+                    CodeGeneratorResponse::get_file_for_reflect,
+                    CodeGeneratorResponse::mut_file_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
                     "CodeGeneratorResponse",

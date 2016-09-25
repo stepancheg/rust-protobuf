@@ -77,6 +77,14 @@ impl FileDescriptorSet {
     pub fn get_file(&self) -> &[FileDescriptorProto] {
         &self.file
     }
+
+    fn get_file_for_reflect(&self) -> &::protobuf::RepeatedField<FileDescriptorProto> {
+        &self.file
+    }
+
+    fn mut_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<FileDescriptorProto> {
+        &mut self.file
+    }
 }
 
 impl ::protobuf::Message for FileDescriptorSet {
@@ -160,9 +168,10 @@ impl ::protobuf::MessageStatic for FileDescriptorSet {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileDescriptorProto>>(
                     "file",
-                    FileDescriptorSet::get_file,
+                    FileDescriptorSet::get_file_for_reflect,
+                    FileDescriptorSet::mut_file_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorSet>(
                     "FileDescriptorSet",
@@ -352,6 +361,14 @@ impl FileDescriptorProto {
         &self.dependency
     }
 
+    fn get_dependency_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
+        &self.dependency
+    }
+
+    fn mut_dependency_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+        &mut self.dependency
+    }
+
     // repeated int32 public_dependency = 10;
 
     pub fn clear_public_dependency(&mut self) {
@@ -375,6 +392,14 @@ impl FileDescriptorProto {
 
     pub fn get_public_dependency(&self) -> &[i32] {
         &self.public_dependency
+    }
+
+    fn get_public_dependency_for_reflect(&self) -> &::std::vec::Vec<i32> {
+        &self.public_dependency
+    }
+
+    fn mut_public_dependency_for_reflect(&mut self) -> &mut ::std::vec::Vec<i32> {
+        &mut self.public_dependency
     }
 
     // repeated int32 weak_dependency = 11;
@@ -402,6 +427,14 @@ impl FileDescriptorProto {
         &self.weak_dependency
     }
 
+    fn get_weak_dependency_for_reflect(&self) -> &::std::vec::Vec<i32> {
+        &self.weak_dependency
+    }
+
+    fn mut_weak_dependency_for_reflect(&mut self) -> &mut ::std::vec::Vec<i32> {
+        &mut self.weak_dependency
+    }
+
     // repeated .google.protobuf.DescriptorProto message_type = 4;
 
     pub fn clear_message_type(&mut self) {
@@ -425,6 +458,14 @@ impl FileDescriptorProto {
 
     pub fn get_message_type(&self) -> &[DescriptorProto] {
         &self.message_type
+    }
+
+    fn get_message_type_for_reflect(&self) -> &::protobuf::RepeatedField<DescriptorProto> {
+        &self.message_type
+    }
+
+    fn mut_message_type_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto> {
+        &mut self.message_type
     }
 
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
@@ -452,6 +493,14 @@ impl FileDescriptorProto {
         &self.enum_type
     }
 
+    fn get_enum_type_for_reflect(&self) -> &::protobuf::RepeatedField<EnumDescriptorProto> {
+        &self.enum_type
+    }
+
+    fn mut_enum_type_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+        &mut self.enum_type
+    }
+
     // repeated .google.protobuf.ServiceDescriptorProto service = 6;
 
     pub fn clear_service(&mut self) {
@@ -477,6 +526,14 @@ impl FileDescriptorProto {
         &self.service
     }
 
+    fn get_service_for_reflect(&self) -> &::protobuf::RepeatedField<ServiceDescriptorProto> {
+        &self.service
+    }
+
+    fn mut_service_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
+        &mut self.service
+    }
+
     // repeated .google.protobuf.FieldDescriptorProto extension = 7;
 
     pub fn clear_extension(&mut self) {
@@ -500,6 +557,14 @@ impl FileDescriptorProto {
 
     pub fn get_extension(&self) -> &[FieldDescriptorProto] {
         &self.extension
+    }
+
+    fn get_extension_for_reflect(&self) -> &::protobuf::RepeatedField<FieldDescriptorProto> {
+        &self.extension
+    }
+
+    fn mut_extension_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+        &mut self.extension
     }
 
     // optional .google.protobuf.FileOptions options = 8;
@@ -810,33 +875,40 @@ impl ::protobuf::MessageStatic for FileDescriptorProto {
                     FileDescriptorProto::has_package,
                     FileDescriptorProto::get_package,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "dependency",
-                    FileDescriptorProto::get_dependency,
+                    FileDescriptorProto::get_dependency_for_reflect,
+                    FileDescriptorProto::mut_dependency_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_i32_accessor(
+                fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "public_dependency",
-                    FileDescriptorProto::get_public_dependency,
+                    FileDescriptorProto::get_public_dependency_for_reflect,
+                    FileDescriptorProto::mut_public_dependency_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_i32_accessor(
+                fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "weak_dependency",
-                    FileDescriptorProto::get_weak_dependency,
+                    FileDescriptorProto::get_weak_dependency_for_reflect,
+                    FileDescriptorProto::mut_weak_dependency_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
                     "message_type",
-                    FileDescriptorProto::get_message_type,
+                    FileDescriptorProto::get_message_type_for_reflect,
+                    FileDescriptorProto::mut_message_type_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                     "enum_type",
-                    FileDescriptorProto::get_enum_type,
+                    FileDescriptorProto::get_enum_type_for_reflect,
+                    FileDescriptorProto::mut_enum_type_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
                     "service",
-                    FileDescriptorProto::get_service,
+                    FileDescriptorProto::get_service_for_reflect,
+                    FileDescriptorProto::mut_service_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "extension",
-                    FileDescriptorProto::get_extension,
+                    FileDescriptorProto::get_extension_for_reflect,
+                    FileDescriptorProto::mut_extension_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
                     "options",
@@ -1023,6 +1095,14 @@ impl DescriptorProto {
         &self.field
     }
 
+    fn get_field_for_reflect(&self) -> &::protobuf::RepeatedField<FieldDescriptorProto> {
+        &self.field
+    }
+
+    fn mut_field_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+        &mut self.field
+    }
+
     // repeated .google.protobuf.FieldDescriptorProto extension = 6;
 
     pub fn clear_extension(&mut self) {
@@ -1046,6 +1126,14 @@ impl DescriptorProto {
 
     pub fn get_extension(&self) -> &[FieldDescriptorProto] {
         &self.extension
+    }
+
+    fn get_extension_for_reflect(&self) -> &::protobuf::RepeatedField<FieldDescriptorProto> {
+        &self.extension
+    }
+
+    fn mut_extension_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+        &mut self.extension
     }
 
     // repeated .google.protobuf.DescriptorProto nested_type = 3;
@@ -1073,6 +1161,14 @@ impl DescriptorProto {
         &self.nested_type
     }
 
+    fn get_nested_type_for_reflect(&self) -> &::protobuf::RepeatedField<DescriptorProto> {
+        &self.nested_type
+    }
+
+    fn mut_nested_type_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto> {
+        &mut self.nested_type
+    }
+
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
 
     pub fn clear_enum_type(&mut self) {
@@ -1096,6 +1192,14 @@ impl DescriptorProto {
 
     pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
         &self.enum_type
+    }
+
+    fn get_enum_type_for_reflect(&self) -> &::protobuf::RepeatedField<EnumDescriptorProto> {
+        &self.enum_type
+    }
+
+    fn mut_enum_type_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+        &mut self.enum_type
     }
 
     // repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
@@ -1123,6 +1227,14 @@ impl DescriptorProto {
         &self.extension_range
     }
 
+    fn get_extension_range_for_reflect(&self) -> &::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
+        &self.extension_range
+    }
+
+    fn mut_extension_range_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
+        &mut self.extension_range
+    }
+
     // repeated .google.protobuf.OneofDescriptorProto oneof_decl = 8;
 
     pub fn clear_oneof_decl(&mut self) {
@@ -1146,6 +1258,14 @@ impl DescriptorProto {
 
     pub fn get_oneof_decl(&self) -> &[OneofDescriptorProto] {
         &self.oneof_decl
+    }
+
+    fn get_oneof_decl_for_reflect(&self) -> &::protobuf::RepeatedField<OneofDescriptorProto> {
+        &self.oneof_decl
+    }
+
+    fn mut_oneof_decl_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<OneofDescriptorProto> {
+        &mut self.oneof_decl
     }
 
     // optional .google.protobuf.MessageOptions options = 7;
@@ -1206,6 +1326,14 @@ impl DescriptorProto {
         &self.reserved_range
     }
 
+    fn get_reserved_range_for_reflect(&self) -> &::protobuf::RepeatedField<DescriptorProto_ReservedRange> {
+        &self.reserved_range
+    }
+
+    fn mut_reserved_range_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto_ReservedRange> {
+        &mut self.reserved_range
+    }
+
     // repeated string reserved_name = 10;
 
     pub fn clear_reserved_name(&mut self) {
@@ -1229,6 +1357,14 @@ impl DescriptorProto {
 
     pub fn get_reserved_name(&self) -> &[::std::string::String] {
         &self.reserved_name
+    }
+
+    fn get_reserved_name_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
+        &self.reserved_name
+    }
+
+    fn mut_reserved_name_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+        &mut self.reserved_name
     }
 }
 
@@ -1420,42 +1556,50 @@ impl ::protobuf::MessageStatic for DescriptorProto {
                     DescriptorProto::has_name,
                     DescriptorProto::get_name,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "field",
-                    DescriptorProto::get_field,
+                    DescriptorProto::get_field_for_reflect,
+                    DescriptorProto::mut_field_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "extension",
-                    DescriptorProto::get_extension,
+                    DescriptorProto::get_extension_for_reflect,
+                    DescriptorProto::mut_extension_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
                     "nested_type",
-                    DescriptorProto::get_nested_type,
+                    DescriptorProto::get_nested_type_for_reflect,
+                    DescriptorProto::mut_nested_type_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                     "enum_type",
-                    DescriptorProto::get_enum_type,
+                    DescriptorProto::get_enum_type_for_reflect,
+                    DescriptorProto::mut_enum_type_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
                     "extension_range",
-                    DescriptorProto::get_extension_range,
+                    DescriptorProto::get_extension_range_for_reflect,
+                    DescriptorProto::mut_extension_range_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofDescriptorProto>>(
                     "oneof_decl",
-                    DescriptorProto::get_oneof_decl,
+                    DescriptorProto::get_oneof_decl_for_reflect,
+                    DescriptorProto::mut_oneof_decl_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
                     "options",
                     DescriptorProto::has_options,
                     DescriptorProto::get_options,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
                     "reserved_range",
-                    DescriptorProto::get_reserved_range,
+                    DescriptorProto::get_reserved_range_for_reflect,
+                    DescriptorProto::mut_reserved_range_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "reserved_name",
-                    DescriptorProto::get_reserved_name,
+                    DescriptorProto::get_reserved_name_for_reflect,
+                    DescriptorProto::mut_reserved_name_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto>(
                     "DescriptorProto",
@@ -3058,6 +3202,14 @@ impl EnumDescriptorProto {
         &self.value
     }
 
+    fn get_value_for_reflect(&self) -> &::protobuf::RepeatedField<EnumValueDescriptorProto> {
+        &self.value
+    }
+
+    fn mut_value_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
+        &mut self.value
+    }
+
     // optional .google.protobuf.EnumOptions options = 3;
 
     pub fn clear_options(&mut self) {
@@ -3199,9 +3351,10 @@ impl ::protobuf::MessageStatic for EnumDescriptorProto {
                     EnumDescriptorProto::has_name,
                     EnumDescriptorProto::get_name,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
                     "value",
-                    EnumDescriptorProto::get_value,
+                    EnumDescriptorProto::get_value_for_reflect,
+                    EnumDescriptorProto::mut_value_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
                     "options",
@@ -3630,6 +3783,14 @@ impl ServiceDescriptorProto {
         &self.method
     }
 
+    fn get_method_for_reflect(&self) -> &::protobuf::RepeatedField<MethodDescriptorProto> {
+        &self.method
+    }
+
+    fn mut_method_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<MethodDescriptorProto> {
+        &mut self.method
+    }
+
     // optional .google.protobuf.ServiceOptions options = 3;
 
     pub fn clear_options(&mut self) {
@@ -3771,9 +3932,10 @@ impl ::protobuf::MessageStatic for ServiceDescriptorProto {
                     ServiceDescriptorProto::has_name,
                     ServiceDescriptorProto::get_name,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodDescriptorProto>>(
                     "method",
-                    ServiceDescriptorProto::get_method,
+                    ServiceDescriptorProto::get_method_for_reflect,
+                    ServiceDescriptorProto::mut_method_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
                     "options",
@@ -4689,6 +4851,14 @@ impl FileOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for FileOptions {
@@ -5004,9 +5174,10 @@ impl ::protobuf::MessageStatic for FileOptions {
                     FileOptions::has_csharp_namespace,
                     FileOptions::get_csharp_namespace,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    FileOptions::get_uninterpreted_option,
+                    FileOptions::get_uninterpreted_option_for_reflect,
+                    FileOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<FileOptions>(
                     "FileOptions",
@@ -5265,6 +5436,14 @@ impl MessageOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for MessageOptions {
@@ -5420,9 +5599,10 @@ impl ::protobuf::MessageStatic for MessageOptions {
                     MessageOptions::has_map_entry,
                     MessageOptions::get_map_entry,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    MessageOptions::get_uninterpreted_option,
+                    MessageOptions::get_uninterpreted_option_for_reflect,
+                    MessageOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<MessageOptions>(
                     "MessageOptions",
@@ -5651,6 +5831,14 @@ impl FieldOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for FieldOptions {
@@ -5842,9 +6030,10 @@ impl ::protobuf::MessageStatic for FieldOptions {
                     FieldOptions::has_weak,
                     FieldOptions::get_weak,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    FieldOptions::get_uninterpreted_option,
+                    FieldOptions::get_uninterpreted_option_for_reflect,
+                    FieldOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<FieldOptions>(
                     "FieldOptions",
@@ -6055,6 +6244,14 @@ impl OneofOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for OneofOptions {
@@ -6138,9 +6335,10 @@ impl ::protobuf::MessageStatic for OneofOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    OneofOptions::get_uninterpreted_option,
+                    OneofOptions::get_uninterpreted_option_for_reflect,
+                    OneofOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<OneofOptions>(
                     "OneofOptions",
@@ -6277,6 +6475,14 @@ impl EnumOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for EnumOptions {
@@ -6396,9 +6602,10 @@ impl ::protobuf::MessageStatic for EnumOptions {
                     EnumOptions::has_deprecated,
                     EnumOptions::get_deprecated,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    EnumOptions::get_uninterpreted_option,
+                    EnumOptions::get_uninterpreted_option_for_reflect,
+                    EnumOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<EnumOptions>(
                     "EnumOptions",
@@ -6518,6 +6725,14 @@ impl EnumValueOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for EnumValueOptions {
@@ -6619,9 +6834,10 @@ impl ::protobuf::MessageStatic for EnumValueOptions {
                     EnumValueOptions::has_deprecated,
                     EnumValueOptions::get_deprecated,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    EnumValueOptions::get_uninterpreted_option,
+                    EnumValueOptions::get_uninterpreted_option_for_reflect,
+                    EnumValueOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<EnumValueOptions>(
                     "EnumValueOptions",
@@ -6739,6 +6955,14 @@ impl ServiceOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for ServiceOptions {
@@ -6840,9 +7064,10 @@ impl ::protobuf::MessageStatic for ServiceOptions {
                     ServiceOptions::has_deprecated,
                     ServiceOptions::get_deprecated,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    ServiceOptions::get_uninterpreted_option,
+                    ServiceOptions::get_uninterpreted_option_for_reflect,
+                    ServiceOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<ServiceOptions>(
                     "ServiceOptions",
@@ -6960,6 +7185,14 @@ impl MethodOptions {
     pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
         &self.uninterpreted_option
     }
+
+    fn get_uninterpreted_option_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption> {
+        &self.uninterpreted_option
+    }
+
+    fn mut_uninterpreted_option_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+        &mut self.uninterpreted_option
+    }
 }
 
 impl ::protobuf::Message for MethodOptions {
@@ -7061,9 +7294,10 @@ impl ::protobuf::MessageStatic for MethodOptions {
                     MethodOptions::has_deprecated,
                     MethodOptions::get_deprecated,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
-                    MethodOptions::get_uninterpreted_option,
+                    MethodOptions::get_uninterpreted_option_for_reflect,
+                    MethodOptions::mut_uninterpreted_option_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<MethodOptions>(
                     "MethodOptions",
@@ -7171,6 +7405,14 @@ impl UninterpretedOption {
 
     pub fn get_name(&self) -> &[UninterpretedOption_NamePart] {
         &self.name
+    }
+
+    fn get_name_for_reflect(&self) -> &::protobuf::RepeatedField<UninterpretedOption_NamePart> {
+        &self.name
+    }
+
+    fn mut_name_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
+        &mut self.name
     }
 
     // optional string identifier_value = 3;
@@ -7486,9 +7728,10 @@ impl ::protobuf::MessageStatic for UninterpretedOption {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
                     "name",
-                    UninterpretedOption::get_name,
+                    UninterpretedOption::get_name_for_reflect,
+                    UninterpretedOption::mut_name_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
                     "identifier_value",
@@ -7861,6 +8104,14 @@ impl SourceCodeInfo {
     pub fn get_location(&self) -> &[SourceCodeInfo_Location] {
         &self.location
     }
+
+    fn get_location_for_reflect(&self) -> &::protobuf::RepeatedField<SourceCodeInfo_Location> {
+        &self.location
+    }
+
+    fn mut_location_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
+        &mut self.location
+    }
 }
 
 impl ::protobuf::Message for SourceCodeInfo {
@@ -7944,9 +8195,10 @@ impl ::protobuf::MessageStatic for SourceCodeInfo {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
                     "location",
-                    SourceCodeInfo::get_location,
+                    SourceCodeInfo::get_location_for_reflect,
+                    SourceCodeInfo::mut_location_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo>(
                     "SourceCodeInfo",
@@ -8050,6 +8302,14 @@ impl SourceCodeInfo_Location {
         &self.path
     }
 
+    fn get_path_for_reflect(&self) -> &::std::vec::Vec<i32> {
+        &self.path
+    }
+
+    fn mut_path_for_reflect(&mut self) -> &mut ::std::vec::Vec<i32> {
+        &mut self.path
+    }
+
     // repeated int32 span = 2;
 
     pub fn clear_span(&mut self) {
@@ -8073,6 +8333,14 @@ impl SourceCodeInfo_Location {
 
     pub fn get_span(&self) -> &[i32] {
         &self.span
+    }
+
+    fn get_span_for_reflect(&self) -> &::std::vec::Vec<i32> {
+        &self.span
+    }
+
+    fn mut_span_for_reflect(&mut self) -> &mut ::std::vec::Vec<i32> {
+        &mut self.span
     }
 
     // optional string leading_comments = 3;
@@ -8170,6 +8438,14 @@ impl SourceCodeInfo_Location {
 
     pub fn get_leading_detached_comments(&self) -> &[::std::string::String] {
         &self.leading_detached_comments
+    }
+
+    fn get_leading_detached_comments_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
+        &self.leading_detached_comments
+    }
+
+    fn mut_leading_detached_comments_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+        &mut self.leading_detached_comments
     }
 }
 
@@ -8297,13 +8573,15 @@ impl ::protobuf::MessageStatic for SourceCodeInfo_Location {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_i32_accessor(
+                fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "path",
-                    SourceCodeInfo_Location::get_path,
+                    SourceCodeInfo_Location::get_path_for_reflect,
+                    SourceCodeInfo_Location::mut_path_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_i32_accessor(
+                fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "span",
-                    SourceCodeInfo_Location::get_span,
+                    SourceCodeInfo_Location::get_span_for_reflect,
+                    SourceCodeInfo_Location::mut_span_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
                     "leading_comments",
@@ -8315,9 +8593,10 @@ impl ::protobuf::MessageStatic for SourceCodeInfo_Location {
                     SourceCodeInfo_Location::has_trailing_comments,
                     SourceCodeInfo_Location::get_trailing_comments,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "leading_detached_comments",
-                    SourceCodeInfo_Location::get_leading_detached_comments,
+                    SourceCodeInfo_Location::get_leading_detached_comments_for_reflect,
+                    SourceCodeInfo_Location::mut_leading_detached_comments_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo_Location>(
                     "SourceCodeInfo_Location",
@@ -8420,6 +8699,14 @@ impl GeneratedCodeInfo {
     pub fn get_annotation(&self) -> &[GeneratedCodeInfo_Annotation] {
         &self.annotation
     }
+
+    fn get_annotation_for_reflect(&self) -> &::protobuf::RepeatedField<GeneratedCodeInfo_Annotation> {
+        &self.annotation
+    }
+
+    fn mut_annotation_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation> {
+        &mut self.annotation
+    }
 }
 
 impl ::protobuf::Message for GeneratedCodeInfo {
@@ -8503,9 +8790,10 @@ impl ::protobuf::MessageStatic for GeneratedCodeInfo {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
                     "annotation",
-                    GeneratedCodeInfo::get_annotation,
+                    GeneratedCodeInfo::get_annotation_for_reflect,
+                    GeneratedCodeInfo::mut_annotation_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo>(
                     "GeneratedCodeInfo",
@@ -8605,6 +8893,14 @@ impl GeneratedCodeInfo_Annotation {
 
     pub fn get_path(&self) -> &[i32] {
         &self.path
+    }
+
+    fn get_path_for_reflect(&self) -> &::std::vec::Vec<i32> {
+        &self.path
+    }
+
+    fn mut_path_for_reflect(&mut self) -> &mut ::std::vec::Vec<i32> {
+        &mut self.path
     }
 
     // optional string source_file = 2;
@@ -8800,9 +9096,10 @@ impl ::protobuf::MessageStatic for GeneratedCodeInfo_Annotation {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_i32_accessor(
+                fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "path",
-                    GeneratedCodeInfo_Annotation::get_path,
+                    GeneratedCodeInfo_Annotation::get_path_for_reflect,
+                    GeneratedCodeInfo_Annotation::mut_path_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
                     "source_file",

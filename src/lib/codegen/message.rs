@@ -427,10 +427,10 @@ impl GenProtobufType {
                 format!("::protobuf::types::ProtobufType{}", capitalize(protobuf_name(t)))
             },
             GenProtobufType::Message(ref name) => {
-                format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
+                format!("::protobuf::types::ProtobufTypeMessage<{}>", name)
             },
             GenProtobufType::Enum(ref name, _) => {
-                format!("::protobuf::types::ProtobufTypeMessage<{}>", name)
+                format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
             },
             GenProtobufType::Group => unreachable!(),
         }
@@ -979,10 +979,20 @@ impl<'a> FieldGen<'a> {
                     key.lib_protobuf_type(),
                     value.lib_protobuf_type())
             },
+            FieldKind::Repeated(RepeatedField { ref elem, .. }) => {
+                let coll =
+                    match self.full_storage_type() {
+                        RustType::Vec(..) => "vec",
+                        RustType::RepeatedField(..) => "repeated_field",
+                        _ => unreachable!(),
+                    };
+                format!("make_{}_accessor::<_, {}>",
+                    coll,
+                    elem.lib_protobuf_type())
+            }
             _ => {
                 let repeated_or_singular = match self.kind {
-                    FieldKind::Repeated(..) => "repeated",
-                    FieldKind::Map(..) => unreachable!(),
+                    FieldKind::Map(..) | FieldKind::Repeated(..) => unreachable!(),
                     FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) |
                     FieldKind::Oneof(..)                                                   => {
                         "singular"
@@ -1006,16 +1016,26 @@ impl<'a> FieldGen<'a> {
     }
 
     // accessor function function params
-    fn make_accessor_fn_fn_params(&self) -> Vec<&'static str> {
-        let mut r = Vec::new();
-        if self.has_has() {
-            r.push("has");
+    fn make_accessor_fn_fn_params(&self) -> Vec<String> {
+        match self.kind {
+            FieldKind::Repeated(..) => {
+                vec![
+                    format!("get_{}_for_reflect", self.rust_name),
+                    format!("mut_{}_for_reflect", self.rust_name),
+                ]
+            }
+            _ => {
+                let mut r = Vec::new();
+                if self.has_has() {
+                    r.push(format!("has_{}", self.rust_name));
+                }
+                r.push(format!("get_{}", self.rust_name));;
+                if let FieldKind::Map(..) = self.kind {
+                    r.push(format!("mut_{}", self.rust_name));;
+                }
+                r
+            }
         }
-        r.push("get");
-        if let FieldKind::Map(..) = self.kind {
-            r.push("mut");
-        }
-        r
     }
 
     fn write_clear(&self, w: &mut CodeWriter) {
@@ -1552,6 +1572,20 @@ impl<'a> FieldGen<'a> {
         });
     }
 
+    fn write_message_field_get_for_reflect(&self, w: &mut CodeWriter) {
+        let sig = format!("get_{}_for_reflect(&self) -> &{}", self.rust_name, self.full_storage_type());
+        w.def_fn(&sig, |w| {
+            w.write_line(&format!("&{}", self.self_field()))
+        });
+    }
+
+    fn write_message_field_mut_for_reflect(&self, w: &mut CodeWriter) {
+        let sig = format!("mut_{}_for_reflect(&mut self) -> &mut {}", self.rust_name, self.full_storage_type());
+        w.def_fn(&sig, |w| {
+            w.write_line(&format!("&mut {}", self.self_field()))
+        });
+    }
+
     fn has_has(&self) -> bool {
         match self.kind {
             FieldKind::Repeated(..) | FieldKind::Map(..) => false,
@@ -1742,6 +1776,13 @@ impl<'a> FieldGen<'a> {
 
         w.write_line("");
         self.write_message_field_get(w);
+
+        if let FieldKind::Repeated(..) = self.kind {
+            w.write_line("");
+            self.write_message_field_get_for_reflect(w);
+            w.write_line("");
+            self.write_message_field_mut_for_reflect(w);
+        }
     }
 }
 
@@ -2019,6 +2060,19 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn write_descriptor_field(&self, fields_var: &str, field: &FieldGen, w: &mut CodeWriter) {
+        w.write_line(&format!("{}.push(::protobuf::reflect::accessor::{}(",
+            fields_var,
+            field.make_accessor_fn_name_and_type_params()));
+        w.indented(|w| {
+            w.write_line(&format!("\"{}\",", field.proto_field.get_name()));
+            for fn_name in field.make_accessor_fn_fn_params() {
+                w.write_line(&format!("{}::{},", self.type_name, fn_name));
+            }
+        });
+        w.write_line("));");
+    }
+
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
         w.def_fn(&format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
@@ -2029,19 +2083,7 @@ impl<'a> MessageGen<'a> {
                     w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
                 }
                 for field in fields {
-                    w.write_line(&format!("fields.push(::protobuf::reflect::accessor::{}(",
-                        field.make_accessor_fn_name_and_type_params()));
-                    w.indented(|w| {
-                        w.write_line(&format!("\"{}\",", field.proto_field.get_name()));
-                        for f in field.make_accessor_fn_fn_params() {
-                            w.write_line(&format!("{}::{}_{},",
-                                    self.type_name,
-                                    f,
-                                    field.rust_name,
-                                ));
-                        }
-                    });
-                    w.write_line("));");
+                    self.write_descriptor_field("fields", field, w);;
                 }
                 w.write_line(&format!(
                     "::protobuf::reflect::MessageDescriptor::new::<{}>(", self.type_name));
