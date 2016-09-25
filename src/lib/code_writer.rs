@@ -190,16 +190,26 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("fn {};", sig));
     }
 
-    pub fn pub_fn<S : AsRef<str>, F>(&mut self, sig: S, cb: F)
+    pub fn fb_block<F>(&mut self, public: bool, sig: &str, cb: F)
         where F : Fn(&mut CodeWriter)
     {
-        self.expr_block(&format!("pub fn {}", sig.as_ref()), cb);
+        if public {
+            self.expr_block(&format!("pub fn {}", sig.as_ref()), cb);
+        } else {
+            self.expr_block(&format!("fn {}", sig.as_ref()), cb);
+        }
     }
 
-    pub fn def_fn<S : AsRef<str>, F>(&mut self, sig: S, cb: F)
+    pub fn pub_fn<F>(&mut self, sig: &str, cb: F)
         where F : Fn(&mut CodeWriter)
     {
-        self.expr_block(&format!("fn {}", sig.as_ref()), cb);
+        self.fn_block(true, sig, cb);
+    }
+
+    pub fn def_fn<F>(&mut self, sig: &str, cb: F)
+        where F : Fn(&mut CodeWriter)
+    {
+        self.fn_block(false, sig, cb);
     }
 
     pub fn while_block<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
