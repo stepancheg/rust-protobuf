@@ -20,9 +20,11 @@ pub mod accessor;
 mod map;
 mod repeated;
 mod value;
+mod optional;
 
 use self::repeated::ReflectRepeated;
 use self::map::ReflectMap;
+use self::optional::ReflectOptional;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueRef;
@@ -341,5 +343,7 @@ impl EnumDescriptor {
 pub enum ReflectFieldRef<'a> {
     Repeated(&'a ReflectRepeated),
     Map(&'a ReflectMap),
-    Other,
+    Optional(&'a ReflectOptional),
+    Singular(&'a ProtobufValue),
+    Old,
 }

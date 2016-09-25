@@ -6,6 +6,7 @@ use repeated::RepeatedField;
 
 pub trait ReflectRepeated : 'static {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
+    fn len(&self) -> usize;
 }
 
 impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
@@ -15,6 +16,10 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
                 iter: self.iter()
             })
         }
+    }
+
+    fn len(&self) -> usize {
+        Vec::len(self)
     }
 }
 
@@ -27,6 +32,10 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
             })
         }
     }
+
+    fn len(&self) -> usize {
+        <[_]>::len(self)
+    }
 }
 
 impl<V : ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
@@ -36,6 +45,10 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
                 iter: self.iter()
             })
         }
+    }
+
+    fn len(&self) -> usize {
+        RepeatedField::len(self)
     }
 }
 

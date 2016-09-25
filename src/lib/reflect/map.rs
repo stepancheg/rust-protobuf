@@ -8,6 +8,8 @@ use super::value::ProtobufValue;
 /// Implemented for `HashMap` with appropriate keys and values
 pub trait ReflectMap : 'static {
     fn reflect_iter(&self) -> ReflectMapIter;
+
+    fn len(&self) -> usize;
 }
 
 impl<K : ProtobufValue + Eq + Hash + 'static, V : ProtobufValue + 'static> ReflectMap for HashMap<K, V> {
@@ -17,6 +19,10 @@ impl<K : ProtobufValue + Eq + Hash + 'static, V : ProtobufValue + 'static> Refle
                 iter: self.iter()
             })
         }
+    }
+
+    fn len(&self) -> usize {
+        HashMap::len(self)
     }
 }
 

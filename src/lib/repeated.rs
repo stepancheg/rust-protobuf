@@ -22,7 +22,7 @@ pub struct RepeatedField<T> {
 
 impl<T> RepeatedField<T> {
     #[inline]
-    fn len(&self) -> usize {
+    pub fn len(&self) -> usize {
         self.len
     }
 

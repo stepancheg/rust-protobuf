@@ -126,6 +126,14 @@ impl CodeGeneratorRequest {
         }
     }
 
+    fn get_parameter_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
+        &self.parameter
+    }
+
+    fn mut_parameter_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
+        &mut self.parameter
+    }
+
     // repeated .google.protobuf.FileDescriptorProto proto_file = 15;
 
     pub fn clear_proto_file(&mut self) {
@@ -264,10 +272,10 @@ impl ::protobuf::MessageStatic for CodeGeneratorRequest {
                     CodeGeneratorRequest::get_file_to_generate_for_reflect,
                     CodeGeneratorRequest::mut_file_to_generate_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "parameter",
-                    CodeGeneratorRequest::has_parameter,
-                    CodeGeneratorRequest::get_parameter,
+                    CodeGeneratorRequest::get_parameter_for_reflect,
+                    CodeGeneratorRequest::mut_parameter_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::descriptor::FileDescriptorProto>>(
                     "proto_file",
@@ -383,6 +391,14 @@ impl CodeGeneratorResponse {
             Some(v) => &v,
             None => "",
         }
+    }
+
+    fn get_error_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
+        &self.error
+    }
+
+    fn mut_error_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
+        &mut self.error
     }
 
     // repeated .google.protobuf.compiler.CodeGeneratorResponse.File file = 15;
@@ -509,10 +525,10 @@ impl ::protobuf::MessageStatic for CodeGeneratorResponse {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "error",
-                    CodeGeneratorResponse::has_error,
-                    CodeGeneratorResponse::get_error,
+                    CodeGeneratorResponse::get_error_for_reflect,
+                    CodeGeneratorResponse::mut_error_for_reflect,
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
@@ -630,6 +646,14 @@ impl CodeGeneratorResponse_File {
         }
     }
 
+    fn get_name_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
+        &self.name
+    }
+
+    fn mut_name_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
+        &mut self.name
+    }
+
     // optional string insertion_point = 2;
 
     pub fn clear_insertion_point(&mut self) {
@@ -666,6 +690,14 @@ impl CodeGeneratorResponse_File {
         }
     }
 
+    fn get_insertion_point_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
+        &self.insertion_point
+    }
+
+    fn mut_insertion_point_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
+        &mut self.insertion_point
+    }
+
     // optional string content = 15;
 
     pub fn clear_content(&mut self) {
@@ -700,6 +732,14 @@ impl CodeGeneratorResponse_File {
             Some(v) => &v,
             None => "",
         }
+    }
+
+    fn get_content_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
+        &self.content
+    }
+
+    fn mut_content_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
+        &mut self.content
     }
 }
 
@@ -799,20 +839,20 @@ impl ::protobuf::MessageStatic for CodeGeneratorResponse_File {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    CodeGeneratorResponse_File::has_name,
-                    CodeGeneratorResponse_File::get_name,
+                    CodeGeneratorResponse_File::get_name_for_reflect,
+                    CodeGeneratorResponse_File::mut_name_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "insertion_point",
-                    CodeGeneratorResponse_File::has_insertion_point,
-                    CodeGeneratorResponse_File::get_insertion_point,
+                    CodeGeneratorResponse_File::get_insertion_point_for_reflect,
+                    CodeGeneratorResponse_File::mut_insertion_point_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "content",
-                    CodeGeneratorResponse_File::has_content,
-                    CodeGeneratorResponse_File::get_content,
+                    CodeGeneratorResponse_File::get_content_for_reflect,
+                    CodeGeneratorResponse_File::mut_content_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
                     "CodeGeneratorResponse_File",

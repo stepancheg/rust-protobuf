@@ -588,6 +588,26 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
     }
 }
 
+struct AccessorFn {
+    name: String,
+    for_reflect_suffix: bool,
+    type_params: Vec<String>,
+    accessors: Vec<String>,
+}
+
+impl AccessorFn {
+    fn sig(&self) -> String {
+        let mut s = self.name.clone();
+        s.push_str("::<_");
+        for p in &self.type_params {
+            s.push_str(", ");
+            s.push_str(&p);
+        }
+        s.push_str(">");
+        s
+    }
+}
+
 impl<'a> FieldGen<'a> {
     fn parse(field: &FieldWithContext, root_scope: &'a RootScope<'a>) -> FieldGen<'a> {
         let (elem, enum_default_value) = field_elem(field, root_scope, true);
@@ -970,15 +990,8 @@ impl<'a> FieldGen<'a> {
             self.proto_field.get_number())
     }
 
-    // name of function in `protobuf::reflect::accessor`
-    // that generates accessor for this field
-    fn make_accessor_fn_name_and_type_params(&self) -> String {
+    fn accessor_fn(&self) -> AccessorFn {
         match self.kind {
-            FieldKind::Map(MapField { ref key, ref value, .. }) => {
-                format!("make_map_accessor::<_, {}, {}>",
-                    key.lib_protobuf_type(),
-                    value.lib_protobuf_type())
-            },
             FieldKind::Repeated(RepeatedField { ref elem, .. }) => {
                 let coll =
                     match self.full_storage_type() {
@@ -986,21 +999,77 @@ impl<'a> FieldGen<'a> {
                         RustType::RepeatedField(..) => "repeated_field",
                         _ => unreachable!(),
                     };
-                format!("make_{}_accessor::<_, {}>",
-                    coll,
-                    elem.lib_protobuf_type())
+                let name = format!("make_{}_accessor", coll);
+                AccessorFn {
+                    name: name,
+                    type_params: vec![elem.lib_protobuf_type()],
+                    for_reflect_suffix: true,
+                    accessors: vec![
+                        format!("get_{}_for_reflect", self.rust_name),
+                        format!("mut_{}_for_reflect", self.rust_name),
+                    ]
+                }
             }
-            _ => {
-                let repeated_or_singular = match self.kind {
-                    FieldKind::Map(..) | FieldKind::Repeated(..) => unreachable!(),
-                    FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) |
-                    FieldKind::Oneof(..)                                                   => {
-                        "singular"
-                    },
-                    FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
-                        "singular_proto3"
-                    },
-                };
+            FieldKind::Map(MapField { ref key, ref value, .. }) => {
+                AccessorFn {
+                    name: "make_map_accessor".to_owned(),
+                    type_params: vec![key.lib_protobuf_type(), value.lib_protobuf_type()],
+                    for_reflect_suffix: true,
+                    accessors: vec![
+                        format!("get_{}_for_reflect", self.rust_name),
+                        format!("mut_{}_for_reflect", self.rust_name),
+                    ]
+                }
+            }
+            FieldKind::Singular(SingularField { ref elem, flag: SingularFieldFlag::WithoutFlag }) => {
+                if let &GenProtobufType::Message(ref name) = elem {
+                    // TODO: old style, needed because of default instance
+
+                    AccessorFn {
+                        name: "make_singular_message_accessor".to_owned(),
+                        type_params: vec![
+                            name.clone(),
+                        ],
+                        for_reflect_suffix: false,
+                        accessors: vec![
+                            format!("has_{}", self.rust_name),
+                            format!("get_{}", self.rust_name),
+                        ]
+                    }
+                } else {
+                    AccessorFn {
+                        name: "make_simple_field_accessor".to_owned(),
+                        type_params: vec![elem.lib_protobuf_type()],
+                        for_reflect_suffix: true,
+                        accessors: vec![
+                            format!("get_{}_for_reflect", self.rust_name),
+                            format!("mut_{}_for_reflect", self.rust_name),
+                        ]
+                    }
+                }
+            }
+            FieldKind::Singular(SingularField { ref elem, flag: SingularFieldFlag::WithFlag { .. } }) => {
+                let coll =
+                    match self.full_storage_type() {
+                        RustType::Option(..) => "option",
+                        RustType::SingularField(..) => "singular_field",
+                        RustType::SingularPtrField(..) => "singular_ptr_field",
+                        _ => unreachable!(),
+                    };
+                let name = format!("make_{}_accessor", coll);
+                AccessorFn {
+                    name: name,
+                    type_params: vec![elem.lib_protobuf_type()],
+                    for_reflect_suffix: true,
+                    accessors: vec![
+                        format!("get_{}_for_reflect", self.rust_name),
+                        format!("mut_{}_for_reflect", self.rust_name),
+                    ]
+                }
+            }
+            FieldKind::Oneof(OneofField { ref elem, .. }) => {
+                // TODO: uses old style
+
                 let suffix = match &self.elem().rust_type() {
                     t if t.is_primitive()                     => format!("{}", t),
                     &RustType::String                         => "string".to_string(),
@@ -1010,30 +1079,25 @@ impl<'a> FieldGen<'a> {
                     t => panic!("unexpected field type: {}", t),
                 };
 
-                format!("make_{}_{}_accessor", repeated_or_singular, suffix)
-            }
-        }
-    }
+                let name = format!("make_singular_{}_accessor", suffix);
 
-    // accessor function function params
-    fn make_accessor_fn_fn_params(&self) -> Vec<String> {
-        match self.kind {
-            FieldKind::Repeated(..) => {
-                vec![
-                    format!("get_{}_for_reflect", self.rust_name),
-                    format!("mut_{}_for_reflect", self.rust_name),
-                ]
-            }
-            _ => {
-                let mut r = Vec::new();
-                if self.has_has() {
-                    r.push(format!("has_{}", self.rust_name));
+                let mut type_params = Vec::new();
+                match elem {
+                    &GenProtobufType::Message(ref name) | &GenProtobufType::Enum(ref name, _) => {
+                        type_params.push(name.to_owned());
+                    }
+                    _ => (),
                 }
-                r.push(format!("get_{}", self.rust_name));;
-                if let FieldKind::Map(..) = self.kind {
-                    r.push(format!("mut_{}", self.rust_name));;
+
+                AccessorFn {
+                    name: name,
+                    type_params: type_params,
+                    for_reflect_suffix: false,
+                    accessors: vec![
+                        format!("has_{}", self.rust_name),
+                        format!("get_{}", self.rust_name),
+                    ]
                 }
-                r
             }
         }
     }
@@ -1777,7 +1841,7 @@ impl<'a> FieldGen<'a> {
         w.write_line("");
         self.write_message_field_get(w);
 
-        if let FieldKind::Repeated(..) = self.kind {
+        if self.accessor_fn().for_reflect_suffix {
             w.write_line("");
             self.write_message_field_get_for_reflect(w);
             w.write_line("");
@@ -2061,13 +2125,14 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_descriptor_field(&self, fields_var: &str, field: &FieldGen, w: &mut CodeWriter) {
+        let accessor_fn = field.accessor_fn();
         w.write_line(&format!("{}.push(::protobuf::reflect::accessor::{}(",
             fields_var,
-            field.make_accessor_fn_name_and_type_params()));
+            accessor_fn.sig()));
         w.indented(|w| {
             w.write_line(&format!("\"{}\",", field.proto_field.get_name()));
-            for fn_name in field.make_accessor_fn_fn_params() {
-                w.write_line(&format!("{}::{},", self.type_name, fn_name));
+            for acc in &accessor_fn.accessors {
+                w.write_line(&format!("{}::{},", self.type_name, acc));
             }
         });
         w.write_line("));");

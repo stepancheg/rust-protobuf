@@ -291,7 +291,17 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
                     print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
                 }
             },
-            ReflectFieldRef::Other => {
+            ReflectFieldRef::Optional(optional) => {
+                if let Some(v) = optional.to_option() {
+                    print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
+                }
+            }
+            ReflectFieldRef::Singular(v) => {
+                if v.as_ref().is_non_zero() {
+                    print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
+                }
+            }
+            ReflectFieldRef::Old => {
                 for i in 0..f.len_field_x(m) {
                     let v = f.get_rep_item_x(m, i);
                     print_field(buf, pretty, indent, &mut first, f.name(), v);

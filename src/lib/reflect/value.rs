@@ -1,10 +1,14 @@
 use ::core::*;
 use super::*;
 
-pub trait ProtobufValue {
+pub trait ProtobufValue : 'static {
     fn as_ref(&self) -> ProtobufValueRef {
         panic!("descriptor_static is not implemented for message, \
             LITE_RUNTIME must be used");
+    }
+
+    fn is_non_zero(&self) -> bool {
+        self.as_ref().is_non_zero()
     }
 }
 
@@ -90,4 +94,22 @@ pub enum ProtobufValueRef<'a> {
     Bytes(&'a [u8]),
     Enum(&'static EnumValueDescriptor),
     Message(&'a Message),
+}
+
+impl<'a> ProtobufValueRef<'a> {
+    pub fn is_non_zero(&self) -> bool {
+        match *self {
+            ProtobufValueRef::U32(v) => v != 0,
+            ProtobufValueRef::U64(v) => v != 0,
+            ProtobufValueRef::I32(v) => v != 0,
+            ProtobufValueRef::I64(v) => v != 0,
+            ProtobufValueRef::F32(v) => v != 0.,
+            ProtobufValueRef::F64(v) => v != 0.,
+            ProtobufValueRef::Bool(v) => v,
+            ProtobufValueRef::String(v) => !v.is_empty(),
+            ProtobufValueRef::Bytes(v) => !v.is_empty(),
+            ProtobufValueRef::Enum(v) => v.value() != 0,
+            ProtobufValueRef::Message(_) => true,
+        }
+    }
 }

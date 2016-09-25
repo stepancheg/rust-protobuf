@@ -8,9 +8,14 @@ use reflect::EnumValueDescriptor;
 use types::*;
 
 use repeated::RepeatedField;
+use singular::SingularField;
+use singular::SingularPtrField;
 
 use super::map::ReflectMap;
 use super::repeated::ReflectRepeated;
+use super::optional::ReflectOptional;
+use super::value::ProtobufValue;
+use super::value::ProtobufValueRef;
 use super::ReflectFieldRef;
 
 
@@ -116,7 +121,7 @@ impl<M : Message, E : ProtobufEnum> GetRepeatedEnum<M> for GetRepeatedEnumImpl<M
 }
 
 
-enum SingularGet<M> {
+enum SingularOldGet<M> {
     U32(fn(&M) -> u32),
     U64(fn(&M) -> u64),
     I32(fn(&M) -> i32),
@@ -128,6 +133,24 @@ enum SingularGet<M> {
     Bytes(for<'a> fn(&'a M) -> &'a [u8]),
     Enum(Box<GetSingularEnum<M> + 'static>),
     Message(Box<GetSingularMessage<M> + 'static>),
+}
+
+impl<M : Message + 'static> SingularOldGet<M> {
+    fn get_ref<'a>(&self, m: &'a M) -> ProtobufValueRef<'a> {
+        match self {
+            &SingularOldGet::U32(get) => ProtobufValueRef::U32(get(m)),
+            &SingularOldGet::U64(get) => ProtobufValueRef::U64(get(m)),
+            &SingularOldGet::I32(get) => ProtobufValueRef::I32(get(m)),
+            &SingularOldGet::I64(get) => ProtobufValueRef::I64(get(m)),
+            &SingularOldGet::F32(get) => ProtobufValueRef::F32(get(m)),
+            &SingularOldGet::F64(get) => ProtobufValueRef::F64(get(m)),
+            &SingularOldGet::Bool(get) => ProtobufValueRef::Bool(get(m)),
+            &SingularOldGet::String(get) => ProtobufValueRef::String(get(m)),
+            &SingularOldGet::Bytes(get) => ProtobufValueRef::Bytes(get(m)),
+            &SingularOldGet::Enum(ref get) => ProtobufValueRef::Enum(get.get_enum(m)),
+            &SingularOldGet::Message(ref get) => ProtobufValueRef::Message(get.get_message(m)),
+        }
+    }
 }
 
 // for rust-protobuf up to 1.0.24
@@ -171,17 +194,57 @@ trait FieldAccessor2<M, R : ?Sized>
     fn mut_field<'a>(&self, &'a mut M) -> &'a mut R;
 }
 
+struct MessageGetMut<M, L>
+    where
+        M : Message + 'static,
+{
+    get_field: for<'a> fn(&'a M) -> &'a L,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut L,
+}
+
+
 enum FieldAccessorFunctions<M> {
-    Singular { has: fn(&M) -> bool, get: SingularGet<M> },
+    // up to 1.0.24 optional or required
+    SingularOld { has: fn(&M) -> bool, get: SingularOldGet<M> },
+    // up to 1.0.24 repeated
     RepeatedOld(RepeatedOldGet<M>),
-    Map(Box<FieldAccessor2<M, ReflectMap>>),
+    // protobuf 3 simple field
+    Simple(Box<FieldAccessor2<M, ProtobufValue>>),
+    // optional, required or message
+    Optional(Box<FieldAccessor2<M, ReflectOptional>>),
+    // repeated
     Repeated(Box<FieldAccessor2<M, ReflectRepeated>>),
+    // protobuf 3 map
+    Map(Box<FieldAccessor2<M, ReflectMap>>),
 }
 
 
 struct FieldAccessorImpl<M> {
     name: &'static str,
     fns: FieldAccessorFunctions<M>,
+}
+
+impl<M : Message> FieldAccessorImpl<M> {
+    fn get_value_option<'a>(&self, m: &'a M) -> Option<ProtobufValueRef<'a>> {
+        match self.fns {
+            FieldAccessorFunctions::Repeated(..) |
+            FieldAccessorFunctions::RepeatedOld(..) |
+            FieldAccessorFunctions::Map(..) => panic!("repeated"),
+            FieldAccessorFunctions::Simple(ref a) => {
+                Some(a.get_field(m).as_ref())
+            },
+            FieldAccessorFunctions::Optional(ref a) => {
+                a.get_field(m).to_option().map(|v| v.as_ref())
+            },
+            FieldAccessorFunctions::SingularOld { ref has, ref get } => {
+                if !has(m) {
+                    None
+                } else {
+                    Some(get.get_ref(m))
+                }
+            }
+        }
+    }
 }
 
 impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
@@ -191,7 +254,9 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn has_field_generic(&self, m: &Message) -> bool {
         match self.fns {
-            FieldAccessorFunctions::Singular { has, .. } => has(message_down_cast(m)),
+            FieldAccessorFunctions::SingularOld { has, .. } => has(message_down_cast(m)),
+            FieldAccessorFunctions::Optional(ref a) => a.get_field(message_down_cast(m)).to_option().is_some(),
+            FieldAccessorFunctions::Simple(ref a) => a.get_field(message_down_cast(m)).is_non_zero(),
             _ => panic!(),
         }
     }
@@ -199,95 +264,98 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
     fn len_field_generic(&self, m: &Message) -> usize {
         match self.fns {
             FieldAccessorFunctions::RepeatedOld(ref r) => r.len_field(message_down_cast(m)),
-            _ => panic!(),
+            FieldAccessorFunctions::Repeated(ref a) => a.get_field(message_down_cast(m)).len(),
+            FieldAccessorFunctions::Map(ref a) => a.get_field(message_down_cast(m)).len(),
+            _ => panic!("not repeated"),
         }
     }
 
     fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message {
         match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::Message(ref get), .. } =>
-                get.get_message(message_down_cast(m)),
+            FieldAccessorFunctions::SingularOld { get: SingularOldGet::Message(ref get), .. } => {
+                get.get_message(message_down_cast(m))
+            }
             _ => panic!(),
         }
     }
 
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor {
         match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::Enum(ref get), .. } =>
+            FieldAccessorFunctions::SingularOld { get: SingularOldGet::Enum(ref get), .. } =>
                 get.get_enum(message_down_cast(m)),
             _ => panic!(),
         }
     }
 
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::String(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::String(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => "", // TODO: check type
         }
     }
 
     fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8] {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::Bytes(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::Bytes(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => b"", // TODO: check type
         }
     }
 
     fn get_u32_generic(&self, m: &Message) -> u32 {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::U32(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::U32(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => 0, // TODO: check type
         }
     }
 
     fn get_u64_generic(&self, m: &Message) -> u64 {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::U64(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::U64(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => 0, // TODO: check type
         }
     }
 
     fn get_i32_generic(&self, m: &Message) -> i32 {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::I32(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::I32(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => 0, // TODO: check type
         }
     }
 
     fn get_i64_generic(&self, m: &Message) -> i64 {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::I64(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::I64(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => 0, // TODO: check type
         }
     }
 
     fn get_f32_generic(&self, m: &Message) -> f32 {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::F32(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::F32(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => 0.0, // TODO: check type
         }
     }
 
     fn get_f64_generic(&self, m: &Message) -> f64 {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::F64(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::F64(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => 0.0, // TODO: check type
         }
     }
 
     fn get_bool_generic(&self, m: &Message) -> bool {
-        match self.fns {
-            FieldAccessorFunctions::Singular { get: SingularGet::Bool(get), .. } =>
-                get(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::Bool(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => false, // TODO: check type
         }
     }
 
@@ -376,8 +444,12 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
                 ReflectFieldRef::Repeated(accessor2.get_field(message_down_cast(m))),
             FieldAccessorFunctions::Map(ref accessor2) =>
                 ReflectFieldRef::Map(accessor2.get_field(message_down_cast(m))),
+            FieldAccessorFunctions::Optional(ref accessor2) =>
+                ReflectFieldRef::Optional(accessor2.get_field(message_down_cast(m))),
+            FieldAccessorFunctions::Simple(ref accessor2) =>
+                ReflectFieldRef::Singular(accessor2.get_field(message_down_cast(m))),
             _ =>
-                ReflectFieldRef::Other,
+                ReflectFieldRef::Old,
         }
     }
 }
@@ -393,27 +465,9 @@ pub fn make_singular_u32_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::U32(get),
-        },
-    })
-}
-
-fn const_true<T>(_: &T) -> bool {
-    true
-}
-
-pub fn make_singular_proto3_u32_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> u32,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::U32(get),
+            get: SingularOldGet::U32(get),
         },
     })
 }
@@ -426,23 +480,9 @@ pub fn make_singular_i32_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::I32(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_i32_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> i32,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::I32(get),
+            get: SingularOldGet::I32(get),
         },
     })
 }
@@ -455,23 +495,9 @@ pub fn make_singular_u64_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::U64(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_u64_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> u64,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::U64(get),
+            get: SingularOldGet::U64(get),
         },
     })
 }
@@ -484,23 +510,9 @@ pub fn make_singular_i64_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::I64(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_i64_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> i64,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::I64(get),
+            get: SingularOldGet::I64(get),
         },
     })
 }
@@ -513,23 +525,9 @@ pub fn make_singular_f32_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::F32(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_f32_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> f32,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::F32(get),
+            get: SingularOldGet::F32(get),
         },
     })
 }
@@ -542,23 +540,9 @@ pub fn make_singular_f64_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::F64(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_f64_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> f64,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::F64(get),
+            get: SingularOldGet::F64(get),
         },
     })
 }
@@ -571,23 +555,9 @@ pub fn make_singular_bool_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::Bool(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_bool_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: fn(&M) -> bool,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::Bool(get),
+            get: SingularOldGet::Bool(get),
         },
     })
 }
@@ -600,25 +570,9 @@ pub fn make_singular_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'st
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::Enum(
-                Box::new(GetSingularEnumImpl { get: get }),
-            ),
-        },
-    })
-}
-
-pub fn make_singular_proto3_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
-        name: &'static str,
-        get: fn(&M) -> E,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::Enum(
+            get: SingularOldGet::Enum(
                 Box::new(GetSingularEnumImpl { get: get }),
             ),
         },
@@ -633,23 +587,9 @@ pub fn make_singular_string_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::String(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_string_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: for<'a> fn(&'a M) -> &'a str,
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::String(get),
+            get: SingularOldGet::String(get),
         },
     })
 }
@@ -662,23 +602,9 @@ pub fn make_singular_bytes_accessor<M : Message + 'static>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::Bytes(get),
-        },
-    })
-}
-
-pub fn make_singular_proto3_bytes_accessor<M : Message + 'static>(
-        name: &'static str,
-        get: for<'a> fn(&'a M) -> &'a [u8],
-    ) -> Box<FieldAccessor + 'static>
-{
-    Box::new(FieldAccessorImpl {
-        name: name,
-        fns: FieldAccessorFunctions::Singular {
-            has: const_true,
-            get: SingularGet::Bytes(get),
+            get: SingularOldGet::Bytes(get),
         },
     })
 }
@@ -691,9 +617,9 @@ pub fn make_singular_message_accessor<M : Message + 'static, F : Message + 'stat
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Singular {
+        fns: FieldAccessorFunctions::SingularOld {
             has: has,
-            get: SingularGet::Message(
+            get: SingularOldGet::Message(
                 Box::new(GetSingularMessageImpl { get: get }),
             ),
         },
@@ -840,26 +766,17 @@ pub fn make_repeated_message_accessor<M : Message + 'static, F : Message + 'stat
 
 
 
-struct VecAccessor<M, V>
+impl<M, V> FieldAccessor2<M, ReflectRepeated> for MessageGetMut<M, Vec<V>>
     where
         M : Message + 'static,
-        V : ProtobufType,
-{
-    get_vec: for<'a> fn(&'a M) -> &'a Vec<V::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::Value>,
-}
-
-impl<M, V> FieldAccessor2<M, ReflectRepeated> for VecAccessor<M, V>
-    where
-        M : Message + 'static,
-        V : ProtobufType,
+        V : ProtobufValue + 'static,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
-        (self.get_vec)(m) as &ReflectRepeated
+        (self.get_field)(m) as &ReflectRepeated
     }
 
     fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectRepeated {
-        (self.mut_vec)(m) as &mut ReflectRepeated
+        (self.mut_field)(m) as &mut ReflectRepeated
     }
 }
 
@@ -876,34 +793,25 @@ pub fn make_vec_accessor<M, V>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Repeated(Box::new(VecAccessor::<M, V> {
-            get_vec: get_vec,
-            mut_vec: mut_vec,
+        fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<M, Vec<V::Value>> {
+            get_field: get_vec,
+            mut_field: mut_vec,
         })),
     })
 }
 
 
-struct RepeatedFieldAccessor<M, V>
+impl<M, V> FieldAccessor2<M, ReflectRepeated> for MessageGetMut<M, RepeatedField<V>>
     where
         M : Message + 'static,
-        V : ProtobufType,
-{
-    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::Value>,
-}
-
-impl<M, V> FieldAccessor2<M, ReflectRepeated> for RepeatedFieldAccessor<M, V>
-    where
-        M : Message + 'static,
-        V : ProtobufType,
+        V : ProtobufValue + 'static,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
-        (self.get_vec)(m) as &ReflectRepeated
+        (self.get_field)(m) as &ReflectRepeated
     }
 
     fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectRepeated {
-        (self.mut_vec)(m) as &mut ReflectRepeated
+        (self.mut_field)(m) as &mut ReflectRepeated
     }
 }
 
@@ -919,46 +827,195 @@ pub fn make_repeated_field_accessor<M, V>(
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Repeated(Box::new(RepeatedFieldAccessor::<M, V> {
-            get_vec: get_vec,
-            mut_vec: mut_vec,
+        fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<M, RepeatedField<V::Value>> {
+            get_field: get_vec,
+            mut_field: mut_vec,
         })),
     })
 }
 
-
-
-struct MapAccessor<M, K, V>
+impl<M, V> FieldAccessor2<M, ReflectOptional> for MessageGetMut<M, Option<V>>
     where
         M : Message + 'static,
-        K : ProtobufType,
-        V : ProtobufType,
-        <K as ProtobufType>::Value : Hash + Eq,
+        V : ProtobufValue + 'static,
 {
-    get_map: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
-    mut_map: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>,
+    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectOptional {
+        (self.get_field)(m) as &ReflectOptional
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectOptional {
+        (self.mut_field)(m) as &mut ReflectOptional
+    }
 }
 
-impl<M, K, V> FieldAccessor2<M, ReflectMap> for MapAccessor<M, K, V>
+#[deprecated]
+pub fn make_option_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a Option<V::Value>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V::Value>)
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    V : ProtobufType + 'static,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<M, Option<V::Value>> {
+            get_field: get_field,
+            mut_field: mut_field,
+        }))
+    })
+}
+
+
+pub fn make_has_get_set_clear_accessor<M, V>(
+    name: &'static str,
+    has_value: for<'a> fn(&'a M) -> bool,
+    get_value: for<'a> fn(&'a M) -> &'a V::Value,
+    set_value: for<'a> fn(&'a M, V::Value),
+    clr_value: for<'a> fn(&'a M))
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    V : ProtobufType + 'static,
+{
+    unimplemented!()
+}
+
+
+pub fn make_has_get_mut_clear_accessor<M, V>(
+    name: &'static str,
+    has_value: for<'a> fn(&'a M) -> bool,
+    get_value: for<'a> fn(&'a M) -> &'a V::Value,
+    mut_value: for<'a> fn(&'a M) -> &'a mut V::Value,
+    clr_value: for<'a> fn(&'a M))
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    V : ProtobufType + 'static,
+{
+    unimplemented!()
+}
+
+
+impl<M, V> FieldAccessor2<M, ReflectOptional> for MessageGetMut<M, SingularField<V>>
     where
         M : Message + 'static,
-        K : ProtobufType,
-        V : ProtobufType,
-        <K as ProtobufType>::Value : Hash + Eq,
+        V : ProtobufValue + 'static,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectOptional {
+        (self.get_field)(m) as &ReflectOptional
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectOptional {
+        (self.mut_field)(m) as &mut ReflectOptional
+    }
+}
+
+pub fn make_singular_field_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a SingularField<V::Value>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularField<V::Value>)
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    V : ProtobufType + 'static,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<M, SingularField<V::Value>> {
+            get_field: get_field,
+            mut_field: mut_field,
+        }))
+    })
+}
+
+impl<M, V> FieldAccessor2<M, ReflectOptional> for MessageGetMut<M, SingularPtrField<V>>
+    where
+        M : Message + 'static,
+        V : ProtobufValue + 'static,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectOptional {
+        (self.get_field)(m) as &ReflectOptional
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectOptional {
+        (self.mut_field)(m) as &mut ReflectOptional
+    }
+}
+
+pub fn make_singular_ptr_field_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<V::Value>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularPtrField<V::Value>)
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    V : ProtobufType + 'static,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<M, SingularPtrField<V::Value>> {
+            get_field: get_field,
+            mut_field: mut_field,
+        }))
+    })
+}
+
+impl<M, V> FieldAccessor2<M, ProtobufValue> for MessageGetMut<M, V>
+    where
+        M : Message + 'static,
+        V : ProtobufValue + 'static,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a ProtobufValue {
+        (self.get_field)(m) as &ProtobufValue
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ProtobufValue {
+        (self.mut_field)(m) as &mut ProtobufValue
+    }
+}
+
+pub fn make_simple_field_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a V::Value,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut V::Value)
+        -> Box<FieldAccessor + 'static>
+where
+    M : Message + 'static,
+    V : ProtobufType + 'static,
+{
+    Box::new(FieldAccessorImpl {
+        name: name,
+        fns: FieldAccessorFunctions::Simple(Box::new(MessageGetMut::<M, V::Value> {
+            get_field: get_field,
+            mut_field: mut_field,
+        }))
+    })
+}
+
+
+impl<M, K, V> FieldAccessor2<M, ReflectMap> for MessageGetMut<M, HashMap<K, V>>
+    where
+        M : Message + 'static,
+        K : ProtobufValue + 'static,
+        V : ProtobufValue + 'static,
+        K : Hash + Eq,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a ReflectMap {
-        (self.get_map)(m) as &ReflectMap
+        (self.get_field)(m) as &ReflectMap
     }
 
     fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectMap {
-        (self.mut_map)(m) as &mut ReflectMap
+        (self.mut_field)(m) as &mut ReflectMap
     }
 }
 
+
 pub fn make_map_accessor<M, K, V>(
     name: &'static str,
-    get_map: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
-    mut_map: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>)
+    get_field: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>)
         -> Box<FieldAccessor + 'static>
 where
     M : Message + 'static,
@@ -968,9 +1025,10 @@ where
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Map(Box::new(MapAccessor::<M, K, V> {
-            get_map: get_map,
-            mut_map: mut_map,
+        fns: FieldAccessorFunctions::Map(Box::new(MessageGetMut::<M, HashMap<K::Value, V::Value>> {
+            get_field: get_field,
+            mut_field: mut_field,
         })),
     })
 }
+
