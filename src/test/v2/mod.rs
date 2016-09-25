@@ -19,7 +19,6 @@ mod test_nonunique_enum_pb;
 mod test_required_pb;
 mod test_root_pb;
 mod test_sanitize_file_name_pb;
-mod text_format_test_data_pb;
 mod test_oneof_pb;
 mod test_special_characters_file_name__pb;
 mod test_enum_alias_pb;
@@ -28,7 +27,10 @@ mod test_basic;
 mod test_required;
 mod test_default_values;
 mod test_lite_runtime;
-mod text_format_test;
+
+mod test_text_format_pb;
+mod test_text_format;
+
 mod test_oneof;
 mod test_enum_values;
 mod test_enum_alias;

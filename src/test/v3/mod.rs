@@ -10,3 +10,5 @@ mod test_map;
 
 mod test_enum_alias_pb;
 mod test_enum_alias;
+
+mod test_ident_pb;
