@@ -24,6 +24,7 @@ mod value;
 mod optional;
 
 use self::repeated::ReflectRepeated;
+use self::repeated::ReflectRepeatedRef;
 use self::map::ReflectMap;
 
 pub use self::value::ProtobufValue;
@@ -377,7 +378,7 @@ impl EnumDescriptor {
 
 pub enum ReflectFieldRef<'a> {
     Repeated(&'a ReflectRepeated),
+    RepeatedOld(ReflectRepeatedRef<'a>),
     Map(&'a ReflectMap),
     Optional(Option<ProtobufValueRef<'a>>),
-    RepeatedOld,
 }

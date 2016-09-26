@@ -89,6 +89,7 @@ impl<M : Message, E : ProtobufEnum> GetSingularEnum<M> for GetSingularEnumImpl<M
 trait GetRepeatedMessage<M> {
     fn len_field(&self, m: &M) -> usize;
     fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a Message;
+    fn reflect_repeated_message<'a>(&self, m: &'a M) -> Box<ReflectRepeatedMessage<'a> + 'a>;
 }
 
 struct GetRepeatedMessageImpl<M, N> {
@@ -103,20 +104,26 @@ impl<M : Message, N : Message + 'static> GetRepeatedMessage<M> for GetRepeatedMe
     fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a Message {
         &(self.get)(m)[index]
     }
+
+    fn reflect_repeated_message<'a>(&self, m: &'a M) -> Box<ReflectRepeatedMessage<'a> + 'a> {
+        Box::new(ReflectRepeatedMessageImpl {
+            slice: (self.get)(m)
+        })
+    }
 }
 
 
 trait GetRepeatedEnum<M : Message + 'static> {
     fn len_field(&self, m: &M) -> usize;
     fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor;
-    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a>>;
+    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a> + 'a>;
 }
 
-struct GetRepeatedEnumImpl<M : Message + 'static, E : ProtobufEnum + ProtobufValue + 'static> {
+struct GetRepeatedEnumImpl<M : Message + 'static, E : ProtobufEnum + 'static> {
     get: for<'a> fn(&'a M) -> &'a [E],
 }
 
-impl<M : Message, E : ProtobufEnum + ProtobufValue + 'static> GetRepeatedEnum<M> for GetRepeatedEnumImpl<M, E> {
+impl<M : Message, E : ProtobufEnum + 'static> GetRepeatedEnum<M> for GetRepeatedEnumImpl<M, E> {
     fn len_field(&self, m: &M) -> usize {
         (self.get)(m).len()
     }
@@ -125,11 +132,10 @@ impl<M : Message, E : ProtobufEnum + ProtobufValue + 'static> GetRepeatedEnum<M>
         (self.get)(m)[index].descriptor()
     }
 
-    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a>> {
-        unimplemented!()
-//        Box::new(ReflectRepeatedEnumImpl::<'a, E> {
-//            slice: (self.get)(m)
-//        })
+    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a> + 'a> {
+        Box::new(ReflectRepeatedEnumImpl {
+            slice: (self.get)(m)
+        })
     }
 }
 
@@ -216,7 +222,7 @@ impl<M : Message> RepeatedOldGet<M> {
             RepeatedOldGet::String(get) => ReflectRepeatedRef::String(get(m)),
             RepeatedOldGet::Bytes(get) => ReflectRepeatedRef::Bytes(get(m)),
             RepeatedOldGet::Enum(ref get) => ReflectRepeatedRef::Enum(get.reflect_repeated_enum(m)),
-            RepeatedOldGet::Message(ref get) => panic!("TODO"),// ReflectRepeatedRef::Message(Box::new(ReflectRepeatedMessageImpl { slice: get(m) })),
+            RepeatedOldGet::Message(ref get) => ReflectRepeatedRef::Message(get.reflect_repeated_message(m)),
         }
     }
 }
@@ -503,8 +509,8 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
                     }
                 )
             }
-            FieldAccessorFunctions::RepeatedOld(..) => {
-                ReflectFieldRef::RepeatedOld
+            FieldAccessorFunctions::RepeatedOld(ref get) => {
+                ReflectFieldRef::RepeatedOld(get.get_repeated(message_down_cast(m)))
             }
         }
     }
@@ -818,7 +824,7 @@ pub fn make_repeated_bytes_accessor<M : Message + 'static>(
 }
 
 #[deprecated]
-pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + ProtobufValue + 'static>(
+pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [E],
     ) -> Box<FieldAccessor + 'static>

@@ -4,6 +4,7 @@ use core::ProtobufEnum;
 use core::Message;
 
 use super::value::ProtobufValue;
+use super::value::ProtobufValueRef;
 
 use repeated::RepeatedField;
 
@@ -106,40 +107,40 @@ impl<'a> IntoIterator for &'a ReflectRepeated {
 pub trait ReflectRepeatedEnum<'a> {
     fn len(&self) -> usize;
 
-    fn get(&self, index: usize) -> &'a ProtobufValue;
+    fn get(&self, index: usize) -> ProtobufValueRef<'a>;
 }
 
 pub struct ReflectRepeatedEnumImpl<'a, E : ProtobufEnum> {
-    slice: &'a [E],
+    pub slice: &'a [E],
 }
 
-impl<'a, E : ProtobufEnum + ProtobufValue + 'static> ReflectRepeatedEnum<'a> for ReflectRepeatedEnumImpl<'a, E> {
+impl<'a, E : ProtobufEnum + 'static> ReflectRepeatedEnum<'a> for ReflectRepeatedEnumImpl<'a, E> {
     fn len(&self) -> usize {
         self.slice.len()
     }
 
-    fn get(&self, index: usize) -> &'a ProtobufValue {
-        &self.slice[index]
+    fn get(&self, index: usize) -> ProtobufValueRef<'a> {
+        ProtobufValueRef::Enum(self.slice[index].descriptor())
     }
 }
 
 pub trait ReflectRepeatedMessage<'a> {
     fn len(&self) -> usize;
 
-    fn get(&self, index: usize) -> &'a ProtobufValue;
+    fn get(&self, index: usize) -> ProtobufValueRef<'a>;
 }
 
 pub struct ReflectRepeatedMessageImpl<'a, M : Message> {
-    slice: &'a [M],
+    pub slice: &'a [M],
 }
 
-impl<'a, M : Message + ProtobufValue> ReflectRepeatedMessage<'a> for ReflectRepeatedMessageImpl<'a, M> {
+impl<'a, M : Message> ReflectRepeatedMessage<'a> for ReflectRepeatedMessageImpl<'a, M> {
     fn len(&self) -> usize {
         self.slice.len()
     }
 
-    fn get(&self, index: usize) -> &'a ProtobufValue {
-        &self.slice[index]
+    fn get(&self, index: usize) -> ProtobufValueRef<'a> {
+        ProtobufValueRef::Message(&self.slice[index])
     }
 }
 
@@ -154,8 +155,8 @@ pub enum ReflectRepeatedRef<'a> {
     Bool(&'a [bool]),
     String(&'a [String]),
     Bytes(&'a [Vec<u8>]),
-    Enum(Box<ReflectRepeatedEnum<'a>>),
-    Message(Box<ReflectRepeatedMessage<'a>>),
+    Enum(Box<ReflectRepeatedEnum<'a> + 'a>),
+    Message(Box<ReflectRepeatedMessage<'a> + 'a>),
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
@@ -176,18 +177,18 @@ impl<'a> ReflectRepeatedRef<'a> {
         }
     }
 
-    fn get(&self, index: usize) -> &'a ProtobufValue {
+    fn get(&self, index: usize) -> ProtobufValueRef<'a> {
         match *self {
-            ReflectRepeatedRef::Generic(ref r) => r.get(index),
-            ReflectRepeatedRef::U32(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::U64(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::I32(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::I64(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::F32(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::F64(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::Bool(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::String(ref r) => &r[index] as &ProtobufValue,
-            ReflectRepeatedRef::Bytes(ref r) => &r[index] as &ProtobufValue,
+            ReflectRepeatedRef::Generic(ref r) => r.get(index).as_ref(),
+            ReflectRepeatedRef::U32(ref r) => ProtobufValueRef::U32(r[index]),
+            ReflectRepeatedRef::U64(ref r) => ProtobufValueRef::U64(r[index]),
+            ReflectRepeatedRef::I32(ref r) => ProtobufValueRef::I32(r[index]),
+            ReflectRepeatedRef::I64(ref r) => ProtobufValueRef::I64(r[index]),
+            ReflectRepeatedRef::F32(ref r) => ProtobufValueRef::F32(r[index]),
+            ReflectRepeatedRef::F64(ref r) => ProtobufValueRef::F64(r[index]),
+            ReflectRepeatedRef::Bool(ref r) => ProtobufValueRef::Bool(r[index]),
+            ReflectRepeatedRef::String(ref r) => ProtobufValueRef::String(&r[index]),
+            ReflectRepeatedRef::Bytes(ref r) => ProtobufValueRef::Bytes(&r[index]),
             ReflectRepeatedRef::Enum(ref r) => r.get(index),
             ReflectRepeatedRef::Message(ref r) => r.get(index),
         }
@@ -200,7 +201,7 @@ pub struct ReflectRepeatedRefIter<'a> {
 }
 
 impl<'a> Iterator for ReflectRepeatedRefIter<'a> {
-    type Item = &'a ProtobufValue;
+    type Item = ProtobufValueRef<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.pos < self.repeated.len() {
@@ -216,7 +217,7 @@ impl<'a> Iterator for ReflectRepeatedRefIter<'a> {
 
 impl<'a> IntoIterator for &'a ReflectRepeatedRef<'a> {
     type IntoIter = ReflectRepeatedRefIter<'a>;
-    type Item = &'a ProtobufValue;
+    type Item = ProtobufValueRef<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
         ReflectRepeatedRefIter {

@@ -142,7 +142,7 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
                     print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
             }
-            ReflectFieldRef::RepeatedOld => {
+            ReflectFieldRef::RepeatedOld(..) => {
                 for i in 0..f.len_field(m) {
                     let v = f.get_rep_item(m, i);
                     print_field(buf, pretty, indent, &mut first, f.name(), v);
