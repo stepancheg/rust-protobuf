@@ -446,16 +446,37 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
         match self.fns {
-            FieldAccessorFunctions::Repeated(ref accessor2) =>
-                ReflectFieldRef::Repeated(accessor2.get_field(message_down_cast(m))),
-            FieldAccessorFunctions::Map(ref accessor2) =>
-                ReflectFieldRef::Map(accessor2.get_field(message_down_cast(m))),
-            FieldAccessorFunctions::Optional(ref accessor2) =>
-                ReflectFieldRef::Optional(accessor2.get_field(message_down_cast(m))),
-            FieldAccessorFunctions::Simple(ref accessor2) =>
-                ReflectFieldRef::Singular(accessor2.get_field(message_down_cast(m))),
-            _ =>
-                ReflectFieldRef::Old,
+            FieldAccessorFunctions::Repeated(ref accessor2) => {
+                ReflectFieldRef::Repeated(accessor2.get_field(message_down_cast(m)))
+            }
+            FieldAccessorFunctions::Map(ref accessor2) => {
+                ReflectFieldRef::Map(accessor2.get_field(message_down_cast(m)))
+            }
+            FieldAccessorFunctions::Optional(ref accessor2) => {
+                ReflectFieldRef::Optional(accessor2.get_field(message_down_cast(m)).to_option().map(|v| v.as_ref()))
+            }
+            FieldAccessorFunctions::Simple(ref accessor2) => {
+                ReflectFieldRef::Optional({
+                    let v = accessor2.get_field(message_down_cast(m));
+                    if v.is_non_zero() {
+                        Some(v.as_ref())
+                    } else {
+                        None
+                    }
+                })
+            }
+            FieldAccessorFunctions::SingularHasGetSet { ref has, ref get_set } => {
+                ReflectFieldRef::Optional(
+                    if has(message_down_cast(m)) {
+                        Some(get_set.get_ref(message_down_cast(m)))
+                    } else {
+                        None
+                    }
+                )
+            }
+            FieldAccessorFunctions::RepeatedOld(..) => {
+                ReflectFieldRef::RepeatedOld
+            }
         }
     }
 }

@@ -1,11 +1,9 @@
 use std::fmt;
 use std::fmt::Write;
 use core::Message;
-use reflect::FieldDescriptor;
-use reflect::EnumValueDescriptor;
 use reflect::ReflectFieldRef;
 use reflect::ProtobufValueRef;
-use descriptor::*;
+
 
 fn print_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push('"');
@@ -38,158 +36,6 @@ fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
         for _ in 0..indent {
             buf.push_str("  ");
         }
-    }
-}
-
-// internal helper
-impl FieldDescriptor {
-    // len fo repeated field, or 1 or 0 for singular field
-    fn len_field_x(&self, m: &Message) -> usize {
-        if self.is_repeated() {
-            self.len_field(m)
-        } else {
-            match self.has_field(m) {
-                true => 1,
-                false => 0,
-            }
-        }
-    }
-
-    // get item by index for repeated fields, or just field for singular fields
-
-    fn get_rep_message_item_x<'a>(&self, m: &'a Message, index: usize) -> &'a Message {
-        if self.is_repeated() {
-            self.get_rep_message_item(m, index)
-        } else {
-            assert_eq!(0, index);
-            self.get_message(m)
-        }
-    }
-
-    fn get_rep_enum_item_x(&self, m: &Message, index: usize) -> &'static EnumValueDescriptor {
-        if self.is_repeated() {
-            self.get_rep_enum_item(m, index)
-        } else {
-            assert_eq!(0, index);
-            self.get_enum(m)
-        }
-    }
-
-    fn get_rep_str_item_x<'a>(&self, m: &'a Message, index: usize) -> &'a str {
-        if self.is_repeated() {
-            self.get_rep_str_item(m, index)
-        } else {
-            assert_eq!(0, index);
-            self.get_str(m)
-        }
-    }
-
-    fn get_rep_bytes_item_x<'a>(&self, m: &'a Message, index: usize) -> &'a [u8] {
-        if self.is_repeated() {
-            self.get_rep_bytes_item(m, index)
-        } else {
-            assert_eq!(0, index);
-            self.get_bytes(m)
-        }
-    }
-
-    fn get_rep_i32_item_x(&self, m: &Message, index: usize) -> i32 {
-        if self.is_repeated() {
-            self.get_rep_i32(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_i32(m)
-        }
-    }
-
-    fn get_rep_u32_item_x(&self, m: &Message, index: usize) -> u32 {
-        if self.is_repeated() {
-            self.get_rep_u32(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_u32(m)
-        }
-    }
-
-    fn get_rep_i64_item_x(&self, m: &Message, index: usize) -> i64 {
-        if self.is_repeated() {
-            self.get_rep_i64(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_i64(m)
-        }
-    }
-
-    fn get_rep_u64_item_x(&self, m: &Message, index: usize) -> u64 {
-        if self.is_repeated() {
-            self.get_rep_u64(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_u64(m)
-        }
-    }
-
-    fn get_rep_bool_item_x(&self, m: &Message, index: usize) -> bool {
-        if self.is_repeated() {
-            self.get_rep_bool(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_bool(m)
-        }
-    }
-
-    fn get_rep_f32_item_x(&self, m: &Message, index: usize) -> f32 {
-        if self.is_repeated() {
-            self.get_rep_f32(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_f32(m)
-        }
-    }
-
-    fn get_rep_f64_item_x(&self, m: &Message, index: usize) -> f64 {
-        if self.is_repeated() {
-            self.get_rep_f64(m)[index]
-        } else {
-            assert_eq!(0, index);
-            self.get_f64(m)
-        }
-    }
-
-    fn get_rep_item_x<'a>(&self, m: &'a Message, index: usize) -> ProtobufValueRef<'a> {
-        match self.proto().get_field_type() {
-            FieldDescriptorProto_Type::TYPE_MESSAGE =>
-                ProtobufValueRef::Message(self.get_rep_message_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_ENUM =>
-                ProtobufValueRef::Enum(self.get_rep_enum_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_STRING =>
-                ProtobufValueRef::String(self.get_rep_str_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_BYTES =>
-                ProtobufValueRef::Bytes(self.get_rep_bytes_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_INT32 |
-            FieldDescriptorProto_Type::TYPE_SINT32 |
-            FieldDescriptorProto_Type::TYPE_SFIXED32 =>
-                ProtobufValueRef::I32(self.get_rep_i32_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_INT64 |
-            FieldDescriptorProto_Type::TYPE_SINT64 |
-            FieldDescriptorProto_Type::TYPE_SFIXED64 =>
-                ProtobufValueRef::I64(self.get_rep_i64_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_UINT32 |
-            FieldDescriptorProto_Type::TYPE_FIXED32 =>
-                ProtobufValueRef::U32(self.get_rep_u32_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_UINT64 |
-            FieldDescriptorProto_Type::TYPE_FIXED64 =>
-                ProtobufValueRef::U64(self.get_rep_u64_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_BOOL =>
-                ProtobufValueRef::Bool(self.get_rep_bool_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_FLOAT =>
-                ProtobufValueRef::F32(self.get_rep_f32_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_DOUBLE =>
-                ProtobufValueRef::F64(self.get_rep_f64_item_x(m, index)),
-            FieldDescriptorProto_Type::TYPE_GROUP =>
-                unimplemented!(),
-        }
-
     }
 }
 
@@ -292,20 +138,14 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
                 }
             },
             ReflectFieldRef::Optional(optional) => {
-                if let Some(v) = optional.to_option() {
-                    print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
-                }
-            }
-            ReflectFieldRef::Singular(v) => {
-                if v.as_ref().is_non_zero() {
-                    print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
-                }
-            }
-            ReflectFieldRef::Old => {
-                for i in 0..f.len_field_x(m) {
-                    let v = f.get_rep_item_x(m, i);
+                if let Some(v) = optional {
                     print_field(buf, pretty, indent, &mut first, f.name(), v);
-
+                }
+            }
+            ReflectFieldRef::RepeatedOld => {
+                for i in 0..f.len_field(m) {
+                    let v = f.get_rep_item(m, i);
+                    print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
             }
         }

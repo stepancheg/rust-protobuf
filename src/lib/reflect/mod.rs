@@ -11,6 +11,7 @@ use descriptor::FieldDescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
 use descriptor::FieldDescriptorProto_Label;
+use descriptor::FieldDescriptorProto_Type;
 use descriptorx::find_enum_by_rust_name;
 use descriptorx::find_message_by_rust_name;
 use reflect::accessor::FieldAccessor;
@@ -24,7 +25,6 @@ mod optional;
 
 use self::repeated::ReflectRepeated;
 use self::map::ReflectMap;
-use self::optional::ReflectOptional;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueRef;
@@ -164,6 +164,41 @@ impl FieldDescriptor {
 
     pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
         self.accessor.get_reflect(m)
+    }
+
+    pub fn get_rep_item<'a>(&self, m: &'a Message, index: usize) -> ProtobufValueRef<'a> {
+        match self.proto().get_field_type() {
+            FieldDescriptorProto_Type::TYPE_MESSAGE =>
+                ProtobufValueRef::Message(self.get_rep_message_item(m, index)),
+            FieldDescriptorProto_Type::TYPE_ENUM =>
+                ProtobufValueRef::Enum(self.get_rep_enum_item(m, index)),
+            FieldDescriptorProto_Type::TYPE_STRING =>
+                ProtobufValueRef::String(self.get_rep_str_item(m, index)),
+            FieldDescriptorProto_Type::TYPE_BYTES =>
+                ProtobufValueRef::Bytes(self.get_rep_bytes_item(m, index)),
+            FieldDescriptorProto_Type::TYPE_INT32 |
+            FieldDescriptorProto_Type::TYPE_SINT32 |
+            FieldDescriptorProto_Type::TYPE_SFIXED32 =>
+                ProtobufValueRef::I32(self.get_rep_i32(m)[index]),
+            FieldDescriptorProto_Type::TYPE_INT64 |
+            FieldDescriptorProto_Type::TYPE_SINT64 |
+            FieldDescriptorProto_Type::TYPE_SFIXED64 =>
+                ProtobufValueRef::I64(self.get_rep_i64(m)[index]),
+            FieldDescriptorProto_Type::TYPE_UINT32 |
+            FieldDescriptorProto_Type::TYPE_FIXED32 =>
+                ProtobufValueRef::U32(self.get_rep_u32(m)[index]),
+            FieldDescriptorProto_Type::TYPE_UINT64 |
+            FieldDescriptorProto_Type::TYPE_FIXED64 =>
+                ProtobufValueRef::U64(self.get_rep_u64(m)[index]),
+            FieldDescriptorProto_Type::TYPE_BOOL =>
+                ProtobufValueRef::Bool(self.get_rep_bool(m)[index]),
+            FieldDescriptorProto_Type::TYPE_FLOAT =>
+                ProtobufValueRef::F32(self.get_rep_f32(m)[index]),
+            FieldDescriptorProto_Type::TYPE_DOUBLE =>
+                ProtobufValueRef::F64(self.get_rep_f64(m)[index]),
+            FieldDescriptorProto_Type::TYPE_GROUP =>
+                unimplemented!(),
+        }
     }
 }
 
@@ -343,7 +378,6 @@ impl EnumDescriptor {
 pub enum ReflectFieldRef<'a> {
     Repeated(&'a ReflectRepeated),
     Map(&'a ReflectMap),
-    Optional(&'a ReflectOptional),
-    Singular(&'a ProtobufValue),
-    Old,
+    Optional(Option<ProtobufValueRef<'a>>),
+    RepeatedOld,
 }
