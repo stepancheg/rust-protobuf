@@ -13,6 +13,11 @@ use singular::SingularPtrField;
 
 use super::map::ReflectMap;
 use super::repeated::ReflectRepeated;
+use super::repeated::ReflectRepeatedRef;
+use super::repeated::ReflectRepeatedEnum;
+use super::repeated::ReflectRepeatedEnumImpl;
+use super::repeated::ReflectRepeatedMessage;
+use super::repeated::ReflectRepeatedMessageImpl;
 use super::optional::ReflectOptional;
 use super::value::ProtobufValue;
 use super::value::ProtobufValueRef;
@@ -101,22 +106,30 @@ impl<M : Message, N : Message + 'static> GetRepeatedMessage<M> for GetRepeatedMe
 }
 
 
-trait GetRepeatedEnum<M> {
+trait GetRepeatedEnum<M : Message + 'static> {
     fn len_field(&self, m: &M) -> usize;
     fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor;
+    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a>>;
 }
 
-struct GetRepeatedEnumImpl<M, E> {
+struct GetRepeatedEnumImpl<M : Message + 'static, E : ProtobufEnum + ProtobufValue + 'static> {
     get: for<'a> fn(&'a M) -> &'a [E],
 }
 
-impl<M : Message, E : ProtobufEnum> GetRepeatedEnum<M> for GetRepeatedEnumImpl<M, E> {
+impl<M : Message, E : ProtobufEnum + ProtobufValue + 'static> GetRepeatedEnum<M> for GetRepeatedEnumImpl<M, E> {
     fn len_field(&self, m: &M) -> usize {
         (self.get)(m).len()
     }
 
     fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor {
         (self.get)(m)[index].descriptor()
+    }
+
+    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a>> {
+        unimplemented!()
+//        Box::new(ReflectRepeatedEnumImpl::<'a, E> {
+//            slice: (self.get)(m)
+//        })
     }
 }
 
@@ -188,6 +201,22 @@ impl<M : Message> RepeatedOldGet<M> {
             RepeatedOldGet::Bytes(get) => get(m).len(),
             RepeatedOldGet::Enum(ref get) => get.len_field(m),
             RepeatedOldGet::Message(ref get) => get.len_field(m),
+        }
+    }
+
+    fn get_repeated<'a>(&self, m: &'a M) -> ReflectRepeatedRef<'a> {
+        match *self {
+            RepeatedOldGet::U32(get) => ReflectRepeatedRef::U32(get(m)),
+            RepeatedOldGet::U64(get) => ReflectRepeatedRef::U64(get(m)),
+            RepeatedOldGet::I32(get) => ReflectRepeatedRef::I32(get(m)),
+            RepeatedOldGet::I64(get) => ReflectRepeatedRef::I64(get(m)),
+            RepeatedOldGet::F32(get) => ReflectRepeatedRef::F32(get(m)),
+            RepeatedOldGet::F64(get) => ReflectRepeatedRef::F64(get(m)),
+            RepeatedOldGet::Bool(get) => ReflectRepeatedRef::Bool(get(m)),
+            RepeatedOldGet::String(get) => ReflectRepeatedRef::String(get(m)),
+            RepeatedOldGet::Bytes(get) => ReflectRepeatedRef::Bytes(get(m)),
+            RepeatedOldGet::Enum(ref get) => ReflectRepeatedRef::Enum(get.reflect_repeated_enum(m)),
+            RepeatedOldGet::Message(ref get) => panic!("TODO"),// ReflectRepeatedRef::Message(Box::new(ReflectRepeatedMessageImpl { slice: get(m) })),
         }
     }
 }
@@ -789,7 +818,7 @@ pub fn make_repeated_bytes_accessor<M : Message + 'static>(
 }
 
 #[deprecated]
-pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + 'static>(
+pub fn make_repeated_enum_accessor<M : Message + 'static, E : ProtobufEnum + ProtobufValue + 'static>(
         name: &'static str,
         get: for<'a> fn(&'a M) -> &'a [E],
     ) -> Box<FieldAccessor + 'static>
