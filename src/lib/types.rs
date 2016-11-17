@@ -24,6 +24,11 @@ pub trait ProtobufType {
         Self::compute_size(value)
     }
 
+    #[inline]
+    fn get_map_prefix_size(_: u32, _: &Self::Value) -> u32 {
+        1
+    }
+
     fn write_with_cached_size(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()>;
 }
 
@@ -382,6 +387,11 @@ impl<M : Message + MessageStatic + ProtobufValue> ProtobufType for ProtobufTypeM
 
     fn get_cached_size(value: &M) -> u32 {
         value.get_cached_size()
+    }
+
+    fn get_map_prefix_size(field_number: u32, value: &M) -> u32 {
+        rt::tag_size(field_number) +
+            rt::compute_raw_varint32_size(value.compute_size())
     }
 
     fn write_with_cached_size(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()> {
