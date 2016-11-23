@@ -1,7 +1,7 @@
 use unknown::UnknownFields;
 use std::cell::Cell;
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct SpecialFields {
     unknown_fields: UnknownFields,
     cached_size: Cell<u32>,
