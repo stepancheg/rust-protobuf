@@ -12,6 +12,7 @@ use reflect::MessageDescriptor;
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
 use unknown::UnknownFields;
+use special::SpecialFields;
 use stream::WithCodedInputStream;
 use stream::WithCodedOutputStream;
 use stream::CodedInputStream;
@@ -38,9 +39,6 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
 
     // compute and cache size of this message and all nested messages
     fn compute_size(&self) -> u32;
-
-    // get size previously computed by `compute_size`
-    fn get_cached_size(&self) -> u32;
 
     fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         try!(self.check_initialized());
@@ -84,9 +82,7 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
     }
 
     fn write_to_vec(&self, v: &mut Vec<u8>) -> ProtobufResult<()> {
-        v.with_coded_output_stream(|os| {
-            self.write_to(os)
-        })
+        self.write_to_writer(v)
     }
 
     fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
@@ -108,11 +104,32 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
         })
     }
 
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
+    fn get_special_fields<'s>(&'s self) -> &'s SpecialFields;
 
-    fn type_id(&self) -> TypeId;
+    fn mut_special_fields<'s>(&'s mut self) -> &'s mut SpecialFields;
+
+    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields {
+        self.get_special_fields().get_unknown_fields()
+    }
+
+    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields {
+        self.mut_special_fields().mut_unknown_fields()
+    }
+
+    fn type_id(&self) -> TypeId {
+        TypeId::of::<Self>()
+    }
+
     fn as_any(&self) -> &Any;
+
+    // get size previously computed by `compute_size`
+    fn get_cached_size(&self) -> u32 {
+        self.get_special_fields().get_cached_size()
+    }
+
+    fn set_cached_size(&self, size: u32) -> u32 {
+        self.get_special_fields().set_cached_size(size)
+    }
 
     // Rust does not allow implementation of trait for trait:
     // impl<M : Message> fmt::Debug for M {
@@ -202,5 +219,3 @@ pub fn parse_length_delimited_from_bytes<M : Message + MessageStatic>(bytes: &[u
         is.read_message::<M>()
     })
 }
-
-

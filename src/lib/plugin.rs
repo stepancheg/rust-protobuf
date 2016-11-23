@@ -20,15 +20,14 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct CodeGeneratorRequest {
     // message fields
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
     proto_file: ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -200,9 +199,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -221,20 +218,12 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<CodeGeneratorRequest>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -289,16 +278,7 @@ impl ::protobuf::Clear for CodeGeneratorRequest {
         self.clear_file_to_generate();
         self.clear_parameter();
         self.clear_proto_file();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for CodeGeneratorRequest {
-    fn eq(&self, other: &CodeGeneratorRequest) -> bool {
-        self.file_to_generate == other.file_to_generate &&
-        self.parameter == other.parameter &&
-        self.proto_file == other.proto_file &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -314,14 +294,13 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct CodeGeneratorResponse {
     // message fields
     error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -454,9 +433,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -472,20 +449,12 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<CodeGeneratorResponse>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -534,15 +503,7 @@ impl ::protobuf::Clear for CodeGeneratorResponse {
     fn clear(&mut self) {
         self.clear_error();
         self.clear_file();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for CodeGeneratorResponse {
-    fn eq(&self, other: &CodeGeneratorResponse) -> bool {
-        self.error == other.error &&
-        self.file == other.file &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -558,15 +519,14 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct CodeGeneratorResponse_File {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     insertion_point: ::protobuf::SingularField<::std::string::String>,
     content: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -759,9 +719,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         if let Some(v) = self.content.as_ref() {
             my_size += ::protobuf::rt::string_size(15, &v);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -778,20 +736,12 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<CodeGeneratorResponse_File>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -846,16 +796,7 @@ impl ::protobuf::Clear for CodeGeneratorResponse_File {
         self.clear_name();
         self.clear_insertion_point();
         self.clear_content();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
-    fn eq(&self, other: &CodeGeneratorResponse_File) -> bool {
-        self.name == other.name &&
-        self.insertion_point == other.insertion_point &&
-        self.content == other.content &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
