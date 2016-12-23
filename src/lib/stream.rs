@@ -2,8 +2,7 @@ use std;
 use std::mem;
 use std::io;
 use std::io::{BufRead, BufReader, Read};
-use std::io::Write;
-use std::ptr;
+use std::io::{BufWriter, Write};
 use std::slice;
 
 use core::Message;
@@ -632,7 +631,8 @@ impl<'a> WithCodedOutputStream for &'a mut (Write + 'a) {
             -> ProtobufResult<T>
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
-        let mut os = CodedOutputStream::new(self);
+        let mut writer = BufWriter::with_capacity(4096, self);
+        let mut os = CodedOutputStream::new(&mut writer);
         let r = try!(cb(&mut os));
         try!(os.flush());
         Ok(r)
@@ -644,7 +644,10 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
             -> ProtobufResult<T>
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
-        (&mut self as &mut Write).with_coded_output_stream(cb)
+        let mut os = CodedOutputStream::new(self);
+        let r = try!(cb(&mut os));
+        try!(os.flush());
+        Ok(r)
     }
 }
 
@@ -697,67 +700,28 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 
 pub struct CodedOutputStream<'a> {
-    buffer: Box<[u8]>,
-    // within buffer
-    position: u32,
-    writer: Option<&'a mut (Write + 'a)>,
+   writer: &'a mut Write,
 }
 
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
-        let buffer_len = 4096;
-        let mut buffer = Vec::with_capacity(buffer_len);
-        unsafe { buffer.set_len(buffer_len); }
         CodedOutputStream {
-            buffer: buffer.into_boxed_slice(),
-            position: 0,
-            writer: Some(writer),
+            writer: writer,
         }
-    }
-
-    fn refresh_buffer(&mut self) -> ProtobufResult<()> {
-        match self.writer {
-            Some(ref mut writer) => {
-                try!(writer.write_all(&self.buffer[0..self.position as usize]));
-            },
-            None => panic!()
-        };
-        self.position = 0;
-        Ok(())
     }
 
     pub fn flush(&mut self) -> ProtobufResult<()> {
-        if self.writer.is_some() {
-            try!(self.refresh_buffer());
-        }
+        try!(self.writer.flush());
         Ok(())
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
-        if self.position as usize == self.buffer.len() {
-            try!(self.refresh_buffer());
-        }
-        self.buffer[self.position as usize] = byte;
-        self.position += 1;
+        try!(self.writer.write_all(&[byte]));
         Ok(())
     }
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        if bytes.len() <= self.buffer.len() - self.position as usize {
-            // TODO: use `copy_from_slice` as soon as rust 1.9 released
-            unsafe {
-                let dest = &mut self.buffer[self.position as usize..];
-                ptr::copy_nonoverlapping(bytes.as_ptr(), dest.as_mut_ptr(), bytes.len());
-                self.position += bytes.len() as u32;
-                return Ok(());
-            }
-        }
-
-        try!(self.refresh_buffer());
-        match self.writer {
-            Some(ref mut writer) => try!(writer.write_all(bytes)),
-            None => panic!()
-        };
+        try!(self.writer.write_all(bytes));
         Ok(())
     }
 
