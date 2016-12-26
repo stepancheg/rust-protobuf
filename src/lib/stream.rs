@@ -23,6 +23,11 @@ use error::ProtobufError;
 // `BufReader` with an internal buffer of this size.
 const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 
+// Equal to the default buffer size of `BufWriter`, so when
+// `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
+const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
+
+
 pub mod wire_format {
     // TODO: temporary
     pub use self::WireType::*;
@@ -705,7 +710,7 @@ pub struct CodedOutputStream<'a> {
 
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
-        let buffer_len = 4096;
+        let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
         let mut buffer = Vec::with_capacity(buffer_len);
         unsafe { buffer.set_len(buffer_len); }
         CodedOutputStream {
