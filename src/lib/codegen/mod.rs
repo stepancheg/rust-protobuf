@@ -85,7 +85,7 @@ fn gen_file(
     }
 
     Some(compiler_plugin::GenResult {
-        name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
+        name: format!("{}.rs", proto_path_to_output_path(file.get_name())),
         content: v,
     })
 }
