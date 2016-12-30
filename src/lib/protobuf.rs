@@ -9,6 +9,7 @@ pub use unknown::UnknownValuesIter;
 pub use repeated::RepeatedField;
 pub use singular::SingularField;
 pub use singular::SingularPtrField;
+pub use special::SpecialFields;
 pub use clear::Clear;
 pub use core::Message;
 pub use core::MessageStatic;
@@ -51,6 +52,7 @@ pub mod descriptorx;
 mod zigzag;
 mod paginate;
 mod unknown;
+mod special;
 mod strx;
 mod rust;
 
@@ -76,5 +78,6 @@ mod protobuf {
     pub use repeated::RepeatedField;
     pub use singular::SingularField;
     pub use singular::SingularPtrField;
+    pub use special::SpecialFields;
     pub use clear::Clear;
 }

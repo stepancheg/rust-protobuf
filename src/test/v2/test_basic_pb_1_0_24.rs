@@ -20,13 +20,12 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct Test1 {
     // message fields
     a: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -42,15 +41,7 @@ impl Test1 {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const Test1,
         };
-        unsafe {
-            instance.get(|| {
-                Test1 {
-                    a: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| Test1::default()) }
     }
 
     // required int32 a = 1;
@@ -107,9 +98,7 @@ impl ::protobuf::Message for Test1 {
         for value in &self.a {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -120,20 +109,12 @@ impl ::protobuf::Message for Test1 {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<Test1>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -176,14 +157,7 @@ impl ::protobuf::MessageStatic for Test1 {
 impl ::protobuf::Clear for Test1 {
     fn clear(&mut self) {
         self.clear_a();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for Test1 {
-    fn eq(&self, other: &Test1) -> bool {
-        self.a == other.a &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -193,13 +167,12 @@ impl ::std::fmt::Debug for Test1 {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct Test2 {
     // message fields
     b: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -215,15 +188,7 @@ impl Test2 {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const Test2,
         };
-        unsafe {
-            instance.get(|| {
-                Test2 {
-                    b: ::protobuf::SingularField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| Test2::default()) }
     }
 
     // required string b = 2;
@@ -293,9 +258,7 @@ impl ::protobuf::Message for Test2 {
         for value in &self.b {
             my_size += ::protobuf::rt::string_size(2, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -306,20 +269,12 @@ impl ::protobuf::Message for Test2 {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<Test2>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -362,14 +317,7 @@ impl ::protobuf::MessageStatic for Test2 {
 impl ::protobuf::Clear for Test2 {
     fn clear(&mut self) {
         self.clear_b();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for Test2 {
-    fn eq(&self, other: &Test2) -> bool {
-        self.b == other.b &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -379,13 +327,12 @@ impl ::std::fmt::Debug for Test2 {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct Test3 {
     // message fields
     c: ::protobuf::SingularPtrField<Test1>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -401,15 +348,7 @@ impl Test3 {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const Test3,
         };
-        unsafe {
-            instance.get(|| {
-                Test3 {
-                    c: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| Test3::default()) }
     }
 
     // required .basic.Test1 c = 3;
@@ -477,9 +416,7 @@ impl ::protobuf::Message for Test3 {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -492,20 +429,12 @@ impl ::protobuf::Message for Test3 {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<Test3>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -548,14 +477,7 @@ impl ::protobuf::MessageStatic for Test3 {
 impl ::protobuf::Clear for Test3 {
     fn clear(&mut self) {
         self.clear_c();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for Test3 {
-    fn eq(&self, other: &Test3) -> bool {
-        self.c == other.c &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -565,13 +487,12 @@ impl ::std::fmt::Debug for Test3 {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct Test4 {
     // message fields
     d: ::std::vec::Vec<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -587,15 +508,7 @@ impl Test4 {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const Test4,
         };
-        unsafe {
-            instance.get(|| {
-                Test4 {
-                    d: ::std::vec::Vec::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| Test4::default()) }
     }
 
     // repeated int32 d = 4;
@@ -651,9 +564,7 @@ impl ::protobuf::Message for Test4 {
         if !self.d.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(4, &self.d);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -669,20 +580,12 @@ impl ::protobuf::Message for Test4 {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<Test4>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -724,14 +627,7 @@ impl ::protobuf::MessageStatic for Test4 {
 impl ::protobuf::Clear for Test4 {
     fn clear(&mut self) {
         self.clear_d();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for Test4 {
-    fn eq(&self, other: &Test4) -> bool {
-        self.d == other.d &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -741,14 +637,13 @@ impl ::std::fmt::Debug for Test4 {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestPackedUnpacked {
     // message fields
     unpacked: ::std::vec::Vec<i32>,
     packed: ::std::vec::Vec<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -764,16 +659,7 @@ impl TestPackedUnpacked {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestPackedUnpacked,
         };
-        unsafe {
-            instance.get(|| {
-                TestPackedUnpacked {
-                    unpacked: ::std::vec::Vec::new(),
-                    packed: ::std::vec::Vec::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestPackedUnpacked::default()) }
     }
 
     // repeated int32 unpacked = 4;
@@ -860,9 +746,7 @@ impl ::protobuf::Message for TestPackedUnpacked {
         if !self.packed.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(5, &self.packed);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -881,20 +765,12 @@ impl ::protobuf::Message for TestPackedUnpacked {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestPackedUnpacked>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -941,15 +817,7 @@ impl ::protobuf::Clear for TestPackedUnpacked {
     fn clear(&mut self) {
         self.clear_unpacked();
         self.clear_packed();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestPackedUnpacked {
-    fn eq(&self, other: &TestPackedUnpacked) -> bool {
-        self.unpacked == other.unpacked &&
-        self.packed == other.packed &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -959,13 +827,12 @@ impl ::std::fmt::Debug for TestPackedUnpacked {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestEmpty {
     // message fields
     foo: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -981,15 +848,7 @@ impl TestEmpty {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestEmpty,
         };
-        unsafe {
-            instance.get(|| {
-                TestEmpty {
-                    foo: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestEmpty::default()) }
     }
 
     // optional int32 foo = 10;
@@ -1043,9 +902,7 @@ impl ::protobuf::Message for TestEmpty {
         for value in &self.foo {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1056,20 +913,12 @@ impl ::protobuf::Message for TestEmpty {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestEmpty>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1112,14 +961,7 @@ impl ::protobuf::MessageStatic for TestEmpty {
 impl ::protobuf::Clear for TestEmpty {
     fn clear(&mut self) {
         self.clear_foo();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestEmpty {
-    fn eq(&self, other: &TestEmpty) -> bool {
-        self.foo == other.foo &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1129,13 +971,12 @@ impl ::std::fmt::Debug for TestEmpty {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestRequired {
     // message fields
     b: ::std::option::Option<bool>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1151,15 +992,7 @@ impl TestRequired {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestRequired,
         };
-        unsafe {
-            instance.get(|| {
-                TestRequired {
-                    b: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestRequired::default()) }
     }
 
     // required bool b = 5;
@@ -1216,9 +1049,7 @@ impl ::protobuf::Message for TestRequired {
         if self.b.is_some() {
             my_size += 2;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1229,20 +1060,12 @@ impl ::protobuf::Message for TestRequired {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestRequired>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1285,14 +1108,7 @@ impl ::protobuf::MessageStatic for TestRequired {
 impl ::protobuf::Clear for TestRequired {
     fn clear(&mut self) {
         self.clear_b();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestRequired {
-    fn eq(&self, other: &TestRequired) -> bool {
-        self.b == other.b &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1302,13 +1118,12 @@ impl ::std::fmt::Debug for TestRequired {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestUnknownFields {
     // message fields
     a: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1324,15 +1139,7 @@ impl TestUnknownFields {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestUnknownFields,
         };
-        unsafe {
-            instance.get(|| {
-                TestUnknownFields {
-                    a: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestUnknownFields::default()) }
     }
 
     // required int32 a = 1;
@@ -1389,9 +1196,7 @@ impl ::protobuf::Message for TestUnknownFields {
         for value in &self.a {
             my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1402,20 +1207,12 @@ impl ::protobuf::Message for TestUnknownFields {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestUnknownFields>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1458,14 +1255,7 @@ impl ::protobuf::MessageStatic for TestUnknownFields {
 impl ::protobuf::Clear for TestUnknownFields {
     fn clear(&mut self) {
         self.clear_a();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestUnknownFields {
-    fn eq(&self, other: &TestUnknownFields) -> bool {
-        self.a == other.a &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1475,14 +1265,13 @@ impl ::std::fmt::Debug for TestUnknownFields {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestSelfReference {
     // message fields
     r1: ::protobuf::SingularPtrField<TestSelfReference>,
     r2: ::protobuf::SingularPtrField<TestSelfReference>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1498,16 +1287,7 @@ impl TestSelfReference {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestSelfReference,
         };
-        unsafe {
-            instance.get(|| {
-                TestSelfReference {
-                    r1: ::protobuf::SingularPtrField::none(),
-                    r2: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestSelfReference::default()) }
     }
 
     // required .basic.TestSelfReference r1 = 1;
@@ -1615,9 +1395,7 @@ impl ::protobuf::Message for TestSelfReference {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1635,20 +1413,12 @@ impl ::protobuf::Message for TestSelfReference {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestSelfReference>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1697,15 +1467,7 @@ impl ::protobuf::Clear for TestSelfReference {
     fn clear(&mut self) {
         self.clear_r1();
         self.clear_r2();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestSelfReference {
-    fn eq(&self, other: &TestSelfReference) -> bool {
-        self.r1 == other.r1 &&
-        self.r2 == other.r2 &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1715,13 +1477,12 @@ impl ::std::fmt::Debug for TestSelfReference {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestDefaultInstanceField {
     // message fields
     s: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1737,15 +1498,7 @@ impl TestDefaultInstanceField {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestDefaultInstanceField,
         };
-        unsafe {
-            instance.get(|| {
-                TestDefaultInstanceField {
-                    s: ::protobuf::SingularField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestDefaultInstanceField::default()) }
     }
 
     // optional string s = 1;
@@ -1812,9 +1565,7 @@ impl ::protobuf::Message for TestDefaultInstanceField {
         for value in &self.s {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1825,20 +1576,12 @@ impl ::protobuf::Message for TestDefaultInstanceField {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestDefaultInstanceField>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1881,14 +1624,7 @@ impl ::protobuf::MessageStatic for TestDefaultInstanceField {
 impl ::protobuf::Clear for TestDefaultInstanceField {
     fn clear(&mut self) {
         self.clear_s();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestDefaultInstanceField {
-    fn eq(&self, other: &TestDefaultInstanceField) -> bool {
-        self.s == other.s &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1898,13 +1634,12 @@ impl ::std::fmt::Debug for TestDefaultInstanceField {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestDefaultInstance {
     // message fields
     field: ::protobuf::SingularPtrField<TestDefaultInstanceField>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1920,15 +1655,7 @@ impl TestDefaultInstance {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestDefaultInstance,
         };
-        unsafe {
-            instance.get(|| {
-                TestDefaultInstance {
-                    field: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestDefaultInstance::default()) }
     }
 
     // optional .basic.TestDefaultInstanceField field = 1;
@@ -1993,9 +1720,7 @@ impl ::protobuf::Message for TestDefaultInstance {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2008,20 +1733,12 @@ impl ::protobuf::Message for TestDefaultInstance {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestDefaultInstance>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -2064,14 +1781,7 @@ impl ::protobuf::MessageStatic for TestDefaultInstance {
 impl ::protobuf::Clear for TestDefaultInstance {
     fn clear(&mut self) {
         self.clear_field();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestDefaultInstance {
-    fn eq(&self, other: &TestDefaultInstance) -> bool {
-        self.field == other.field &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -2081,13 +1791,12 @@ impl ::std::fmt::Debug for TestDefaultInstance {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestDescriptor {
     // message fields
     stuff: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -2103,15 +1812,7 @@ impl TestDescriptor {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestDescriptor,
         };
-        unsafe {
-            instance.get(|| {
-                TestDescriptor {
-                    stuff: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestDescriptor::default()) }
     }
 
     // optional int32 stuff = 10;
@@ -2165,9 +1866,7 @@ impl ::protobuf::Message for TestDescriptor {
         for value in &self.stuff {
             my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2178,20 +1877,12 @@ impl ::protobuf::Message for TestDescriptor {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestDescriptor>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -2234,14 +1925,7 @@ impl ::protobuf::MessageStatic for TestDescriptor {
 impl ::protobuf::Clear for TestDescriptor {
     fn clear(&mut self) {
         self.clear_stuff();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestDescriptor {
-    fn eq(&self, other: &TestDescriptor) -> bool {
-        self.stuff == other.stuff &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -2251,7 +1935,7 @@ impl ::std::fmt::Debug for TestDescriptor {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestTypesSingular {
     // message fields
     double_field: ::std::option::Option<f64>,
@@ -2271,8 +1955,7 @@ pub struct TestTypesSingular {
     bytes_field: ::protobuf::SingularField<::std::vec::Vec<u8>>,
     enum_field: ::std::option::Option<TestEnumDescriptor>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -2288,30 +1971,7 @@ impl TestTypesSingular {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestTypesSingular,
         };
-        unsafe {
-            instance.get(|| {
-                TestTypesSingular {
-                    double_field: ::std::option::Option::None,
-                    float_field: ::std::option::Option::None,
-                    int32_field: ::std::option::Option::None,
-                    int64_field: ::std::option::Option::None,
-                    uint32_field: ::std::option::Option::None,
-                    uint64_field: ::std::option::Option::None,
-                    sint32_field: ::std::option::Option::None,
-                    sint64_field: ::std::option::Option::None,
-                    fixed32_field: ::std::option::Option::None,
-                    fixed64_field: ::std::option::Option::None,
-                    sfixed32_field: ::std::option::Option::None,
-                    sfixed64_field: ::std::option::Option::None,
-                    bool_field: ::std::option::Option::None,
-                    string_field: ::protobuf::SingularField::none(),
-                    bytes_field: ::protobuf::SingularField::none(),
-                    enum_field: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestTypesSingular::default()) }
     }
 
     // optional double double_field = 1;
@@ -2826,9 +2486,7 @@ impl ::protobuf::Message for TestTypesSingular {
         for value in &self.enum_field {
             my_size += ::protobuf::rt::enum_size(16, *value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2884,20 +2542,12 @@ impl ::protobuf::Message for TestTypesSingular {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestTypesSingular>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3030,29 +2680,7 @@ impl ::protobuf::Clear for TestTypesSingular {
         self.clear_string_field();
         self.clear_bytes_field();
         self.clear_enum_field();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestTypesSingular {
-    fn eq(&self, other: &TestTypesSingular) -> bool {
-        self.double_field == other.double_field &&
-        self.float_field == other.float_field &&
-        self.int32_field == other.int32_field &&
-        self.int64_field == other.int64_field &&
-        self.uint32_field == other.uint32_field &&
-        self.uint64_field == other.uint64_field &&
-        self.sint32_field == other.sint32_field &&
-        self.sint64_field == other.sint64_field &&
-        self.fixed32_field == other.fixed32_field &&
-        self.fixed64_field == other.fixed64_field &&
-        self.sfixed32_field == other.sfixed32_field &&
-        self.sfixed64_field == other.sfixed64_field &&
-        self.bool_field == other.bool_field &&
-        self.string_field == other.string_field &&
-        self.bytes_field == other.bytes_field &&
-        self.enum_field == other.enum_field &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -3062,7 +2690,7 @@ impl ::std::fmt::Debug for TestTypesSingular {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestTypesRepeated {
     // message fields
     double_field: ::std::vec::Vec<f64>,
@@ -3082,8 +2710,7 @@ pub struct TestTypesRepeated {
     bytes_field: ::protobuf::RepeatedField<::std::vec::Vec<u8>>,
     enum_field: ::std::vec::Vec<TestEnumDescriptor>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3099,30 +2726,7 @@ impl TestTypesRepeated {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestTypesRepeated,
         };
-        unsafe {
-            instance.get(|| {
-                TestTypesRepeated {
-                    double_field: ::std::vec::Vec::new(),
-                    float_field: ::std::vec::Vec::new(),
-                    int32_field: ::std::vec::Vec::new(),
-                    int64_field: ::std::vec::Vec::new(),
-                    uint32_field: ::std::vec::Vec::new(),
-                    uint64_field: ::std::vec::Vec::new(),
-                    sint32_field: ::std::vec::Vec::new(),
-                    sint64_field: ::std::vec::Vec::new(),
-                    fixed32_field: ::std::vec::Vec::new(),
-                    fixed64_field: ::std::vec::Vec::new(),
-                    sfixed32_field: ::std::vec::Vec::new(),
-                    sfixed64_field: ::std::vec::Vec::new(),
-                    bool_field: ::std::vec::Vec::new(),
-                    string_field: ::protobuf::RepeatedField::new(),
-                    bytes_field: ::protobuf::RepeatedField::new(),
-                    enum_field: ::std::vec::Vec::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestTypesRepeated::default()) }
     }
 
     // repeated double double_field = 1;
@@ -3629,9 +3233,7 @@ impl ::protobuf::Message for TestTypesRepeated {
         for value in &self.enum_field {
             my_size += ::protobuf::rt::enum_size(16, *value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3687,20 +3289,12 @@ impl ::protobuf::Message for TestTypesRepeated {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestTypesRepeated>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3817,29 +3411,7 @@ impl ::protobuf::Clear for TestTypesRepeated {
         self.clear_string_field();
         self.clear_bytes_field();
         self.clear_enum_field();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestTypesRepeated {
-    fn eq(&self, other: &TestTypesRepeated) -> bool {
-        self.double_field == other.double_field &&
-        self.float_field == other.float_field &&
-        self.int32_field == other.int32_field &&
-        self.int64_field == other.int64_field &&
-        self.uint32_field == other.uint32_field &&
-        self.uint64_field == other.uint64_field &&
-        self.sint32_field == other.sint32_field &&
-        self.sint64_field == other.sint64_field &&
-        self.fixed32_field == other.fixed32_field &&
-        self.fixed64_field == other.fixed64_field &&
-        self.sfixed32_field == other.sfixed32_field &&
-        self.sfixed64_field == other.sfixed64_field &&
-        self.bool_field == other.bool_field &&
-        self.string_field == other.string_field &&
-        self.bytes_field == other.bytes_field &&
-        self.enum_field == other.enum_field &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -3849,7 +3421,7 @@ impl ::std::fmt::Debug for TestTypesRepeated {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestTypesRepeatedPacked {
     // message fields
     double_field: ::std::vec::Vec<f64>,
@@ -3869,8 +3441,7 @@ pub struct TestTypesRepeatedPacked {
     bytes_field: ::protobuf::RepeatedField<::std::vec::Vec<u8>>,
     enum_field: ::std::vec::Vec<TestEnumDescriptor>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3886,30 +3457,7 @@ impl TestTypesRepeatedPacked {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestTypesRepeatedPacked,
         };
-        unsafe {
-            instance.get(|| {
-                TestTypesRepeatedPacked {
-                    double_field: ::std::vec::Vec::new(),
-                    float_field: ::std::vec::Vec::new(),
-                    int32_field: ::std::vec::Vec::new(),
-                    int64_field: ::std::vec::Vec::new(),
-                    uint32_field: ::std::vec::Vec::new(),
-                    uint64_field: ::std::vec::Vec::new(),
-                    sint32_field: ::std::vec::Vec::new(),
-                    sint64_field: ::std::vec::Vec::new(),
-                    fixed32_field: ::std::vec::Vec::new(),
-                    fixed64_field: ::std::vec::Vec::new(),
-                    sfixed32_field: ::std::vec::Vec::new(),
-                    sfixed64_field: ::std::vec::Vec::new(),
-                    bool_field: ::std::vec::Vec::new(),
-                    string_field: ::protobuf::RepeatedField::new(),
-                    bytes_field: ::protobuf::RepeatedField::new(),
-                    enum_field: ::std::vec::Vec::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestTypesRepeatedPacked::default()) }
     }
 
     // repeated double double_field = 1;
@@ -4430,9 +3978,7 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
         if !self.enum_field.is_empty() {
             my_size += ::protobuf::rt::vec_packed_enum_size(16, &self.enum_field);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -4558,20 +4104,12 @@ impl ::protobuf::Message for TestTypesRepeatedPacked {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestTypesRepeatedPacked>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -4688,29 +4226,7 @@ impl ::protobuf::Clear for TestTypesRepeatedPacked {
         self.clear_string_field();
         self.clear_bytes_field();
         self.clear_enum_field();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestTypesRepeatedPacked {
-    fn eq(&self, other: &TestTypesRepeatedPacked) -> bool {
-        self.double_field == other.double_field &&
-        self.float_field == other.float_field &&
-        self.int32_field == other.int32_field &&
-        self.int64_field == other.int64_field &&
-        self.uint32_field == other.uint32_field &&
-        self.uint64_field == other.uint64_field &&
-        self.sint32_field == other.sint32_field &&
-        self.sint64_field == other.sint64_field &&
-        self.fixed32_field == other.fixed32_field &&
-        self.fixed64_field == other.fixed64_field &&
-        self.sfixed32_field == other.sfixed32_field &&
-        self.sfixed64_field == other.sfixed64_field &&
-        self.bool_field == other.bool_field &&
-        self.string_field == other.string_field &&
-        self.bytes_field == other.bytes_field &&
-        self.enum_field == other.enum_field &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -4720,7 +4236,7 @@ impl ::std::fmt::Debug for TestTypesRepeatedPacked {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestDefaultValues {
     // message fields
     double_field: ::std::option::Option<f64>,
@@ -4741,8 +4257,7 @@ pub struct TestDefaultValues {
     enum_field: ::std::option::Option<EnumForDefaultValue>,
     enum_field_without_default: ::std::option::Option<EnumForDefaultValue>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -4758,31 +4273,7 @@ impl TestDefaultValues {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestDefaultValues,
         };
-        unsafe {
-            instance.get(|| {
-                TestDefaultValues {
-                    double_field: ::std::option::Option::None,
-                    float_field: ::std::option::Option::None,
-                    int32_field: ::std::option::Option::None,
-                    int64_field: ::std::option::Option::None,
-                    uint32_field: ::std::option::Option::None,
-                    uint64_field: ::std::option::Option::None,
-                    sint32_field: ::std::option::Option::None,
-                    sint64_field: ::std::option::Option::None,
-                    fixed32_field: ::std::option::Option::None,
-                    fixed64_field: ::std::option::Option::None,
-                    sfixed32_field: ::std::option::Option::None,
-                    sfixed64_field: ::std::option::Option::None,
-                    bool_field: ::std::option::Option::None,
-                    string_field: ::protobuf::SingularField::none(),
-                    bytes_field: ::protobuf::SingularField::none(),
-                    enum_field: ::std::option::Option::None,
-                    enum_field_without_default: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestDefaultValues::default()) }
     }
 
     // optional double double_field = 1;
@@ -5326,9 +4817,7 @@ impl ::protobuf::Message for TestDefaultValues {
         for value in &self.enum_field_without_default {
             my_size += ::protobuf::rt::enum_size(17, *value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5387,20 +4876,12 @@ impl ::protobuf::Message for TestDefaultValues {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestDefaultValues>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -5539,30 +5020,7 @@ impl ::protobuf::Clear for TestDefaultValues {
         self.clear_bytes_field();
         self.clear_enum_field();
         self.clear_enum_field_without_default();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestDefaultValues {
-    fn eq(&self, other: &TestDefaultValues) -> bool {
-        self.double_field == other.double_field &&
-        self.float_field == other.float_field &&
-        self.int32_field == other.int32_field &&
-        self.int64_field == other.int64_field &&
-        self.uint32_field == other.uint32_field &&
-        self.uint64_field == other.uint64_field &&
-        self.sint32_field == other.sint32_field &&
-        self.sint64_field == other.sint64_field &&
-        self.fixed32_field == other.fixed32_field &&
-        self.fixed64_field == other.fixed64_field &&
-        self.sfixed32_field == other.sfixed32_field &&
-        self.sfixed64_field == other.sfixed64_field &&
-        self.bool_field == other.bool_field &&
-        self.string_field == other.string_field &&
-        self.bytes_field == other.bytes_field &&
-        self.enum_field == other.enum_field &&
-        self.enum_field_without_default == other.enum_field_without_default &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -5572,7 +5030,7 @@ impl ::std::fmt::Debug for TestDefaultValues {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestExtremeDefaultValues {
     // message fields
     inf_double: ::std::option::Option<f64>,
@@ -5582,8 +5040,7 @@ pub struct TestExtremeDefaultValues {
     neg_inf_float: ::std::option::Option<f32>,
     nan_float: ::std::option::Option<f32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -5599,20 +5056,7 @@ impl TestExtremeDefaultValues {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestExtremeDefaultValues,
         };
-        unsafe {
-            instance.get(|| {
-                TestExtremeDefaultValues {
-                    inf_double: ::std::option::Option::None,
-                    neg_inf_double: ::std::option::Option::None,
-                    nan_double: ::std::option::Option::None,
-                    inf_float: ::std::option::Option::None,
-                    neg_inf_float: ::std::option::Option::None,
-                    nan_float: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestExtremeDefaultValues::default()) }
     }
 
     // optional double inf_double = 14;
@@ -5811,9 +5255,7 @@ impl ::protobuf::Message for TestExtremeDefaultValues {
         if self.nan_float.is_some() {
             my_size += 6;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5839,20 +5281,12 @@ impl ::protobuf::Message for TestExtremeDefaultValues {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestExtremeDefaultValues>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -5925,19 +5359,7 @@ impl ::protobuf::Clear for TestExtremeDefaultValues {
         self.clear_inf_float();
         self.clear_neg_inf_float();
         self.clear_nan_float();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestExtremeDefaultValues {
-    fn eq(&self, other: &TestExtremeDefaultValues) -> bool {
-        self.inf_double == other.inf_double &&
-        self.neg_inf_double == other.neg_inf_double &&
-        self.nan_double == other.nan_double &&
-        self.inf_float == other.inf_float &&
-        self.neg_inf_float == other.neg_inf_float &&
-        self.nan_float == other.nan_float &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -5947,11 +5369,10 @@ impl ::std::fmt::Debug for TestExtremeDefaultValues {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestInvalidTag {
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -5967,14 +5388,7 @@ impl TestInvalidTag {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestInvalidTag,
         };
-        unsafe {
-            instance.get(|| {
-                TestInvalidTag {
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestInvalidTag::default()) }
     }
 }
 
@@ -5999,9 +5413,7 @@ impl ::protobuf::Message for TestInvalidTag {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6009,20 +5421,12 @@ impl ::protobuf::Message for TestInvalidTag {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestInvalidTag>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -6059,13 +5463,7 @@ impl ::protobuf::MessageStatic for TestInvalidTag {
 
 impl ::protobuf::Clear for TestInvalidTag {
     fn clear(&mut self) {
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestInvalidTag {
-    fn eq(&self, other: &TestInvalidTag) -> bool {
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -6075,13 +5473,12 @@ impl ::std::fmt::Debug for TestInvalidTag {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestTruncated {
     // message fields
     ints: ::std::vec::Vec<u32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6097,15 +5494,7 @@ impl TestTruncated {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestTruncated,
         };
-        unsafe {
-            instance.get(|| {
-                TestTruncated {
-                    ints: ::std::vec::Vec::new(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestTruncated::default()) }
     }
 
     // repeated fixed32 ints = 2;
@@ -6161,9 +5550,7 @@ impl ::protobuf::Message for TestTruncated {
         if !self.ints.is_empty() {
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(self.ints.len() as u32) + (self.ints.len() * 4) as u32;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6179,20 +5566,12 @@ impl ::protobuf::Message for TestTruncated {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestTruncated>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -6234,14 +5613,7 @@ impl ::protobuf::MessageStatic for TestTruncated {
 impl ::protobuf::Clear for TestTruncated {
     fn clear(&mut self) {
         self.clear_ints();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestTruncated {
-    fn eq(&self, other: &TestTruncated) -> bool {
-        self.ints == other.ints &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -6251,14 +5623,13 @@ impl ::std::fmt::Debug for TestTruncated {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct TestBugSint {
     // message fields
     s32: ::std::option::Option<i32>,
     s64: ::std::option::Option<i64>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6274,16 +5645,7 @@ impl TestBugSint {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const TestBugSint,
         };
-        unsafe {
-            instance.get(|| {
-                TestBugSint {
-                    s32: ::std::option::Option::None,
-                    s64: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
-        }
+        unsafe { instance.get(|| TestBugSint::default()) }
     }
 
     // optional sint32 s32 = 1;
@@ -6366,9 +5728,7 @@ impl ::protobuf::Message for TestBugSint {
         for value in &self.s64 {
             my_size += ::protobuf::rt::value_varint_zigzag_size(2, *value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6382,20 +5742,12 @@ impl ::protobuf::Message for TestBugSint {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<TestBugSint>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -6444,15 +5796,7 @@ impl ::protobuf::Clear for TestBugSint {
     fn clear(&mut self) {
         self.clear_s32();
         self.clear_s64();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for TestBugSint {
-    fn eq(&self, other: &TestBugSint) -> bool {
-        self.s32 == other.s32 &&
-        self.s64 == other.s64 &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 

@@ -20,13 +20,12 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(Clone,Default)]
+#[derive(Clone, Default, PartialEq)]
 pub struct FileDescriptorSet {
     // message fields
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -109,9 +108,7 @@ impl ::protobuf::Message for FileDescriptorSet {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -124,22 +121,14 @@ impl ::protobuf::Message for FileDescriptorSet {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FileDescriptorSet>()
-    }
-
+    
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -180,14 +169,7 @@ impl ::protobuf::MessageStatic for FileDescriptorSet {
 impl ::protobuf::Clear for FileDescriptorSet {
     fn clear(&mut self) {
         self.clear_file();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for FileDescriptorSet {
-    fn eq(&self, other: &FileDescriptorSet) -> bool {
-        self.file == other.file &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -203,7 +185,7 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorSet {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct FileDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -219,8 +201,7 @@ pub struct FileDescriptorProto {
     source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
     syntax: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -786,9 +767,7 @@ impl ::protobuf::Message for FileDescriptorProto {
         if let Some(v) = self.syntax.as_ref() {
             my_size += ::protobuf::rt::string_size(12, &v);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -844,20 +823,12 @@ impl ::protobuf::Message for FileDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FileDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -966,25 +937,7 @@ impl ::protobuf::Clear for FileDescriptorProto {
         self.clear_options();
         self.clear_source_code_info();
         self.clear_syntax();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for FileDescriptorProto {
-    fn eq(&self, other: &FileDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.package == other.package &&
-        self.dependency == other.dependency &&
-        self.public_dependency == other.public_dependency &&
-        self.weak_dependency == other.weak_dependency &&
-        self.message_type == other.message_type &&
-        self.enum_type == other.enum_type &&
-        self.service == other.service &&
-        self.extension == other.extension &&
-        self.options == other.options &&
-        self.source_code_info == other.source_code_info &&
-        self.syntax == other.syntax &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1000,7 +953,7 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct DescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -1014,8 +967,7 @@ pub struct DescriptorProto {
     reserved_range: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>,
     reserved_name: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1475,9 +1427,7 @@ impl ::protobuf::Message for DescriptorProto {
         for value in &self.reserved_name {
             my_size += ::protobuf::rt::string_size(10, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1531,20 +1481,12 @@ impl ::protobuf::Message for DescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<DescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1641,23 +1583,7 @@ impl ::protobuf::Clear for DescriptorProto {
         self.clear_options();
         self.clear_reserved_range();
         self.clear_reserved_name();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for DescriptorProto {
-    fn eq(&self, other: &DescriptorProto) -> bool {
-        self.name == other.name &&
-        self.field == other.field &&
-        self.extension == other.extension &&
-        self.nested_type == other.nested_type &&
-        self.enum_type == other.enum_type &&
-        self.extension_range == other.extension_range &&
-        self.oneof_decl == other.oneof_decl &&
-        self.options == other.options &&
-        self.reserved_range == other.reserved_range &&
-        self.reserved_name == other.reserved_name &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1673,14 +1599,13 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct DescriptorProto_ExtensionRange {
     // message fields
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1797,9 +1722,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -1813,20 +1736,12 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<DescriptorProto_ExtensionRange>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -1875,15 +1790,7 @@ impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
     fn clear(&mut self) {
         self.clear_start();
         self.clear_end();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for DescriptorProto_ExtensionRange {
-    fn eq(&self, other: &DescriptorProto_ExtensionRange) -> bool {
-        self.start == other.start &&
-        self.end == other.end &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -1899,14 +1806,13 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ExtensionRange {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct DescriptorProto_ReservedRange {
     // message fields
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -2023,9 +1929,7 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2039,20 +1943,12 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<DescriptorProto_ReservedRange>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -2101,15 +1997,7 @@ impl ::protobuf::Clear for DescriptorProto_ReservedRange {
     fn clear(&mut self) {
         self.clear_start();
         self.clear_end();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for DescriptorProto_ReservedRange {
-    fn eq(&self, other: &DescriptorProto_ReservedRange) -> bool {
-        self.start == other.start &&
-        self.end == other.end &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -2125,7 +2013,7 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ReservedRange {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct FieldDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -2139,8 +2027,7 @@ pub struct FieldDescriptorProto {
     json_name: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<FieldOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -2629,9 +2516,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -2671,20 +2556,12 @@ impl ::protobuf::Message for FieldDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FieldDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -2781,23 +2658,7 @@ impl ::protobuf::Clear for FieldDescriptorProto {
         self.clear_oneof_index();
         self.clear_json_name();
         self.clear_options();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for FieldDescriptorProto {
-    fn eq(&self, other: &FieldDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.number == other.number &&
-        self.label == other.label &&
-        self.field_type == other.field_type &&
-        self.type_name == other.type_name &&
-        self.extendee == other.extendee &&
-        self.default_value == other.default_value &&
-        self.oneof_index == other.oneof_index &&
-        self.json_name == other.json_name &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -2962,14 +2823,13 @@ impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct OneofDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<OneofOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3110,9 +2970,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3128,20 +2986,12 @@ impl ::protobuf::Message for OneofDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<OneofDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3190,15 +3040,7 @@ impl ::protobuf::Clear for OneofDescriptorProto {
     fn clear(&mut self) {
         self.clear_name();
         self.clear_options();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for OneofDescriptorProto {
-    fn eq(&self, other: &OneofDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -3214,15 +3056,14 @@ impl ::protobuf::reflect::ProtobufValue for OneofDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct EnumDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: ::protobuf::SingularPtrField<EnumOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3403,9 +3244,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3426,20 +3265,12 @@ impl ::protobuf::Message for EnumDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3494,16 +3325,7 @@ impl ::protobuf::Clear for EnumDescriptorProto {
         self.clear_name();
         self.clear_value();
         self.clear_options();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for EnumDescriptorProto {
-    fn eq(&self, other: &EnumDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.value == other.value &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -3519,15 +3341,14 @@ impl ::protobuf::reflect::ProtobufValue for EnumDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct EnumValueDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
     options: ::protobuf::SingularPtrField<EnumValueOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3705,9 +3526,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -3726,20 +3545,12 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumValueDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3794,16 +3605,7 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
         self.clear_name();
         self.clear_number();
         self.clear_options();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
-    fn eq(&self, other: &EnumValueDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.number == other.number &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -3819,15 +3621,14 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct ServiceDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: ::protobuf::SingularPtrField<ServiceOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -4008,9 +3809,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -4031,20 +3830,12 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<ServiceDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -4099,16 +3890,7 @@ impl ::protobuf::Clear for ServiceDescriptorProto {
         self.clear_name();
         self.clear_method();
         self.clear_options();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for ServiceDescriptorProto {
-    fn eq(&self, other: &ServiceDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.method == other.method &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -4124,7 +3906,7 @@ impl ::protobuf::reflect::ProtobufValue for ServiceDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct MethodDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -4134,8 +3916,7 @@ pub struct MethodDescriptorProto {
     client_streaming: ::std::option::Option<bool>,
     server_streaming: ::std::option::Option<bool>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -4450,9 +4231,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
         if let Some(v) = self.server_streaming {
             my_size += 2;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -4480,20 +4259,12 @@ impl ::protobuf::Message for MethodDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<MethodDescriptorProto>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -4566,19 +4337,7 @@ impl ::protobuf::Clear for MethodDescriptorProto {
         self.clear_options();
         self.clear_client_streaming();
         self.clear_server_streaming();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for MethodDescriptorProto {
-    fn eq(&self, other: &MethodDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.input_type == other.input_type &&
-        self.output_type == other.output_type &&
-        self.options == other.options &&
-        self.client_streaming == other.client_streaming &&
-        self.server_streaming == other.server_streaming &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -4594,7 +4353,7 @@ impl ::protobuf::reflect::ProtobufValue for MethodDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct FileOptions {
     // message fields
     java_package: ::protobuf::SingularField<::std::string::String>,
@@ -4613,8 +4372,7 @@ pub struct FileOptions {
     csharp_namespace: ::protobuf::SingularField<::std::string::String>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -5280,9 +5038,7 @@ impl ::protobuf::Message for FileOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5337,20 +5093,12 @@ impl ::protobuf::Message for FileOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FileOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -5477,28 +5225,7 @@ impl ::protobuf::Clear for FileOptions {
         self.clear_objc_class_prefix();
         self.clear_csharp_namespace();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for FileOptions {
-    fn eq(&self, other: &FileOptions) -> bool {
-        self.java_package == other.java_package &&
-        self.java_outer_classname == other.java_outer_classname &&
-        self.java_multiple_files == other.java_multiple_files &&
-        self.java_generate_equals_and_hash == other.java_generate_equals_and_hash &&
-        self.java_string_check_utf8 == other.java_string_check_utf8 &&
-        self.optimize_for == other.optimize_for &&
-        self.go_package == other.go_package &&
-        self.cc_generic_services == other.cc_generic_services &&
-        self.java_generic_services == other.java_generic_services &&
-        self.py_generic_services == other.py_generic_services &&
-        self.deprecated == other.deprecated &&
-        self.cc_enable_arenas == other.cc_enable_arenas &&
-        self.objc_class_prefix == other.objc_class_prefix &&
-        self.csharp_namespace == other.csharp_namespace &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -5566,7 +5293,7 @@ impl ::protobuf::reflect::ProtobufValue for FileOptions_OptimizeMode {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct MessageOptions {
     // message fields
     message_set_wire_format: ::std::option::Option<bool>,
@@ -5575,8 +5302,7 @@ pub struct MessageOptions {
     map_entry: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -5807,9 +5533,7 @@ impl ::protobuf::Message for MessageOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -5834,20 +5558,12 @@ impl ::protobuf::Message for MessageOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<MessageOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -5914,18 +5630,7 @@ impl ::protobuf::Clear for MessageOptions {
         self.clear_deprecated();
         self.clear_map_entry();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for MessageOptions {
-    fn eq(&self, other: &MessageOptions) -> bool {
-        self.message_set_wire_format == other.message_set_wire_format &&
-        self.no_standard_descriptor_accessor == other.no_standard_descriptor_accessor &&
-        self.deprecated == other.deprecated &&
-        self.map_entry == other.map_entry &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -5941,7 +5646,7 @@ impl ::protobuf::reflect::ProtobufValue for MessageOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct FieldOptions {
     // message fields
     ctype: ::std::option::Option<FieldOptions_CType>,
@@ -5952,8 +5657,7 @@ pub struct FieldOptions {
     weak: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6258,9 +5962,7 @@ impl ::protobuf::Message for FieldOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6291,20 +5993,12 @@ impl ::protobuf::Message for FieldOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FieldOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -6383,20 +6077,7 @@ impl ::protobuf::Clear for FieldOptions {
         self.clear_deprecated();
         self.clear_weak();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for FieldOptions {
-    fn eq(&self, other: &FieldOptions) -> bool {
-        self.ctype == other.ctype &&
-        self.packed == other.packed &&
-        self.jstype == other.jstype &&
-        self.lazy == other.lazy &&
-        self.deprecated == other.deprecated &&
-        self.weak == other.weak &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -6516,13 +6197,12 @@ impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct OneofOptions {
     // message fields
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6605,9 +6285,7 @@ impl ::protobuf::Message for OneofOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6620,20 +6298,12 @@ impl ::protobuf::Message for OneofOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<OneofOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -6676,14 +6346,7 @@ impl ::protobuf::MessageStatic for OneofOptions {
 impl ::protobuf::Clear for OneofOptions {
     fn clear(&mut self) {
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for OneofOptions {
-    fn eq(&self, other: &OneofOptions) -> bool {
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -6699,15 +6362,14 @@ impl ::protobuf::reflect::ProtobufValue for OneofOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct EnumOptions {
     // message fields
     allow_alias: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6864,9 +6526,7 @@ impl ::protobuf::Message for EnumOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -6885,20 +6545,12 @@ impl ::protobuf::Message for EnumOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -6953,16 +6605,7 @@ impl ::protobuf::Clear for EnumOptions {
         self.clear_allow_alias();
         self.clear_deprecated();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for EnumOptions {
-    fn eq(&self, other: &EnumOptions) -> bool {
-        self.allow_alias == other.allow_alias &&
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -6978,14 +6621,13 @@ impl ::protobuf::reflect::ProtobufValue for EnumOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct EnumValueOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -7105,9 +6747,7 @@ impl ::protobuf::Message for EnumValueOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -7123,20 +6763,12 @@ impl ::protobuf::Message for EnumValueOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumValueOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -7185,15 +6817,7 @@ impl ::protobuf::Clear for EnumValueOptions {
     fn clear(&mut self) {
         self.clear_deprecated();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for EnumValueOptions {
-    fn eq(&self, other: &EnumValueOptions) -> bool {
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -7209,14 +6833,13 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct ServiceOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -7336,9 +6959,7 @@ impl ::protobuf::Message for ServiceOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -7354,20 +6975,12 @@ impl ::protobuf::Message for ServiceOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<ServiceOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -7416,15 +7029,7 @@ impl ::protobuf::Clear for ServiceOptions {
     fn clear(&mut self) {
         self.clear_deprecated();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for ServiceOptions {
-    fn eq(&self, other: &ServiceOptions) -> bool {
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -7440,14 +7045,13 @@ impl ::protobuf::reflect::ProtobufValue for ServiceOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct MethodOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -7567,9 +7171,7 @@ impl ::protobuf::Message for MethodOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -7585,20 +7187,12 @@ impl ::protobuf::Message for MethodOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<MethodOptions>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -7647,15 +7241,7 @@ impl ::protobuf::Clear for MethodOptions {
     fn clear(&mut self) {
         self.clear_deprecated();
         self.clear_uninterpreted_option();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for MethodOptions {
-    fn eq(&self, other: &MethodOptions) -> bool {
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -7671,7 +7257,7 @@ impl ::protobuf::reflect::ProtobufValue for MethodOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct UninterpretedOption {
     // message fields
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
@@ -7682,8 +7268,7 @@ pub struct UninterpretedOption {
     string_value: ::protobuf::SingularField<::std::vec::Vec<u8>>,
     aggregate_value: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8027,9 +7612,7 @@ impl ::protobuf::Message for UninterpretedOption {
         if let Some(v) = self.aggregate_value.as_ref() {
             my_size += ::protobuf::rt::string_size(8, &v);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -8060,20 +7643,12 @@ impl ::protobuf::Message for UninterpretedOption {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<UninterpretedOption>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -8152,20 +7727,7 @@ impl ::protobuf::Clear for UninterpretedOption {
         self.clear_double_value();
         self.clear_string_value();
         self.clear_aggregate_value();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for UninterpretedOption {
-    fn eq(&self, other: &UninterpretedOption) -> bool {
-        self.name == other.name &&
-        self.identifier_value == other.identifier_value &&
-        self.positive_int_value == other.positive_int_value &&
-        self.negative_int_value == other.negative_int_value &&
-        self.double_value == other.double_value &&
-        self.string_value == other.string_value &&
-        self.aggregate_value == other.aggregate_value &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -8181,14 +7743,13 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct UninterpretedOption_NamePart {
     // message fields
     name_part: ::protobuf::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8324,9 +7885,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         if let Some(v) = self.is_extension {
             my_size += 2;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -8340,20 +7899,12 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<UninterpretedOption_NamePart>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -8402,15 +7953,7 @@ impl ::protobuf::Clear for UninterpretedOption_NamePart {
     fn clear(&mut self) {
         self.clear_name_part();
         self.clear_is_extension();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for UninterpretedOption_NamePart {
-    fn eq(&self, other: &UninterpretedOption_NamePart) -> bool {
-        self.name_part == other.name_part &&
-        self.is_extension == other.is_extension &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -8426,13 +7969,12 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption_NamePart {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct SourceCodeInfo {
     // message fields
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8515,9 +8057,7 @@ impl ::protobuf::Message for SourceCodeInfo {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -8530,20 +8070,12 @@ impl ::protobuf::Message for SourceCodeInfo {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<SourceCodeInfo>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -8586,14 +8118,7 @@ impl ::protobuf::MessageStatic for SourceCodeInfo {
 impl ::protobuf::Clear for SourceCodeInfo {
     fn clear(&mut self) {
         self.clear_location();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for SourceCodeInfo {
-    fn eq(&self, other: &SourceCodeInfo) -> bool {
-        self.location == other.location &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -8609,7 +8134,7 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct SourceCodeInfo_Location {
     // message fields
     path: ::std::vec::Vec<i32>,
@@ -8618,8 +8143,7 @@ pub struct SourceCodeInfo_Location {
     trailing_comments: ::protobuf::SingularField<::std::string::String>,
     leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8879,9 +8403,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         for value in &self.leading_detached_comments {
             my_size += ::protobuf::rt::string_size(6, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -8914,20 +8436,12 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<SourceCodeInfo_Location>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -8994,18 +8508,7 @@ impl ::protobuf::Clear for SourceCodeInfo_Location {
         self.clear_leading_comments();
         self.clear_trailing_comments();
         self.clear_leading_detached_comments();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for SourceCodeInfo_Location {
-    fn eq(&self, other: &SourceCodeInfo_Location) -> bool {
-        self.path == other.path &&
-        self.span == other.span &&
-        self.leading_comments == other.leading_comments &&
-        self.trailing_comments == other.trailing_comments &&
-        self.leading_detached_comments == other.leading_detached_comments &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -9021,13 +8524,12 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo_Location {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct GeneratedCodeInfo {
     // message fields
     annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -9110,9 +8612,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -9125,20 +8625,12 @@ impl ::protobuf::Message for GeneratedCodeInfo {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<GeneratedCodeInfo>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -9181,14 +8673,7 @@ impl ::protobuf::MessageStatic for GeneratedCodeInfo {
 impl ::protobuf::Clear for GeneratedCodeInfo {
     fn clear(&mut self) {
         self.clear_annotation();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for GeneratedCodeInfo {
-    fn eq(&self, other: &GeneratedCodeInfo) -> bool {
-        self.annotation == other.annotation &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 
@@ -9204,7 +8689,7 @@ impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(Clone,Default,PartialEq)]
 pub struct GeneratedCodeInfo_Annotation {
     // message fields
     path: ::std::vec::Vec<i32>,
@@ -9212,8 +8697,7 @@ pub struct GeneratedCodeInfo_Annotation {
     begin: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    special_fields: ::protobuf::SpecialFields,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -9419,9 +8903,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
+        self.set_cached_size(my_size)
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
@@ -9446,20 +8928,12 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    fn get_special_fields(&self) -> &::protobuf::SpecialFields {
+        &self.special_fields
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<GeneratedCodeInfo_Annotation>()
+    fn mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields {
+        &mut self.special_fields
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -9520,17 +8994,7 @@ impl ::protobuf::Clear for GeneratedCodeInfo_Annotation {
         self.clear_source_file();
         self.clear_begin();
         self.clear_end();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for GeneratedCodeInfo_Annotation {
-    fn eq(&self, other: &GeneratedCodeInfo_Annotation) -> bool {
-        self.path == other.path &&
-        self.source_file == other.source_file &&
-        self.begin == other.begin &&
-        self.end == other.end &&
-        self.unknown_fields == other.unknown_fields
+        self.mut_unknown_fields().clear();
     }
 }
 

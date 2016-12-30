@@ -2025,12 +2025,6 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_get_cached_size(&self, w: &mut CodeWriter) {
-        w.def_fn("get_cached_size(&self) -> u32", |w| {
-            w.write_line("self.cached_size.get()");
-        });
-    }
-
     fn write_default_instance(&self, w: &mut CodeWriter) {
         w.pub_fn(&format!("default_instance() -> &'static {}", self.type_name), |w| {
             w.lazy_static_decl_get_simple(
@@ -2056,9 +2050,7 @@ impl<'a> MessageGen<'a> {
             self.write_match_each_oneof_variant(w, |w, variant, v, vtype| {
                 variant.field.write_element_size(w, v, vtype, "my_size");
             });
-            w.write_line("my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());");
-            w.write_line("self.cached_size.set(my_size);");
-            w.write_line("my_size");
+            w.write_line("self.set_cached_size(my_size)");
         });
     }
 
@@ -2084,13 +2076,13 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_unknown_fields(&self, w: &mut CodeWriter) {
-        w.def_fn("get_unknown_fields(&self) -> &::protobuf::UnknownFields", |w| {
-            w.write_line("&self.unknown_fields");
+    fn write_special_fields(&self, w: &mut CodeWriter) {
+        w.def_fn("get_special_fields(&self) -> &::protobuf::SpecialFields", |w| {
+            w.write_line("&self.special_fields");
         });
         w.write_line("");
-        w.def_fn("mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields", |w| {
-            w.write_line("&mut self.unknown_fields");
+        w.def_fn("mut_special_fields(&mut self) -> &mut ::protobuf::SpecialFields", |w| {
+            w.write_line("&mut self.special_fields");
         });
     }
 
@@ -2169,13 +2161,7 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_write_to_with_cached_sizes(w);
             w.write_line("");
-            self.write_get_cached_size(w);
-            w.write_line("");
-            self.write_unknown_fields(w);
-            w.write_line("");
-            w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
-                w.write_line(&format!("::std::any::TypeId::of::<{}>()", self.type_name));
-            });
+            self.write_special_fields(w);
             w.write_line("");
             w.def_fn("as_any(&self) -> &::std::any::Any", |w| {
                 w.write_line("self as &::std::any::Any");
@@ -2225,29 +2211,13 @@ impl<'a> MessageGen<'a> {
                     let clear_field_func = f.clear_field_func();
                     w.write_line(&format!("self.{}();", clear_field_func));
                 }
-                w.write_line("self.unknown_fields.clear();");
-            });
-        });
-    }
-
-    // cannot use `#[derive(PartialEq)]` because of `cached_size` field
-    fn write_impl_partial_eq(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
-            w.def_fn(&format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
-                for f in self.fields_except_oneof_and_group() {
-                    let ref field_rust_name = f.rust_name;
-                    w.write_line(&format!("self.{field} == other.{field} &&", field=field_rust_name));
-                }
-                for oneof in self.oneofs() {
-                    w.write_line(&format!("self.{oneof} == other.{oneof} &&", oneof=oneof.name()));
-                }
-                w.write_line("self.unknown_fields == other.unknown_fields");
+                w.write_line("self.mut_unknown_fields().clear();");
             });
         });
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
-        let mut derive = vec!["Clone", "Default"];
+        let mut derive = vec!["Clone", "Default", "PartialEq"];
         if self.lite_runtime {
             derive.push("Debug");
         }
@@ -2280,8 +2250,7 @@ impl<'a> MessageGen<'a> {
                 }
             }
             w.comment("special fields");
-            w.field_decl("unknown_fields", "::protobuf::UnknownFields");
-            w.field_decl("cached_size", "::std::cell::Cell<u32>");
+            w.field_decl("special_fields", "::protobuf::SpecialFields");
         });
     }
 
@@ -2313,8 +2282,6 @@ impl<'a> MessageGen<'a> {
         self.write_impl_message_static(w);
         w.write_line("");
         self.write_impl_clear(w);
-        w.write_line("");
-        self.write_impl_partial_eq(w);
         if !self.lite_runtime {
             w.write_line("");
             self.write_impl_show(w);
