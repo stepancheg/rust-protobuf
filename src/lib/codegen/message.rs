@@ -2230,24 +2230,8 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    // cannot use `#[derive(PartialEq)]` because of `cached_size` field
-    fn write_impl_partial_eq(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
-            w.def_fn(&format!("eq(&self, other: &{}) -> bool", self.type_name), |w| {
-                for f in self.fields_except_oneof_and_group() {
-                    let ref field_rust_name = f.rust_name;
-                    w.write_line(&format!("self.{field} == other.{field} &&", field=field_rust_name));
-                }
-                for oneof in self.oneofs() {
-                    w.write_line(&format!("self.{oneof} == other.{oneof} &&", oneof=oneof.name()));
-                }
-                w.write_line("self.unknown_fields == other.unknown_fields");
-            });
-        });
-    }
-
     fn write_struct(&self, w: &mut CodeWriter) {
-        let mut derive = vec!["Clone", "Default"];
+        let mut derive = vec!["PartialEq", "Clone", "Default"];
         if self.lite_runtime {
             derive.push("Debug");
         }
@@ -2281,7 +2265,7 @@ impl<'a> MessageGen<'a> {
             }
             w.comment("special fields");
             w.field_decl("unknown_fields", "::protobuf::UnknownFields");
-            w.field_decl("cached_size", "::std::cell::Cell<u32>");
+            w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }
 
@@ -2313,8 +2297,6 @@ impl<'a> MessageGen<'a> {
         self.write_impl_message_static(w);
         w.write_line("");
         self.write_impl_clear(w);
-        w.write_line("");
-        self.write_impl_partial_eq(w);
         if !self.lite_runtime {
             w.write_line("");
             self.write_impl_show(w);

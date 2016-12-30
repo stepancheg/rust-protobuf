@@ -22,6 +22,7 @@ pub use stream::CodedOutputStream;
 pub use stream::wire_format;
 pub use error::ProtobufResult;
 pub use error::ProtobufError;
+pub use cached_size::CachedSize;
 
 // generated
 pub mod descriptor;
@@ -53,6 +54,7 @@ mod paginate;
 mod unknown;
 mod strx;
 mod rust;
+mod cached_size;
 
 // so `use protobuf::*` could work in descriptor mod
 mod protobuf {
@@ -77,4 +79,5 @@ mod protobuf {
     pub use singular::SingularField;
     pub use singular::SingularPtrField;
     pub use clear::Clear;
+    pub use cached_size::CachedSize;
 }

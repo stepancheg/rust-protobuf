@@ -20,13 +20,13 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct FileDescriptorSet {
     // message fields
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -184,13 +184,6 @@ impl ::protobuf::Clear for FileDescriptorSet {
     }
 }
 
-impl ::std::cmp::PartialEq for FileDescriptorSet {
-    fn eq(&self, other: &FileDescriptorSet) -> bool {
-        self.file == other.file &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for FileDescriptorSet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -203,7 +196,7 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorSet {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct FileDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -220,7 +213,7 @@ pub struct FileDescriptorProto {
     syntax: ::protobuf::SingularField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -970,24 +963,6 @@ impl ::protobuf::Clear for FileDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for FileDescriptorProto {
-    fn eq(&self, other: &FileDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.package == other.package &&
-        self.dependency == other.dependency &&
-        self.public_dependency == other.public_dependency &&
-        self.weak_dependency == other.weak_dependency &&
-        self.message_type == other.message_type &&
-        self.enum_type == other.enum_type &&
-        self.service == other.service &&
-        self.extension == other.extension &&
-        self.options == other.options &&
-        self.source_code_info == other.source_code_info &&
-        self.syntax == other.syntax &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for FileDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -1000,7 +975,7 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct DescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -1015,7 +990,7 @@ pub struct DescriptorProto {
     reserved_name: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1645,22 +1620,6 @@ impl ::protobuf::Clear for DescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for DescriptorProto {
-    fn eq(&self, other: &DescriptorProto) -> bool {
-        self.name == other.name &&
-        self.field == other.field &&
-        self.extension == other.extension &&
-        self.nested_type == other.nested_type &&
-        self.enum_type == other.enum_type &&
-        self.extension_range == other.extension_range &&
-        self.oneof_decl == other.oneof_decl &&
-        self.options == other.options &&
-        self.reserved_range == other.reserved_range &&
-        self.reserved_name == other.reserved_name &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for DescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -1673,14 +1632,14 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct DescriptorProto_ExtensionRange {
     // message fields
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -1879,14 +1838,6 @@ impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
     }
 }
 
-impl ::std::cmp::PartialEq for DescriptorProto_ExtensionRange {
-    fn eq(&self, other: &DescriptorProto_ExtensionRange) -> bool {
-        self.start == other.start &&
-        self.end == other.end &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for DescriptorProto_ExtensionRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -1899,14 +1850,14 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ExtensionRange {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct DescriptorProto_ReservedRange {
     // message fields
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -2105,14 +2056,6 @@ impl ::protobuf::Clear for DescriptorProto_ReservedRange {
     }
 }
 
-impl ::std::cmp::PartialEq for DescriptorProto_ReservedRange {
-    fn eq(&self, other: &DescriptorProto_ReservedRange) -> bool {
-        self.start == other.start &&
-        self.end == other.end &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for DescriptorProto_ReservedRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -2125,7 +2068,7 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ReservedRange {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct FieldDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -2140,7 +2083,7 @@ pub struct FieldDescriptorProto {
     options: ::protobuf::SingularPtrField<FieldOptions>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -2785,22 +2728,6 @@ impl ::protobuf::Clear for FieldDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for FieldDescriptorProto {
-    fn eq(&self, other: &FieldDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.number == other.number &&
-        self.label == other.label &&
-        self.field_type == other.field_type &&
-        self.type_name == other.type_name &&
-        self.extendee == other.extendee &&
-        self.default_value == other.default_value &&
-        self.oneof_index == other.oneof_index &&
-        self.json_name == other.json_name &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for FieldDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -2962,14 +2889,14 @@ impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct OneofDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<OneofOptions>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3194,14 +3121,6 @@ impl ::protobuf::Clear for OneofDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for OneofDescriptorProto {
-    fn eq(&self, other: &OneofDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for OneofDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -3214,7 +3133,7 @@ impl ::protobuf::reflect::ProtobufValue for OneofDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct EnumDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -3222,7 +3141,7 @@ pub struct EnumDescriptorProto {
     options: ::protobuf::SingularPtrField<EnumOptions>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3498,15 +3417,6 @@ impl ::protobuf::Clear for EnumDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for EnumDescriptorProto {
-    fn eq(&self, other: &EnumDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.value == other.value &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for EnumDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -3519,7 +3429,7 @@ impl ::protobuf::reflect::ProtobufValue for EnumDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct EnumValueDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -3527,7 +3437,7 @@ pub struct EnumValueDescriptorProto {
     options: ::protobuf::SingularPtrField<EnumValueOptions>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -3798,15 +3708,6 @@ impl ::protobuf::Clear for EnumValueDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for EnumValueDescriptorProto {
-    fn eq(&self, other: &EnumValueDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.number == other.number &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for EnumValueDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -3819,7 +3720,7 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct ServiceDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -3827,7 +3728,7 @@ pub struct ServiceDescriptorProto {
     options: ::protobuf::SingularPtrField<ServiceOptions>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -4103,15 +4004,6 @@ impl ::protobuf::Clear for ServiceDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for ServiceDescriptorProto {
-    fn eq(&self, other: &ServiceDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.method == other.method &&
-        self.options == other.options &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for ServiceDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -4124,7 +4016,7 @@ impl ::protobuf::reflect::ProtobufValue for ServiceDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct MethodDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -4135,7 +4027,7 @@ pub struct MethodDescriptorProto {
     server_streaming: ::std::option::Option<bool>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -4570,18 +4462,6 @@ impl ::protobuf::Clear for MethodDescriptorProto {
     }
 }
 
-impl ::std::cmp::PartialEq for MethodDescriptorProto {
-    fn eq(&self, other: &MethodDescriptorProto) -> bool {
-        self.name == other.name &&
-        self.input_type == other.input_type &&
-        self.output_type == other.output_type &&
-        self.options == other.options &&
-        self.client_streaming == other.client_streaming &&
-        self.server_streaming == other.server_streaming &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for MethodDescriptorProto {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -4594,7 +4474,7 @@ impl ::protobuf::reflect::ProtobufValue for MethodDescriptorProto {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct FileOptions {
     // message fields
     java_package: ::protobuf::SingularField<::std::string::String>,
@@ -4614,7 +4494,7 @@ pub struct FileOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -5481,27 +5361,6 @@ impl ::protobuf::Clear for FileOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for FileOptions {
-    fn eq(&self, other: &FileOptions) -> bool {
-        self.java_package == other.java_package &&
-        self.java_outer_classname == other.java_outer_classname &&
-        self.java_multiple_files == other.java_multiple_files &&
-        self.java_generate_equals_and_hash == other.java_generate_equals_and_hash &&
-        self.java_string_check_utf8 == other.java_string_check_utf8 &&
-        self.optimize_for == other.optimize_for &&
-        self.go_package == other.go_package &&
-        self.cc_generic_services == other.cc_generic_services &&
-        self.java_generic_services == other.java_generic_services &&
-        self.py_generic_services == other.py_generic_services &&
-        self.deprecated == other.deprecated &&
-        self.cc_enable_arenas == other.cc_enable_arenas &&
-        self.objc_class_prefix == other.objc_class_prefix &&
-        self.csharp_namespace == other.csharp_namespace &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for FileOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -5566,7 +5425,7 @@ impl ::protobuf::reflect::ProtobufValue for FileOptions_OptimizeMode {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct MessageOptions {
     // message fields
     message_set_wire_format: ::std::option::Option<bool>,
@@ -5576,7 +5435,7 @@ pub struct MessageOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -5918,17 +5777,6 @@ impl ::protobuf::Clear for MessageOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for MessageOptions {
-    fn eq(&self, other: &MessageOptions) -> bool {
-        self.message_set_wire_format == other.message_set_wire_format &&
-        self.no_standard_descriptor_accessor == other.no_standard_descriptor_accessor &&
-        self.deprecated == other.deprecated &&
-        self.map_entry == other.map_entry &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for MessageOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -5941,7 +5789,7 @@ impl ::protobuf::reflect::ProtobufValue for MessageOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct FieldOptions {
     // message fields
     ctype: ::std::option::Option<FieldOptions_CType>,
@@ -5953,7 +5801,7 @@ pub struct FieldOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6387,19 +6235,6 @@ impl ::protobuf::Clear for FieldOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for FieldOptions {
-    fn eq(&self, other: &FieldOptions) -> bool {
-        self.ctype == other.ctype &&
-        self.packed == other.packed &&
-        self.jstype == other.jstype &&
-        self.lazy == other.lazy &&
-        self.deprecated == other.deprecated &&
-        self.weak == other.weak &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for FieldOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -6516,13 +6351,13 @@ impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct OneofOptions {
     // message fields
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6680,13 +6515,6 @@ impl ::protobuf::Clear for OneofOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for OneofOptions {
-    fn eq(&self, other: &OneofOptions) -> bool {
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for OneofOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -6699,7 +6527,7 @@ impl ::protobuf::reflect::ProtobufValue for OneofOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct EnumOptions {
     // message fields
     allow_alias: ::std::option::Option<bool>,
@@ -6707,7 +6535,7 @@ pub struct EnumOptions {
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -6957,15 +6785,6 @@ impl ::protobuf::Clear for EnumOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for EnumOptions {
-    fn eq(&self, other: &EnumOptions) -> bool {
-        self.allow_alias == other.allow_alias &&
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for EnumOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -6978,14 +6797,14 @@ impl ::protobuf::reflect::ProtobufValue for EnumOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct EnumValueOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -7189,14 +7008,6 @@ impl ::protobuf::Clear for EnumValueOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for EnumValueOptions {
-    fn eq(&self, other: &EnumValueOptions) -> bool {
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for EnumValueOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -7209,14 +7020,14 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct ServiceOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -7420,14 +7231,6 @@ impl ::protobuf::Clear for ServiceOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for ServiceOptions {
-    fn eq(&self, other: &ServiceOptions) -> bool {
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for ServiceOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -7440,14 +7243,14 @@ impl ::protobuf::reflect::ProtobufValue for ServiceOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct MethodOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -7651,14 +7454,6 @@ impl ::protobuf::Clear for MethodOptions {
     }
 }
 
-impl ::std::cmp::PartialEq for MethodOptions {
-    fn eq(&self, other: &MethodOptions) -> bool {
-        self.deprecated == other.deprecated &&
-        self.uninterpreted_option == other.uninterpreted_option &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for MethodOptions {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -7671,7 +7466,7 @@ impl ::protobuf::reflect::ProtobufValue for MethodOptions {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct UninterpretedOption {
     // message fields
     name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
@@ -7683,7 +7478,7 @@ pub struct UninterpretedOption {
     aggregate_value: ::protobuf::SingularField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8156,19 +7951,6 @@ impl ::protobuf::Clear for UninterpretedOption {
     }
 }
 
-impl ::std::cmp::PartialEq for UninterpretedOption {
-    fn eq(&self, other: &UninterpretedOption) -> bool {
-        self.name == other.name &&
-        self.identifier_value == other.identifier_value &&
-        self.positive_int_value == other.positive_int_value &&
-        self.negative_int_value == other.negative_int_value &&
-        self.double_value == other.double_value &&
-        self.string_value == other.string_value &&
-        self.aggregate_value == other.aggregate_value &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for UninterpretedOption {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -8181,14 +7963,14 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct UninterpretedOption_NamePart {
     // message fields
     name_part: ::protobuf::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8406,14 +8188,6 @@ impl ::protobuf::Clear for UninterpretedOption_NamePart {
     }
 }
 
-impl ::std::cmp::PartialEq for UninterpretedOption_NamePart {
-    fn eq(&self, other: &UninterpretedOption_NamePart) -> bool {
-        self.name_part == other.name_part &&
-        self.is_extension == other.is_extension &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for UninterpretedOption_NamePart {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -8426,13 +8200,13 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption_NamePart {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct SourceCodeInfo {
     // message fields
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8590,13 +8364,6 @@ impl ::protobuf::Clear for SourceCodeInfo {
     }
 }
 
-impl ::std::cmp::PartialEq for SourceCodeInfo {
-    fn eq(&self, other: &SourceCodeInfo) -> bool {
-        self.location == other.location &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for SourceCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -8609,7 +8376,7 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct SourceCodeInfo_Location {
     // message fields
     path: ::std::vec::Vec<i32>,
@@ -8619,7 +8386,7 @@ pub struct SourceCodeInfo_Location {
     leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -8998,17 +8765,6 @@ impl ::protobuf::Clear for SourceCodeInfo_Location {
     }
 }
 
-impl ::std::cmp::PartialEq for SourceCodeInfo_Location {
-    fn eq(&self, other: &SourceCodeInfo_Location) -> bool {
-        self.path == other.path &&
-        self.span == other.span &&
-        self.leading_comments == other.leading_comments &&
-        self.trailing_comments == other.trailing_comments &&
-        self.leading_detached_comments == other.leading_detached_comments &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for SourceCodeInfo_Location {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -9021,13 +8777,13 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo_Location {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct GeneratedCodeInfo {
     // message fields
     annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -9185,13 +8941,6 @@ impl ::protobuf::Clear for GeneratedCodeInfo {
     }
 }
 
-impl ::std::cmp::PartialEq for GeneratedCodeInfo {
-    fn eq(&self, other: &GeneratedCodeInfo) -> bool {
-        self.annotation == other.annotation &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for GeneratedCodeInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -9204,7 +8953,7 @@ impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct GeneratedCodeInfo_Annotation {
     // message fields
     path: ::std::vec::Vec<i32>,
@@ -9213,7 +8962,7 @@ pub struct GeneratedCodeInfo_Annotation {
     end: ::std::option::Option<i32>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -9521,16 +9270,6 @@ impl ::protobuf::Clear for GeneratedCodeInfo_Annotation {
         self.clear_begin();
         self.clear_end();
         self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for GeneratedCodeInfo_Annotation {
-    fn eq(&self, other: &GeneratedCodeInfo_Annotation) -> bool {
-        self.path == other.path &&
-        self.source_file == other.source_file &&
-        self.begin == other.begin &&
-        self.end == other.end &&
-        self.unknown_fields == other.unknown_fields
     }
 }
 

@@ -20,7 +20,7 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct CodeGeneratorRequest {
     // message fields
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
@@ -28,7 +28,7 @@ pub struct CodeGeneratorRequest {
     proto_file: ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -293,15 +293,6 @@ impl ::protobuf::Clear for CodeGeneratorRequest {
     }
 }
 
-impl ::std::cmp::PartialEq for CodeGeneratorRequest {
-    fn eq(&self, other: &CodeGeneratorRequest) -> bool {
-        self.file_to_generate == other.file_to_generate &&
-        self.parameter == other.parameter &&
-        self.proto_file == other.proto_file &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -314,14 +305,14 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct CodeGeneratorResponse {
     // message fields
     error: ::protobuf::SingularField<::std::string::String>,
     file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -538,14 +529,6 @@ impl ::protobuf::Clear for CodeGeneratorResponse {
     }
 }
 
-impl ::std::cmp::PartialEq for CodeGeneratorResponse {
-    fn eq(&self, other: &CodeGeneratorResponse) -> bool {
-        self.error == other.error &&
-        self.file == other.file &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
@@ -558,7 +541,7 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
     }
 }
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct CodeGeneratorResponse_File {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
@@ -566,7 +549,7 @@ pub struct CodeGeneratorResponse_File {
     content: ::protobuf::SingularField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -847,15 +830,6 @@ impl ::protobuf::Clear for CodeGeneratorResponse_File {
         self.clear_insertion_point();
         self.clear_content();
         self.unknown_fields.clear();
-    }
-}
-
-impl ::std::cmp::PartialEq for CodeGeneratorResponse_File {
-    fn eq(&self, other: &CodeGeneratorResponse_File) -> bool {
-        self.name == other.name &&
-        self.insertion_point == other.insertion_point &&
-        self.content == other.content &&
-        self.unknown_fields == other.unknown_fields
     }
 }
 
