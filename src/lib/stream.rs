@@ -3,7 +3,6 @@ use std::mem;
 use std::io;
 use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
-use std::ptr;
 use std::slice;
 
 use core::Message;
@@ -749,13 +748,11 @@ impl<'a> CodedOutputStream<'a> {
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         if bytes.len() <= self.buffer.len() - self.position as usize {
-            // TODO: use `copy_from_slice` as soon as rust 1.9 released
-            unsafe {
-                let dest = &mut self.buffer[self.position as usize..];
-                ptr::copy_nonoverlapping(bytes.as_ptr(), dest.as_mut_ptr(), bytes.len());
-                self.position += bytes.len() as u32;
-                return Ok(());
-            }
+            let bottom = self.position as usize;
+            let top = bottom + (bytes.len() as usize);
+            self.buffer[bottom .. top].copy_from_slice(bytes);
+            self.position += bytes.len() as u32;
+            return Ok(());
         }
 
         try!(self.refresh_buffer());
