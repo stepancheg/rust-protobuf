@@ -136,10 +136,6 @@ impl ::protobuf::Message for FileDescriptorSet {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FileDescriptorSet>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -849,10 +845,6 @@ impl ::protobuf::Message for FileDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FileDescriptorProto>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -1518,10 +1510,6 @@ impl ::protobuf::Message for DescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<DescriptorProto>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -1784,10 +1772,6 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<DescriptorProto_ExtensionRange>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -2000,10 +1984,6 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<DescriptorProto_ReservedRange>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -2626,10 +2606,6 @@ impl ::protobuf::Message for FieldDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FieldDescriptorProto>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -3067,10 +3043,6 @@ impl ::protobuf::Message for OneofDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<OneofDescriptorProto>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -3355,10 +3327,6 @@ impl ::protobuf::Message for EnumDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumDescriptorProto>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3646,10 +3614,6 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumValueDescriptorProto>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -3942,10 +3906,6 @@ impl ::protobuf::Message for ServiceDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<ServiceDescriptorProto>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -4382,10 +4342,6 @@ impl ::protobuf::Message for MethodDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<MethodDescriptorProto>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -5229,10 +5185,6 @@ impl ::protobuf::Message for FileOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FileOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -5705,10 +5657,6 @@ impl ::protobuf::Message for MessageOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<MessageOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -6151,10 +6099,6 @@ impl ::protobuf::Message for FieldOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<FieldOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -6467,10 +6411,6 @@ impl ::protobuf::Message for OneofOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<OneofOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -6725,10 +6665,6 @@ impl ::protobuf::Message for EnumOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -6954,10 +6890,6 @@ impl ::protobuf::Message for EnumValueOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<EnumValueOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -7177,10 +7109,6 @@ impl ::protobuf::Message for ServiceOptions {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<ServiceOptions>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -7398,10 +7326,6 @@ impl ::protobuf::Message for MethodOptions {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<MethodOptions>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -7867,10 +7791,6 @@ impl ::protobuf::Message for UninterpretedOption {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<UninterpretedOption>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -8134,10 +8054,6 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<UninterpretedOption_NamePart>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -8314,10 +8230,6 @@ impl ::protobuf::Message for SourceCodeInfo {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<SourceCodeInfo>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -8693,10 +8605,6 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<SourceCodeInfo_Location>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -8891,10 +8799,6 @@ impl ::protobuf::Message for GeneratedCodeInfo {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<GeneratedCodeInfo>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -9205,10 +9109,6 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<GeneratedCodeInfo_Annotation>()
     }
 
     fn as_any(&self) -> &::std::any::Any {

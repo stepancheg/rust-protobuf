@@ -2173,10 +2173,6 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_unknown_fields(w);
             w.write_line("");
-            w.def_fn("type_id(&self) -> ::std::any::TypeId", |w| {
-                w.write_line(&format!("::std::any::TypeId::of::<{}>()", self.type_name));
-            });
-            w.write_line("");
             w.def_fn("as_any(&self) -> &::std::any::Any", |w| {
                 w.write_line("self as &::std::any::Any");
             });

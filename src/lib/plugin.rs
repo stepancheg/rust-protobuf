@@ -233,10 +233,6 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<CodeGeneratorRequest>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
     }
@@ -473,10 +469,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<CodeGeneratorResponse>()
     }
 
     fn as_any(&self) -> &::std::any::Any {
@@ -771,10 +763,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
     fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<CodeGeneratorResponse_File>()
     }
 
     fn as_any(&self) -> &::std::any::Any {

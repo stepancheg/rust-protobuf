@@ -111,7 +111,10 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
 
-    fn type_id(&self) -> TypeId;
+    fn type_id(&self) -> TypeId {
+        TypeId::of::<Self>()
+    }
+
     fn as_any(&self) -> &Any;
 
     // Rust does not allow implementation of trait for trait:
