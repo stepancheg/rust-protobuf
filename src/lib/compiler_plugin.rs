@@ -15,7 +15,7 @@ pub struct GenResult {
 pub fn plugin_main(
     gen: fn(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String]) -> Vec<GenResult>)
 {
-    let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin()).unwrap();
+    let req = parse_from_reader::<CodeGeneratorRequest, _>(&mut stdin()).unwrap();
     let result = gen(req.get_proto_file(), req.get_file_to_generate());
     let mut resp = CodeGeneratorResponse::new();
     resp.set_file(result.iter().map(|file| {
