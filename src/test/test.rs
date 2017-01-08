@@ -3,19 +3,19 @@ use protobuf::hex::decode_hex;
 
 use protobuf::*;
 
-pub fn test_serialize_deserialize_length_delimited<M : Message + MessageStatic>(msg: &M) {
+pub fn test_serialize_deserialize_length_delimited<M : CodedMessage + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
     let parsed = parse_length_delimited_from_bytes::<M>(&serialized_bytes).unwrap();
     assert!(*msg == parsed);
 }
 
-pub fn test_serialize_deserialize_no_hex<M : Message + MessageStatic>(msg: &M) {
+pub fn test_serialize_deserialize_no_hex<M : CodedMessage + MessageStatic>(msg: &M) {
     let serialized_bytes = msg.write_to_bytes().unwrap();
     let parsed = parse_from_bytes::<M>(&serialized_bytes).unwrap();
     assert!(*msg == parsed);
 }
 
-pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
+pub fn test_serialize_deserialize<M : CodedMessage + MessageStatic>(hex: &str, msg: &M) {
     let expected_bytes = decode_hex(hex);
     let expected_hex = encode_hex(&expected_bytes);
     let serialized = msg.write_to_bytes().unwrap();
@@ -29,7 +29,7 @@ pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &
     test_serialize_deserialize_length_delimited(msg);
 }
 
-pub fn test_deserialize<M : Message + MessageStatic>(hex: &str, msg: &M) {
+pub fn test_deserialize<M : CodedMessage + MessageStatic>(hex: &str, msg: &M) {
     let bytes = decode_hex(hex);
     let parsed = parse_from_bytes::<M>(&bytes).unwrap();
     assert!(*msg == parsed);

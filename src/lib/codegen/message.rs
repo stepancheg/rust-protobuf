@@ -1398,7 +1398,7 @@ impl<'a> FieldGen<'a> {
 
     fn write_merge_from_map(&self, w: &mut CodeWriter) {
         let &MapField { ref key, ref value, .. } = self.map();
-        w.write_line(&format!("try!(::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {}));",
+        w.write_line(&format!("try!(::protobuf::rt::read_map_into::<{}, {}, _>(wire_type, is, &mut {}));",
             key.lib_protobuf_type(),
             value.lib_protobuf_type(),
             self.self_field()));
@@ -2095,7 +2095,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
+        w.def_fn(&format!("merge_from<I: ::protobuf::InputSource>(&mut self, is: &mut ::protobuf::CodedInputStream<I>) -> ::protobuf::ProtobufResult<()>"), |w| {
             w.while_block("!try!(is.eof())", |w| {
                 w.write_line(&format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
                 w.match_block("field_number", |w| {
@@ -2163,8 +2163,6 @@ impl<'a> MessageGen<'a> {
                 w.write_line("true");
             });
             w.write_line("");
-            self.write_merge_from(w);
-            w.write_line("");
             self.write_compute_size(w);
             w.write_line("");
             self.write_write_to_with_cached_sizes(w);
@@ -2181,6 +2179,12 @@ impl<'a> MessageGen<'a> {
                 w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)");
             });
         });
+    }
+
+    fn write_impl_coded_message(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::protobuf::CodedMessage", &self.type_name, |w| {
+            self.write_merge_from(w);
+        })
     }
 
     fn write_impl_message_static(&self, w: &mut CodeWriter) {
@@ -2289,6 +2293,8 @@ impl<'a> MessageGen<'a> {
         self.write_impl_self(w);
         w.write_line("");
         self.write_impl_message(w);
+        w.write_line("");
+        self.write_impl_coded_message(w);
         w.write_line("");
         self.write_impl_message_static(w);
         w.write_line("");

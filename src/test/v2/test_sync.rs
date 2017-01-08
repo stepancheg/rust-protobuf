@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 use protobuf::CodedInputStream;
 use protobuf::Message;
+use protobuf::CodedMessage;
 
 use super::test_basic_pb::*;
 

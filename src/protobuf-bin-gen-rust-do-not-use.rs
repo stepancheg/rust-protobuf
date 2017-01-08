@@ -3,7 +3,6 @@
 extern crate protobuf;
 
 use std::fs::*;
-use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
@@ -14,7 +13,7 @@ use protobuf::codegen::*;
 
 fn write_file(bin: &str) {
     let mut is = File::open(&Path::new(bin)).unwrap();
-    let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Read).unwrap();
+    let fds = parse_from_reader::<FileDescriptorSet, _>(&mut is).unwrap();
 
     let file_names: Vec<String> = fds.get_file().iter()
         .map(|f| f.get_name().to_string())

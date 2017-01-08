@@ -10,8 +10,7 @@ use rand::Rng;
 use rand::StdRng;
 use rand::SeedableRng;
 
-use protobuf::Message;
-use protobuf::MessageStatic;
+use protobuf::{MessageStatic, CodedMessage};
 use perftest_data::PerftestData;
 
 mod perftest_data;
@@ -36,7 +35,7 @@ struct TestRunner {
 }
 
 impl TestRunner {
-    fn run_test<M : Message + MessageStatic>(&self, name: &str, data: &[M]) {
+    fn run_test<M : CodedMessage + MessageStatic>(&self, name: &str, data: &[M]) {
         assert!(data.len() > 0, "empty string for test: {}", name);
 
         let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40][..]);
@@ -60,7 +59,7 @@ impl TestRunner {
             let mut r = Vec::new();
             let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
             while !coded_input_stream.eof().unwrap() {
-                r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream).unwrap());
+                r.push(protobuf::parse_length_delimited_from(&mut coded_input_stream).unwrap());
             }
             r
         });
@@ -82,7 +81,7 @@ impl TestRunner {
         assert_eq!(random_data.len(), merged);
     }
 
-    fn test<M : Message + MessageStatic>(&mut self, name: &str, data: &[M]) {
+    fn test<M : CodedMessage + MessageStatic>(&mut self, name: &str, data: &[M]) {
         if self.selected.as_ref().map(|s| *s == name).unwrap_or(true) {
             self.run_test(name, data);
             self.any_matched = true;
@@ -110,7 +109,7 @@ fn main() {
     };
 
     let mut is = File::open(&Path::new("perftest_data.pbbin")).unwrap();
-    let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is).unwrap();
+    let test_data: PerftestData = protobuf::parse_from_reader(&mut is).unwrap();
 
     runner.test("test1", test_data.get_test1());
     runner.test("test_repeated_bool", test_data.get_test_repeated_bool());

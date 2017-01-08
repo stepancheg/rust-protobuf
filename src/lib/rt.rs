@@ -7,7 +7,7 @@ use std::collections::HashMap;
 
 use core::*;
 use zigzag::*;
-use stream::wire_format;
+use stream::{wire_format, InputSource};
 use stream::wire_format::WireType;
 use stream::wire_format::WireTypeFixed32;
 use stream::wire_format::WireTypeFixed64;
@@ -220,7 +220,7 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
 }
 
 
-pub fn read_repeated_int32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
+pub fn read_repeated_int32_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<i32>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -230,7 +230,7 @@ pub fn read_repeated_int32_into(wire_type: WireType, is: &mut CodedInputStream, 
     }
 }
 
-pub fn read_repeated_int64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
+pub fn read_repeated_int64_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<i64>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -240,7 +240,7 @@ pub fn read_repeated_int64_into(wire_type: WireType, is: &mut CodedInputStream, 
     }
 }
 
-pub fn read_repeated_uint32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u32>)
+pub fn read_repeated_uint32_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<u32>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -250,7 +250,7 @@ pub fn read_repeated_uint32_into(wire_type: WireType, is: &mut CodedInputStream,
     }
 }
 
-pub fn read_repeated_uint64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u64>)
+pub fn read_repeated_uint64_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<u64>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -260,7 +260,7 @@ pub fn read_repeated_uint64_into(wire_type: WireType, is: &mut CodedInputStream,
     }
 }
 
-pub fn read_repeated_sint32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
+pub fn read_repeated_sint32_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<i32>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -270,7 +270,7 @@ pub fn read_repeated_sint32_into(wire_type: WireType, is: &mut CodedInputStream,
     }
 }
 
-pub fn read_repeated_sint64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
+pub fn read_repeated_sint64_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<i64>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -280,7 +280,7 @@ pub fn read_repeated_sint64_into(wire_type: WireType, is: &mut CodedInputStream,
     }
 }
 
-pub fn read_repeated_fixed32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u32>)
+pub fn read_repeated_fixed32_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<u32>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -290,7 +290,7 @@ pub fn read_repeated_fixed32_into(wire_type: WireType, is: &mut CodedInputStream
     }
 }
 
-pub fn read_repeated_fixed64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u64>)
+pub fn read_repeated_fixed64_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<u64>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -300,7 +300,7 @@ pub fn read_repeated_fixed64_into(wire_type: WireType, is: &mut CodedInputStream
     }
 }
 
-pub fn read_repeated_sfixed32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
+pub fn read_repeated_sfixed32_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<i32>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -310,7 +310,7 @@ pub fn read_repeated_sfixed32_into(wire_type: WireType, is: &mut CodedInputStrea
     }
 }
 
-pub fn read_repeated_sfixed64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
+pub fn read_repeated_sfixed64_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<i64>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -320,7 +320,7 @@ pub fn read_repeated_sfixed64_into(wire_type: WireType, is: &mut CodedInputStrea
     }
 }
 
-pub fn read_repeated_double_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<f64>)
+pub fn read_repeated_double_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<f64>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -330,7 +330,7 @@ pub fn read_repeated_double_into(wire_type: WireType, is: &mut CodedInputStream,
     }
 }
 
-pub fn read_repeated_float_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<f32>)
+pub fn read_repeated_float_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<f32>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -340,7 +340,7 @@ pub fn read_repeated_float_into(wire_type: WireType, is: &mut CodedInputStream, 
     }
 }
 
-pub fn read_repeated_bool_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<bool>)
+pub fn read_repeated_bool_into<I: InputSource>(wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<bool>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -350,8 +350,8 @@ pub fn read_repeated_bool_into(wire_type: WireType, is: &mut CodedInputStream, t
     }
 }
 
-pub fn read_repeated_enum_into<E : ProtobufEnum>(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<E>)
+pub fn read_repeated_enum_into<E : ProtobufEnum, I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<E>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -361,8 +361,8 @@ pub fn read_repeated_enum_into<E : ProtobufEnum>(
     }
 }
 
-pub fn read_repeated_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<String>)
+pub fn read_repeated_string_into<I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut RepeatedField<String>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -374,8 +374,8 @@ pub fn read_repeated_string_into(
     }
 }
 
-pub fn read_singular_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<String>)
+pub fn read_singular_string_into<I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut SingularField<String>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -387,8 +387,8 @@ pub fn read_singular_string_into(
     }
 }
 
-pub fn read_singular_proto3_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut String)
+pub fn read_singular_proto3_string_into<I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut String)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -399,8 +399,8 @@ pub fn read_singular_proto3_string_into(
     }
 }
 
-pub fn read_repeated_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Vec<u8>>)
+pub fn read_repeated_bytes_into<I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut RepeatedField<Vec<u8>>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -412,8 +412,8 @@ pub fn read_repeated_bytes_into(
     }
 }
 
-pub fn read_singular_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Vec<u8>>)
+pub fn read_singular_bytes_into<I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut SingularField<Vec<u8>>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -425,8 +425,8 @@ pub fn read_singular_bytes_into(
     }
 }
 
-pub fn read_singular_proto3_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u8>)
+pub fn read_singular_proto3_bytes_into<I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut Vec<u8>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -437,8 +437,8 @@ pub fn read_singular_proto3_bytes_into(
     }
 }
 
-pub fn read_repeated_message_into<M : Message + Default>(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<M>)
+pub fn read_repeated_message_into<M : CodedMessage + Default, I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut RepeatedField<M>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -450,8 +450,8 @@ pub fn read_repeated_message_into<M : Message + Default>(
     }
 }
 
-pub fn read_singular_message_into<M : Message + Default>(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularPtrField<M>)
+pub fn read_singular_message_into<M : CodedMessage + Default, I: InputSource>(
+    wire_type: WireType, is: &mut CodedInputStream<I>, target: &mut SingularPtrField<M>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -463,7 +463,7 @@ pub fn read_singular_message_into<M : Message + Default>(
     }
 }
 
-fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
+fn skip_group<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<()> {
     loop {
         let (_, wire_type) = try!(is.read_tag_unpack());
         if wire_type == wire_format::WireTypeEndGroup {
@@ -475,9 +475,9 @@ fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
 
 // Handle unknown field in generated code.
 // Either store a value in unknown, or skip a group.
-pub fn read_unknown_or_skip_group(
+pub fn read_unknown_or_skip_group<I: InputSource>(
     field_number: u32, wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<I>,
     unknown_fields: &mut UnknownFields,
 )
     -> ProtobufResult<()>
@@ -551,13 +551,13 @@ pub fn write_map_with_cached_sizes<K, V>(
     Ok(())
 }
 
-pub fn read_map_into<K, V>(
+pub fn read_map_into<K, V, I: InputSource>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<I>,
     target: &mut HashMap<K::Value, V::Value>)
         -> ProtobufResult<()>
     where
-        K : ProtobufType, V : ProtobufType,
+        K : CodedProtobufType, V : CodedProtobufType,
         K::Value : Eq + Hash,
 {
     if wire_type != WireType::WireTypeLengthDelimited {

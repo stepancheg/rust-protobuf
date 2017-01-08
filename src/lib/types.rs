@@ -1,11 +1,8 @@
 use std::marker;
 
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
+use stream::{CodedInputStream, CodedOutputStream, InputSource};
 use error::ProtobufResult;
-use core::ProtobufEnum;
-use core::Message;
-use core::MessageStatic;
+use core::{ProtobufEnum, Message, MessageStatic, CodedMessage};
 use wire_format::WireType;
 use rt;
 use reflect::ProtobufValue;
@@ -14,8 +11,6 @@ pub trait ProtobufType {
     type Value : ProtobufValue + Clone + 'static;
 
     fn wire_type() -> WireType;
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<Self::Value>;
 
     fn compute_size(value: &Self::Value) -> u32;
 
@@ -50,6 +45,11 @@ pub trait ProtobufType {
     fn write_with_cached_size(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()>;
 }
 
+pub trait CodedProtobufType: ProtobufType {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<Self::Value>;
+}
+
+
 pub struct ProtobufTypeFloat;
 pub struct ProtobufTypeDouble;
 pub struct ProtobufTypeInt32;
@@ -75,10 +75,6 @@ impl ProtobufType for ProtobufTypeFloat {
         WireType::WireTypeFixed32
     }
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<f32> {
-        is.read_float()
-    }
-
     fn compute_size(_value: &f32) -> u32 {
         4
     }
@@ -88,15 +84,17 @@ impl ProtobufType for ProtobufTypeFloat {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeFloat {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<f32> {
+        is.read_float()
+    }
+}
+
 impl ProtobufType for ProtobufTypeDouble {
     type Value = f64;
 
     fn wire_type() -> WireType {
         WireType::WireTypeFixed64
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<f64> {
-        is.read_double()
     }
 
     fn compute_size(_value: &f64) -> u32 {
@@ -108,15 +106,17 @@ impl ProtobufType for ProtobufTypeDouble {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeDouble {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<f64> {
+        is.read_double()
+    }
+}
+
 impl ProtobufType for ProtobufTypeInt32 {
     type Value = i32;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
-        is.read_int32()
     }
 
     fn compute_size(value: &i32) -> u32 {
@@ -128,15 +128,17 @@ impl ProtobufType for ProtobufTypeInt32 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeInt32 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<i32> {
+        is.read_int32()
+    }
+}
+
 impl ProtobufType for ProtobufTypeInt64 {
     type Value = i64;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
-        is.read_int64()
     }
 
     fn compute_size(value: &i64) -> u32 {
@@ -148,15 +150,17 @@ impl ProtobufType for ProtobufTypeInt64 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeInt64 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<i64> {
+        is.read_int64()
+    }
+}
+
 impl ProtobufType for ProtobufTypeUint32 {
     type Value = u32;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u32> {
-        is.read_uint32()
     }
 
     fn compute_size(value: &u32) -> u32 {
@@ -168,15 +172,17 @@ impl ProtobufType for ProtobufTypeUint32 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeUint32 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<u32> {
+        is.read_uint32()
+    }
+}
+
 impl ProtobufType for ProtobufTypeUint64 {
     type Value = u64;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
-        is.read_uint64()
     }
 
     fn compute_size(value: &u64) -> u32 {
@@ -188,15 +194,17 @@ impl ProtobufType for ProtobufTypeUint64 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeUint64 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<u64> {
+        is.read_uint64()
+    }
+}
+
 impl ProtobufType for ProtobufTypeSint32 {
     type Value = i32;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
-        is.read_sint32()
     }
 
     fn compute_size(value: &i32) -> u32 {
@@ -208,15 +216,17 @@ impl ProtobufType for ProtobufTypeSint32 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeSint32 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<i32> {
+        is.read_sint32()
+    }
+}
+
 impl ProtobufType for ProtobufTypeSint64 {
     type Value = i64;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
-        is.read_sint64()
     }
 
     fn compute_size(value: &i64) -> u32 {
@@ -228,15 +238,17 @@ impl ProtobufType for ProtobufTypeSint64 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeSint64 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<i64> {
+        is.read_sint64()
+    }
+}
+
 impl ProtobufType for ProtobufTypeFixed32 {
     type Value = u32;
 
     fn wire_type() -> WireType {
         WireType::WireTypeFixed32
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u32> {
-        is.read_fixed32()
     }
 
     fn compute_size(_value: &u32) -> u32 {
@@ -248,15 +260,17 @@ impl ProtobufType for ProtobufTypeFixed32 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeFixed32 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<u32> {
+        is.read_fixed32()
+    }
+}
+
 impl ProtobufType for ProtobufTypeFixed64 {
     type Value = u64;
 
     fn wire_type() -> WireType {
         WireType::WireTypeFixed64
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
-        is.read_fixed64()
     }
 
     fn compute_size(_value: &u64) -> u32 {
@@ -268,15 +282,17 @@ impl ProtobufType for ProtobufTypeFixed64 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeFixed64 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<u64> {
+        is.read_fixed64()
+    }
+}
+
 impl ProtobufType for ProtobufTypeSfixed32 {
     type Value = i32;
 
     fn wire_type() -> WireType {
         WireType::WireTypeFixed32
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
-        is.read_sfixed32()
     }
 
     fn compute_size(_value: &i32) -> u32 {
@@ -288,15 +304,17 @@ impl ProtobufType for ProtobufTypeSfixed32 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeSfixed32 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<i32> {
+        is.read_sfixed32()
+    }
+}
+
 impl ProtobufType for ProtobufTypeSfixed64 {
     type Value = i64;
 
     fn wire_type() -> WireType {
         WireType::WireTypeFixed64
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
-        is.read_sfixed64()
     }
 
     fn compute_size(_value: &i64) -> u32 {
@@ -308,15 +326,17 @@ impl ProtobufType for ProtobufTypeSfixed64 {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeSfixed64 {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<i64> {
+        is.read_sfixed64()
+    }
+}
+
 impl ProtobufType for ProtobufTypeBool {
     type Value = bool;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<bool> {
-        is.read_bool()
     }
 
     fn compute_size(_value: &bool) -> u32 {
@@ -328,15 +348,17 @@ impl ProtobufType for ProtobufTypeBool {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeBool {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<bool> {
+        is.read_bool()
+    }
+}
+
 impl ProtobufType for ProtobufTypeString {
     type Value = String;
 
     fn wire_type() -> WireType {
         WireType::WireTypeLengthDelimited
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<String> {
-        is.read_string()
     }
 
     fn compute_size(value: &String) -> u32 {
@@ -348,15 +370,17 @@ impl ProtobufType for ProtobufTypeString {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeString {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<String> {
+        is.read_string()
+    }
+}
+
 impl ProtobufType for ProtobufTypeBytes {
     type Value = Vec<u8>;
 
     fn wire_type() -> WireType {
         WireType::WireTypeLengthDelimited
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<Vec<u8>> {
-        is.read_bytes()
     }
 
     fn compute_size(value: &Vec<u8>) -> u32 {
@@ -368,15 +392,17 @@ impl ProtobufType for ProtobufTypeBytes {
     }
 }
 
+impl CodedProtobufType for ProtobufTypeBytes {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<Vec<u8>> {
+        is.read_bytes()
+    }
+}
+
 impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
     type Value = E;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<E> {
-        is.read_enum()
     }
 
     fn compute_size(value: &E) -> u32 {
@@ -388,15 +414,17 @@ impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
     }
 }
 
+impl<E: ProtobufEnum + ProtobufValue> CodedProtobufType for ProtobufTypeEnum<E> {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<E> {
+        is.read_enum()
+    }
+}
+
 impl<M : Message + MessageStatic + ProtobufValue> ProtobufType for ProtobufTypeMessage<M> {
     type Value = M;
 
     fn wire_type() -> WireType {
         WireType::WireTypeLengthDelimited
-    }
-
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<M> {
-        is.read_message()
     }
 
     fn compute_size(value: &M) -> u32 {
@@ -412,5 +440,11 @@ impl<M : Message + MessageStatic + ProtobufValue> ProtobufType for ProtobufTypeM
         try!(os.write_raw_varint32(value.get_cached_size()));
         try!(value.write_to_with_cached_sizes(os));
         Ok(())
+    }
+}
+
+impl<M : CodedMessage + MessageStatic + ProtobufValue> CodedProtobufType for ProtobufTypeMessage<M> {
+    fn read<I: InputSource>(is: &mut CodedInputStream<I>) -> ProtobufResult<M> {
+        is.read_message()
     }
 }

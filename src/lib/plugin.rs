@@ -165,27 +165,6 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
-            match field_number {
-                1 => {
-                    try!(::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate));
-                },
-                2 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.parameter));
-                },
-                15 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file));
-                },
-                _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
-                },
-            };
-        }
-        ::std::result::Result::Ok(())
-    }
-
     // Compute sizes of nested messages
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
@@ -239,6 +218,29 @@ impl ::protobuf::Message for CodeGeneratorRequest {
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::CodedMessage for CodeGeneratorRequest {
+    fn merge_from<I: ::protobuf::InputSource>(&mut self, is: &mut ::protobuf::CodedInputStream<I>) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
+            match field_number {
+                1 => {
+                    try!(::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate));
+                },
+                2 => {
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.parameter));
+                },
+                15 => {
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file));
+                },
+                _ => {
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
     }
 }
 
@@ -412,24 +414,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
-            match field_number {
-                1 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.error));
-                },
-                15 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file));
-                },
-                _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
-                },
-            };
-        }
-        ::std::result::Result::Ok(())
-    }
-
     // Compute sizes of nested messages
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
@@ -477,6 +461,26 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::CodedMessage for CodeGeneratorResponse {
+    fn merge_from<I: ::protobuf::InputSource>(&mut self, is: &mut ::protobuf::CodedInputStream<I>) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
+            match field_number {
+                1 => {
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.error));
+                },
+                15 => {
+                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file));
+                },
+                _ => {
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
     }
 }
 
@@ -700,27 +704,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
-            match field_number {
-                1 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
-                },
-                2 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point));
-                },
-                15 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content));
-                },
-                _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
-                },
-            };
-        }
-        ::std::result::Result::Ok(())
-    }
-
     // Compute sizes of nested messages
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
@@ -771,6 +754,29 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::CodedMessage for CodeGeneratorResponse_File {
+    fn merge_from<I: ::protobuf::InputSource>(&mut self, is: &mut ::protobuf::CodedInputStream<I>) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
+            match field_number {
+                1 => {
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
+                },
+                2 => {
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point));
+                },
+                15 => {
+                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content));
+                },
+                _ => {
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
     }
 }
 

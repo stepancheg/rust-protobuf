@@ -12,6 +12,7 @@ use reflect::MessageDescriptor;
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
 use unknown::UnknownFields;
+use stream::InputSource;
 use stream::WithCodedInputStream;
 use stream::WithCodedOutputStream;
 use stream::CodedInputStream;
@@ -30,7 +31,6 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
 
     // all required fields set
     fn is_initialized(&self) -> bool;
-    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
     // sizes of this messages (and nested messages) must be cached
     // by calling `compute_size` prior to this call
@@ -62,11 +62,6 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
         // TODO: assert we've written same number of bytes as computed
 
         Ok(())
-    }
-
-    fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        let mut is = CodedInputStream::from_bytes(bytes);
-        self.merge_from(&mut is)
     }
 
     fn check_initialized(&self) -> ProtobufResult<()> {
@@ -123,6 +118,15 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
     // }
 }
 
+pub trait CodedMessage: Message {
+    fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
+        let mut is = CodedInputStream::from_bytes(bytes);
+        self.merge_from(&mut is)
+    }
+
+    fn merge_from<I: InputSource>(&mut self, is: &mut CodedInputStream<I>) -> ProtobufResult<()>;
+}
+
 // For some reason Rust doesn't allow conversion of &Foo to &Message it
 // Message contains static functions. So static functions must be placed
 // into separate place.
@@ -168,42 +172,43 @@ pub trait ProtobufEnum : Eq + Sized + Copy + 'static /* + ProtobufValue */ {
     }
 }
 
-pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+pub fn parse_from<M, I>(is: &mut CodedInputStream<I>) -> ProtobufResult<M>
+        where M: CodedMessage + MessageStatic, I: InputSource {
     let mut r: M = MessageStatic::new();
     try!(r.merge_from(is));
     try!(r.check_initialized());
     Ok(r)
 }
 
-pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Read) -> ProtobufResult<M> {
-    reader.with_coded_input_stream(|is| {
-        parse_from::<M>(is)
-    })
+pub fn parse_from_reader<M, R>(reader: R) -> ProtobufResult<M>
+        where M: CodedMessage + MessageStatic, R: Read {
+    let mut is = CodedInputStream::new(reader);
+    parse_from(&mut is)
 }
 
-pub fn parse_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| {
-        parse_from::<M>(is)
-    })
+pub fn parse_from_bytes<M : CodedMessage + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
+    let mut is = CodedInputStream::from_bytes(bytes);
+    parse_from(&mut is)
 }
 
-pub fn parse_length_delimited_from<M : Message + MessageStatic>(is: &mut CodedInputStream)
+pub fn parse_length_delimited_from<M, I>(is: &mut CodedInputStream<I>)
         -> ProtobufResult<M>
+        where M: CodedMessage + MessageStatic, I: InputSource
 {
     is.read_message::<M>()
 }
 
-pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(r: &mut Read) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_reader<M, R>(r: R) -> ProtobufResult<M>
+        where M: CodedMessage + MessageStatic, R: Read {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| {
         is.read_message::<M>()
     })
 }
 
-pub fn parse_length_delimited_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| {
-        is.read_message::<M>()
-    })
+pub fn parse_length_delimited_from_bytes<M : CodedMessage + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
+    let mut is = CodedInputStream::from_bytes(bytes);
+    is.read_message()
 }
 
 

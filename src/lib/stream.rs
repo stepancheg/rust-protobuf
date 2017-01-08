@@ -1,13 +1,10 @@
 use std;
 use std::mem;
-use std::io;
 use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
 use std::slice;
 
-use core::Message;
-use core::MessageStatic;
-use core::ProtobufEnum;
+use core::{Message, CodedMessage, MessageStatic, ProtobufEnum};
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
@@ -114,97 +111,71 @@ pub mod wire_format {
 
 }
 
-enum InputSource<'a> {
-    BufRead(&'a mut BufRead),
-    Read(BufReader<&'a mut Read>),
-    Cursor(io::Cursor<&'a [u8]>),
+pub trait InputSource: Read {
+    fn eof(&mut self) -> ProtobufResult<bool>;
 }
 
-impl<'a> InputSource<'a> {
-    pub fn read(&mut self, target: &mut [u8]) -> ProtobufResult<()> {
-        let mut target = target;
-        let count = target.len();
-        let mut bread = 0;
-        while bread != count {
-            let res = match self {
-                &mut InputSource::BufRead(ref mut br) => br.read(&mut target[bread..]),
-                &mut InputSource::Read(ref mut br) => br.read(&mut target[bread..]),
-                &mut InputSource::Cursor(ref mut c) => c.read(&mut target[bread..]),
-            };
-            match try!(res) {
-                0 => {
-                    return Err(ProtobufError::IoError(io::Error::new(
-                        io::ErrorKind::Other, "unexpected EOF")));
-                },
-                x => {
-                    bread += x;
-                },
-            }
-        }
-        Ok(())
-    }
-
-    pub fn eof(&mut self) -> ProtobufResult<bool> {
-        let res = match self {
-            &mut InputSource::BufRead(ref mut br) => br.fill_buf(),
-            &mut InputSource::Read(ref mut br) => br.fill_buf(),
-            &mut InputSource::Cursor(ref mut c) => c.fill_buf(),
-        };
-        Ok(try!(res).len() == 0)
+impl<R: BufRead> InputSource for R {
+    fn eof(&mut self) -> ProtobufResult<bool> {
+        let bs = try!(self.fill_buf());
+        Ok(bs.is_empty())
     }
 }
 
 const NO_LIMIT: u32 = std::u32::MAX;
 
-pub struct CodedInputStream<'a> {
-    source: InputSource<'a>,
+pub struct CodedInputStream<I> {
+    source: I,
     current_limit: u32,
     pos: u32,
 }
 
-impl<'a> CodedInputStream<'a> {
-    pub fn new(reader: &'a mut Read) -> CodedInputStream<'a> {
-        CodedInputStream {
-            source: InputSource::Read(BufReader::with_capacity(
-                INPUT_STREAM_BUFFER_SIZE, reader)),
-            current_limit: NO_LIMIT,
-            pos: 0,
-        }
-    }
-
-    pub fn from_buffered_reader(buffered_reader: &'a mut BufRead) -> CodedInputStream<'a> {
-        CodedInputStream {
-            source: InputSource::BufRead(buffered_reader),
-            current_limit: NO_LIMIT,
-            pos: 0,
-        }
-    }
-
-    pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
+impl<'a> CodedInputStream<&'a [u8]> {
+    pub fn from_bytes(bytes: &[u8]) -> CodedInputStream<&[u8]> {
         let len = bytes.len();
         assert!(len < NO_LIMIT as usize);
         CodedInputStream {
-            source: InputSource::Cursor(io::Cursor::new(bytes)),
+            source: bytes,
             current_limit: len as u32,
             pos: 0,
         }
     }
+}
 
+impl<R: Read> CodedInputStream<R> {
+    pub fn new(reader: R) -> CodedInputStream<BufReader<R>> {
+        CodedInputStream::from_buffered_reader(BufReader::with_capacity(INPUT_STREAM_BUFFER_SIZE, reader))
+    }
+}
+
+impl<R: BufRead> CodedInputStream<R> {
+    pub fn from_buffered_reader(buffered_reader: R) -> CodedInputStream<R> {
+        CodedInputStream {
+            source: buffered_reader,
+            current_limit: NO_LIMIT,
+            pos: 0,
+        }
+    }
+}
+
+impl<I> CodedInputStream<I> {
     pub fn pos(&self) -> u32 { self.pos }
 
     pub fn bytes_until_limit(&self) -> u32 {
         assert!(self.current_limit != NO_LIMIT);
         self.current_limit - self.pos
     }
+}
 
-    pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
+impl<I: InputSource> CodedInputStream<I> {
+    pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         assert!(buf.len() < NO_LIMIT as usize);
         let new_pos = match self.pos.checked_add(buf.len() as u32) {
             None | Some(NO_LIMIT) =>
                 return Err(ProtobufError::WireError(format!("u32 overflow"))),
             Some(new_pos) => new_pos,
         };
-        try!(self.source.read(buf));
+        try!(self.source.read_exact(buf));
         self.pos = new_pos;
         Ok(())
     }
@@ -609,7 +580,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn merge_message<M : Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
+    pub fn merge_message<M : CodedMessage>(&mut self, message: &mut M) -> ProtobufResult<()> {
         let len = try!(self.read_raw_varint32());
         let old_limit = try!(self.push_limit(len));
         try!(message.merge_from(self));
@@ -617,7 +588,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn read_message<M : Message + MessageStatic>(&mut self) -> ProtobufResult<M> {
+    pub fn read_message<M : CodedMessage + MessageStatic>(&mut self) -> ProtobufResult<M> {
         let mut r: M = MessageStatic::new();
         try!(self.merge_message(&mut r));
         try!(r.check_initialized());
@@ -661,14 +632,14 @@ pub fn with_coded_output_stream_to_bytes<F>(cb: F)
     Ok(v)
 }
 
-pub trait WithCodedInputStream {
+pub trait WithCodedInputStream<I> {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
+        where F : FnOnce(&mut CodedInputStream<I>) -> ProtobufResult<T>;
 }
 
-impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
+impl<R: Read> WithCodedInputStream<BufReader<R>> for R {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream<BufReader<R>>) -> ProtobufResult<T>
     {
         let mut is = CodedInputStream::new(self);
         let r = try!(cb(&mut is));
@@ -677,9 +648,9 @@ impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
     }
 }
 
-impl<'a> WithCodedInputStream for &'a mut (BufRead + 'a) {
+impl<R: BufRead> WithCodedInputStream<R> for R {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream<R>) -> ProtobufResult<T>
     {
         let mut is = CodedInputStream::from_buffered_reader(self);
         let r = try!(cb(&mut is));
@@ -687,18 +658,6 @@ impl<'a> WithCodedInputStream for &'a mut (BufRead + 'a) {
         Ok(r)
     }
 }
-
-impl<'a> WithCodedInputStream for &'a [u8] {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
-    {
-        let mut is = CodedInputStream::from_bytes(self);
-        let r = try!(cb(&mut is));
-        try!(is.check_eof());
-        Ok(r)
-    }
-}
-
 
 pub struct CodedOutputStream<'a> {
     buffer: Box<[u8]>,
@@ -1023,9 +982,6 @@ impl<'a> CodedOutputStream<'a> {
 
 #[cfg(test)]
 mod test {
-
-    use std::io;
-    use std::io::{BufRead};
     use std::io::Write;
     use std::iter::repeat;
     use std::fmt::Debug;
@@ -1040,17 +996,16 @@ mod test {
     use super::CodedOutputStream;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
-        where F : FnMut(&mut CodedInputStream)
+        where F : FnMut(&mut CodedInputStream<&[u8]>)
     {
         let d = decode_hex(hex);
-        let mut reader = io::Cursor::new(d);
-        let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut BufRead);
+        let mut is = CodedInputStream::from_bytes(&d);
         assert_eq!(0, is.pos());
         callback(&mut is);
     }
 
     fn test_read<F>(hex: &str, mut callback: F)
-        where F : FnMut(&mut CodedInputStream)
+        where F : FnMut(&mut CodedInputStream<&[u8]>)
     {
         let len = decode_hex(hex).len();
         test_read_partial(hex, |reader| {
@@ -1062,7 +1017,7 @@ mod test {
 
     fn test_read_v<F, V>(hex: &str, v: V, mut callback: F)
         where
-            F : FnMut(&mut CodedInputStream) -> ProtobufResult<V>,
+            F : FnMut(&mut CodedInputStream<&[u8]>) -> ProtobufResult<V>,
             V : PartialEq + Debug,
     {
         test_read(hex, |reader| {
