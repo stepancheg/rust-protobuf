@@ -1162,18 +1162,18 @@ impl<'a> FieldGen<'a> {
 
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                w.write_line(&format!("try!({}.write_tag({}, ::protobuf::wire_format::{:?}));",
+                w.write_line(&format!("{}.write_tag({}, ::protobuf::wire_format::{:?})?;",
                         os, self.number, wire_format::WireTypeLengthDelimited));
-                w.write_line(&format!("try!({}.write_raw_varint32({}.get_cached_size()));",
+                w.write_line(&format!("{}.write_raw_varint32({}.get_cached_size())?;",
                         os, var));
-                w.write_line(&format!("try!({}.write_to_with_cached_sizes({}));",
+                w.write_line(&format!("{}.write_to_with_cached_sizes({})?;",
                         var, os));
             }
             _ => {
                 let param_type = self.os_write_fn_param_type();
                 let os_write_fn_suffix = self.os_write_fn_suffix();
                 let number = self.number();
-                w.write_line(&format!("try!({}.write_{}({}, {}));",
+                w.write_line(&format!("{}.write_{}({}, {})?;",
                     os,
                     os_write_fn_suffix,
                     number,
@@ -1381,7 +1381,7 @@ impl<'a> FieldGen<'a> {
             FieldKind::Oneof(..) => unreachable!(),
         };
         w.write_line(&format!(
-            "try!(::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{}));",
+            "::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{})?;",
             singular_or_repeated,
             protobuf_name(self.proto_type),
             self.rust_name));
@@ -1390,7 +1390,7 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_oneof(&self, w: &mut CodeWriter) {
         w.assert_wire_type(self.wire_type);
         // TODO: split long line
-        w.write_line(&format!("self.{} = ::std::option::Option::Some({}(try!({})));",
+        w.write_line(&format!("self.{} = ::std::option::Option::Some({}({}?));",
                              self.oneof().oneof_name,
                              self.variant_path(),
                              self.proto_type.read("is")));
@@ -1398,7 +1398,7 @@ impl<'a> FieldGen<'a> {
 
     fn write_merge_from_map(&self, w: &mut CodeWriter) {
         let &MapField { ref key, ref value, .. } = self.map();
-        w.write_line(&format!("try!(::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {}));",
+        w.write_line(&format!("::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
             key.lib_protobuf_type(),
             value.lib_protobuf_type(),
             self.self_field()));
@@ -1413,7 +1413,7 @@ impl<'a> FieldGen<'a> {
                     self.write_merge_from_field_message_string_bytes(w);
                 } else {
                     let wire_type = field_type_wire_type(self.proto_type);
-                    let read_proc = format!("try!(is.read_{}())", protobuf_name(self.proto_type));
+                    let read_proc = format!("is.read_{}()?", protobuf_name(self.proto_type));
 
                     match self.kind {
                         FieldKind::Singular(..) => {
@@ -1423,7 +1423,7 @@ impl<'a> FieldGen<'a> {
                         }
                         FieldKind::Repeated(..) => {
                             w.write_line(&format!(
-                                "try!(::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{}));",
+                                "::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{})?;",
                                 protobuf_name(self.proto_type),
                                 self.rust_name));
                         }
@@ -1483,20 +1483,20 @@ impl<'a> FieldGen<'a> {
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.number();
-                    w.write_line(&format!("try!(os.write_tag({}, ::protobuf::wire_format::{:?}));", number, wire_format::WireTypeLengthDelimited));
+                    w.write_line(&format!("os.write_tag({}, ::protobuf::wire_format::{:?})?;", number, wire_format::WireTypeLengthDelimited));
                     w.comment("TODO: Data size is computed again, it should be cached");
                     let data_size_expr = self.self_field_vec_packed_data_size();
-                    w.write_line(&format!("try!(os.write_raw_varint32({}));", data_size_expr));
+                    w.write_line(&format!("os.write_raw_varint32({})?;", data_size_expr));
                     self.write_for_self_field(w, "v", |w, v_type| {
                         let param_type = self.os_write_fn_param_type();
                         let os_write_fn_suffix = self.os_write_fn_suffix();
-                        w.write_line(&format!("try!(os.write_{}_no_tag({}));",
+                        w.write_line(&format!("os.write_{}_no_tag({})?;",
                             os_write_fn_suffix, v_type.into_target(&param_type, "v")));
                     });
                 });
             },
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
-                w.write_line(&format!("try!(::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os));",
+                w.write_line(&format!("::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
                     key.lib_protobuf_type(),
                     value.lib_protobuf_type(),
                     self.number,
@@ -2020,7 +2020,7 @@ impl<'a> MessageGen<'a> {
             self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
                 variant.field.write_write_element(w, "os", v, v_type);
             });
-            w.write_line("try!(os.write_unknown_fields(self.get_unknown_fields()));");
+            w.write_line("os.write_unknown_fields(self.get_unknown_fields())?;");
             w.write_line("::std::result::Result::Ok(())");
         });
     }
@@ -2096,8 +2096,8 @@ impl<'a> MessageGen<'a> {
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
         w.def_fn(&format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
-            w.while_block("!try!(is.eof())", |w| {
-                w.write_line(&format!("let (field_number, wire_type) = try!(is.read_tag_unpack());"));
+            w.while_block("!is.eof()?", |w| {
+                w.write_line(&format!("let (field_number, wire_type) = is.read_tag_unpack()?;"));
                 w.match_block("field_number", |w| {
                     for f in &self.fields_except_group() {
                         let number = f.number;
@@ -2106,7 +2106,7 @@ impl<'a> MessageGen<'a> {
                         });
                     }
                     w.case_block("_", |w| {
-                        w.write_line("try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));");
+                        w.write_line("::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;");
                     });
                 });
             });

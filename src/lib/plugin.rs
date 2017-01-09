@@ -166,20 +166,20 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate));
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate)?;
                 },
                 2 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.parameter));
+                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.parameter)?;
                 },
                 15 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file));
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file)?;
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -207,17 +207,17 @@ impl ::protobuf::Message for CodeGeneratorRequest {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         for v in &self.file_to_generate {
-            try!(os.write_string(1, &v));
+            os.write_string(1, &v)?;
         };
         if let Some(v) = self.parameter.as_ref() {
-            try!(os.write_string(2, &v));
+            os.write_string(2, &v)?;
         };
         for v in &self.proto_file {
-            try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -413,17 +413,17 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.error));
+                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.error)?;
                 },
                 15 => {
-                    try!(::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file));
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -448,14 +448,14 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.error.as_ref() {
-            try!(os.write_string(1, &v));
+            os.write_string(1, &v)?;
         };
         for v in &self.file {
-            try!(os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -701,20 +701,20 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name));
+                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point));
+                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point)?;
                 },
                 15 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content));
+                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content)?;
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -741,15 +741,15 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
-            try!(os.write_string(1, &v));
+            os.write_string(1, &v)?;
         };
         if let Some(v) = self.insertion_point.as_ref() {
-            try!(os.write_string(2, &v));
+            os.write_string(2, &v)?;
         };
         if let Some(v) = self.content.as_ref() {
-            try!(os.write_string(15, &v));
+            os.write_string(15, &v)?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
