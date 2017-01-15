@@ -40,6 +40,7 @@ impl<'a> CodeWriter<'a> {
         self.write_line("");
         self.write_line("#![allow(box_pointers)]");
         self.write_line("#![allow(dead_code)]");
+        self.write_line("#![allow(missing_docs)]");
         self.write_line("#![allow(non_camel_case_types)]");
         self.write_line("#![allow(non_snake_case)]");
         self.write_line("#![allow(non_upper_case_globals)]");
