@@ -154,12 +154,12 @@ impl<'a> InputSource<'a> {
     }
 }
 
-const NO_LIMIT: u32 = std::u32::MAX;
+const NO_LIMIT: u64 = std::u64::MAX;
 
 pub struct CodedInputStream<'a> {
     source: InputSource<'a>,
-    current_limit: u32,
-    pos: u32,
+    current_limit: u64,
+    pos: u64,
 }
 
 impl<'a> CodedInputStream<'a> {
@@ -182,26 +182,25 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
         let len = bytes.len();
-        assert!(len < NO_LIMIT as usize);
         CodedInputStream {
             source: InputSource::Cursor(io::Cursor::new(bytes)),
-            current_limit: len as u32,
+            current_limit: len as u64,
             pos: 0,
         }
     }
 
-    pub fn pos(&self) -> u32 { self.pos }
+    pub fn pos(&self) -> u64 { self.pos }
 
-    pub fn bytes_until_limit(&self) -> u32 {
+    pub fn bytes_until_limit(&self) -> u64 {
         assert!(self.current_limit != NO_LIMIT);
         self.current_limit - self.pos
     }
 
     pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
         assert!(buf.len() < NO_LIMIT as usize);
-        let new_pos = match self.pos.checked_add(buf.len() as u32) {
+        let new_pos = match self.pos.checked_add(buf.len() as u64) {
             None | Some(NO_LIMIT) =>
-                return Err(ProtobufError::WireError(format!("u32 overflow"))),
+                return Err(ProtobufError::WireError(format!("u64 overflow"))),
             Some(new_pos) => new_pos,
         };
         try!(self.source.read(buf));
@@ -219,7 +218,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(r)
     }
 
-    pub fn push_limit(&mut self, limit: u32) -> ProtobufResult<u32> {
+    pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
         let old_limit = self.current_limit;
         let new_limit = match self.pos.checked_add(limit) {
             None | Some(NO_LIMIT) => return Err(ProtobufError::WireError(format!("corrupted stream"))),
@@ -232,7 +231,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(old_limit)
     }
 
-    pub fn pop_limit(&mut self, old_limit: u32) {
+    pub fn pop_limit(&mut self, old_limit: u64) {
         self.current_limit = old_limit;
     }
 
@@ -376,7 +375,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_double_into(&mut self, target: &mut Vec<f64>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         target.reserve((len / 4) as usize);
 
@@ -389,7 +388,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_float_into(&mut self, target: &mut Vec<f32>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         target.reserve((len / 4) as usize);
 
@@ -402,8 +401,8 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_int64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
-        let old_limit = try!(self.push_limit(len));
+        let len = try!(self.read_raw_varint64());
+        let old_limit = try!(self.push_limit(len as u64));
         while !try!(self.eof()) {
             target.push(try!(self.read_int64()));
         }
@@ -412,7 +411,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_int32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_int32()));
@@ -422,7 +421,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_uint64_into(&mut self, target: &mut Vec<u64>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_uint64()));
@@ -432,7 +431,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_uint32_into(&mut self, target: &mut Vec<u32>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_uint32()));
@@ -442,7 +441,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_sint64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_sint64()));
@@ -452,7 +451,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_sint32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_sint32()));
@@ -462,7 +461,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_fixed64_into(&mut self, target: &mut Vec<u64>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         target.reserve((len / 8) as usize);
 
@@ -475,7 +474,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_fixed32_into(&mut self, target: &mut Vec<u32>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         target.reserve((len / 4) as usize);
 
@@ -488,7 +487,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_sfixed64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         target.reserve((len / 8) as usize);
 
@@ -501,7 +500,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_sfixed32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         target.reserve((len / 4) as usize);
 
@@ -514,7 +513,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_bool_into(&mut self, target: &mut Vec<bool>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
 
         // regular bool value is 1-byte size
         target.reserve(len as usize);
@@ -528,7 +527,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_repeated_packed_enum_into<E : ProtobufEnum>(&mut self, target: &mut Vec<E>) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         while !try!(self.eof()) {
             target.push(try!(self.read_enum()));
@@ -610,7 +609,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn merge_message<M : Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
-        let len = try!(self.read_raw_varint32());
+        let len = try!(self.read_raw_varint64());
         let old_limit = try!(self.push_limit(len));
         try!(message.merge_from(self));
         self.pop_limit(old_limit);
@@ -1056,7 +1055,7 @@ mod test {
         test_read_partial(hex, |reader| {
             callback(reader);
             assert!(reader.eof().unwrap());
-            assert_eq!(len as u32, reader.pos());
+            assert_eq!(len as u64, reader.pos());
         });
     }
 
