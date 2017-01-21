@@ -568,7 +568,7 @@ pub fn read_map_into<K, V>(
     let mut value = None;
 
     let len = try!(is.read_raw_varint32());
-    let old_limit = try!(is.push_limit(len));
+    let old_limit = try!(is.push_limit(len as u64));
     while !try!(is.eof()) {
         let (field_number, wire_type) = try!(is.read_tag_unpack());
         match field_number {
