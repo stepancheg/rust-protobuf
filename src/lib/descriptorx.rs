@@ -28,7 +28,8 @@ fn ident_continue(c: char) -> bool {
 
 pub fn proto_path_to_rust_mod(path: &str) -> String {
     let without_dir = strx::remove_to(path, '/');
-    let without_suffix = strx::remove_suffix(without_dir, ".proto");
+    let without_suffix = strx::remove_suffix(without_dir, ".proto")
+        .expect(&format!("file name must end with .proto: {}", path));
     without_suffix.chars().enumerate().map(|(i, c)| {
         let valid = if i == 0 { ident_start(c) } else { ident_continue(c) };
         if valid { c } else { '_' }
