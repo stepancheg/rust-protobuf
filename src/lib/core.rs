@@ -21,7 +21,7 @@ use error::ProtobufError;
 use error::ProtobufResult;
 
 
-pub trait Message : fmt::Debug + Clear + Any + 'static {
+pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
