@@ -117,6 +117,14 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
 
     fn as_any(&self) -> &Any;
 
+    fn as_any_mut(&mut self) -> &mut Any {
+        panic!()
+    }
+
+    fn into_any(self: Box<Self>) -> Box<Any> {
+        panic!()
+    }
+
     // Rust does not allow implementation of trait for trait:
     // impl<M : Message> fmt::Debug for M {
     // ...
