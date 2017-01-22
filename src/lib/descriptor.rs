@@ -18,6 +18,9 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
+use std::io::Write;
+
+use protobuf::CodedOutputStream;
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
@@ -115,7 +118,7 @@ impl ::protobuf::Message for FileDescriptorSet {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         for v in &self.file {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -787,7 +790,7 @@ impl ::protobuf::Message for FileDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -1460,7 +1463,7 @@ impl ::protobuf::Message for DescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -1768,7 +1771,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.start {
             os.write_int32(1, v)?;
         };
@@ -1988,7 +1991,7 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.start {
             os.write_int32(1, v)?;
         };
@@ -2588,7 +2591,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -3055,7 +3058,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -3342,7 +3345,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -3637,7 +3640,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -3933,7 +3936,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -4368,7 +4371,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -5188,7 +5191,7 @@ impl ::protobuf::Message for FileOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.java_package.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -5696,7 +5699,7 @@ impl ::protobuf::Message for MessageOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.message_set_wire_format {
             os.write_bool(1, v)?;
         };
@@ -6138,7 +6141,7 @@ impl ::protobuf::Message for FieldOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.ctype {
             os.write_enum(1, v.value())?;
         };
@@ -6474,7 +6477,7 @@ impl ::protobuf::Message for OneofOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6728,7 +6731,7 @@ impl ::protobuf::Message for EnumOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.allow_alias {
             os.write_bool(2, v)?;
         };
@@ -6962,7 +6965,7 @@ impl ::protobuf::Message for EnumValueOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(1, v)?;
         };
@@ -7187,7 +7190,7 @@ impl ::protobuf::Message for ServiceOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
         };
@@ -7412,7 +7415,7 @@ impl ::protobuf::Message for MethodOptions {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
         };
@@ -7866,7 +7869,7 @@ impl ::protobuf::Message for UninterpretedOption {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         for v in &self.name {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -8152,7 +8155,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name_part.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -8337,7 +8340,7 @@ impl ::protobuf::Message for SourceCodeInfo {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         for v in &self.location {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -8696,7 +8699,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if !self.path.is_empty() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             // TODO: Data size is computed again, it should be cached
@@ -8918,7 +8921,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         for v in &self.annotation {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -9222,7 +9225,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if !self.path.is_empty() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             // TODO: Data size is computed again, it should be cached

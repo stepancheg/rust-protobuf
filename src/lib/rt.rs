@@ -1,9 +1,10 @@
 // Functions used by generated protobuf code.
 // Should not be used by programs written by hands.
 
+use std::collections::HashMap;
 use std::default::Default;
 use std::hash::Hash;
-use std::collections::HashMap;
+use std::io::Write;
 
 use core::*;
 use zigzag::*;
@@ -523,14 +524,15 @@ pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Valu
     sum
 }
 
-pub fn write_map_with_cached_sizes<K, V>(
+pub fn write_map_with_cached_sizes<K, V, W>(
     field_number: u32,
     map: &HashMap<K::Value, V::Value>,
-    os: &mut CodedOutputStream)
+    os: &mut W)
         -> ProtobufResult<()>
     where
         K : ProtobufType, V : ProtobufType,
         K::Value : Eq + Hash,
+        W: Write,
 {
     for (k, v) in map {
 

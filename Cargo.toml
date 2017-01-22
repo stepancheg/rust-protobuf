@@ -16,6 +16,9 @@ Rust implementation of Google protocol buffers
 name = "protobuf"
 path = "src/lib/lib.rs"
 
+[dependencies]
+byteorder = "1"
+
 [[bin]]
 
 name = "protoc-gen-rust"
