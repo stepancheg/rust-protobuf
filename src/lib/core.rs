@@ -21,7 +21,7 @@ use error::ProtobufError;
 use error::ProtobufResult;
 
 
-pub trait Message : fmt::Debug + Clear + Any + 'static {
+pub trait Message: fmt::Debug + Clear + Any + 'static {
     // All generated Message types also implement MessageStatic.
     // However, rust doesn't allow these types to be extended by
     // Message.
@@ -78,15 +78,11 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
     }
 
     fn write_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
-        w.with_coded_output_stream(|os| {
-            self.write_to(os)
-        })
+        w.with_coded_output_stream(|os| self.write_to(os))
     }
 
     fn write_to_vec(&self, v: &mut Vec<u8>) -> ProtobufResult<()> {
-        v.with_coded_output_stream(|os| {
-            self.write_to(os)
-        })
+        v.with_coded_output_stream(|os| self.write_to(os))
     }
 
     fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
@@ -97,15 +93,11 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
     }
 
     fn write_length_delimited_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
-        w.with_coded_output_stream(|os| {
-            self.write_length_delimited_to(os)
-        })
+        w.with_coded_output_stream(|os| self.write_length_delimited_to(os))
     }
 
     fn write_length_delimited_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
-        with_coded_output_stream_to_bytes(|os| {
-            self.write_length_delimited_to(os)
-        })
+        with_coded_output_stream_to_bytes(|os| self.write_length_delimited_to(os))
     }
 
     fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
@@ -128,7 +120,7 @@ pub trait Message : fmt::Debug + Clear + Any + 'static {
 // into separate place.
 //
 // See https://github.com/rust-lang/rust/commit/cd31e6ff for details.
-pub trait MessageStatic : Message + Clone + Default + PartialEq /* + ProtobufValue */ {
+pub trait MessageStatic: Message + Clone + Default + PartialEq {
     fn new() -> Self;
 
     // http://stackoverflow.com/q/20342436/15018
@@ -140,12 +132,12 @@ pub trait MessageStatic : Message + Clone + Default + PartialEq /* + ProtobufVal
 
 
 
-pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
+pub fn message_down_cast<'a, M: Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
 
-pub trait ProtobufEnum : Eq + Sized + Copy + 'static /* + ProtobufValue */ {
+pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
     fn value(&self) -> i32;
 
     fn from_i32(v: i32) -> Option<Self>;
@@ -168,42 +160,33 @@ pub trait ProtobufEnum : Eq + Sized + Copy + 'static /* + ProtobufValue */ {
     }
 }
 
-pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+pub fn parse_from<M: Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     let mut r: M = MessageStatic::new();
     try!(r.merge_from(is));
     try!(r.check_initialized());
     Ok(r)
 }
 
-pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Read) -> ProtobufResult<M> {
-    reader.with_coded_input_stream(|is| {
-        parse_from::<M>(is)
-    })
+pub fn parse_from_reader<M: Message + MessageStatic>(reader: &mut Read) -> ProtobufResult<M> {
+    reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
-pub fn parse_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| {
-        parse_from::<M>(is)
-    })
+pub fn parse_from_bytes<M: Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
+    bytes.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
-pub fn parse_length_delimited_from<M : Message + MessageStatic>(is: &mut CodedInputStream)
-        -> ProtobufResult<M>
-{
+pub fn parse_length_delimited_from<M: Message + MessageStatic>(is: &mut CodedInputStream)
+                                                               -> ProtobufResult<M> {
     is.read_message::<M>()
 }
 
-pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(r: &mut Read) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_reader<M: Message + MessageStatic>(r: &mut Read)
+                                                                      -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
-    r.with_coded_input_stream(|is| {
-        is.read_message::<M>()
-    })
+    r.with_coded_input_stream(|is| is.read_message::<M>())
 }
 
-pub fn parse_length_delimited_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| {
-        is.read_message::<M>()
-    })
+pub fn parse_length_delimited_from_bytes<M: Message + MessageStatic>(bytes: &[u8])
+                                                                     -> ProtobufResult<M> {
+    bytes.with_coded_input_stream(|is| is.read_message::<M>())
 }
-
-
