@@ -56,6 +56,8 @@ mod strx;
 mod rust;
 mod cached_size;
 
+mod misc;
+
 mod buf_read_iter;
 mod input_source;
 

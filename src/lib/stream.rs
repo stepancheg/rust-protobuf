@@ -5,6 +5,8 @@ use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
 use std::slice;
 
+use misc::remaining_capacity_as_slice_mut;
+use misc::remove_lifetime_mut;
 use core::Message;
 use core::MessageStatic;
 use core::ProtobufEnum;
@@ -609,7 +611,10 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
             -> ProtobufResult<T>
         where F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>
     {
-        (&mut self as &mut Write).with_coded_output_stream(cb)
+        let mut os = CodedOutputStream::vec(&mut self);
+        let r = cb(&mut os)?;
+        os.flush()?;
+        Ok(r)
     }
 }
 
@@ -663,6 +668,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 enum OutputTarget<'a> {
     Write(&'a mut Write, Vec<u8>),
+    Vec(&'a mut Vec<u8>),
     Bytes,
 }
 
@@ -672,7 +678,7 @@ pub struct CodedOutputStream<'a> {
     // alias to buf from target
     buffer: &'a mut [u8],
     // within buffer
-    position: u32,
+    position: usize,
 }
 
 impl<'a> CodedOutputStream<'a> {
@@ -682,7 +688,7 @@ impl<'a> CodedOutputStream<'a> {
         let mut buffer_storage = Vec::with_capacity(buffer_len);
         unsafe { buffer_storage.set_len(buffer_len); }
 
-        let buffer = unsafe { mem::transmute(&mut buffer_storage as &mut [u8]) };
+        let buffer = unsafe { remove_lifetime_mut(&mut buffer_storage as &mut [u8]) };
 
         CodedOutputStream {
             target: OutputTarget::Write(writer, buffer_storage),
@@ -691,10 +697,25 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    /// `CodedOutputStream` which writes directly to bytes.
+    ///
+    /// Attempt to write more than bytes capacity results in error.
     pub fn bytes(bytes: &'a mut[u8]) -> CodedOutputStream<'a> {
         CodedOutputStream {
             target: OutputTarget::Bytes,
             buffer: bytes,
+            position: 0,
+        }
+    }
+
+    /// `CodedOutputStream` which writes directly to `Vec<u8>`.
+    ///
+    /// Caller should call `flush` at the end to guarantee vec contains
+    /// all written data.
+    pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
+        CodedOutputStream {
+            target: OutputTarget::Vec(vec),
+            buffer: &mut [],
             position: 0,
         }
     }
@@ -704,8 +725,8 @@ impl<'a> CodedOutputStream<'a> {
             OutputTarget::Bytes => {
                 assert_eq!(self.buffer.len() as u64, self.position as u64);
             }
-            OutputTarget::Write(..) => {
-                panic!("must not be called with Writer");
+            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
+                panic!("must not be called with Writer or Vec");
             }
         }
     }
@@ -714,12 +735,22 @@ impl<'a> CodedOutputStream<'a> {
         match self.target {
             OutputTarget::Write(ref mut write, _) => {
                 write.write_all(&self.buffer[0..self.position as usize])?;
+                self.position = 0;
+            }
+            OutputTarget::Vec(ref mut vec) => {
+                unsafe {
+                    let vec_len = vec.len();
+                    assert!(vec_len + self.position <= vec.capacity());
+                    vec.set_len(vec_len + self.position);
+                    vec.reserve(1);
+                    self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
+                    self.position = 0;
+                }
             }
             OutputTarget::Bytes => {
                 panic!("refresh_buffer must not be called on CodedOutputStream create from slice");
             }
         }
-        self.position = 0;
         Ok(())
     }
 
@@ -728,7 +759,8 @@ impl<'a> CodedOutputStream<'a> {
             OutputTarget::Bytes => {
                 Ok(())
             }
-            OutputTarget::Write(..) => {
+            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
+                // TODO: must not reserve additional in Vec
                 self.refresh_buffer()
             }
         }
@@ -744,11 +776,11 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        if bytes.len() <= self.buffer.len() - self.position as usize {
+        if bytes.len() <= self.buffer.len() - self.position {
             let bottom = self.position as usize;
             let top = bottom + (bytes.len() as usize);
             self.buffer[bottom .. top].copy_from_slice(bytes);
-            self.position += bytes.len() as u32;
+            self.position += bytes.len();
             return Ok(());
         }
 
@@ -758,9 +790,16 @@ impl<'a> CodedOutputStream<'a> {
                 unreachable!();
             }
             OutputTarget::Write(ref mut write, _) => {
-                Ok(write.write_all(bytes)?)
+                write.write_all(bytes)?;
+            }
+            OutputTarget::Vec(ref mut vec) => {
+                vec.extend(bytes);
+                unsafe {
+                    self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
+                }
             }
         }
+        Ok(())
     }
 
     pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) -> ProtobufResult<()> {
@@ -1199,6 +1238,20 @@ mod test {
                 gen(&mut os).unwrap();
                 os.check_eof();
             }
+            assert_eq!(encode_hex(&expected_bytes), encode_hex(&r));
+        }
+
+        // write to Vec<u8>
+        {
+            let mut r = Vec::new();
+            r.extend(&[ 11, 22, 33, 44, 55, 66, 77 ]);
+            {
+                let mut os = CodedOutputStream::vec(&mut r);
+                gen(&mut os).unwrap();
+                os.flush().unwrap();
+            }
+
+            r.drain(..7);
             assert_eq!(encode_hex(&expected_bytes), encode_hex(&r));
         }
     }
