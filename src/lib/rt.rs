@@ -225,7 +225,7 @@ pub fn read_repeated_int32_into(wire_type: WireType, is: &mut CodedInputStream, 
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_int32_into(target),
-        WireTypeVarint => { target.push(try!(is.read_int32())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_int32()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -235,7 +235,7 @@ pub fn read_repeated_int64_into(wire_type: WireType, is: &mut CodedInputStream, 
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_int64_into(target),
-        WireTypeVarint => { target.push(try!(is.read_int64())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_int64()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -245,7 +245,7 @@ pub fn read_repeated_uint32_into(wire_type: WireType, is: &mut CodedInputStream,
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_uint32_into(target),
-        WireTypeVarint => { target.push(try!(is.read_uint32())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_uint32()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -255,7 +255,7 @@ pub fn read_repeated_uint64_into(wire_type: WireType, is: &mut CodedInputStream,
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_uint64_into(target),
-        WireTypeVarint => { target.push(try!(is.read_uint64())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_uint64()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -265,7 +265,7 @@ pub fn read_repeated_sint32_into(wire_type: WireType, is: &mut CodedInputStream,
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sint32_into(target),
-        WireTypeVarint => { target.push(try!(is.read_sint32())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_sint32()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -275,7 +275,7 @@ pub fn read_repeated_sint64_into(wire_type: WireType, is: &mut CodedInputStream,
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sint64_into(target),
-        WireTypeVarint => { target.push(try!(is.read_sint64())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_sint64()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -285,7 +285,7 @@ pub fn read_repeated_fixed32_into(wire_type: WireType, is: &mut CodedInputStream
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_fixed32_into(target),
-        WireTypeFixed32 => { target.push(try!(is.read_fixed32())); Ok(()) },
+        WireTypeFixed32 => { target.push(is.read_fixed32()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -295,7 +295,7 @@ pub fn read_repeated_fixed64_into(wire_type: WireType, is: &mut CodedInputStream
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_fixed64_into(target),
-        WireTypeFixed64 => { target.push(try!(is.read_fixed64())); Ok(()) },
+        WireTypeFixed64 => { target.push(is.read_fixed64()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -305,7 +305,7 @@ pub fn read_repeated_sfixed32_into(wire_type: WireType, is: &mut CodedInputStrea
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sfixed32_into(target),
-        WireTypeFixed32 => { target.push(try!(is.read_sfixed32())); Ok(()) },
+        WireTypeFixed32 => { target.push(is.read_sfixed32()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -315,7 +315,7 @@ pub fn read_repeated_sfixed64_into(wire_type: WireType, is: &mut CodedInputStrea
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sfixed64_into(target),
-        WireTypeFixed64 => { target.push(try!(is.read_sfixed64())); Ok(()) },
+        WireTypeFixed64 => { target.push(is.read_sfixed64()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -325,7 +325,7 @@ pub fn read_repeated_double_into(wire_type: WireType, is: &mut CodedInputStream,
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_double_into(target),
-        WireTypeFixed64 => { target.push(try!(is.read_double())); Ok(()) },
+        WireTypeFixed64 => { target.push(is.read_double()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -335,7 +335,7 @@ pub fn read_repeated_float_into(wire_type: WireType, is: &mut CodedInputStream, 
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_float_into(target),
-        WireTypeFixed32 => { target.push(try!(is.read_float())); Ok(()) },
+        WireTypeFixed32 => { target.push(is.read_float()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -345,7 +345,7 @@ pub fn read_repeated_bool_into(wire_type: WireType, is: &mut CodedInputStream, t
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_bool_into(target),
-        WireTypeVarint => { target.push(try!(is.read_bool())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_bool()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -356,7 +356,7 @@ pub fn read_repeated_enum_into<E : ProtobufEnum>(
 {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
-        WireTypeVarint => { target.push(try!(is.read_enum())); Ok(()) },
+        WireTypeVarint => { target.push(is.read_enum()?); Ok(()) },
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -465,11 +465,11 @@ pub fn read_singular_message_into<M : Message + Default>(
 
 fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
     loop {
-        let (_, wire_type) = try!(is.read_tag_unpack());
+        let (_, wire_type) = is.read_tag_unpack()?;
         if wire_type == wire_format::WireTypeEndGroup {
             return Ok(());
         }
-        try!(is.skip_field(wire_type));
+        is.skip_field(wire_type)?;
     }
 }
 
@@ -485,7 +485,7 @@ pub fn read_unknown_or_skip_group(
     match wire_type {
         wire_format::WireTypeStartGroup => skip_group(is),
         _ => {
-            let unknown = try!(is.read_unknown(wire_type));
+            let unknown = is.read_unknown(wire_type)?;
             unknown_fields.add_value(field_number, unknown);
             Ok(())
         }
@@ -543,10 +543,10 @@ pub fn write_map_with_cached_sizes<K, V>(
         let entry_len = key_tag_size + key_len
             + value_tag_size + value_len;
 
-        try!(os.write_tag(field_number, WireType::WireTypeLengthDelimited));
-        try!(os.write_raw_varint32(entry_len));
-        try!(K::write_with_cached_size(1, k, os));
-        try!(V::write_with_cached_size(2, v, os));
+        os.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+        os.write_raw_varint32(entry_len)?;
+        K::write_with_cached_size(1, k, os)?;
+        V::write_with_cached_size(2, v, os)?;
     }
     Ok(())
 }
@@ -567,24 +567,24 @@ pub fn read_map_into<K, V>(
     let mut key = None;
     let mut value = None;
 
-    let len = try!(is.read_raw_varint32());
-    let old_limit = try!(is.push_limit(len as u64));
-    while !try!(is.eof()) {
-        let (field_number, wire_type) = try!(is.read_tag_unpack());
+    let len = is.read_raw_varint32()?;
+    let old_limit = is.push_limit(len as u64)?;
+    while !is.eof()? {
+        let (field_number, wire_type) = is.read_tag_unpack()?;
         match field_number {
             1 => {
                 if wire_type != K::wire_type() {
                     return Err(unexpected_wire_type(wire_type));
                 }
-                key = Some(try!(K::read(is)));
+                key = Some(K::read(is)?);
             },
             2 => {
                 if wire_type != V::wire_type() {
                     return Err(unexpected_wire_type(wire_type));
                 }
-                value = Some(try!(V::read(is)));
+                value = Some(V::read(is)?);
             },
-            _ => try!(is.skip_field(wire_type)),
+            _ => is.skip_field(wire_type)?,
         }
     }
     is.pop_limit(old_limit);

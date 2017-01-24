@@ -43,11 +43,11 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     fn get_cached_size(&self) -> u32;
 
     fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        try!(self.check_initialized());
+        self.check_initialized()?;
 
         // cache sizes
         self.compute_size();
-        try!(self.write_to_with_cached_sizes(os));
+        self.write_to_with_cached_sizes(os)?;
 
         // TODO: assert we've written same number of bytes as computed
 
@@ -56,8 +56,8 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
 
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         let size = self.compute_size();
-        try!(os.write_raw_varint32(size));
-        try!(self.write_to_with_cached_sizes(os));
+        os.write_raw_varint32(size)?;
+        self.write_to_with_cached_sizes(os)?;
 
         // TODO: assert we've written same number of bytes as computed
 
@@ -186,8 +186,8 @@ pub trait ProtobufEnum : Eq + Sized + Copy + 'static /* + ProtobufValue */ {
 
 pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     let mut r: M = MessageStatic::new();
-    try!(r.merge_from(is));
-    try!(r.check_initialized());
+    r.merge_from(is)?;
+    r.check_initialized()?;
     Ok(r)
 }
 

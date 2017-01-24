@@ -408,9 +408,9 @@ impl<M : Message + MessageStatic + ProtobufValue> ProtobufType for ProtobufTypeM
     }
 
     fn write_with_cached_size(field_number: u32, value: &Self::Value, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        try!(os.write_tag(field_number, WireType::WireTypeLengthDelimited));
-        try!(os.write_raw_varint32(value.get_cached_size()));
-        try!(value.write_to_with_cached_sizes(os));
+        os.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+        os.write_raw_varint32(value.get_cached_size())?;
+        value.write_to_with_cached_sizes(os)?;
         Ok(())
     }
 }
