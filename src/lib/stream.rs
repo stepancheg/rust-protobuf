@@ -662,7 +662,9 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 
 
 pub struct CodedOutputStream<'a> {
-    buffer: Box<[u8]>,
+    _buffer_storage: Vec<u8>,
+    // alias to either buffer_box of parameter
+    buffer: &'a mut [u8],
     // within buffer
     position: u32,
     writer: Option<&'a mut (Write + 'a)>,
@@ -671,13 +673,34 @@ pub struct CodedOutputStream<'a> {
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
         let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
-        let mut buffer = Vec::with_capacity(buffer_len);
-        unsafe { buffer.set_len(buffer_len); }
+
+        let mut buffer_storage = Vec::with_capacity(buffer_len);
+        unsafe { buffer_storage.set_len(buffer_len); }
+
+        let buffer = unsafe { mem::transmute(&mut buffer_storage as &mut [u8]) };
+
         CodedOutputStream {
-            buffer: buffer.into_boxed_slice(),
+            _buffer_storage: buffer_storage,
+            buffer: buffer,
             position: 0,
             writer: Some(writer),
         }
+    }
+
+    pub fn bytes(bytes: &'a mut[u8]) -> CodedOutputStream<'a> {
+        CodedOutputStream {
+            _buffer_storage: Vec::new(),
+            buffer: bytes,
+            position: 0,
+            writer: None,
+        }
+    }
+
+    pub fn check_eof(&self) {
+        if let Some(..) = self.writer {
+            panic!("must not be called with Writer");
+        }
+        assert_eq!(self.buffer.len() as u64, self.position as u64);
     }
 
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
@@ -1138,13 +1161,30 @@ mod test {
     fn test_write<F>(expected: &str, mut gen: F)
         where F : FnMut(&mut CodedOutputStream) -> ProtobufResult<()>
     {
-        let mut v = Vec::new();
+        let expected_bytes = decode_hex(expected);
+
+        // write to Write
         {
-            let mut os = CodedOutputStream::new(&mut v as &mut Write);
-            gen(&mut os).unwrap();
-            os.flush().unwrap();
+            let mut v = Vec::new();
+            {
+                let mut os = CodedOutputStream::new(&mut v as &mut Write);
+                gen(&mut os).unwrap();
+                os.flush().unwrap();
+            }
+            assert_eq!(encode_hex(&expected_bytes), encode_hex(&v));
         }
-        assert_eq!(encode_hex(&decode_hex(expected)), encode_hex(&v));
+
+        // write to &[u8]
+        {
+            let mut r = Vec::with_capacity(expected_bytes.len());
+            r.resize(expected_bytes.len(), 0);
+            {
+                let mut os = CodedOutputStream::bytes(&mut r);
+                gen(&mut os).unwrap();
+                os.check_eof();
+            }
+            assert_eq!(encode_hex(&expected_bytes), encode_hex(&r));
+        }
     }
 
     #[test]

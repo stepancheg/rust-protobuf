@@ -90,11 +90,19 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     }
 
     fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
-        // TODO: compute message size and reserve that size
-        let mut v = Vec::new();
-        try!(self.write_to_vec(&mut v));
+        self.check_initialized()?;
+
+        let size = self.compute_size() as usize;
+        let mut v = Vec::with_capacity(size);
+        // skip zerofill
+        unsafe { v.set_len(size); }
+        {
+            let mut os = CodedOutputStream::bytes(&mut v);
+            self.write_to_with_cached_sizes(&mut os)?;
+            os.check_eof();
+        }
         Ok(v)
-    }
+        }
 
     fn write_length_delimited_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| {
