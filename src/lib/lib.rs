@@ -58,7 +58,7 @@ mod cached_size;
 
 mod buf_read_iter;
 mod input_source;
-mod input_source_iter;
+
 
 // so `use protobuf::*` could work in descriptor mod
 mod protobuf {
