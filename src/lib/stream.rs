@@ -785,6 +785,16 @@ impl<'a> CodedOutputStream<'a> {
         }
 
         self.refresh_buffer()?;
+
+        assert!(self.position == 0);
+
+        if self.position + bytes.len() < self.buffer.len() {
+            &mut self.buffer[self.position..self.position + bytes.len()]
+                .copy_from_slice(bytes);
+            self.position += bytes.len();
+            return Ok(())
+        }
+
         match self.target {
             OutputTarget::Bytes => {
                 unreachable!();
