@@ -102,7 +102,7 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
             os.check_eof();
         }
         Ok(v)
-        }
+    }
 
     fn write_length_delimited_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| {
