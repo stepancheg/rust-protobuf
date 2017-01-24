@@ -17,6 +17,8 @@ use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 use error::ProtobufResult;
 use error::ProtobufError;
+use input_source::InputSource;
+use buf_read_iter::BufReadIter;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -114,50 +116,10 @@ pub mod wire_format {
 
 }
 
-enum InputSource<'a> {
-    BufRead(&'a mut BufRead),
-    Read(BufReader<&'a mut Read>),
-    Cursor(io::Cursor<&'a [u8]>),
-}
-
-impl<'a> InputSource<'a> {
-    pub fn read(&mut self, target: &mut [u8]) -> ProtobufResult<()> {
-        let mut target = target;
-        let count = target.len();
-        let mut bread = 0;
-        while bread != count {
-            let res = match self {
-                &mut InputSource::BufRead(ref mut br) => br.read(&mut target[bread..]),
-                &mut InputSource::Read(ref mut br) => br.read(&mut target[bread..]),
-                &mut InputSource::Cursor(ref mut c) => c.read(&mut target[bread..]),
-            };
-            match try!(res) {
-                0 => {
-                    return Err(ProtobufError::IoError(io::Error::new(
-                        io::ErrorKind::Other, "unexpected EOF")));
-                },
-                x => {
-                    bread += x;
-                },
-            }
-        }
-        Ok(())
-    }
-
-    pub fn eof(&mut self) -> ProtobufResult<bool> {
-        let res = match self {
-            &mut InputSource::BufRead(ref mut br) => br.fill_buf(),
-            &mut InputSource::Read(ref mut br) => br.fill_buf(),
-            &mut InputSource::Cursor(ref mut c) => c.fill_buf(),
-        };
-        Ok(try!(res).len() == 0)
-    }
-}
-
 const NO_LIMIT: u64 = std::u64::MAX;
 
 pub struct CodedInputStream<'a> {
-    source: InputSource<'a>,
+    source: BufReadIter<InputSource<'a>>,
     current_limit: u64,
     pos: u64,
 }
@@ -165,8 +127,8 @@ pub struct CodedInputStream<'a> {
 impl<'a> CodedInputStream<'a> {
     pub fn new(reader: &'a mut Read) -> CodedInputStream<'a> {
         CodedInputStream {
-            source: InputSource::Read(BufReader::with_capacity(
-                INPUT_STREAM_BUFFER_SIZE, reader)),
+            source: BufReadIter::new(InputSource::Read(BufReader::with_capacity(
+                INPUT_STREAM_BUFFER_SIZE, reader))),
             current_limit: NO_LIMIT,
             pos: 0,
         }
@@ -174,7 +136,7 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn from_buffered_reader(buffered_reader: &'a mut BufRead) -> CodedInputStream<'a> {
         CodedInputStream {
-            source: InputSource::BufRead(buffered_reader),
+            source: BufReadIter::new(InputSource::BufRead(buffered_reader)),
             current_limit: NO_LIMIT,
             pos: 0,
         }
@@ -183,7 +145,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
         let len = bytes.len();
         CodedInputStream {
-            source: InputSource::Cursor(io::Cursor::new(bytes)),
+            source: BufReadIter::new(InputSource::Cursor(io::Cursor::new(bytes))),
             current_limit: len as u64,
             pos: 0,
         }
@@ -197,24 +159,24 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
-        assert!(buf.len() < NO_LIMIT as usize);
-        let new_pos = match self.pos.checked_add(buf.len() as u64) {
-            None | Some(NO_LIMIT) =>
-                return Err(ProtobufError::WireError(format!("u64 overflow"))),
-            Some(new_pos) => new_pos,
-        };
-        try!(self.source.read(buf));
-        self.pos = new_pos;
+        if self.current_limit != NO_LIMIT {
+            if buf.len() as u64 > self.bytes_until_limit() {
+                return Err(ProtobufError::WireError(format!("unexpected EOF")));
+            }
+        }
+
+        self.source.read_exact(buf)?;
+        self.pos += buf.len() as u64;
         Ok(())
     }
 
     pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
-        let mut r = 0u8;
-        let bytes: &mut [u8] = unsafe {
-            let p: *mut u8 = mem::transmute(&mut r);
-            slice::from_raw_parts_mut(p, mem::size_of::<u8>())
-        };
-        try!(self.read(bytes));
+        if self.pos == self.current_limit {
+            return Err(ProtobufError::WireError(format!("unexpected EOF")));
+        }
+
+        let r = self.source.read_byte()?;
+        self.pos += 1;
         Ok(r)
     }
 
@@ -238,7 +200,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn eof(&mut self) -> ProtobufResult<bool> {
         assert!(self.pos <= self.current_limit);
         if self.current_limit == NO_LIMIT {
-            self.source.eof()
+            Ok(self.source.eof()?)
         } else {
             Ok(self.pos == self.current_limit)
         }
