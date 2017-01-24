@@ -661,13 +661,18 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 }
 
 
+enum OutputTarget<'a> {
+    Write(&'a mut Write, Vec<u8>),
+    Bytes,
+}
+
+
 pub struct CodedOutputStream<'a> {
-    _buffer_storage: Vec<u8>,
-    // alias to either buffer_box of parameter
+    target: OutputTarget<'a>,
+    // alias to buf from target
     buffer: &'a mut [u8],
     // within buffer
     position: u32,
-    writer: Option<&'a mut (Write + 'a)>,
 }
 
 impl<'a> CodedOutputStream<'a> {
@@ -680,47 +685,53 @@ impl<'a> CodedOutputStream<'a> {
         let buffer = unsafe { mem::transmute(&mut buffer_storage as &mut [u8]) };
 
         CodedOutputStream {
-            _buffer_storage: buffer_storage,
+            target: OutputTarget::Write(writer, buffer_storage),
             buffer: buffer,
             position: 0,
-            writer: Some(writer),
         }
     }
 
     pub fn bytes(bytes: &'a mut[u8]) -> CodedOutputStream<'a> {
         CodedOutputStream {
-            _buffer_storage: Vec::new(),
+            target: OutputTarget::Bytes,
             buffer: bytes,
             position: 0,
-            writer: None,
         }
     }
 
     pub fn check_eof(&self) {
-        if let Some(..) = self.writer {
-            panic!("must not be called with Writer");
+        match self.target {
+            OutputTarget::Bytes => {
+                assert_eq!(self.buffer.len() as u64, self.position as u64);
+            }
+            OutputTarget::Write(..) => {
+                panic!("must not be called with Writer");
+            }
         }
-        assert_eq!(self.buffer.len() as u64, self.position as u64);
     }
 
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
-        match self.writer {
-            Some(ref mut writer) => {
-                writer.write_all(&self.buffer[0..self.position as usize])?;
-            },
-            None => {
-                panic!("refresh_buffer must not be called on CodedOutputStream without Write");
+        match self.target {
+            OutputTarget::Write(ref mut write, _) => {
+                write.write_all(&self.buffer[0..self.position as usize])?;
             }
-        };
+            OutputTarget::Bytes => {
+                panic!("refresh_buffer must not be called on CodedOutputStream create from slice");
+            }
+        }
         self.position = 0;
         Ok(())
     }
 
     pub fn flush(&mut self) -> ProtobufResult<()> {
-        if self.writer.is_some() {
-            self.refresh_buffer()?;
+        match self.target {
+            OutputTarget::Bytes => {
+                Ok(())
+            }
+            OutputTarget::Write(..) => {
+                self.refresh_buffer()
+            }
         }
-        Ok(())
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
@@ -742,11 +753,14 @@ impl<'a> CodedOutputStream<'a> {
         }
 
         self.refresh_buffer()?;
-        match self.writer {
-            Some(ref mut writer) => writer.write_all(bytes)?,
-            None => panic!()
-        };
-        Ok(())
+        match self.target {
+            OutputTarget::Bytes => {
+                unreachable!();
+            }
+            OutputTarget::Write(ref mut write, _) => {
+                Ok(write.write_all(bytes)?)
+            }
+        }
     }
 
     pub fn write_tag(&mut self, field_number: u32, wire_type: wire_format::WireType) -> ProtobufResult<()> {
