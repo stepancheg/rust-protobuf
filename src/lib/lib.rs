@@ -55,6 +55,7 @@ mod unknown;
 mod strx;
 mod rust;
 mod cached_size;
+mod varint;
 
 mod misc;
 

@@ -5,6 +5,7 @@ use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
 use std::slice;
 
+use varint;
 use misc::remaining_capacity_as_slice_mut;
 use misc::remove_lifetime_mut;
 use core::Message;
@@ -817,19 +818,31 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_varint32(&mut self, value: u32) -> ProtobufResult<()> {
-        self.write_raw_varint64(value as u64)
+        if self.buffer.len() - self.position >= 5 {
+            // fast path
+            let len = varint::encode_varint32(value, &mut self.buffer[self.position..]);
+            self.position += len;
+            Ok(())
+        } else {
+            // slow path
+            let mut buf = &mut [0u8; 5];
+            let len = varint::encode_varint32(value, buf);
+            self.write_raw_bytes(&buf[..len])
+        }
     }
 
-    pub fn write_raw_varint64(&mut self, mut value: u64) -> ProtobufResult<()> {
-        let mut buf = &mut [0u8; 10];
-        let mut i = 0;
-        while (value & !0x7F) > 0 {
-            buf[i] = ((value & 0x7F) | 0x80) as u8;
-            value >>= 7;
-            i += 1;
+    pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
+        if self.buffer.len() - self.position >= 10 {
+            // fast path
+            let len = varint::encode_varint64(value, &mut self.buffer[self.position..]);
+            self.position += len;
+            Ok(())
+        } else {
+            // slow path
+            let mut buf = &mut [0u8; 10];
+            let len = varint::encode_varint64(value, buf);
+            self.write_raw_bytes(&buf[..len])
         }
-        buf[i] = value as u8;
-        self.write_raw_bytes(&buf[..i+1])
     }
 
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
