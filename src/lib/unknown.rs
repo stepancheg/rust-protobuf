@@ -170,8 +170,8 @@ impl UnknownFields {
 
 impl Clear for UnknownFields {
     fn clear(&mut self) {
-        if self.fields.is_some() {
-            self.fields.as_mut().unwrap().clear();
+        if let Some(ref mut fields) = self.fields {
+            fields.clear();
         }
     }
 }
@@ -193,10 +193,9 @@ impl<'s> Iterator for UnknownFieldsIter<'s> {
     type Item = (u32, &'s UnknownValues);
 
     fn next(&mut self) -> Option<(u32, &'s UnknownValues)> {
-        if self.entries.is_none() {
-            None
-        } else {
-            self.entries.as_mut().unwrap().next().map(|(&number, values)| (number, values))
+        match self.entries {
+            Some(ref mut entries) => entries.next().map(|(&number, values)| (number, values)),
+            None => None,
         }
     }
 }
