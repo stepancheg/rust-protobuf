@@ -820,18 +820,16 @@ impl<'a> CodedOutputStream<'a> {
         self.write_raw_varint64(value as u64)
     }
 
-    pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
-        let mut temp = value;
-        loop {
-            if (temp & !0x7Fu64) == 0 {
-                self.write_raw_byte(temp as u8)?;
-                break;
-            } else {
-                self.write_raw_byte(((temp & 0x7F) | 0x80) as u8)?;
-                temp >>= 7;
-            }
+    pub fn write_raw_varint64(&mut self, mut value: u64) -> ProtobufResult<()> {
+        let mut buf = &mut [0u8; 10];
+        let mut i = 0;
+        while (value & !0x7F) > 0 {
+            buf[i] = ((value & 0x7F) | 0x80) as u8;
+            value >>= 7;
+            i += 1;
         }
-        Ok(())
+        buf[i] = value as u8;
+        self.write_raw_bytes(&buf[..i+1])
     }
 
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
