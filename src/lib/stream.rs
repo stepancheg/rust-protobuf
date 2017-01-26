@@ -846,23 +846,17 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
-        self.write_raw_byte(((value) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 8) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 16) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 24) & 0xFF) as u8)?;
-        Ok(())
+        let bytes = unsafe {
+            mem::transmute::<_, [u8; 4]>(value.to_le())
+        };
+        self.write_raw_bytes(&bytes)
     }
 
     pub fn write_raw_little_endian64(&mut self, value: u64) -> ProtobufResult<()> {
-        self.write_raw_byte(((value) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 8) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 16) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 24) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 32) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 40) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 48) & 0xFF) as u8)?;
-        self.write_raw_byte(((value >> 56) & 0xFF) as u8)?;
-        Ok(())
+        let bytes = unsafe {
+            mem::transmute::<_, [u8; 8]>(value.to_le())
+        };
+        self.write_raw_bytes(&bytes)
     }
 
     pub fn write_float_no_tag(&mut self, value: f32) -> ProtobufResult<()> {
