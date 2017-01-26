@@ -18,6 +18,9 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
+use std::io::Write;
+
+use protobuf::CodedOutputStream;
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
@@ -206,7 +209,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         for v in &self.file_to_generate {
             os.write_string(1, &v)?;
         };
@@ -453,7 +456,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.error.as_ref() {
             os.write_string(1, &v)?;
         };
@@ -752,7 +755,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         };

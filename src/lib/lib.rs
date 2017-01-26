@@ -1,5 +1,7 @@
 #![crate_type = "lib"]
 
+extern crate byteorder;
+
 pub use unknown::UnknownFields;
 pub use unknown::UnknownFieldsIter;
 pub use unknown::UnknownValue;
@@ -55,8 +57,6 @@ mod unknown;
 mod strx;
 mod rust;
 mod cached_size;
-
-mod misc;
 
 mod buf_read_iter;
 mod input_source;

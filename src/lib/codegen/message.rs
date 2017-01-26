@@ -2022,7 +2022,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
-        w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
+        w.def_fn("write_to_with_cached_sizes(&self, mut os: &mut Write) -> ::protobuf::ProtobufResult<()>", |w| {
             // To have access to its methods but not polute the name space.
             for f in self.fields_except_oneof_and_group() {
                 f.write_message_write_field(w);

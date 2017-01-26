@@ -15,7 +15,8 @@ use self::enums::*;
 
 
 fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
-    let fdp_bytes = file.write_to_bytes().unwrap();
+    let mut fdp_bytes = Vec::new();
+    file.write_to(&mut fdp_bytes).unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
     for groups in fdp_bytes.iter().paginate(16) {
         let fdp_bytes_str = groups.iter()
@@ -63,6 +64,9 @@ fn gen_file(
         w.write_generated();
 
         w.write_line("");
+        w.write_line("use std::io::Write;");
+        w.write_line("");
+        w.write_line("use protobuf::CodedOutputStream;");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
 
