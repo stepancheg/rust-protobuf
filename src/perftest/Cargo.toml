@@ -9,7 +9,8 @@ path = "../.."
 [dependencies.time]
 git = "http://github.com/rust-lang/time"
 
-[dependencies.rand]
+[dependencies]
+rand = "0.*"
 
 [[bin]]
 
