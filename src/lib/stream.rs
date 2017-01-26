@@ -157,8 +157,11 @@ impl<'a> CodedInputStream<'a> {
     pub fn pos(&self) -> u64 { self.pos }
 
     pub fn bytes_until_limit(&self) -> u64 {
-        assert!(self.current_limit != NO_LIMIT);
-        self.current_limit - self.pos
+        if self.current_limit == NO_LIMIT {
+            NO_LIMIT
+        } else {
+            self.current_limit - self.pos
+        }
     }
 
     pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
@@ -218,18 +221,42 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
-        let mut r: u64 = 0;
-        let mut i = 0;
-        loop {
-            if i == 10 {
-                return Err(ProtobufError::WireError(format!("invalid varint")));
+        if self.bytes_until_limit() >= 10 && self.source.remaining().len() >= 10 {
+            // fast path
+            let mut r: u64 = 0;
+            let mut i = 0;
+            {
+                let rem = self.source.remaining();
+                loop {
+                    if i == 10 {
+                        return Err(ProtobufError::WireError(format!("invalid varint")));
+                    }
+                    let b = rem[i];
+                    // TODO: may overflow if i == 9
+                    r = r | (((b & 0x7f) as u64) << (i * 7));
+                    i += 1;
+                    if b < 0x80 {
+                        break;
+                    }
+                }
             }
-            let b = self.read_raw_byte()?;
-            // TODO: may overflow if i == 9
-            r = r | (((b & 0x7f) as u64) << (i * 7));
-            i += 1;
-            if b < 0x80 {
-                return Ok(r);
+            self.source.consume(i);
+            self.pos += i as u64;
+            Ok(r)
+        } else {
+            let mut r: u64 = 0;
+            let mut i = 0;
+            loop {
+                if i == 10 {
+                    return Err(ProtobufError::WireError(format!("invalid varint")));
+                }
+                let b = self.read_raw_byte()?;
+                // TODO: may overflow if i == 9
+                r = r | (((b & 0x7f) as u64) << (i * 7));
+                i += 1;
+                if b < 0x80 {
+                    return Ok(r);
+                }
             }
         }
     }

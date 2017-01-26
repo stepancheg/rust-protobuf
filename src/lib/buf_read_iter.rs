@@ -34,6 +34,11 @@ impl<R : BufRead> BufReadIter<R> {
     }
 
     #[inline]
+    pub fn remaining(&self) -> &[u8] {
+        &self.buf[self.pos..]
+    }
+
+    #[inline]
     pub fn eof(&mut self) -> io::Result<bool> {
         self.fill_buf()?;
         Ok(self.buf.is_empty())
