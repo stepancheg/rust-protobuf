@@ -65,6 +65,13 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
         Ok(())
     }
 
+    fn write_length_delimited_to_vec(&self, vec: &mut Vec<u8>) -> ProtobufResult<()> {
+        let mut os = CodedOutputStream::vec(vec);
+        self.write_length_delimited_to(&mut os)?;
+        os.flush()?;
+        Ok(())
+    }
+
     fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         let mut is = CodedInputStream::from_bytes(bytes);
         self.merge_from(&mut is)
