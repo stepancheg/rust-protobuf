@@ -38,6 +38,10 @@ impl<R : BufRead> BufReadIter<R> {
         &self.buf[self.pos..]
     }
 
+    fn remaining_len(&self) -> usize {
+        self.buf.len() - self.pos
+    }
+
     #[inline]
     pub fn eof(&mut self) -> io::Result<bool> {
         self.fill_buf()?;
@@ -74,6 +78,23 @@ impl<R : BufRead> Read for BufReadIter<R> {
         &mut buf[..len].copy_from_slice(&rem[..len]);
         self.pos += len;
         Ok((len))
+    }
+
+    fn read_exact(&mut self, mut buf: &mut [u8]) -> io::Result<()> {
+        if self.remaining_len() >= buf.len() {
+            let buf_len = buf.len();
+            buf.copy_from_slice(&self.buf[self.pos .. self.pos + buf_len]);
+            self.pos += buf_len;
+            return Ok(());
+        }
+
+        if self.pos != 0 {
+            self.buf_read.consume(self.pos);
+            self.pos = 0;
+            self.buf = &[];
+        }
+
+        self.buf_read.read_exact(buf)
     }
 }
 
