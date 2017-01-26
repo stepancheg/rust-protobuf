@@ -1219,10 +1219,20 @@ impl<'a> FieldGen<'a> {
                     cb(var, &v_type, w);
                 });
             }
-            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
-                w.if_stmt(format!("{} != {}", self.self_field(), self.full_storage_type().default_value()), |w| {
-                    cb(&self.self_field(), &self.full_storage_type(), w);
-                });
+            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, ref elem }) => {
+                match *elem {
+                    GenProtobufType::Primitive(FieldDescriptorProto_Type::TYPE_STRING) |
+                    GenProtobufType::Primitive(FieldDescriptorProto_Type::TYPE_BYTES)  => {
+                        w.if_stmt(format!("!{}.is_empty()", self.self_field()), |w| {
+                            cb(&self.self_field(), &self.full_storage_type(), w);
+                        });
+                    }
+                    _ => {
+                        w.if_stmt(format!("{} != {}", self.self_field(), self.full_storage_type().default_value()), |w| {
+                            cb(&self.self_field(), &self.full_storage_type(), w);
+                        });
+                    }
+                }
             }
             FieldKind::Oneof(..) => unreachable!(),
         }
