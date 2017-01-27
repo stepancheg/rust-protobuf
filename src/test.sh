@@ -31,9 +31,9 @@ rm -f test/*/*_pb.rs
     done
 )
 
-protoc --rust_out test/v2 -I test/v2 test/v2/*.proto
+protoc -Iproto --rust_out test/v2 -I test/v2 test/v2/*.proto
 if $HAS_PROTO3; then
-    protoc --rust_out test/v3 -I test/v3 test/v3/*.proto
+    protoc -Iproto --rust_out test/v3 -I test/v3 test/v3/*.proto
 else
     # Because `#[cfg(nonexistent)]` still requires module files to exist
     # https://github.com/rust-lang/rust/pull/36482

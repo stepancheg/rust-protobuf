@@ -41,6 +41,17 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     });
 }
 
+fn write_extensions(file: &FileDescriptorProto, w: &mut CodeWriter) {
+    if file.get_extension().is_empty() {
+        return;
+    }
+
+    w.write_line("");
+    w.pub_mod("exts", |w| {
+        w.write_line("// TODO");
+    });
+}
+
 fn gen_file(
     file: &FileDescriptorProto,
     _files_map: &HashMap<&str, &FileDescriptorProto>,
@@ -50,7 +61,10 @@ fn gen_file(
 {
     let scope = FileScope { file_descriptor: file } .to_scope();
 
-    if scope.get_messages().is_empty() && scope.get_enums().is_empty() {
+    if scope.get_messages().is_empty()
+        && scope.get_enums().is_empty()
+        && file.get_extension().is_empty()
+    {
         // protoc generates empty file descriptors for directories: skip them
         return None;
     }
@@ -82,6 +96,8 @@ fn gen_file(
             w.write_line("");
             write_file_descriptor_data(file, &mut w);
         }
+
+        write_extensions(file, &mut w);
     }
 
     Some(compiler_plugin::GenResult {

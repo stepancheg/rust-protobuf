@@ -221,6 +221,18 @@ impl<'a> CodeWriter<'a> {
         self.fn_block(false, sig, cb);
     }
 
+    pub fn def_mod<F>(&mut self, name: &str, cb: F)
+        where F : Fn(&mut CodeWriter)
+    {
+        self.expr_block(&format!("mod {}", name), cb)
+    }
+
+    pub fn pub_mod<F>(&mut self, name: &str, cb: F)
+        where F : Fn(&mut CodeWriter)
+    {
+        self.expr_block(&format!("pub mod {}", name), cb)
+    }
+
     pub fn while_block<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut CodeWriter)
     {

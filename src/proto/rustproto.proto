@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+import "google/protobuf/descriptor.proto";
+
+package rustproto;
+
+extend google.protobuf.FileOptions {
+    optional bool expose_oneof = 17001;
+}
