@@ -36,6 +36,8 @@ mod test_enum_values;
 mod test_enum_alias;
 mod test_sync;
 
+mod struct_pb;
+
 // Taken from rust-protobuf 1.0.24 to make sure
 // that old generated code it is still compatible with latest rust-protobuf.
 mod test_basic_pb_1_0_24;
