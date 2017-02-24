@@ -53,14 +53,21 @@ fn test_read_packed_expect_unpacked() {
 }
 
 #[test]
+fn test_end_by_negative_int() {
+    // added following https://github.com/stepancheg/rust-protobuf/pull/209
+    let mut test = Test1::new();
+    test.set_a(-1);
+    test_serialize_deserialize("08 ff ff ff ff ff ff ff ff ff 01", &test);
+}
+
+#[test]
 fn test_empty() {
     test_serialize_deserialize("", &TestEmpty::new());
 }
 
 #[test]
-#[should_panic]
 fn test_read_junk() {
-    parse_from_bytes::<Test1>(&decode_hex("00")).unwrap();
+    assert!(parse_from_bytes::<Test1>(&decode_hex("00")).is_err());
 }
 
 #[test]

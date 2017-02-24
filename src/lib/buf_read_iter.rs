@@ -114,7 +114,7 @@ impl<R : BufRead> BufRead for BufReadIter<R> {
 
     #[inline]
     fn consume(&mut self, amt: usize) {
-        assert!(amt < self.buf.len() - self.pos);
+        assert!(amt <= self.buf.len() - self.pos);
         self.pos += amt;
     }
 }
