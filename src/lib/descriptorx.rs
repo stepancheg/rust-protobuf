@@ -448,16 +448,6 @@ pub struct OneofVariantWithContext<'a> {
     pub field: &'a FieldDescriptorProto,
 }
 
-impl<'a> OneofVariantWithContext<'a> {
-    pub fn field_name(&self) -> &str {
-        match self.field.get_name() {
-            "type" => "field_type",
-            "box" => "field_box",
-            x => x,
-        }
-    }
-}
-
 
 #[derive(Clone)]
 pub struct OneofWithContext<'a> {

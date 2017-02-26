@@ -1913,9 +1913,9 @@ impl<'a> OneofGen<'a> {
         self.oneof.variants().into_iter()
             .map(|v| {
                 let field = self.message.fields.iter()
-                    .filter(|f| f.proto_field.get_name() == v.field_name())
+                    .filter(|f| f.proto_field.get_name() == v.field.get_name())
                     .next()
-                    .expect(&format!("field not found by name: {}", v.field_name()));
+                    .expect(&format!("field not found by name: {}", v.field.get_name()));
                 OneofVariantGen::parse(self, v, field)
             })
             .collect()

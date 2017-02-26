@@ -12,3 +12,5 @@ mod test_enum_alias_pb;
 mod test_enum_alias;
 
 mod test_ident_pb;
+
+mod test_issue_190_pb;
