@@ -34,10 +34,11 @@ rm -f test/*/*_pb.rs
 protoc -Iproto --rust_out test/v2 -I test/v2 test/v2/*.proto
 if $HAS_PROTO3; then
     protoc -Iproto --rust_out test/v3 -I test/v3 test/v3/*.proto
+    protoc -Iproto --rust_out test/google/protobuf -I test test/google/protobuf/*.proto
 else
     # Because `#[cfg(nonexistent)]` still requires module files to exist
     # https://github.com/rust-lang/rust/pull/36482
-    for f in test/v3/*.proto; do
+    for f in test/v3/*.proto test/google/protobuf/*.proto; do
         f=${f%.proto}
         (
             echo '// generated'

@@ -1,3 +1,4 @@
+use std;
 use std::fmt;
 use std::fmt::Write;
 use core::Message;
@@ -5,8 +6,7 @@ use reflect::ReflectFieldRef;
 use reflect::ProtobufValueRef;
 
 
-fn print_bytes_to(bytes: &[u8], buf: &mut String) {
-    buf.push('"');
+fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     for &c in bytes {
         match c {
             b'\n' => buf.push_str(r"\n"),
@@ -23,12 +23,70 @@ fn print_bytes_to(bytes: &[u8], buf: &mut String) {
             }
         }
     }
+}
+
+fn quote_escape_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push('"');
+    quote_bytes_to(bytes, buf);
+    buf.push('"');
+}
+
+pub fn quote_escape_bytes(bytes: &[u8]) -> String {
+    let mut r = String::new();
+    quote_escape_bytes_to(bytes, &mut r);
+    r
+}
+
+pub fn unescape_string(string: &str) -> Vec<u8> {
+    fn parse_if_digit(chars: &mut std::str::Chars) -> u8 {
+        let mut copy = chars.clone();
+        let f = match copy.next() {
+            None => return 0,
+            Some(f) => f,
+        };
+        let d = match f {
+            '0' ... '9' => (f as u8 - b'0'),
+            _ => return 0,
+        };
+        *chars = copy;
+        d
+    }
+
+    fn parse_escape_rem(chars: &mut std::str::Chars) -> u8 {
+        let n = chars.next().unwrap();
+        let d1 = match n {
+            'n' => return b'\n',
+            'r' => return b'\r',
+            't' => return b'\t',
+            '"' => return b'"',
+            '0' ... '9' => (n as u8 - b'0'),
+            c => return c as u8, // TODO: validate ASCII
+        };
+        let d2 = parse_if_digit(chars);
+        let d3 = parse_if_digit(chars);
+        return (d1 * 64 + d2 * 8 + d3) as u8;
+    }
+
+    let mut chars = string.chars();
+    let mut r = Vec::new();
+
+    loop {
+        let f = match chars.next() {
+            None => return r,
+            Some(f) => f,
+        };
+
+        if f == '\\' {
+            r.push(parse_escape_rem(&mut chars));
+        } else {
+            r.push(f as u8); // TODO: escape UTF-8
+        }
+    }
 }
 
 fn print_str_to(s: &str, buf: &mut String) {
     // TODO: keep printable Unicode
-    print_bytes_to(s.as_bytes(), buf);
+    quote_escape_bytes_to(s.as_bytes(), buf);
 }
 
 fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
@@ -81,7 +139,7 @@ fn print_field(buf: &mut String, pretty: bool, indent: usize, first: &mut bool,
         }
         ProtobufValueRef::Bytes(b) => {
             buf.push_str(": ");
-            print_bytes_to(b, buf);
+            quote_escape_bytes_to(b, buf);
         },
         ProtobufValueRef::I32(v) => {
             write!(buf, ": {}", v).unwrap();
@@ -178,15 +236,30 @@ mod test {
 
     fn escape(data: &[u8]) -> String {
         let mut s = String::with_capacity(data.len() * 4);
-        super::print_bytes_to(data, &mut s);
+        super::quote_bytes_to(data, &mut s);
         s
+    }
+
+    fn test_escape_unescape(text: &str, escaped: &str) {
+        assert_eq!(text.as_bytes(), &super::unescape_string(escaped)[..]);
+        assert_eq!(escaped, &escape(text.as_bytes())[..]);
     }
 
     #[test]
     fn test_print_to_bytes() {
-        assert_eq!("\"ab\"", escape(b"ab"));
-        assert_eq!("\"a\\\\023\"", escape(b"a\\023"));
-        assert_eq!("\"a\\r\\n\\t '\\\"\\\\\"", escape(b"a\r\n\t '\"\\"));
-        assert_eq!("\"\\344\\275\\240\\345\\245\\275\"", escape("你好".as_bytes()));
+        assert_eq!("ab", escape(b"ab"));
+        assert_eq!("a\\\\023", escape(b"a\\023"));
+        assert_eq!("a\\r\\n\\t '\\\"\\\\", escape(b"a\r\n\t '\"\\"));
+        assert_eq!("\\344\\275\\240\\345\\245\\275", escape("你好".as_bytes()));
+    }
+
+    #[test]
+    fn test_unescape_string() {
+        test_escape_unescape("", "");
+        test_escape_unescape("aa", "aa");
+        test_escape_unescape("\n", "\\n");
+        test_escape_unescape("\r", "\\r");
+        test_escape_unescape("\t", "\\t");
+        test_escape_unescape("你好", "\\344\\275\\240\\345\\245\\275");
     }
 }

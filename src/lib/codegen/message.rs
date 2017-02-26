@@ -7,11 +7,9 @@ use rt;
 use code_writer::*;
 
 use super::enums::*;
+use ::rust;
+use ::text_format;
 
-
-fn escape_default(s: &str) -> String {
-    s.chars().flat_map(|c| c.escape_default()).collect()
-}
 
 // Represent subset of rust types used in generated code
 #[derive(Debug,Clone,PartialEq,Eq)]
@@ -950,9 +948,9 @@ impl<'a> FieldGen<'a> {
                 // For booleans, "true" or "false"
                 FieldDescriptorProto_Type::TYPE_BOOL     => format!("{}", proto_default),
                 // For strings, contains the default text contents (not escaped in any way)
-                FieldDescriptorProto_Type::TYPE_STRING   => format!("\"{}\"", escape_default(proto_default)),
+                FieldDescriptorProto_Type::TYPE_STRING   => rust::quote_escape_str(proto_default),
                 // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
-                FieldDescriptorProto_Type::TYPE_BYTES    => format!("b\"{}\"", proto_default),
+                FieldDescriptorProto_Type::TYPE_BYTES    => rust::quote_escape_bytes(&text_format::unescape_string(proto_default)),
                 // TODO: resolve outer message prefix
                 FieldDescriptorProto_Type::TYPE_GROUP    |
                 FieldDescriptorProto_Type::TYPE_ENUM     => unreachable!(),
