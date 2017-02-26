@@ -36,6 +36,9 @@ mod test_enum_values;
 mod test_enum_alias;
 mod test_sync;
 
+mod test_oneof_default_value_pb;
+mod test_oneof_default_value;
+
 mod struct_pb;
 
 // Taken from rust-protobuf 1.0.24 to make sure

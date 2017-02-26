@@ -11,6 +11,7 @@ use ::rust;
 use ::text_format;
 
 
+// TODO: move into separate file
 // Represent subset of rust types used in generated code
 #[derive(Debug,Clone,PartialEq,Eq)]
 pub enum RustType {
@@ -66,6 +67,10 @@ impl fmt::Display for RustType {
 }
 
 impl RustType {
+    fn u8() -> RustType {
+        RustType::Int(false, 8)
+    }
+
     fn is_primitive(&self) -> bool {
         match *self {
             RustType::Int(..)      |
@@ -150,6 +155,13 @@ impl RustType {
         }
     }
 
+    fn default_value_typed(self) -> RustValueTyped {
+        RustValueTyped {
+            value: self.default_value(),
+            rust_type: self,
+        }
+    }
+
     /// Emit a code to clear a variable `v`
     fn clear(&self, v: &str) -> String {
         match *self {
@@ -187,6 +199,14 @@ impl RustType {
                     format!("&{}", v),
             (&RustType::Ref(ref t1), &RustType::Ref(ref t2)) if t1.is_string() && t2.is_str() =>
                     format!("&{}", v),
+            (&RustType::Ref(ref t1), &RustType::String)
+                if match **t1 { RustType::Str => true, _ => false } =>
+                    format!("{}.to_owned()", v),
+            (&RustType::Ref(ref t1), &RustType::Vec(ref t2))
+                if match (&**t1, &**t2) {
+                    (&RustType::Slice(ref x), ref y) => **x == **y,
+                    _ => false
+                } => format!("{}.to_vec()", v),
             (&RustType::Vec(ref x), &RustType::Ref(ref t))
                 if match **t { RustType::Slice(ref y) => x == y, _ => false } =>
                     format!("&{}", v),
@@ -233,6 +253,24 @@ impl RustType {
         }
     }
 }
+
+
+pub struct RustValueTyped {
+    pub value: String,
+    pub rust_type: RustType,
+}
+
+impl RustValueTyped {
+    pub fn into_type(&self, target: RustType) -> RustValueTyped {
+        let target_value = self.rust_type.into_target(&target, &self.value);
+        RustValueTyped {
+            value: target_value,
+            rust_type: target,
+        }
+    }
+}
+
+
 
 
 // rust type for protobuf base type
@@ -780,7 +818,11 @@ impl<'a> FieldGen<'a> {
 
     // type of `v` in `for v in field`
     fn full_storage_iter_elem_type(&self) -> RustType {
-        self.full_storage_type().iter_elem_type()
+        if let FieldKind::Oneof(ref oneof) = self.kind {
+            oneof.elem.rust_type()
+        } else {
+            self.full_storage_type().iter_elem_type()
+        }
     }
 
     // suffix `xxx` as in `os.write_xxx_no_tag(..)`
@@ -962,6 +1004,25 @@ impl<'a> FieldGen<'a> {
         }
     }
 
+    fn default_value_from_proto_typed(&self) -> Option<RustValueTyped> {
+        self.default_value_from_proto()
+            .map(|v| {
+                let default_value_type = match self.proto_type {
+                    FieldDescriptorProto_Type::TYPE_STRING => {
+                        RustType::Ref(Box::new(RustType::Str))
+                    }
+                    FieldDescriptorProto_Type::TYPE_BYTES => {
+                        RustType::Ref(Box::new(RustType::Slice(Box::new(RustType::u8()))))
+                    }
+                    _ => {
+                        self.full_storage_iter_elem_type()
+                    },
+                };
+
+                RustValueTyped { value: v, rust_type: default_value_type }
+            })
+    }
+
     // default value to be returned from fn get_xxx
     fn get_xxx_default_value_rust(&self) -> String {
         assert!(self.is_singular() || self.is_oneof());
@@ -969,9 +1030,9 @@ impl<'a> FieldGen<'a> {
     }
 
     // default to be assigned to field
-    fn element_default_value_rust(&self) -> String {
+    fn element_default_value_rust(&self) -> RustValueTyped {
         assert!(self.is_singular() || self.is_oneof(), "field is not singular: {}", self.reconstruct_def());
-        self.default_value_from_proto().unwrap_or_else(|| self.elem().rust_type().default_value())
+        self.default_value_from_proto_typed().unwrap_or_else(|| self.elem().rust_type().default_value_typed())
     }
 
     fn reconstruct_def(&self) -> String {
@@ -1307,14 +1368,14 @@ impl<'a> FieldGen<'a> {
                 format!("{} = ::std::option::Option::Some({}({}))",
                 self_field_oneof,
                 self.variant_path(),
-                // TODO: default from .proto is not needed here
-                self.element_default_value_rust()));
+                // TODO: default from .proto is not needed here (?)
+                self.element_default_value_rust().into_type(self.full_storage_iter_elem_type()).value));
         } else {
             if !self.elem_type_is_copy() {
                 let self_field = self.self_field();
                 w.write_line(&format!("{}.set_default();", self_field));
             } else {
-                self.write_self_field_assign_some(w, &self.element_default_value_rust());
+                self.write_self_field_assign_some(w, &self.element_default_value_rust().value);
             }
         }
     }
@@ -1762,7 +1823,9 @@ impl<'a> FieldGen<'a> {
                             "{} = ::std::option::Option::Some({}({}));",
                             self_field_oneof,
                             self.variant_path(),
-                            self.element_default_value_rust()));
+                            self.element_default_value_rust()
+                                .into_type(self.full_storage_iter_elem_type())
+                                .value));
                     });
 
                     // extract field
@@ -1795,7 +1858,7 @@ impl<'a> FieldGen<'a> {
                     });
                     w.write_line("} else {");
                     w.indented(|w| {
-                        w.write_line(self.element_default_value_rust());
+                        w.write_line(self.elem().rust_type().default_value_typed().into_type(take_xxx_return_type.clone()).value);
                     });
                     w.write_line("}");
                 }
@@ -1811,7 +1874,7 @@ impl<'a> FieldGen<'a> {
                             self.self_field(), elem.rust_type().default_value()));
                     } else {
                         w.write_line(&format!("{}.take().unwrap_or({})",
-                            self.self_field(), self.element_default_value_rust()));
+                            self.self_field(), self.element_default_value_rust().value));
                     }
                 }
                 FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {

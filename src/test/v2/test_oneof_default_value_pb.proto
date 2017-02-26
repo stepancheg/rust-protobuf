@@ -1,0 +1,35 @@
+syntax = "proto2";
+
+package test_oneof_default_value_pb;
+
+enum EnumForOneofDefaultValue {
+    A = 10;
+    B = 20;
+}
+
+message MessageForOneofDefaultValue {
+    optional int32 f = 1;
+}
+
+message TestOneofDefaultValue {
+    optional string s = 29;
+    oneof one {
+        double double_field = 1       [default = 9.0];
+        float float_field = 2         [default = 10.0];
+        int32 int32_field = 3         [default = 11];
+        int64 int64_field = 4         [default = 12];
+        uint32 uint32_field = 5       [default = 13];
+        uint64 uint64_field = 6       [default = 14];
+        sint32 sint32_field = 7       [default = 15];
+        sint64 sint64_field = 8       [default = 16];
+        fixed32 fixed32_field = 9     [default = 17];
+        fixed64 fixed64_field = 10    [default = 18];
+        sfixed32 sfixed32_field = 11  [default = 19];
+        sfixed64 sfixed64_field = 12  [default = 20];
+        bool bool_field = 13          [default = true];
+        string string_field = 14      [default = "ss"];
+        bytes bytes_field = 15        [default = "bb"];
+        EnumForOneofDefaultValue enum_field = 16 [default = B];
+        MessageForOneofDefaultValue message_field = 17;
+    }
+}
