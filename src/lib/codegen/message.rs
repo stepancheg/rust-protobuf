@@ -1915,7 +1915,7 @@ impl<'a> OneofGen<'a> {
                 let field = self.message.fields.iter()
                     .filter(|f| f.proto_field.get_name() == v.field_name())
                     .next()
-                    .unwrap();
+                    .expect(&format!("field not found by name: {}", v.field_name()));
                 OneofVariantGen::parse(self, v, field)
             })
             .collect()
