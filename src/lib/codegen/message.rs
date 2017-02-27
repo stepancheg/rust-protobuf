@@ -1950,6 +1950,7 @@ struct OneofGen<'a> {
     message: &'a MessageGen<'a>,
     oneof: OneofWithContext<'a>,
     type_name: RustType,
+    lite_runtime: bool,
 }
 
 impl<'a> OneofGen<'a> {
@@ -1959,6 +1960,7 @@ impl<'a> OneofGen<'a> {
             message: message,
             oneof: oneof,
             type_name: RustType::Oneof(rust_name),
+            lite_runtime: message.lite_runtime,
         }
     }
 
@@ -1989,7 +1991,7 @@ impl<'a> OneofGen<'a> {
 
 fn write_message_oneof(oneof: &OneofGen, w: &mut CodeWriter) {
     let mut derive = vec!["Clone", "PartialEq"];
-    if false /* lite_runtime */ {
+    if oneof.lite_runtime {
         derive.push("Debug");
     }
     w.derive(&derive);
