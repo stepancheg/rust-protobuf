@@ -55,9 +55,13 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
     fn parse_escape_rem(chars: &mut std::str::Chars) -> u8 {
         let n = chars.next().unwrap();
         let d1 = match n {
+            'a' => return b'\x07',
+            'b' => return b'\x08',
+            'f' => return b'\x0c',
             'n' => return b'\n',
             'r' => return b'\r',
             't' => return b'\t',
+            'v' => return b'\x0b',
             '"' => return b'"',
             '0' ... '9' => (n as u8 - b'0'),
             c => return c as u8, // TODO: validate ASCII

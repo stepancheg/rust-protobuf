@@ -31,6 +31,7 @@ message TestDefaultValues {
 
 message TestExtremeDefaultValues {
     // Text for nonfinite floating-point values.
+    optional bytes escaped_bytes = 1 [default = "\0\001\a\b\f\n\r\t\v\\\'\"\xfe"];
     optional double inf_double = 14 [default = inf];
     optional double neg_inf_double = 15 [default = -inf];
     optional double nan_double = 16 [default = nan];

@@ -87,12 +87,28 @@ pub fn quote_escape_bytes(bytes: &[u8]) -> String {
             b'\\' => buf.push_str(r"\\"),
             b'\x20'...b'\x7e' => buf.push(b as char),
             _ => {
-                buf.push_str("\\x");
-                buf.push(hex_digit((b as u32) & 0x0f));
+                buf.push_str(r"\x");
                 buf.push(hex_digit((b as u32) >> 4));
+                buf.push(hex_digit((b as u32) & 0x0f));
             }
         }
     }
     buf.push('"');
     buf
+}
+
+#[cfg(test)]
+mod test {
+
+    use super::*;
+
+    #[test]
+    fn test_quote_escape_bytes() {
+        assert_eq!("b\"\"", quote_escape_bytes(b""));
+        assert_eq!("b\"xyZW\"", quote_escape_bytes(b"xyZW"));
+        assert_eq!("b\"aa\\\"bb\"", quote_escape_bytes(b"aa\"bb"));
+        assert_eq!("b\"aa\\r\\n\\tbb\"", quote_escape_bytes(b"aa\r\n\tbb"));
+        assert_eq!("b\"\\x00\\x01\\x12\\xfe\\xff\"", quote_escape_bytes(b"\x00\x01\x12\xfe\xff"));
+    }
+
 }
