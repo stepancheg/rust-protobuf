@@ -84,6 +84,11 @@ impl FileDescriptorSet {
 
 impl ::protobuf::Message for FileDescriptorSet {
     fn is_initialized(&self) -> bool {
+        for v in &self.file {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -257,7 +262,7 @@ impl FileDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -301,7 +306,7 @@ impl FileDescriptorProto {
     pub fn mut_package(&mut self) -> &mut ::std::string::String {
         if self.package.is_none() {
             self.package.set_default();
-        };
+        }
         self.package.as_mut().unwrap()
     }
 
@@ -576,7 +581,7 @@ impl FileDescriptorProto {
     pub fn mut_options(&mut self) -> &mut FileOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -617,7 +622,7 @@ impl FileDescriptorProto {
     pub fn mut_source_code_info(&mut self) -> &mut SourceCodeInfo {
         if self.source_code_info.is_none() {
             self.source_code_info.set_default();
-        };
+        }
         self.source_code_info.as_mut().unwrap()
     }
 
@@ -658,7 +663,7 @@ impl FileDescriptorProto {
     pub fn mut_syntax(&mut self) -> &mut ::std::string::String {
         if self.syntax.is_none() {
             self.syntax.set_default();
-        };
+        }
         self.syntax.as_mut().unwrap()
     }
 
@@ -685,6 +690,36 @@ impl FileDescriptorProto {
 
 impl ::protobuf::Message for FileDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.message_type {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.enum_type {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.service {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.extension {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.source_code_info {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -742,10 +777,10 @@ impl ::protobuf::Message for FileDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.package.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
-        };
+        }
         for value in &self.dependency {
             my_size += ::protobuf::rt::string_size(3, &value);
         };
@@ -774,14 +809,14 @@ impl ::protobuf::Message for FileDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         if let Some(v) = self.source_code_info.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         if let Some(v) = self.syntax.as_ref() {
             my_size += ::protobuf::rt::string_size(12, &v);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -790,10 +825,10 @@ impl ::protobuf::Message for FileDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.package.as_ref() {
             os.write_string(2, &v)?;
-        };
+        }
         for v in &self.dependency {
             os.write_string(3, &v)?;
         };
@@ -827,15 +862,15 @@ impl ::protobuf::Message for FileDescriptorProto {
             os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         if let Some(v) = self.source_code_info.as_ref() {
             os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         if let Some(v) = self.syntax.as_ref() {
             os.write_string(12, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -1036,7 +1071,7 @@ impl DescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -1278,7 +1313,7 @@ impl DescriptorProto {
     pub fn mut_options(&mut self) -> &mut MessageOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -1368,6 +1403,46 @@ impl DescriptorProto {
 
 impl ::protobuf::Message for DescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.field {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.extension {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.nested_type {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.enum_type {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.extension_range {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.oneof_decl {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.reserved_range {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -1419,7 +1494,7 @@ impl ::protobuf::Message for DescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         for value in &self.field {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -1447,7 +1522,7 @@ impl ::protobuf::Message for DescriptorProto {
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         for value in &self.reserved_range {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -1463,7 +1538,7 @@ impl ::protobuf::Message for DescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         for v in &self.field {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -1498,7 +1573,7 @@ impl ::protobuf::Message for DescriptorProto {
             os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         for v in &self.reserved_range {
             os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -1734,14 +1809,14 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.end = ::std::option::Option::Some(tmp);
                 },
@@ -1759,10 +1834,10 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         let mut my_size = 0;
         if let Some(v) = self.start {
             my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -1771,10 +1846,10 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.start {
             os.write_int32(1, v)?;
-        };
+        }
         if let Some(v) = self.end {
             os.write_int32(2, v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -1954,14 +2029,14 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.end = ::std::option::Option::Some(tmp);
                 },
@@ -1979,10 +2054,10 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
         let mut my_size = 0;
         if let Some(v) = self.start {
             my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -1991,10 +2066,10 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.start {
             os.write_int32(1, v)?;
-        };
+        }
         if let Some(v) = self.end {
             os.write_int32(2, v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -2135,7 +2210,7 @@ impl FieldDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -2260,7 +2335,7 @@ impl FieldDescriptorProto {
     pub fn mut_type_name(&mut self) -> &mut ::std::string::String {
         if self.type_name.is_none() {
             self.type_name.set_default();
-        };
+        }
         self.type_name.as_mut().unwrap()
     }
 
@@ -2304,7 +2379,7 @@ impl FieldDescriptorProto {
     pub fn mut_extendee(&mut self) -> &mut ::std::string::String {
         if self.extendee.is_none() {
             self.extendee.set_default();
-        };
+        }
         self.extendee.as_mut().unwrap()
     }
 
@@ -2348,7 +2423,7 @@ impl FieldDescriptorProto {
     pub fn mut_default_value(&mut self) -> &mut ::std::string::String {
         if self.default_value.is_none() {
             self.default_value.set_default();
-        };
+        }
         self.default_value.as_mut().unwrap()
     }
 
@@ -2419,7 +2494,7 @@ impl FieldDescriptorProto {
     pub fn mut_json_name(&mut self) -> &mut ::std::string::String {
         if self.json_name.is_none() {
             self.json_name.set_default();
-        };
+        }
         self.json_name.as_mut().unwrap()
     }
 
@@ -2463,7 +2538,7 @@ impl FieldDescriptorProto {
     pub fn mut_options(&mut self) -> &mut FieldOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -2487,6 +2562,11 @@ impl FieldDescriptorProto {
 
 impl ::protobuf::Message for FieldDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -2500,21 +2580,21 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.number = ::std::option::Option::Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_enum()?;
                     self.label = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_enum()?;
                     self.field_type = ::std::option::Option::Some(tmp);
                 },
@@ -2530,7 +2610,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.oneof_index = ::std::option::Option::Some(tmp);
                 },
@@ -2554,35 +2634,35 @@ impl ::protobuf::Message for FieldDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.number {
             my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.label {
             my_size += ::protobuf::rt::enum_size(4, v);
-        };
+        }
         if let Some(v) = self.field_type {
             my_size += ::protobuf::rt::enum_size(5, v);
-        };
+        }
         if let Some(v) = self.type_name.as_ref() {
             my_size += ::protobuf::rt::string_size(6, &v);
-        };
+        }
         if let Some(v) = self.extendee.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
-        };
+        }
         if let Some(v) = self.default_value.as_ref() {
             my_size += ::protobuf::rt::string_size(7, &v);
-        };
+        }
         if let Some(v) = self.oneof_index {
             my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.json_name.as_ref() {
             my_size += ::protobuf::rt::string_size(10, &v);
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -2591,36 +2671,36 @@ impl ::protobuf::Message for FieldDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.number {
             os.write_int32(3, v)?;
-        };
+        }
         if let Some(v) = self.label {
             os.write_enum(4, v.value())?;
-        };
+        }
         if let Some(v) = self.field_type {
             os.write_enum(5, v.value())?;
-        };
+        }
         if let Some(v) = self.type_name.as_ref() {
             os.write_string(6, &v)?;
-        };
+        }
         if let Some(v) = self.extendee.as_ref() {
             os.write_string(2, &v)?;
-        };
+        }
         if let Some(v) = self.default_value.as_ref() {
             os.write_string(7, &v)?;
-        };
+        }
         if let Some(v) = self.oneof_index {
             os.write_int32(9, v)?;
-        };
+        }
         if let Some(v) = self.json_name.as_ref() {
             os.write_string(10, &v)?;
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -2950,7 +3030,7 @@ impl OneofDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -2994,7 +3074,7 @@ impl OneofDescriptorProto {
     pub fn mut_options(&mut self) -> &mut OneofOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -3018,6 +3098,11 @@ impl OneofDescriptorProto {
 
 impl ::protobuf::Message for OneofDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -3045,11 +3130,11 @@ impl ::protobuf::Message for OneofDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -3058,12 +3143,12 @@ impl ::protobuf::Message for OneofDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -3197,7 +3282,7 @@ impl EnumDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -3274,7 +3359,7 @@ impl EnumDescriptorProto {
     pub fn mut_options(&mut self) -> &mut EnumOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -3298,6 +3383,16 @@ impl EnumDescriptorProto {
 
 impl ::protobuf::Message for EnumDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.value {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -3328,7 +3423,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         for value in &self.value {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -3336,7 +3431,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -3345,7 +3440,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         for v in &self.value {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -3355,7 +3450,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -3495,7 +3590,7 @@ impl EnumValueDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -3566,7 +3661,7 @@ impl EnumValueDescriptorProto {
     pub fn mut_options(&mut self) -> &mut EnumValueOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -3590,6 +3685,11 @@ impl EnumValueDescriptorProto {
 
 impl ::protobuf::Message for EnumValueDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -3603,7 +3703,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.number = ::std::option::Option::Some(tmp);
                 },
@@ -3624,14 +3724,14 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.number {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -3640,15 +3740,15 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.number {
             os.write_int32(2, v)?;
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -3788,7 +3888,7 @@ impl ServiceDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -3865,7 +3965,7 @@ impl ServiceDescriptorProto {
     pub fn mut_options(&mut self) -> &mut ServiceOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -3889,6 +3989,16 @@ impl ServiceDescriptorProto {
 
 impl ::protobuf::Message for ServiceDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.method {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -3919,7 +4029,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         for value in &self.method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -3927,7 +4037,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -3936,7 +4046,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         for v in &self.method {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -3946,7 +4056,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -4089,7 +4199,7 @@ impl MethodDescriptorProto {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -4133,7 +4243,7 @@ impl MethodDescriptorProto {
     pub fn mut_input_type(&mut self) -> &mut ::std::string::String {
         if self.input_type.is_none() {
             self.input_type.set_default();
-        };
+        }
         self.input_type.as_mut().unwrap()
     }
 
@@ -4177,7 +4287,7 @@ impl MethodDescriptorProto {
     pub fn mut_output_type(&mut self) -> &mut ::std::string::String {
         if self.output_type.is_none() {
             self.output_type.set_default();
-        };
+        }
         self.output_type.as_mut().unwrap()
     }
 
@@ -4221,7 +4331,7 @@ impl MethodDescriptorProto {
     pub fn mut_options(&mut self) -> &mut MethodOptions {
         if self.options.is_none() {
             self.options.set_default();
-        };
+        }
         self.options.as_mut().unwrap()
     }
 
@@ -4299,6 +4409,11 @@ impl MethodDescriptorProto {
 
 impl ::protobuf::Message for MethodDescriptorProto {
     fn is_initialized(&self) -> bool {
+        for v in &self.options {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -4321,14 +4436,14 @@ impl ::protobuf::Message for MethodDescriptorProto {
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.client_streaming = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.server_streaming = ::std::option::Option::Some(tmp);
                 },
@@ -4346,23 +4461,23 @@ impl ::protobuf::Message for MethodDescriptorProto {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.input_type.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
-        };
+        }
         if let Some(v) = self.output_type.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         if let Some(v) = self.client_streaming {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.server_streaming {
             my_size += 2;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -4371,24 +4486,24 @@ impl ::protobuf::Message for MethodDescriptorProto {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.input_type.as_ref() {
             os.write_string(2, &v)?;
-        };
+        }
         if let Some(v) = self.output_type.as_ref() {
             os.write_string(3, &v)?;
-        };
+        }
         if let Some(v) = self.options.as_ref() {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         if let Some(v) = self.client_streaming {
             os.write_bool(5, v)?;
-        };
+        }
         if let Some(v) = self.server_streaming {
             os.write_bool(6, v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -4558,7 +4673,7 @@ impl FileOptions {
     pub fn mut_java_package(&mut self) -> &mut ::std::string::String {
         if self.java_package.is_none() {
             self.java_package.set_default();
-        };
+        }
         self.java_package.as_mut().unwrap()
     }
 
@@ -4602,7 +4717,7 @@ impl FileOptions {
     pub fn mut_java_outer_classname(&mut self) -> &mut ::std::string::String {
         if self.java_outer_classname.is_none() {
             self.java_outer_classname.set_default();
-        };
+        }
         self.java_outer_classname.as_mut().unwrap()
     }
 
@@ -4754,7 +4869,7 @@ impl FileOptions {
     pub fn mut_go_package(&mut self) -> &mut ::std::string::String {
         if self.go_package.is_none() {
             self.go_package.set_default();
-        };
+        }
         self.go_package.as_mut().unwrap()
     }
 
@@ -4933,7 +5048,7 @@ impl FileOptions {
     pub fn mut_objc_class_prefix(&mut self) -> &mut ::std::string::String {
         if self.objc_class_prefix.is_none() {
             self.objc_class_prefix.set_default();
-        };
+        }
         self.objc_class_prefix.as_mut().unwrap()
     }
 
@@ -4977,7 +5092,7 @@ impl FileOptions {
     pub fn mut_csharp_namespace(&mut self) -> &mut ::std::string::String {
         if self.csharp_namespace.is_none() {
             self.csharp_namespace.set_default();
-        };
+        }
         self.csharp_namespace.as_mut().unwrap()
     }
 
@@ -5037,6 +5152,11 @@ impl FileOptions {
 
 impl ::protobuf::Message for FileOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -5053,28 +5173,28 @@ impl ::protobuf::Message for FileOptions {
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.java_multiple_files = ::std::option::Option::Some(tmp);
                 },
                 20 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.java_generate_equals_and_hash = ::std::option::Option::Some(tmp);
                 },
                 27 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.java_string_check_utf8 = ::std::option::Option::Some(tmp);
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_enum()?;
                     self.optimize_for = ::std::option::Option::Some(tmp);
                 },
@@ -5084,35 +5204,35 @@ impl ::protobuf::Message for FileOptions {
                 16 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.cc_generic_services = ::std::option::Option::Some(tmp);
                 },
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.java_generic_services = ::std::option::Option::Some(tmp);
                 },
                 18 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.py_generic_services = ::std::option::Option::Some(tmp);
                 },
                 23 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 31 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.cc_enable_arenas = ::std::option::Option::Some(tmp);
                 },
@@ -5139,46 +5259,46 @@ impl ::protobuf::Message for FileOptions {
         let mut my_size = 0;
         if let Some(v) = self.java_package.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.java_outer_classname.as_ref() {
             my_size += ::protobuf::rt::string_size(8, &v);
-        };
+        }
         if let Some(v) = self.java_multiple_files {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.java_generate_equals_and_hash {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.java_string_check_utf8 {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.optimize_for {
             my_size += ::protobuf::rt::enum_size(9, v);
-        };
+        }
         if let Some(v) = self.go_package.as_ref() {
             my_size += ::protobuf::rt::string_size(11, &v);
-        };
+        }
         if let Some(v) = self.cc_generic_services {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.java_generic_services {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.py_generic_services {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.deprecated {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.cc_enable_arenas {
             my_size += 3;
-        };
+        }
         if let Some(v) = self.objc_class_prefix.as_ref() {
             my_size += ::protobuf::rt::string_size(36, &v);
-        };
+        }
         if let Some(v) = self.csharp_namespace.as_ref() {
             my_size += ::protobuf::rt::string_size(37, &v);
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -5191,46 +5311,46 @@ impl ::protobuf::Message for FileOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.java_package.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.java_outer_classname.as_ref() {
             os.write_string(8, &v)?;
-        };
+        }
         if let Some(v) = self.java_multiple_files {
             os.write_bool(10, v)?;
-        };
+        }
         if let Some(v) = self.java_generate_equals_and_hash {
             os.write_bool(20, v)?;
-        };
+        }
         if let Some(v) = self.java_string_check_utf8 {
             os.write_bool(27, v)?;
-        };
+        }
         if let Some(v) = self.optimize_for {
             os.write_enum(9, v.value())?;
-        };
+        }
         if let Some(v) = self.go_package.as_ref() {
             os.write_string(11, &v)?;
-        };
+        }
         if let Some(v) = self.cc_generic_services {
             os.write_bool(16, v)?;
-        };
+        }
         if let Some(v) = self.java_generic_services {
             os.write_bool(17, v)?;
-        };
+        }
         if let Some(v) = self.py_generic_services {
             os.write_bool(18, v)?;
-        };
+        }
         if let Some(v) = self.deprecated {
             os.write_bool(23, v)?;
-        };
+        }
         if let Some(v) = self.cc_enable_arenas {
             os.write_bool(31, v)?;
-        };
+        }
         if let Some(v) = self.objc_class_prefix.as_ref() {
             os.write_string(36, &v)?;
-        };
+        }
         if let Some(v) = self.csharp_namespace.as_ref() {
             os.write_string(37, &v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -5625,6 +5745,11 @@ impl MessageOptions {
 
 impl ::protobuf::Message for MessageOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -5635,28 +5760,28 @@ impl ::protobuf::Message for MessageOptions {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.message_set_wire_format = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.no_standard_descriptor_accessor = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.map_entry = ::std::option::Option::Some(tmp);
                 },
@@ -5677,16 +5802,16 @@ impl ::protobuf::Message for MessageOptions {
         let mut my_size = 0;
         if let Some(v) = self.message_set_wire_format {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.no_standard_descriptor_accessor {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.deprecated {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.map_entry {
             my_size += 2;
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -5699,16 +5824,16 @@ impl ::protobuf::Message for MessageOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.message_set_wire_format {
             os.write_bool(1, v)?;
-        };
+        }
         if let Some(v) = self.no_standard_descriptor_accessor {
             os.write_bool(2, v)?;
-        };
+        }
         if let Some(v) = self.deprecated {
             os.write_bool(3, v)?;
-        };
+        }
         if let Some(v) = self.map_entry {
             os.write_bool(7, v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6047,6 +6172,11 @@ impl FieldOptions {
 
 impl ::protobuf::Message for FieldOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -6057,42 +6187,42 @@ impl ::protobuf::Message for FieldOptions {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_enum()?;
                     self.ctype = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.packed = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_enum()?;
                     self.jstype = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.lazy = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.weak = ::std::option::Option::Some(tmp);
                 },
@@ -6113,22 +6243,22 @@ impl ::protobuf::Message for FieldOptions {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
             my_size += ::protobuf::rt::enum_size(1, v);
-        };
+        }
         if let Some(v) = self.packed {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.jstype {
             my_size += ::protobuf::rt::enum_size(6, v);
-        };
+        }
         if let Some(v) = self.lazy {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.deprecated {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.weak {
             my_size += 2;
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -6141,22 +6271,22 @@ impl ::protobuf::Message for FieldOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.ctype {
             os.write_enum(1, v.value())?;
-        };
+        }
         if let Some(v) = self.packed {
             os.write_bool(2, v)?;
-        };
+        }
         if let Some(v) = self.jstype {
             os.write_enum(6, v.value())?;
-        };
+        }
         if let Some(v) = self.lazy {
             os.write_bool(5, v)?;
-        };
+        }
         if let Some(v) = self.deprecated {
             os.write_bool(3, v)?;
-        };
+        }
         if let Some(v) = self.weak {
             os.write_bool(10, v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6443,6 +6573,11 @@ impl OneofOptions {
 
 impl ::protobuf::Message for OneofOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -6677,6 +6812,11 @@ impl EnumOptions {
 
 impl ::protobuf::Message for EnumOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -6687,14 +6827,14 @@ impl ::protobuf::Message for EnumOptions {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.allow_alias = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
@@ -6715,10 +6855,10 @@ impl ::protobuf::Message for EnumOptions {
         let mut my_size = 0;
         if let Some(v) = self.allow_alias {
             my_size += 2;
-        };
+        }
         if let Some(v) = self.deprecated {
             my_size += 2;
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -6731,10 +6871,10 @@ impl ::protobuf::Message for EnumOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.allow_alias {
             os.write_bool(2, v)?;
-        };
+        }
         if let Some(v) = self.deprecated {
             os.write_bool(3, v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6921,6 +7061,11 @@ impl EnumValueOptions {
 
 impl ::protobuf::Message for EnumValueOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -6931,7 +7076,7 @@ impl ::protobuf::Message for EnumValueOptions {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
@@ -6952,7 +7097,7 @@ impl ::protobuf::Message for EnumValueOptions {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
             my_size += 2;
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -6965,7 +7110,7 @@ impl ::protobuf::Message for EnumValueOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(1, v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7146,6 +7291,11 @@ impl ServiceOptions {
 
 impl ::protobuf::Message for ServiceOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -7156,7 +7306,7 @@ impl ::protobuf::Message for ServiceOptions {
                 33 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
@@ -7177,7 +7327,7 @@ impl ::protobuf::Message for ServiceOptions {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
             my_size += 3;
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -7190,7 +7340,7 @@ impl ::protobuf::Message for ServiceOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7371,6 +7521,11 @@ impl MethodOptions {
 
 impl ::protobuf::Message for MethodOptions {
     fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -7381,7 +7536,7 @@ impl ::protobuf::Message for MethodOptions {
                 33 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
@@ -7402,7 +7557,7 @@ impl ::protobuf::Message for MethodOptions {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
             my_size += 3;
-        };
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -7415,7 +7570,7 @@ impl ::protobuf::Message for MethodOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
-        };
+        }
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7591,7 +7746,7 @@ impl UninterpretedOption {
     pub fn mut_identifier_value(&mut self) -> &mut ::std::string::String {
         if self.identifier_value.is_none() {
             self.identifier_value.set_default();
-        };
+        }
         self.identifier_value.as_mut().unwrap()
     }
 
@@ -7716,7 +7871,7 @@ impl UninterpretedOption {
     pub fn mut_string_value(&mut self) -> &mut ::std::vec::Vec<u8> {
         if self.string_value.is_none() {
             self.string_value.set_default();
-        };
+        }
         self.string_value.as_mut().unwrap()
     }
 
@@ -7760,7 +7915,7 @@ impl UninterpretedOption {
     pub fn mut_aggregate_value(&mut self) -> &mut ::std::string::String {
         if self.aggregate_value.is_none() {
             self.aggregate_value.set_default();
-        };
+        }
         self.aggregate_value.as_mut().unwrap()
     }
 
@@ -7787,6 +7942,11 @@ impl UninterpretedOption {
 
 impl ::protobuf::Message for UninterpretedOption {
     fn is_initialized(&self) -> bool {
+        for v in &self.name {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -7803,21 +7963,21 @@ impl ::protobuf::Message for UninterpretedOption {
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_uint64()?;
                     self.positive_int_value = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int64()?;
                     self.negative_int_value = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_double()?;
                     self.double_value = ::std::option::Option::Some(tmp);
                 },
@@ -7845,22 +8005,22 @@ impl ::protobuf::Message for UninterpretedOption {
         };
         if let Some(v) = self.identifier_value.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
-        };
+        }
         if let Some(v) = self.positive_int_value {
             my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.negative_int_value {
             my_size += ::protobuf::rt::value_size(5, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.double_value {
             my_size += 9;
-        };
+        }
         if let Some(v) = self.string_value.as_ref() {
             my_size += ::protobuf::rt::bytes_size(7, &v);
-        };
+        }
         if let Some(v) = self.aggregate_value.as_ref() {
             my_size += ::protobuf::rt::string_size(8, &v);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -7874,22 +8034,22 @@ impl ::protobuf::Message for UninterpretedOption {
         };
         if let Some(v) = self.identifier_value.as_ref() {
             os.write_string(3, &v)?;
-        };
+        }
         if let Some(v) = self.positive_int_value {
             os.write_uint64(4, v)?;
-        };
+        }
         if let Some(v) = self.negative_int_value {
             os.write_int64(5, v)?;
-        };
+        }
         if let Some(v) = self.double_value {
             os.write_double(6, v)?;
-        };
+        }
         if let Some(v) = self.string_value.as_ref() {
             os.write_bytes(7, &v)?;
-        };
+        }
         if let Some(v) = self.aggregate_value.as_ref() {
             os.write_string(8, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -8052,7 +8212,7 @@ impl UninterpretedOption_NamePart {
     pub fn mut_name_part(&mut self) -> &mut ::std::string::String {
         if self.name_part.is_none() {
             self.name_part.set_default();
-        };
+        }
         self.name_part.as_mut().unwrap()
     }
 
@@ -8108,10 +8268,10 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     fn is_initialized(&self) -> bool {
         if self.name_part.is_none() {
             return false;
-        };
+        }
         if self.is_extension.is_none() {
             return false;
-        };
+        }
         true
     }
 
@@ -8125,7 +8285,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_bool()?;
                     self.is_extension = ::std::option::Option::Some(tmp);
                 },
@@ -8143,10 +8303,10 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         let mut my_size = 0;
         if let Some(v) = self.name_part.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.is_extension {
             my_size += 2;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -8155,10 +8315,10 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name_part.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.is_extension {
             os.write_bool(2, v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -8306,6 +8466,11 @@ impl SourceCodeInfo {
 
 impl ::protobuf::Message for SourceCodeInfo {
     fn is_initialized(&self) -> bool {
+        for v in &self.location {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -8538,7 +8703,7 @@ impl SourceCodeInfo_Location {
     pub fn mut_leading_comments(&mut self) -> &mut ::std::string::String {
         if self.leading_comments.is_none() {
             self.leading_comments.set_default();
-        };
+        }
         self.leading_comments.as_mut().unwrap()
     }
 
@@ -8582,7 +8747,7 @@ impl SourceCodeInfo_Location {
     pub fn mut_trailing_comments(&mut self) -> &mut ::std::string::String {
         if self.trailing_comments.is_none() {
             self.trailing_comments.set_default();
-        };
+        }
         self.trailing_comments.as_mut().unwrap()
     }
 
@@ -8678,16 +8843,16 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         let mut my_size = 0;
         if !self.path.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
-        };
+        }
         if !self.span.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
-        };
+        }
         if let Some(v) = self.leading_comments.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
-        };
+        }
         if let Some(v) = self.trailing_comments.as_ref() {
             my_size += ::protobuf::rt::string_size(4, &v);
-        };
+        }
         for value in &self.leading_detached_comments {
             my_size += ::protobuf::rt::string_size(6, &value);
         };
@@ -8704,7 +8869,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             for v in &self.path {
                 os.write_int32_no_tag(*v)?;
             };
-        };
+        }
         if !self.span.is_empty() {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             // TODO: Data size is computed again, it should be cached
@@ -8712,13 +8877,13 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
             for v in &self.span {
                 os.write_int32_no_tag(*v)?;
             };
-        };
+        }
         if let Some(v) = self.leading_comments.as_ref() {
             os.write_string(3, &v)?;
-        };
+        }
         if let Some(v) = self.trailing_comments.as_ref() {
             os.write_string(4, &v)?;
-        };
+        }
         for v in &self.leading_detached_comments {
             os.write_string(6, &v)?;
         };
@@ -8887,6 +9052,11 @@ impl GeneratedCodeInfo {
 
 impl ::protobuf::Message for GeneratedCodeInfo {
     fn is_initialized(&self) -> bool {
+        for v in &self.annotation {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -9085,7 +9255,7 @@ impl GeneratedCodeInfo_Annotation {
     pub fn mut_source_file(&mut self) -> &mut ::std::string::String {
         if self.source_file.is_none() {
             self.source_file.set_default();
-        };
+        }
         self.source_file.as_mut().unwrap()
     }
 
@@ -9182,14 +9352,14 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.begin = ::std::option::Option::Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    };
+                    }
                     let tmp = is.read_int32()?;
                     self.end = ::std::option::Option::Some(tmp);
                 },
@@ -9207,16 +9377,16 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         let mut my_size = 0;
         if !self.path.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
-        };
+        }
         if let Some(v) = self.source_file.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
-        };
+        }
         if let Some(v) = self.begin {
             my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -9230,16 +9400,16 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
             for v in &self.path {
                 os.write_int32_no_tag(*v)?;
             };
-        };
+        }
         if let Some(v) = self.source_file.as_ref() {
             os.write_string(2, &v)?;
-        };
+        }
         if let Some(v) = self.begin {
             os.write_int32(3, v)?;
-        };
+        }
         if let Some(v) = self.end {
             os.write_int32(4, v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }

@@ -243,7 +243,7 @@ impl<'a> CodeWriter<'a> {
     pub fn if_stmt<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
         where F : Fn(&mut CodeWriter)
     {
-        self.stmt_block(&format!("if {}", cond.as_ref()), cb);
+        self.expr_block(&format!("if {}", cond.as_ref()), cb);
     }
 
     // if ... {} else { ... }

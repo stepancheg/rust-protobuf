@@ -103,7 +103,7 @@ impl CodeGeneratorRequest {
     pub fn mut_parameter(&mut self) -> &mut ::std::string::String {
         if self.parameter.is_none() {
             self.parameter.set_default();
-        };
+        }
         self.parameter.as_mut().unwrap()
     }
 
@@ -163,6 +163,11 @@ impl CodeGeneratorRequest {
 
 impl ::protobuf::Message for CodeGeneratorRequest {
     fn is_initialized(&self) -> bool {
+        for v in &self.proto_file {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -196,7 +201,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         };
         if let Some(v) = self.parameter.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
-        };
+        }
         for value in &self.proto_file {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -212,7 +217,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         };
         if let Some(v) = self.parameter.as_ref() {
             os.write_string(2, &v)?;
-        };
+        }
         for v in &self.proto_file {
             os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -356,7 +361,7 @@ impl CodeGeneratorResponse {
     pub fn mut_error(&mut self) -> &mut ::std::string::String {
         if self.error.is_none() {
             self.error.set_default();
-        };
+        }
         self.error.as_mut().unwrap()
     }
 
@@ -416,6 +421,11 @@ impl CodeGeneratorResponse {
 
 impl ::protobuf::Message for CodeGeneratorResponse {
     fn is_initialized(&self) -> bool {
+        for v in &self.file {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -443,7 +453,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         let mut my_size = 0;
         if let Some(v) = self.error.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         for value in &self.file {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -456,7 +466,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.error.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         for v in &self.file {
             os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -595,7 +605,7 @@ impl CodeGeneratorResponse_File {
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
             self.name.set_default();
-        };
+        }
         self.name.as_mut().unwrap()
     }
 
@@ -639,7 +649,7 @@ impl CodeGeneratorResponse_File {
     pub fn mut_insertion_point(&mut self) -> &mut ::std::string::String {
         if self.insertion_point.is_none() {
             self.insertion_point.set_default();
-        };
+        }
         self.insertion_point.as_mut().unwrap()
     }
 
@@ -683,7 +693,7 @@ impl CodeGeneratorResponse_File {
     pub fn mut_content(&mut self) -> &mut ::std::string::String {
         if self.content.is_none() {
             self.content.set_default();
-        };
+        }
         self.content.as_mut().unwrap()
     }
 
@@ -740,13 +750,13 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
-        };
+        }
         if let Some(v) = self.insertion_point.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
-        };
+        }
         if let Some(v) = self.content.as_ref() {
             my_size += ::protobuf::rt::string_size(15, &v);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -755,13 +765,13 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.name.as_ref() {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.insertion_point.as_ref() {
             os.write_string(2, &v)?;
-        };
+        }
         if let Some(v) = self.content.as_ref() {
             os.write_string(15, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }

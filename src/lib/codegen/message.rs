@@ -163,10 +163,10 @@ fn capitalize(s: &str) -> String {
 #[derive(Clone,Debug)]
 enum GenProtobufType {
     Primitive(FieldDescriptorProto_Type),
-    // name, entry
-    Message(String),
-    // name, default value
-    Enum(String, String),
+    // name, file name
+    Message(String, String),
+    // name, file name, default value
+    Enum(String, String, String),
     Group,
 }
 
@@ -188,8 +188,8 @@ impl GenProtobufType {
         match *self {
             GenProtobufType::Primitive(t) => rust_name(t),
             GenProtobufType::Group => RustType::Group,
-            GenProtobufType::Message(ref name) => RustType::Message(name.clone()),
-            GenProtobufType::Enum(ref name, ref default_value) => {
+            GenProtobufType::Message(ref name, _) => RustType::Message(name.clone()),
+            GenProtobufType::Enum(ref name, _, ref default_value) => {
                 RustType::Enum(name.clone(), default_value.clone())
             }
         }
@@ -201,10 +201,10 @@ impl GenProtobufType {
             GenProtobufType::Primitive(t) => {
                 format!("::protobuf::types::ProtobufType{}", capitalize(protobuf_name(t)))
             },
-            GenProtobufType::Message(ref name) => {
+            GenProtobufType::Message(ref name, _) => {
                 format!("::protobuf::types::ProtobufTypeMessage<{}>", name)
             },
-            GenProtobufType::Enum(ref name, _) => {
+            GenProtobufType::Enum(ref name, _, _) => {
                 format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
             },
             GenProtobufType::Group => unreachable!(),
@@ -293,10 +293,10 @@ struct FieldGen<'a> {
 
 enum FieldElem {
     Primitive(FieldDescriptorProto_Type),
-    // name, entry
-    Message(String, Option<Box<EntryKeyValue>>),
-    // name, default value
-    Enum(String, String),
+    // name, file name, entry
+    Message(String, String, Option<Box<EntryKeyValue>>),
+    // name, file name, default value
+    Enum(String, String, String),
     Group,
 }
 
@@ -304,10 +304,10 @@ impl FieldElem {
     fn into_type(self) -> GenProtobufType {
         match self {
             FieldElem::Primitive(t) => GenProtobufType::Primitive(t),
-            FieldElem::Message(name, None) => GenProtobufType::Message(name),
+            FieldElem::Message(name, file_name, None) => GenProtobufType::Message(name, file_name),
             // TODO: replace with unreachable
-            FieldElem::Message(name, Some(..)) => GenProtobufType::Message(name),
-            FieldElem::Enum(name, default_value) => GenProtobufType::Enum(name, default_value),
+            FieldElem::Message(name, file_name, Some(..)) => GenProtobufType::Message(name, file_name),
+            FieldElem::Enum(name, file_name, default_value) => GenProtobufType::Enum(name, file_name, default_value),
             FieldElem::Group => GenProtobufType::Group,
         }
     }
@@ -320,6 +320,7 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
         (FieldElem::Group, None)
     } else if field.field.has_type_name() {
         let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
+        let file_name = message_or_enum.get_scope().file_scope.file_descriptor.get_name().to_owned();
         let rust_name =
             if message_or_enum.get_scope().get_file_descriptor().get_name() ==
                 field.message.get_scope().get_file_descriptor().get_name()
@@ -340,7 +341,7 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
                     } else {
                         None
                     };
-                (FieldElem::Message(rust_name, entry_key_value), None)
+                (FieldElem::Message(rust_name, file_name, entry_key_value), None)
             }
             (FieldDescriptorProto_Type::TYPE_ENUM, MessageOrEnumWithScope::Enum(enum_with_scope)) => {
                 let e = EnumGen::new(&enum_with_scope, field.message.get_scope().get_file_descriptor());
@@ -350,7 +351,7 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
                     e.values_unique().into_iter().next().unwrap()
                 };
                 (
-                    FieldElem::Enum(rust_name, enum_with_scope.values()[0].get_name().to_owned()),
+                    FieldElem::Enum(rust_name, file_name, enum_with_scope.values()[0].get_name().to_owned()),
                     Some(ev),
                 )
             }
@@ -390,12 +391,14 @@ impl<'a> FieldGen<'a> {
         let kind =
             if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
                 match (elem, true) {
-                    (FieldElem::Message(name, Some(key_value)), true) =>
+                    // map field
+                    (FieldElem::Message(name, _, Some(key_value)), true) =>
                         FieldKind::Map(MapField {
                             name: name,
                             key: key_value.0.clone(),
                             value: key_value.1.clone(),
                         }),
+                    // regular repeated field
                     (elem, _) =>
                         FieldKind::Repeated(RepeatedField {
                             elem: elem.into_type(),
@@ -820,7 +823,7 @@ impl<'a> FieldGen<'a> {
                 }
             }
             FieldKind::Singular(SingularField { ref elem, flag: SingularFieldFlag::WithoutFlag }) => {
-                if let &GenProtobufType::Message(ref name) = elem {
+                if let &GenProtobufType::Message(ref name, _) = elem {
                     // TODO: old style, needed because of default instance
 
                     AccessorFn {
@@ -881,7 +884,7 @@ impl<'a> FieldGen<'a> {
 
                 let mut type_params = Vec::new();
                 match elem {
-                    &GenProtobufType::Message(ref name) | &GenProtobufType::Enum(ref name, _) => {
+                    &GenProtobufType::Message(ref name, _) | &GenProtobufType::Enum(ref name, _, _) => {
                         type_params.push(name.to_owned());
                     }
                     _ => (),
@@ -1008,7 +1011,7 @@ impl<'a> FieldGen<'a> {
         where F : Fn(&str, &RustType, &mut CodeWriter)
     {
         match self.kind {
-            FieldKind::Repeated(..) | FieldKind::Map(..) => panic!(),
+            FieldKind::Repeated(..) | FieldKind::Map(..) => panic!("field is not singular"),
             FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
                 let var = "v";
                 w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
@@ -1055,9 +1058,19 @@ impl<'a> FieldGen<'a> {
     fn write_for_self_field<F>(&self, w: &mut CodeWriter, varn: &str, cb: F)
         where F : Fn(&mut CodeWriter, &RustType)
     {
-        let v_type = self.full_storage_iter_elem_type();
-        let self_field = self.self_field();
-        w.for_stmt(&format!("&{}", self_field), varn, |w| cb(w, &v_type));
+        match self.kind {
+            FieldKind::Oneof(OneofField { ref elem, ref oneof_type_name, .. }) => {
+                let cond = format!("Some({}::{}(ref {}))", oneof_type_name, self.rust_name, varn);
+                w.if_let_stmt(&cond, &self.self_field_oneof(), |w| {
+                    cb(w, &elem.rust_type())
+                })
+            }
+            _ => {
+                let v_type = self.full_storage_iter_elem_type();
+                let self_field = self.self_field();
+                w.for_stmt(&format!("&{}", self_field), varn, |w| cb(w, &v_type));
+            }
+        }
     }
 
     fn write_self_field_assign(&self, w: &mut CodeWriter, value: &str) {
@@ -1781,6 +1794,12 @@ impl<'a> MessageGen<'a> {
         }).collect()
     }
 
+    fn message_fields(&'a self) -> Vec<&'a FieldGen> {
+        self.fields.iter()
+            .filter(|f| f.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE)
+            .collect()
+    }
+
     fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
         self.fields.iter()
             .filter(|f| !f.is_oneof())
@@ -1964,16 +1983,38 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_impl_message(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
-            w.def_fn(&format!("is_initialized(&self) -> bool"), |w| {
-                for f in self.required_fields() {
-                    f.write_if_self_field_is_none(w, |w| {
+    fn write_is_initialized(&self, w: &mut CodeWriter) {
+        w.def_fn(&format!("is_initialized(&self) -> bool"), |w| {
+            // TODO: use single loop
+
+            for f in self.required_fields() {
+                f.write_if_self_field_is_none(w, |w| {
+                    w.write_line("return false;");
+                });
+            }
+
+            for f in self.message_fields() {
+                if let FieldKind::Map(..) = f.kind {
+                    // TODO: check values
+                    continue;
+                }
+
+                // TODO:
+                // if message is declared in this file and has no message fields,
+                // we could skip the check here
+                f.write_for_self_field(w, "v", |w, _t| {
+                    w.if_stmt("!v.is_initialized()", |w| {
                         w.write_line("return false;");
                     });
-                }
-                w.write_line("true");
-            });
+                });
+            }
+            w.write_line("true");
+        });
+    }
+
+    fn write_impl_message(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
+            self.write_is_initialized(w);
             w.write_line("");
             self.write_merge_from(w);
             w.write_line("");
