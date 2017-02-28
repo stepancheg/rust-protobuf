@@ -9,6 +9,7 @@ use descriptorx::*;
 
 mod message;
 mod enums;
+mod rust_types_values;
 
 use self::message::*;
 use self::enums::*;
