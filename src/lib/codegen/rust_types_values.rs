@@ -21,7 +21,7 @@ pub enum RustType {
     SingularPtrField(Box<RustType>),
     RepeatedField(Box<RustType>),
     // Box<T>
-    _Uniq(Box<RustType>),
+    Uniq(Box<RustType>),
     // &T
     Ref(Box<RustType>),
     // protobuf message
@@ -52,7 +52,7 @@ impl fmt::Display for RustType {
             RustType::SingularField(ref param)    => write!(f, "::protobuf::SingularField<{}>", **param),
             RustType::SingularPtrField(ref param) => write!(f, "::protobuf::SingularPtrField<{}>", **param),
             RustType::RepeatedField(ref param)    => write!(f, "::protobuf::RepeatedField<{}>", **param),
-            RustType::_Uniq(ref param)             => write!(f, "::std::Box<{}>", **param),
+            RustType::Uniq(ref param)             => write!(f, "::std::boxed::Box<{}>", **param),
             RustType::Ref(ref param)              => write!(f, "&{}", **param),
             RustType::Message(ref name) |
             RustType::Enum(ref name, _)    |
@@ -190,8 +190,12 @@ impl RustType {
     // expression to convert `v` of type `self` to type `target`
     pub fn into_target(&self, target: &RustType, v: &str) -> String {
         match (self, target) {
-            (x, y) if x == y                        => format!("{}", v),
-            (&RustType::Ref(ref x), y) if **x == *y => format!("*{}", v),
+            (x, y) if x == y                        =>
+                    format!("{}", v),
+            (&RustType::Ref(ref x), y) if **x == *y =>
+                    format!("*{}", v),
+            (x, &RustType::Uniq(ref y)) if *x == **y =>
+                    format!("::std::boxed::Box::new({})", v),
             (&RustType::String, &RustType::Ref(ref t)) if t.is_str() =>
                     format!("&{}", v),
             (&RustType::Ref(ref t1), &RustType::Ref(ref t2)) if t1.is_string() && t2.is_str() =>
@@ -264,5 +268,9 @@ impl RustValueTyped {
             value: target_value,
             rust_type: target,
         }
+    }
+
+    pub fn boxed(self) -> RustValueTyped {
+        self.into_type(RustType::Uniq(Box::new(self.rust_type.clone())))
     }
 }

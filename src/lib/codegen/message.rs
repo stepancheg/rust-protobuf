@@ -235,19 +235,44 @@ struct SingularField {
     elem: GenProtobufType,
 }
 
+// oneof one { ... }
 #[derive(Clone)]
 struct OneofField {
     elem: GenProtobufType,
     oneof_name: String,
     oneof_type_name: RustType,
+    boxed: bool,
 }
 
 impl OneofField {
-    fn parse(oneof: &OneofWithContext, elem: GenProtobufType) -> OneofField {
+    fn parse(oneof: &OneofWithContext, _field: &FieldDescriptorProto, elem: GenProtobufType) -> OneofField {
+        // detecting recursion
+        let boxed =
+            if let &GenProtobufType::Message(ref name, ..) = &elem {
+                if *name == oneof.message.rust_name() {
+                    true
+                } else {
+                    false
+                }
+            } else {
+                false
+            };
+
         OneofField {
             elem: elem,
             oneof_name: oneof.name().to_string(),
             oneof_type_name: RustType::Oneof(oneof.rust_name()),
+            boxed: boxed,
+        }
+    }
+
+    fn rust_type(&self) -> RustType {
+        let t = self.elem.rust_type();
+
+        if self.boxed {
+            RustType::Uniq(Box::new(t))
+        } else {
+            t
         }
     }
 }
@@ -406,7 +431,7 @@ impl<'a> FieldGen<'a> {
                         })
                 }
             } else if let Some(oneof) = field.oneof() {
-                FieldKind::Oneof(OneofField::parse(&oneof, elem.into_type()))
+                FieldKind::Oneof(OneofField::parse(&oneof, field.field, elem.into_type()))
             } else {
                 let flag =
                     if field.message.scope.file_scope.syntax() == Syntax::PROTO3 &&
@@ -1208,13 +1233,26 @@ impl<'a> FieldGen<'a> {
             self.rust_name));
     }
 
-    fn write_merge_from_oneof(&self, w: &mut CodeWriter) {
+    fn write_merge_from_oneof(&self, f: &OneofField, w: &mut CodeWriter) {
         w.assert_wire_type(self.wire_type);
-        // TODO: split long line
-        w.write_line(&format!("self.{} = ::std::option::Option::Some({}({}?));",
-                             self.oneof().oneof_name,
-                             self.variant_path(),
-                             self.proto_type.read("is")));
+
+        let typed = RustValueTyped {
+            value: format!("{}?", self.proto_type.read("is")),
+            rust_type: self.full_storage_iter_elem_type(),
+        };
+
+        let maybe_boxed =
+            if f.boxed {
+                typed.boxed()
+            } else {
+                typed
+            };
+
+        w.write_line(&format!(
+            "self.{} = ::std::option::Option::Some({}({}));",
+            self.oneof().oneof_name,
+            self.variant_path(),
+            maybe_boxed.value)); // TODO: into_type
     }
 
     fn write_merge_from_map(&self, w: &mut CodeWriter) {
@@ -1227,7 +1265,7 @@ impl<'a> FieldGen<'a> {
 
     fn write_merge_from_field(&self, w: &mut CodeWriter) {
         match self.kind {
-            FieldKind::Oneof(..) => self.write_merge_from_oneof(w),
+            FieldKind::Oneof(ref f) => self.write_merge_from_oneof(&f, w),
             FieldKind::Map(..) => self.write_merge_from_map(w),
             _ => {
                 if !self.elem_type_is_copy() {
@@ -1528,8 +1566,9 @@ impl<'a> FieldGen<'a> {
                 self.write_self_field_assign_value(w, "v", &set_xxx_param_type);
             } else {
                 let self_field_oneof = self.self_field_oneof();
-                w.write_line(&format!("{} = ::std::option::Option::Some({}(v))",
-                    self_field_oneof, self.variant_path()));
+                let v = set_xxx_param_type.into_target(&self.oneof().rust_type(), "v");
+                w.write_line(&format!("{} = ::std::option::Option::Some({}({}))",
+                    self_field_oneof, self.variant_path(), v));
             }
         });
     }
@@ -1677,7 +1716,7 @@ impl<'a> FieldGen<'a> {
 struct OneofVariantGen<'a> {
     oneof: &'a OneofGen<'a>,
     variant: OneofVariantWithContext<'a>,
-    // TODO: OneofField
+    oneof_field: OneofField,
     field: FieldGen<'a>,
     path: String,
 }
@@ -1686,10 +1725,15 @@ impl<'a> OneofVariantGen<'a> {
     fn parse(oneof: &'a OneofGen<'a>, variant: OneofVariantWithContext<'a>, field: &'a FieldGen) -> OneofVariantGen<'a> {
         OneofVariantGen {
             oneof: oneof,
-            variant: variant,
+            variant: variant.clone(),
             field: field.clone(),
             path: format!("{}::{}", oneof.type_name, field.rust_name),
+            oneof_field: OneofField::parse(variant.oneof, variant.field, field.oneof().elem.clone())
         }
+    }
+
+    fn rust_type(&self) -> RustType {
+        self.oneof_field.rust_type()
     }
 
     fn path(&self) -> String {
@@ -1699,6 +1743,7 @@ impl<'a> OneofVariantGen<'a> {
 
 #[derive(Clone)]
 struct OneofGen<'a> {
+    // Message containing this oneof
     message: &'a MessageGen<'a>,
     oneof: OneofWithContext<'a>,
     type_name: RustType,
@@ -1739,19 +1784,21 @@ impl<'a> OneofGen<'a> {
     fn full_storage_type(&self) -> RustType {
         RustType::Option(Box::new(self.type_name.clone()))
     }
-}
 
-fn write_message_oneof(oneof: &OneofGen, w: &mut CodeWriter) {
-    let mut derive = vec!["Clone", "PartialEq"];
-    if oneof.lite_runtime {
-        derive.push("Debug");
-    }
-    w.derive(&derive);
-    w.pub_enum(&oneof.type_name.to_string(), |w| {
-        for variant in oneof.variants() {
-            w.write_line(&format!("{}({}),", variant.field.rust_name, &variant.field.elem().rust_type().to_string()));
+    fn write_enum(&self, w: &mut CodeWriter) {
+        let mut derive = vec!["Clone", "PartialEq"];
+        if self.lite_runtime {
+            derive.push("Debug");
         }
-    });
+        w.derive(&derive);
+        w.pub_enum(&self.type_name.to_string(), |w| {
+            for variant in self.variants() {
+                w.write_line(
+                    &format!("{}({}),",
+                    variant.field.rust_name, &variant.rust_type().to_string()));
+            }
+        });
+    }
 }
 
 /// Message info for codegen
@@ -2141,7 +2188,7 @@ impl<'a> MessageGen<'a> {
         w.unsafe_impl("::std::marker::Sync", &self.type_name);
         for oneof in self.oneofs() {
             w.write_line("");
-            write_message_oneof(&oneof, w);
+            oneof.write_enum(w);
         }
 
         w.write_line("");

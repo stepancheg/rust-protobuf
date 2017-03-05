@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package test_oneof_recursive;
+
+message LinkedList {
+  oneof x {
+    bool tail = 1;
+    /*
+    LinkedList node = 2;
+    */
+  }
+}
