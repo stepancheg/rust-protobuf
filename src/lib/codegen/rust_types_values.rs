@@ -196,6 +196,8 @@ impl RustType {
                     format!("*{}", v),
             (x, &RustType::Uniq(ref y)) if *x == **y =>
                     format!("::std::boxed::Box::new({})", v),
+            (&RustType::Uniq(ref x), y) if **x == *y =>
+                    format!("*{}", v),
             (&RustType::String, &RustType::Ref(ref t)) if t.is_str() =>
                     format!("&{}", v),
             (&RustType::Ref(ref t1), &RustType::Ref(ref t2)) if t1.is_string() && t2.is_str() =>
@@ -253,9 +255,17 @@ impl RustType {
             x => panic!("cannot iterate {}", x),
         }
     }
+
+    pub fn value(self, value: String) -> RustValueTyped {
+        RustValueTyped {
+            value: value,
+            rust_type: self,
+        }
+    }
 }
 
 
+/// Representation of an expression in code generator: text and type
 pub struct RustValueTyped {
     pub value: String,
     pub rust_type: RustType,

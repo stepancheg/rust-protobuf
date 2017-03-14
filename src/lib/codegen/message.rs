@@ -1615,7 +1615,7 @@ impl<'a> FieldGen<'a> {
                             self_field_oneof,
                             self.variant_path(),
                             self.element_default_value_rust()
-                                .into_type(self.full_storage_iter_elem_type())
+                                .into_type(self.oneof().rust_type())
                                 .value));
                     });
 
@@ -1632,26 +1632,34 @@ impl<'a> FieldGen<'a> {
         });
     }
 
+    fn write_message_field_take_oneof(&self, w: &mut CodeWriter) {
+        let take_xxx_return_type = self.take_xxx_return_type();
+
+        // TODO: replace with if let
+        w.write_line(&format!("if self.{}() {{", self.has_name()));
+        w.indented(|w| {
+            let self_field_oneof = self.self_field_oneof();
+            w.match_expr(format!("{}.take()", self_field_oneof), |w| {
+                let value_in_some = self.oneof().rust_type().value("v".to_owned());
+                let converted = value_in_some.into_type(self.take_xxx_return_type());
+                w.case_expr(format!("::std::option::Option::Some({}(v))", self.variant_path()), &converted.value);
+                w.case_expr("_", "panic!()");
+            });
+        });
+        w.write_line("} else {");
+        w.indented(|w| {
+            w.write_line(self.elem().rust_type().default_value_typed().into_type(take_xxx_return_type.clone()).value);
+        });
+        w.write_line("}");
+    }
+
     fn write_message_field_take(&self, w: &mut CodeWriter) {
         let take_xxx_return_type = self.take_xxx_return_type();
         w.comment("Take field");
         w.pub_fn(&format!("take_{}(&mut self) -> {}", self.rust_name, take_xxx_return_type), |w| {
             match self.kind {
                 FieldKind::Oneof(..) => {
-                    // TODO: replace with if let
-                    w.write_line(&format!("if self.{}() {{", self.has_name()));
-                    w.indented(|w| {
-                        let self_field_oneof = self.self_field_oneof();
-                        w.match_expr(format!("{}.take()", self_field_oneof), |w| {
-                            w.case_expr(format!("::std::option::Option::Some({}(v))", self.variant_path()), "v");
-                            w.case_expr("_", "panic!()");
-                        });
-                    });
-                    w.write_line("} else {");
-                    w.indented(|w| {
-                        w.write_line(self.elem().rust_type().default_value_typed().into_type(take_xxx_return_type.clone()).value);
-                    });
-                    w.write_line("}");
+                    self.write_message_field_take_oneof(w);
                 }
                 FieldKind::Repeated(..) | FieldKind::Map(..) => {
                     w.write_line(&format!("::std::mem::replace(&mut self.{}, {})",
