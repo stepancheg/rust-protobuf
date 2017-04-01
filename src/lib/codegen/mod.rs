@@ -1,10 +1,10 @@
 use std::collections::hash_map::HashMap;
+use std::fmt::Write;
 
 use descriptor::*;
 use core::Message;
 use compiler_plugin;
 use code_writer::CodeWriter;
-use paginate::PaginatableIterator;
 use descriptorx::*;
 
 mod message;
@@ -15,17 +15,55 @@ use self::message::*;
 use self::enums::*;
 
 
+fn escape_byte(s: &mut String, b: u8) {
+    if b == b'\n' {
+        write!(s, "\\n").unwrap();
+    } else if b == b'\r' {
+        write!(s, "\\r").unwrap();
+    } else if b == b'\t' {
+        write!(s, "\\t").unwrap();
+    } else if b == b'\\' || b == b'"' {
+        write!(s, "\\{}", b as char).unwrap();
+    } else if b == b'\0' {
+        write!(s, "\\0").unwrap();
+        // ASCII printable except space
+    } else if b > 0x20 && b < 0x7f {
+        write!(s, "{}", b as char).unwrap();
+    } else {
+        write!(s, "\\x{:02x}", b).unwrap();
+    }
+}
+
 fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     let fdp_bytes = file.write_to_bytes().unwrap();
-    w.write_line("static file_descriptor_proto_data: &'static [u8] = &[");
-    for groups in fdp_bytes.iter().paginate(16) {
-        let fdp_bytes_str = groups.iter()
-                .map(|&b| format!("0x{:02x}", *b))
-                .collect::<Vec<String>>()
-                .join(", ");
-        w.write_line(&format!("    {},", fdp_bytes_str));
-    }
-    w.write_line("];");
+    w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
+    w.indented(|w| {
+        const MAX_LINE_LEN: usize = 72;
+
+        let mut s = String::new();
+        for &b in &fdp_bytes {
+            let prev_len = s.len();
+            escape_byte(&mut s, b);
+            let truncate = s.len() > MAX_LINE_LEN;
+            if truncate {
+                s.truncate(prev_len);
+            }
+            if truncate || s.len() == MAX_LINE_LEN {
+                write!(s, "\\").unwrap();
+                w.write_line(&s);
+                s.clear();
+            }
+            if truncate {
+                escape_byte(&mut s, b);
+            }
+        }
+        if !s.is_empty() {
+            write!(s, "\\").unwrap();
+            w.write_line(&s);
+            s.clear();
+        }
+    });
+    w.write_line("\";");
     w.write_line("");
     w.lazy_static("file_descriptor_proto_lazy", "::protobuf::descriptor::FileDescriptorProto");
     w.write_line("");
