@@ -21,3 +21,9 @@ script:
   - PATH=/home/travis/bin:$PATH src/full-rebuild.sh
   # Test cargo configuration
   - cargo test
+
+notifications:
+  email:
+    on_success: never
+
+# vim: set ts=2 sw=2 et:
