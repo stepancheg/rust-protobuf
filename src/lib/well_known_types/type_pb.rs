@@ -28,7 +28,7 @@ pub struct Type {
     fields: ::protobuf::RepeatedField<Field>,
     oneofs: ::protobuf::RepeatedField<::std::string::String>,
     options: ::protobuf::RepeatedField<Option>,
-    source_context: ::protobuf::SingularPtrField<super::source_context::SourceContext>,
+    source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
@@ -197,13 +197,13 @@ impl Type {
     }
 
     // Param is passed by value, moved
-    pub fn set_source_context(&mut self, v: super::source_context::SourceContext) {
+    pub fn set_source_context(&mut self, v: ::protobuf::well_known_types::SourceContext) {
         self.source_context = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_context(&mut self) -> &mut super::source_context::SourceContext {
+    pub fn mut_source_context(&mut self) -> &mut ::protobuf::well_known_types::SourceContext {
         if self.source_context.is_none() {
             self.source_context.set_default();
         }
@@ -211,19 +211,19 @@ impl Type {
     }
 
     // Take field
-    pub fn take_source_context(&mut self) -> super::source_context::SourceContext {
-        self.source_context.take().unwrap_or_else(|| super::source_context::SourceContext::new())
+    pub fn take_source_context(&mut self) -> ::protobuf::well_known_types::SourceContext {
+        self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
     }
 
-    pub fn get_source_context(&self) -> &super::source_context::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| super::source_context::SourceContext::default_instance())
+    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
     }
 
-    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<super::source_context::SourceContext> {
+    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
         &self.source_context
     }
 
-    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<super::source_context::SourceContext> {
+    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
         &mut self.source_context
     }
 
@@ -424,7 +424,7 @@ impl ::protobuf::MessageStatic for Type {
                     Type::get_options_for_reflect,
                     Type::mut_options_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::source_context::SourceContext>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
                     Type::get_source_context_for_reflect,
                     Type::mut_source_context_for_reflect,
@@ -1239,7 +1239,7 @@ pub struct Enum {
     pub name: ::std::string::String,
     enumvalue: ::protobuf::RepeatedField<EnumValue>,
     options: ::protobuf::RepeatedField<Option>,
-    source_context: ::protobuf::SingularPtrField<super::source_context::SourceContext>,
+    source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
@@ -1375,13 +1375,13 @@ impl Enum {
     }
 
     // Param is passed by value, moved
-    pub fn set_source_context(&mut self, v: super::source_context::SourceContext) {
+    pub fn set_source_context(&mut self, v: ::protobuf::well_known_types::SourceContext) {
         self.source_context = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_context(&mut self) -> &mut super::source_context::SourceContext {
+    pub fn mut_source_context(&mut self) -> &mut ::protobuf::well_known_types::SourceContext {
         if self.source_context.is_none() {
             self.source_context.set_default();
         }
@@ -1389,19 +1389,19 @@ impl Enum {
     }
 
     // Take field
-    pub fn take_source_context(&mut self) -> super::source_context::SourceContext {
-        self.source_context.take().unwrap_or_else(|| super::source_context::SourceContext::new())
+    pub fn take_source_context(&mut self) -> ::protobuf::well_known_types::SourceContext {
+        self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
     }
 
-    pub fn get_source_context(&self) -> &super::source_context::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| super::source_context::SourceContext::default_instance())
+    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
     }
 
-    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<super::source_context::SourceContext> {
+    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
         &self.source_context
     }
 
-    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<super::source_context::SourceContext> {
+    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
         &mut self.source_context
     }
 
@@ -1588,7 +1588,7 @@ impl ::protobuf::MessageStatic for Enum {
                     Enum::get_options_for_reflect,
                     Enum::mut_options_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::source_context::SourceContext>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
                     Enum::get_source_context_for_reflect,
                     Enum::mut_source_context_for_reflect,
@@ -1911,7 +1911,7 @@ impl ::protobuf::reflect::ProtobufValue for EnumValue {
 pub struct Option {
     // message fields
     pub name: ::std::string::String,
-    value: ::protobuf::SingularPtrField<super::any::Any>,
+    value: ::protobuf::SingularPtrField<::protobuf::well_known_types::Any>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
@@ -1980,13 +1980,13 @@ impl Option {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: super::any::Any) {
+    pub fn set_value(&mut self, v: ::protobuf::well_known_types::Any) {
         self.value = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_value(&mut self) -> &mut super::any::Any {
+    pub fn mut_value(&mut self) -> &mut ::protobuf::well_known_types::Any {
         if self.value.is_none() {
             self.value.set_default();
         }
@@ -1994,19 +1994,19 @@ impl Option {
     }
 
     // Take field
-    pub fn take_value(&mut self) -> super::any::Any {
-        self.value.take().unwrap_or_else(|| super::any::Any::new())
+    pub fn take_value(&mut self) -> ::protobuf::well_known_types::Any {
+        self.value.take().unwrap_or_else(|| ::protobuf::well_known_types::Any::new())
     }
 
-    pub fn get_value(&self) -> &super::any::Any {
-        self.value.as_ref().unwrap_or_else(|| super::any::Any::default_instance())
+    pub fn get_value(&self) -> &::protobuf::well_known_types::Any {
+        self.value.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::Any::default_instance())
     }
 
-    fn get_value_for_reflect(&self) -> &::protobuf::SingularPtrField<super::any::Any> {
+    fn get_value_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::Any> {
         &self.value
     }
 
-    fn mut_value_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<super::any::Any> {
+    fn mut_value_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::Any> {
         &mut self.value
     }
 }
@@ -2113,7 +2113,7 @@ impl ::protobuf::MessageStatic for Option {
                     Option::get_name_for_reflect,
                     Option::mut_name_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::any::Any>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>>(
                     "value",
                     Option::get_value_for_reflect,
                     Option::mut_value_for_reflect,

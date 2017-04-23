@@ -23,3 +23,4 @@ mod unittest_preserve_unknown_enum2;
 mod unittest_proto3_arena;
 mod unittest_proto3_arena_lite;
 mod unittest_proto3_lite;
+mod unittest_well_known_types;

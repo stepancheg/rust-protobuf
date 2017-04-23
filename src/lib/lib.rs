@@ -64,7 +64,7 @@ mod buf_read_iter;
 mod input_source;
 
 
-// so `use protobuf::*` could work in descriptor mod
+// so `use protobuf::*` could work in mod descriptor and well_known_types
 mod protobuf {
     pub use descriptor;
     pub use descriptorx;
@@ -77,6 +77,7 @@ mod protobuf {
     pub use text_format;
     pub use types;
     pub use lazy;
+    pub use well_known_types;
     pub use unknown::UnknownFields;
     pub use unknown::UnknownFieldsIter;
     pub use unknown::UnknownValue;

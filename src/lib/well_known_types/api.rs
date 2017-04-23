@@ -28,7 +28,7 @@ pub struct Api {
     methods: ::protobuf::RepeatedField<Method>,
     options: ::protobuf::RepeatedField<super::type_pb::Option>,
     pub version: ::std::string::String,
-    source_context: ::protobuf::SingularPtrField<super::source_context::SourceContext>,
+    source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     mixins: ::protobuf::RepeatedField<Mixin>,
     pub syntax: super::type_pb::Syntax,
     // special fields
@@ -199,13 +199,13 @@ impl Api {
     }
 
     // Param is passed by value, moved
-    pub fn set_source_context(&mut self, v: super::source_context::SourceContext) {
+    pub fn set_source_context(&mut self, v: ::protobuf::well_known_types::SourceContext) {
         self.source_context = ::protobuf::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_context(&mut self) -> &mut super::source_context::SourceContext {
+    pub fn mut_source_context(&mut self) -> &mut ::protobuf::well_known_types::SourceContext {
         if self.source_context.is_none() {
             self.source_context.set_default();
         }
@@ -213,19 +213,19 @@ impl Api {
     }
 
     // Take field
-    pub fn take_source_context(&mut self) -> super::source_context::SourceContext {
-        self.source_context.take().unwrap_or_else(|| super::source_context::SourceContext::new())
+    pub fn take_source_context(&mut self) -> ::protobuf::well_known_types::SourceContext {
+        self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
     }
 
-    pub fn get_source_context(&self) -> &super::source_context::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| super::source_context::SourceContext::default_instance())
+    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
     }
 
-    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<super::source_context::SourceContext> {
+    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
         &self.source_context
     }
 
-    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<super::source_context::SourceContext> {
+    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
         &mut self.source_context
     }
 
@@ -476,7 +476,7 @@ impl ::protobuf::MessageStatic for Api {
                     Api::get_version_for_reflect,
                     Api::mut_version_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::source_context::SourceContext>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
                     Api::get_source_context_for_reflect,
                     Api::mut_source_context_for_reflect,

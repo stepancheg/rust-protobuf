@@ -6,6 +6,7 @@ use code_writer::*;
 
 use super::enums::*;
 use super::rust_types_values::*;
+use super::well_known_types::is_well_known_type_full;
 
 use ::rust;
 use ::text_format;
@@ -346,12 +347,14 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
     } else if field.field.has_type_name() {
         let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
         let file_name = message_or_enum.get_scope().file_scope.file_descriptor.get_name().to_owned();
-        let rust_name =
+        let rust_relative_name =
             if message_or_enum.get_scope().get_file_descriptor().get_name() ==
                 field.message.get_scope().get_file_descriptor().get_name()
             {
                 // field type is a message or enum declared in the same file
                 message_or_enum.rust_name()
+            } else if let Some(name) = is_well_known_type_full(field.field.get_type_name()) {
+                format!("::protobuf::well_known_types::{}", name)
             } else {
                 format!("super::{}", message_or_enum.rust_fq_name())
             };
@@ -366,7 +369,7 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
                     } else {
                         None
                     };
-                (FieldElem::Message(rust_name, file_name, entry_key_value), None)
+                (FieldElem::Message(rust_relative_name, file_name, entry_key_value), None)
             }
             (FieldDescriptorProto_Type::TYPE_ENUM, MessageOrEnumWithScope::Enum(enum_with_scope)) => {
                 let e = EnumGen::new(&enum_with_scope, field.message.get_scope().get_file_descriptor());
@@ -376,7 +379,7 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
                     e.values_unique().into_iter().next().unwrap()
                 };
                 (
-                    FieldElem::Enum(rust_name, file_name, enum_with_scope.values()[0].get_name().to_owned()),
+                    FieldElem::Enum(rust_relative_name, file_name, enum_with_scope.values()[0].get_name().to_owned()),
                     Some(ev),
                 )
             }

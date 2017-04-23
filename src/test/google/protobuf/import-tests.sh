@@ -9,7 +9,6 @@ cp $HOME/devel/left/protobuf/src/google/protobuf/unittest*.proto ./
 # TODO
 rm unittest_custom_options.proto
 rm unittest_empty.proto
-rm unittest_well_known_types.proto
 # https://github.com/rust-lang/rust/issues/40119
 rm unittest_enormous_descriptor.proto
 rm *_proto3.proto
