@@ -2908,7 +2908,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
         values
     }
 
-    fn enum_descriptor_static(_: Option<FieldDescriptorProto_Type>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static(_: ::std::option::Option<FieldDescriptorProto_Type>) -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
@@ -2960,7 +2960,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
         values
     }
 
-    fn enum_descriptor_static(_: Option<FieldDescriptorProto_Label>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static(_: ::std::option::Option<FieldDescriptorProto_Label>) -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
@@ -5548,7 +5548,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
         values
     }
 
-    fn enum_descriptor_static(_: Option<FileOptions_OptimizeMode>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static(_: ::std::option::Option<FileOptions_OptimizeMode>) -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
@@ -6436,7 +6436,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
         values
     }
 
-    fn enum_descriptor_static(_: Option<FieldOptions_CType>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static(_: ::std::option::Option<FieldOptions_CType>) -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
@@ -6488,7 +6488,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
         values
     }
 
-    fn enum_descriptor_static(_: Option<FieldOptions_JSType>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static(_: ::std::option::Option<FieldOptions_JSType>) -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
