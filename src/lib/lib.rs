@@ -42,6 +42,7 @@ pub mod text_format;
 pub mod stream;
 pub mod error;
 pub mod types;
+pub mod well_known_types;
 
 // used by test
 pub mod hex;

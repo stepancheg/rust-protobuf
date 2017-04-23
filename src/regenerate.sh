@@ -25,5 +25,23 @@ protoc --rust_out tmp-generated -Iproto \
     proto/rustproto.proto
 
 mv tmp-generated/descriptor.rs tmp-generated/plugin.rs tmp-generated/rustproto.rs lib/
+mv tmp-generated/*.rs lib/well_known_types/
+(
+    cd lib/well_known_types
+    exec > mod.rs
+    echo "// This file is generated. Do not edit"
+
+    mod_list() {
+        ls | grep -v mod.rs | sed -e 's,\.rs$,,'
+    }
+
+    echo
+    mod_list | sed -e 's,^,mod ,; s,$,;,'
+
+    echo
+    mod_list | while read mod; do
+        echo "pub use self::$mod::*;"
+    done
+)
 
 # vim: set ts=4 sw=4 et:
