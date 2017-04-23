@@ -26,11 +26,11 @@ pub struct Api {
     // message fields
     pub name: ::std::string::String,
     methods: ::protobuf::RepeatedField<Method>,
-    options: ::protobuf::RepeatedField<super::type_pb::Option>,
+    options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
     pub version: ::std::string::String,
     source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     mixins: ::protobuf::RepeatedField<Mixin>,
-    pub syntax: super::type_pb::Syntax,
+    pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
@@ -128,29 +128,29 @@ impl Api {
     }
 
     // Param is passed by value, moved
-    pub fn set_options(&mut self, v: ::protobuf::RepeatedField<super::type_pb::Option>) {
+    pub fn set_options(&mut self, v: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>) {
         self.options = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_options(&mut self) -> &mut ::protobuf::RepeatedField<super::type_pb::Option> {
+    pub fn mut_options(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         &mut self.options
     }
 
     // Take field
-    pub fn take_options(&mut self) -> ::protobuf::RepeatedField<super::type_pb::Option> {
+    pub fn take_options(&mut self) -> ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[super::type_pb::Option] {
+    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
         &self.options
     }
 
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<super::type_pb::Option> {
+    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         &self.options
     }
 
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<super::type_pb::Option> {
+    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         &mut self.options
     }
 
@@ -265,23 +265,23 @@ impl Api {
     // .google.protobuf.Syntax syntax = 7;
 
     pub fn clear_syntax(&mut self) {
-        self.syntax = super::type_pb::Syntax::SYNTAX_PROTO2;
+        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
     }
 
     // Param is passed by value, moved
-    pub fn set_syntax(&mut self, v: super::type_pb::Syntax) {
+    pub fn set_syntax(&mut self, v: ::protobuf::well_known_types::Syntax) {
         self.syntax = v;
     }
 
-    pub fn get_syntax(&self) -> super::type_pb::Syntax {
+    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
         self.syntax
     }
 
-    fn get_syntax_for_reflect(&self) -> &super::type_pb::Syntax {
+    fn get_syntax_for_reflect(&self) -> &::protobuf::well_known_types::Syntax {
         &self.syntax
     }
 
-    fn mut_syntax_for_reflect(&mut self) -> &mut super::type_pb::Syntax {
+    fn mut_syntax_for_reflect(&mut self) -> &mut ::protobuf::well_known_types::Syntax {
         &mut self.syntax
     }
 }
@@ -374,7 +374,7 @@ impl ::protobuf::Message for Api {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != super::type_pb::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
             my_size += ::protobuf::rt::enum_size(7, self.syntax);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -409,7 +409,7 @@ impl ::protobuf::Message for Api {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if self.syntax != super::type_pb::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
             os.write_enum(7, self.syntax.value())?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -466,7 +466,7 @@ impl ::protobuf::MessageStatic for Api {
                     Api::get_methods_for_reflect,
                     Api::mut_methods_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::type_pb::Option>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
                     "options",
                     Api::get_options_for_reflect,
                     Api::mut_options_for_reflect,
@@ -486,7 +486,7 @@ impl ::protobuf::MessageStatic for Api {
                     Api::get_mixins_for_reflect,
                     Api::mut_mixins_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<super::type_pb::Syntax>>(
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
                     "syntax",
                     Api::get_syntax_for_reflect,
                     Api::mut_syntax_for_reflect,
@@ -534,8 +534,8 @@ pub struct Method {
     pub request_streaming: bool,
     pub response_type_url: ::std::string::String,
     pub response_streaming: bool,
-    options: ::protobuf::RepeatedField<super::type_pb::Option>,
-    pub syntax: super::type_pb::Syntax,
+    options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
+    pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
@@ -714,52 +714,52 @@ impl Method {
     }
 
     // Param is passed by value, moved
-    pub fn set_options(&mut self, v: ::protobuf::RepeatedField<super::type_pb::Option>) {
+    pub fn set_options(&mut self, v: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>) {
         self.options = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_options(&mut self) -> &mut ::protobuf::RepeatedField<super::type_pb::Option> {
+    pub fn mut_options(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         &mut self.options
     }
 
     // Take field
-    pub fn take_options(&mut self) -> ::protobuf::RepeatedField<super::type_pb::Option> {
+    pub fn take_options(&mut self) -> ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[super::type_pb::Option] {
+    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
         &self.options
     }
 
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<super::type_pb::Option> {
+    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         &self.options
     }
 
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<super::type_pb::Option> {
+    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
         &mut self.options
     }
 
     // .google.protobuf.Syntax syntax = 7;
 
     pub fn clear_syntax(&mut self) {
-        self.syntax = super::type_pb::Syntax::SYNTAX_PROTO2;
+        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
     }
 
     // Param is passed by value, moved
-    pub fn set_syntax(&mut self, v: super::type_pb::Syntax) {
+    pub fn set_syntax(&mut self, v: ::protobuf::well_known_types::Syntax) {
         self.syntax = v;
     }
 
-    pub fn get_syntax(&self) -> super::type_pb::Syntax {
+    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
         self.syntax
     }
 
-    fn get_syntax_for_reflect(&self) -> &super::type_pb::Syntax {
+    fn get_syntax_for_reflect(&self) -> &::protobuf::well_known_types::Syntax {
         &self.syntax
     }
 
-    fn mut_syntax_for_reflect(&mut self) -> &mut super::type_pb::Syntax {
+    fn mut_syntax_for_reflect(&mut self) -> &mut ::protobuf::well_known_types::Syntax {
         &mut self.syntax
     }
 }
@@ -842,7 +842,7 @@ impl ::protobuf::Message for Method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != super::type_pb::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
             my_size += ::protobuf::rt::enum_size(7, self.syntax);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -871,7 +871,7 @@ impl ::protobuf::Message for Method {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if self.syntax != super::type_pb::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
             os.write_enum(7, self.syntax.value())?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -943,12 +943,12 @@ impl ::protobuf::MessageStatic for Method {
                     Method::get_response_streaming_for_reflect,
                     Method::mut_response_streaming_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::type_pb::Option>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
                     "options",
                     Method::get_options_for_reflect,
                     Method::mut_options_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<super::type_pb::Syntax>>(
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
                     "syntax",
                     Method::get_syntax_for_reflect,
                     Method::mut_syntax_for_reflect,

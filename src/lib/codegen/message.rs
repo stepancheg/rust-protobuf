@@ -354,6 +354,8 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
                 // field type is a message or enum declared in the same file
                 message_or_enum.rust_name()
             } else if let Some(name) = is_well_known_type_full(field.field.get_type_name()) {
+                // Well-known types are included in rust-protobuf library
+                // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
                 format!("::protobuf::well_known_types::{}", name)
             } else {
                 format!("super::{}", message_or_enum.rust_fq_name())
