@@ -18,8 +18,8 @@ impl<'a> ExtGen<'a> {
 
     fn repeated(&self) -> bool {
         match self.field.get_label() {
-            FieldDescriptorProto_Label::LABEL_REPEATED => false,
-            FieldDescriptorProto_Label::LABEL_OPTIONAL => true,
+            FieldDescriptorProto_Label::LABEL_REPEATED => true,
+            FieldDescriptorProto_Label::LABEL_OPTIONAL => false,
             FieldDescriptorProto_Label::LABEL_REQUIRED =>
                 panic!("required ext field: {}", self.field.get_name()),
         }

@@ -43,6 +43,9 @@ mod test_oneof_recursive_pb;
 
 mod struct_pb;
 
+mod test_oneof_expose;
+mod test_oneof_expose_pb;
+
 // Taken from rust-protobuf 1.0.24 to make sure
 // that old generated code it is still compatible with latest rust-protobuf.
 mod test_basic_pb_1_0_24;

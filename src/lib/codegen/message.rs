@@ -3,6 +3,7 @@ use descriptor::*;
 use descriptorx::*;
 use rt;
 use code_writer::*;
+use rustproto;
 
 use super::enums::*;
 use super::rust_types_values::*;
@@ -1774,6 +1775,11 @@ impl<'a> MessageGen<'a> {
         }
     }
 
+    fn expose_oneof(&self) -> bool {
+        let options = self.message.get_scope().get_file_descriptor().get_options();
+        rustproto::exts::expose_oneof.get(options).unwrap_or(false)
+    }
+
     fn oneofs(&'a self) -> Vec<OneofGen<'a>> {
         self.message.oneofs().into_iter().map(|oneof| {
             OneofGen::parse(self, oneof)
@@ -2106,7 +2112,11 @@ impl<'a> MessageGen<'a> {
             if !self.oneofs().is_empty() {
                 w.comment("message oneof groups");
                 for oneof in self.oneofs() {
-                    w.field_decl(oneof.name(), &oneof.full_storage_type().to_string());
+                    let vis = match self.expose_oneof() {
+                        true  => Visibility::Public,
+                        false => Visibility::Default,
+                    };
+                    w.field_decl_vis(vis, oneof.name(), &oneof.full_storage_type().to_string());
                 }
             }
             w.comment("special fields");

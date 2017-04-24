@@ -27,6 +27,7 @@ pub use cached_size::CachedSize;
 // generated
 pub mod descriptor;
 pub mod plugin;
+mod rustproto;
 
 pub mod core;
 pub mod rt;

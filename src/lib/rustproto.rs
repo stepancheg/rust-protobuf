@@ -24,7 +24,7 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 pub mod exts {
     use protobuf::Message as Message_imported_for_functions;
 
-    pub const expose_oneof: ::protobuf::ext::ExtFieldRepeated<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldRepeated { field_number: 17001, phantom: ::std::marker::PhantomData };
+    pub const expose_oneof: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
