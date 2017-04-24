@@ -1,5 +1,9 @@
 use std::fmt;
 
+use descriptor::*;
+use descriptorx::*;
+use super::well_known_types::is_well_known_type_full;
+
 
 // Represent subset of rust types used in generated code
 #[derive(Debug,Clone,PartialEq,Eq)]
@@ -282,5 +286,108 @@ impl RustValueTyped {
 
     pub fn boxed(self) -> RustValueTyped {
         self.into_type(RustType::Uniq(Box::new(self.rust_type.clone())))
+    }
+}
+
+
+// protobuf type name for protobuf base type
+pub fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
+    match field_type {
+        FieldDescriptorProto_Type::TYPE_DOUBLE   => "double",
+        FieldDescriptorProto_Type::TYPE_FLOAT    => "float",
+        FieldDescriptorProto_Type::TYPE_INT32    => "int32",
+        FieldDescriptorProto_Type::TYPE_INT64    => "int64",
+        FieldDescriptorProto_Type::TYPE_UINT32   => "uint32",
+        FieldDescriptorProto_Type::TYPE_UINT64   => "uint64",
+        FieldDescriptorProto_Type::TYPE_SINT32   => "sint32",
+        FieldDescriptorProto_Type::TYPE_SINT64   => "sint64",
+        FieldDescriptorProto_Type::TYPE_FIXED32  => "fixed32",
+        FieldDescriptorProto_Type::TYPE_FIXED64  => "fixed64",
+        FieldDescriptorProto_Type::TYPE_SFIXED32 => "sfixed32",
+        FieldDescriptorProto_Type::TYPE_SFIXED64 => "sfixed64",
+        FieldDescriptorProto_Type::TYPE_BOOL     => "bool",
+        FieldDescriptorProto_Type::TYPE_STRING   => "string",
+        FieldDescriptorProto_Type::TYPE_BYTES    => "bytes",
+        FieldDescriptorProto_Type::TYPE_ENUM     => "enum",
+        FieldDescriptorProto_Type::TYPE_MESSAGE  => "message",
+        FieldDescriptorProto_Type::TYPE_GROUP    => "group",
+    }
+}
+
+
+// rust type for protobuf base type
+pub fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
+    match field_type {
+        FieldDescriptorProto_Type::TYPE_DOUBLE   => RustType::Float(64),
+        FieldDescriptorProto_Type::TYPE_FLOAT    => RustType::Float(32),
+        FieldDescriptorProto_Type::TYPE_INT32    => RustType::Int(true, 32),
+        FieldDescriptorProto_Type::TYPE_INT64    => RustType::Int(true, 64),
+        FieldDescriptorProto_Type::TYPE_UINT32   => RustType::Int(false, 32),
+        FieldDescriptorProto_Type::TYPE_UINT64   => RustType::Int(false, 64),
+        FieldDescriptorProto_Type::TYPE_SINT32   => RustType::Int(true, 32),
+        FieldDescriptorProto_Type::TYPE_SINT64   => RustType::Int(true, 64),
+        FieldDescriptorProto_Type::TYPE_FIXED32  => RustType::Int(false, 32),
+        FieldDescriptorProto_Type::TYPE_FIXED64  => RustType::Int(false, 64),
+        FieldDescriptorProto_Type::TYPE_SFIXED32 => RustType::Int(true, 32),
+        FieldDescriptorProto_Type::TYPE_SFIXED64 => RustType::Int(true, 64),
+        FieldDescriptorProto_Type::TYPE_BOOL     => RustType::Bool,
+        FieldDescriptorProto_Type::TYPE_STRING   => RustType::String,
+        FieldDescriptorProto_Type::TYPE_BYTES    => RustType::Vec(Box::new(RustType::Int(false, 8))),
+        FieldDescriptorProto_Type::TYPE_ENUM     |
+        FieldDescriptorProto_Type::TYPE_GROUP    |
+        FieldDescriptorProto_Type::TYPE_MESSAGE  => panic!("there is no rust name for {:?}", field_type),
+    }
+}
+
+pub fn type_name_to_rust_relative(
+    type_name: &str, file: &FileDescriptorProto, subm: bool, root_scope: &RootScope) -> String
+{
+    let message_or_enum = root_scope.find_message_or_enum(type_name);
+    if message_or_enum.get_scope().get_file_descriptor().get_name() ==
+        file.get_name()
+    {
+        // field type is a message or enum declared in the same file
+        if subm {
+            format!("super::{}", message_or_enum.rust_name())
+        } else {
+            format!("{}", message_or_enum.rust_name())
+        }
+    } else if let Some(name) = is_well_known_type_full(type_name) {
+        // Well-known types are included in rust-protobuf library
+        // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
+        format!("::protobuf::well_known_types::{}", name)
+    } else {
+        if subm {
+            format!("super::super::{}", message_or_enum.rust_fq_name())
+        } else {
+            format!("super::{}", message_or_enum.rust_fq_name())
+        }
+    }
+}
+
+
+fn capitalize(s: &str) -> String {
+    if s.is_empty() {
+        return String::new();
+    }
+    s[..1].to_uppercase() + &s[1..]
+}
+
+pub enum ProtobufTypeGen {
+    Primitive(FieldDescriptorProto_Type),
+    Message(String),
+    Enum(String),
+}
+
+impl ProtobufTypeGen {
+    pub fn rust_type(&self) -> String {
+        match self {
+            &ProtobufTypeGen::Primitive(t) =>
+                format!("::protobuf::types::ProtobufType{}", capitalize(protobuf_name(t))),
+            &ProtobufTypeGen::Message(ref name) =>
+                format!("::protobuf::types::ProtobufTypeMessage<{}>", name),
+            &ProtobufTypeGen::Enum(ref name) =>
+                format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
+        }
     }
 }

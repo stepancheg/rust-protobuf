@@ -9,6 +9,7 @@ use core::MessageStatic;
 use wire_format::WireType;
 use rt;
 use reflect::ProtobufValue;
+use unknown::UnknownValues;
 
 pub trait ProtobufType {
     type Value : ProtobufValue + Clone + 'static;
@@ -28,6 +29,10 @@ pub trait ProtobufType {
         } else {
             size
         }
+    }
+
+    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::Value> {
+        unimplemented!()
     }
 
     /// Get previously computed size
@@ -317,6 +322,10 @@ impl ProtobufType for ProtobufTypeBool {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<bool> {
         is.read_bool()
+    }
+
+    fn get_from_unknown(unknown: &UnknownValues) -> Option<bool> {
+        unknown.varint.iter().rev().next().map(|&v| v != 0)
     }
 
     fn compute_size(_value: &bool) -> u32 {

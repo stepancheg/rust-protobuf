@@ -43,6 +43,7 @@ pub mod stream;
 pub mod error;
 pub mod types;
 pub mod well_known_types;
+pub mod ext;
 
 // used by test
 pub mod hex;
@@ -78,6 +79,7 @@ mod protobuf {
     pub use types;
     pub use lazy;
     pub use well_known_types;
+    pub use ext;
     pub use unknown::UnknownFields;
     pub use unknown::UnknownFieldsIter;
     pub use unknown::UnknownValue;

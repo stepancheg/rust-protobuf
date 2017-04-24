@@ -166,6 +166,13 @@ impl UnknownFields {
             entries: self.fields.as_ref().map(|m| m.iter())
         }
     }
+
+    pub fn get(&self, field_number: u32) -> Option<&UnknownValues> {
+        match self.fields {
+            Some(ref map) => map.get(&field_number),
+            None => None,
+        }
+    }
 }
 
 impl Clear for UnknownFields {

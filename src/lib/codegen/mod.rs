@@ -11,9 +11,11 @@ mod message;
 mod enums;
 mod rust_types_values;
 mod well_known_types;
+mod extensions;
 
 use self::message::*;
 use self::enums::*;
+use self::extensions::*;
 
 
 fn escape_byte(s: &mut String, b: u8) {
@@ -81,17 +83,6 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     });
 }
 
-fn write_extensions(file: &FileDescriptorProto, w: &mut CodeWriter) {
-    if file.get_extension().is_empty() {
-        return;
-    }
-
-    w.write_line("");
-    w.pub_mod("exts", |w| {
-        w.write_line("// TODO");
-    });
-}
-
 fn gen_file(
     file: &FileDescriptorProto,
     _files_map: &HashMap<&str, &FileDescriptorProto>,
@@ -132,12 +123,12 @@ fn gen_file(
             EnumGen::new(enum_type, file).write(&mut w);
         }
 
+        write_extensions(file, &root_scope, &mut w);
+
         if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {
             w.write_line("");
             write_file_descriptor_data(file, &mut w);
         }
-
-        write_extensions(file, &mut w);
     }
 
     Some(compiler_plugin::GenResult {

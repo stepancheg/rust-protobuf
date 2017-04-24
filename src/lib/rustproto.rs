@@ -21,6 +21,12 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
+pub mod exts {
+    use protobuf::Message as Message_imported_for_functions;
+
+    pub const expose_oneof: ::protobuf::ext::ExtFieldRepeated<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldRepeated { field_number: 17001, phantom: ::std::marker::PhantomData };
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x0frustproto.proto\x12\trustproto\x1a\x20google/protobuf/descriptor.p\
     roto:A\n\x0cexpose_oneof\x18\xe9\x84\x01\x20\x01(\x08\x12\x1c.google.pro\
@@ -47,8 +53,4 @@ pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescripto
             parse_descriptor_proto()
         })
     }
-}
-
-pub mod exts {
-    // TODO
 }

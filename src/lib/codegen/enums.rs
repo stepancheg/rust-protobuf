@@ -128,10 +128,8 @@ impl<'a> EnumGen<'a> {
             w.write_line("");
             self.write_impl_default(w);
         }
-        if !self.lite_runtime {
-            w.write_line("");
-            self.write_impl_value(w);
-        }
+        w.write_line("");
+        self.write_impl_value(w);
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
@@ -219,11 +217,9 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            if !self.lite_runtime {
-                w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
-                    w.write_line("::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())")
-                })
-            }
+            w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
+                w.write_line("::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())")
+            })
         })
     }
 

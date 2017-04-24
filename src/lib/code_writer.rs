@@ -54,6 +54,10 @@ impl<'a> CodeWriter<'a> {
         self.write_line(format!("panic!(\"TODO: {}\");", message));
     }
 
+    pub fn unimplemented(&mut self) {
+        self.write_line(format!("unimplemented!();"));
+    }
+
     pub fn indented<F>(&mut self, cb: F)
         where F : Fn(&mut CodeWriter)
     {
@@ -71,6 +75,10 @@ impl<'a> CodeWriter<'a> {
             writer: self.writer,
             indent: format!("// {}", self.indent),
         });
+    }
+
+    pub fn pub_const(&mut self, name: &str, field_type: &str, init: &str) {
+        self.write_line(&format!("pub const {}: {} = {};", name, field_type, init));
     }
 
     pub fn lazy_static(&mut self, name: &str, ty: &str) {

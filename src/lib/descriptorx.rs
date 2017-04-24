@@ -74,7 +74,7 @@ impl<'a> RootScope<'a> {
 
     // find message or enum by fully qualified name
     pub fn find_message_or_enum(&'a self, fqn: &str) -> MessageOrEnumWithScope<'a> {
-        assert!(fqn.starts_with("."));
+        assert!(fqn.starts_with("."), "name must start with dot: {}", fqn);
         let fqn1 = &fqn[1..];
         self.packages().into_iter()
             .flat_map(|p| {
