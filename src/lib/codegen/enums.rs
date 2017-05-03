@@ -179,7 +179,7 @@ impl<'a> EnumGen<'a> {
 
             w.write_line("");
             let ref type_name = self.type_name;
-            w.def_fn(&format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
+            w.def_fn(&format!("pub from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
                 w.match_expr("value", |w| {
                     let values = self.values_unique();
                     for value in values {
