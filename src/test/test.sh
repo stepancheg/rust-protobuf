@@ -5,7 +5,7 @@ prj_root=$(cd ../..; pwd)
 
 (
     cd $prj_root
-    cargo build --bin=protoc-gen-rust
+    cargo build --features=$RUST_PROTOBUF_FEATURES --bin=protoc-gen-rust
 )
 
 PATH="$prj_root/target/debug:$PATH"
@@ -52,10 +52,17 @@ else
     done
 fi
 
+features=
 if $HAS_PROTO3; then
-    cargo test --features=proto3
-else
-    cargo test
+    features=proto3
 fi
+if test -n "$RUST_PROTOBUF_FEATURES"; then
+    if test -n "$features"; then
+        features="$features "
+    fi
+    features="$features$RUST_PROTOBUF_FEATURES"
+fi
+
+cargo test --features="$features"
 
 # vim: set ts=4 sw=4 et:

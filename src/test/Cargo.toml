@@ -6,9 +6,10 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 [lib]
 doctest = false
 
-[dependencies.protobuf]
-path = "../.."
-
 [features]
+default-features = []
 proto3 = []
 bytes = ["protobuf/bytes"]
+
+[dependencies.protobuf]
+path = "../.."

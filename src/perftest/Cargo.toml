@@ -3,6 +3,11 @@ name = "rust-protobuf-perftest"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
+[features]
+default-features = []
+proto3 = []
+bytes = ["protobuf/bytes"]
+
 [dependencies.protobuf]
 path = "../.."
 
