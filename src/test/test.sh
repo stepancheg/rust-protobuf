@@ -1,9 +1,14 @@
 #!/bin/sh -ex
 
-cargo build
+cd $(dirname $0)
+prj_root=$(cd ../..; pwd)
 
-where_am_i=$(cd `dirname $0`/..; pwd)
-PATH="$where_am_i/target/debug:$PATH"
+(
+    cd $prj_root
+    cargo build --bin=protoc-gen-rust
+)
+
+PATH="$prj_root/target/debug:$PATH"
 
 protoc_ver=$(protoc --version)
 case "$protoc_ver" in
@@ -16,11 +21,11 @@ case "$protoc_ver" in
         ;;
 esac
 
-rm -f test/*/pb_*.rs
-rm -f test/*/*_pb.rs
+rm -f src/*/pb_*.rs
+rm -f src/*/*_pb.rs
 
 (
-    cd test/common
+    cd src/common
     for f in *.rs; do
         for v in v2 v3; do
             (
@@ -31,14 +36,14 @@ rm -f test/*/*_pb.rs
     done
 )
 
-protoc -Iproto --rust_out test/v2 -I test/v2 -I proto test/v2/*.proto
+protoc -I../proto --rust_out src/v2 -I src/v2 src/v2/*.proto
 if $HAS_PROTO3; then
-    protoc -Iproto --rust_out test/v3 -I test/v3 -I proto test/v3/*.proto
-    protoc -Iproto --rust_out test/google/protobuf -I test test/google/protobuf/*.proto
+    protoc -I../proto --rust_out src/v3 -I src/v3 src/v3/*.proto
+    protoc -I../proto --rust_out src/google/protobuf -I src src/google/protobuf/*.proto
 else
     # Because `#[cfg(nonexistent)]` still requires module files to exist
     # https://github.com/rust-lang/rust/pull/36482
-    for f in test/v3/*.proto test/google/protobuf/*.proto; do
+    for f in src/v3/*.proto src/google/protobuf/*.proto; do
         f=${f%.proto}
         (
             echo '// generated'
@@ -47,13 +52,10 @@ else
     done
 fi
 
-(
-    cd test
+if $HAS_PROTO3; then
+    cargo test --features=proto3
+else
+    cargo test
+fi
 
-    if $HAS_PROTO3; then
-        rustc --cfg proto3 --test -L ../../target/debug lib.rs
-    else
-        rustc --test -L ../../target/debug lib.rs
-    fi
-    ./lib
-)
+# vim: set ts=4 sw=4 et:

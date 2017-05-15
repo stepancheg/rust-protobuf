@@ -1,0 +1,14 @@
+[project]
+name = "rust-protobuf-test"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+
+[lib]
+doctest = false
+
+[dependencies.protobuf]
+path = "../.."
+
+[features]
+proto3 = []
+bytes = ["protobuf/bytes"]

@@ -30,3 +30,9 @@ test = false
 name = "protobuf-bin-gen-rust-do-not-use"
 path = "src/protobuf-bin-gen-rust-do-not-use.rs"
 test = false
+
+[workspace]
+members = [
+    "src/perftest",
+    "src/test",
+]

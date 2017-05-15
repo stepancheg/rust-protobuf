@@ -26,7 +26,7 @@ case "$protoc_ver" in
         ;;
 esac
 
-./test.sh
+./test/test.sh
 
 rm -f perftest/Cargo.lock
 ./perftest/build-perftest-rust.sh
