@@ -1,5 +1,8 @@
 #![crate_type = "lib"]
 
+#[cfg(feature = "bytes")]
+extern crate bytes;
+
 pub use unknown::UnknownFields;
 pub use unknown::UnknownFieldsIter;
 pub use unknown::UnknownValue;

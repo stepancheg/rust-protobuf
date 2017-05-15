@@ -5,6 +5,9 @@ use std::io::{BufRead, BufReader, Read};
 use std::io::Write;
 use std::slice;
 
+#[cfg(feature = "bytes")]
+use bytes::Bytes;
+
 use varint;
 use misc::remaining_capacity_as_slice_mut;
 use misc::remove_lifetime_mut;
@@ -164,16 +167,28 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
-    pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
+    fn check_limit(&self, len: usize) -> ProtobufResult<()> {
         if self.current_limit != NO_LIMIT {
-            if buf.len() as u64 > self.bytes_until_limit() {
+            if len as u64 > self.bytes_until_limit() {
                 return Err(ProtobufError::WireError(format!("unexpected EOF")));
             }
         }
+        Ok(())
+    }
 
+    pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
+        self.check_limit(buf.len())?;
         self.source.read_exact(buf)?;
         self.pos += buf.len() as u64;
         Ok(())
+    }
+
+    #[cfg(feature = "bytes")]
+    fn read_raw_callerche_bytes(&mut self, count: usize) -> ProtobufResult<Bytes> {
+        self.check_limit(count)?;
+        let r = self.source.read_exact_bytes(count)?;
+        self.pos += count as u64;
+        Ok(r)
     }
 
     pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
@@ -571,6 +586,12 @@ impl<'a> CodedInputStream<'a> {
         let mut r = Vec::new();
         self.read_bytes_into(&mut r)?;
         Ok(r)
+    }
+
+    #[cfg(feature = "bytes")]
+    pub fn read_carllerche_bytes(&mut self) -> ProtobufResult<Bytes> {
+        let len = self.read_raw_varint32()?;
+        self.read_raw_callerche_bytes(len as usize)
     }
 
     pub fn read_bytes_into(&mut self, target: &mut Vec<u8>) -> ProtobufResult<()> {

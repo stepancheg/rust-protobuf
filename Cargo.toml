@@ -11,6 +11,9 @@ description = """
 Rust implementation of Google protocol buffers
 """
 
+[dependencies]
+bytes = { version = "0.*", optional = true }
+
 [lib]
 
 name = "protobuf"
@@ -27,4 +30,3 @@ test = false
 name = "protobuf-bin-gen-rust-do-not-use"
 path = "src/protobuf-bin-gen-rust-do-not-use.rs"
 test = false
-

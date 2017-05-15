@@ -1,5 +1,8 @@
 use std::any::Any;
 
+#[cfg(feature = "bytes")]
+use bytes::Bytes;
+
 use ::core::*;
 use super::*;
 
@@ -90,6 +93,13 @@ impl ProtobufValue for str {
 impl ProtobufValue for Vec<u8> {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::Bytes(*&self)
+    }
+}
+
+#[cfg(feature = "bytes")]
+impl ProtobufValue for Bytes {
+    fn as_ref(&self) -> ProtobufValueRef {
+        ProtobufValueRef::Bytes(&*self)
     }
 }
 

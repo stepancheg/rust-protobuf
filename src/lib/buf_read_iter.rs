@@ -4,6 +4,23 @@ use std::io::Read;
 use std::io::BufRead;
 use std::mem;
 
+#[cfg(feature = "bytes")]
+use bytes::Bytes;
+
+#[cfg(feature = "bytes")]
+struct BytesWhenFeature(Bytes);
+
+#[cfg(feature = "bytes")]
+impl Default for BytesWhenFeature {
+    fn default() -> Self {
+        BytesWhenFeature(Bytes::new())
+    }
+}
+
+#[cfg(not(feature = "bytes"))]
+#[derive(Default)]
+struct BytesWhenFeature();
+
 /// Dangerous implementation of `BufRead`.
 ///
 /// Unsafe wrapper around BufRead which assumes that `BufRead` buf is
@@ -22,6 +39,7 @@ pub struct BufReadIter<R : BufRead> {
     buf_read: R,
     buf: &'static [u8],
     pos: usize, // within buf
+    _bytes: BytesWhenFeature,
 }
 
 impl<R : BufRead> BufReadIter<R> {
@@ -30,6 +48,7 @@ impl<R : BufRead> BufReadIter<R> {
             buf_read: buf_read,
             buf: &[],
             pos: 0,
+            _bytes: BytesWhenFeature::default(),
         }
     }
 
@@ -57,6 +76,17 @@ impl<R : BufRead> BufReadIter<R> {
 
         let r = self.buf[self.pos];
         self.pos += 1;
+        Ok(r)
+    }
+
+    #[cfg(feature = "bytes")]
+    pub fn read_exact_bytes(&mut self, len: usize) -> io::Result<Bytes> {
+        let end = self.pos + len;
+        if end > self._bytes.0.len() {
+            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+        }
+        let r = self._bytes.0.slice(self.pos, end);
+        self.pos = end;
         Ok(r)
     }
 }
