@@ -1,6 +1,7 @@
 use std::io;
 use std::error::Error;
 use std::fmt;
+use std::str;
 
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
@@ -8,6 +9,7 @@ pub type ProtobufResult<T> = Result<T, ProtobufError>;
 pub enum ProtobufError {
     IoError(io::Error),
     WireError(String),
+    Utf8(str::Utf8Error),
     MessageNotInitialized { message: &'static str },
 }
 
@@ -31,6 +33,7 @@ impl Error for ProtobufError {
             // not sure that cause should be included in message
             &ProtobufError::IoError(ref e) => e.description(),
             &ProtobufError::WireError(ref e) => &e,
+            &ProtobufError::Utf8(ref e) => &e.description(),
             &ProtobufError::MessageNotInitialized { .. } => "not all message fields set",
         }
     }
@@ -38,6 +41,7 @@ impl Error for ProtobufError {
     fn cause(&self) -> Option<&Error> {
         match self {
             &ProtobufError::IoError(ref e) => Some(e),
+            &ProtobufError::Utf8(ref e) => Some(e),
             &ProtobufError::WireError(..) => None,
             &ProtobufError::MessageNotInitialized { .. } => None,
         }
@@ -50,12 +54,21 @@ impl From<io::Error> for ProtobufError {
     }
 }
 
+impl From<str::Utf8Error> for ProtobufError {
+    fn from(err: str::Utf8Error) -> Self {
+        ProtobufError::Utf8(err)
+    }
+}
+
 impl From<ProtobufError> for io::Error {
     fn from(err: ProtobufError) -> Self {
         match err {
             ProtobufError::IoError(e) => e,
             ProtobufError::WireError(e) => io::Error::new(io::ErrorKind::InvalidData, ProtobufError::WireError(e)),
-            ProtobufError::MessageNotInitialized { message: msg } => io::Error::new(io::ErrorKind::InvalidInput, ProtobufError::MessageNotInitialized { message: msg }),
+            ProtobufError::MessageNotInitialized { message: msg } => {
+                io::Error::new(io::ErrorKind::InvalidInput, ProtobufError::MessageNotInitialized { message: msg })
+            },
+            e => io::Error::new(io::ErrorKind::Other, Box::new(e)),
         }
     }
 }

@@ -36,7 +36,7 @@ impl<'a> ExtGen<'a> {
                 t => panic!("unknown type: {:?}", t),
             }
         } else {
-            ProtobufTypeGen::Primitive(self.field.get_field_type())
+            ProtobufTypeGen::Primitive(self.field.get_field_type(), PrimitiveTypeVariant::Default)
         }
     }
 

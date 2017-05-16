@@ -7,4 +7,8 @@ package rustproto;
 extend google.protobuf.FileOptions {
     // When true, oneof field is generated public
     optional bool expose_oneof = 17001;
+    // Use `bytes::Bytes` for `bytes` fields
+    optional bool carllerche_bytes_for_bytes = 17011;
+    // Use `bytes::Bytes` for `string` fields
+    optional bool carllerche_bytes_for_string = 17012;
 }

@@ -2,6 +2,8 @@ use std::marker;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
+#[cfg(feature = "bytes")]
+use chars::Chars;
 
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
@@ -73,9 +75,12 @@ pub struct ProtobufTypeSfixed64;
 pub struct ProtobufTypeBool;
 pub struct ProtobufTypeString;
 pub struct ProtobufTypeBytes;
+pub struct ProtobufTypeChars;
 
 #[cfg(feature = "bytes")]
 pub struct ProtobufTypeCarllercheBytes;
+#[cfg(feature = "bytes")]
+pub struct ProtobufTypeCarllercheChars;
 
 pub struct ProtobufTypeEnum<E : ProtobufEnum>(marker::PhantomData<E>);
 pub struct ProtobufTypeMessage<M : Message>(marker::PhantomData<M>);
@@ -404,6 +409,29 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
         -> ProtobufResult<()>
     {
         os.write_bytes(field_number, &value)
+    }
+}
+
+#[cfg(feature = "bytes")]
+impl ProtobufType for ProtobufTypeCarllercheChars {
+    type Value = Chars;
+
+    fn wire_type() -> WireType {
+        ProtobufTypeBytes::wire_type()
+    }
+
+    fn read(is: &mut CodedInputStream) -> ProtobufResult<Self::Value> {
+        is.read_carllerche_chars()
+    }
+
+    fn compute_size(value: &Chars) -> u32 {
+        value.len() as u32
+    }
+
+    fn write_with_cached_size(field_number: u32, value: &Chars, os: &mut CodedOutputStream)
+        -> ProtobufResult<()>
+    {
+        os.write_string(field_number, &value)
     }
 }
 

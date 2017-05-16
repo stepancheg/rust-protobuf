@@ -9,7 +9,11 @@ doctest = false
 [features]
 default-features = []
 proto3 = []
-bytes = ["protobuf/bytes"]
+with-bytes = ["bytes", "protobuf/with-bytes"]
 
 [dependencies.protobuf]
 path = "../.."
+
+[dependencies.bytes]
+version = "0.*"
+optional = true

@@ -26,6 +26,8 @@ pub use stream::wire_format;
 pub use error::ProtobufResult;
 pub use error::ProtobufError;
 pub use cached_size::CachedSize;
+#[cfg(feature = "bytes")]
+pub use chars::Chars;
 
 // generated
 pub mod descriptor;
@@ -62,11 +64,12 @@ mod strx;
 mod rust;
 mod cached_size;
 mod varint;
+#[cfg(feature = "bytes")]
+pub mod chars; // TODO: make private
 
 mod misc;
 
 mod buf_read_iter;
-mod input_source;
 
 
 // so `use protobuf::*` could work in mod descriptor and well_known_types

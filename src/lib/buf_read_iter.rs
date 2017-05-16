@@ -2,24 +2,30 @@ use std::cmp;
 use std::io;
 use std::io::Read;
 use std::io::BufRead;
+use std::io::BufReader;
 use std::mem;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
-
 #[cfg(feature = "bytes")]
-struct BytesWhenFeature(Bytes);
-
+use bytes::BytesMut;
 #[cfg(feature = "bytes")]
-impl Default for BytesWhenFeature {
-    fn default() -> Self {
-        BytesWhenFeature(Bytes::new())
-    }
+use bytes::BufMut;
+
+
+// If an input stream is constructed with a `Read`, we create a
+// `BufReader` with an internal buffer of this size.
+const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
+
+
+/// Hold all possible combinations of input source
+enum InputSource<'a> {
+    BufRead(&'a mut BufRead),
+    Read(BufReader<&'a mut Read>),
+    Slice(&'a [u8]),
+    #[cfg(feature = "bytes")]
+    Bytes(&'a Bytes),
 }
-
-#[cfg(not(feature = "bytes"))]
-#[derive(Default)]
-struct BytesWhenFeature();
 
 /// Dangerous implementation of `BufRead`.
 ///
@@ -35,20 +41,44 @@ struct BytesWhenFeature();
 /// It is important for `CodedInputStream` performance that small reads
 /// (e. g. 4 bytes reads) do not involve virtual calls or switches.
 /// This is achievable with `BufReadIter`.
-pub struct BufReadIter<R : BufRead> {
-    buf_read: R,
-    buf: &'static [u8],
+pub struct BufReadIter<'a> {
+    input_source: InputSource<'a>,
+    buf: &'a [u8],
     pos: usize, // within buf
-    _bytes: BytesWhenFeature,
 }
 
-impl<R : BufRead> BufReadIter<R> {
-    pub fn new(buf_read: R) -> BufReadIter<R> {
+impl<'ignore> BufReadIter<'ignore> {
+    pub fn from_read<'a>(read: &'a mut Read) -> BufReadIter<'a> {
         BufReadIter {
-            buf_read: buf_read,
+            input_source: InputSource::Read(
+                BufReader::with_capacity(INPUT_STREAM_BUFFER_SIZE, read)),
             buf: &[],
             pos: 0,
-            _bytes: BytesWhenFeature::default(),
+        }
+    }
+
+    pub fn from_buf_read<'a>(buf_read: &'a mut BufRead) -> BufReadIter<'a> {
+        BufReadIter {
+            input_source: InputSource::BufRead(buf_read),
+            buf: &[],
+            pos: 0,
+        }
+    }
+
+    pub fn from_byte_slice<'a>(bytes: &'a [u8]) -> BufReadIter<'a> {
+        BufReadIter {
+            input_source: InputSource::Slice(bytes),
+            buf: bytes,
+            pos: 0,
+        }
+    }
+
+    #[cfg(feature = "bytes")]
+    pub fn from_bytes<'a>(bytes: &'a Bytes) -> BufReadIter<'a> {
+        BufReadIter {
+            input_source: InputSource::Bytes(bytes),
+            buf: &bytes,
+            pos: 0,
         }
     }
 
@@ -57,7 +87,7 @@ impl<R : BufRead> BufReadIter<R> {
         &self.buf[self.pos..]
     }
 
-    fn remaining_len(&self) -> usize {
+    fn remaining_len_in_buf(&self) -> usize {
         self.buf.len() - self.pos
     }
 
@@ -81,23 +111,40 @@ impl<R : BufRead> BufReadIter<R> {
 
     #[cfg(feature = "bytes")]
     pub fn read_exact_bytes(&mut self, len: usize) -> io::Result<Bytes> {
-        let end = self.pos + len;
-        if end > self._bytes.0.len() {
-            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+        if let InputSource::Bytes(bytes) = self.input_source {
+            if self.pos + len > bytes.len() {
+                return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+            }
+            let r = bytes.slice(self.pos, self.pos + len);
+            self.pos += len;
+            Ok(r)
+        } else {
+            let mut r = BytesMut::with_capacity(len);
+            unsafe {
+                {
+                    let mut buf = &mut r.bytes_mut()[..len];
+                    self.read_exact(buf)?;
+                }
+                r.advance_mut(len);
+            }
+            Ok(r.freeze())
         }
-        let r = self._bytes.0.slice(self.pos, end);
-        self.pos = end;
-        Ok(r)
     }
 }
 
-impl<R : BufRead> Drop for BufReadIter<R> {
+impl<'a> Drop for BufReadIter<'a> {
     fn drop(&mut self) {
-        self.buf_read.consume(self.pos);
+        match self.input_source {
+            InputSource::BufRead(ref mut buf_read) => buf_read.consume(self.pos),
+            InputSource::Read(_) => {
+                // Nothing to flush, because we own BufReader
+            }
+            _ => {},
+        }
     }
 }
 
-impl<R : BufRead> Read for BufReadIter<R> {
+impl<'a> Read for BufReadIter<'a> {
     #[inline]
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.fill_buf()?;
@@ -111,32 +158,53 @@ impl<R : BufRead> Read for BufReadIter<R> {
     }
 
     fn read_exact(&mut self, mut buf: &mut [u8]) -> io::Result<()> {
-        if self.remaining_len() >= buf.len() {
+        if self.remaining_len_in_buf() >= buf.len() {
             let buf_len = buf.len();
             buf.copy_from_slice(&self.buf[self.pos .. self.pos + buf_len]);
             self.pos += buf_len;
             return Ok(());
         }
 
-        if self.pos != 0 {
-            self.buf_read.consume(self.pos);
-            self.pos = 0;
-            self.buf = &[];
+        match self.input_source {
+            InputSource::Read(ref mut buf_read) => {
+                buf_read.consume(self.pos);
+                self.pos = 0;
+                self.buf = &[];
+                buf_read.read_exact(buf)
+            }
+            InputSource::BufRead(ref mut buf_read) => {
+                buf_read.consume(self.pos);
+                self.pos = 0;
+                self.buf = &[];
+                buf_read.read_exact(buf)
+            }
+            _ => {
+                Err(io::Error::new(io::ErrorKind::UnexpectedEof, "failed to fill whole buffer"))
+            }
         }
-
-        self.buf_read.read_exact(buf)
     }
 }
 
-impl<R : BufRead> BufRead for BufReadIter<R> {
+impl<'a> BufRead for BufReadIter<'a> {
     #[inline]
     fn fill_buf(&mut self) -> io::Result<&[u8]> {
         if self.pos == self.buf.len() {
-            self.buf_read.consume(self.pos);
+            match self.input_source {
+                InputSource::Read(ref mut buf_read) => {
+                    buf_read.consume(self.pos);
+                    // Danger! `buf_read.buf` must not be moved!
+                    self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+                    self.pos = 0;
+                }
+                InputSource::BufRead(ref mut buf_read) => {
+                    buf_read.consume(self.pos);
+                    // Danger! `buf_read.buf` must not be moved!
+                    self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+                    self.pos = 0;
+                }
+                _ => {}
+            }
 
-            // Danger! `buf_read.buf` must not be moved!
-            self.buf = unsafe { mem::transmute(self.buf_read.fill_buf()?) };
-            self.pos = 0;
         }
 
         Ok(&self.buf[self.pos..])
@@ -147,4 +215,39 @@ impl<R : BufRead> BufRead for BufReadIter<R> {
         assert!(amt <= self.buf.len() - self.pos);
         self.pos += amt;
     }
+}
+
+#[cfg(all(test, feature = "bytes"))]
+mod test_bytes {
+    use super::*;
+    use std::io::Write;
+
+    fn make_long_string(len: usize) -> Vec<u8> {
+        let mut s = Vec::new();
+        while s.len() < len {
+            let len = s.len();
+            write!(&mut s, "{}", len).expect("unexpected");
+        }
+        s.truncate(len);
+        s
+    }
+
+    #[test]
+    fn read_exact_bytes_from_slice() {
+        let bytes = make_long_string(100);
+        let mut bri = BufReadIter::from_byte_slice(&bytes[..]);
+        assert_eq!(&bytes[..90], &bri.read_exact_bytes(90).unwrap()[..]);
+        assert_eq!(bytes[90], bri.read_byte().expect("read_byte"));
+    }
+
+    #[test]
+    fn read_exact_bytes_from_bytes() {
+        let bytes = Bytes::from(make_long_string(100));
+        let mut bri = BufReadIter::from_bytes(&bytes);
+        let read = bri.read_exact_bytes(90).unwrap();
+        assert_eq!(&bytes[..90], &read[..]);
+        assert_eq!(&bytes[..90].as_ptr(), &read.as_ptr());
+        assert_eq!(bytes[90], bri.read_byte().expect("read_byte"));
+    }
+
 }

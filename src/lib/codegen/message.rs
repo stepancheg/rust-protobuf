@@ -108,7 +108,7 @@ struct EntryKeyValue(GenProtobufType, GenProtobufType);
 
 #[derive(Clone,Debug)]
 enum GenProtobufType {
-    Primitive(FieldDescriptorProto_Type),
+    Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name
     Message(String, String),
     // name, file name, default value
@@ -119,7 +119,7 @@ enum GenProtobufType {
 impl GenProtobufType {
     fn proto_type(&self) -> FieldDescriptorProto_Type {
         match *self {
-            GenProtobufType::Primitive(t) => t,
+            GenProtobufType::Primitive(t, ..) => t,
             GenProtobufType::Group => FieldDescriptorProto_Type::TYPE_GROUP,
             GenProtobufType::Message(..) => FieldDescriptorProto_Type::TYPE_MESSAGE,
             GenProtobufType::Enum(..) => FieldDescriptorProto_Type::TYPE_ENUM,
@@ -132,7 +132,16 @@ impl GenProtobufType {
 
     fn rust_type(&self) -> RustType {
         match *self {
-            GenProtobufType::Primitive(t) => rust_name(t),
+            GenProtobufType::Primitive(t, PrimitiveTypeVariant::Default) => rust_name(t),
+            GenProtobufType::Primitive(
+                FieldDescriptorProto_Type::TYPE_STRING,
+                PrimitiveTypeVariant::Carllerche)
+                    => RustType::Chars,
+            GenProtobufType::Primitive(
+                FieldDescriptorProto_Type::TYPE_BYTES,
+                PrimitiveTypeVariant::Carllerche)
+                    => RustType::Bytes,
+            GenProtobufType::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             GenProtobufType::Group => RustType::Group,
             GenProtobufType::Message(ref name, _) => RustType::Message(name.clone()),
             GenProtobufType::Enum(ref name, _, ref default_value) => {
@@ -143,7 +152,7 @@ impl GenProtobufType {
 
     fn protobuf_type_gen(&self) -> ProtobufTypeGen {
         match *self {
-            GenProtobufType::Primitive(t) => ProtobufTypeGen::Primitive(t),
+            GenProtobufType::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
             GenProtobufType::Message(ref name, ..) => ProtobufTypeGen::Message(name.clone()),
             GenProtobufType::Enum(ref name, ..) => ProtobufTypeGen::Enum(name.clone()),
             GenProtobufType::Group => unreachable!(),
@@ -261,7 +270,7 @@ struct FieldGen<'a> {
 }
 
 enum FieldElem {
-    Primitive(FieldDescriptorProto_Type),
+    Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name, entry
     Message(String, String, Option<Box<EntryKeyValue>>),
     // name, file name, default value
@@ -272,7 +281,7 @@ enum FieldElem {
 impl FieldElem {
     fn into_type(self) -> GenProtobufType {
         match self {
-            FieldElem::Primitive(t) => GenProtobufType::Primitive(t),
+            FieldElem::Primitive(t, v) => GenProtobufType::Primitive(t, v),
             FieldElem::Message(name, file_name, None) => GenProtobufType::Message(name, file_name),
             // TODO: replace with unreachable
             FieldElem::Message(name, file_name, Some(..)) => GenProtobufType::Message(name, file_name),
@@ -322,7 +331,19 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
             _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
         }
     } else if field.field.has_field_type() {
-        (FieldElem::Primitive(field.field.get_field_type()), None)
+        let options = field.message.get_scope().get_file_descriptor().get_options();
+        let carllerche_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(options).unwrap_or(false);
+        let carllerche_for_string = rustproto::exts::carllerche_bytes_for_string.get(options).unwrap_or(false);
+
+        let elem = match field.field.get_field_type() {
+            FieldDescriptorProto_Type::TYPE_STRING if carllerche_for_string =>
+                FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, PrimitiveTypeVariant::Carllerche),
+            FieldDescriptorProto_Type::TYPE_BYTES if carllerche_for_bytes =>
+                FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, PrimitiveTypeVariant::Carllerche),
+            t => FieldElem::Primitive(t, PrimitiveTypeVariant::Default),
+        };
+
+        (elem, None)
     } else {
         panic!("neither type_name, nor field_type specified for field: {}", field.field.get_name());
     }
@@ -986,8 +1007,8 @@ impl<'a> FieldGen<'a> {
             }
             FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, ref elem }) => {
                 match *elem {
-                    GenProtobufType::Primitive(FieldDescriptorProto_Type::TYPE_STRING) |
-                    GenProtobufType::Primitive(FieldDescriptorProto_Type::TYPE_BYTES)  => {
+                    GenProtobufType::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..) |
+                    GenProtobufType::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..)  => {
                         w.if_stmt(format!("!{}.is_empty()", self.self_field()), |w| {
                             cb(&self.self_field(), &self.full_storage_type(), w);
                         });

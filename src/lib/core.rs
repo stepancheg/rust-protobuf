@@ -7,6 +7,9 @@ use std::fmt;
 use std::io::Read;
 use std::io::Write;
 
+#[cfg(feature = "bytes")]
+use bytes::Bytes;
+
 use clear::Clear;
 use reflect::MessageDescriptor;
 use reflect::EnumDescriptor;
@@ -206,6 +209,13 @@ pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Read) -> Prot
 }
 
 pub fn parse_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
+    bytes.with_coded_input_stream(|is| {
+        parse_from::<M>(is)
+    })
+}
+
+#[cfg(feature = "bytes")]
+pub fn parse_from_carllerche_bytes<M : Message + MessageStatic>(bytes: &Bytes) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| {
         parse_from::<M>(is)
     })

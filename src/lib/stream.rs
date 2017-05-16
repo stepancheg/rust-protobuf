@@ -1,12 +1,13 @@
 use std;
 use std::mem;
-use std::io;
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, Read};
 use std::io::Write;
 use std::slice;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
+#[cfg(feature = "bytes")]
+use chars::Chars;
 
 use varint;
 use misc::remaining_capacity_as_slice_mut;
@@ -23,12 +24,7 @@ use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 use error::ProtobufResult;
 use error::ProtobufError;
-use input_source::InputSource;
 use buf_read_iter::BufReadIter;
-
-// If an input stream is constructed with a `Read`, we create a
-// `BufReader` with an internal buffer of this size.
-const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -125,24 +121,23 @@ pub mod wire_format {
 const NO_LIMIT: u64 = std::u64::MAX;
 
 pub struct CodedInputStream<'a> {
-    source: BufReadIter<InputSource<'a>>,
+    source: BufReadIter<'a>,
     current_limit: u64,
     pos: u64,
 }
 
 impl<'a> CodedInputStream<'a> {
-    pub fn new(reader: &'a mut Read) -> CodedInputStream<'a> {
+    pub fn new(read: &'a mut Read) -> CodedInputStream<'a> {
         CodedInputStream {
-            source: BufReadIter::new(InputSource::Read(BufReader::with_capacity(
-                INPUT_STREAM_BUFFER_SIZE, reader))),
+            source: BufReadIter::from_read(read),
             current_limit: NO_LIMIT,
             pos: 0,
         }
     }
 
-    pub fn from_buffered_reader(buffered_reader: &'a mut BufRead) -> CodedInputStream<'a> {
+    pub fn from_buffered_reader(buf_read: &'a mut BufRead) -> CodedInputStream<'a> {
         CodedInputStream {
-            source: BufReadIter::new(InputSource::BufRead(buffered_reader)),
+            source: BufReadIter::from_buf_read(buf_read),
             current_limit: NO_LIMIT,
             pos: 0,
         }
@@ -151,7 +146,17 @@ impl<'a> CodedInputStream<'a> {
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
         let len = bytes.len();
         CodedInputStream {
-            source: BufReadIter::new(InputSource::Cursor(io::Cursor::new(bytes))),
+            source: BufReadIter::from_byte_slice(bytes),
+            current_limit: len as u64,
+            pos: 0,
+        }
+    }
+
+    #[cfg(feature = "bytes")]
+    pub fn from_carllerche_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
+        let len = bytes.len();
+        CodedInputStream {
+            source: BufReadIter::from_bytes(bytes),
             current_limit: len as u64,
             pos: 0,
         }
@@ -594,6 +599,12 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_callerche_bytes(len as usize)
     }
 
+    #[cfg(feature = "bytes")]
+    pub fn read_carllerche_chars(&mut self) -> ProtobufResult<Chars> {
+        let bytes = self.read_carllerche_bytes()?;
+        Ok(Chars::from_bytes(bytes)?)
+    }
+
     pub fn read_bytes_into(&mut self, target: &mut Vec<u8>) -> ProtobufResult<()> {
         let len = self.read_raw_varint32()?;
         self.read_raw_bytes_into(len, target)?;
@@ -708,6 +719,18 @@ impl<'a> WithCodedInputStream for &'a [u8] {
         where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
     {
         let mut is = CodedInputStream::from_bytes(self);
+        let r = cb(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
+    }
+}
+
+#[cfg(features = "bytes")]
+impl<'a> WithCodedInputStream for &'a Bytes {
+    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
+        where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
+    {
+        let mut is = CodedInputStream::from_carllerche_bytes(self);
         let r = cb(&mut is)?;
         is.check_eof()?;
         Ok(r)

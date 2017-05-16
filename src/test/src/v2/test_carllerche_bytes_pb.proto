@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+option (rustproto.carllerche_bytes_for_bytes) = true;
+option (rustproto.carllerche_bytes_for_string) = true;
+
+message TestCarllercheBytes {
+    optional bytes b1 = 1;
+    optional string s1 = 2;
+    repeated bytes br = 3;
+    repeated string sr = 4;
+}

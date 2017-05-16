@@ -11,6 +11,9 @@ description = """
 Rust implementation of Google protocol buffers
 """
 
+[features]
+with-bytes = ["bytes"]
+
 [dependencies]
 bytes = { version = "0.*", optional = true }
 

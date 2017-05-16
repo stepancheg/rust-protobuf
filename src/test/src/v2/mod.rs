@@ -49,3 +49,10 @@ mod test_oneof_expose_pb;
 // Taken from rust-protobuf 1.0.24 to make sure
 // that old generated code it is still compatible with latest rust-protobuf.
 mod test_basic_pb_1_0_24;
+
+// Disabled until bytes released with `Default` for `Bytes`:
+// https://github.com/carllerche/bytes/commit/37f6cabd96a6200b0b3cb1d743be9c0cf75d1085
+//#[cfg(feature = "with-bytes")]
+//mod test_carllerche_bytes_pb;
+//#[cfg(feature = "with-bytes")]
+//mod test_carllerche_bytes;

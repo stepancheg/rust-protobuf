@@ -22,7 +22,7 @@ impl<M : Message, T : ProtobufType> ExtFieldOptional<M, T> {
 }
 
 impl<M : Message, T : ProtobufType> ExtFieldRepeated<M, T> {
-    pub fn get(&self, m: &M) -> Vec<T::Value> {
+    pub fn get(&self, _m: &M) -> Vec<T::Value> {
         unimplemented!()
     }
 }
