@@ -6,7 +6,7 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 [features]
 default-features = []
 proto3 = []
-with-bytes = ["bytes", "protobuf/with-bytes"]
+with-bytes = ["protobuf/with-bytes"]
 
 [dependencies.protobuf]
 path = "../.."
