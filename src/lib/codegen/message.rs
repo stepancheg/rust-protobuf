@@ -163,6 +163,13 @@ impl GenProtobufType {
     fn lib_protobuf_type(&self) -> String {
         self.protobuf_type_gen().rust_type()
     }
+
+    fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
+        match self {
+            &GenProtobufType::Primitive(_, v) => v,
+            _ => PrimitiveTypeVariant::Default,
+        }
+    }
 }
 
 #[derive(Clone,PartialEq,Eq)]
@@ -253,6 +260,16 @@ enum FieldKind {
     Map(MapField),
     // part of oneof
     Oneof(OneofField),
+}
+
+impl FieldKind {
+    fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
+        match self {
+            &FieldKind::Singular(ref s) => s.elem.primitive_type_variant(),
+            &FieldKind::Repeated(ref r) => r.elem.primitive_type_variant(),
+            _ => panic!("not a primitive type"), // TODO: map
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -1186,10 +1203,16 @@ impl<'a> FieldGen<'a> {
             },
             FieldKind::Oneof(..) => unreachable!(),
         };
+        let carllerche = match self.kind.primitive_type_variant() {
+            PrimitiveTypeVariant::Carllerche => "carllerche_",
+            PrimitiveTypeVariant::Default => "",
+        };
+        let type_name_for_fn = protobuf_name(self.proto_type);
         w.write_line(&format!(
-            "::protobuf::rt::read_{}_{}_into(wire_type, is, &mut self.{})?;",
+            "::protobuf::rt::read_{}_{}{}_into(wire_type, is, &mut self.{})?;",
             singular_or_repeated,
-            protobuf_name(self.proto_type),
+            carllerche,
+            type_name_for_fn,
             self.rust_name));
     }
 

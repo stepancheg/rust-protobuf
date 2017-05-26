@@ -5,6 +5,11 @@ use std::default::Default;
 use std::hash::Hash;
 use std::collections::HashMap;
 
+#[cfg(feature = "bytes")]
+use bytes::Bytes;
+#[cfg(feature = "bytes")]
+use chars::Chars;
+
 use core::*;
 use zigzag::*;
 use stream::wire_format;
@@ -374,6 +379,20 @@ pub fn read_repeated_string_into(
     }
 }
 
+#[cfg(feature = "bytes")]
+pub fn read_repeated_carllerche_string_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Chars>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            target.push(is.read_carllerche_chars()?);
+            Ok(())
+        },
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
 pub fn read_singular_string_into(
     wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<String>)
         -> ProtobufResult<()>
@@ -382,6 +401,20 @@ pub fn read_singular_string_into(
         WireTypeLengthDelimited => {
             let tmp = target.set_default();
             is.read_string_into(tmp)
+        },
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+#[cfg(feature = "bytes")]
+pub fn read_singular_carllerche_string_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Chars>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            *target = SingularField::some(is.read_carllerche_chars()?);
+            Ok(())
         },
         _ => Err(unexpected_wire_type(wire_type)),
     }
@@ -412,6 +445,20 @@ pub fn read_repeated_bytes_into(
     }
 }
 
+#[cfg(feature = "bytes")]
+pub fn read_repeated_carllerche_bytes_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Bytes>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            target.push(is.read_carllerche_bytes()?);
+            Ok(())
+        },
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
 pub fn read_singular_bytes_into(
     wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Vec<u8>>)
         -> ProtobufResult<()>
@@ -420,6 +467,20 @@ pub fn read_singular_bytes_into(
         WireTypeLengthDelimited => {
             let tmp = target.set_default();
             is.read_bytes_into(tmp)
+        },
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+#[cfg(feature = "bytes")]
+pub fn read_singular_carllerche_bytes_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Bytes>)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            *target = SingularField::some(is.read_carllerche_bytes()?);
+            Ok(())
         },
         _ => Err(unexpected_wire_type(wire_type)),
     }
