@@ -243,6 +243,18 @@ struct RepeatedField {
     packed: bool,
 }
 
+impl RepeatedField {
+    fn rust_type(&self) -> RustType {
+        if !self.elem.is_copy()
+            && self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche
+        {
+            RustType::RepeatedField(Box::new(self.elem.rust_type()))
+        } else {
+            RustType::Vec(Box::new(self.elem.rust_type()))
+        }
+    }
+}
+
 #[derive(Clone)]
 struct MapField {
     name: String,
@@ -529,13 +541,7 @@ impl<'a> FieldGen<'a> {
     // type of field in struct
     fn full_storage_type(&self) -> RustType {
         match self.kind {
-            FieldKind::Repeated(RepeatedField { ref elem, .. }) => {
-                if !elem.is_copy() {
-                    RustType::RepeatedField(Box::new(elem.rust_type()))
-                } else {
-                    RustType::Vec(Box::new(elem.rust_type()))
-                }
-            }
+            FieldKind::Repeated(ref repeated) => repeated.rust_type(),
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
                 RustType::HashMap(Box::new(key.rust_type()), Box::new(value.rust_type()))
             }

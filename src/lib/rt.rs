@@ -381,7 +381,7 @@ pub fn read_repeated_string_into(
 
 #[cfg(feature = "bytes")]
 pub fn read_repeated_carllerche_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Chars>)
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<Chars>)
         -> ProtobufResult<()>
 {
     match wire_type {
@@ -447,7 +447,7 @@ pub fn read_repeated_bytes_into(
 
 #[cfg(feature = "bytes")]
 pub fn read_repeated_carllerche_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Bytes>)
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<Bytes>)
         -> ProtobufResult<()>
 {
     match wire_type {
