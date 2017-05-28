@@ -408,12 +408,12 @@ pub fn read_singular_string_into(
 
 #[cfg(feature = "bytes")]
 pub fn read_singular_carllerche_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Chars>)
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Option<Chars>)
         -> ProtobufResult<()>
 {
     match wire_type {
         WireTypeLengthDelimited => {
-            *target = SingularField::some(is.read_carllerche_chars()?);
+            *target = Some(is.read_carllerche_chars()?);
             Ok(())
         },
         _ => Err(unexpected_wire_type(wire_type)),
@@ -474,12 +474,12 @@ pub fn read_singular_bytes_into(
 
 #[cfg(feature = "bytes")]
 pub fn read_singular_carllerche_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Bytes>)
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Option<Bytes>)
         -> ProtobufResult<()>
 {
     match wire_type {
         WireTypeLengthDelimited => {
-            *target = SingularField::some(is.read_carllerche_bytes()?);
+            *target = Some(is.read_carllerche_bytes()?);
             Ok(())
         },
         _ => Err(unexpected_wire_type(wire_type)),

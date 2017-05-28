@@ -195,6 +195,28 @@ struct SingularField {
     elem: GenProtobufType,
 }
 
+impl SingularField {
+    fn rust_type(&self) -> RustType {
+        match self.flag {
+            SingularFieldFlag::WithFlag { .. } => {
+                match self.elem.proto_type() {
+                    FieldDescriptorProto_Type::TYPE_MESSAGE =>
+                        RustType::SingularPtrField(Box::new(self.elem.rust_type())),
+                    FieldDescriptorProto_Type::TYPE_STRING |
+                    FieldDescriptorProto_Type::TYPE_BYTES
+                            if self.elem.primitive_type_variant() == PrimitiveTypeVariant::Default =>
+                        RustType::SingularField(Box::new(self.elem.rust_type())),
+                    _ =>
+                        RustType::Option(Box::new(self.elem.rust_type()))
+                }
+            }
+            SingularFieldFlag::WithoutFlag => {
+                self.elem.rust_type()
+            }
+        }
+    }
+}
+
 // oneof one { ... }
 #[derive(Clone)]
 struct OneofField {
@@ -545,21 +567,7 @@ impl<'a> FieldGen<'a> {
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
                 RustType::HashMap(Box::new(key.rust_type()), Box::new(value.rust_type()))
             }
-            FieldKind::Singular(SingularField { ref elem, flag: SingularFieldFlag::WithFlag { .. }}) => {
-                match elem.proto_type() {
-                    FieldDescriptorProto_Type::TYPE_MESSAGE =>
-                        RustType::SingularPtrField(Box::new(elem.rust_type())),
-                    FieldDescriptorProto_Type::TYPE_STRING |
-                    FieldDescriptorProto_Type::TYPE_BYTES  =>
-                        RustType::SingularField(Box::new(elem.rust_type())),
-                    _ =>
-                        RustType::Option(Box::new(elem.rust_type()))
-                }
-
-            }
-            FieldKind::Singular(SingularField { ref elem, flag: SingularFieldFlag::WithoutFlag }) => {
-                elem.rust_type()
-            }
+            FieldKind::Singular(ref singular) => singular.rust_type(),
             FieldKind::Oneof(..) => {
                 unreachable!()
             }
@@ -638,27 +646,6 @@ impl<'a> FieldGen<'a> {
             FieldKind::Map(..) => {
                 RustType::Ref(Box::new(self.full_storage_type()))
             }
-        }
-    }
-
-    // suffix to convert field value to option
-    // like `.as_ref()` in `self.xx.as_ref()`
-    fn as_option(&self) -> &'static str {
-        assert!(self.is_singular());
-        match self.full_storage_type() {
-            RustType::Option(..) => "",
-            _                    => ".as_ref()"
-        }
-    }
-
-    // type of expression returned by `as_option()`
-    fn as_option_type(&self) -> RustType {
-        assert!(self.is_singular());
-        match self.full_storage_type() {
-            r @ RustType::Option(..)       => r,
-            RustType::SingularField(ty)    |
-            RustType::SingularPtrField(ty) => RustType::Option(Box::new(RustType::Ref(ty))),
-            x => panic!("cannot convert {} to option", x),
         }
     }
 
@@ -1010,9 +997,29 @@ impl<'a> FieldGen<'a> {
         format!("{}.is_none()", self.self_field())
     }
 
+    // type of expression returned by `as_option()`
+    fn as_option_type(&self) -> RustType {
+        assert!(self.is_singular());
+        match self.full_storage_type() {
+            RustType::Option(ref e) if e.is_copy()     => RustType::Option(e.clone()),
+            RustType::Option(e)                        => RustType::Option(Box::new(e.ref_type())),
+            RustType::SingularField(ty)                |
+            RustType::SingularPtrField(ty)             => RustType::Option(Box::new(RustType::Ref(ty))),
+            x => panic!("cannot convert {} to option", x),
+        }
+    }
+
     // field data viewed as Option
-    fn self_field_as_option(&self) -> String {
-        format!("{}{}", self.self_field(), self.as_option())
+    fn self_field_as_option(&self) -> RustValueTyped {
+        assert!(self.is_singular());
+
+        let suffix = match self.full_storage_type() {
+            RustType::Option(ref e) if e.is_copy() => "",
+            _                                      => ".as_ref()",
+        };
+
+        self.as_option_type()
+            .value(format!("{}{}", self.self_field(), suffix))
     }
 
     fn write_if_let_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
@@ -1020,11 +1027,15 @@ impl<'a> FieldGen<'a> {
     {
         match self.kind {
             FieldKind::Repeated(..) | FieldKind::Map(..) => panic!("field is not singular"),
-            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
+            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, ref elem }) => {
                 let var = "v";
-                w.if_let_stmt(&format!("Some({})", var), &self.self_field_as_option(), |w| {
-                    let option_type = self.as_option_type();
-                    let v_type = option_type.elem_type();
+                let ref_prefix = match elem.rust_type().is_copy() {
+                    true => "",
+                    false => "ref ",
+                };
+                let as_option = self.self_field_as_option();
+                w.if_let_stmt(&format!("Some({}{})", ref_prefix, var), &as_option.value, |w| {
+                    let v_type = as_option.rust_type.elem_type();
                     cb(var, &v_type, w);
                 });
             }
@@ -1131,11 +1142,14 @@ impl<'a> FieldGen<'a> {
                 // TODO: default from .proto is not needed here (?)
                 self.element_default_value_rust().into_type(self.full_storage_iter_elem_type()).value));
         } else {
-            if !self.elem_type_is_copy() {
-                let self_field = self.self_field();
-                w.write_line(&format!("{}.set_default();", self_field));
-            } else {
-                self.write_self_field_assign_some(w, &self.element_default_value_rust().value);
+            match self.full_storage_type() {
+                RustType::SingularField(..) | RustType::SingularPtrField(..) => {
+                    let self_field = self.self_field();
+                    w.write_line(&format!("{}.set_default();", self_field));
+                }
+                _ => {
+                    self.write_self_field_assign_some(w, &self.element_default_value_rust().value);
+                }
             }
         }
     }
@@ -1422,10 +1436,9 @@ impl<'a> FieldGen<'a> {
             match self.singular() {
                 &SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. } => {
                     if get_xxx_return_type.is_ref() {
-                        let self_field_as_option = self.self_field_as_option();
-                        w.match_expr(self_field_as_option, |w| {
-                            let option_type = self.as_option_type();
-                            let v_type = option_type.elem_type();
+                        let as_option = self.self_field_as_option();
+                        w.match_expr(&as_option.value, |w| {
+                            let v_type = as_option.rust_type.elem_type();
                             let r_type = self.get_xxx_return_type();
                             w.case_expr(
                                 "Some(v)",

@@ -87,6 +87,16 @@ impl RustType {
         }
     }
 
+    pub fn is_copy(&self) -> bool {
+        if self.is_primitive() {
+            true
+        } else if let RustType::Enum(..) = *self {
+            true
+        } else {
+            false
+        }
+    }
+
     fn is_str(&self) -> bool {
         match *self {
             RustType::Str => true,
