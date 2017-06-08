@@ -1,6 +1,6 @@
 # API to generate .rs files
 
-API to generate `.rs` files to be used e. g. from `build.rs`.
+API to generate `.rs` files to be used e. g. [from build.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf-test/build.rs).
 
 Example code:
 
