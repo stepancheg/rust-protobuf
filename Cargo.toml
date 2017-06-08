@@ -1,2 +1,2 @@
 [workspace]
-members = ["protobuf", "protobuf-test", "perftest"]
+members = ["protoc", "protobuf", "protobuf-test", "perftest"]

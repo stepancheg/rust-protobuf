@@ -17,6 +17,9 @@ git = "http://github.com/rust-lang/time"
 [dependencies]
 rand = "0.*"
 
+[build-dependencies]
+protoc = { path = "../protoc" }
+
 [[bin]]
 
 name = "rust-protobuf-perftest"
