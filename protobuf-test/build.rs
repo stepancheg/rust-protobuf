@@ -85,6 +85,10 @@ fn generate_pb_rs() {
             f.flush().expect("flush");
         }
     }
+
+    if p.version().expect("version").is_3() {
+        println!("cargo:rustc-cfg=proto3");
+    }
 }
 
 fn main() {

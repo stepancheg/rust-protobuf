@@ -5,10 +5,12 @@ extern crate bytes;
 
 mod v2;
 
-#[cfg(feature = "proto3")]
+// `cfg(proto3)` is emitted by `build.rs`
+
+#[cfg(proto3)]
 mod v3;
 
-#[cfg(feature = "proto3")]
+#[cfg(proto3)]
 mod google;
 
 mod test;
