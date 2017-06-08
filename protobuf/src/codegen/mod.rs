@@ -149,8 +149,12 @@ pub fn gen(file_descriptors: &[FileDescriptorProto], files_to_generate: &[String
     let files_map: HashMap<&str, &FileDescriptorProto> =
         file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
 
+    let all_file_names: Vec<&str> = file_descriptors.iter().map(|f| f.get_name()).collect();
+
     for file_name in files_to_generate {
-        let file = files_map[&file_name[..]];
+        let file = files_map.get(&file_name[..])
+            .expect(&format!(
+                "file not found in file descriptors: {:?}, files: {:?}", file_name, all_file_names));
         results.extend(gen_file(file, &files_map, &root_scope));
     }
     results

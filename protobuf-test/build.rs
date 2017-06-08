@@ -1,5 +1,8 @@
-extern crate protoc;
 extern crate glob;
+extern crate env_logger;
+
+extern crate protoc;
+extern crate protoc_rust;
 
 use std::io::Write;
 use std::fs;
@@ -47,10 +50,8 @@ fn generate_pb_rs() {
 
         let protos = glob_simple(&format!("{}/*.proto", dir));
 
-        protoc::run(protoc::Args {
-            lang: "rust",
+        protoc_rust::run(protoc_rust::Args {
             out_dir: dir,
-            plugin: Some("../target/debug/protoc-gen-rust"),
             input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
             includes: &["../proto", dir],
         }).expect("protoc");
@@ -63,10 +64,8 @@ fn generate_pb_rs() {
         gen_v2_v3("src/v3");
 
         let protos = glob_simple("src/google/protobuf/*.proto");
-        protoc::run(protoc::Args {
-            lang: "rust",
+        protoc_rust::run(protoc_rust::Args {
             out_dir: "src/google/protobuf",
-            plugin: Some("../target/debug/protoc-gen-rust"),
             input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
             includes: &["../proto", "src"],
         }).expect("protoc");
@@ -96,6 +95,8 @@ fn generate_pb_rs() {
 }
 
 fn main() {
+    env_logger::init().expect("env_logger");
+
     clean_old_files();
     generate_v_from_common();
     generate_pb_rs();

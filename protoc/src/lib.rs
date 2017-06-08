@@ -1,6 +1,10 @@
 use std::io;
 use std::process;
 
+#[macro_use]
+extern crate log;
+
+
 pub type Error = io::Error;
 pub type Result<T> = io::Result<T>;
 
@@ -10,18 +14,32 @@ fn err_other<T>(s: &str) -> Result<T> {
 }
 
 
+/// `Protoc --lang_out...` args
 #[derive(Default)]
 pub struct Args<'a> {
-    /// lang part in --lang_out=...
+    /// `LANG` part in `--LANG_out=...`
     pub lang: &'a str,
-    /// --lang_out= param
+    /// `--LANG_out=...` param
     pub out_dir: &'a str,
-    /// --plugin param. Not needed if plugin is in $PATH
+    /// `--plugin` param. Not needed if plugin is in `$PATH`
     pub plugin: Option<&'a str>,
-    /// -I args
+    /// `-I` args
     pub includes: &'a[&'a str],
-    /// List of .proto files to compile
+    /// List of `.proto` files to compile
     pub input: &'a[&'a str],
+}
+
+/// `Protoc --descriptor_set_out...` args
+#[derive(Debug)]
+pub struct DescriptorSetOutArgs<'a> {
+    /// `--file_descriptor_out=...` param
+    pub out: &'a str,
+    /// `-I` args
+    pub includes: &'a[&'a str],
+    /// List of `.proto` files to compile
+    pub input: &'a[&'a str],
+    /// `--include_imports`
+    pub include_imports: bool,
 }
 
 
@@ -86,6 +104,23 @@ impl Protoc {
         })
     }
 
+    /// Execute `protoc` command with given args, check it completed correctly.
+    fn run_with_args(&self, args: Vec<String>) -> Result<()> {
+        let mut cmd = process::Command::new(&self.exec);
+        cmd.stdin(process::Stdio::null());
+        cmd.args(args);
+
+        info!("spawning command {:?}", cmd);
+
+        let mut child = cmd.spawn()?;
+
+        if !child.wait()?.success() {
+            return err_other("protoc exited with non-zero exit code");
+        }
+
+        Ok(())
+    }
+
     /// Execute configured `protoc` with given args
     pub fn run(&self, args: Args) -> Result<()> {
         let mut cmd_args: Vec<String> = Vec::new();
@@ -114,16 +149,34 @@ impl Protoc {
             cmd_args.push(format!("-I{}", include));
         }
 
-        let mut child = process::Command::new(&self.exec)
-            .stdin(process::Stdio::null())
-            .args(cmd_args)
-            .spawn()?;
+        self.run_with_args(cmd_args)
+    }
 
-        if !child.wait()?.success() {
-            return err_other("protoc exited with non-zero exit code");
+    /// Execute `protoc --descriptor_set_out=`
+    pub fn write_descriptor_set(&self, args: DescriptorSetOutArgs) -> Result<()> {
+        let mut cmd_args: Vec<String> = Vec::new();
+
+        for include in args.includes {
+            cmd_args.push(format!("-I{}", include));
         }
 
-        Ok(())
+        if args.out.is_empty() {
+            return err_other("out is empty");
+        }
+
+        cmd_args.push(format!("--descriptor_set_out={}", args.out));
+
+        if args.include_imports {
+            cmd_args.push("--include_imports".to_owned());
+        }
+
+        if args.input.is_empty() {
+            return err_other("input is empty");
+        }
+
+        cmd_args.extend(args.input.into_iter().map(|a| String::from(*a)));
+
+        self.run_with_args(cmd_args)
     }
 }
 

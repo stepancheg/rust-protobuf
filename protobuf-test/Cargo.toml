@@ -12,8 +12,10 @@ proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
 
 [build-dependencies]
-protoc = { path = "../protoc" }
-glob   = "0.2"
+protoc      = { path = "../protoc" }
+protoc-rust = { path = "../protoc-rust" }
+glob        = "0.2"
+env_logger  = "0.*"
 
 [dependencies.protobuf]
 path = "../protobuf"
