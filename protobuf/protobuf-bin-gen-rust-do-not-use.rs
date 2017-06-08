@@ -1,5 +1,3 @@
-#![crate_type = "bin"]
-
 extern crate protobuf;
 
 use std::fs::*;

@@ -26,9 +26,9 @@ case "$protoc_ver" in
         ;;
 esac
 
-./test/test.sh
+./../protobuf-test/test.sh
 
-rm -f perftest/Cargo.lock
-./perftest/build-perftest-rust.sh
+rm -f ../perftest/Cargo.lock
+./../perftest/build-perftest-rust.sh
 
 # vim: set ts=4 sw=4 et:
