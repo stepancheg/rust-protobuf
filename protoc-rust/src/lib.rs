@@ -75,7 +75,24 @@ pub fn run(args: Args) -> Result<()> {
     Ok(())
 }
 
-fn remove_path_prefix<'a>(path: &'a str, mut prefix: &str) -> Option<&'a str> {
+fn remove_dot_slash(path: &str) -> &str {
+    if path == "." {
+        ""
+    } else if path.starts_with("./") || path.starts_with(".\\") {
+        &path[2..]
+    } else {
+        path
+    }
+}
+
+fn remove_path_prefix<'a>(mut path: &'a str, mut prefix: &str) -> Option<&'a str> {
+    path = remove_dot_slash(path);
+    prefix = remove_dot_slash(prefix);
+
+    if prefix == "" {
+        return Some(path);
+    }
+
     if prefix.ends_with("/") || prefix.ends_with("\\") {
         prefix = &prefix[.. prefix.len() - 1];
     }
@@ -89,7 +106,7 @@ fn remove_path_prefix<'a>(path: &'a str, mut prefix: &str) -> Option<&'a str> {
     }
 
     if path.as_bytes()[prefix.len()] == b'/' || path.as_bytes()[prefix.len()] == b'\\' {
-        return Some(&path[prefix.len() + 1 ..])
+        return Some(&path[prefix.len() + 1 ..]);
     } else {
         return None;
     }
@@ -102,6 +119,8 @@ mod test {
         assert_eq!(Some("abc.proto"), super::remove_path_prefix("xxx/abc.proto", "xxx"));
         assert_eq!(Some("abc.proto"), super::remove_path_prefix("xxx/abc.proto", "xxx/"));
         assert_eq!(Some("abc.proto"), super::remove_path_prefix("../xxx/abc.proto", "../xxx/"));
+        assert_eq!(Some("abc.proto"), super::remove_path_prefix("abc.proto", "."));
+        assert_eq!(Some("abc.proto"), super::remove_path_prefix("abc.proto", "./"));
         assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy"));
         assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy/"));
     }
