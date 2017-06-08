@@ -1,6 +1,3 @@
-use protobuf::CodedInputStream;
-use protobuf::Message;
-
 use super::test_oneof_default_value_pb::*;
 
 #[test]

@@ -1,5 +1,10 @@
+// This file is generated once with older version of protobuf
+// and saved to guarantee backward compatibility.
+
 // This file is generated. Do not edit
 // @generated
+
+#![allow(deprecated)]
 
 // https://github.com/Manishearth/rust-clippy/issues/702
 #![allow(unknown_lints)]
