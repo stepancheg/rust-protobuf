@@ -13,7 +13,11 @@ rust-protobuf
 * Has runtime library for generated code
   (Coded{Input|Output}Stream impl)
 
-## How to use rust-protobuf
+## How to generate rust code
+
+There are several ways to generate rust code from `.proto` files
+
+### With protoc command and protoc-gen-rust plugin
 
 0) Install protobuf for `protoc` binary.
 
@@ -52,19 +56,13 @@ protoc --rust_out . foo.proto
 
 This will generate .rs files in current directory.
 
-4) Add rust-protobuf as dependency to your project `Cargo.toml`:
+## Invoke protoc programmatically with protoc crate
 
-```
-[dependencies.protobuf]
-```
+Have a look at readme in [protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc).
 
-5) Include generated files into your project .rs file:
+## Invoke protoc programmatically with protoc-rust crate
 
-```
-extern crate protobuf; // depend on rust-protobuf runtime
-mod foo; // add generated file to the project
-```
-
+Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
 
 ## Generated code
 
