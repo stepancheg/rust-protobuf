@@ -44,12 +44,15 @@ fn generate_v_from_common() {
 fn generate_pb_rs() {
 
     fn gen_v2_v3(dir: &str) {
+
+        let protos = glob_simple(&format!("{}/*.proto", dir));
+
         protoc::run(protoc::Args {
-            lang: "rust".to_owned(),
-            out_dir: dir.to_owned(),
-            plugin: Some("../target/debug/protoc-gen-rust".to_owned()),
-            input: glob_simple(&format!("{}/*.proto", dir)),
-            includes: vec!["../proto".to_owned(), dir.to_owned()],
+            lang: "rust",
+            out_dir: dir,
+            plugin: Some("../target/debug/protoc-gen-rust"),
+            input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
+            includes: &["../proto", dir],
         }).expect("protoc");
     }
 
@@ -59,12 +62,13 @@ fn generate_pb_rs() {
     if v3 {
         gen_v2_v3("src/v3");
 
+        let protos = glob_simple("src/google/protobuf/*.proto");
         protoc::run(protoc::Args {
-            lang: "rust".to_owned(),
-            out_dir: "src/google/protobuf".to_owned(),
-            plugin: Some("../target/debug/protoc-gen-rust".to_owned()),
-            input: glob_simple("src/google/protobuf/*.proto"),
-            includes: vec!["../proto".to_owned(), "src".to_owned()],
+            lang: "rust",
+            out_dir: "src/google/protobuf",
+            plugin: Some("../target/debug/protoc-gen-rust"),
+            input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
+            includes: &["../proto", "src"],
         }).expect("protoc");
     } else {
         // Because `#[cfg(nonexistent)]` still requires module files to exist

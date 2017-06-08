@@ -11,17 +11,17 @@ fn err_other<T>(s: &str) -> Result<T> {
 
 
 #[derive(Default)]
-pub struct Args {
+pub struct Args<'a> {
     /// lang part in --lang_out=...
-    pub lang: String,
+    pub lang: &'a str,
     /// --lang_out= param
-    pub out_dir: String,
+    pub out_dir: &'a str,
     /// --plugin param. Not needed if plugin is in $PATH
-    pub plugin: Option<String>,
+    pub plugin: Option<&'a str>,
     /// -I args
-    pub includes: Vec<String>,
+    pub includes: &'a[&'a str],
     /// List of .proto files to compile
-    pub input: Vec<String>,
+    pub input: &'a[&'a str],
 }
 
 
@@ -88,7 +88,7 @@ impl Protoc {
 
     /// Execute configured `protoc` with given args
     pub fn run(&self, args: Args) -> Result<()> {
-        let mut cmd_args = Vec::new();
+        let mut cmd_args: Vec<String> = Vec::new();
 
         if args.out_dir.is_empty() {
             return err_other("out_dir is empty");
@@ -104,7 +104,7 @@ impl Protoc {
             return err_other("input is empty");
         }
 
-        cmd_args.extend(args.input);
+        cmd_args.extend(args.input.into_iter().map(|a| String::from(*a)));
 
         if let Some(plugin) = args.plugin {
             cmd_args.push(format!("--plugin={}", plugin));
