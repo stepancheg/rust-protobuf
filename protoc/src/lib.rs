@@ -18,6 +18,8 @@ pub struct Args {
     pub out_dir: String,
     /// --plugin param. Not needed if plugin is in $PATH
     pub plugin: Option<String>,
+    /// -I args
+    pub includes: Vec<String>,
     /// List of .proto files to compile
     pub input: Vec<String>,
 }
@@ -106,6 +108,10 @@ impl Protoc {
 
         if let Some(plugin) = args.plugin {
             cmd_args.push(format!("--plugin={}", plugin));
+        }
+
+        for include in args.includes {
+            cmd_args.push(format!("-I{}", include));
         }
 
         let mut child = process::Command::new(&self.exec)

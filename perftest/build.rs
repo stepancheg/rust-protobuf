@@ -6,5 +6,8 @@ fn main() {
         out_dir: ".".to_owned(),
         plugin: Some("../target/debug/protoc-gen-rust".to_owned()),
         input: vec!["perftest_data.proto".to_owned()],
+        ..Default::default()
     }).expect("protoc");
+
+    
 }
