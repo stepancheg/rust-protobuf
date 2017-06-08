@@ -323,7 +323,7 @@ impl ::protobuf::Message for Type {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.source_context.as_ref() {
+        if let Some(ref v) = self.source_context.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -352,7 +352,7 @@ impl ::protobuf::Message for Type {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.source_context.as_ref() {
+        if let Some(ref v) = self.source_context.as_ref() {
             os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -1495,7 +1495,7 @@ impl ::protobuf::Message for Enum {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.source_context.as_ref() {
+        if let Some(ref v) = self.source_context.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -1521,7 +1521,7 @@ impl ::protobuf::Message for Enum {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.source_context.as_ref() {
+        if let Some(ref v) = self.source_context.as_ref() {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -2046,7 +2046,7 @@ impl ::protobuf::Message for Option {
         if !self.name.is_empty() {
             my_size += ::protobuf::rt::string_size(1, &self.name);
         }
-        if let Some(v) = self.value.as_ref() {
+        if let Some(ref v) = self.value.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -2059,7 +2059,7 @@ impl ::protobuf::Message for Option {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
-        if let Some(v) = self.value.as_ref() {
+        if let Some(ref v) = self.value.as_ref() {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;

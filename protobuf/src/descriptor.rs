@@ -775,10 +775,10 @@ impl ::protobuf::Message for FileDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
-        if let Some(v) = self.package.as_ref() {
+        if let Some(ref v) = self.package.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
         }
         for value in &self.dependency {
@@ -806,15 +806,15 @@ impl ::protobuf::Message for FileDescriptorProto {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        if let Some(v) = self.source_code_info.as_ref() {
+        if let Some(ref v) = self.source_code_info.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        if let Some(v) = self.syntax.as_ref() {
+        if let Some(ref v) = self.syntax.as_ref() {
             my_size += ::protobuf::rt::string_size(12, &v);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -823,10 +823,10 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
-        if let Some(v) = self.package.as_ref() {
+        if let Some(ref v) = self.package.as_ref() {
             os.write_string(2, &v)?;
         }
         for v in &self.dependency {
@@ -858,17 +858,17 @@ impl ::protobuf::Message for FileDescriptorProto {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
-        if let Some(v) = self.source_code_info.as_ref() {
+        if let Some(ref v) = self.source_code_info.as_ref() {
             os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
-        if let Some(v) = self.syntax.as_ref() {
+        if let Some(ref v) = self.syntax.as_ref() {
             os.write_string(12, &v)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -1492,7 +1492,7 @@ impl ::protobuf::Message for DescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
         for value in &self.field {
@@ -1519,7 +1519,7 @@ impl ::protobuf::Message for DescriptorProto {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -1536,7 +1536,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
         for v in &self.field {
@@ -1569,7 +1569,7 @@ impl ::protobuf::Message for DescriptorProto {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -2632,7 +2632,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
         if let Some(v) = self.number {
@@ -2644,22 +2644,22 @@ impl ::protobuf::Message for FieldDescriptorProto {
         if let Some(v) = self.field_type {
             my_size += ::protobuf::rt::enum_size(5, v);
         }
-        if let Some(v) = self.type_name.as_ref() {
+        if let Some(ref v) = self.type_name.as_ref() {
             my_size += ::protobuf::rt::string_size(6, &v);
         }
-        if let Some(v) = self.extendee.as_ref() {
+        if let Some(ref v) = self.extendee.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
         }
-        if let Some(v) = self.default_value.as_ref() {
+        if let Some(ref v) = self.default_value.as_ref() {
             my_size += ::protobuf::rt::string_size(7, &v);
         }
         if let Some(v) = self.oneof_index {
             my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
         }
-        if let Some(v) = self.json_name.as_ref() {
+        if let Some(ref v) = self.json_name.as_ref() {
             my_size += ::protobuf::rt::string_size(10, &v);
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -2669,7 +2669,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
         if let Some(v) = self.number {
@@ -2681,22 +2681,22 @@ impl ::protobuf::Message for FieldDescriptorProto {
         if let Some(v) = self.field_type {
             os.write_enum(5, v.value())?;
         }
-        if let Some(v) = self.type_name.as_ref() {
+        if let Some(ref v) = self.type_name.as_ref() {
             os.write_string(6, &v)?;
         }
-        if let Some(v) = self.extendee.as_ref() {
+        if let Some(ref v) = self.extendee.as_ref() {
             os.write_string(2, &v)?;
         }
-        if let Some(v) = self.default_value.as_ref() {
+        if let Some(ref v) = self.default_value.as_ref() {
             os.write_string(7, &v)?;
         }
         if let Some(v) = self.oneof_index {
             os.write_int32(9, v)?;
         }
-        if let Some(v) = self.json_name.as_ref() {
+        if let Some(ref v) = self.json_name.as_ref() {
             os.write_string(10, &v)?;
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -3128,10 +3128,10 @@ impl ::protobuf::Message for OneofDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -3141,10 +3141,10 @@ impl ::protobuf::Message for OneofDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -3421,14 +3421,14 @@ impl ::protobuf::Message for EnumDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
         for value in &self.value {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -3438,7 +3438,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
         for v in &self.value {
@@ -3446,7 +3446,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -3722,13 +3722,13 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
         if let Some(v) = self.number {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -3738,13 +3738,13 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
         if let Some(v) = self.number {
             os.write_int32(2, v)?;
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -4027,14 +4027,14 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
         for value in &self.method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -4044,7 +4044,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
         for v in &self.method {
@@ -4052,7 +4052,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -4459,16 +4459,16 @@ impl ::protobuf::Message for MethodDescriptorProto {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
-        if let Some(v) = self.input_type.as_ref() {
+        if let Some(ref v) = self.input_type.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
         }
-        if let Some(v) = self.output_type.as_ref() {
+        if let Some(ref v) = self.output_type.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -4484,16 +4484,16 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name.as_ref() {
+        if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
-        if let Some(v) = self.input_type.as_ref() {
+        if let Some(ref v) = self.input_type.as_ref() {
             os.write_string(2, &v)?;
         }
-        if let Some(v) = self.output_type.as_ref() {
+        if let Some(ref v) = self.output_type.as_ref() {
             os.write_string(3, &v)?;
         }
-        if let Some(v) = self.options.as_ref() {
+        if let Some(ref v) = self.options.as_ref() {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
@@ -5257,10 +5257,10 @@ impl ::protobuf::Message for FileOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.java_package.as_ref() {
+        if let Some(ref v) = self.java_package.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
-        if let Some(v) = self.java_outer_classname.as_ref() {
+        if let Some(ref v) = self.java_outer_classname.as_ref() {
             my_size += ::protobuf::rt::string_size(8, &v);
         }
         if let Some(v) = self.java_multiple_files {
@@ -5275,7 +5275,7 @@ impl ::protobuf::Message for FileOptions {
         if let Some(v) = self.optimize_for {
             my_size += ::protobuf::rt::enum_size(9, v);
         }
-        if let Some(v) = self.go_package.as_ref() {
+        if let Some(ref v) = self.go_package.as_ref() {
             my_size += ::protobuf::rt::string_size(11, &v);
         }
         if let Some(v) = self.cc_generic_services {
@@ -5293,10 +5293,10 @@ impl ::protobuf::Message for FileOptions {
         if let Some(v) = self.cc_enable_arenas {
             my_size += 3;
         }
-        if let Some(v) = self.objc_class_prefix.as_ref() {
+        if let Some(ref v) = self.objc_class_prefix.as_ref() {
             my_size += ::protobuf::rt::string_size(36, &v);
         }
-        if let Some(v) = self.csharp_namespace.as_ref() {
+        if let Some(ref v) = self.csharp_namespace.as_ref() {
             my_size += ::protobuf::rt::string_size(37, &v);
         }
         for value in &self.uninterpreted_option {
@@ -5309,10 +5309,10 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.java_package.as_ref() {
+        if let Some(ref v) = self.java_package.as_ref() {
             os.write_string(1, &v)?;
         }
-        if let Some(v) = self.java_outer_classname.as_ref() {
+        if let Some(ref v) = self.java_outer_classname.as_ref() {
             os.write_string(8, &v)?;
         }
         if let Some(v) = self.java_multiple_files {
@@ -5327,7 +5327,7 @@ impl ::protobuf::Message for FileOptions {
         if let Some(v) = self.optimize_for {
             os.write_enum(9, v.value())?;
         }
-        if let Some(v) = self.go_package.as_ref() {
+        if let Some(ref v) = self.go_package.as_ref() {
             os.write_string(11, &v)?;
         }
         if let Some(v) = self.cc_generic_services {
@@ -5345,10 +5345,10 @@ impl ::protobuf::Message for FileOptions {
         if let Some(v) = self.cc_enable_arenas {
             os.write_bool(31, v)?;
         }
-        if let Some(v) = self.objc_class_prefix.as_ref() {
+        if let Some(ref v) = self.objc_class_prefix.as_ref() {
             os.write_string(36, &v)?;
         }
-        if let Some(v) = self.csharp_namespace.as_ref() {
+        if let Some(ref v) = self.csharp_namespace.as_ref() {
             os.write_string(37, &v)?;
         }
         for v in &self.uninterpreted_option {
@@ -8003,7 +8003,7 @@ impl ::protobuf::Message for UninterpretedOption {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(v) = self.identifier_value.as_ref() {
+        if let Some(ref v) = self.identifier_value.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
         }
         if let Some(v) = self.positive_int_value {
@@ -8015,10 +8015,10 @@ impl ::protobuf::Message for UninterpretedOption {
         if let Some(v) = self.double_value {
             my_size += 9;
         }
-        if let Some(v) = self.string_value.as_ref() {
+        if let Some(ref v) = self.string_value.as_ref() {
             my_size += ::protobuf::rt::bytes_size(7, &v);
         }
-        if let Some(v) = self.aggregate_value.as_ref() {
+        if let Some(ref v) = self.aggregate_value.as_ref() {
             my_size += ::protobuf::rt::string_size(8, &v);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -8032,7 +8032,7 @@ impl ::protobuf::Message for UninterpretedOption {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if let Some(v) = self.identifier_value.as_ref() {
+        if let Some(ref v) = self.identifier_value.as_ref() {
             os.write_string(3, &v)?;
         }
         if let Some(v) = self.positive_int_value {
@@ -8044,10 +8044,10 @@ impl ::protobuf::Message for UninterpretedOption {
         if let Some(v) = self.double_value {
             os.write_double(6, v)?;
         }
-        if let Some(v) = self.string_value.as_ref() {
+        if let Some(ref v) = self.string_value.as_ref() {
             os.write_bytes(7, &v)?;
         }
-        if let Some(v) = self.aggregate_value.as_ref() {
+        if let Some(ref v) = self.aggregate_value.as_ref() {
             os.write_string(8, &v)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -8301,7 +8301,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if let Some(v) = self.name_part.as_ref() {
+        if let Some(ref v) = self.name_part.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
         if let Some(v) = self.is_extension {
@@ -8313,7 +8313,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name_part.as_ref() {
+        if let Some(ref v) = self.name_part.as_ref() {
             os.write_string(1, &v)?;
         }
         if let Some(v) = self.is_extension {
@@ -8847,10 +8847,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         if !self.span.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
         }
-        if let Some(v) = self.leading_comments.as_ref() {
+        if let Some(ref v) = self.leading_comments.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
         }
-        if let Some(v) = self.trailing_comments.as_ref() {
+        if let Some(ref v) = self.trailing_comments.as_ref() {
             my_size += ::protobuf::rt::string_size(4, &v);
         }
         for value in &self.leading_detached_comments {
@@ -8878,10 +8878,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                 os.write_int32_no_tag(*v)?;
             };
         }
-        if let Some(v) = self.leading_comments.as_ref() {
+        if let Some(ref v) = self.leading_comments.as_ref() {
             os.write_string(3, &v)?;
         }
-        if let Some(v) = self.trailing_comments.as_ref() {
+        if let Some(ref v) = self.trailing_comments.as_ref() {
             os.write_string(4, &v)?;
         }
         for v in &self.leading_detached_comments {
@@ -9378,7 +9378,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         if !self.path.is_empty() {
             my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
         }
-        if let Some(v) = self.source_file.as_ref() {
+        if let Some(ref v) = self.source_file.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
         }
         if let Some(v) = self.begin {
@@ -9401,7 +9401,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
                 os.write_int32_no_tag(*v)?;
             };
         }
-        if let Some(v) = self.source_file.as_ref() {
+        if let Some(ref v) = self.source_file.as_ref() {
             os.write_string(2, &v)?;
         }
         if let Some(v) = self.begin {

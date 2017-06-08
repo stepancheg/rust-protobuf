@@ -1,5 +1,7 @@
 #!/bin/sh -ex
 
+cd $(dirname $0)
+
 die() {
     echo "$@" >&2
     exit 1
@@ -19,15 +21,15 @@ PATH="$where_am_i/target/debug:$PATH"
 rm -rf tmp-generated
 mkdir tmp-generated
 
-protoc --rust_out tmp-generated -Iproto \
-    proto/google/protobuf/*.proto \
-    proto/google/protobuf/compiler/* \
-    proto/rustproto.proto
+protoc --rust_out tmp-generated -I../proto \
+    ../proto/google/protobuf/*.proto \
+    ../proto/google/protobuf/compiler/* \
+    ../proto/rustproto.proto
 
-mv tmp-generated/descriptor.rs tmp-generated/plugin.rs tmp-generated/rustproto.rs lib/
-mv tmp-generated/*.rs lib/well_known_types/
+mv tmp-generated/descriptor.rs tmp-generated/plugin.rs tmp-generated/rustproto.rs src/
+mv tmp-generated/*.rs src/well_known_types/
 (
-    cd lib/well_known_types
+    cd src/well_known_types
     exec > mod.rs
     echo "// This file is generated. Do not edit"
 

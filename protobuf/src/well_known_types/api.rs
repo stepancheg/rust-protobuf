@@ -366,7 +366,7 @@ impl ::protobuf::Message for Api {
         if !self.version.is_empty() {
             my_size += ::protobuf::rt::string_size(4, &self.version);
         }
-        if let Some(v) = self.source_context.as_ref() {
+        if let Some(ref v) = self.source_context.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -399,7 +399,7 @@ impl ::protobuf::Message for Api {
         if !self.version.is_empty() {
             os.write_string(4, &self.version)?;
         }
-        if let Some(v) = self.source_context.as_ref() {
+        if let Some(ref v) = self.source_context.as_ref() {
             os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;

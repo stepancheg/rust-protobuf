@@ -24,7 +24,7 @@ before_install:
 script:
   - rustc --version
   # Full rebuild with regenerate
-  - PATH=/home/travis/bin:$PATH src/full-rebuild.sh
+  - PATH=/home/travis/bin:$PATH protobuf/full-rebuild.sh
 
 notifications:
   email:

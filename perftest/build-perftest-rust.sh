@@ -3,12 +3,12 @@
 cd $(dirname $0)
 
 (
-    cd ../..
+    cd ../protobuf
     # building protoc-gen-rust
-    cargo build --features=$RUST_PROTOBUF_FEATURES
+    cargo build --features=$RUST_PROTOBUF_FEATURES --bin=protoc-gen-rust
 )
 
-root=$(cd ../..; pwd)
+root=$(cd ..; pwd)
 PATH="$root/target/debug:$PATH"
 
 protoc --rust_out . perftest_data.proto

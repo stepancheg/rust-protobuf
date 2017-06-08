@@ -1,0 +1,32 @@
+[package]
+
+name = "protobuf"
+version = "1.2.2"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/stepancheg/rust-protobuf/"
+repository = "https://github.com/stepancheg/rust-protobuf/"
+documentation = "https://github.com/stepancheg/rust-protobuf/blob/master/README.md"
+description = """
+Rust implementation of Google protocol buffers
+"""
+
+[lib]
+
+[features]
+with-bytes = ["bytes"]
+
+[dependencies]
+bytes = { version = "0.*", optional = true }
+
+[[bin]]
+
+name = "protoc-gen-rust"
+path = "protoc-gen-rust.rs"
+test = false
+
+[[bin]]
+
+name = "protobuf-bin-gen-rust-do-not-use"
+path = "protobuf-bin-gen-rust-do-not-use.rs"
+test = false
