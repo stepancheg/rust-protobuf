@@ -4,13 +4,13 @@ use std::sync::Arc;
 use protobuf::CodedInputStream;
 use protobuf::Message;
 
-use super::test_basic_pb::*;
+use super::test_sync_pb::*;
 
 // test messages are sync
 #[test]
 fn test_sync() {
     let m = Arc::new({
-        let mut r = TestTypesSingular::new();
+        let mut r = TestSync::new();
         r.set_int32_field(23);
         r
     });
@@ -20,7 +20,7 @@ fn test_sync() {
         thread::spawn(move || {
             let bytes = m_copy.write_to_bytes().unwrap();
             let mut is = CodedInputStream::from_bytes(&bytes);
-            let mut read = TestTypesSingular::new();
+            let mut read = TestSync::new();
             // API is not very convenient here
             read.merge_from(&mut is).unwrap();
             read.check_initialized().unwrap();

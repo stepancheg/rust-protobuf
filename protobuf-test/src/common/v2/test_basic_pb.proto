@@ -1,17 +1,17 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package basic;
 
 message Test1 {
-    int32 a = 1;
+    required int32 a = 1;
 }
 
 message Test2 {
-    string b = 2;
+    required string b = 2;
 }
 
 message Test3 {
-    Test1 c = 3;
+    required Test1 c = 3;
 }
 
 message Test4 {
@@ -25,59 +25,55 @@ message TestPackedUnpacked {
 }
 
 message TestEmpty {
-    int32 foo = 10;
-}
-
-message Test{
-    bool b = 5;
+    optional int32 foo = 10;
 }
 
 message TestUnknownFields {
-    int32 a = 1;
+    required int32 a = 1;
 }
 
 // just check it compiles
 message TestSelfReference {
-    TestSelfReference r1 = 1;
-    TestSelfReference r2 = 2;
+    required TestSelfReference r1 = 1;
+    optional TestSelfReference r2 = 2;
 }
 
 message TestDefaultInstanceField {
-    string s = 1;
+    optional string s = 1;
 }
 
 message TestDefaultInstance {
-    TestDefaultInstanceField field = 1;
+    optional TestDefaultInstanceField field = 1;
 }
 
 message TestDescriptor {
-    int32 stuff = 10;
+    optional int32 stuff = 10;
 }
 
 enum TestEnumDescriptor {
-    UNKNOWN = 0;
+    UNDEFINED = 0;
     RED = 1;
     BLUE = 2;
     GREEN = 3;
 }
 
 message TestTypesSingular {
-    double double_field = 1;
-    float float_field = 2;
-    int32 int32_field = 3;
-    int64 int64_field = 4;
-    uint32 uint32_field = 5;
-    uint64 uint64_field = 6;
-    sint32 sint32_field = 7;
-    sint64 sint64_field = 8;
-    fixed32 fixed32_field = 9;
-    fixed64 fixed64_field = 10;
-    sfixed32 sfixed32_field = 11;
-    sfixed64 sfixed64_field = 12;
-    bool bool_field = 13;
-    string string_field = 14;
-    bytes bytes_field = 15;
-    TestEnumDescriptor enum_field = 16;
+    optional double double_field = 1;
+    optional float float_field = 2;
+    optional int32 int32_field = 3;
+    optional int64 int64_field = 4;
+    optional uint32 uint32_field = 5;
+    optional uint64 uint64_field = 6;
+    optional sint32 sint32_field = 7;
+    optional sint64 sint64_field = 8;
+    optional fixed32 fixed32_field = 9;
+    optional fixed64 fixed64_field = 10;
+    optional sfixed32 sfixed32_field = 11;
+    optional sfixed64 sfixed64_field = 12;
+    optional bool bool_field = 13;
+    optional string string_field = 14;
+    optional bytes bytes_field = 15;
+    optional TestEnumDescriptor enum_field = 16;
 }
 
 message TestTypesRepeated {
@@ -126,6 +122,6 @@ message TestTruncated {
 }
 
 message TestBugSint {
-    sint32 s32 = 1;
-    sint64 s64 = 2;
+    optional sint32 s32 = 1;
+    optional sint64 s64 = 2;
 }

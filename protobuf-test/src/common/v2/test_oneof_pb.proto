@@ -1,16 +1,16 @@
-syntax = "proto3";
+syntax = "proto2";
 
 enum EnumForOneof {
-    Z = 0;
+    UNKNOWN = 0;
     A = 10;
 }
 
 message MessageForOneof {
-    int32 f = 1;
+    optional int32 f = 1;
 }
 
 message TestOneof {
-    string s = 29;
+    optional string s = 29;
     oneof one {
         double double_field = 1;
         float float_field = 2;
