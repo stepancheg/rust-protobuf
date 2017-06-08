@@ -3,6 +3,11 @@ extern crate protobuf;
 mod test_basic_pb;
 mod test_basic;
 
+#[cfg(feature = "with-bytes")]
+mod test_carllerche_bytes;
+#[cfg(feature = "with-bytes")]
+mod test_carllerche_bytes_pb;
+
 mod test_zeros_are_not_written;
 
 mod test_map_pb;

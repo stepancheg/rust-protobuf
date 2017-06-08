@@ -186,11 +186,13 @@ impl RustType {
         match *self {
             RustType::Option(..) => format!("{} = ::std::option::Option::None", v),
             RustType::Vec(..) |
+            RustType::Bytes |
             RustType::String |
             RustType::RepeatedField(..)    |
             RustType::SingularField(..)    |
             RustType::SingularPtrField(..) |
             RustType::HashMap(..)          => format!("{}.clear()", v),
+            RustType::Chars => format!("::protobuf::Clear::clear(&mut {})", v),
             RustType::Bool      |
             RustType::Float(..) |
             RustType::Int(..)   |

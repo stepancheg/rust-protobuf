@@ -432,6 +432,20 @@ pub fn read_singular_proto3_string_into(
     }
 }
 
+#[cfg(feature = "bytes")]
+pub fn read_singular_proto3_carllerche_string_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Chars)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            *target = is.read_carllerche_chars()?;
+            Ok(())
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
 pub fn read_repeated_bytes_into(
     wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Vec<u8>>)
         -> ProtobufResult<()>
@@ -493,6 +507,20 @@ pub fn read_singular_proto3_bytes_into(
     match wire_type {
         WireTypeLengthDelimited => {
             is.read_bytes_into(target)
+        },
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+#[cfg(feature = "bytes")]
+pub fn read_singular_proto3_carllerche_bytes_into(
+    wire_type: WireType, is: &mut CodedInputStream, target: &mut Bytes)
+        -> ProtobufResult<()>
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            *target = is.read_carllerche_bytes()?;
+            Ok(())
         },
         _ => Err(unexpected_wire_type(wire_type)),
     }
