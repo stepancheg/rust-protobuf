@@ -383,8 +383,8 @@ fn field_elem(field: &FieldWithContext, root_scope: &RootScope, parse_map: bool)
         }
     } else if field.field.has_field_type() {
         let options = field.message.get_scope().get_file_descriptor().get_options();
-        let carllerche_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(options).unwrap_or(false);
-        let carllerche_for_string = rustproto::exts::carllerche_bytes_for_string.get(options).unwrap_or(false);
+        let carllerche_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_all.get(options).unwrap_or(false);
+        let carllerche_for_string = rustproto::exts::carllerche_bytes_for_string_all.get(options).unwrap_or(false);
 
         let elem = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_STRING if carllerche_for_string =>
@@ -1840,7 +1840,7 @@ impl<'a> MessageGen<'a> {
 
     fn expose_oneof(&self) -> bool {
         let options = self.message.get_scope().get_file_descriptor().get_options();
-        rustproto::exts::expose_oneof.get(options).unwrap_or(false)
+        rustproto::exts::expose_oneof_all.get(options).unwrap_or(false)
     }
 
     fn oneofs(&'a self) -> Vec<OneofGen<'a>> {

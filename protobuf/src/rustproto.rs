@@ -24,35 +24,85 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 pub mod exts {
     use protobuf::Message as Message_imported_for_functions;
 
-    pub const expose_oneof: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
+    pub const expose_oneof_all: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_bytes: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_bytes_all: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_string: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_string_all: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+
+    pub const expose_oneof: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
+
+    pub const carllerche_bytes_for_bytes: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+
+    pub const carllerche_bytes_for_string: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+
+    pub const expose_oneof_field: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
+
+    pub const carllerche_bytes_for_bytes_field: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+
+    pub const carllerche_bytes_for_string_field: ::protobuf::ext::ExtFieldOptional<super::super::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x0frustproto.proto\x12\trustproto\x1a\x20google/protobuf/descriptor.p\
-    roto:A\n\x0cexpose_oneof\x18\xe9\x84\x01\x20\x01(\x08\x12\x1c.google.pro\
-    tobuf.FileOptionsR\x0bexposeOneof:[\n\x1acarllerche_bytes_for_bytes\x18\
-    \xf3\x84\x01\x20\x01(\x08\x12\x1c.google.protobuf.FileOptionsR\x17carlle\
-    rcheBytesForBytes:]\n\x1bcarllerche_bytes_for_string\x18\xf4\x84\x01\x20\
-    \x01(\x08\x12\x1c.google.protobuf.FileOptionsR\x18carllercheBytesForStri\
-    ngJ\x88\x03\n\x06\x12\x04\0\0\r\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\t\
-    \n\x02\x03\0\x12\x03\x02\x07)\n\x08\n\x01\x02\x12\x03\x04\x08\x11\n\t\n\
-    \x01\x07\x12\x04\x06\0\r\x01\n7\n\x02\x07\0\x12\x03\x08\x04'\x1a,\x20Whe\
-    n\x20true,\x20oneof\x20field\x20is\x20generated\x20public\n\n\n\n\x03\
-    \x07\0\x02\x12\x03\x06\x07\"\n\n\n\x03\x07\0\x04\x12\x03\x08\x04\x0c\n\n\
-    \n\x03\x07\0\x05\x12\x03\x08\r\x11\n\n\n\x03\x07\0\x01\x12\x03\x08\x12\
-    \x1e\n\n\n\x03\x07\0\x03\x12\x03\x08!&\n2\n\x02\x07\x01\x12\x03\n\x045\
-    \x1a'\x20Use\x20`bytes::Bytes`\x20for\x20`bytes`\x20fields\n\n\n\n\x03\
-    \x07\x01\x02\x12\x03\x06\x07\"\n\n\n\x03\x07\x01\x04\x12\x03\n\x04\x0c\n\
-    \n\n\x03\x07\x01\x05\x12\x03\n\r\x11\n\n\n\x03\x07\x01\x01\x12\x03\n\x12\
-    ,\n\n\n\x03\x07\x01\x03\x12\x03\n/4\n3\n\x02\x07\x02\x12\x03\x0c\x046\
-    \x1a(\x20Use\x20`bytes::Bytes`\x20for\x20`string`\x20fields\n\n\n\n\x03\
-    \x07\x02\x02\x12\x03\x06\x07\"\n\n\n\x03\x07\x02\x04\x12\x03\x0c\x04\x0c\
-    \n\n\n\x03\x07\x02\x05\x12\x03\x0c\r\x11\n\n\n\x03\x07\x02\x01\x12\x03\
-    \x0c\x12-\n\n\n\x03\x07\x02\x03\x12\x03\x0c05\
+    roto:H\n\x10expose_oneof_all\x18\xe9\x84\x01\x20\x01(\x08\x12\x1c.google\
+    .protobuf.FileOptionsR\x0eexposeOneofAll:b\n\x1ecarllerche_bytes_for_byt\
+    es_all\x18\xf3\x84\x01\x20\x01(\x08\x12\x1c.google.protobuf.FileOptionsR\
+    \x1acarllercheBytesForBytesAll:d\n\x1fcarllerche_bytes_for_string_all\
+    \x18\xf4\x84\x01\x20\x01(\x08\x12\x1c.google.protobuf.FileOptionsR\x1bca\
+    rllercheBytesForStringAll:D\n\x0cexpose_oneof\x18\xe9\x84\x01\x20\x01(\
+    \x08\x12\x1f.google.protobuf.MessageOptionsR\x0bexposeOneof:^\n\x1acarll\
+    erche_bytes_for_bytes\x18\xf3\x84\x01\x20\x01(\x08\x12\x1f.google.protob\
+    uf.MessageOptionsR\x17carllercheBytesForBytes:`\n\x1bcarllerche_bytes_fo\
+    r_string\x18\xf4\x84\x01\x20\x01(\x08\x12\x1f.google.protobuf.MessageOpt\
+    ionsR\x18carllercheBytesForString:M\n\x12expose_oneof_field\x18\xe9\x84\
+    \x01\x20\x01(\x08\x12\x1d.google.protobuf.FieldOptionsR\x10exposeOneofFi\
+    eld:g\n\x20carllerche_bytes_for_bytes_field\x18\xf3\x84\x01\x20\x01(\x08\
+    \x12\x1d.google.protobuf.FieldOptionsR\x1ccarllercheBytesForBytesField:i\
+    \n!carllerche_bytes_for_string_field\x18\xf4\x84\x01\x20\x01(\x08\x12\
+    \x1d.google.protobuf.FieldOptionsR\x1dcarllercheBytesForStringFieldJ\xaa\
+    \t\n\x06\x12\x04\0\0\"\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\t\n\x02\x03\
+    \0\x12\x03\x02\x07)\nh\n\x01\x02\x12\x03\x07\x08\x112^\x20see\x20https:/\
+    /github.com/gogo/protobuf/blob/master/gogoproto/gogo.proto\n\x20for\x20t\
+    he\x20original\x20idea\n\n\t\n\x01\x07\x12\x04\t\0\x10\x01\n7\n\x02\x07\
+    \0\x12\x03\x0b\x04+\x1a,\x20When\x20true,\x20oneof\x20field\x20is\x20gen\
+    erated\x20public\n\n\n\n\x03\x07\0\x02\x12\x03\t\x07\"\n\n\n\x03\x07\0\
+    \x04\x12\x03\x0b\x04\x0c\n\n\n\x03\x07\0\x05\x12\x03\x0b\r\x11\n\n\n\x03\
+    \x07\0\x01\x12\x03\x0b\x12\"\n\n\n\x03\x07\0\x03\x12\x03\x0b%*\n2\n\x02\
+    \x07\x01\x12\x03\r\x049\x1a'\x20Use\x20`bytes::Bytes`\x20for\x20`bytes`\
+    \x20fields\n\n\n\n\x03\x07\x01\x02\x12\x03\t\x07\"\n\n\n\x03\x07\x01\x04\
+    \x12\x03\r\x04\x0c\n\n\n\x03\x07\x01\x05\x12\x03\r\r\x11\n\n\n\x03\x07\
+    \x01\x01\x12\x03\r\x120\n\n\n\x03\x07\x01\x03\x12\x03\r38\n3\n\x02\x07\
+    \x02\x12\x03\x0f\x04:\x1a(\x20Use\x20`bytes::Bytes`\x20for\x20`string`\
+    \x20fields\n\n\n\n\x03\x07\x02\x02\x12\x03\t\x07\"\n\n\n\x03\x07\x02\x04\
+    \x12\x03\x0f\x04\x0c\n\n\n\x03\x07\x02\x05\x12\x03\x0f\r\x11\n\n\n\x03\
+    \x07\x02\x01\x12\x03\x0f\x121\n\n\n\x03\x07\x02\x03\x12\x03\x0f49\n\t\n\
+    \x01\x07\x12\x04\x12\0\x19\x01\n7\n\x02\x07\x03\x12\x03\x14\x04'\x1a,\
+    \x20When\x20true,\x20oneof\x20field\x20is\x20generated\x20public\n\n\n\n\
+    \x03\x07\x03\x02\x12\x03\x12\x07%\n\n\n\x03\x07\x03\x04\x12\x03\x14\x04\
+    \x0c\n\n\n\x03\x07\x03\x05\x12\x03\x14\r\x11\n\n\n\x03\x07\x03\x01\x12\
+    \x03\x14\x12\x1e\n\n\n\x03\x07\x03\x03\x12\x03\x14!&\n2\n\x02\x07\x04\
+    \x12\x03\x16\x045\x1a'\x20Use\x20`bytes::Bytes`\x20for\x20`bytes`\x20fie\
+    lds\n\n\n\n\x03\x07\x04\x02\x12\x03\x12\x07%\n\n\n\x03\x07\x04\x04\x12\
+    \x03\x16\x04\x0c\n\n\n\x03\x07\x04\x05\x12\x03\x16\r\x11\n\n\n\x03\x07\
+    \x04\x01\x12\x03\x16\x12,\n\n\n\x03\x07\x04\x03\x12\x03\x16/4\n3\n\x02\
+    \x07\x05\x12\x03\x18\x046\x1a(\x20Use\x20`bytes::Bytes`\x20for\x20`strin\
+    g`\x20fields\n\n\n\n\x03\x07\x05\x02\x12\x03\x12\x07%\n\n\n\x03\x07\x05\
+    \x04\x12\x03\x18\x04\x0c\n\n\n\x03\x07\x05\x05\x12\x03\x18\r\x11\n\n\n\
+    \x03\x07\x05\x01\x12\x03\x18\x12-\n\n\n\x03\x07\x05\x03\x12\x03\x1805\n\
+    \t\n\x01\x07\x12\x04\x1b\0\"\x01\n7\n\x02\x07\x06\x12\x03\x1d\x04-\x1a,\
+    \x20When\x20true,\x20oneof\x20field\x20is\x20generated\x20public\n\n\n\n\
+    \x03\x07\x06\x02\x12\x03\x1b\x07#\n\n\n\x03\x07\x06\x04\x12\x03\x1d\x04\
+    \x0c\n\n\n\x03\x07\x06\x05\x12\x03\x1d\r\x11\n\n\n\x03\x07\x06\x01\x12\
+    \x03\x1d\x12$\n\n\n\x03\x07\x06\x03\x12\x03\x1d',\n2\n\x02\x07\x07\x12\
+    \x03\x1f\x04;\x1a'\x20Use\x20`bytes::Bytes`\x20for\x20`bytes`\x20fields\
+    \n\n\n\n\x03\x07\x07\x02\x12\x03\x1b\x07#\n\n\n\x03\x07\x07\x04\x12\x03\
+    \x1f\x04\x0c\n\n\n\x03\x07\x07\x05\x12\x03\x1f\r\x11\n\n\n\x03\x07\x07\
+    \x01\x12\x03\x1f\x122\n\n\n\x03\x07\x07\x03\x12\x03\x1f5:\n3\n\x02\x07\
+    \x08\x12\x03!\x04<\x1a(\x20Use\x20`bytes::Bytes`\x20for\x20`string`\x20f\
+    ields\n\n\n\n\x03\x07\x08\x02\x12\x03\x1b\x07#\n\n\n\x03\x07\x08\x04\x12\
+    \x03!\x04\x0c\n\n\n\x03\x07\x08\x05\x12\x03!\r\x11\n\n\n\x03\x07\x08\x01\
+    \x12\x03!\x123\n\n\n\x03\x07\x08\x03\x12\x03!6;\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+message TestMessage {
+
+}
+
+message TestMessageWithBytes {
+
+}

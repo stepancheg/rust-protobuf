@@ -2,7 +2,7 @@ syntax = "proto2";
 
 import "rustproto.proto";
 
-option (rustproto.expose_oneof) = true;
+option (rustproto.expose_oneof_all) = true;
 
 message TestOneofExpose {
     oneof aaa {
