@@ -1,13 +1,9 @@
-extern crate protoc;
+extern crate protoc_rust;
 
 fn main() {
-    protoc::run(protoc::Args {
-        lang: "rust",
+    protoc_rust::run(protoc_rust::Args {
         out_dir: ".",
-        plugin: Some("../target/debug/protoc-gen-rust"),
         input: &["perftest_data.proto"],
         ..Default::default()
     }).expect("protoc");
-
-    
 }

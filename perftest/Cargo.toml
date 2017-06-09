@@ -18,7 +18,7 @@ git = "http://github.com/rust-lang/time"
 rand = "0.*"
 
 [build-dependencies]
-protoc = { path = "../protoc" }
+protoc-rust = { path = "../protoc-rust" }
 
 [[bin]]
 

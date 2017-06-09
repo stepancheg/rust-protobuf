@@ -12,7 +12,7 @@ pub use protoc::Error;
 pub use protoc::Result;
 
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Args<'a> {
     /// --lang_out= param
     pub out_dir: &'a str,
@@ -48,10 +48,16 @@ pub fn run(args: Args) -> Result<()> {
     let fds: protobuf::descriptor::FileDescriptorSet = protobuf::parse_from_bytes(&fds)
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
+    let mut includes = args.includes;
+    if includes.is_empty() {
+        static DOT_SLICE: &'static [&'static str] = &["."];
+        includes = DOT_SLICE;
+    }
+
     let mut files_to_generate = Vec::new();
     'outer:
     for file in args.input {
-        for include in args.includes {
+        for include in includes {
             if let Some(truncated) = remove_path_prefix(file, include) {
                 files_to_generate.push(truncated.to_owned());
                 continue 'outer;

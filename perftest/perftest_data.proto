@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 message Test1 {
     optional int32 value = 1;
 }
