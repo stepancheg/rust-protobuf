@@ -122,10 +122,8 @@ fn generate_pb_rs() {
         }).expect("protoc");
     }
 
-    let p = protoc::Protoc::from_env_path();
-    let v3 = p.version().expect("version").is_3();
     gen_v2_v3("src/v2");
-    if v3 {
+    if protoc::Protoc::from_env_path().version().expect("version").is_3() {
         gen_v2_v3("src/v3");
 
         let protos = glob_simple("src/google/protobuf/*.proto");
@@ -153,10 +151,6 @@ fn generate_pb_rs() {
             f.flush().expect("flush");
         }
     }
-
-    if p.version().expect("version").is_3() {
-        println!("cargo:rustc-cfg=proto3");
-    }
 }
 
 fn main() {
@@ -165,4 +159,8 @@ fn main() {
     clean_old_files();
     generate_v_from_common();
     generate_pb_rs();
+
+    if protoc::Protoc::from_env_path().version().expect("version").is_3() {
+        println!("cargo:rustc-cfg=proto3");
+    }
 }
