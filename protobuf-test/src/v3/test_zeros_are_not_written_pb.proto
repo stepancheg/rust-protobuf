@@ -7,7 +7,7 @@ enum TestEnumDescriptor {
     GREEN = 3;
 }
 
-message TestTypesSingular {
+message TestZerosAreNotWritten {
     double double_field = 1;
     float float_field = 2;
     int32 int32_field = 3;
