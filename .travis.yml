@@ -26,9 +26,7 @@ script:
   # Full rebuild with regenerate
   - PATH=/home/travis/bin:$PATH protobuf/full-rebuild.sh
   - PATH=/home/travis/bin:$PATH ./protoc/test.sh
-  - PATH=/home/travis/bin:$PATH cargo build --all --features=with-bytes --bins --tests --examples
-  # `cargo test --benches` and `#[feature(test)]` only works on nightly
-  - test "$TRAVIS_RUST_VERSION" != "nightly" || PATH=/home/travis/bin:$PATH RUST_BACKTRACE=1 cargo test --all --benches
+  - test "$TRAVIS_RUST_VERSION" != "nightly" || PATH=/home/travis/bin:$PATH cargo build --all --features=with-bytes --bins --tests --examples --benches
 
 notifications:
   email:
