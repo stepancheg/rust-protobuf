@@ -1,0 +1,15 @@
+[package]
+name = "test-protoc"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+
+[dependencies]
+protobuf = { path = "../../protobuf" }
+
+[features]
+default-features = []
+# Feature to avoid recompilation of protobuf
+with-bytes = ["protobuf/with-bytes"]
+
+[build-dependencies]
+protoc = { path = ".." }
