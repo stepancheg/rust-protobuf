@@ -26,8 +26,6 @@ extend google.protobuf.MessageOptions {
 }
 
 extend google.protobuf.FieldOptions {
-    // When true, oneof field is generated public
-    optional bool expose_oneof_field = 17001;
     // Use `bytes::Bytes` for `bytes` fields
     optional bool carllerche_bytes_for_bytes_field = 17011;
     // Use `bytes::Bytes` for `string` fields
