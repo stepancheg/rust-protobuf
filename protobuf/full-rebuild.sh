@@ -8,7 +8,7 @@ die() {
 cd $(dirname $0)
 
 # Build protoc-gen-rust
-./rebuild.sh
+./build.sh
 
 protoc_ver=$(protoc --version)
 case "$protoc_ver" in
@@ -16,7 +16,7 @@ case "$protoc_ver" in
         # Generate from descriptor.proto
         ./regenerate.sh
         # Build again with regenerated descriptor.proto
-        ./rebuild.sh
+        ./build.sh
         ;;
     "libprotoc 2"*)
 		echo "do not regenerate with proto 2"

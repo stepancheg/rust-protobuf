@@ -1,6 +1,6 @@
 ## How to develop rust-protobuf itself
 
-### ./rebuild.sh
+### ./build.sh
 
 Compile the project.
 
