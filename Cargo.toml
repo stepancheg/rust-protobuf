@@ -5,5 +5,5 @@ members = [
     "protoc-rust",
     "protobuf",
     "protobuf-test",
-    "perftest",
+    "perftest/vs-cxx",
 ]

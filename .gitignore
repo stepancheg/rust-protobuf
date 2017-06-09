@@ -12,13 +12,6 @@ src/test/v*/*_pb.rs
 src/test/lib
 protobuf-bin-gen-rust
 protoc-gen-rust
-shrug.rs
-perftest/perftest
-perftest/perftest-cxx
-perftest/perftest_proto.rs
-perftest/perftest_data.pbbin
-perftest/perftest_data.pb.*
-perftest/perftest_data.rs
 target/
 Cargo.lock
 .idea
