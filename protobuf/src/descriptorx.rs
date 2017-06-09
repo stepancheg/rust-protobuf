@@ -329,9 +329,9 @@ impl<'a> MessageWithScope<'a> {
         self.clone().into_scope()
     }
 
-    pub fn fields(&'a self) -> Vec<FieldWithContext<'a>> {
+    pub fn fields(&self) -> Vec<FieldWithContext<'a>> {
         self.message.get_field().iter()
-            .map(|f| FieldWithContext { field: f, message: self })
+            .map(|f| FieldWithContext { field: f, message: self.clone() })
             .collect()
     }
 
@@ -413,9 +413,10 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
 }
 
 
+#[derive(Clone)]
 pub struct FieldWithContext<'a> {
     pub field: &'a FieldDescriptorProto,
-    pub message: &'a MessageWithScope<'a>,
+    pub message: MessageWithScope<'a>,
 }
 
 impl<'a> FieldWithContext<'a> {
@@ -431,6 +432,15 @@ impl<'a> FieldWithContext<'a> {
         }
     }
 
+    pub fn number(&self) -> u32 {
+        self.field.get_number() as u32
+    }
+
+    /// Shortcut
+    pub fn name(&self) -> &str {
+        self.field.get_name()
+    }
+
     // field name in generated code
     pub fn rust_name(&self) -> String {
         if rust::is_rust_keyword(self.field.get_name()) {
@@ -438,6 +448,14 @@ impl<'a> FieldWithContext<'a> {
         } else {
             self.field.get_name().to_string()
         }
+    }
+
+    // From field to file root
+    pub fn containing_messages(&self) -> Vec<&'a DescriptorProto> {
+        let mut r = Vec::new();
+        r.push(self.message.message);
+        r.extend(self.message.scope.path.iter().rev());
+        r
     }
 }
 

@@ -11,6 +11,7 @@ mod message;
 mod enums;
 mod rust_types_values;
 mod well_known_types;
+mod field;
 mod extensions;
 
 use self::message::*;
