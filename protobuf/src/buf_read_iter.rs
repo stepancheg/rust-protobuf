@@ -4,6 +4,7 @@ use std::io::Read;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::mem;
+use std::slice;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -16,6 +17,8 @@ use bytes::BufMut;
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
 const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
+
+const USE_UNSAFE_FOR_SPEED: bool = true;
 
 
 /// Hold all possible combinations of input source
@@ -83,28 +86,45 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline]
-    pub fn remaining(&self) -> &[u8] {
-        &self.buf[self.pos..]
+    pub fn remaining_in_buf(&self) -> &[u8] {
+        if USE_UNSAFE_FOR_SPEED {
+            unsafe {
+                slice::from_raw_parts(
+                    self.buf.as_ptr().offset(self.pos as isize),
+                    self.buf.len() - self.pos)
+            }
+        } else {
+            &self.buf[self.pos..]
+        }
     }
 
-    fn remaining_len_in_buf(&self) -> usize {
+    #[inline]
+    pub fn remaining_in_buf_len(&self) -> usize {
         self.buf.len() - self.pos
     }
 
     #[inline]
     pub fn eof(&mut self) -> io::Result<bool> {
-        self.fill_buf()?;
-        Ok(self.buf.is_empty())
+        if self.buf.len() == self.pos {
+            Ok(self.fill_buf()?.is_empty())
+        } else {
+            Ok(false)
+        }
     }
 
     #[inline]
     pub fn read_byte(&mut self) -> io::Result<u8> {
-        self.fill_buf()?;
         if self.pos == self.buf.len() {
-            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+            if self.fill_buf()?.is_empty() {
+                return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+            }
         }
 
-        let r = self.buf[self.pos];
+        let r = if USE_UNSAFE_FOR_SPEED {
+            unsafe { *self.buf.get_unchecked(self.pos) }
+        } else {
+            self.buf[self.pos]
+        };
         self.pos += 1;
         Ok(r)
     }
@@ -129,6 +149,26 @@ impl<'ignore> BufReadIter<'ignore> {
             }
             Ok(r.freeze())
         }
+    }
+
+    fn do_fill_buf(&mut self) -> io::Result<()> {
+        debug_assert!(self.pos == self.buf.len());
+        match self.input_source {
+            InputSource::Read(ref mut buf_read) => {
+                buf_read.consume(self.pos);
+                // Danger! `buf_read.buf` must not be moved!
+                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+                self.pos = 0;
+            }
+            InputSource::BufRead(ref mut buf_read) => {
+                buf_read.consume(self.pos);
+                // Danger! `buf_read.buf` must not be moved!
+                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+                self.pos = 0;
+            }
+            _ => {}
+        }
+        Ok(())
     }
 }
 
@@ -158,7 +198,7 @@ impl<'a> Read for BufReadIter<'a> {
     }
 
     fn read_exact(&mut self, mut buf: &mut [u8]) -> io::Result<()> {
-        if self.remaining_len_in_buf() >= buf.len() {
+        if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
             buf.copy_from_slice(&self.buf[self.pos .. self.pos + buf_len]);
             self.pos += buf_len;
@@ -189,25 +229,15 @@ impl<'a> BufRead for BufReadIter<'a> {
     #[inline]
     fn fill_buf(&mut self) -> io::Result<&[u8]> {
         if self.pos == self.buf.len() {
-            match self.input_source {
-                InputSource::Read(ref mut buf_read) => {
-                    buf_read.consume(self.pos);
-                    // Danger! `buf_read.buf` must not be moved!
-                    self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
-                    self.pos = 0;
-                }
-                InputSource::BufRead(ref mut buf_read) => {
-                    buf_read.consume(self.pos);
-                    // Danger! `buf_read.buf` must not be moved!
-                    self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
-                    self.pos = 0;
-                }
-                _ => {}
-            }
-
+            self.do_fill_buf()?;
         }
 
-        Ok(&self.buf[self.pos..])
+        let s = if USE_UNSAFE_FOR_SPEED {
+            unsafe { self.buf.get_unchecked(self.pos..) }
+        } else {
+            &self.buf[self.pos..]
+        };
+        Ok(s)
     }
 
     #[inline]

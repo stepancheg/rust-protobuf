@@ -3,12 +3,28 @@ use std::error::Error;
 use std::fmt;
 use std::str;
 
+use wire_format::WireType;
+
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
+
+/// Enum values added here for diagnostic purposes.
+/// Users should not depend on specific values.
+#[derive(Debug)]
+pub enum WireError {
+    UnexpectedEof,
+    UnexpectedWireType(WireType),
+    IncorrectTag(u32),
+    IncompleteMap,
+    IncorrectVarint,
+    Utf8Error,
+    InvalidEnumValue(i32),
+    Other,
+}
 
 #[derive(Debug)]
 pub enum ProtobufError {
     IoError(io::Error),
-    WireError(String),
+    WireError(WireError),
     Utf8(str::Utf8Error),
     MessageNotInitialized { message: &'static str },
 }
@@ -32,7 +48,18 @@ impl Error for ProtobufError {
         match self {
             // not sure that cause should be included in message
             &ProtobufError::IoError(ref e) => e.description(),
-            &ProtobufError::WireError(ref e) => &e,
+            &ProtobufError::WireError(ref e) => {
+                match *e {
+                    WireError::Utf8Error => "invalid UTF-8 sequence",
+                    WireError::UnexpectedWireType(..) => "unexpected wire type",
+                    WireError::InvalidEnumValue(..) => "invalid enum value",
+                    WireError::IncorrectTag(..) => "incorrect tag",
+                    WireError::IncorrectVarint => "incorrect varint",
+                    WireError::IncompleteMap => "incomplete map",
+                    WireError::UnexpectedEof => "unexpected EOF",
+                    WireError::Other => "other error",
+                }
+            }
             &ProtobufError::Utf8(ref e) => &e.description(),
             &ProtobufError::MessageNotInitialized { .. } => "not all message fields set",
         }

@@ -24,6 +24,7 @@ use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 use error::ProtobufResult;
 use error::ProtobufError;
+use error::WireError;
 use buf_read_iter::BufReadIter;
 
 // Equal to the default buffer size of `BufWriter`, so when
@@ -175,7 +176,7 @@ impl<'a> CodedInputStream<'a> {
     fn check_limit(&self, len: usize) -> ProtobufResult<()> {
         if self.current_limit != NO_LIMIT {
             if len as u64 > self.bytes_until_limit() {
-                return Err(ProtobufError::WireError(format!("unexpected EOF")));
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
         }
         Ok(())
@@ -196,9 +197,10 @@ impl<'a> CodedInputStream<'a> {
         Ok(r)
     }
 
+    #[inline]
     pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
         if self.pos == self.current_limit {
-            return Err(ProtobufError::WireError(format!("unexpected EOF")));
+            return Err(ProtobufError::WireError(WireError::UnexpectedEof));
         }
 
         let r = self.source.read_byte()?;
@@ -209,11 +211,11 @@ impl<'a> CodedInputStream<'a> {
     pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
         let old_limit = self.current_limit;
         let new_limit = match self.pos.checked_add(limit) {
-            None | Some(NO_LIMIT) => return Err(ProtobufError::WireError(format!("corrupted stream"))),
+            None | Some(NO_LIMIT) => return Err(ProtobufError::WireError(WireError::Other)),
             Some(new_limit) => new_limit,
         };
         if old_limit != NO_LIMIT && new_limit > old_limit {
-            return Err(ProtobufError::WireError(format!("truncated message")));
+            return Err(ProtobufError::WireError(WireError::Other));
         }
         self.current_limit = new_limit;
         Ok(old_limit)
@@ -223,8 +225,9 @@ impl<'a> CodedInputStream<'a> {
         self.current_limit = old_limit;
     }
 
+    #[inline]
     pub fn eof(&mut self) -> ProtobufResult<bool> {
-        assert!(self.pos <= self.current_limit);
+        debug_assert!(self.pos <= self.current_limit);
         if self.current_limit == NO_LIMIT {
             Ok(self.source.eof()?)
         } else {
@@ -235,23 +238,48 @@ impl<'a> CodedInputStream<'a> {
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
         let eof = self.eof()?;
         if !eof {
-            return Err(ProtobufError::WireError(format!("expecting EOF")));
+            return Err(ProtobufError::WireError(WireError::UnexpectedEof));
         }
         Ok(())
     }
 
+    fn read_raw_varint64_slow(&mut self) -> ProtobufResult<u64> {
+        let mut r: u64 = 0;
+        let mut i = 0;
+        loop {
+            if i == 10 {
+                return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+            }
+            let b = self.read_raw_byte()?;
+            // TODO: may overflow if i == 9
+            r = r | (((b & 0x7f) as u64) << (i * 7));
+            i += 1;
+            if b < 0x80 {
+                return Ok(r);
+            }
+        }
+    }
+
+    #[inline]
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
-        if self.bytes_until_limit() >= 10 && self.source.remaining().len() >= 10 {
+        if self.bytes_until_limit() >= 10 && self.source.remaining_in_buf_len() >= 10 {
             // fast path
             let mut r: u64 = 0;
-            let mut i = 0;
+            let mut i: usize = 0;
             {
-                let rem = self.source.remaining();
+                let rem = self.source.remaining_in_buf();
                 loop {
                     if i == 10 {
-                        return Err(ProtobufError::WireError(format!("invalid varint")));
+                        return Err(ProtobufError::WireError(WireError::IncorrectVarint));
                     }
-                    let b = rem[i];
+
+                    let b = if true {
+                        // skip range check
+                        unsafe { *rem.get_unchecked(i) }
+                    } else {
+                        rem[i]
+                    };
+
                     // TODO: may overflow if i == 9
                     r = r | (((b & 0x7f) as u64) << (i * 7));
                     i += 1;
@@ -264,23 +292,11 @@ impl<'a> CodedInputStream<'a> {
             self.pos += i as u64;
             Ok(r)
         } else {
-            let mut r: u64 = 0;
-            let mut i = 0;
-            loop {
-                if i == 10 {
-                    return Err(ProtobufError::WireError(format!("invalid varint")));
-                }
-                let b = self.read_raw_byte()?;
-                // TODO: may overflow if i == 9
-                r = r | (((b & 0x7f) as u64) << (i * 7));
-                i += 1;
-                if b < 0x80 {
-                    return Ok(r);
-                }
-            }
+            self.read_raw_varint64_slow()
         }
     }
 
+    #[inline]
     pub fn read_raw_varint32(&mut self) -> ProtobufResult<u32> {
         self.read_raw_varint64().map(|v| v as u32)
     }
@@ -306,15 +322,17 @@ impl<'a> CodedInputStream<'a> {
         Ok(r.to_le())
     }
 
+    #[inline]
     pub fn read_tag(&mut self) -> ProtobufResult<wire_format::Tag> {
         let v = self.read_raw_varint32()?;
         match wire_format::Tag::new(v) {
             Some(tag) => Ok(tag),
-            None => Err(ProtobufError::WireError(format!("unknown tag: {}", v))),
+            None => Err(ProtobufError::WireError(WireError::IncorrectTag(v))),
         }
     }
 
     // Read tag, return it is pair (field number, wire type)
+    #[inline]
     pub fn read_tag_unpack(&mut self) -> ProtobufResult<(u32, wire_format::WireType)> {
         self.read_tag().map(|t| t.unpack())
     }
@@ -381,8 +399,7 @@ impl<'a> CodedInputStream<'a> {
         let i = self.read_int32()?;
         match ProtobufEnum::from_i32(i) {
             Some(e) => Ok(e),
-            None => Err(ProtobufError::WireError(
-                format!("invalid value for enum: {}", i))),
+            None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i))),
         }
     }
 
@@ -557,7 +574,7 @@ impl<'a> CodedInputStream<'a> {
                 let len = self.read_raw_varint32()?;
                 self.read_raw_bytes(len).map(|v| UnknownValue::LengthDelimited(v))
             },
-            _ => Err(ProtobufError::WireError(format!("unknown wire type: {}", wire_type as isize)))
+            _ => Err(ProtobufError::WireError(WireError::UnexpectedWireType(wire_type))),
         }
     }
 
@@ -626,7 +643,7 @@ impl<'a> CodedInputStream<'a> {
 
         let s = match String::from_utf8(vec) {
             Ok(t) => t,
-            Err(_) => return Err(ProtobufError::WireError(format!("invalid UTF-8 string on wire"))),
+            Err(_) => return Err(ProtobufError::WireError(WireError::Utf8Error)),
         };
         mem::replace(target, s);
         Ok(())

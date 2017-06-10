@@ -20,6 +20,7 @@ use stream::wire_format::WireTypeLengthDelimited;
 use stream::wire_format::WireTypeVarint;
 use error::ProtobufError;
 use error::ProtobufResult;
+use error::WireError;
 use singular::SingularField;
 use singular::SingularPtrField;
 use repeated::RepeatedField;
@@ -587,7 +588,7 @@ pub fn read_unknown_or_skip_group(
 /// Function is used in generated code, so error types can be changed,
 /// but this function remains unchanged.
 pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
-    ProtobufError::WireError(format!("unexpected wire type {:?}", wire_type))
+    ProtobufError::WireError(WireError::UnexpectedWireType(wire_type))
 }
 
 
@@ -679,8 +680,7 @@ pub fn read_map_into<K, V>(
     is.pop_limit(old_limit);
 
     match (key, value) {
-        (None, _) => return Err(ProtobufError::WireError(format!("map key is not set"))),
-        (_, None) => return Err(ProtobufError::WireError(format!("map value is not set"))),
+        (None, _) | (_, None) => return Err(ProtobufError::WireError(WireError::IncompleteMap)),
         (Some(key), Some(value)) => {
             target.insert(key, value);
         }
