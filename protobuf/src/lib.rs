@@ -18,6 +18,8 @@ pub use core::MessageStatic;
 pub use core::ProtobufEnum;
 pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
+#[cfg(feature = "bytes")]
+pub use core::parse_from_carllerche_bytes;
 pub use core::parse_length_delimited_from;
 pub use core::parse_length_delimited_from_bytes;
 pub use stream::CodedInputStream;
