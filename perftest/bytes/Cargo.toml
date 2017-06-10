@@ -1,10 +1,19 @@
 [package]
-name = "bytes"
+name = "perftest-bytes"
 version = "0.1.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
-[dependencies]
-protobuf = { path = "../../protobuf" }
+[features]
+default-features = []
+with-bytes = ["bytes", "protobuf/with-bytes"]
+
+[dependencies.protobuf]
+path = "../../protobuf"
+
+[dependencies.bytes]
+version = "0.*"
+optional = true
+
 
 [build-dependencies]
 protoc-rust = { path = "../../protoc-rust" }
