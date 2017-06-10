@@ -216,7 +216,8 @@ pub fn parse_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufRe
 
 #[cfg(feature = "bytes")]
 pub fn parse_from_carllerche_bytes<M : Message + MessageStatic>(bytes: &Bytes) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| {
+    // Call trait explicitly to avoid accidental construction from `&[u8]`
+    WithCodedInputStream::with_coded_input_stream(bytes, |is| {
         parse_from::<M>(is)
     })
 }

@@ -725,7 +725,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
     }
 }
 
-#[cfg(features = "bytes")]
+#[cfg(feature = "bytes")]
 impl<'a> WithCodedInputStream for &'a Bytes {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
         where F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>
