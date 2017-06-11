@@ -1,10 +1,9 @@
 use std::cmp;
-use std::io;
 use std::io::Read;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::mem;
-use std::slice;
+use std::u64;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -13,12 +12,18 @@ use bytes::BytesMut;
 #[cfg(feature = "bytes")]
 use bytes::BufMut;
 
+use ProtobufResult;
+use ProtobufError;
+use error::WireError;
+
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
 const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 
 const USE_UNSAFE_FOR_SPEED: bool = true;
+
+const NO_LIMIT: u64 = u64::MAX;
 
 
 /// Hold all possible combinations of input source
@@ -47,7 +52,22 @@ enum InputSource<'a> {
 pub struct BufReadIter<'a> {
     input_source: InputSource<'a>,
     buf: &'a [u8],
-    pos: usize, // within buf
+    pos_within_buf: usize,
+    limit_within_buf: usize,
+    pos_of_buf_start: u64,
+    limit: u64,
+}
+
+impl<'a> Drop for BufReadIter<'a> {
+    fn drop(&mut self) {
+        match self.input_source {
+            InputSource::BufRead(ref mut buf_read) => buf_read.consume(self.pos_within_buf),
+            InputSource::Read(_) => {
+                // Nothing to flush, because we own BufReader
+            }
+            _ => {},
+        }
+    }
 }
 
 impl<'ignore> BufReadIter<'ignore> {
@@ -56,7 +76,10 @@ impl<'ignore> BufReadIter<'ignore> {
             input_source: InputSource::Read(
                 BufReader::with_capacity(INPUT_STREAM_BUFFER_SIZE, read)),
             buf: &[],
-            pos: 0,
+            pos_within_buf: 0,
+            limit_within_buf: 0,
+            pos_of_buf_start: 0,
+            limit: NO_LIMIT,
         }
     }
 
@@ -64,7 +87,10 @@ impl<'ignore> BufReadIter<'ignore> {
         BufReadIter {
             input_source: InputSource::BufRead(buf_read),
             buf: &[],
-            pos: 0,
+            pos_within_buf: 0,
+            limit_within_buf: 0,
+            pos_of_buf_start: 0,
+            limit: NO_LIMIT,
         }
     }
 
@@ -72,7 +98,10 @@ impl<'ignore> BufReadIter<'ignore> {
         BufReadIter {
             input_source: InputSource::Slice(bytes),
             buf: bytes,
-            pos: 0,
+            pos_within_buf: 0,
+            limit_within_buf: bytes.len(),
+            pos_of_buf_start: 0,
+            limit: NO_LIMIT,
         }
     }
 
@@ -81,62 +110,119 @@ impl<'ignore> BufReadIter<'ignore> {
         BufReadIter {
             input_source: InputSource::Bytes(bytes),
             buf: &bytes,
-            pos: 0,
+            pos_within_buf: 0,
+            limit_within_buf: bytes.len(),
+            pos_of_buf_start: 0,
+            limit: NO_LIMIT,
         }
+    }
+
+    #[inline]
+    fn assertions(&self) {
+        debug_assert!(self.pos_within_buf <= self.limit_within_buf);
+        debug_assert!(self.limit_within_buf <= self.buf.len());
+        debug_assert!(self.pos_of_buf_start + self.pos_within_buf as u64 <= self.limit);
+    }
+
+    pub fn pos(&self) -> u64 {
+        self.pos_of_buf_start + self.pos_within_buf as u64
+    }
+
+    /// Recompute `limit_within_buf` after update of `limit`
+    #[inline]
+    fn update_limit_within_buf(&mut self) {
+        if self.pos_of_buf_start + (self.buf.len() as u64) <= self.limit {
+            self.limit_within_buf = self.buf.len();
+        } else {
+            self.limit_within_buf = (self.limit - self.pos_of_buf_start) as usize;
+        }
+
+        self.assertions();
+    }
+
+    pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
+        // TODO: return error instead of panic
+        let new_limit = match self.pos().checked_add(limit) {
+            Some(new_limit) => new_limit,
+            None => return Err(ProtobufError::WireError(WireError::Other)),
+        };
+
+        if new_limit > self.limit {
+            return Err(ProtobufError::WireError(WireError::Other));
+        }
+
+        let prev_limit = mem::replace(&mut self.limit, new_limit);
+
+        self.update_limit_within_buf();
+
+        Ok(prev_limit)
+    }
+
+    #[inline]
+    pub fn pop_limit(&mut self, limit: u64) {
+        assert!(limit >= self.limit);
+
+        self.limit = limit;
+
+        self.update_limit_within_buf();
     }
 
     #[inline]
     pub fn remaining_in_buf(&self) -> &[u8] {
         if USE_UNSAFE_FOR_SPEED {
-            unsafe {
-                slice::from_raw_parts(
-                    self.buf.as_ptr().offset(self.pos as isize),
-                    self.buf.len() - self.pos)
-            }
+            unsafe { &self.buf.get_unchecked(self.pos_within_buf..self.limit_within_buf) }
         } else {
-            &self.buf[self.pos..]
+            &self.buf[self.pos_within_buf..self.limit_within_buf]
         }
     }
 
     #[inline]
     pub fn remaining_in_buf_len(&self) -> usize {
-        self.buf.len() - self.pos
+        self.limit_within_buf - self.pos_within_buf
     }
 
-    #[inline]
-    pub fn eof(&mut self) -> io::Result<bool> {
-        if self.buf.len() == self.pos {
+    pub fn bytes_until_limit(&self) -> u64 {
+        if self.limit == NO_LIMIT {
+            NO_LIMIT
+        } else {
+            self.limit - (self.pos_of_buf_start + self.pos_within_buf as u64)
+        }
+    }
+
+    #[inline(always)]
+    pub fn eof(&mut self) -> ProtobufResult<bool> {
+        if self.pos_within_buf == self.limit_within_buf {
             Ok(self.fill_buf()?.is_empty())
         } else {
             Ok(false)
         }
     }
 
-    #[inline]
-    pub fn read_byte(&mut self) -> io::Result<u8> {
-        if self.pos == self.buf.len() {
+    #[inline(always)]
+    pub fn read_byte(&mut self) -> ProtobufResult<u8> {
+        if self.pos_within_buf == self.limit_within_buf {
             if self.fill_buf()?.is_empty() {
-                return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
         }
 
         let r = if USE_UNSAFE_FOR_SPEED {
-            unsafe { *self.buf.get_unchecked(self.pos) }
+            unsafe { *self.buf.get_unchecked(self.pos_within_buf) }
         } else {
-            self.buf[self.pos]
+            self.buf[self.pos_within_buf]
         };
-        self.pos += 1;
+        self.pos_within_buf += 1;
         Ok(r)
     }
 
     #[cfg(feature = "bytes")]
-    pub fn read_exact_bytes(&mut self, len: usize) -> io::Result<Bytes> {
+    pub fn read_exact_bytes(&mut self, len: usize) -> ProtobufResult<Bytes> {
         if let InputSource::Bytes(bytes) = self.input_source {
-            if self.pos + len > bytes.len() {
-                return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "unexpected EOF"));
+            if self.pos_within_buf + len > self.limit_within_buf {
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
-            let r = bytes.slice(self.pos, self.pos + len);
-            self.pos += len;
+            let r = bytes.slice(self.pos_within_buf, self.pos_within_buf + len);
+            self.pos_within_buf += len;
             Ok(r)
         } else {
             let mut r = BytesMut::with_capacity(len);
@@ -151,99 +237,106 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    fn do_fill_buf(&mut self) -> io::Result<()> {
-        debug_assert!(self.pos == self.buf.len());
-        match self.input_source {
-            InputSource::Read(ref mut buf_read) => {
-                buf_read.consume(self.pos);
-                // Danger! `buf_read.buf` must not be moved!
-                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
-                self.pos = 0;
-            }
-            InputSource::BufRead(ref mut buf_read) => {
-                buf_read.consume(self.pos);
-                // Danger! `buf_read.buf` must not be moved!
-                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
-                self.pos = 0;
-            }
-            _ => {}
-        }
-        Ok(())
-    }
-}
-
-impl<'a> Drop for BufReadIter<'a> {
-    fn drop(&mut self) {
-        match self.input_source {
-            InputSource::BufRead(ref mut buf_read) => buf_read.consume(self.pos),
-            InputSource::Read(_) => {
-                // Nothing to flush, because we own BufReader
-            }
-            _ => {},
-        }
-    }
-}
-
-impl<'a> Read for BufReadIter<'a> {
-    #[inline]
-    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+    fn _read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
         self.fill_buf()?;
 
-        let rem = &self.buf[self.pos..];
+        let rem = &self.buf[self.pos_within_buf..self.limit_within_buf];
 
         let len = cmp::min(rem.len(), buf.len());
         &mut buf[..len].copy_from_slice(&rem[..len]);
-        self.pos += len;
+        self.pos_within_buf += len;
         Ok((len))
     }
 
-    fn read_exact(&mut self, mut buf: &mut [u8]) -> io::Result<()> {
+    pub fn read_exact(&mut self, mut buf: &mut [u8]) -> ProtobufResult<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
-            buf.copy_from_slice(&self.buf[self.pos .. self.pos + buf_len]);
-            self.pos += buf_len;
+            buf.copy_from_slice(&self.buf[self.pos_within_buf.. self.pos_within_buf + buf_len]);
+            self.pos_within_buf += buf_len;
             return Ok(());
         }
 
+        if self.bytes_until_limit() < buf.len() as u64 {
+            return Err(ProtobufError::WireError(WireError::UnexpectedEof));
+        }
+
+        let consume = self.pos_within_buf;
+        self.pos_of_buf_start += self.pos_within_buf as u64;
+        self.pos_within_buf = 0;
+        self.buf = &[];
+        self.limit_within_buf = 0;
+
         match self.input_source {
             InputSource::Read(ref mut buf_read) => {
-                buf_read.consume(self.pos);
-                self.pos = 0;
-                self.buf = &[];
-                buf_read.read_exact(buf)
+                buf_read.consume(consume);
+                buf_read.read_exact(buf)?;
             }
             InputSource::BufRead(ref mut buf_read) => {
-                buf_read.consume(self.pos);
-                self.pos = 0;
-                self.buf = &[];
-                buf_read.read_exact(buf)
+                buf_read.consume(consume);
+                buf_read.read_exact(buf)?;
             }
             _ => {
-                Err(io::Error::new(io::ErrorKind::UnexpectedEof, "failed to fill whole buffer"))
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
         }
-    }
-}
 
-impl<'a> BufRead for BufReadIter<'a> {
-    #[inline]
-    fn fill_buf(&mut self) -> io::Result<&[u8]> {
-        if self.pos == self.buf.len() {
+        self.pos_of_buf_start += buf.len() as u64;
+
+        self.assertions();
+
+        Ok(())
+    }
+
+    fn do_fill_buf(&mut self) -> ProtobufResult<()> {
+        debug_assert!(self.pos_within_buf == self.limit_within_buf);
+
+        // Limit is reached, so EOF is reached
+        if self.limit_within_buf != self.buf.len() {
+            return Ok(());
+        }
+
+        let consume = self.buf.len();
+        self.pos_of_buf_start += self.buf.len() as u64;
+        self.buf = &[];
+        self.pos_within_buf = 0;
+        self.limit_within_buf = 0;
+
+        match self.input_source {
+            InputSource::Read(ref mut buf_read) => {
+                buf_read.consume(consume);
+                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+            }
+            InputSource::BufRead(ref mut buf_read) => {
+                buf_read.consume(consume);
+                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+            }
+            _ => {
+                return Ok(());
+            }
+        }
+
+        self.update_limit_within_buf();
+
+        Ok(())
+    }
+
+    #[inline(always)]
+    pub fn fill_buf(&mut self) -> ProtobufResult<&[u8]> {
+        if self.pos_within_buf == self.limit_within_buf {
             self.do_fill_buf()?;
         }
 
-        let s = if USE_UNSAFE_FOR_SPEED {
-            unsafe { self.buf.get_unchecked(self.pos..) }
+        Ok(if USE_UNSAFE_FOR_SPEED {
+            unsafe { self.buf.get_unchecked(self.pos_within_buf..self.limit_within_buf) }
         } else {
-            &self.buf[self.pos..]
-        };
-        Ok(s)
+            &self.buf[self.pos_within_buf..self.limit_within_buf]
+        })
     }
 
-    #[inline]
-    fn consume(&mut self, amt: usize) {
-        assert!(amt <= self.buf.len() - self.pos);
-        self.pos += amt;
+    #[inline(always)]
+    pub fn consume(&mut self, amt: usize) {
+        assert!(amt <= self.limit_within_buf - self.pos_within_buf);
+        self.pos_within_buf += amt;
     }
 }
 

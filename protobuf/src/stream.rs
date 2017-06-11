@@ -1,4 +1,3 @@
-use std;
 use std::mem;
 use std::io::{BufRead, Read};
 use std::io::Write;
@@ -119,120 +118,69 @@ pub mod wire_format {
 
 }
 
-const NO_LIMIT: u64 = std::u64::MAX;
-
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
-    current_limit: u64,
-    pos: u64,
 }
 
 impl<'a> CodedInputStream<'a> {
     pub fn new(read: &'a mut Read) -> CodedInputStream<'a> {
         CodedInputStream {
             source: BufReadIter::from_read(read),
-            current_limit: NO_LIMIT,
-            pos: 0,
         }
     }
 
     pub fn from_buffered_reader(buf_read: &'a mut BufRead) -> CodedInputStream<'a> {
         CodedInputStream {
             source: BufReadIter::from_buf_read(buf_read),
-            current_limit: NO_LIMIT,
-            pos: 0,
         }
     }
 
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
-        let len = bytes.len();
         CodedInputStream {
             source: BufReadIter::from_byte_slice(bytes),
-            current_limit: len as u64,
-            pos: 0,
         }
     }
 
     #[cfg(feature = "bytes")]
     pub fn from_carllerche_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
-        let len = bytes.len();
         CodedInputStream {
             source: BufReadIter::from_bytes(bytes),
-            current_limit: len as u64,
-            pos: 0,
         }
     }
 
-    pub fn pos(&self) -> u64 { self.pos }
+    pub fn pos(&self) -> u64 { self.source.pos() }
 
     pub fn bytes_until_limit(&self) -> u64 {
-        if self.current_limit == NO_LIMIT {
-            NO_LIMIT
-        } else {
-            self.current_limit - self.pos
-        }
-    }
-
-    fn check_limit(&self, len: usize) -> ProtobufResult<()> {
-        if self.current_limit != NO_LIMIT {
-            if len as u64 > self.bytes_until_limit() {
-                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
-            }
-        }
-        Ok(())
+        self.source.bytes_until_limit()
     }
 
     pub fn read(&mut self, buf: &mut[u8]) -> ProtobufResult<()> {
-        self.check_limit(buf.len())?;
         self.source.read_exact(buf)?;
-        self.pos += buf.len() as u64;
         Ok(())
     }
 
     #[cfg(feature = "bytes")]
     fn read_raw_callerche_bytes(&mut self, count: usize) -> ProtobufResult<Bytes> {
-        self.check_limit(count)?;
         let r = self.source.read_exact_bytes(count)?;
-        self.pos += count as u64;
         Ok(r)
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
-        if self.pos == self.current_limit {
-            return Err(ProtobufError::WireError(WireError::UnexpectedEof));
-        }
-
-        let r = self.source.read_byte()?;
-        self.pos += 1;
-        Ok(r)
+        self.source.read_byte()
     }
 
     pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
-        let old_limit = self.current_limit;
-        let new_limit = match self.pos.checked_add(limit) {
-            None | Some(NO_LIMIT) => return Err(ProtobufError::WireError(WireError::Other)),
-            Some(new_limit) => new_limit,
-        };
-        if old_limit != NO_LIMIT && new_limit > old_limit {
-            return Err(ProtobufError::WireError(WireError::Other));
-        }
-        self.current_limit = new_limit;
-        Ok(old_limit)
+        self.source.push_limit(limit)
     }
 
     pub fn pop_limit(&mut self, old_limit: u64) {
-        self.current_limit = old_limit;
+        self.source.pop_limit(old_limit);
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn eof(&mut self) -> ProtobufResult<bool> {
-        debug_assert!(self.pos <= self.current_limit);
-        if self.current_limit == NO_LIMIT {
-            Ok(self.source.eof()?)
-        } else {
-            Ok(self.pos == self.current_limit)
-        }
+        Ok(self.source.eof()?)
     }
 
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
@@ -260,9 +208,9 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
-        if self.bytes_until_limit() >= 10 && self.source.remaining_in_buf_len() >= 10 {
+        if self.source.remaining_in_buf_len() >= 10 {
             // fast path
             let mut r: u64 = 0;
             let mut i: usize = 0;
@@ -289,14 +237,13 @@ impl<'a> CodedInputStream<'a> {
                 }
             }
             self.source.consume(i);
-            self.pos += i as u64;
             Ok(r)
         } else {
             self.read_raw_varint64_slow()
         }
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn read_raw_varint32(&mut self) -> ProtobufResult<u32> {
         self.read_raw_varint64().map(|v| v as u32)
     }
@@ -1197,7 +1144,7 @@ mod test {
         let len = decode_hex(hex).len();
         test_read_partial(hex, |reader| {
             callback(reader);
-            assert!(reader.eof().unwrap());
+            assert!(reader.eof().expect("eof"));
             assert_eq!(len as u64, reader.pos());
         });
     }
@@ -1260,8 +1207,7 @@ mod test {
         test_read_partial("96 97", |reader| {
             let result = reader.read_raw_varint32();
             match result {
-                // TODO: make unexpected EOF an enum variant
-                Err(ProtobufError::IoError(..)) => (),
+                Err(ProtobufError::WireError(..)) => (),
                 _ => panic!(),
             }
         });
@@ -1301,6 +1247,13 @@ mod test {
         test_read("aa bb cc dd ee ff", |reader| {
             reader.skip_raw_bytes(6).unwrap();
         });
+    }
+
+    #[test]
+    fn test_input_stream_read_raw_bytes() {
+        test_read("", |reader| {
+            assert_eq!(Vec::from(&b""[..]), reader.read_raw_bytes(0).expect("read_raw_bytes"));
+        })
     }
 
     #[test]
