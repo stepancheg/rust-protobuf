@@ -21,7 +21,7 @@ There are several ways to generate rust code from `.proto` files
 
 0) Install protobuf for `protoc` binary.
 
-On OS X [Homebrew](https://github.com/Homebrew/homebrew) can be used:
+On OS X [Homebrew](https://github.com/Homebrew/brew) can be used:
 
 ```
 brew install protobuf
