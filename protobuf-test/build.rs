@@ -25,9 +25,6 @@ fn clean_old_files() {
     for f in glob_simple("src/*/pb_*.rs") {
         fs::remove_file(f).expect("rm");
     }
-    for f in glob_simple("src/*/pb_*.rs") {
-        fs::remove_file(f).expect("rm");
-    }
 }
 
 
