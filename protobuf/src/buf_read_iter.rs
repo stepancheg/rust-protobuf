@@ -176,7 +176,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn remaining_in_buf_len(&self) -> usize {
         self.limit_within_buf - self.pos_within_buf
     }
@@ -201,7 +201,8 @@ impl<'ignore> BufReadIter<'ignore> {
     #[inline(always)]
     pub fn read_byte(&mut self) -> ProtobufResult<u8> {
         if self.pos_within_buf == self.limit_within_buf {
-            if self.fill_buf()?.is_empty() {
+            self.do_fill_buf()?;
+            if self.remaining_in_buf_len() == 0 {
                 return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
         }
