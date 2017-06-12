@@ -357,11 +357,11 @@ impl<'a> MessageGen<'a> {
                         w.comment(&format!("{}: <group>", &field.rust_name));
                     } else {
                         match field.kind {
-                            FieldKind::Repeated(..)                |
-                            FieldKind::Map(..)                     |
+                            FieldKind::Repeated(..) |
                             FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
                                 w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
                             }
+                            FieldKind::Map(..)      |
                             FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
                                 w.pub_field_decl(&field.rust_name, &field.full_storage_type().to_string());
                             }
