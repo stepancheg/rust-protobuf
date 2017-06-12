@@ -76,6 +76,33 @@ Have a look at generated files, used internally in rust-protobuf:
 
 docs.rs hosts [rustdoc for protobuf](https://docs.rs/protobuf/*/protobuf/).
 
+## Copy-on-write
+
+Rust-protobuf can be used with [bytes crate](https://github.com/carllerche/bytes).
+
+To enable `Bytes` you need to:
+
+1. Enable `with-bytes` feature in rust-protobuf:
+
+```
+[dependencies]
+protobuf = { version = "1.3", features = ["with-bytes"] }
+```
+
+2. Enable bytes option in `.proto` file:
+
+```
+import "rustproto.proto";
+
+option (rustproto.carllerche_bytes_for_bytes_all) = true;
+option (rustproto.carllerche_bytes_for_string_all) = true;
+```
+
+With these options enabled, fields of type `bytes` or `string` are
+generated as `Bytes` or `Chars` respectively. When `CodedInputStream` is constructed
+from `Bytes` object, fields of these types get subslices of original `Bytes` object,
+instead of being allocated on heap.
+
 ## TODO
 
 * Implement some rust-specific options
