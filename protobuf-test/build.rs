@@ -22,7 +22,7 @@ fn glob_simple(pattern: &str) -> Vec<String> {
 
 
 fn clean_old_files() {
-    for f in glob_simple("src/*/pb_*.rs") {
+    for f in glob_simple("src/**/*_pb.rs") {
         fs::remove_file(f).expect("rm");
     }
 }
@@ -123,6 +123,8 @@ fn generate_pb_rs() {
             includes: &["../proto", dir],
         }).expect("protoc");
     }
+
+    gen_v2_v3("src/v2");
 
     if protoc::Protoc::from_env_path().version().expect("version").is_3() {
         gen_v2_v3("src/v3");
