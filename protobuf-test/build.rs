@@ -1,4 +1,6 @@
 extern crate glob;
+#[macro_use]
+extern crate log;
 extern crate env_logger;
 
 extern crate protoc;
@@ -112,8 +114,11 @@ fn generate_v_from_common() {
 fn generate_pb_rs() {
 
     fn gen_v2_v3(dir: &str) {
+        info!("generating protos in {}", dir);
 
         let protos = glob_simple(&format!("{}/*.proto", dir));
+
+        assert!(!protos.is_empty());
 
         protoc_rust::run(protoc_rust::Args {
             out_dir: dir,
@@ -122,7 +127,6 @@ fn generate_pb_rs() {
         }).expect("protoc");
     }
 
-    gen_v2_v3("src/v2");
     if protoc::Protoc::from_env_path().version().expect("version").is_3() {
         gen_v2_v3("src/v3");
 
@@ -133,6 +137,8 @@ fn generate_pb_rs() {
             includes: &["../proto", "src"],
         }).expect("protoc");
     } else {
+        info!("generating stubs in src/v3");
+
         // Because `#[cfg(nonexistent)]` still requires module files to exist
         // https://github.com/rust-lang/rust/pull/36482
 

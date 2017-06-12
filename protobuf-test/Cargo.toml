@@ -16,6 +16,7 @@ with-bytes = ["bytes", "protobuf/with-bytes"]
 protoc      = { path = "../protoc" }
 protoc-rust = { path = "../protoc-rust" }
 glob        = "0.2"
+log         = "0.*"
 env_logger  = "0.*"
 
 [dependencies.protobuf]
