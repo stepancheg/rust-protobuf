@@ -58,13 +58,35 @@ fn read_byte_from_vec(b: &mut Bencher) {
 }
 
 #[bench]
-fn read_varint(b: &mut Bencher) {
+fn read_varint_12(b: &mut Bencher) {
     let mut v = Vec::new();
     {
         let mut v = protobuf::CodedOutputStream::vec(&mut v);
         for i in 0..1000 {
             // one or two byte varints
             v.write_raw_varint32((i * 7919) % (1 << 14)).expect("write");
+        }
+        v.flush().expect("flush");
+    }
+    b.iter(|| {
+        let mut is = CodedInputStream::from_bytes(test::black_box(&v));
+        let mut count = 0;
+        while !is.eof().expect("eof") {
+            test::black_box(is.read_raw_varint32().expect("read"));
+            count += 1;
+        }
+        assert_eq!(1000, count);
+    })
+}
+
+#[bench]
+fn read_varint_1(b: &mut Bencher) {
+    let mut v = Vec::new();
+    {
+        let mut v = protobuf::CodedOutputStream::vec(&mut v);
+        for i in 0..1000 {
+            // one or two byte varints
+            v.write_raw_varint32((i * 7919) % (1 << 7)).expect("write");
         }
         v.flush().expect("flush");
     }

@@ -210,37 +210,67 @@ impl<'a> CodedInputStream<'a> {
 
     #[inline(always)]
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
-        if self.source.remaining_in_buf_len() >= 10 {
-            // fast path
-            let mut r: u64 = 0;
-            let mut i: usize = 0;
-            {
+        'slow: loop {
+            let ret;
+            let consume;
+
+            loop {
                 let rem = self.source.remaining_in_buf();
-                loop {
-                    if i == 10 {
-                        return Err(ProtobufError::WireError(WireError::IncorrectVarint));
-                    }
 
-                    let b = if true {
-                        // skip range check
-                        unsafe { *rem.get_unchecked(i) }
+                if rem.len() >= 1 {
+                    // most varints are in practice fit in 1 byte
+                    if rem[0] < 0x80 {
+                        ret = rem[0] as u64;
+                        consume = 1;
                     } else {
-                        rem[i]
-                    };
+                        // handle case of two bytes too
+                        if rem.len() >= 2 && rem[1] < 0x80 {
+                            ret = (rem[0] & 0x7f) as u64 | (rem[1] as u64) << 7;
+                            consume = 2;
+                        } else if rem.len() >= 10 {
+                            // Read from array when buf at at least 10 bytes,
+                            // max len for varint.
+                            let mut r: u64 = 0;
+                            let mut i: usize = 0;
+                            {
+                                let rem = rem;
+                                loop {
+                                    if i == 10 {
+                                        return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                                    }
 
-                    // TODO: may overflow if i == 9
-                    r = r | (((b & 0x7f) as u64) << (i * 7));
-                    i += 1;
-                    if b < 0x80 {
-                        break;
+                                    let b = if true {
+                                        // skip range check
+                                        unsafe { *rem.get_unchecked(i) }
+                                    } else {
+                                        rem[i]
+                                    };
+
+                                    // TODO: may overflow if i == 9
+                                    r = r | (((b & 0x7f) as u64) << (i * 7));
+                                    i += 1;
+                                    if b < 0x80 {
+                                        break;
+                                    }
+                                }
+                            }
+                            consume = i;
+                            ret = r;
+                        } else {
+                            break 'slow;
+                        }
                     }
+                } else {
+                    break 'slow;
                 }
+                break;
             }
-            self.source.consume(i);
-            Ok(r)
-        } else {
-            self.read_raw_varint64_slow()
+
+            self.source.consume(consume);
+            return Ok(ret);
         }
+
+        self.read_raw_varint64_slow()
     }
 
     #[inline(always)]
