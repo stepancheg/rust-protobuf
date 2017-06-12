@@ -2,6 +2,7 @@
 name = "rust-protobuf-test"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+publish = false
 
 [lib]
 doctest = false

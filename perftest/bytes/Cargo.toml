@@ -2,6 +2,7 @@
 name = "perftest-bytes"
 version = "0.1.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+publish = false
 
 [features]
 default-features = []
