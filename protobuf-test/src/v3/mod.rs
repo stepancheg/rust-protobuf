@@ -9,3 +9,8 @@ mod test_map;
 mod test_ident_pb;
 
 mod test_issue_190_pb;
+
+#[cfg(feature = "bytes")]
+mod test_map_carllerche;
+#[cfg(feature = "bytes")]
+mod test_map_carllerche_pb;
