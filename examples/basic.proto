@@ -1,0 +1,4 @@
+message BasicMessage {
+    optional string name = 1;
+    repeated double data = 2;
+}
