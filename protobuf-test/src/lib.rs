@@ -12,6 +12,8 @@ mod v2;
 #[cfg(proto3)]
 mod v3;
 
+mod common;
+
 #[cfg(proto3)]
 mod google;
 
