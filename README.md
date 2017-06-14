@@ -68,8 +68,8 @@ Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-
 
 Have a look at generated files, used internally in rust-protobuf:
 
-* [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/src/lib/descriptor.rs)
-  for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/src/proto/google/protobuf/descriptor.proto)
+* [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf/src/descriptor.rs)
+  for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/proto/google/protobuf/descriptor.proto)
   (that is part of Google protobuf)
 
 ## Rustdoc
