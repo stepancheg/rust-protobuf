@@ -9,6 +9,9 @@ description = """
 protoc --rust_out=... available as API. protoc needs to be in $PATH, protoc-gen-run does not.
 """
 
+[lib]
+doctest = false
+
 [dependencies]
 protoc   = { path = "../protoc", version = "1.3.0" }
 protobuf = { path = "../protobuf", version = "1.3.0" }

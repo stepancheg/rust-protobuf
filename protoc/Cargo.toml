@@ -9,5 +9,8 @@ description = """
 Protobuf protoc command as API
 """
 
+[lib]
+doctest = false
+
 [dependencies]
 log = "0.*"

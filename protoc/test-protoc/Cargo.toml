@@ -3,6 +3,10 @@ name = "test-protoc"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
+[lib]
+test = false
+doctest = false
+
 [dependencies]
 protobuf = { path = "../../protobuf" }
 

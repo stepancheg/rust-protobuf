@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
 
+[lib]
+test = false
+doctest = false
+
 [features]
 default-features = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
