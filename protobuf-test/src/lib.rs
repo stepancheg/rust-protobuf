@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 extern crate protobuf;
 
 #[cfg(feature = "with-bytes")]
