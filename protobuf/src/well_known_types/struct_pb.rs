@@ -24,7 +24,7 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[derive(PartialEq,Clone,Default)]
 pub struct Struct {
     // message fields
-    fields: ::std::collections::HashMap<::std::string::String, Value>,
+    pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
@@ -686,7 +686,7 @@ impl ::protobuf::reflect::ProtobufValue for Value {
 #[derive(PartialEq,Clone,Default)]
 pub struct ListValue {
     // message fields
-    values: ::protobuf::RepeatedField<Value>,
+    pub values: ::protobuf::RepeatedField<Value>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,

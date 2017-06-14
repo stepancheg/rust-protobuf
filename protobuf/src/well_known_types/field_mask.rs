@@ -24,7 +24,7 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[derive(PartialEq,Clone,Default)]
 pub struct FieldMask {
     // message fields
-    paths: ::protobuf::RepeatedField<::std::string::String>,
+    pub paths: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,

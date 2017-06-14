@@ -25,10 +25,10 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 pub struct Type {
     // message fields
     pub name: ::std::string::String,
-    fields: ::protobuf::RepeatedField<Field>,
-    oneofs: ::protobuf::RepeatedField<::std::string::String>,
-    options: ::protobuf::RepeatedField<Option>,
-    source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
+    pub fields: ::protobuf::RepeatedField<Field>,
+    pub oneofs: ::protobuf::RepeatedField<::std::string::String>,
+    pub options: ::protobuf::RepeatedField<Option>,
+    pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
@@ -478,7 +478,7 @@ pub struct Field {
     pub type_url: ::std::string::String,
     pub oneof_index: i32,
     pub packed: bool,
-    options: ::protobuf::RepeatedField<Option>,
+    pub options: ::protobuf::RepeatedField<Option>,
     pub json_name: ::std::string::String,
     pub default_value: ::std::string::String,
     // special fields
@@ -1237,9 +1237,9 @@ impl ::protobuf::reflect::ProtobufValue for Field_Cardinality {
 pub struct Enum {
     // message fields
     pub name: ::std::string::String,
-    enumvalue: ::protobuf::RepeatedField<EnumValue>,
-    options: ::protobuf::RepeatedField<Option>,
-    source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
+    pub enumvalue: ::protobuf::RepeatedField<EnumValue>,
+    pub options: ::protobuf::RepeatedField<Option>,
+    pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
@@ -1636,7 +1636,7 @@ pub struct EnumValue {
     // message fields
     pub name: ::std::string::String,
     pub number: i32,
-    options: ::protobuf::RepeatedField<Option>,
+    pub options: ::protobuf::RepeatedField<Option>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
@@ -1911,7 +1911,7 @@ impl ::protobuf::reflect::ProtobufValue for EnumValue {
 pub struct Option {
     // message fields
     pub name: ::std::string::String,
-    value: ::protobuf::SingularPtrField<::protobuf::well_known_types::Any>,
+    pub value: ::protobuf::SingularPtrField<::protobuf::well_known_types::Any>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,

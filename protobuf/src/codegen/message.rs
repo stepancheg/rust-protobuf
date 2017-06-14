@@ -356,17 +356,23 @@ impl<'a> MessageGen<'a> {
                     if field.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
                         w.comment(&format!("{}: <group>", &field.rust_name));
                     } else {
-                        match field.kind {
-                            FieldKind::Repeated(..) |
-                            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
-                                w.field_decl(&field.rust_name, &field.full_storage_type().to_string());
+                        let vis = if field.expose_field {
+                            Visibility::Public
+                        } else {
+                            match field.kind {
+                                FieldKind::Repeated(..) => Visibility::Default,
+                                FieldKind::Singular(SingularField { ref flag, .. }) => {
+                                    match *flag {
+                                        SingularFieldFlag::WithFlag { .. } => Visibility::Default,
+                                        SingularFieldFlag::WithoutFlag => Visibility::Public,
+                                    }
+                                }
+                                FieldKind::Map(..) => Visibility::Public,
+                                FieldKind::Oneof(..) => unreachable!(),
                             }
-                            FieldKind::Map(..)      |
-                            FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
-                                w.pub_field_decl(&field.rust_name, &field.full_storage_type().to_string());
-                            }
-                            FieldKind::Oneof(..) => unreachable!(),
-                        }
+                        };
+                        w.field_decl_vis(
+                            vis, &field.rust_name, &field.full_storage_type().to_string());
                     }
                 }
             }
@@ -381,6 +387,7 @@ impl<'a> MessageGen<'a> {
                 }
             }
             w.comment("special fields");
+            // TODO: make public
             w.field_decl("unknown_fields", "::protobuf::UnknownFields");
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });

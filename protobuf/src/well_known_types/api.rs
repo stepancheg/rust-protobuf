@@ -25,11 +25,11 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 pub struct Api {
     // message fields
     pub name: ::std::string::String,
-    methods: ::protobuf::RepeatedField<Method>,
-    options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
+    pub methods: ::protobuf::RepeatedField<Method>,
+    pub options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
     pub version: ::std::string::String,
-    source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
-    mixins: ::protobuf::RepeatedField<Mixin>,
+    pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
+    pub mixins: ::protobuf::RepeatedField<Mixin>,
     pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
@@ -534,7 +534,7 @@ pub struct Method {
     pub request_streaming: bool,
     pub response_type_url: ::std::string::String,
     pub response_streaming: bool,
-    options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
+    pub options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
     pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
