@@ -5,6 +5,7 @@ use super::test_enum_values_pb::*;
 #[test]
 fn test_enum_values() {
     let expected = [
+        TestEnumValuesEnum::UNKNOWN,
         TestEnumValuesEnum::WINTER,
         TestEnumValuesEnum::SPRING,
         TestEnumValuesEnum::SUMMER,

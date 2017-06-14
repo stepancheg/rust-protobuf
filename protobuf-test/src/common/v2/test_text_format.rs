@@ -25,7 +25,7 @@ fn test_singular() {
     t("fixed64_singular: 99",     |m| m.set_fixed64_singular(99));
     t("sfixed32_singular: 99",    |m| m.set_sfixed32_singular(99));
     t("sfixed64_singular: 99",    |m| m.set_sfixed64_singular(99));
-    t("bool_singular: false",     |m| m.set_bool_singular(false));
+    t("bool_singular: true",      |m| m.set_bool_singular(true));
     t("string_singular: \"abc\"", |m| m.set_string_singular("abc".to_string()));
     t("bytes_singular: \"def\"",  |m| m.set_bytes_singular(b"def".to_vec()));
     t("test_enum_singular: DARK", |m| m.set_test_enum_singular(TestEnum::DARK));

@@ -1,6 +1,7 @@
 syntax = "proto2";
 
 enum TestEnumValuesEnum {
+    UNKNOWN = 0;
     WINTER = 11;
     SPRING = 22;
     SUMMER = 33;
