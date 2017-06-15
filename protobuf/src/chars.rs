@@ -1,5 +1,6 @@
 use std::str;
 use std::ops::Deref;
+use std::fmt;
 
 use bytes::Bytes;
 
@@ -57,5 +58,35 @@ impl Deref for Chars {
 impl Clear for Chars {
     fn clear(&mut self) {
         self.0.clear();
+    }
+}
+
+impl fmt::Display for Chars {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&**self, f)
+    }
+}
+
+impl fmt::Debug for Chars {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(&**self, f)
+    }
+}
+
+
+#[cfg(test)]
+mod test {
+    use super::Chars;
+
+    #[test]
+    fn test_display_and_debug() {
+        let s = "test";
+        let string: String = s.into();
+        let chars: Chars = s.into();
+
+        assert_eq!(format!("{}", string), format!("{}", chars));
+        assert_eq!(format!("{:?}", string), format!("{:?}", chars));
     }
 }
