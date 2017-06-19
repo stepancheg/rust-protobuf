@@ -45,7 +45,7 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
             Some(f) => f,
         };
         let d = match f {
-            '0' ... '9' => (f as u8 - b'0'),
+            '0'...'9' => (f as u8 - b'0'),
             _ => return 0,
         };
         *chars = copy;
@@ -63,7 +63,7 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
             't' => return b'\t',
             'v' => return b'\x0b',
             '"' => return b'"',
-            '0' ... '9' => (n as u8 - b'0'),
+            '0'...'9' => (n as u8 - b'0'),
             c => return c as u8, // TODO: validate ASCII
         };
         let d2 = parse_if_digit(chars);
@@ -101,9 +101,13 @@ fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
     }
 }
 
-fn print_start_field(buf: &mut String, pretty: bool, indent: usize, first: &mut bool,
-    field_name: &str)
-{
+fn print_start_field(
+    buf: &mut String,
+    pretty: bool,
+    indent: usize,
+    first: &mut bool,
+    field_name: &str,
+) {
     if !*first && !pretty {
         buf.push_str(" ");
     }
@@ -118,9 +122,14 @@ fn print_end_field(buf: &mut String, pretty: bool) {
     }
 }
 
-fn print_field(buf: &mut String, pretty: bool, indent: usize, first: &mut bool,
-    field_name: &str, value: ProtobufValueRef)
-{
+fn print_field(
+    buf: &mut String,
+    pretty: bool,
+    indent: usize,
+    first: &mut bool,
+    field_name: &str,
+    value: ProtobufValueRef,
+) {
     print_start_field(buf, pretty, indent, first, field_name);
 
     match value {
@@ -144,28 +153,28 @@ fn print_field(buf: &mut String, pretty: bool, indent: usize, first: &mut bool,
         ProtobufValueRef::Bytes(b) => {
             buf.push_str(": ");
             quote_escape_bytes_to(b, buf);
-        },
+        }
         ProtobufValueRef::I32(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
         ProtobufValueRef::I64(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
         ProtobufValueRef::U32(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
         ProtobufValueRef::U64(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
         ProtobufValueRef::Bool(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
         ProtobufValueRef::F32(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
         ProtobufValueRef::F64(v) => {
             write!(buf, ": {}", v).unwrap();
-        },
+        }
     }
 
     print_end_field(buf, pretty);
@@ -187,18 +196,25 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
                     let mut entry_first = true;
 
                     print_field(buf, pretty, indent + 1, &mut entry_first, "key", k.as_ref());
-                    print_field(buf, pretty, indent + 1, &mut entry_first, "value", v.as_ref());
+                    print_field(
+                        buf,
+                        pretty,
+                        indent + 1,
+                        &mut entry_first,
+                        "value",
+                        v.as_ref(),
+                    );
                     do_indent(buf, pretty, indent);
                     buf.push_str("}");
                     print_end_field(buf, pretty);
                 }
-            },
+            }
             ReflectFieldRef::Repeated(repeated) => {
                 // TODO: do not print zeros for v3
                 for v in repeated {
                     print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
                 }
-            },
+            }
             ReflectFieldRef::Optional(optional) => {
                 if let Some(v) = optional {
                     print_field(buf, pretty, indent, &mut first, f.name(), v);
@@ -254,7 +270,10 @@ mod test {
         assert_eq!("ab", escape(b"ab"));
         assert_eq!("a\\\\023", escape(b"a\\023"));
         assert_eq!("a\\r\\n\\t '\\\"\\\\", escape(b"a\r\n\t '\"\\"));
-        assert_eq!("\\344\\275\\240\\345\\245\\275", escape("你好".as_bytes()));
+        assert_eq!(
+            "\\344\\275\\240\\345\\245\\275",
+            escape("你好".as_bytes())
+        );
     }
 
     #[test]

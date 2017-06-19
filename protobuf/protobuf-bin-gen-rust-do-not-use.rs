@@ -14,7 +14,8 @@ fn write_file(bin: &str) {
     let mut is = File::open(&Path::new(bin)).unwrap();
     let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Read).unwrap();
 
-    let file_names: Vec<String> = fds.get_file().iter()
+    let file_names: Vec<String> = fds.get_file()
+        .iter()
         .map(|f| f.get_name().to_string())
         .collect();
     let results = gen(fds.get_file(), &file_names);

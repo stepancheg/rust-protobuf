@@ -4,7 +4,7 @@ use super::value::ProtobufValue;
 
 use singular::*;
 
-pub trait ReflectOptional : 'static {
+pub trait ReflectOptional: 'static {
     fn to_option(&self) -> Option<&ProtobufValue>;
 
     fn set_value(&mut self, value: &ProtobufValue);

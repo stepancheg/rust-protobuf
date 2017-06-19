@@ -32,15 +32,33 @@ use unknown::UnknownFields;
 
 
 pub fn compute_raw_varint64_size(value: u64) -> u32 {
-    if (value & (0xffffffffffffffffu64 <<  7)) == 0 { return 1; }
-    if (value & (0xffffffffffffffffu64 << 14)) == 0 { return 2; }
-    if (value & (0xffffffffffffffffu64 << 21)) == 0 { return 3; }
-    if (value & (0xffffffffffffffffu64 << 28)) == 0 { return 4; }
-    if (value & (0xffffffffffffffffu64 << 35)) == 0 { return 5; }
-    if (value & (0xffffffffffffffffu64 << 42)) == 0 { return 6; }
-    if (value & (0xffffffffffffffffu64 << 49)) == 0 { return 7; }
-    if (value & (0xffffffffffffffffu64 << 56)) == 0 { return 8; }
-    if (value & (0xffffffffffffffffu64 << 63)) == 0 { return 9; }
+    if (value & (0xffffffffffffffffu64 << 7)) == 0 {
+        return 1;
+    }
+    if (value & (0xffffffffffffffffu64 << 14)) == 0 {
+        return 2;
+    }
+    if (value & (0xffffffffffffffffu64 << 21)) == 0 {
+        return 3;
+    }
+    if (value & (0xffffffffffffffffu64 << 28)) == 0 {
+        return 4;
+    }
+    if (value & (0xffffffffffffffffu64 << 35)) == 0 {
+        return 5;
+    }
+    if (value & (0xffffffffffffffffu64 << 42)) == 0 {
+        return 6;
+    }
+    if (value & (0xffffffffffffffffu64 << 49)) == 0 {
+        return 7;
+    }
+    if (value & (0xffffffffffffffffu64 << 56)) == 0 {
+        return 8;
+    }
+    if (value & (0xffffffffffffffffu64 << 63)) == 0 {
+        return 9;
+    }
     10
 }
 
@@ -116,11 +134,15 @@ pub fn vec_packed_varint_data_size<T : ProtobufVarint>(vec: &[T]) -> u32 {
 
 // Size of serialized data, excluding length and tag
 pub fn vec_packed_varint_zigzag_data_size<T : ProtobufVarintZigzag>(vec: &[T]) -> u32 {
-    vec.iter().map(|v| v.len_varint_zigzag()).fold(0, |a, i| a + i)
+    vec.iter()
+        .map(|v| v.len_varint_zigzag())
+        .fold(0, |a, i| a + i)
 }
 
 pub fn vec_packed_enum_data_size<E : ProtobufEnum>(vec: &[E]) -> u32 {
-    vec.iter().map(|e| compute_raw_varint32_size(e.value() as u32)).fold(0, |a, i| a + i)
+    vec.iter()
+        .map(|e| compute_raw_varint32_size(e.value() as u32))
+        .fold(0, |a, i| a + i)
 }
 
 // Size of serialized data with length prefix and tag
@@ -134,7 +156,10 @@ pub fn vec_packed_varint_size<T : ProtobufVarint>(field_number: u32, vec: &[T]) 
 }
 
 // Size of serialized data with length prefix and tag
-pub fn vec_packed_varint_zigzag_size<T : ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u32 {
+pub fn vec_packed_varint_zigzag_size<T : ProtobufVarintZigzag>(
+    field_number: u32,
+    vec: &[T],
+) -> u32 {
     if vec.is_empty() {
         0
     } else {
@@ -154,7 +179,9 @@ pub fn vec_packed_enum_size<E : ProtobufEnum>(field_number: u32, vec: &[E]) -> u
 
 // Size of tag does not depend on wire type
 pub fn tag_size(field_number: u32) -> u32 {
-    wire_format::Tag::make(field_number, WireTypeFixed64).value().len_varint()
+    wire_format::Tag::make(field_number, WireTypeFixed64)
+        .value()
+        .len_varint()
 }
 
 pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: WireType) -> u32 {
@@ -162,7 +189,7 @@ pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: WireType) -> u32 {
         WireTypeFixed64 => 8,
         WireTypeFixed32 => 4,
         WireTypeVarint => value.len_varint(),
-        _ => panic!()
+        _ => panic!(),
     }
 }
 
@@ -226,218 +253,291 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
 }
 
 
-pub fn read_repeated_int32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_int32_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<i32>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_int32_into(target),
-        WireTypeVarint => { target.push(is.read_int32()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_int32()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_int64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_int64_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<i64>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_int64_into(target),
-        WireTypeVarint => { target.push(is.read_int64()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_int64()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_uint32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u32>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_uint32_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<u32>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_uint32_into(target),
-        WireTypeVarint => { target.push(is.read_uint32()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_uint32()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_uint64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u64>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_uint64_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<u64>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_uint64_into(target),
-        WireTypeVarint => { target.push(is.read_uint64()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_uint64()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_sint32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_sint32_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<i32>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sint32_into(target),
-        WireTypeVarint => { target.push(is.read_sint32()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_sint32()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_sint64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_sint64_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<i64>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sint64_into(target),
-        WireTypeVarint => { target.push(is.read_sint64()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_sint64()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_fixed32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u32>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_fixed32_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<u32>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_fixed32_into(target),
-        WireTypeFixed32 => { target.push(is.read_fixed32()?); Ok(()) },
+        WireTypeFixed32 => {
+            target.push(is.read_fixed32()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_fixed64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u64>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_fixed64_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<u64>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_fixed64_into(target),
-        WireTypeFixed64 => { target.push(is.read_fixed64()?); Ok(()) },
+        WireTypeFixed64 => {
+            target.push(is.read_fixed64()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_sfixed32_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i32>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_sfixed32_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<i32>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sfixed32_into(target),
-        WireTypeFixed32 => { target.push(is.read_sfixed32()?); Ok(()) },
+        WireTypeFixed32 => {
+            target.push(is.read_sfixed32()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_sfixed64_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<i64>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_sfixed64_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<i64>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_sfixed64_into(target),
-        WireTypeFixed64 => { target.push(is.read_sfixed64()?); Ok(()) },
+        WireTypeFixed64 => {
+            target.push(is.read_sfixed64()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_double_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<f64>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_double_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<f64>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_double_into(target),
-        WireTypeFixed64 => { target.push(is.read_double()?); Ok(()) },
+        WireTypeFixed64 => {
+            target.push(is.read_double()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_float_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<f32>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_float_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<f32>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_float_into(target),
-        WireTypeFixed32 => { target.push(is.read_float()?); Ok(()) },
+        WireTypeFixed32 => {
+            target.push(is.read_float()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
-pub fn read_repeated_bool_into(wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<bool>)
-        -> ProtobufResult<()>
-{
+pub fn read_repeated_bool_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<bool>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_bool_into(target),
-        WireTypeVarint => { target.push(is.read_bool()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_bool()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 pub fn read_repeated_enum_into<E : ProtobufEnum>(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<E>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<E>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
-        WireTypeVarint => { target.push(is.read_enum()?); Ok(()) },
+        WireTypeVarint => {
+            target.push(is.read_enum()?);
+            Ok(())
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 pub fn read_repeated_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<String>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut RepeatedField<String>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.push_default();
             is.read_string_into(tmp)
-        },
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-#[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<Chars>)
-        -> ProtobufResult<()>
-{
-    match wire_type {
-        WireTypeLengthDelimited => {
-            target.push(is.read_carllerche_chars()?);
-            Ok(())
-        },
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-pub fn read_singular_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<String>)
-        -> ProtobufResult<()>
-{
-    match wire_type {
-        WireTypeLengthDelimited => {
-            let tmp = target.set_default();
-            is.read_string_into(tmp)
-        },
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-#[cfg(feature = "bytes")]
-pub fn read_singular_carllerche_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Option<Chars>)
-        -> ProtobufResult<()>
-{
-    match wire_type {
-        WireTypeLengthDelimited => {
-            *target = Some(is.read_carllerche_chars()?);
-            Ok(())
-        },
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-pub fn read_singular_proto3_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut String)
-        -> ProtobufResult<()>
-{
-    match wire_type {
-        WireTypeLengthDelimited => {
-            is.read_string_into(target)
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 #[cfg(feature = "bytes")]
+pub fn read_repeated_carllerche_string_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<Chars>,
+) -> ProtobufResult<()> {
+    match wire_type {
+        WireTypeLengthDelimited => {
+            target.push(is.read_carllerche_chars()?);
+            Ok(())
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+pub fn read_singular_string_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut SingularField<String>,
+) -> ProtobufResult<()> {
+    match wire_type {
+        WireTypeLengthDelimited => {
+            let tmp = target.set_default();
+            is.read_string_into(tmp)
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+#[cfg(feature = "bytes")]
+pub fn read_singular_carllerche_string_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Option<Chars>,
+) -> ProtobufResult<()> {
+    match wire_type {
+        WireTypeLengthDelimited => {
+            *target = Some(is.read_carllerche_chars()?);
+            Ok(())
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+pub fn read_singular_proto3_string_into(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut String,
+) -> ProtobufResult<()> {
+    match wire_type {
+        WireTypeLengthDelimited => is.read_string_into(target),
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+#[cfg(feature = "bytes")]
 pub fn read_singular_proto3_carllerche_string_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Chars)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Chars,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             *target = is.read_carllerche_chars()?;
@@ -448,107 +548,113 @@ pub fn read_singular_proto3_carllerche_string_into(
 }
 
 pub fn read_repeated_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<Vec<u8>>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut RepeatedField<Vec<u8>>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.push_default();
             is.read_bytes_into(tmp)
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 #[cfg(feature = "bytes")]
 pub fn read_repeated_carllerche_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<Bytes>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<Bytes>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             target.push(is.read_carllerche_bytes()?);
             Ok(())
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 pub fn read_singular_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularField<Vec<u8>>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut SingularField<Vec<u8>>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.set_default();
             is.read_bytes_into(tmp)
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 #[cfg(feature = "bytes")]
 pub fn read_singular_carllerche_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Option<Bytes>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Option<Bytes>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             *target = Some(is.read_carllerche_bytes()?);
             Ok(())
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 pub fn read_singular_proto3_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Vec<u8>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<u8>,
+) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
-            is.read_bytes_into(target)
-        },
+        WireTypeLengthDelimited => is.read_bytes_into(target),
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 #[cfg(feature = "bytes")]
 pub fn read_singular_proto3_carllerche_bytes_into(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut Bytes)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Bytes,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             *target = is.read_carllerche_bytes()?;
             Ok(())
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 pub fn read_repeated_message_into<M : Message + Default>(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut RepeatedField<M>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut RepeatedField<M>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.push_default();
             is.merge_message(tmp)
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
 
 pub fn read_singular_message_into<M : Message + Default>(
-    wire_type: WireType, is: &mut CodedInputStream, target: &mut SingularPtrField<M>)
-        -> ProtobufResult<()>
-{
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut SingularPtrField<M>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.set_default();
             is.merge_message(tmp)
-        },
+        }
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -566,12 +672,11 @@ fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
 // Handle unknown field in generated code.
 // Either store a value in unknown, or skip a group.
 pub fn read_unknown_or_skip_group(
-    field_number: u32, wire_type: WireType,
+    field_number: u32,
+    wire_type: WireType,
     is: &mut CodedInputStream,
     unknown_fields: &mut UnknownFields,
-)
-    -> ProtobufResult<()>
-{
+) -> ProtobufResult<()> {
     match wire_type {
         wire_format::WireTypeStartGroup => skip_group(is),
         _ => {
@@ -594,9 +699,10 @@ pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
 
 
 pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Value>) -> u32
-    where
-        K : ProtobufType, V : ProtobufType,
-        K::Value : Eq + Hash,
+where
+    K : ProtobufType,
+    V : ProtobufType,
+    K::Value : Eq + Hash,
 {
     let mut sum = 0;
     for (k, v) in map {
@@ -606,8 +712,7 @@ pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Valu
         let key_len = K::compute_size_with_length_delimiter(k);
         let value_len = V::compute_size_with_length_delimiter(v);
 
-        let entry_len = key_tag_size + key_len
-            + value_tag_size + value_len;
+        let entry_len = key_tag_size + key_len + value_tag_size + value_len;
         sum += tag_size(field_number) + compute_raw_varint32_size(entry_len) + entry_len;
     }
     sum
@@ -616,11 +721,12 @@ pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Valu
 pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
     map: &HashMap<K::Value, V::Value>,
-    os: &mut CodedOutputStream)
-        -> ProtobufResult<()>
-    where
-        K : ProtobufType, V : ProtobufType,
-        K::Value : Eq + Hash,
+    os: &mut CodedOutputStream,
+) -> ProtobufResult<()>
+where
+    K : ProtobufType,
+    V : ProtobufType,
+    K::Value : Eq + Hash,
 {
     for (k, v) in map {
 
@@ -630,8 +736,7 @@ pub fn write_map_with_cached_sizes<K, V>(
         let key_len = K::get_cached_size_with_length_delimiter(k);
         let value_len = V::get_cached_size_with_length_delimiter(v);
 
-        let entry_len = key_tag_size + key_len
-            + value_tag_size + value_len;
+        let entry_len = key_tag_size + key_len + value_tag_size + value_len;
 
         os.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
         os.write_raw_varint32(entry_len)?;
@@ -644,11 +749,12 @@ pub fn write_map_with_cached_sizes<K, V>(
 pub fn read_map_into<K, V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut HashMap<K::Value, V::Value>)
-        -> ProtobufResult<()>
-    where
-        K : ProtobufType, V : ProtobufType,
-        K::Value : Eq + Hash,
+    target: &mut HashMap<K::Value, V::Value>,
+) -> ProtobufResult<()>
+where
+    K : ProtobufType,
+    V : ProtobufType,
+    K::Value : Eq + Hash,
 {
     if wire_type != WireType::WireTypeLengthDelimited {
         return Err(unexpected_wire_type(wire_type));
@@ -667,13 +773,13 @@ pub fn read_map_into<K, V>(
                     return Err(unexpected_wire_type(wire_type));
                 }
                 key = Some(K::read(is)?);
-            },
+            }
             2 => {
                 if wire_type != V::wire_type() {
                     return Err(unexpected_wire_type(wire_type));
                 }
                 value = Some(V::read(is)?);
-            },
+            }
             _ => is.skip_field(wire_type)?,
         }
     }

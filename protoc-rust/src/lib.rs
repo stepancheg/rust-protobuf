@@ -17,9 +17,9 @@ pub struct Args<'a> {
     /// --lang_out= param
     pub out_dir: &'a str,
     /// -I args
-    pub includes: &'a[&'a str],
+    pub includes: &'a [&'a str],
     /// List of .proto files to compile
-    pub input: &'a[&'a str],
+    pub input: &'a [&'a str],
 }
 
 /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
@@ -55,8 +55,7 @@ pub fn run(args: Args) -> Result<()> {
     }
 
     let mut files_to_generate = Vec::new();
-    'outer:
-    for file in args.input {
+    'outer: for file in args.input {
         for include in includes {
             if let Some(truncated) = remove_path_prefix(file, include) {
                 files_to_generate.push(truncated.to_owned());
@@ -64,8 +63,14 @@ pub fn run(args: Args) -> Result<()> {
             }
         }
 
-        return Err(Error::new(io::ErrorKind::Other,
-            format!("file {:?} is not found in includes {:?}", file, args.includes)));
+        return Err(Error::new(
+            io::ErrorKind::Other,
+            format!(
+                "file {:?} is not found in includes {:?}",
+                file,
+                args.includes
+            ),
+        ));
     }
 
     let gen_result = protobuf::codegen::gen(fds.get_file(), &files_to_generate);
@@ -100,7 +105,7 @@ fn remove_path_prefix<'a>(mut path: &'a str, mut prefix: &str) -> Option<&'a str
     }
 
     if prefix.ends_with("/") || prefix.ends_with("\\") {
-        prefix = &prefix[.. prefix.len() - 1];
+        prefix = &prefix[..prefix.len() - 1];
     }
 
     if !path.starts_with(prefix) {
@@ -112,7 +117,7 @@ fn remove_path_prefix<'a>(mut path: &'a str, mut prefix: &str) -> Option<&'a str
     }
 
     if path.as_bytes()[prefix.len()] == b'/' || path.as_bytes()[prefix.len()] == b'\\' {
-        return Some(&path[prefix.len() + 1 ..]);
+        return Some(&path[prefix.len() + 1..]);
     } else {
         return None;
     }
@@ -122,11 +127,26 @@ fn remove_path_prefix<'a>(mut path: &'a str, mut prefix: &str) -> Option<&'a str
 mod test {
     #[test]
     fn remove_path_prefix() {
-        assert_eq!(Some("abc.proto"), super::remove_path_prefix("xxx/abc.proto", "xxx"));
-        assert_eq!(Some("abc.proto"), super::remove_path_prefix("xxx/abc.proto", "xxx/"));
-        assert_eq!(Some("abc.proto"), super::remove_path_prefix("../xxx/abc.proto", "../xxx/"));
-        assert_eq!(Some("abc.proto"), super::remove_path_prefix("abc.proto", "."));
-        assert_eq!(Some("abc.proto"), super::remove_path_prefix("abc.proto", "./"));
+        assert_eq!(
+            Some("abc.proto"),
+            super::remove_path_prefix("xxx/abc.proto", "xxx")
+        );
+        assert_eq!(
+            Some("abc.proto"),
+            super::remove_path_prefix("xxx/abc.proto", "xxx/")
+        );
+        assert_eq!(
+            Some("abc.proto"),
+            super::remove_path_prefix("../xxx/abc.proto", "../xxx/")
+        );
+        assert_eq!(
+            Some("abc.proto"),
+            super::remove_path_prefix("abc.proto", ".")
+        );
+        assert_eq!(
+            Some("abc.proto"),
+            super::remove_path_prefix("abc.proto", "./")
+        );
         assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy"));
         assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy/"));
     }

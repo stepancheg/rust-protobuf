@@ -8,7 +8,8 @@ pub struct Lazy<T> {
 
 impl<T> Lazy<T> {
     pub fn get<F>(&'static mut self, init: F) -> &'static T
-        where F : FnOnce() -> T
+    where
+        F : FnOnce() -> T,
     {
         // ~ decouple the lifetimes of 'self' and 'self.lock' such we
         // can initialize self.ptr in the call_once closure (note: we
@@ -16,10 +17,8 @@ impl<T> Lazy<T> {
         // the ptr is valid for all calling threads at any point in
         // time)
         let lock: &sync::Once = unsafe { mem::transmute(&self.lock) };
-        lock.call_once(|| {
-            unsafe {
-                self.ptr = mem::transmute(Box::new(init()));
-            }
+        lock.call_once(|| unsafe {
+            self.ptr = mem::transmute(Box::new(init()));
         });
         unsafe { &*self.ptr }
     }
@@ -33,7 +32,7 @@ mod test {
     use super::{Lazy, ONCE_INIT};
     use std::thread;
     use std::sync::{Arc, Barrier};
-    use std::sync::atomic::{AtomicIsize, Ordering, ATOMIC_ISIZE_INIT};
+    use std::sync::atomic::{ATOMIC_ISIZE_INIT, AtomicIsize, Ordering};
 
     #[test]
     fn many_threads_calling_get() {

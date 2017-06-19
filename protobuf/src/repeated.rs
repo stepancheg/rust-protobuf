@@ -58,10 +58,7 @@ impl<T> RepeatedField<T> {
     #[inline]
     pub fn from_vec(vec: Vec<T>) -> RepeatedField<T> {
         let len = vec.len();
-        RepeatedField {
-            vec: vec,
-            len: len,
-        }
+        RepeatedField { vec: vec, len: len }
     }
 
     #[inline]
@@ -206,7 +203,10 @@ impl<T> RepeatedField<T> {
     }
 
     #[inline]
-    pub fn sort_by<F>(&mut self, compare: F) where F: Fn(&T, &T) -> Ordering {
+    pub fn sort_by<F>(&mut self, compare: F)
+    where
+        F : Fn(&T, &T) -> Ordering,
+    {
         self.as_mut_slice().sort_by(compare)
     }
 
@@ -221,7 +221,7 @@ impl<T> RepeatedField<T> {
     }
 }
 
-impl<T : Default+Clear> RepeatedField<T> {
+impl<T : Default + Clear> RepeatedField<T> {
     pub fn push_default<'a>(&'a mut self) -> &'a mut T {
         if self.len == self.vec.len() {
             self.vec.push(Default::default());

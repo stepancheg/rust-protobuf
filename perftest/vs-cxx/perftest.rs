@@ -16,13 +16,13 @@ use perftest_data::PerftestData;
 
 mod perftest_data;
 
-fn measure_ns<R, F: FnMut() -> R>(mut f: F) -> (u64, R) {
+fn measure_ns<R, F : FnMut() -> R>(mut f: F) -> (u64, R) {
     let start = time::precise_time_ns();
     let r = f();
     (time::precise_time_ns() - start, r)
 }
 
-fn measure_and_print<R, F: FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
+fn measure_and_print<R, F : FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
     let (ns, r) = measure_ns(f);
     let ns_per_iter = ns / iter;
     println!("{}: {} ns per iter", title, ns_per_iter);
@@ -56,28 +56,36 @@ impl TestRunner {
             }
         });
 
-        let read_data = measure_and_print(&format!("{}: read", name), random_data.len() as u64, || {
-            let mut r = Vec::new();
-            let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-            while !coded_input_stream.eof().unwrap() {
-                r.push(protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream).unwrap());
-            }
-            r
-        });
+        let read_data =
+            measure_and_print(&format!("{}: read", name), random_data.len() as u64, || {
+                let mut r = Vec::new();
+                let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
+                while !coded_input_stream.eof().unwrap() {
+                    r.push(
+                        protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream)
+                            .unwrap(),
+                    );
+                }
+                r
+            });
 
         assert_eq!(random_data, read_data);
 
-        let merged = measure_and_print(&format!("{}: read reuse", name), random_data.len() as u64, || {
-            let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-            let mut msg: M = Default::default();
-            let mut count = 0;
-            while !coded_input_stream.eof().unwrap() {
-                msg.clear();
-                coded_input_stream.merge_message(&mut msg).unwrap();
-                count += 1;
-            }
-            count
-        });
+        let merged = measure_and_print(
+            &format!("{}: read reuse", name),
+            random_data.len() as u64,
+            || {
+                let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
+                let mut msg: M = Default::default();
+                let mut count = 0;
+                while !coded_input_stream.eof().unwrap() {
+                    msg.clear();
+                    coded_input_stream.merge_message(&mut msg).unwrap();
+                    count += 1;
+                }
+                count
+            },
+        );
 
         assert_eq!(random_data.len(), merged);
     }
@@ -99,8 +107,13 @@ impl TestRunner {
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
-    if args.len() > 3 { panic!("usage: {} [data_size] [test]", args[0]) }
-    let data_size = args.iter().nth(1).map(|x| x.parse().unwrap()).unwrap_or(1000000);
+    if args.len() > 3 {
+        panic!("usage: {} [data_size] [test]", args[0])
+    }
+    let data_size = args.iter()
+        .nth(1)
+        .map(|x| x.parse().unwrap())
+        .unwrap_or(1000000);
     let selected = args.iter().nth(2).cloned();
 
     let mut runner = TestRunner {
@@ -114,11 +127,26 @@ fn main() {
 
     runner.test("test1", test_data.get_test1());
     runner.test("test_repeated_bool", test_data.get_test_repeated_bool());
-    runner.test("test_repeated_packed_int32", test_data.get_test_repeated_packed_int32());
-    runner.test("test_repeated_messages", test_data.get_test_repeated_messages());
-    runner.test("test_optional_messages", test_data.get_test_optional_messages());
+    runner.test(
+        "test_repeated_packed_int32",
+        test_data.get_test_repeated_packed_int32(),
+    );
+    runner.test(
+        "test_repeated_messages",
+        test_data.get_test_repeated_messages(),
+    );
+    runner.test(
+        "test_optional_messages",
+        test_data.get_test_optional_messages(),
+    );
     runner.test("test_strings", test_data.get_test_strings());
-    runner.test("test_small_bytearrays", test_data.get_test_small_bytearrays());
-    runner.test("test_large_bytearrays", test_data.get_test_large_bytearrays());
+    runner.test(
+        "test_small_bytearrays",
+        test_data.get_test_small_bytearrays(),
+    );
+    runner.test(
+        "test_large_bytearrays",
+        test_data.get_test_large_bytearrays(),
+    );
     runner.check();
 }

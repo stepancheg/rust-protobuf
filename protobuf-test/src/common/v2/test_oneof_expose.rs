@@ -4,4 +4,3 @@ use super::test_oneof_expose_pb::*;
 fn test_simple() {
     let _aaa = TestOneofExpose::new().aaa;
 }
-

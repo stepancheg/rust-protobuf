@@ -1,7 +1,7 @@
 /// Cached size field used in generated code.
 /// It is always equal to itself to simplify generated code.
 /// (Generated code can use `#[derive(Eq)]`).
-#[derive(Debug,Default,Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct CachedSize {
     size: ::std::cell::Cell<u32>,
 }

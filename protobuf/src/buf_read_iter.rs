@@ -65,7 +65,7 @@ impl<'a> Drop for BufReadIter<'a> {
             InputSource::Read(_) => {
                 // Nothing to flush, because we own BufReader
             }
-            _ => {},
+            _ => {}
         }
     }
 }
@@ -74,7 +74,8 @@ impl<'ignore> BufReadIter<'ignore> {
     pub fn from_read<'a>(read: &'a mut Read) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(
-                BufReader::with_capacity(INPUT_STREAM_BUFFER_SIZE, read)),
+                BufReader::with_capacity(INPUT_STREAM_BUFFER_SIZE, read),
+            ),
             buf: &[],
             pos_within_buf: 0,
             limit_within_buf: 0,
@@ -170,7 +171,10 @@ impl<'ignore> BufReadIter<'ignore> {
     #[inline]
     pub fn remaining_in_buf(&self) -> &[u8] {
         if USE_UNSAFE_FOR_SPEED {
-            unsafe { &self.buf.get_unchecked(self.pos_within_buf..self.limit_within_buf) }
+            unsafe {
+                &self.buf
+                    .get_unchecked(self.pos_within_buf..self.limit_within_buf)
+            }
         } else {
             &self.buf[self.pos_within_buf..self.limit_within_buf]
         }
@@ -252,7 +256,9 @@ impl<'ignore> BufReadIter<'ignore> {
     pub fn read_exact(&mut self, mut buf: &mut [u8]) -> ProtobufResult<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
-            buf.copy_from_slice(&self.buf[self.pos_within_buf.. self.pos_within_buf + buf_len]);
+            buf.copy_from_slice(
+                &self.buf[self.pos_within_buf..self.pos_within_buf + buf_len],
+            );
             self.pos_within_buf += buf_len;
             return Ok(());
         }
@@ -328,7 +334,10 @@ impl<'ignore> BufReadIter<'ignore> {
         }
 
         Ok(if USE_UNSAFE_FOR_SPEED {
-            unsafe { self.buf.get_unchecked(self.pos_within_buf..self.limit_within_buf) }
+            unsafe {
+                self.buf
+                    .get_unchecked(self.pos_within_buf..self.limit_within_buf)
+            }
         } else {
             &self.buf[self.pos_within_buf..self.limit_within_buf]
         })

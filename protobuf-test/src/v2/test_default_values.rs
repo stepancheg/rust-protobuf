@@ -34,5 +34,8 @@ fn test_default_value_extreme() {
     assert_eq!(f32::INFINITY, d.get_inf_float());
     assert_eq!(f32::NEG_INFINITY, d.get_neg_inf_float());
     assert!(d.get_nan_float().is_nan());
-    assert_eq!(b"\0\x01\x07\x08\x0c\n\r\t\x0b\\\'\"\xfe", d.get_escaped_bytes())
+    assert_eq!(
+        b"\0\x01\x07\x08\x0c\n\r\t\x0b\\\'\"\xfe",
+        d.get_escaped_bytes()
+    )
 }

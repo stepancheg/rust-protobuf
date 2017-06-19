@@ -49,9 +49,7 @@ impl Deref for Chars {
     type Target = str;
 
     fn deref(&self) -> &str {
-        unsafe {
-            str::from_utf8_unchecked(&self.0)
-        }
+        unsafe { str::from_utf8_unchecked(&self.0) }
     }
 }
 

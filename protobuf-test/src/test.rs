@@ -20,7 +20,12 @@ pub fn test_serialize_deserialize<M : Message + MessageStatic>(hex: &str, msg: &
     let expected_hex = encode_hex(&expected_bytes);
     let serialized = msg.write_to_bytes().unwrap();
     let serialized_hex = encode_hex(&serialized);
-    assert_eq!(expected_hex, serialized_hex, "message {}", M::descriptor_static(None).name());
+    assert_eq!(
+        expected_hex,
+        serialized_hex,
+        "message {}",
+        M::descriptor_static(None).name()
+    );
     let parsed = parse_from_bytes::<M>(&expected_bytes).unwrap();
     assert!(*msg == parsed);
 

@@ -37,13 +37,14 @@ pub struct FieldDescriptor {
 }
 
 impl FieldDescriptor {
-    fn new(a: Box<FieldAccessor + 'static>, proto: &'static FieldDescriptorProto)
-        -> FieldDescriptor
-    {
+    fn new(
+        a: Box<FieldAccessor + 'static>,
+        proto: &'static FieldDescriptorProto,
+    ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), a.name_generic());
         FieldDescriptor {
             proto: proto,
-            accessor: a
+            accessor: a,
         }
     }
 
@@ -169,36 +170,46 @@ impl FieldDescriptor {
 
     pub fn get_rep_item<'a>(&self, m: &'a Message, index: usize) -> ProtobufValueRef<'a> {
         match self.proto().get_field_type() {
-            FieldDescriptorProto_Type::TYPE_MESSAGE =>
-                ProtobufValueRef::Message(self.get_rep_message_item(m, index)),
-            FieldDescriptorProto_Type::TYPE_ENUM =>
-                ProtobufValueRef::Enum(self.get_rep_enum_item(m, index)),
-            FieldDescriptorProto_Type::TYPE_STRING =>
-                ProtobufValueRef::String(self.get_rep_str_item(m, index)),
-            FieldDescriptorProto_Type::TYPE_BYTES =>
-                ProtobufValueRef::Bytes(self.get_rep_bytes_item(m, index)),
+            FieldDescriptorProto_Type::TYPE_MESSAGE => ProtobufValueRef::Message(
+                self.get_rep_message_item(m, index),
+            ),
+            FieldDescriptorProto_Type::TYPE_ENUM => ProtobufValueRef::Enum(
+                self.get_rep_enum_item(m, index),
+            ),
+            FieldDescriptorProto_Type::TYPE_STRING => ProtobufValueRef::String(
+                self.get_rep_str_item(m, index),
+            ),
+            FieldDescriptorProto_Type::TYPE_BYTES => ProtobufValueRef::Bytes(
+                self.get_rep_bytes_item(m, index),
+            ),
             FieldDescriptorProto_Type::TYPE_INT32 |
             FieldDescriptorProto_Type::TYPE_SINT32 |
-            FieldDescriptorProto_Type::TYPE_SFIXED32 =>
-                ProtobufValueRef::I32(self.get_rep_i32(m)[index]),
+            FieldDescriptorProto_Type::TYPE_SFIXED32 => ProtobufValueRef::I32(
+                self.get_rep_i32(m)[index],
+            ),
             FieldDescriptorProto_Type::TYPE_INT64 |
             FieldDescriptorProto_Type::TYPE_SINT64 |
-            FieldDescriptorProto_Type::TYPE_SFIXED64 =>
-                ProtobufValueRef::I64(self.get_rep_i64(m)[index]),
+            FieldDescriptorProto_Type::TYPE_SFIXED64 => ProtobufValueRef::I64(
+                self.get_rep_i64(m)[index],
+            ),
             FieldDescriptorProto_Type::TYPE_UINT32 |
-            FieldDescriptorProto_Type::TYPE_FIXED32 =>
-                ProtobufValueRef::U32(self.get_rep_u32(m)[index]),
+            FieldDescriptorProto_Type::TYPE_FIXED32 => ProtobufValueRef::U32(
+                self.get_rep_u32(m)[index],
+            ),
             FieldDescriptorProto_Type::TYPE_UINT64 |
-            FieldDescriptorProto_Type::TYPE_FIXED64 =>
-                ProtobufValueRef::U64(self.get_rep_u64(m)[index]),
-            FieldDescriptorProto_Type::TYPE_BOOL =>
-                ProtobufValueRef::Bool(self.get_rep_bool(m)[index]),
-            FieldDescriptorProto_Type::TYPE_FLOAT =>
-                ProtobufValueRef::F32(self.get_rep_f32(m)[index]),
-            FieldDescriptorProto_Type::TYPE_DOUBLE =>
-                ProtobufValueRef::F64(self.get_rep_f64(m)[index]),
-            FieldDescriptorProto_Type::TYPE_GROUP =>
-                unimplemented!(),
+            FieldDescriptorProto_Type::TYPE_FIXED64 => ProtobufValueRef::U64(
+                self.get_rep_u64(m)[index],
+            ),
+            FieldDescriptorProto_Type::TYPE_BOOL => ProtobufValueRef::Bool(
+                self.get_rep_bool(m)[index],
+            ),
+            FieldDescriptorProto_Type::TYPE_FLOAT => ProtobufValueRef::F32(
+                self.get_rep_f32(m)[index],
+            ),
+            FieldDescriptorProto_Type::TYPE_DOUBLE => ProtobufValueRef::F64(
+                self.get_rep_f64(m)[index],
+            ),
+            FieldDescriptorProto_Type::TYPE_GROUP => unimplemented!(),
         }
     }
 }
@@ -245,11 +256,10 @@ impl MessageDescriptor {
     }
 
     pub fn new<M : 'static + Message + Default>(
-            rust_name: &'static str,
-            fields: Vec<Box<FieldAccessor + 'static>>,
-            file: &'static FileDescriptorProto
-        ) -> MessageDescriptor
-    {
+        rust_name: &'static str,
+        fields: Vec<Box<FieldAccessor + 'static>>,
+        file: &'static FileDescriptorProto,
+    ) -> MessageDescriptor {
         let proto = find_message_by_rust_name(file, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
@@ -274,12 +284,13 @@ impl MessageDescriptor {
             full_name: full_name,
             proto: proto.message,
             factory: Box::new(MessageFactoryTyped::<M>::new()),
-            fields: fields.into_iter()
-                    .map(|f| {
-                        let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
-                        FieldDescriptor::new(f, proto)
-                    })
-                    .collect(),
+            fields: fields
+                .into_iter()
+                .map(|f| {
+                    let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                    FieldDescriptor::new(f, proto)
+                })
+                .collect(),
             index_by_name: index_by_name,
             index_by_number: index_by_number,
         }
@@ -357,7 +368,12 @@ impl EnumDescriptor {
         }
         EnumDescriptor {
             proto: proto.en,
-            values: proto.en.get_value().iter().map(|v| EnumValueDescriptor { proto: v }).collect(),
+            values: proto
+                .en
+                .get_value()
+                .iter()
+                .map(|v| EnumValueDescriptor { proto: v })
+                .collect(),
             index_by_name: index_by_name,
             index_by_number: index_by_number,
         }

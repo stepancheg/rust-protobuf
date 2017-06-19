@@ -31,9 +31,7 @@ pub enum ProtobufError {
 
 impl ProtobufError {
     pub fn message_not_initialized(message: &'static str) -> ProtobufError {
-        ProtobufError::MessageNotInitialized {
-            message: message
-        }
+        ProtobufError::MessageNotInitialized { message: message }
     }
 }
 
@@ -91,10 +89,15 @@ impl From<ProtobufError> for io::Error {
     fn from(err: ProtobufError) -> Self {
         match err {
             ProtobufError::IoError(e) => e,
-            ProtobufError::WireError(e) => io::Error::new(io::ErrorKind::InvalidData, ProtobufError::WireError(e)),
+            ProtobufError::WireError(e) => {
+                io::Error::new(io::ErrorKind::InvalidData, ProtobufError::WireError(e))
+            }
             ProtobufError::MessageNotInitialized { message: msg } => {
-                io::Error::new(io::ErrorKind::InvalidInput, ProtobufError::MessageNotInitialized { message: msg })
-            },
+                io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    ProtobufError::MessageNotInitialized { message: msg },
+                )
+            }
             e => io::Error::new(io::ErrorKind::Other, Box::new(e)),
         }
     }

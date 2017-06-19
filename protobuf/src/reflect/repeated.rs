@@ -8,7 +8,7 @@ use super::value::ProtobufValueRef;
 
 use repeated::RepeatedField;
 
-pub trait ReflectRepeated : 'static {
+pub trait ReflectRepeated: 'static {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &ProtobufValue;
@@ -17,9 +17,7 @@ pub trait ReflectRepeated : 'static {
 impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
-            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> {
-                iter: self.iter()
-            })
+            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
         }
     }
 
@@ -36,9 +34,7 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
 impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
-            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> {
-                iter: self.iter()
-            })
+            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
         }
     }
 
@@ -54,9 +50,7 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
 impl<V : ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
-            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> {
-                iter: self.iter()
-            })
+            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
         }
     }
 
@@ -77,7 +71,8 @@ struct ReflectRepeatedIterImplSlice<'a, V : ProtobufValue + 'static> {
     iter: slice::Iter<'a, V>,
 }
 
-impl<'a, V : ProtobufValue + 'static> ReflectRepeatedIterTrait<'a> for ReflectRepeatedIterImplSlice<'a, V> {
+impl<'a, V : ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
+    for ReflectRepeatedIterImplSlice<'a, V> {
     fn next(&mut self) -> Option<&'a ProtobufValue> {
         self.iter.next().map(|v| v as &ProtobufValue)
     }
@@ -212,7 +207,6 @@ impl<'a> Iterator for ReflectRepeatedRefIter<'a> {
             None
         }
     }
-
 }
 
 impl<'a> IntoIterator for &'a ReflectRepeatedRef<'a> {

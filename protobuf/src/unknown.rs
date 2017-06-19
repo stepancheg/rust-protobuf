@@ -46,7 +46,7 @@ impl<'o> UnknownValueRef<'o> {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Default)]
+#[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
@@ -60,7 +60,9 @@ impl UnknownValues {
             UnknownValue::Fixed64(fixed64) => self.fixed64.push(fixed64),
             UnknownValue::Fixed32(fixed32) => self.fixed32.push(fixed32),
             UnknownValue::Varint(varint) => self.varint.push(varint),
-            UnknownValue::LengthDelimited(length_delimited) => self.length_delimited.push(length_delimited),
+            UnknownValue::LengthDelimited(length_delimited) => {
+                self.length_delimited.push(length_delimited)
+            }
         };
     }
 
@@ -108,13 +110,13 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
         }
         let length_delimited = self.length_delimited.next();
         if length_delimited.is_some() {
-            return Some(UnknownValueRef::LengthDelimited(&length_delimited.unwrap()))
+            return Some(UnknownValueRef::LengthDelimited(&length_delimited.unwrap()));
         }
         None
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Default)]
+#[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub struct UnknownFields {
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive
@@ -154,7 +156,9 @@ impl UnknownFields {
     }
 
     pub fn add_length_delimited(&mut self, number: u32, length_delimited: Vec<u8>) {
-        self.find_field(&number).length_delimited.push(length_delimited);
+        self.find_field(&number)
+            .length_delimited
+            .push(length_delimited);
     }
 
     pub fn add_value(&mut self, number: u32, value: UnknownValue) {
@@ -162,9 +166,7 @@ impl UnknownFields {
     }
 
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
-        UnknownFieldsIter {
-            entries: self.fields.as_ref().map(|m| m.iter())
-        }
+        UnknownFieldsIter { entries: self.fields.as_ref().map(|m| m.iter()) }
     }
 
     pub fn get(&self, field_number: u32) -> Option<&UnknownValues> {

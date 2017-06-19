@@ -17,7 +17,9 @@ pub struct ExtFieldRepeated<M : Message, T : ProtobufType> {
 
 impl<M : Message, T : ProtobufType> ExtFieldOptional<M, T> {
     pub fn get(&self, m: &M) -> Option<T::Value> {
-        m.get_unknown_fields().get(self.field_number).and_then(T::get_from_unknown)
+        m.get_unknown_fields()
+            .get(self.field_number)
+            .and_then(T::get_from_unknown)
     }
 }
 

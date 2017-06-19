@@ -108,7 +108,10 @@ mod test {
         assert_eq!("b\"xyZW\"", quote_escape_bytes(b"xyZW"));
         assert_eq!("b\"aa\\\"bb\"", quote_escape_bytes(b"aa\"bb"));
         assert_eq!("b\"aa\\r\\n\\tbb\"", quote_escape_bytes(b"aa\r\n\tbb"));
-        assert_eq!("b\"\\x00\\x01\\x12\\xfe\\xff\"", quote_escape_bytes(b"\x00\x01\x12\xfe\xff"));
+        assert_eq!(
+            "b\"\\x00\\x01\\x12\\xfe\\xff\"",
+            quote_escape_bytes(b"\x00\x01\x12\xfe\xff")
+        );
     }
 
 }

@@ -74,7 +74,9 @@ fn test_read_junk() {
 fn test_unknown_fields_length_delimited() {
     let mut message = TestUnknownFields::new();
     message.set_a(150);
-    message.mut_unknown_fields().add_length_delimited(4, [0x10u8, 0x20, 0x30].to_vec());
+    message
+        .mut_unknown_fields()
+        .add_length_delimited(4, [0x10u8, 0x20, 0x30].to_vec());
     test_serialize_deserialize("08 96 01 22 03 10 20 30", &message);
 }
 
@@ -125,9 +127,15 @@ fn test_types_repeated() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(&["thirty two".to_string(), "thirty three".to_string()]));
-    message.set_bytes_field(RepeatedField::from_slice(&[[33u8, 34].to_vec(), [35u8].to_vec()]));
-    message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
+    message.set_string_field(RepeatedField::from_slice(
+        &["thirty two".to_string(), "thirty three".to_string()],
+    ));
+    message.set_bytes_field(RepeatedField::from_slice(
+        &[[33u8, 34].to_vec(), [35u8].to_vec()],
+    ));
+    message.set_enum_field(
+        [TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec(),
+    );
     test_serialize_deserialize_no_hex(&message);
 }
 
@@ -147,9 +155,15 @@ fn test_types_repeated_packed() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(&["thirty two".to_string(), "thirty three".to_string()]));
-    message.set_bytes_field(RepeatedField::from_slice(&[[33u8, 34].to_vec(), [35u8].to_vec()]));
-    message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
+    message.set_string_field(RepeatedField::from_slice(
+        &["thirty two".to_string(), "thirty three".to_string()],
+    ));
+    message.set_bytes_field(RepeatedField::from_slice(
+        &[[33u8, 34].to_vec(), [35u8].to_vec()],
+    ));
+    message.set_enum_field(
+        [TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec(),
+    );
     test_serialize_deserialize_no_hex(&message);
 }
 
@@ -185,7 +199,10 @@ fn test_message_descriptor() {
 fn test_enum_descriptor() {
     let d = TestEnumDescriptor::RED.enum_descriptor();
     assert_eq!("TestEnumDescriptor", d.name());
-    assert_eq!("TestEnumDescriptor", reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name());
+    assert_eq!(
+        "TestEnumDescriptor",
+        reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name()
+    );
     assert_eq!("GREEN", d.value_by_name("GREEN").name());
 }
 

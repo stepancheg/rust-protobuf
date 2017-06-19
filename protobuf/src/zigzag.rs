@@ -38,13 +38,13 @@ mod test {
             test_zig_zag_pair_64(decoded as i64, encoded as u64);
         }
 
-        test_zig_zag_pair( 0, 0);
+        test_zig_zag_pair(0, 0);
         test_zig_zag_pair(-1, 1);
-        test_zig_zag_pair( 1, 2);
+        test_zig_zag_pair(1, 2);
         test_zig_zag_pair(-2, 3);
-        test_zig_zag_pair( 2147483647, 4294967294);
+        test_zig_zag_pair(2147483647, 4294967294);
         test_zig_zag_pair(-2147483648, 4294967295);
-        test_zig_zag_pair_64( 9223372036854775807, 18446744073709551614);
+        test_zig_zag_pair_64(9223372036854775807, 18446744073709551614);
         test_zig_zag_pair_64(-9223372036854775808, 18446744073709551615);
     }
 }

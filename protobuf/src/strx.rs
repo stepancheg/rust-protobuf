@@ -1,7 +1,7 @@
 pub fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
     match s.rfind(c) {
         Some(pos) => &s[(pos + 1)..],
-        None => s
+        None => s,
     }
 }
 

@@ -24,9 +24,9 @@ pub struct Args<'a> {
     /// `--plugin` param. Not needed if plugin is in `$PATH`
     pub plugin: Option<&'a str>,
     /// `-I` args
-    pub includes: &'a[&'a str],
+    pub includes: &'a [&'a str],
     /// List of `.proto` files to compile
-    pub input: &'a[&'a str],
+    pub input: &'a [&'a str],
 }
 
 /// `Protoc --descriptor_set_out...` args
@@ -35,9 +35,9 @@ pub struct DescriptorSetOutArgs<'a> {
     /// `--file_descriptor_out=...` param
     pub out: &'a str,
     /// `-I` args
-    pub includes: &'a[&'a str],
+    pub includes: &'a [&'a str],
     /// List of `.proto` files to compile
-    pub input: &'a[&'a str],
+    pub input: &'a [&'a str],
     /// `--include_imports`
     pub include_imports: bool,
 }
@@ -51,16 +51,12 @@ pub struct Protoc {
 impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
-        Protoc {
-            exec: "protoc".to_owned(),
-        }
+        Protoc { exec: "protoc".to_owned() }
     }
 
     /// New `protoc` command from specified path
     pub fn from_path(path: &str) -> Protoc {
-        Protoc {
-            exec: path.to_owned(),
-        }
+        Protoc { exec: path.to_owned() }
     }
 
     /// Check `protoc` command found and valid
@@ -76,13 +72,13 @@ impl Protoc {
             .stderr(process::Stdio::piped())
             .args(&["--version"])
             .spawn()?;
-        
+
         let output = child.wait_with_output()?;
         if !output.status.success() {
             return err_other("protoc failed with error");
         }
         let output = String::from_utf8(output.stdout)
-            .map_err(|e| { Error::new(io::ErrorKind::Other, e) })?;
+            .map_err(|e| Error::new(io::ErrorKind::Other, e))?;
         let output = match output.lines().next() {
             None => return err_other("output is empty"),
             Some(line) => line,
@@ -99,9 +95,7 @@ impl Protoc {
         if !first.is_digit(10) {
             return err_other("version does not start with digit");
         }
-        Ok(Version {
-            version: output.to_owned(),
-        })
+        Ok(Version { version: output.to_owned() })
     }
 
     /// Execute `protoc` command with given args, check it completed correctly.

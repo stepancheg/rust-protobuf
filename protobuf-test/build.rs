@@ -13,9 +13,14 @@ use std::path;
 
 
 fn glob_simple(pattern: &str) -> Vec<String> {
-    glob::glob(pattern).expect("glob")
+    glob::glob(pattern)
+        .expect("glob")
         .map(|g| {
-            g.expect("item").as_path().to_str().expect("utf-8").to_owned()
+            g.expect("item")
+                .as_path()
+                .to_str()
+                .expect("utf-8")
+                .to_owned()
         })
         .collect()
 }
@@ -29,7 +34,10 @@ fn clean_old_files() {
 
 
 fn generate_v_from_common() {
-    let v3 = protoc::Protoc::from_env_path().version().expect("version").is_3();
+    let v3 = protoc::Protoc::from_env_path()
+        .version()
+        .expect("version")
+        .is_3();
 
     let mut mod_v2 = fs::File::create("src/common/v2/mod.rs").expect("mod.rs");
     let mut mod_v3 = fs::File::create("src/common/v3/mod.rs").expect("mod.rs");
@@ -39,9 +47,13 @@ fn generate_v_from_common() {
 
     for f in glob_simple("src/common/v2/*.rs") {
         let f = path::PathBuf::from(f);
-        let base_name = f.as_path().file_name().expect("file_name").to_str().expect("to_str");
+        let base_name = f.as_path()
+            .file_name()
+            .expect("file_name")
+            .to_str()
+            .expect("to_str");
 
-        let without_suffix = &base_name[.. base_name.len() - ".rs".len()];
+        let without_suffix = &base_name[..base_name.len() - ".rs".len()];
 
         if without_suffix == "mod" {
             continue;
@@ -126,7 +138,11 @@ fn generate_pb_rs() {
 
     gen_v2_v3("src/v2");
 
-    if protoc::Protoc::from_env_path().version().expect("version").is_3() {
+    if protoc::Protoc::from_env_path()
+        .version()
+        .expect("version")
+        .is_3()
+    {
         gen_v2_v3("src/v3");
 
         let protos = glob_simple("src/google/protobuf/*.proto");
@@ -165,7 +181,11 @@ fn main() {
     generate_v_from_common();
     generate_pb_rs();
 
-    if protoc::Protoc::from_env_path().version().expect("version").is_3() {
+    if protoc::Protoc::from_env_path()
+        .version()
+        .expect("version")
+        .is_3()
+    {
         println!("cargo:rustc-cfg=proto3");
     }
 }

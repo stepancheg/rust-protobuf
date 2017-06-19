@@ -30,7 +30,8 @@ fn make_repeated(len: usize) -> Vec<u8> {
 
     for i in 0..100 {
         m.mut_sr().push(make_string_of_len(i % len));
-        m.mut_br().push(make_string_of_len((i + len / 2) % len).into_bytes());
+        m.mut_br()
+            .push(make_string_of_len((i + len / 2) % len).into_bytes());
     }
 
     m.write_to_bytes().expect("write")

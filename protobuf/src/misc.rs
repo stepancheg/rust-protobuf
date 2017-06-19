@@ -5,7 +5,8 @@ use std::mem;
 pub unsafe fn remaining_capacity_as_slice_mut<A>(vec: &mut Vec<A>) -> &mut [A] {
     slice::from_raw_parts_mut(
         vec.as_mut_slice().as_mut_ptr().offset(vec.len() as isize),
-        vec.capacity() - vec.len())
+        vec.capacity() - vec.len(),
+    )
 }
 
 pub unsafe fn remove_lifetime_mut<A : ?Sized>(a: &mut A) -> &'static mut A {

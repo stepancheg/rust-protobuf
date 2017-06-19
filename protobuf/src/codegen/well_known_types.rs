@@ -38,8 +38,8 @@ fn is_well_known_type(name: &str) -> bool {
 
 pub fn is_well_known_type_full(name: &str) -> Option<&str> {
     if let Some(dot) = name.rfind('.') {
-        if &name[.. dot] == ".google.protobuf" && is_well_known_type(&name[dot + 1 ..]) {
-            Some(&name[dot + 1 ..])
+        if &name[..dot] == ".google.protobuf" && is_well_known_type(&name[dot + 1..]) {
+            Some(&name[dot + 1..])
         } else {
             None
         }
@@ -54,7 +54,10 @@ mod test {
 
     #[test]
     fn test_is_well_known_type_full() {
-        assert_eq!(Some("BoolValue"), is_well_known_type_full(".google.protobuf.BoolValue"));
+        assert_eq!(
+            Some("BoolValue"),
+            is_well_known_type_full(".google.protobuf.BoolValue")
+        );
         assert_eq!(None, is_well_known_type_full(".google.protobuf.Fgfg"));
     }
 }

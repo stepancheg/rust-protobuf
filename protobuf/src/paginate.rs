@@ -1,4 +1,4 @@
-pub trait PaginatableIterator : Sized {
+pub trait PaginatableIterator: Sized {
     fn paginate(self, page: usize) -> Paginate<Self>;
 }
 
@@ -25,10 +25,9 @@ impl<E, I : Iterator<Item = E>> Iterator for Paginate<I> {
             match self.iter.next() {
                 Some(next) => r.push(next),
                 None if r.is_empty() => return None,
-                None                 => return Some(r),
+                None => return Some(r),
             }
         }
         Some(r)
     }
 }
-
