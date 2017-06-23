@@ -39,6 +39,12 @@ impl<'a> From<&'a str> for Chars {
     }
 }
 
+impl From<String> for Chars {
+    fn from(src: String) -> Chars {
+        Chars(Bytes::from(src))
+    }
+}
+
 impl Default for Chars {
     fn default() -> Self {
         Chars::new()
