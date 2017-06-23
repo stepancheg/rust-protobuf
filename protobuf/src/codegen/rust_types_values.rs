@@ -1,4 +1,5 @@
 use std::fmt;
+use std::cmp;
 
 use descriptor::*;
 use descriptorx::*;
@@ -399,6 +400,26 @@ pub fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     }
 }
 
+fn file_last_component(file: &str) -> &str {
+    let bs = file.rfind('\\').map(|i| i + 1).unwrap_or(0);
+    let fs = file.rfind('/').map(|i| i + 1).unwrap_or(0);
+    &file[cmp::max(fs, bs)..]
+}
+
+#[cfg(test)]
+#[test]
+fn test_file_last_component() {
+    assert_eq!("ab.proto", file_last_component("ab.proto"));
+    assert_eq!("ab.proto", file_last_component("xx/ab.proto"));
+    assert_eq!("ab.proto", file_last_component("xx\\ab.proto"));
+    assert_eq!("ab.proto", file_last_component("yy\\xx\\ab.proto"));
+}
+
+fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
+    file.get_package() == "google.protobuf"
+        && file_last_component(file.get_name()) == "descriptor.proto"
+}
+
 pub fn type_name_to_rust_relative(
     type_name: &str,
     file: &FileDescriptorProto,
@@ -417,6 +438,9 @@ pub fn type_name_to_rust_relative(
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
         format!("::protobuf::well_known_types::{}", name)
+    } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
+        // Messages defined in descriptor.proto
+        format!("::protobuf::descriptor::{}", message_or_enum.name_to_package())
     } else {
         if subm {
             format!("super::super::{}", message_or_enum.rust_fq_name())
