@@ -1,6 +1,4 @@
-# https://github.com/rust-lang-nursery/rustfmt/pull/1267
 space_before_bound = true
-
 array_layout = "Block"
 normalize_comments = false
 fn_args_layout = "Block"
@@ -10,6 +8,7 @@ fn_call_style = "Block"
 fn_return_indent = "WithWhereClause"
 reorder_imported_names = true
 where_pred_indent = "Block"
+# https://github.com/rust-lang-nursery/rustfmt/issues/1755
 closure_block_indent_threshold = -1
 error_on_line_overflow = false
 generics_indent = "Block"
