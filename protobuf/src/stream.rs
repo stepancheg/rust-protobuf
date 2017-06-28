@@ -1,6 +1,7 @@
 use std::mem;
 use std::io::{BufRead, Read};
 use std::io::Write;
+use std::io::Result as IOResult;
 use std::slice;
 
 #[cfg(feature = "bytes")]
@@ -676,6 +677,22 @@ impl<'a> CodedInputStream<'a> {
     }
 }
 
+impl<'a> Read for CodedInputStream<'a> {
+    fn read(&mut self, buf: &mut [u8]) -> IOResult<usize> {
+        self.source._read(buf).map_err(Into::into)
+    }
+}
+
+impl<'a> BufRead for CodedInputStream<'a> {
+    fn fill_buf(&mut self) -> IOResult<&[u8]> {
+        self.source.fill_buf().map_err(Into::into)
+    }
+
+    fn consume(&mut self, amt: usize) {
+        self.source.consume(amt)
+    }
+}
+
 pub trait WithCodedOutputStream {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
@@ -1179,11 +1196,23 @@ impl<'a> CodedOutputStream<'a> {
     }
 }
 
+impl<'a> Write for CodedOutputStream<'a> {
+    fn write(&mut self, buf: &[u8]) -> IOResult<usize> {
+        self.write_raw_bytes(buf)?;
+        Ok(buf.len())
+    }
+
+    fn flush(&mut self) -> IOResult<()> {
+        self.flush().map_err(Into::into)
+    }
+}
+
 
 #[cfg(test)]
 mod test {
 
     use std::io;
+    use std::io::Read;
     use std::io::BufRead;
     use std::io::Write;
     use std::iter::repeat;
@@ -1347,6 +1376,26 @@ mod test {
         });
     }
 
+    #[test]
+    fn test_input_stream_io_read() {
+        test_read("aa bb cc", |is| {
+            let mut buf = [0; 3];
+            assert_eq!(Read::read(is, &mut buf).expect("io::Read"), 3);
+            assert_eq!(buf, [0xaa, 0xbb, 0xcc]);
+        });
+    }
+
+    #[test]
+    fn test_input_stream_io_bufread() {
+        test_read("aa bb cc", |is| {
+            assert_eq!(
+                BufRead::fill_buf(is).expect("io::BufRead::fill_buf"),
+                &[0xaa, 0xbb, 0xcc]
+            );
+            BufRead::consume(is, 3);
+        });
+    }
+
     fn test_write<F>(expected: &str, mut gen: F)
     where
         F : FnMut(&mut CodedOutputStream) -> ProtobufResult<()>,
@@ -1469,5 +1518,45 @@ mod test {
         test_write("f1 e2 d3 c4 b5 a6 07 f8", |os| {
             os.write_raw_little_endian64(0xf807a6b5c4d3e2f1)
         });
+    }
+
+    #[test]
+    fn test_output_stream_io_write() {
+        let expected = [0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77];
+
+        // write to Write
+        {
+            let mut v = Vec::new();
+            {
+                let mut os = CodedOutputStream::new(&mut v as &mut Write);
+                Write::write(&mut os, &expected).expect("io::Write::write");
+                Write::flush(&mut os).expect("io::Write::flush");
+            }
+            assert_eq!(expected, *v);
+        }
+
+        // write to &[u8]
+        {
+            let mut v = Vec::with_capacity(expected.len());
+            v.resize(expected.len(), 0);
+            {
+                let mut os = CodedOutputStream::bytes(&mut v);
+                Write::write(&mut os, &expected).expect("io::Write::write");
+                Write::flush(&mut os).expect("io::Write::flush");
+                os.check_eof();
+            }
+            assert_eq!(expected, *v);
+        }
+
+        // write to Vec<u8>
+        {
+            let mut v = Vec::new();
+            {
+                let mut os = CodedOutputStream::vec(&mut v);
+                Write::write(&mut os, &expected).expect("io::Write::write");
+                Write::flush(&mut os).expect("io::Write::flush");
+            }
+            assert_eq!(expected, *v);
+        }
     }
 }
