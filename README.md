@@ -103,9 +103,9 @@ generated as `Bytes` or `Chars` respectively. When `CodedInputStream` is constru
 from `Bytes` object, fields of these types get subslices of original `Bytes` object,
 instead of being allocated on heap.
 
-## TODO
+## Related projects
 
-* Implement some rust-specific options
-* Deal better with namespaces
-* Protobuf reflection
-* Extensions
+* [quick-protobuf](https://github.com/tafia/quick-protobuf) — alternative protobuf implementation in Rust
+* [prost](https://github.com/danburkert/prost) — another protobuf implementation in Rust
+* [grpc-rust](https://github.com/stepancheg/grpc-rust) — implementation of gRPC based on this library
+* [grpc-rs](https://github.com/pingcap/grpc-rs/) — another gRPC implementation for Rust
