@@ -1,7 +1,7 @@
 use std::mem;
+use std::io;
 use std::io::{BufRead, Read};
 use std::io::Write;
-use std::io::Result as IOResult;
 use std::slice;
 
 #[cfg(feature = "bytes")]
@@ -678,13 +678,13 @@ impl<'a> CodedInputStream<'a> {
 }
 
 impl<'a> Read for CodedInputStream<'a> {
-    fn read(&mut self, buf: &mut [u8]) -> IOResult<usize> {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.source._read(buf).map_err(Into::into)
     }
 }
 
 impl<'a> BufRead for CodedInputStream<'a> {
-    fn fill_buf(&mut self) -> IOResult<&[u8]> {
+    fn fill_buf(&mut self) -> io::Result<&[u8]> {
         self.source.fill_buf().map_err(Into::into)
     }
 
@@ -1197,12 +1197,12 @@ impl<'a> CodedOutputStream<'a> {
 }
 
 impl<'a> Write for CodedOutputStream<'a> {
-    fn write(&mut self, buf: &[u8]) -> IOResult<usize> {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.write_raw_bytes(buf)?;
         Ok(buf.len())
     }
 
-    fn flush(&mut self) -> IOResult<()> {
+    fn flush(&mut self) -> io::Result<()> {
         self.flush().map_err(Into::into)
     }
 }
