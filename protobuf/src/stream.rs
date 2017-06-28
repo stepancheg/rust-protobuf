@@ -1203,7 +1203,7 @@ impl<'a> Write for CodedOutputStream<'a> {
     }
 
     fn flush(&mut self) -> io::Result<()> {
-        self.flush().map_err(Into::into)
+        CodedOutputStream::flush(self).map_err(Into::into)
     }
 }
 
