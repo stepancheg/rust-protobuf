@@ -26,7 +26,7 @@ pub struct CodeGeneratorRequest {
     // message fields
     file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
-    proto_file: ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto>,
+    proto_file: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
@@ -134,29 +134,29 @@ impl CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_proto_file(&mut self, v: ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto>) {
+    pub fn set_proto_file(&mut self, v: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>) {
         self.proto_file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&mut self) -> &mut ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
+    pub fn mut_proto_file(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
         &mut self.proto_file
     }
 
     // Take field
-    pub fn take_proto_file(&mut self) -> ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
+    pub fn take_proto_file(&mut self) -> ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
         ::std::mem::replace(&mut self.proto_file, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_proto_file(&self) -> &[super::descriptor::FileDescriptorProto] {
+    pub fn get_proto_file(&self) -> &[::protobuf::descriptor::FileDescriptorProto] {
         &self.proto_file
     }
 
-    fn get_proto_file_for_reflect(&self) -> &::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
+    fn get_proto_file_for_reflect(&self) -> &::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
         &self.proto_file
     }
 
-    fn mut_proto_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<super::descriptor::FileDescriptorProto> {
+    fn mut_proto_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
         &mut self.proto_file
     }
 }
@@ -277,7 +277,7 @@ impl ::protobuf::MessageStatic for CodeGeneratorRequest {
                     CodeGeneratorRequest::get_parameter_for_reflect,
                     CodeGeneratorRequest::mut_parameter_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::descriptor::FileDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
                     "proto_file",
                     CodeGeneratorRequest::get_proto_file_for_reflect,
                     CodeGeneratorRequest::mut_proto_file_for_reflect,
