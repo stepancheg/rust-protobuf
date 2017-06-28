@@ -1,5 +1,3 @@
-#![crate_type = "lib"]
-
 #[cfg(feature = "bytes")]
 extern crate bytes;
 
