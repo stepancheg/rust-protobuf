@@ -17,6 +17,14 @@ rust-protobuf
 
 There are several ways to generate rust code from `.proto` files
 
+### Invoke protoc programmatically with protoc-rust crate (recommended)
+
+Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
+
+### Invoke protoc programmatically with protoc crate
+
+Have a look at readme in [protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc).
+
 ### With protoc command and protoc-gen-rust plugin
 
 0) Install protobuf for `protoc` binary.
@@ -55,14 +63,6 @@ protoc --rust_out . foo.proto
 ```
 
 This will generate .rs files in current directory.
-
-## Invoke protoc programmatically with protoc crate
-
-Have a look at readme in [protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc).
-
-## Invoke protoc programmatically with protoc-rust crate
-
-Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
 
 ## Generated code
 
