@@ -679,7 +679,7 @@ impl<'a> CodedInputStream<'a> {
 
 impl<'a> Read for CodedInputStream<'a> {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-        self.source._read(buf).map_err(Into::into)
+        self.source.read(buf).map_err(Into::into)
     }
 }
 
