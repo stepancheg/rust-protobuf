@@ -30,9 +30,6 @@ pub struct SourceContext {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for SourceContext {}
-
 impl SourceContext {
     pub fn new() -> SourceContext {
         ::std::default::Default::default()

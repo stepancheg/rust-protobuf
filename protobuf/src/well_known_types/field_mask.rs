@@ -30,9 +30,6 @@ pub struct FieldMask {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for FieldMask {}
-
 impl FieldMask {
     pub fn new() -> FieldMask {
         ::std::default::Default::default()

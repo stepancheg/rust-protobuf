@@ -35,9 +35,6 @@ pub struct Type {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Type {}
-
 impl Type {
     pub fn new() -> Type {
         ::std::default::Default::default()
@@ -485,9 +482,6 @@ pub struct Field {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Field {}
 
 impl Field {
     pub fn new() -> Field {
@@ -1246,9 +1240,6 @@ pub struct Enum {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Enum {}
-
 impl Enum {
     pub fn new() -> Enum {
         ::std::default::Default::default()
@@ -1642,9 +1633,6 @@ pub struct EnumValue {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for EnumValue {}
-
 impl EnumValue {
     pub fn new() -> EnumValue {
         ::std::default::Default::default()
@@ -1916,9 +1904,6 @@ pub struct Option {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Option {}
 
 impl Option {
     pub fn new() -> Option {

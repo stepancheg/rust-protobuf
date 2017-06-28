@@ -31,9 +31,6 @@ pub struct Any {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Any {}
-
 impl Any {
     pub fn new() -> Any {
         ::std::default::Default::default()

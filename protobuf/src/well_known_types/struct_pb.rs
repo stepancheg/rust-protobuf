@@ -30,9 +30,6 @@ pub struct Struct {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Struct {}
-
 impl Struct {
     pub fn new() -> Struct {
         ::std::default::Default::default()
@@ -200,9 +197,6 @@ pub struct Value {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Value {}
 
 #[derive(Clone,PartialEq)]
 pub enum Value_oneof_kind {
@@ -691,9 +685,6 @@ pub struct ListValue {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for ListValue {}
 
 impl ListValue {
     pub fn new() -> ListValue {

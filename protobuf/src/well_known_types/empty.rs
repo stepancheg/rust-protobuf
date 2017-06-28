@@ -28,9 +28,6 @@ pub struct Empty {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Empty {}
-
 impl Empty {
     pub fn new() -> Empty {
         ::std::default::Default::default()

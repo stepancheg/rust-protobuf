@@ -31,9 +31,6 @@ pub struct Timestamp {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Timestamp {}
-
 impl Timestamp {
     pub fn new() -> Timestamp {
         ::std::default::Default::default()

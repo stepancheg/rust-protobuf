@@ -31,9 +31,6 @@ pub struct Duration {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Duration {}
-
 impl Duration {
     pub fn new() -> Duration {
         ::std::default::Default::default()

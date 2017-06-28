@@ -32,9 +32,6 @@ pub struct CodeGeneratorRequest {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for CodeGeneratorRequest {}
-
 impl CodeGeneratorRequest {
     pub fn new() -> CodeGeneratorRequest {
         ::std::default::Default::default()
@@ -323,9 +320,6 @@ pub struct CodeGeneratorResponse {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for CodeGeneratorResponse {}
-
 impl CodeGeneratorResponse {
     pub fn new() -> CodeGeneratorResponse {
         ::std::default::Default::default()
@@ -566,9 +560,6 @@ pub struct CodeGeneratorResponse_File {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for CodeGeneratorResponse_File {}
 
 impl CodeGeneratorResponse_File {
     pub fn new() -> CodeGeneratorResponse_File {

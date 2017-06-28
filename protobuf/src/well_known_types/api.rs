@@ -36,9 +36,6 @@ pub struct Api {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Api {}
-
 impl Api {
     pub fn new() -> Api {
         ::std::default::Default::default()
@@ -541,9 +538,6 @@ pub struct Method {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Method {}
-
 impl Method {
     pub fn new() -> Method {
         ::std::default::Default::default()
@@ -997,9 +991,6 @@ pub struct Mixin {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Mixin {}
 
 impl Mixin {
     pub fn new() -> Mixin {

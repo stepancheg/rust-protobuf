@@ -30,9 +30,6 @@ pub struct DoubleValue {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for DoubleValue {}
-
 impl DoubleValue {
     pub fn new() -> DoubleValue {
         ::std::default::Default::default()
@@ -198,9 +195,6 @@ pub struct FloatValue {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for FloatValue {}
 
 impl FloatValue {
     pub fn new() -> FloatValue {
@@ -368,9 +362,6 @@ pub struct Int64Value {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Int64Value {}
-
 impl Int64Value {
     pub fn new() -> Int64Value {
         ::std::default::Default::default()
@@ -536,9 +527,6 @@ pub struct UInt64Value {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for UInt64Value {}
 
 impl UInt64Value {
     pub fn new() -> UInt64Value {
@@ -706,9 +694,6 @@ pub struct Int32Value {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for Int32Value {}
-
 impl Int32Value {
     pub fn new() -> Int32Value {
         ::std::default::Default::default()
@@ -874,9 +859,6 @@ pub struct UInt32Value {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for UInt32Value {}
 
 impl UInt32Value {
     pub fn new() -> UInt32Value {
@@ -1044,9 +1026,6 @@ pub struct BoolValue {
     cached_size: ::protobuf::CachedSize,
 }
 
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for BoolValue {}
-
 impl BoolValue {
     pub fn new() -> BoolValue {
         ::std::default::Default::default()
@@ -1212,9 +1191,6 @@ pub struct StringValue {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for StringValue {}
 
 impl StringValue {
     pub fn new() -> StringValue {
@@ -1388,9 +1364,6 @@ pub struct BytesValue {
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
-
-// see codegen.rs for the explanation why impl Sync explicitly
-unsafe impl ::std::marker::Sync for BytesValue {}
 
 impl BytesValue {
     pub fn new() -> BytesValue {
