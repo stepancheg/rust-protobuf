@@ -195,6 +195,13 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(&format!("pub trait {}", name), cb);
     }
 
+    pub fn pub_trait_extend<F>(&mut self, name: &str, extend: &str, cb: F)
+    where
+        F : Fn(&mut CodeWriter),
+    {
+        self.expr_block(&format!("pub trait {} : {}", name, extend), cb);
+    }
+
     pub fn field_entry(&mut self, name: &str, value: &str) {
         self.write_line(&format!("{}: {},", name, value));
     }
