@@ -35,7 +35,11 @@ pub fn proto_path_to_rust_mod(path: &str) -> String {
             } else {
                 ident_continue(c)
             };
-            if valid { c } else { '_' }
+            if valid {
+                c
+            } else {
+                '_'
+            }
         })
         .collect::<String>();
 
@@ -543,9 +547,9 @@ impl<'a> OneofWithContext<'a> {
         self.message
             .fields()
             .iter()
-            .filter(|f| {
-                f.field.has_oneof_index() && f.field.get_oneof_index() == self.index as i32
-            })
+            .filter(
+                |f| f.field.has_oneof_index() && f.field.get_oneof_index() == self.index as i32,
+            )
             .map(|f| {
                 OneofVariantWithContext {
                     oneof: self,

@@ -416,8 +416,8 @@ fn test_file_last_component() {
 }
 
 fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
-    file.get_package() == "google.protobuf"
-        && file_last_component(file.get_name()) == "descriptor.proto"
+    file.get_package() == "google.protobuf" &&
+        file_last_component(file.get_name()) == "descriptor.proto"
 }
 
 pub fn type_name_to_rust_relative(
@@ -440,7 +440,10 @@ pub fn type_name_to_rust_relative(
         format!("::protobuf::well_known_types::{}", name)
     } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
         // Messages defined in descriptor.proto
-        format!("::protobuf::descriptor::{}", message_or_enum.name_to_package())
+        format!(
+            "::protobuf::descriptor::{}",
+            message_or_enum.name_to_package()
+        )
     } else {
         if subm {
             format!("super::super::{}", message_or_enum.rust_fq_name())

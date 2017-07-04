@@ -255,14 +255,13 @@ impl<T> Into<Vec<T>> for RepeatedField<T> {
 
 
 impl<T : Clone> RepeatedField<T> {
-
     #[inline]
     pub fn from_slice(values: &[T]) -> RepeatedField<T> {
         RepeatedField::from_vec(values.to_vec())
     }
 
     #[inline]
-    pub fn from_ref<X: AsRef<[T]>>(values: X) -> RepeatedField<T> {
+    pub fn from_ref<X : AsRef<[T]>>(values: X) -> RepeatedField<T> {
         RepeatedField::from_slice(values.as_ref())
     }
 

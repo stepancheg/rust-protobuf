@@ -39,12 +39,20 @@ impl<T> SingularField<T> {
 
     #[inline]
     pub fn into_option(self) -> Option<T> {
-        if self.set { Some(self.value) } else { None }
+        if self.set {
+            Some(self.value)
+        } else {
+            None
+        }
     }
 
     #[inline]
     pub fn as_ref<'a>(&'a self) -> Option<&'a T> {
-        if self.set { Some(&self.value) } else { None }
+        if self.set {
+            Some(&self.value)
+        } else {
+            None
+        }
     }
 
     #[inline]
@@ -77,7 +85,11 @@ impl<T> SingularField<T> {
 
     #[inline]
     pub fn unwrap_or(self, def: T) -> T {
-        if self.set { self.value } else { def }
+        if self.set {
+            self.value
+        } else {
+            def
+        }
     }
 
     #[inline]
@@ -85,7 +97,11 @@ impl<T> SingularField<T> {
     where
         F : FnOnce() -> T,
     {
-        if self.set { self.value } else { f() }
+        if self.set {
+            self.value
+        } else {
+            f()
+        }
     }
 
     #[inline]
@@ -223,7 +239,11 @@ impl<T> SingularPtrField<T> {
 
     #[inline]
     pub fn unwrap_or(self, def: T) -> T {
-        if self.set { *self.value.unwrap() } else { def }
+        if self.set {
+            *self.value.unwrap()
+        } else {
+            def
+        }
     }
 
     #[inline]
@@ -231,7 +251,11 @@ impl<T> SingularPtrField<T> {
     where
         F : FnOnce() -> T,
     {
-        if self.set { *self.value.unwrap() } else { f() }
+        if self.set {
+            *self.value.unwrap()
+        } else {
+            f()
+        }
     }
 
     #[inline]
