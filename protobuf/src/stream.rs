@@ -1281,12 +1281,16 @@ mod test {
             |reader| reader.read_raw_varint64(),
         );
 
-        test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| {
-            reader.read_raw_varint32()
-        });
-        test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| {
-            reader.read_raw_varint64()
-        });
+        test_read_v(
+            "ff ff ff ff 0f",
+            0xffffffff,
+            |reader| reader.read_raw_varint32(),
+        );
+        test_read_v(
+            "ff ff ff ff 0f",
+            0xffffffff,
+            |reader| reader.read_raw_varint64(),
+        );
     }
 
     #[test]
@@ -1476,23 +1480,26 @@ mod test {
     #[test]
     fn test_output_stream_write_raw_varint64() {
         test_write("96 01", |os| os.write_raw_varint64(150));
-        test_write("ff ff ff ff ff ff ff ff ff 01", |os| {
-            os.write_raw_varint64(0xffffffffffffffff)
-        });
+        test_write(
+            "ff ff ff ff ff ff ff ff ff 01",
+            |os| os.write_raw_varint64(0xffffffffffffffff),
+        );
     }
 
     #[test]
     fn test_output_stream_write_int32_no_tag() {
-        test_write("ff ff ff ff ff ff ff ff ff 01", |os| {
-            os.write_int32_no_tag(-1)
-        });
+        test_write(
+            "ff ff ff ff ff ff ff ff ff 01",
+            |os| os.write_int32_no_tag(-1),
+        );
     }
 
     #[test]
     fn test_output_stream_write_int64_no_tag() {
-        test_write("ff ff ff ff ff ff ff ff ff 01", |os| {
-            os.write_int64_no_tag(-1)
-        });
+        test_write(
+            "ff ff ff ff ff ff ff ff ff 01",
+            |os| os.write_int64_no_tag(-1),
+        );
     }
 
     #[test]
@@ -1515,9 +1522,10 @@ mod test {
 
     #[test]
     fn test_output_stream_write_raw_little_endian64() {
-        test_write("f1 e2 d3 c4 b5 a6 07 f8", |os| {
-            os.write_raw_little_endian64(0xf807a6b5c4d3e2f1)
-        });
+        test_write(
+            "f1 e2 d3 c4 b5 a6 07 f8",
+            |os| os.write_raw_little_endian64(0xf807a6b5c4d3e2f1),
+        );
     }
 
     #[test]

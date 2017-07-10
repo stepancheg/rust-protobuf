@@ -233,11 +233,41 @@ impl<T : Default + Clear> RepeatedField<T> {
     }
 }
 
+impl<T> From<Vec<T>> for RepeatedField<T> {
+    #[inline]
+    fn from(values: Vec<T>) -> RepeatedField<T> {
+        RepeatedField::from_vec(values)
+    }
+}
+
+impl<'a, T : Clone> From<&'a [T]> for RepeatedField<T> {
+    #[inline]
+    fn from(values: &'a [T]) -> RepeatedField<T> {
+        RepeatedField::from_slice(values)
+    }
+}
+
+impl<T> Into<Vec<T>> for RepeatedField<T> {
+    fn into(self) -> Vec<T> {
+        self.into_vec()
+    }
+}
+
+
 impl<T : Clone> RepeatedField<T> {
-    // TODO: implement to_vec()
     #[inline]
     pub fn from_slice(values: &[T]) -> RepeatedField<T> {
         RepeatedField::from_vec(values.to_vec())
+    }
+
+    #[inline]
+    pub fn from_ref<X : AsRef<[T]>>(values: X) -> RepeatedField<T> {
+        RepeatedField::from_slice(values.as_ref())
+    }
+
+    #[inline]
+    pub fn to_vec(&self) -> Vec<T> {
+        self.as_ref().to_vec()
     }
 }
 
