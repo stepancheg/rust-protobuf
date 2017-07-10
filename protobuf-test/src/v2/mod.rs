@@ -15,8 +15,11 @@ mod test_required_pb;
 mod test_sanitize_file_name_pb;
 mod test_special_characters_file_name__pb;
 
+mod submessage;
+
 mod test_required;
 mod test_default_values;
+mod test_submessage_reflect;
 
 mod test_oneof_default_value_pb;
 mod test_oneof_default_value;
