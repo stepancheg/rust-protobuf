@@ -107,6 +107,6 @@ instead of being allocated on heap.
 
 * [quick-protobuf](https://github.com/tafia/quick-protobuf) — alternative protobuf implementation in Rust
 * [prost](https://github.com/danburkert/prost) — another protobuf implementation in Rust
-* [serde-protobuf](https://github.com/dflemstr/rq/tree/master/serde-protobuf)
+* [serde-protobuf](https://github.com/dflemstr/serde-protobuf)
 * [grpc-rust](https://github.com/stepancheg/grpc-rust) — implementation of gRPC based on this library
 * [grpc-rs](https://github.com/pingcap/grpc-rs/) — another gRPC implementation for Rust
