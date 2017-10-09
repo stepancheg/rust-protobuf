@@ -125,6 +125,7 @@ impl<'ignore> BufReadIter<'ignore> {
         debug_assert!(self.pos_of_buf_start + self.pos_within_buf as u64 <= self.limit);
     }
 
+    #[inline(always)]
     pub fn pos(&self) -> u64 {
         self.pos_of_buf_start + self.pos_within_buf as u64
     }
@@ -297,8 +298,9 @@ impl<'ignore> BufReadIter<'ignore> {
     fn do_fill_buf(&mut self) -> ProtobufResult<()> {
         debug_assert!(self.pos_within_buf == self.limit_within_buf);
 
-        // Limit is reached, so EOF is reached
-        if self.limit_within_buf != self.buf.len() {
+        // Limit is reached, do not fill buf, because otherwise
+        // synchronous read from `CodedInputStream` may block.
+        if self.limit == self.pos() {
             return Ok(());
         }
 
@@ -383,4 +385,52 @@ mod test_bytes {
         assert_eq!(bytes[90], bri.read_byte().expect("read_byte"));
     }
 
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::io::BufRead;
+    use std::io::Read;
+    use std::io;
+
+    #[test]
+    fn eof_at_limit() {
+        struct Read5ThenPanic {
+            pos: usize,
+        }
+
+        impl Read for Read5ThenPanic {
+            fn read(&mut self, _buf: &mut [u8]) -> io::Result<usize> {
+                unreachable!();
+            }
+        }
+
+        impl BufRead for Read5ThenPanic {
+            fn fill_buf(&mut self) -> io::Result<&[u8]> {
+                assert_eq!(0, self.pos);
+                static ZERO_TO_FIVE: &'static [u8] = &[0, 1, 2, 3, 4];
+                Ok(ZERO_TO_FIVE)
+            }
+
+            fn consume(&mut self, amt: usize) {
+                if amt == 0 {
+                    // drop of BufReadIter
+                    return;
+                }
+
+                assert_eq!(0, self.pos);
+                assert_eq!(5, amt);
+                self.pos += amt;
+            }
+        }
+
+        let mut read = Read5ThenPanic { pos : 0 };
+        let mut buf_read_iter = BufReadIter::from_buf_read(&mut read);
+        assert_eq!(0, buf_read_iter.pos());
+        let _prev_limit = buf_read_iter.push_limit(5);
+        buf_read_iter.read_byte().expect("read_byte");
+        buf_read_iter.read_exact(&mut [1, 2, 3, 4]).expect("read_exact");
+        assert!(buf_read_iter.eof().expect("eof"));
+    }
 }
