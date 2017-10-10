@@ -14,5 +14,12 @@ protoc_rust::run(protoc_rust::Args {
 }).expect("protoc");
 ```
 
+And in `Cargo.toml`:
+
+```
+[build-dependencies]
+protoc-rust = "1.4.1"
+```
+
 Note this API requires `protoc` command present in `$PATH`.
 Although `protoc-gen-rust` command is not needed.
