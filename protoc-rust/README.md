@@ -18,7 +18,7 @@ And in `Cargo.toml`:
 
 ```
 [build-dependencies]
-protoc-rust = "1.4.1"
+protoc-rust = "1.4"
 ```
 
 Note this API requires `protoc` command present in `$PATH`.
