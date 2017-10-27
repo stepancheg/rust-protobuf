@@ -37,6 +37,24 @@ fn test4() {
 }
 
 #[test]
+fn test_recursion_limit() {
+    let mut test1 = Test1::new();
+    test1.set_a(150);
+    let mut test3 = Test3::new();
+    test3.set_c(test1);
+    let bytes = test3.write_to_bytes().unwrap();
+    let mut is = CodedInputStream::from_bytes(&bytes);
+    let mut t = Test3::new();
+    t.merge_from(&mut is).unwrap();
+    assert_eq!(test3, t);
+
+    is = CodedInputStream::from_bytes(&bytes);
+    is.set_recursion_limit(0);
+    let mut t = Test3::new();
+    t.merge_from(&mut is).unwrap_err();
+}
+
+#[test]
 fn test_read_unpacked_expect_packed() {
     let mut test_packed_unpacked = TestPackedUnpacked::new();
     test_packed_unpacked.set_packed(Vec::new());

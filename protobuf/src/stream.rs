@@ -31,6 +31,9 @@ use buf_read_iter::BufReadIter;
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
+// Default recursion level limit.
+const DEFAULT_RECURSION_LIMIT: isize = 100;
+
 
 pub mod wire_format {
     // TODO: temporary
@@ -121,24 +124,52 @@ pub mod wire_format {
 
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
+    recursion_budget: isize,
+    recursion_limit: isize,
 }
 
 impl<'a> CodedInputStream<'a> {
     pub fn new(read: &'a mut Read) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_read(read) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_read(read))
     }
 
     pub fn from_buffered_reader(buf_read: &'a mut BufRead) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_buf_read(buf_read) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_buf_read(buf_read))
     }
 
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_byte_slice(bytes) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_byte_slice(bytes))
     }
 
     #[cfg(feature = "bytes")]
     pub fn from_carllerche_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_bytes(bytes) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_bytes(bytes))
+    }
+
+    fn from_buf_read_iter(source: BufReadIter<'a>) -> CodedInputStream<'a> {
+        CodedInputStream { source: source, recursion_budget: DEFAULT_RECURSION_LIMIT, recursion_limit: DEFAULT_RECURSION_LIMIT }
+    }
+
+    /// Set the recursion limit.
+    pub fn set_recursion_limit(&mut self, limit: isize) {
+        self.recursion_budget += limit - self.recursion_limit;
+        self.recursion_limit = limit;
+    }
+
+    // Only for internal tracing
+    #[doc(hidden)]
+    pub fn incr_recursion(&mut self) -> ProtobufResult<()> {
+        self.recursion_budget -= 1;
+        if self.recursion_budget < 0 {
+            return Err(ProtobufError::WireError(WireError::OverRecursionLimit));
+        }
+        Ok(())
+    }
+
+    // Only for internal tracing
+    #[doc(hidden)]
+    pub fn decr_recursion(&mut self) {
+        self.recursion_budget += 1;
     }
 
     pub fn pos(&self) -> u64 {
