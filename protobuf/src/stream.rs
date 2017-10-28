@@ -158,6 +158,7 @@ impl<'a> CodedInputStream<'a> {
 
     // Only for internal tracing
     #[doc(hidden)]
+    #[inline]
     pub fn incr_recursion(&mut self) -> ProtobufResult<()> {
         self.recursion_budget -= 1;
         if self.recursion_budget < 0 {
@@ -168,6 +169,7 @@ impl<'a> CodedInputStream<'a> {
 
     // Only for internal tracing
     #[doc(hidden)]
+    #[inline]
     pub fn decr_recursion(&mut self) {
         self.recursion_budget += 1;
     }
