@@ -31,8 +31,8 @@ use buf_read_iter::BufReadIter;
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
-// Default recursion level limit.
-const DEFAULT_RECURSION_LIMIT: isize = 100;
+// Default recursion level limit. 100 is the default value of C++'s implementation.
+const DEFAULT_RECURSION_LIMIT: u32 = 100;
 
 
 pub mod wire_format {
@@ -124,8 +124,8 @@ pub mod wire_format {
 
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
-    recursion_budget: isize,
-    recursion_limit: isize,
+    recursion_level: u32,
+    recursion_limit: u32,
 }
 
 impl<'a> CodedInputStream<'a> {
@@ -147,31 +147,30 @@ impl<'a> CodedInputStream<'a> {
     }
 
     fn from_buf_read_iter(source: BufReadIter<'a>) -> CodedInputStream<'a> {
-        CodedInputStream { source: source, recursion_budget: DEFAULT_RECURSION_LIMIT, recursion_limit: DEFAULT_RECURSION_LIMIT }
+        CodedInputStream {
+            source: source,
+            recursion_level: 0,
+            recursion_limit: DEFAULT_RECURSION_LIMIT,
+        }
     }
 
     /// Set the recursion limit.
-    pub fn set_recursion_limit(&mut self, limit: isize) {
-        self.recursion_budget += limit - self.recursion_limit;
+    pub fn set_recursion_limit(&mut self, limit: u32) {
         self.recursion_limit = limit;
     }
 
-    // Only for internal tracing
-    #[doc(hidden)]
     #[inline]
-    pub fn incr_recursion(&mut self) -> ProtobufResult<()> {
-        self.recursion_budget -= 1;
-        if self.recursion_budget < 0 {
+    pub(crate) fn incr_recursion(&mut self) -> ProtobufResult<()> {
+        if self.recursion_level >= self.recursion_limit {
             return Err(ProtobufError::WireError(WireError::OverRecursionLimit));
         }
+        self.recursion_level += 1;
         Ok(())
     }
 
-    // Only for internal tracing
-    #[doc(hidden)]
     #[inline]
-    pub fn decr_recursion(&mut self) {
-        self.recursion_budget += 1;
+    pub(crate) fn decr_recursion(&mut self) {
+        self.recursion_level -= 1;
     }
 
     pub fn pos(&self) -> u64 {

@@ -38,20 +38,32 @@ fn test4() {
 
 #[test]
 fn test_recursion_limit() {
-    let mut test1 = Test1::new();
-    test1.set_a(150);
-    let mut test3 = Test3::new();
-    test3.set_c(test1);
-    let bytes = test3.write_to_bytes().unwrap();
-    let mut is = CodedInputStream::from_bytes(&bytes);
-    let mut t = Test3::new();
-    t.merge_from(&mut is).unwrap();
-    assert_eq!(test3, t);
+    let mut test = TestRecursion::new();
+    for _ in 0..10 {
+        let mut t = TestRecursion::new();
+        t.mut_children().push(test);
+        test = t;
+    }
+    
+    let bytes = test.write_to_bytes().unwrap();
+    let cases = vec![
+        (None, false),
+        (Some(9), true),
+        (Some(10), false),
+    ];
 
-    is = CodedInputStream::from_bytes(&bytes);
-    is.set_recursion_limit(0);
-    let mut t = Test3::new();
-    t.merge_from(&mut is).unwrap_err();
+    for (limit, has_err) in cases {
+        let mut is = CodedInputStream::from_bytes(&bytes);
+        if let Some(limit) = limit {
+            is.set_recursion_limit(limit);
+        }
+        let mut t = TestRecursion::new();
+        let res = t.merge_from(&mut is);
+        assert_eq!(res.is_err(), has_err, "limit: {:?}", limit);
+        if !has_err {
+            assert_eq!(t, test, "limit: {:?}", limit);
+        }
+    }
 }
 
 #[test]
