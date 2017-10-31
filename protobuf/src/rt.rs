@@ -638,8 +638,11 @@ pub fn read_repeated_message_into<M : Message + Default>(
 ) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
+            is.incr_recursion()?;
             let tmp = target.push_default();
-            is.merge_message(tmp)
+            let res = is.merge_message(tmp);
+            is.decr_recursion();
+            res
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }
@@ -652,8 +655,11 @@ pub fn read_singular_message_into<M : Message + Default>(
 ) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
+            is.incr_recursion()?;
             let tmp = target.set_default();
-            is.merge_message(tmp)
+            let res = is.merge_message(tmp);
+            is.decr_recursion();
+            res
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }

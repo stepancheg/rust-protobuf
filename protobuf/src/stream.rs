@@ -31,6 +31,9 @@ use buf_read_iter::BufReadIter;
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
+// Default recursion level limit. 100 is the default value of C++'s implementation.
+const DEFAULT_RECURSION_LIMIT: u32 = 100;
+
 
 pub mod wire_format {
     // TODO: temporary
@@ -121,24 +124,53 @@ pub mod wire_format {
 
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
+    recursion_level: u32,
+    recursion_limit: u32,
 }
 
 impl<'a> CodedInputStream<'a> {
     pub fn new(read: &'a mut Read) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_read(read) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_read(read))
     }
 
     pub fn from_buffered_reader(buf_read: &'a mut BufRead) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_buf_read(buf_read) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_buf_read(buf_read))
     }
 
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_byte_slice(bytes) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_byte_slice(bytes))
     }
 
     #[cfg(feature = "bytes")]
     pub fn from_carllerche_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
-        CodedInputStream { source: BufReadIter::from_bytes(bytes) }
+        CodedInputStream::from_buf_read_iter(BufReadIter::from_bytes(bytes))
+    }
+
+    fn from_buf_read_iter(source: BufReadIter<'a>) -> CodedInputStream<'a> {
+        CodedInputStream {
+            source: source,
+            recursion_level: 0,
+            recursion_limit: DEFAULT_RECURSION_LIMIT,
+        }
+    }
+
+    /// Set the recursion limit.
+    pub fn set_recursion_limit(&mut self, limit: u32) {
+        self.recursion_limit = limit;
+    }
+
+    #[inline]
+    pub(crate) fn incr_recursion(&mut self) -> ProtobufResult<()> {
+        if self.recursion_level >= self.recursion_limit {
+            return Err(ProtobufError::WireError(WireError::OverRecursionLimit));
+        }
+        self.recursion_level += 1;
+        Ok(())
+    }
+
+    #[inline]
+    pub(crate) fn decr_recursion(&mut self) {
+        self.recursion_level -= 1;
     }
 
     pub fn pos(&self) -> u64 {

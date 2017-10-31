@@ -37,6 +37,36 @@ fn test4() {
 }
 
 #[test]
+fn test_recursion_limit() {
+    let mut test = TestRecursion::new();
+    for _ in 0..10 {
+        let mut t = TestRecursion::new();
+        t.mut_children().push(test);
+        test = t;
+    }
+    
+    let bytes = test.write_to_bytes().unwrap();
+    let cases = vec![
+        (None, false),
+        (Some(9), true),
+        (Some(10), false),
+    ];
+
+    for (limit, has_err) in cases {
+        let mut is = CodedInputStream::from_bytes(&bytes);
+        if let Some(limit) = limit {
+            is.set_recursion_limit(limit);
+        }
+        let mut t = TestRecursion::new();
+        let res = t.merge_from(&mut is);
+        assert_eq!(res.is_err(), has_err, "limit: {:?}", limit);
+        if !has_err {
+            assert_eq!(t, test, "limit: {:?}", limit);
+        }
+    }
+}
+
+#[test]
 fn test_read_unpacked_expect_packed() {
     let mut test_packed_unpacked = TestPackedUnpacked::new();
     test_packed_unpacked.set_packed(Vec::new());

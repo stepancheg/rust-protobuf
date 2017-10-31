@@ -18,6 +18,7 @@ pub enum WireError {
     IncorrectVarint,
     Utf8Error,
     InvalidEnumValue(i32),
+    OverRecursionLimit,
     Other,
 }
 
@@ -55,6 +56,7 @@ impl Error for ProtobufError {
                     WireError::IncorrectVarint => "incorrect varint",
                     WireError::IncompleteMap => "incomplete map",
                     WireError::UnexpectedEof => "unexpected EOF",
+                    WireError::OverRecursionLimit => "over recursion limit",
                     WireError::Other => "other error",
                 }
             }
