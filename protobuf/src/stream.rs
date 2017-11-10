@@ -188,8 +188,7 @@ impl<'a> CodedInputStream<'a> {
 
     #[cfg(feature = "bytes")]
     fn read_raw_callerche_bytes(&mut self, count: usize) -> ProtobufResult<Bytes> {
-        let r = self.source.read_exact_bytes(count)?;
-        Ok(r)
+        self.source.read_exact_bytes(count)
     }
 
     #[inline(always)]
@@ -207,7 +206,7 @@ impl<'a> CodedInputStream<'a> {
 
     #[inline(always)]
     pub fn eof(&mut self) -> ProtobufResult<bool> {
-        Ok(self.source.eof()?)
+        self.source.eof()
     }
 
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
