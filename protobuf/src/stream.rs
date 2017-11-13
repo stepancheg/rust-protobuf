@@ -980,7 +980,7 @@ impl<'a> CodedOutputStream<'a> {
             Ok(())
         } else {
             // slow path
-            let mut buf = &mut [0u8; 5];
+            let buf = &mut [0u8; 5];
             let len = varint::encode_varint32(value, buf);
             self.write_raw_bytes(&buf[..len])
         }
@@ -994,7 +994,7 @@ impl<'a> CodedOutputStream<'a> {
             Ok(())
         } else {
             // slow path
-            let mut buf = &mut [0u8; 10];
+            let buf = &mut [0u8; 10];
             let len = varint::encode_varint64(value, buf);
             self.write_raw_bytes(&buf[..len])
         }
