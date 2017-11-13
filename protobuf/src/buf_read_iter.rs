@@ -254,7 +254,7 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok((len))
     }
 
-    pub fn read_exact(&mut self, mut buf: &mut [u8]) -> ProtobufResult<()> {
+    pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
             buf.copy_from_slice(
