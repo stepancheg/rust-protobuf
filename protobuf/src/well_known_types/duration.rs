@@ -61,14 +61,6 @@ impl Duration {
         self.seconds
     }
 
-    fn get_seconds_for_reflect(&self) -> &i64 {
-        &self.seconds
-    }
-
-    fn mut_seconds_for_reflect(&mut self) -> &mut i64 {
-        &mut self.seconds
-    }
-
     // int32 nanos = 2;
 
     pub fn clear_nanos(&mut self) {
@@ -82,14 +74,6 @@ impl Duration {
 
     pub fn get_nanos(&self) -> i32 {
         self.nanos
-    }
-
-    fn get_nanos_for_reflect(&self) -> &i32 {
-        &self.nanos
-    }
-
-    fn mut_nanos_for_reflect(&mut self) -> &mut i32 {
-        &mut self.nanos
     }
 }
 
@@ -190,13 +174,13 @@ impl ::protobuf::Message for Duration {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "seconds",
-                    Duration::get_seconds_for_reflect,
-                    Duration::mut_seconds_for_reflect,
+                    |m: &Duration| { &m.seconds },
+                    |m: &mut Duration| { &mut m.seconds },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "nanos",
-                    Duration::get_nanos_for_reflect,
-                    Duration::mut_nanos_for_reflect,
+                    |m: &Duration| { &m.nanos },
+                    |m: &mut Duration| { &mut m.nanos },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Duration>(
                     "Duration",
