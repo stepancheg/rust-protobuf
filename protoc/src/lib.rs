@@ -64,14 +64,22 @@ impl Protoc {
         self.version().map(|_| ())
     }
 
+    fn spawn(&self, cmd: &mut process::Command) -> io::Result<process::Child> {
+        info!("spawning command {:?}", cmd);
+
+        cmd.spawn()
+            .map_err(|e| {
+                Error::new(e.kind(), format!("failed to spawn `{:?}`: {}", cmd, e))
+            })
+    }
+
     /// Obtain `protoc` version
     pub fn version(&self) -> Result<Version> {
-        let child = process::Command::new(&self.exec)
+        let child = self.spawn(process::Command::new(&self.exec)
             .stdin(process::Stdio::null())
             .stdout(process::Stdio::piped())
             .stderr(process::Stdio::piped())
-            .args(&["--version"])
-            .spawn()?;
+            .args(&["--version"]))?;
 
         let output = child.wait_with_output()?;
         if !output.status.success() {
@@ -104,9 +112,7 @@ impl Protoc {
         cmd.stdin(process::Stdio::null());
         cmd.args(args);
 
-        info!("spawning command {:?}", cmd);
-
-        let mut child = cmd.spawn()?;
+        let mut child = self.spawn(&mut cmd)?;
 
         if !child.wait()?.success() {
             return err_other("protoc exited with non-zero exit code");
