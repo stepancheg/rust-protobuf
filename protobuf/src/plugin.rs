@@ -72,14 +72,6 @@ impl CodeGeneratorRequest {
         &self.file_to_generate
     }
 
-    fn get_file_to_generate_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
-        &self.file_to_generate
-    }
-
-    fn mut_file_to_generate_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
-        &mut self.file_to_generate
-    }
-
     // optional string parameter = 2;
 
     pub fn clear_parameter(&mut self) {
@@ -116,14 +108,6 @@ impl CodeGeneratorRequest {
         }
     }
 
-    fn get_parameter_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
-        &self.parameter
-    }
-
-    fn mut_parameter_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
-        &mut self.parameter
-    }
-
     // repeated .google.protobuf.FileDescriptorProto proto_file = 15;
 
     pub fn clear_proto_file(&mut self) {
@@ -147,14 +131,6 @@ impl CodeGeneratorRequest {
 
     pub fn get_proto_file(&self) -> &[::protobuf::descriptor::FileDescriptorProto] {
         &self.proto_file
-    }
-
-    fn get_proto_file_for_reflect(&self) -> &::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
-        &self.proto_file
-    }
-
-    fn mut_proto_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
-        &mut self.proto_file
     }
 }
 
@@ -264,18 +240,18 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_to_generate",
-                    CodeGeneratorRequest::get_file_to_generate_for_reflect,
-                    CodeGeneratorRequest::mut_file_to_generate_for_reflect,
+                    |m: &CodeGeneratorRequest| { &m.file_to_generate },
+                    |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "parameter",
-                    CodeGeneratorRequest::get_parameter_for_reflect,
-                    CodeGeneratorRequest::mut_parameter_for_reflect,
+                    |m: &CodeGeneratorRequest| { &m.parameter },
+                    |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
                     "proto_file",
-                    CodeGeneratorRequest::get_proto_file_for_reflect,
-                    CodeGeneratorRequest::mut_proto_file_for_reflect,
+                    |m: &CodeGeneratorRequest| { &m.proto_file },
+                    |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
                     "CodeGeneratorRequest",
@@ -369,14 +345,6 @@ impl CodeGeneratorResponse {
         }
     }
 
-    fn get_error_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
-        &self.error
-    }
-
-    fn mut_error_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
-        &mut self.error
-    }
-
     // repeated .google.protobuf.compiler.CodeGeneratorResponse.File file = 15;
 
     pub fn clear_file(&mut self) {
@@ -400,14 +368,6 @@ impl CodeGeneratorResponse {
 
     pub fn get_file(&self) -> &[CodeGeneratorResponse_File] {
         &self.file
-    }
-
-    fn get_file_for_reflect(&self) -> &::protobuf::RepeatedField<CodeGeneratorResponse_File> {
-        &self.file
-    }
-
-    fn mut_file_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
-        &mut self.file
     }
 }
 
@@ -508,13 +468,13 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "error",
-                    CodeGeneratorResponse::get_error_for_reflect,
-                    CodeGeneratorResponse::mut_error_for_reflect,
+                    |m: &CodeGeneratorResponse| { &m.error },
+                    |m: &mut CodeGeneratorResponse| { &mut m.error },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
-                    CodeGeneratorResponse::get_file_for_reflect,
-                    CodeGeneratorResponse::mut_file_for_reflect,
+                    |m: &CodeGeneratorResponse| { &m.file },
+                    |m: &mut CodeGeneratorResponse| { &mut m.file },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
                     "CodeGeneratorResponse",
@@ -608,14 +568,6 @@ impl CodeGeneratorResponse_File {
         }
     }
 
-    fn get_name_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
-        &mut self.name
-    }
-
     // optional string insertion_point = 2;
 
     pub fn clear_insertion_point(&mut self) {
@@ -652,14 +604,6 @@ impl CodeGeneratorResponse_File {
         }
     }
 
-    fn get_insertion_point_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
-        &self.insertion_point
-    }
-
-    fn mut_insertion_point_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
-        &mut self.insertion_point
-    }
-
     // optional string content = 15;
 
     pub fn clear_content(&mut self) {
@@ -694,14 +638,6 @@ impl CodeGeneratorResponse_File {
             Some(v) => &v,
             None => "",
         }
-    }
-
-    fn get_content_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
-        &self.content
-    }
-
-    fn mut_content_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
-        &mut self.content
     }
 }
 
@@ -803,18 +739,18 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    CodeGeneratorResponse_File::get_name_for_reflect,
-                    CodeGeneratorResponse_File::mut_name_for_reflect,
+                    |m: &CodeGeneratorResponse_File| { &m.name },
+                    |m: &mut CodeGeneratorResponse_File| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "insertion_point",
-                    CodeGeneratorResponse_File::get_insertion_point_for_reflect,
-                    CodeGeneratorResponse_File::mut_insertion_point_for_reflect,
+                    |m: &CodeGeneratorResponse_File| { &m.insertion_point },
+                    |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "content",
-                    CodeGeneratorResponse_File::get_content_for_reflect,
-                    CodeGeneratorResponse_File::mut_content_for_reflect,
+                    |m: &CodeGeneratorResponse_File| { &m.content },
+                    |m: &mut CodeGeneratorResponse_File| { &mut m.content },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
                     "CodeGeneratorResponse_File",
