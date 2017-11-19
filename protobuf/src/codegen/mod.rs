@@ -1,3 +1,6 @@
+// TODO: move into separate crate
+#![doc(hidden)]
+
 use std::collections::hash_map::HashMap;
 use std::fmt::Write;
 

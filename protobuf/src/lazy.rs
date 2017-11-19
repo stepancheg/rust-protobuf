@@ -1,12 +1,20 @@
+//! Lazily initialized data.
+//! Used in generated code.
+
 use std::mem;
 use std::sync;
 
+/// Lasily initialized data.
+// Fields are public until `const` functions available in stable.
 pub struct Lazy<T> {
+    #[doc(hidden)]
     pub lock: sync::Once,
+    #[doc(hidden)]
     pub ptr: *const T,
 }
 
 impl<T> Lazy<T> {
+    /// Get lazy field value, initialize it with given function if not yet.
     pub fn get<F>(&'static mut self, init: F) -> &'static T
     where
         F : FnOnce() -> T,
@@ -24,6 +32,7 @@ impl<T> Lazy<T> {
     }
 }
 
+/// Used to initialize `lock` field in `Lazy` struct.
 pub const ONCE_INIT: sync::Once = sync::ONCE_INIT;
 
 

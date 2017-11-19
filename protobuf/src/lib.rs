@@ -1,3 +1,8 @@
+//! Library to read and write protocol buffers data.
+
+// TODO: add docs
+//#![deny(missing_docs)]
+
 #[cfg(feature = "bytes")]
 extern crate bytes;
 
@@ -19,6 +24,7 @@ pub use core::parse_from_reader;
 #[cfg(feature = "bytes")]
 pub use core::parse_from_carllerche_bytes;
 pub use core::parse_length_delimited_from;
+pub use core::parse_length_delimited_from_reader;
 pub use core::parse_length_delimited_from_bytes;
 pub use stream::CodedInputStream;
 pub use stream::CodedOutputStream;
@@ -34,15 +40,15 @@ pub mod descriptor;
 pub mod plugin;
 mod rustproto;
 
-pub mod core;
+mod core;
 pub mod rt;
 pub mod lazy;
 pub mod code_writer;
 pub mod codegen;
 pub mod compiler_plugin;
-pub mod repeated;
-pub mod singular;
-pub mod clear;
+mod repeated;
+mod singular;
+mod clear;
 pub mod reflect;
 pub mod text_format;
 pub mod stream;

@@ -1,3 +1,6 @@
+// TODO: move into separate crate
+#![doc(hidden)]
+
 use std::io::stdin;
 use std::io::stdout;
 use std::str;

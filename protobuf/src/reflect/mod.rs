@@ -1,3 +1,5 @@
+//! Reflection implementation for protobuf types.
+
 use std::collections::HashMap;
 use std::default::Default;
 use std::marker;

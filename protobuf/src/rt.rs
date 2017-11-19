@@ -1,5 +1,5 @@
-// Functions used by generated protobuf code.
-// Should not be used by programs written by hands.
+//! Functions used by generated protobuf code.
+//! Should not be used by programs written by hands.
 
 use std::default::Default;
 use std::hash::Hash;
@@ -31,6 +31,7 @@ use types::*;
 use unknown::UnknownFields;
 
 
+/// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {
     if (value & (0xffffffffffffffffu64 << 7)) == 0 {
         return 1;
@@ -62,16 +63,20 @@ pub fn compute_raw_varint64_size(value: u64) -> u32 {
     10
 }
 
+/// Given `u32` value compute varint encoded length.
 pub fn compute_raw_varint32_size(value: u32) -> u32 {
     compute_raw_varint64_size(value as u64)
 }
 
+/// Helper trait implemented by integer types which could be encoded as varint.
 pub trait ProtobufVarint {
-    // size of self when written as varint
+    /// Size of self when encoded as varint.
     fn len_varint(&self) -> u32;
 }
 
+/// Helper trait implemented by integer types which could be encoded as zigzag varint.
 pub trait ProtobufVarintZigzag {
+    /// Size of self when encoded as zigzag varint.
     fn len_varint_zigzag(&self) -> u32;
 }
 
@@ -127,25 +132,26 @@ impl<E:ProtobufEnum> ProtobufVarint for E {
 }
 */
 
-// Size of serialized data, excluding length and tag
+/// Size of serialized repeated packed field, excluding length and tag.
 pub fn vec_packed_varint_data_size<T : ProtobufVarint>(vec: &[T]) -> u32 {
     vec.iter().map(|v| v.len_varint()).fold(0, |a, i| a + i)
 }
 
-// Size of serialized data, excluding length and tag
+/// Size of serialized repeated packed field, excluding length and tag.
 pub fn vec_packed_varint_zigzag_data_size<T : ProtobufVarintZigzag>(vec: &[T]) -> u32 {
     vec.iter()
         .map(|v| v.len_varint_zigzag())
         .fold(0, |a, i| a + i)
 }
 
+/// Size of serialized repeated packed enum field, excluding length and tag.
 pub fn vec_packed_enum_data_size<E : ProtobufEnum>(vec: &[E]) -> u32 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
         .fold(0, |a, i| a + i)
 }
 
-// Size of serialized data with length prefix and tag
+/// Size of serialized data with length prefix and tag
 pub fn vec_packed_varint_size<T : ProtobufVarint>(field_number: u32, vec: &[T]) -> u32 {
     if vec.is_empty() {
         0
@@ -155,7 +161,7 @@ pub fn vec_packed_varint_size<T : ProtobufVarint>(field_number: u32, vec: &[T]) 
     }
 }
 
-// Size of serialized data with length prefix and tag
+/// Size of serialized data with length prefix and tag
 pub fn vec_packed_varint_zigzag_size<T : ProtobufVarintZigzag>(
     field_number: u32,
     vec: &[T],
@@ -168,6 +174,7 @@ pub fn vec_packed_varint_zigzag_size<T : ProtobufVarintZigzag>(
     }
 }
 
+/// Size of serialized data with length prefix and tag
 pub fn vec_packed_enum_size<E : ProtobufEnum>(field_number: u32, vec: &[E]) -> u32 {
     if vec.is_empty() {
         0
@@ -177,14 +184,14 @@ pub fn vec_packed_enum_size<E : ProtobufEnum>(field_number: u32, vec: &[E]) -> u
     }
 }
 
-// Size of tag does not depend on wire type
+/// Compute tag size. Size of tag does not depend on wire type.
 pub fn tag_size(field_number: u32) -> u32 {
     wire_format::Tag::make(field_number, WireTypeFixed64)
         .value()
         .len_varint()
 }
 
-pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: WireType) -> u32 {
+fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: WireType) -> u32 {
     match wt {
         WireTypeFixed64 => 8,
         WireTypeFixed32 => 4,
@@ -193,11 +200,12 @@ pub fn value_size_no_tag<T : ProtobufVarint>(value: T, wt: WireType) -> u32 {
     }
 }
 
+/// Integer value size when encoded as specified wire type.
 pub fn value_size<T : ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u32 {
     tag_size(field_number) + value_size_no_tag(value, wt)
 }
 
-/// Length of value when encoded with zigzag encoding
+/// Integer value size when encoded as specified wire type.
 pub fn value_varint_zigzag_size_no_tag<T : ProtobufVarintZigzag>(value: T) -> u32 {
     value.len_varint_zigzag()
 }
@@ -211,28 +219,30 @@ fn enum_size_no_tag<E : ProtobufEnum>(value: E) -> u32 {
     value.value().len_varint()
 }
 
+/// Size of encoded enum field value.
 pub fn enum_size<E : ProtobufEnum>(field_number: u32, value: E) -> u32 {
     tag_size(field_number) + enum_size_no_tag(value)
 }
 
-// TODO: not used in generated code
-pub fn bytes_size_no_tag(bytes: &[u8]) -> u32 {
+fn bytes_size_no_tag(bytes: &[u8]) -> u32 {
     compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u32
 }
 
+/// Size of encoded bytes field.
 pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u32 {
     tag_size(field_number) + bytes_size_no_tag(bytes)
 }
 
-// TODO: not used in generated code
-pub fn string_size_no_tag(s: &str) -> u32 {
+fn string_size_no_tag(s: &str) -> u32 {
     bytes_size_no_tag(s.as_bytes())
 }
 
+/// Size of encoded string field.
 pub fn string_size(field_number: u32, s: &str) -> u32 {
     tag_size(field_number) + string_size_no_tag(s)
 }
 
+/// Size of encoded unknown fields size.
 pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
     let mut r = 0;
     for (number, values) in unknown_fields {
@@ -253,6 +263,7 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
 }
 
 
+/// Read repeated `int32` field into given vec.
 pub fn read_repeated_int32_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -268,6 +279,7 @@ pub fn read_repeated_int32_into(
     }
 }
 
+/// Read repeated `int64` field into given vec.
 pub fn read_repeated_int64_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -283,6 +295,7 @@ pub fn read_repeated_int64_into(
     }
 }
 
+/// Read repeated `uint32` field into given vec.
 pub fn read_repeated_uint32_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -298,6 +311,7 @@ pub fn read_repeated_uint32_into(
     }
 }
 
+/// Read repeated `uint64` field into given vec.
 pub fn read_repeated_uint64_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -313,6 +327,7 @@ pub fn read_repeated_uint64_into(
     }
 }
 
+/// Read repeated `sint32` field into given vec.
 pub fn read_repeated_sint32_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -328,6 +343,7 @@ pub fn read_repeated_sint32_into(
     }
 }
 
+/// Read repeated `sint64` field into given vec.
 pub fn read_repeated_sint64_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -343,6 +359,7 @@ pub fn read_repeated_sint64_into(
     }
 }
 
+/// Read repeated `fixed32` field into given vec.
 pub fn read_repeated_fixed32_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -358,6 +375,7 @@ pub fn read_repeated_fixed32_into(
     }
 }
 
+/// Read repeated `fixed64` field into given vec.
 pub fn read_repeated_fixed64_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -373,6 +391,7 @@ pub fn read_repeated_fixed64_into(
     }
 }
 
+/// Read repeated `sfixed32` field into given vec.
 pub fn read_repeated_sfixed32_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -388,6 +407,7 @@ pub fn read_repeated_sfixed32_into(
     }
 }
 
+/// Read repeated `sfixed64` field into given vec.
 pub fn read_repeated_sfixed64_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -403,6 +423,7 @@ pub fn read_repeated_sfixed64_into(
     }
 }
 
+/// Read repeated `double` field into given vec.
 pub fn read_repeated_double_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -418,6 +439,7 @@ pub fn read_repeated_double_into(
     }
 }
 
+/// Read repeated `float` field into given vec.
 pub fn read_repeated_float_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -433,6 +455,7 @@ pub fn read_repeated_float_into(
     }
 }
 
+/// Read repeated `bool` field into given vec.
 pub fn read_repeated_bool_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -448,6 +471,7 @@ pub fn read_repeated_bool_into(
     }
 }
 
+/// Read repeated `enum` field into given vec.
 pub fn read_repeated_enum_into<E : ProtobufEnum>(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -463,6 +487,7 @@ pub fn read_repeated_enum_into<E : ProtobufEnum>(
     }
 }
 
+/// Read repeated `string` field into given vec.
 pub fn read_repeated_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -477,6 +502,7 @@ pub fn read_repeated_string_into(
     }
 }
 
+/// Read repeated `Chars` field into given vec.
 #[cfg(feature = "bytes")]
 pub fn read_repeated_carllerche_string_into(
     wire_type: WireType,
@@ -492,6 +518,7 @@ pub fn read_repeated_carllerche_string_into(
     }
 }
 
+/// Read singular `string` field.
 pub fn read_singular_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -506,6 +533,7 @@ pub fn read_singular_string_into(
     }
 }
 
+/// Read singular `Chars` field.
 #[cfg(feature = "bytes")]
 pub fn read_singular_carllerche_string_into(
     wire_type: WireType,
@@ -521,6 +549,7 @@ pub fn read_singular_carllerche_string_into(
     }
 }
 
+/// Read singular `string` field for proto3.
 pub fn read_singular_proto3_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -532,6 +561,7 @@ pub fn read_singular_proto3_string_into(
     }
 }
 
+/// Read singular `Chars` field for proto3.
 #[cfg(feature = "bytes")]
 pub fn read_singular_proto3_carllerche_string_into(
     wire_type: WireType,
@@ -547,6 +577,7 @@ pub fn read_singular_proto3_carllerche_string_into(
     }
 }
 
+/// Read repeated `bytes` field into given vec.
 pub fn read_repeated_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -561,6 +592,7 @@ pub fn read_repeated_bytes_into(
     }
 }
 
+/// Read repeated `Bytes` field into given vec.
 #[cfg(feature = "bytes")]
 pub fn read_repeated_carllerche_bytes_into(
     wire_type: WireType,
@@ -576,6 +608,7 @@ pub fn read_repeated_carllerche_bytes_into(
     }
 }
 
+/// Read singular `bytes` field.
 pub fn read_singular_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -590,6 +623,7 @@ pub fn read_singular_bytes_into(
     }
 }
 
+/// Read singular `Bytes` field.
 #[cfg(feature = "bytes")]
 pub fn read_singular_carllerche_bytes_into(
     wire_type: WireType,
@@ -605,6 +639,7 @@ pub fn read_singular_carllerche_bytes_into(
     }
 }
 
+/// Read singular `bytes` field for proto3.
 pub fn read_singular_proto3_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -616,6 +651,7 @@ pub fn read_singular_proto3_bytes_into(
     }
 }
 
+/// Read singular `Bytes` field for proto3.
 #[cfg(feature = "bytes")]
 pub fn read_singular_proto3_carllerche_bytes_into(
     wire_type: WireType,
@@ -631,6 +667,7 @@ pub fn read_singular_proto3_carllerche_bytes_into(
     }
 }
 
+/// Read repeated `message` field.
 pub fn read_repeated_message_into<M : Message + Default>(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -648,6 +685,7 @@ pub fn read_repeated_message_into<M : Message + Default>(
     }
 }
 
+/// Read singular `message` field.
 pub fn read_singular_message_into<M : Message + Default>(
     wire_type: WireType,
     is: &mut CodedInputStream,
@@ -675,8 +713,8 @@ fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
     }
 }
 
-// Handle unknown field in generated code.
-// Either store a value in unknown, or skip a group.
+/// Handle unknown field in generated code.
+/// Either store a value in unknown, or skip a group.
 pub fn read_unknown_or_skip_group(
     field_number: u32,
     wire_type: WireType,
@@ -703,7 +741,7 @@ pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
 }
 
 
-
+/// Compute serialized size of `map` field and cache nested field sizes.
 pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Value>) -> u32
 where
     K : ProtobufType,
@@ -724,6 +762,7 @@ where
     sum
 }
 
+/// Write map, message sizes must be already known.
 pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
     map: &HashMap<K::Value, V::Value>,
@@ -752,6 +791,7 @@ where
     Ok(())
 }
 
+/// Read `map` field.
 pub fn read_map_into<K, V>(
     wire_type: WireType,
     is: &mut CodedInputStream,

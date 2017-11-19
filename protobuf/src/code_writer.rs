@@ -1,8 +1,12 @@
+// TODO: used by grpc-rust, should move it into separate crate.
+#![doc(hidden)]
+
 use std::io::Write;
 
 // TODO: should not use wire_format here
 use wire_format;
 
+/// Field visibility.
 pub enum Visibility {
     Public,
     Default,
