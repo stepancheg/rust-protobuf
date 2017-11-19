@@ -22,7 +22,3 @@ mod test_oneof_default_value_pb;
 mod test_oneof_default_value;
 
 mod struct_pb;
-
-// Taken from rust-protobuf 1.0.24 to make sure
-// that old generated code it is still compatible with latest rust-protobuf.
-mod test_basic_pb_1_0_24;

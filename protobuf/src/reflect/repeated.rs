@@ -1,8 +1,5 @@
 use std::slice;
 
-use core::ProtobufEnum;
-use core::Message;
-
 use super::value::ProtobufValue;
 use super::value::ProtobufValueRef;
 
@@ -105,38 +102,10 @@ pub trait ReflectRepeatedEnum<'a> {
     fn get(&self, index: usize) -> ProtobufValueRef<'a>;
 }
 
-pub struct ReflectRepeatedEnumImpl<'a, E : ProtobufEnum> {
-    pub slice: &'a [E],
-}
-
-impl<'a, E : ProtobufEnum + 'static> ReflectRepeatedEnum<'a> for ReflectRepeatedEnumImpl<'a, E> {
-    fn len(&self) -> usize {
-        self.slice.len()
-    }
-
-    fn get(&self, index: usize) -> ProtobufValueRef<'a> {
-        ProtobufValueRef::Enum(self.slice[index].descriptor())
-    }
-}
-
 pub trait ReflectRepeatedMessage<'a> {
     fn len(&self) -> usize;
 
     fn get(&self, index: usize) -> ProtobufValueRef<'a>;
-}
-
-pub struct ReflectRepeatedMessageImpl<'a, M : Message> {
-    pub slice: &'a [M],
-}
-
-impl<'a, M : Message> ReflectRepeatedMessage<'a> for ReflectRepeatedMessageImpl<'a, M> {
-    fn len(&self) -> usize {
-        self.slice.len()
-    }
-
-    fn get(&self, index: usize) -> ProtobufValueRef<'a> {
-        ProtobufValueRef::Message(&self.slice[index])
-    }
 }
 
 pub enum ReflectRepeatedRef<'a> {
