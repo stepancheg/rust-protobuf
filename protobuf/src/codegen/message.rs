@@ -233,8 +233,15 @@ impl<'a> MessageGen<'a> {
         ));
         w.indented(|w| {
             w.write_line(&format!("\"{}\",", field.proto_field.name()));
-            for acc in &accessor_fn.accessors {
-                w.write_line(&format!("{}::{},", self.type_name, acc));
+            match accessor_fn.style {
+                AccessorStyle::Lambda => {
+                    w.write_line(&format!("|m: &{}| {{ &m.{} }},", self.type_name, field.rust_name));
+                    w.write_line(&format!("|m: &mut {}| {{ &mut m.{} }},", self.type_name, field.rust_name));
+                }
+                AccessorStyle::HasGet => {
+                    w.write_line(&format!("{}::has_{},", self.type_name, field.rust_name));
+                    w.write_line(&format!("{}::get_{},", self.type_name, field.rust_name));
+                }
             }
         });
         w.write_line("));");

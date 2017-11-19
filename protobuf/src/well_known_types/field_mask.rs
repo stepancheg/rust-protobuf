@@ -69,14 +69,6 @@ impl FieldMask {
     pub fn get_paths(&self) -> &[::std::string::String] {
         &self.paths
     }
-
-    fn get_paths_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
-        &self.paths
-    }
-
-    fn mut_paths_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
-        &mut self.paths
-    }
 }
 
 impl ::protobuf::Message for FieldMask {
@@ -161,8 +153,8 @@ impl ::protobuf::MessageStatic for FieldMask {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "paths",
-                    FieldMask::get_paths_for_reflect,
-                    FieldMask::mut_paths_for_reflect,
+                    |m: &FieldMask| { &m.paths },
+                    |m: &mut FieldMask| { &mut m.paths },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<FieldMask>(
                     "FieldMask",

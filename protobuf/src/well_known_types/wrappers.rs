@@ -59,14 +59,6 @@ impl DoubleValue {
     pub fn get_value(&self) -> f64 {
         self.value
     }
-
-    fn get_value_for_reflect(&self) -> &f64 {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut f64 {
-        &mut self.value
-    }
 }
 
 impl ::protobuf::Message for DoubleValue {
@@ -155,8 +147,8 @@ impl ::protobuf::MessageStatic for DoubleValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
                     "value",
-                    DoubleValue::get_value_for_reflect,
-                    DoubleValue::mut_value_for_reflect,
+                    |m: &DoubleValue| { &m.value },
+                    |m: &mut DoubleValue| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<DoubleValue>(
                     "DoubleValue",
@@ -224,14 +216,6 @@ impl FloatValue {
 
     pub fn get_value(&self) -> f32 {
         self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &f32 {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut f32 {
-        &mut self.value
     }
 }
 
@@ -321,8 +305,8 @@ impl ::protobuf::MessageStatic for FloatValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
                     "value",
-                    FloatValue::get_value_for_reflect,
-                    FloatValue::mut_value_for_reflect,
+                    |m: &FloatValue| { &m.value },
+                    |m: &mut FloatValue| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<FloatValue>(
                     "FloatValue",
@@ -390,14 +374,6 @@ impl Int64Value {
 
     pub fn get_value(&self) -> i64 {
         self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &i64 {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut i64 {
-        &mut self.value
     }
 }
 
@@ -487,8 +463,8 @@ impl ::protobuf::MessageStatic for Int64Value {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "value",
-                    Int64Value::get_value_for_reflect,
-                    Int64Value::mut_value_for_reflect,
+                    |m: &Int64Value| { &m.value },
+                    |m: &mut Int64Value| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Int64Value>(
                     "Int64Value",
@@ -556,14 +532,6 @@ impl UInt64Value {
 
     pub fn get_value(&self) -> u64 {
         self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &u64 {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut u64 {
-        &mut self.value
     }
 }
 
@@ -653,8 +621,8 @@ impl ::protobuf::MessageStatic for UInt64Value {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "value",
-                    UInt64Value::get_value_for_reflect,
-                    UInt64Value::mut_value_for_reflect,
+                    |m: &UInt64Value| { &m.value },
+                    |m: &mut UInt64Value| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<UInt64Value>(
                     "UInt64Value",
@@ -722,14 +690,6 @@ impl Int32Value {
 
     pub fn get_value(&self) -> i32 {
         self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &i32 {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut i32 {
-        &mut self.value
     }
 }
 
@@ -819,8 +779,8 @@ impl ::protobuf::MessageStatic for Int32Value {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "value",
-                    Int32Value::get_value_for_reflect,
-                    Int32Value::mut_value_for_reflect,
+                    |m: &Int32Value| { &m.value },
+                    |m: &mut Int32Value| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Int32Value>(
                     "Int32Value",
@@ -888,14 +848,6 @@ impl UInt32Value {
 
     pub fn get_value(&self) -> u32 {
         self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &u32 {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut u32 {
-        &mut self.value
     }
 }
 
@@ -985,8 +937,8 @@ impl ::protobuf::MessageStatic for UInt32Value {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
                     "value",
-                    UInt32Value::get_value_for_reflect,
-                    UInt32Value::mut_value_for_reflect,
+                    |m: &UInt32Value| { &m.value },
+                    |m: &mut UInt32Value| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<UInt32Value>(
                     "UInt32Value",
@@ -1054,14 +1006,6 @@ impl BoolValue {
 
     pub fn get_value(&self) -> bool {
         self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &bool {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut bool {
-        &mut self.value
     }
 }
 
@@ -1151,8 +1095,8 @@ impl ::protobuf::MessageStatic for BoolValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "value",
-                    BoolValue::get_value_for_reflect,
-                    BoolValue::mut_value_for_reflect,
+                    |m: &BoolValue| { &m.value },
+                    |m: &mut BoolValue| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<BoolValue>(
                     "BoolValue",
@@ -1231,14 +1175,6 @@ impl StringValue {
 
     pub fn get_value(&self) -> &str {
         &self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &::std::string::String {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.value
     }
 }
 
@@ -1324,8 +1260,8 @@ impl ::protobuf::MessageStatic for StringValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "value",
-                    StringValue::get_value_for_reflect,
-                    StringValue::mut_value_for_reflect,
+                    |m: &StringValue| { &m.value },
+                    |m: &mut StringValue| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<StringValue>(
                     "StringValue",
@@ -1404,14 +1340,6 @@ impl BytesValue {
 
     pub fn get_value(&self) -> &[u8] {
         &self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &::std::vec::Vec<u8> {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut ::std::vec::Vec<u8> {
-        &mut self.value
     }
 }
 
@@ -1497,8 +1425,8 @@ impl ::protobuf::MessageStatic for BytesValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
                     "value",
-                    BytesValue::get_value_for_reflect,
-                    BytesValue::mut_value_for_reflect,
+                    |m: &BytesValue| { &m.value },
+                    |m: &mut BytesValue| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<BytesValue>(
                     "BytesValue",

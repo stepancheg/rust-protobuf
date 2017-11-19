@@ -77,14 +77,6 @@ impl Api {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // repeated .google.protobuf.Method methods = 2;
 
     pub fn clear_methods(&mut self) {
@@ -108,14 +100,6 @@ impl Api {
 
     pub fn get_methods(&self) -> &[Method] {
         &self.methods
-    }
-
-    fn get_methods_for_reflect(&self) -> &::protobuf::RepeatedField<Method> {
-        &self.methods
-    }
-
-    fn mut_methods_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Method> {
-        &mut self.methods
     }
 
     // repeated .google.protobuf.Option options = 3;
@@ -143,14 +127,6 @@ impl Api {
         &self.options
     }
 
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
-        &self.options
-    }
-
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
-        &mut self.options
-    }
-
     // string version = 4;
 
     pub fn clear_version(&mut self) {
@@ -175,14 +151,6 @@ impl Api {
 
     pub fn get_version(&self) -> &str {
         &self.version
-    }
-
-    fn get_version_for_reflect(&self) -> &::std::string::String {
-        &self.version
-    }
-
-    fn mut_version_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.version
     }
 
     // .google.protobuf.SourceContext source_context = 5;
@@ -218,14 +186,6 @@ impl Api {
         self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
     }
 
-    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
-        &self.source_context
-    }
-
-    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
-        &mut self.source_context
-    }
-
     // repeated .google.protobuf.Mixin mixins = 6;
 
     pub fn clear_mixins(&mut self) {
@@ -251,14 +211,6 @@ impl Api {
         &self.mixins
     }
 
-    fn get_mixins_for_reflect(&self) -> &::protobuf::RepeatedField<Mixin> {
-        &self.mixins
-    }
-
-    fn mut_mixins_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Mixin> {
-        &mut self.mixins
-    }
-
     // .google.protobuf.Syntax syntax = 7;
 
     pub fn clear_syntax(&mut self) {
@@ -272,14 +224,6 @@ impl Api {
 
     pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
         self.syntax
-    }
-
-    fn get_syntax_for_reflect(&self) -> &::protobuf::well_known_types::Syntax {
-        &self.syntax
-    }
-
-    fn mut_syntax_for_reflect(&mut self) -> &mut ::protobuf::well_known_types::Syntax {
-        &mut self.syntax
     }
 }
 
@@ -455,38 +399,38 @@ impl ::protobuf::MessageStatic for Api {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Api::get_name_for_reflect,
-                    Api::mut_name_for_reflect,
+                    |m: &Api| { &m.name },
+                    |m: &mut Api| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Method>>(
                     "methods",
-                    Api::get_methods_for_reflect,
-                    Api::mut_methods_for_reflect,
+                    |m: &Api| { &m.methods },
+                    |m: &mut Api| { &mut m.methods },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
                     "options",
-                    Api::get_options_for_reflect,
-                    Api::mut_options_for_reflect,
+                    |m: &Api| { &m.options },
+                    |m: &mut Api| { &mut m.options },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "version",
-                    Api::get_version_for_reflect,
-                    Api::mut_version_for_reflect,
+                    |m: &Api| { &m.version },
+                    |m: &mut Api| { &mut m.version },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
-                    Api::get_source_context_for_reflect,
-                    Api::mut_source_context_for_reflect,
+                    |m: &Api| { &m.source_context },
+                    |m: &mut Api| { &mut m.source_context },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Mixin>>(
                     "mixins",
-                    Api::get_mixins_for_reflect,
-                    Api::mut_mixins_for_reflect,
+                    |m: &Api| { &m.mixins },
+                    |m: &mut Api| { &mut m.mixins },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
                     "syntax",
-                    Api::get_syntax_for_reflect,
-                    Api::mut_syntax_for_reflect,
+                    |m: &Api| { &m.syntax },
+                    |m: &mut Api| { &mut m.syntax },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Api>(
                     "Api",
@@ -579,14 +523,6 @@ impl Method {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // string request_type_url = 2;
 
     pub fn clear_request_type_url(&mut self) {
@@ -613,14 +549,6 @@ impl Method {
         &self.request_type_url
     }
 
-    fn get_request_type_url_for_reflect(&self) -> &::std::string::String {
-        &self.request_type_url
-    }
-
-    fn mut_request_type_url_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.request_type_url
-    }
-
     // bool request_streaming = 3;
 
     pub fn clear_request_streaming(&mut self) {
@@ -634,14 +562,6 @@ impl Method {
 
     pub fn get_request_streaming(&self) -> bool {
         self.request_streaming
-    }
-
-    fn get_request_streaming_for_reflect(&self) -> &bool {
-        &self.request_streaming
-    }
-
-    fn mut_request_streaming_for_reflect(&mut self) -> &mut bool {
-        &mut self.request_streaming
     }
 
     // string response_type_url = 4;
@@ -670,14 +590,6 @@ impl Method {
         &self.response_type_url
     }
 
-    fn get_response_type_url_for_reflect(&self) -> &::std::string::String {
-        &self.response_type_url
-    }
-
-    fn mut_response_type_url_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.response_type_url
-    }
-
     // bool response_streaming = 5;
 
     pub fn clear_response_streaming(&mut self) {
@@ -691,14 +603,6 @@ impl Method {
 
     pub fn get_response_streaming(&self) -> bool {
         self.response_streaming
-    }
-
-    fn get_response_streaming_for_reflect(&self) -> &bool {
-        &self.response_streaming
-    }
-
-    fn mut_response_streaming_for_reflect(&mut self) -> &mut bool {
-        &mut self.response_streaming
     }
 
     // repeated .google.protobuf.Option options = 6;
@@ -726,14 +630,6 @@ impl Method {
         &self.options
     }
 
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
-        &self.options
-    }
-
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::well_known_types::Option> {
-        &mut self.options
-    }
-
     // .google.protobuf.Syntax syntax = 7;
 
     pub fn clear_syntax(&mut self) {
@@ -747,14 +643,6 @@ impl Method {
 
     pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
         self.syntax
-    }
-
-    fn get_syntax_for_reflect(&self) -> &::protobuf::well_known_types::Syntax {
-        &self.syntax
-    }
-
-    fn mut_syntax_for_reflect(&mut self) -> &mut ::protobuf::well_known_types::Syntax {
-        &mut self.syntax
     }
 }
 
@@ -914,38 +802,38 @@ impl ::protobuf::MessageStatic for Method {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Method::get_name_for_reflect,
-                    Method::mut_name_for_reflect,
+                    |m: &Method| { &m.name },
+                    |m: &mut Method| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "request_type_url",
-                    Method::get_request_type_url_for_reflect,
-                    Method::mut_request_type_url_for_reflect,
+                    |m: &Method| { &m.request_type_url },
+                    |m: &mut Method| { &mut m.request_type_url },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "request_streaming",
-                    Method::get_request_streaming_for_reflect,
-                    Method::mut_request_streaming_for_reflect,
+                    |m: &Method| { &m.request_streaming },
+                    |m: &mut Method| { &mut m.request_streaming },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "response_type_url",
-                    Method::get_response_type_url_for_reflect,
-                    Method::mut_response_type_url_for_reflect,
+                    |m: &Method| { &m.response_type_url },
+                    |m: &mut Method| { &mut m.response_type_url },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "response_streaming",
-                    Method::get_response_streaming_for_reflect,
-                    Method::mut_response_streaming_for_reflect,
+                    |m: &Method| { &m.response_streaming },
+                    |m: &mut Method| { &mut m.response_streaming },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
                     "options",
-                    Method::get_options_for_reflect,
-                    Method::mut_options_for_reflect,
+                    |m: &Method| { &m.options },
+                    |m: &mut Method| { &mut m.options },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
                     "syntax",
-                    Method::get_syntax_for_reflect,
-                    Method::mut_syntax_for_reflect,
+                    |m: &Method| { &m.syntax },
+                    |m: &mut Method| { &mut m.syntax },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Method>(
                     "Method",
@@ -1033,14 +921,6 @@ impl Mixin {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // string root = 2;
 
     pub fn clear_root(&mut self) {
@@ -1065,14 +945,6 @@ impl Mixin {
 
     pub fn get_root(&self) -> &str {
         &self.root
-    }
-
-    fn get_root_for_reflect(&self) -> &::std::string::String {
-        &self.root
-    }
-
-    fn mut_root_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.root
     }
 }
 
@@ -1167,13 +1039,13 @@ impl ::protobuf::MessageStatic for Mixin {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Mixin::get_name_for_reflect,
-                    Mixin::mut_name_for_reflect,
+                    |m: &Mixin| { &m.name },
+                    |m: &mut Mixin| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "root",
-                    Mixin::get_root_for_reflect,
-                    Mixin::mut_root_for_reflect,
+                    |m: &Mixin| { &m.root },
+                    |m: &mut Mixin| { &mut m.root },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Mixin>(
                     "Mixin",
