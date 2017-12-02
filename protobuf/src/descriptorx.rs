@@ -300,6 +300,8 @@ pub trait WithScope<'a> {
     // message or enum name
     fn get_name(&self) -> &'a str;
 
+    fn escape_prefix(&self) -> &'static str;
+
     fn name_to_package(&self) -> String {
         let mut r = self.get_scope().prefix();
         r.push_str(self.get_name());
@@ -309,6 +311,10 @@ pub trait WithScope<'a> {
     // rust type name of this descriptor
     fn rust_name(&self) -> String {
         let mut r = self.get_scope().rust_prefix();
+        // Only escape if prefix is not empty
+        if r.is_empty() && rust::is_rust_keyword(self.get_name()) {
+            r.push_str(self.escape_prefix());
+        }
         r.push_str(self.get_name());
         r
     }
@@ -333,6 +339,10 @@ pub struct MessageWithScope<'a> {
 impl<'a> WithScope<'a> for MessageWithScope<'a> {
     fn get_scope(&self) -> &Scope<'a> {
         &self.scope
+    }
+
+    fn escape_prefix(&self) -> &'static str {
+        "message_"
     }
 
     fn get_name(&self) -> &'a str {
@@ -429,6 +439,10 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
         &self.scope
     }
 
+    fn escape_prefix(&self) -> &'static str {
+        "enum_"
+    }
+
     fn get_name(&self) -> &'a str {
         self.en.get_name()
     }
@@ -445,6 +459,13 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
         match self {
             &MessageOrEnumWithScope::Message(ref m) => m.get_scope(),
             &MessageOrEnumWithScope::Enum(ref e) => e.get_scope(),
+        }
+    }
+
+    fn escape_prefix(&self) -> &'static str {
+        match self {
+            &MessageOrEnumWithScope::Message(ref m) => m.escape_prefix(),
+            &MessageOrEnumWithScope::Enum(ref e) => e.escape_prefix(),
         }
     }
 
