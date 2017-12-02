@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+// rust types defined in prelude
+
 message Vec { }
 
 message String { }
@@ -9,6 +11,20 @@ message None { }
 message Some { }
 
 message Message { }
+
+// rust keywords
+
+message struct { }
+
+message Self {
+    optional string s = 1;
+}
+
+message Outer {
+    message fn {}
+}
+
+// oneof named type
 
 message TestType {
     oneof type {
