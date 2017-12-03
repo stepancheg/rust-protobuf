@@ -72,14 +72,6 @@ impl Any {
         &self.type_url
     }
 
-    fn get_type_url_for_reflect(&self) -> &::std::string::String {
-        &self.type_url
-    }
-
-    fn mut_type_url_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.type_url
-    }
-
     // bytes value = 2;
 
     pub fn clear_value(&mut self) {
@@ -104,14 +96,6 @@ impl Any {
 
     pub fn get_value(&self) -> &[u8] {
         &self.value
-    }
-
-    fn get_value_for_reflect(&self) -> &::std::vec::Vec<u8> {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut ::std::vec::Vec<u8> {
-        &mut self.value
     }
 }
 
@@ -206,13 +190,13 @@ impl ::protobuf::MessageStatic for Any {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "type_url",
-                    Any::get_type_url_for_reflect,
-                    Any::mut_type_url_for_reflect,
+                    |m: &Any| { &m.type_url },
+                    |m: &mut Any| { &mut m.type_url },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
                     "value",
-                    Any::get_value_for_reflect,
-                    Any::mut_value_for_reflect,
+                    |m: &Any| { &m.value },
+                    |m: &mut Any| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Any>(
                     "Any",

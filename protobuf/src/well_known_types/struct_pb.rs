@@ -69,14 +69,6 @@ impl Struct {
     pub fn get_fields(&self) -> &::std::collections::HashMap<::std::string::String, Value> {
         &self.fields
     }
-
-    fn get_fields_for_reflect(&self) -> &::std::collections::HashMap<::std::string::String, Value> {
-        &self.fields
-    }
-
-    fn mut_fields_for_reflect(&mut self) -> &mut ::std::collections::HashMap<::std::string::String, Value> {
-        &mut self.fields
-    }
 }
 
 impl ::protobuf::Message for Struct {
@@ -157,8 +149,8 @@ impl ::protobuf::MessageStatic for Struct {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<Value>>(
                     "fields",
-                    Struct::get_fields_for_reflect,
-                    Struct::mut_fields_for_reflect,
+                    |m: &Struct| { &m.fields },
+                    |m: &mut Struct| { &mut m.fields },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Struct>(
                     "Struct",
@@ -725,14 +717,6 @@ impl ListValue {
     pub fn get_values(&self) -> &[Value] {
         &self.values
     }
-
-    fn get_values_for_reflect(&self) -> &::protobuf::RepeatedField<Value> {
-        &self.values
-    }
-
-    fn mut_values_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Value> {
-        &mut self.values
-    }
 }
 
 impl ::protobuf::Message for ListValue {
@@ -825,8 +809,8 @@ impl ::protobuf::MessageStatic for ListValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Value>>(
                     "values",
-                    ListValue::get_values_for_reflect,
-                    ListValue::mut_values_for_reflect,
+                    |m: &ListValue| { &m.values },
+                    |m: &mut ListValue| { &mut m.values },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<ListValue>(
                     "ListValue",

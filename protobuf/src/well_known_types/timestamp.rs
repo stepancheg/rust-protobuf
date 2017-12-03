@@ -61,14 +61,6 @@ impl Timestamp {
         self.seconds
     }
 
-    fn get_seconds_for_reflect(&self) -> &i64 {
-        &self.seconds
-    }
-
-    fn mut_seconds_for_reflect(&mut self) -> &mut i64 {
-        &mut self.seconds
-    }
-
     // int32 nanos = 2;
 
     pub fn clear_nanos(&mut self) {
@@ -82,14 +74,6 @@ impl Timestamp {
 
     pub fn get_nanos(&self) -> i32 {
         self.nanos
-    }
-
-    fn get_nanos_for_reflect(&self) -> &i32 {
-        &self.nanos
-    }
-
-    fn mut_nanos_for_reflect(&mut self) -> &mut i32 {
-        &mut self.nanos
     }
 }
 
@@ -192,13 +176,13 @@ impl ::protobuf::MessageStatic for Timestamp {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "seconds",
-                    Timestamp::get_seconds_for_reflect,
-                    Timestamp::mut_seconds_for_reflect,
+                    |m: &Timestamp| { &m.seconds },
+                    |m: &mut Timestamp| { &mut m.seconds },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "nanos",
-                    Timestamp::get_nanos_for_reflect,
-                    Timestamp::mut_nanos_for_reflect,
+                    |m: &Timestamp| { &m.nanos },
+                    |m: &mut Timestamp| { &mut m.nanos },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Timestamp>(
                     "Timestamp",

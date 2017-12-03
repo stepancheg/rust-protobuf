@@ -70,14 +70,6 @@ impl SourceContext {
     pub fn get_file_name(&self) -> &str {
         &self.file_name
     }
-
-    fn get_file_name_for_reflect(&self) -> &::std::string::String {
-        &self.file_name
-    }
-
-    fn mut_file_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.file_name
-    }
 }
 
 impl ::protobuf::Message for SourceContext {
@@ -162,8 +154,8 @@ impl ::protobuf::MessageStatic for SourceContext {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_name",
-                    SourceContext::get_file_name_for_reflect,
-                    SourceContext::mut_file_name_for_reflect,
+                    |m: &SourceContext| { &m.file_name },
+                    |m: &mut SourceContext| { &mut m.file_name },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<SourceContext>(
                     "SourceContext",

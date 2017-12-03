@@ -459,11 +459,15 @@ fn field_elem(
     }
 }
 
+pub enum AccessorStyle {
+    Lambda,
+    HasGet,
+}
+
 pub struct AccessorFn {
     name: String,
-    for_reflect_suffix: bool,
     type_params: Vec<String>,
-    pub accessors: Vec<String>,
+    pub style: AccessorStyle,
 }
 
 impl AccessorFn {
@@ -889,22 +893,14 @@ impl<'a> FieldGen<'a> {
                 AccessorFn {
                     name: name,
                     type_params: vec![elem.lib_protobuf_type()],
-                    for_reflect_suffix: true,
-                    accessors: vec![
-                        format!("get_{}_for_reflect", self.rust_name),
-                        format!("mut_{}_for_reflect", self.rust_name),
-                    ],
+                    style: AccessorStyle::Lambda,
                 }
             }
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
                 AccessorFn {
                     name: "make_map_accessor".to_owned(),
                     type_params: vec![key.lib_protobuf_type(), value.lib_protobuf_type()],
-                    for_reflect_suffix: true,
-                    accessors: vec![
-                        format!("get_{}_for_reflect", self.rust_name),
-                        format!("mut_{}_for_reflect", self.rust_name),
-                    ],
+                    style: AccessorStyle::Lambda,
                 }
             }
             FieldKind::Singular(SingularField {
@@ -917,21 +913,13 @@ impl<'a> FieldGen<'a> {
                     AccessorFn {
                         name: "make_singular_message_accessor".to_owned(),
                         type_params: vec![name.clone()],
-                        for_reflect_suffix: false,
-                        accessors: vec![
-                            format!("has_{}", self.rust_name),
-                            format!("get_{}", self.rust_name),
-                        ],
+                        style: AccessorStyle::HasGet,
                     }
                 } else {
                     AccessorFn {
                         name: "make_simple_field_accessor".to_owned(),
                         type_params: vec![elem.lib_protobuf_type()],
-                        for_reflect_suffix: true,
-                        accessors: vec![
-                            format!("get_{}_for_reflect", self.rust_name),
-                            format!("mut_{}_for_reflect", self.rust_name),
-                        ],
+                        style: AccessorStyle::Lambda,
                     }
                 }
             }
@@ -949,11 +937,7 @@ impl<'a> FieldGen<'a> {
                 AccessorFn {
                     name: name,
                     type_params: vec![elem.lib_protobuf_type()],
-                    for_reflect_suffix: true,
-                    accessors: vec![
-                        format!("get_{}_for_reflect", self.rust_name),
-                        format!("mut_{}_for_reflect", self.rust_name),
-                    ],
+                    style: AccessorStyle::Lambda,
                 }
             }
             FieldKind::Oneof(OneofField { ref elem, .. }) => {
@@ -982,11 +966,7 @@ impl<'a> FieldGen<'a> {
                 AccessorFn {
                     name: name,
                     type_params: type_params,
-                    for_reflect_suffix: false,
-                    accessors: vec![
-                        format!("has_{}", self.rust_name),
-                        format!("get_{}", self.rust_name),
-                    ],
+                    style: AccessorStyle::HasGet,
                 }
             }
         }
@@ -1681,27 +1661,6 @@ impl<'a> FieldGen<'a> {
         });
     }
 
-    fn write_message_field_get_for_reflect(&self, w: &mut CodeWriter) {
-        let sig = format!(
-            "get_{}_for_reflect(&self) -> &{}",
-            self.rust_name,
-            self.full_storage_type()
-        );
-        w.def_fn(&sig, |w| w.write_line(&format!("&{}", self.self_field())));
-    }
-
-    fn write_message_field_mut_for_reflect(&self, w: &mut CodeWriter) {
-        let sig = format!(
-            "mut_{}_for_reflect(&mut self) -> &mut {}",
-            self.rust_name,
-            self.full_storage_type()
-        );
-        w.def_fn(
-            &sig,
-            |w| w.write_line(&format!("&mut {}", self.self_field())),
-        );
-    }
-
     fn has_has(&self) -> bool {
         match self.kind {
             FieldKind::Repeated(..) |
@@ -1951,13 +1910,6 @@ impl<'a> FieldGen<'a> {
 
         w.write_line("");
         self.write_message_field_get(w);
-
-        if self.accessor_fn().for_reflect_suffix {
-            w.write_line("");
-            self.write_message_field_get_for_reflect(w);
-            w.write_line("");
-            self.write_message_field_mut_for_reflect(w);
-        }
     }
 }
 

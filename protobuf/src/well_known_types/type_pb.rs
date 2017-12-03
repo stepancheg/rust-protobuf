@@ -76,14 +76,6 @@ impl Type {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // repeated .google.protobuf.Field fields = 2;
 
     pub fn clear_fields(&mut self) {
@@ -107,14 +99,6 @@ impl Type {
 
     pub fn get_fields(&self) -> &[Field] {
         &self.fields
-    }
-
-    fn get_fields_for_reflect(&self) -> &::protobuf::RepeatedField<Field> {
-        &self.fields
-    }
-
-    fn mut_fields_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Field> {
-        &mut self.fields
     }
 
     // repeated string oneofs = 3;
@@ -142,14 +126,6 @@ impl Type {
         &self.oneofs
     }
 
-    fn get_oneofs_for_reflect(&self) -> &::protobuf::RepeatedField<::std::string::String> {
-        &self.oneofs
-    }
-
-    fn mut_oneofs_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
-        &mut self.oneofs
-    }
-
     // repeated .google.protobuf.Option options = 4;
 
     pub fn clear_options(&mut self) {
@@ -173,14 +149,6 @@ impl Type {
 
     pub fn get_options(&self) -> &[Option] {
         &self.options
-    }
-
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<Option> {
-        &self.options
-    }
-
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Option> {
-        &mut self.options
     }
 
     // .google.protobuf.SourceContext source_context = 5;
@@ -216,14 +184,6 @@ impl Type {
         self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
     }
 
-    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
-        &self.source_context
-    }
-
-    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
-        &mut self.source_context
-    }
-
     // .google.protobuf.Syntax syntax = 6;
 
     pub fn clear_syntax(&mut self) {
@@ -237,14 +197,6 @@ impl Type {
 
     pub fn get_syntax(&self) -> Syntax {
         self.syntax
-    }
-
-    fn get_syntax_for_reflect(&self) -> &Syntax {
-        &self.syntax
-    }
-
-    fn mut_syntax_for_reflect(&mut self) -> &mut Syntax {
-        &mut self.syntax
     }
 }
 
@@ -403,33 +355,33 @@ impl ::protobuf::MessageStatic for Type {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Type::get_name_for_reflect,
-                    Type::mut_name_for_reflect,
+                    |m: &Type| { &m.name },
+                    |m: &mut Type| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Field>>(
                     "fields",
-                    Type::get_fields_for_reflect,
-                    Type::mut_fields_for_reflect,
+                    |m: &Type| { &m.fields },
+                    |m: &mut Type| { &mut m.fields },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "oneofs",
-                    Type::get_oneofs_for_reflect,
-                    Type::mut_oneofs_for_reflect,
+                    |m: &Type| { &m.oneofs },
+                    |m: &mut Type| { &mut m.oneofs },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
-                    Type::get_options_for_reflect,
-                    Type::mut_options_for_reflect,
+                    |m: &Type| { &m.options },
+                    |m: &mut Type| { &mut m.options },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
-                    Type::get_source_context_for_reflect,
-                    Type::mut_source_context_for_reflect,
+                    |m: &Type| { &m.source_context },
+                    |m: &mut Type| { &mut m.source_context },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
                     "syntax",
-                    Type::get_syntax_for_reflect,
-                    Type::mut_syntax_for_reflect,
+                    |m: &Type| { &m.syntax },
+                    |m: &mut Type| { &mut m.syntax },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Type>(
                     "Type",
@@ -513,14 +465,6 @@ impl Field {
         self.kind
     }
 
-    fn get_kind_for_reflect(&self) -> &Field_Kind {
-        &self.kind
-    }
-
-    fn mut_kind_for_reflect(&mut self) -> &mut Field_Kind {
-        &mut self.kind
-    }
-
     // .google.protobuf.Field.Cardinality cardinality = 2;
 
     pub fn clear_cardinality(&mut self) {
@@ -536,14 +480,6 @@ impl Field {
         self.cardinality
     }
 
-    fn get_cardinality_for_reflect(&self) -> &Field_Cardinality {
-        &self.cardinality
-    }
-
-    fn mut_cardinality_for_reflect(&mut self) -> &mut Field_Cardinality {
-        &mut self.cardinality
-    }
-
     // int32 number = 3;
 
     pub fn clear_number(&mut self) {
@@ -557,14 +493,6 @@ impl Field {
 
     pub fn get_number(&self) -> i32 {
         self.number
-    }
-
-    fn get_number_for_reflect(&self) -> &i32 {
-        &self.number
-    }
-
-    fn mut_number_for_reflect(&mut self) -> &mut i32 {
-        &mut self.number
     }
 
     // string name = 4;
@@ -593,14 +521,6 @@ impl Field {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // string type_url = 6;
 
     pub fn clear_type_url(&mut self) {
@@ -627,14 +547,6 @@ impl Field {
         &self.type_url
     }
 
-    fn get_type_url_for_reflect(&self) -> &::std::string::String {
-        &self.type_url
-    }
-
-    fn mut_type_url_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.type_url
-    }
-
     // int32 oneof_index = 7;
 
     pub fn clear_oneof_index(&mut self) {
@@ -650,14 +562,6 @@ impl Field {
         self.oneof_index
     }
 
-    fn get_oneof_index_for_reflect(&self) -> &i32 {
-        &self.oneof_index
-    }
-
-    fn mut_oneof_index_for_reflect(&mut self) -> &mut i32 {
-        &mut self.oneof_index
-    }
-
     // bool packed = 8;
 
     pub fn clear_packed(&mut self) {
@@ -671,14 +575,6 @@ impl Field {
 
     pub fn get_packed(&self) -> bool {
         self.packed
-    }
-
-    fn get_packed_for_reflect(&self) -> &bool {
-        &self.packed
-    }
-
-    fn mut_packed_for_reflect(&mut self) -> &mut bool {
-        &mut self.packed
     }
 
     // repeated .google.protobuf.Option options = 9;
@@ -704,14 +600,6 @@ impl Field {
 
     pub fn get_options(&self) -> &[Option] {
         &self.options
-    }
-
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<Option> {
-        &self.options
-    }
-
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Option> {
-        &mut self.options
     }
 
     // string json_name = 10;
@@ -740,14 +628,6 @@ impl Field {
         &self.json_name
     }
 
-    fn get_json_name_for_reflect(&self) -> &::std::string::String {
-        &self.json_name
-    }
-
-    fn mut_json_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.json_name
-    }
-
     // string default_value = 11;
 
     pub fn clear_default_value(&mut self) {
@@ -772,14 +652,6 @@ impl Field {
 
     pub fn get_default_value(&self) -> &str {
         &self.default_value
-    }
-
-    fn get_default_value_for_reflect(&self) -> &::std::string::String {
-        &self.default_value
-    }
-
-    fn mut_default_value_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.default_value
     }
 }
 
@@ -974,53 +846,53 @@ impl ::protobuf::MessageStatic for Field {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Kind>>(
                     "kind",
-                    Field::get_kind_for_reflect,
-                    Field::mut_kind_for_reflect,
+                    |m: &Field| { &m.kind },
+                    |m: &mut Field| { &mut m.kind },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Cardinality>>(
                     "cardinality",
-                    Field::get_cardinality_for_reflect,
-                    Field::mut_cardinality_for_reflect,
+                    |m: &Field| { &m.cardinality },
+                    |m: &mut Field| { &mut m.cardinality },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "number",
-                    Field::get_number_for_reflect,
-                    Field::mut_number_for_reflect,
+                    |m: &Field| { &m.number },
+                    |m: &mut Field| { &mut m.number },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Field::get_name_for_reflect,
-                    Field::mut_name_for_reflect,
+                    |m: &Field| { &m.name },
+                    |m: &mut Field| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "type_url",
-                    Field::get_type_url_for_reflect,
-                    Field::mut_type_url_for_reflect,
+                    |m: &Field| { &m.type_url },
+                    |m: &mut Field| { &mut m.type_url },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "oneof_index",
-                    Field::get_oneof_index_for_reflect,
-                    Field::mut_oneof_index_for_reflect,
+                    |m: &Field| { &m.oneof_index },
+                    |m: &mut Field| { &mut m.oneof_index },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "packed",
-                    Field::get_packed_for_reflect,
-                    Field::mut_packed_for_reflect,
+                    |m: &Field| { &m.packed },
+                    |m: &mut Field| { &mut m.packed },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
-                    Field::get_options_for_reflect,
-                    Field::mut_options_for_reflect,
+                    |m: &Field| { &m.options },
+                    |m: &mut Field| { &mut m.options },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "json_name",
-                    Field::get_json_name_for_reflect,
-                    Field::mut_json_name_for_reflect,
+                    |m: &Field| { &m.json_name },
+                    |m: &mut Field| { &mut m.json_name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "default_value",
-                    Field::get_default_value_for_reflect,
-                    Field::mut_default_value_for_reflect,
+                    |m: &Field| { &m.default_value },
+                    |m: &mut Field| { &mut m.default_value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Field>(
                     "Field",
@@ -1281,14 +1153,6 @@ impl Enum {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // repeated .google.protobuf.EnumValue enumvalue = 2;
 
     pub fn clear_enumvalue(&mut self) {
@@ -1314,14 +1178,6 @@ impl Enum {
         &self.enumvalue
     }
 
-    fn get_enumvalue_for_reflect(&self) -> &::protobuf::RepeatedField<EnumValue> {
-        &self.enumvalue
-    }
-
-    fn mut_enumvalue_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<EnumValue> {
-        &mut self.enumvalue
-    }
-
     // repeated .google.protobuf.Option options = 3;
 
     pub fn clear_options(&mut self) {
@@ -1345,14 +1201,6 @@ impl Enum {
 
     pub fn get_options(&self) -> &[Option] {
         &self.options
-    }
-
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<Option> {
-        &self.options
-    }
-
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Option> {
-        &mut self.options
     }
 
     // .google.protobuf.SourceContext source_context = 4;
@@ -1388,14 +1236,6 @@ impl Enum {
         self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
     }
 
-    fn get_source_context_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
-        &self.source_context
-    }
-
-    fn mut_source_context_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext> {
-        &mut self.source_context
-    }
-
     // .google.protobuf.Syntax syntax = 5;
 
     pub fn clear_syntax(&mut self) {
@@ -1409,14 +1249,6 @@ impl Enum {
 
     pub fn get_syntax(&self) -> Syntax {
         self.syntax
-    }
-
-    fn get_syntax_for_reflect(&self) -> &Syntax {
-        &self.syntax
-    }
-
-    fn mut_syntax_for_reflect(&mut self) -> &mut Syntax {
-        &mut self.syntax
     }
 }
 
@@ -1566,28 +1398,28 @@ impl ::protobuf::MessageStatic for Enum {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Enum::get_name_for_reflect,
-                    Enum::mut_name_for_reflect,
+                    |m: &Enum| { &m.name },
+                    |m: &mut Enum| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValue>>(
                     "enumvalue",
-                    Enum::get_enumvalue_for_reflect,
-                    Enum::mut_enumvalue_for_reflect,
+                    |m: &Enum| { &m.enumvalue },
+                    |m: &mut Enum| { &mut m.enumvalue },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
-                    Enum::get_options_for_reflect,
-                    Enum::mut_options_for_reflect,
+                    |m: &Enum| { &m.options },
+                    |m: &mut Enum| { &mut m.options },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
-                    Enum::get_source_context_for_reflect,
-                    Enum::mut_source_context_for_reflect,
+                    |m: &Enum| { &m.source_context },
+                    |m: &mut Enum| { &mut m.source_context },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
                     "syntax",
-                    Enum::get_syntax_for_reflect,
-                    Enum::mut_syntax_for_reflect,
+                    |m: &Enum| { &m.syntax },
+                    |m: &mut Enum| { &mut m.syntax },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Enum>(
                     "Enum",
@@ -1674,14 +1506,6 @@ impl EnumValue {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // int32 number = 2;
 
     pub fn clear_number(&mut self) {
@@ -1695,14 +1519,6 @@ impl EnumValue {
 
     pub fn get_number(&self) -> i32 {
         self.number
-    }
-
-    fn get_number_for_reflect(&self) -> &i32 {
-        &self.number
-    }
-
-    fn mut_number_for_reflect(&mut self) -> &mut i32 {
-        &mut self.number
     }
 
     // repeated .google.protobuf.Option options = 3;
@@ -1728,14 +1544,6 @@ impl EnumValue {
 
     pub fn get_options(&self) -> &[Option] {
         &self.options
-    }
-
-    fn get_options_for_reflect(&self) -> &::protobuf::RepeatedField<Option> {
-        &self.options
-    }
-
-    fn mut_options_for_reflect(&mut self) -> &mut ::protobuf::RepeatedField<Option> {
-        &mut self.options
     }
 }
 
@@ -1851,18 +1659,18 @@ impl ::protobuf::MessageStatic for EnumValue {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    EnumValue::get_name_for_reflect,
-                    EnumValue::mut_name_for_reflect,
+                    |m: &EnumValue| { &m.name },
+                    |m: &mut EnumValue| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "number",
-                    EnumValue::get_number_for_reflect,
-                    EnumValue::mut_number_for_reflect,
+                    |m: &EnumValue| { &m.number },
+                    |m: &mut EnumValue| { &mut m.number },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
-                    EnumValue::get_options_for_reflect,
-                    EnumValue::mut_options_for_reflect,
+                    |m: &EnumValue| { &m.options },
+                    |m: &mut EnumValue| { &mut m.options },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<EnumValue>(
                     "EnumValue",
@@ -1946,14 +1754,6 @@ impl Option {
         &self.name
     }
 
-    fn get_name_for_reflect(&self) -> &::std::string::String {
-        &self.name
-    }
-
-    fn mut_name_for_reflect(&mut self) -> &mut ::std::string::String {
-        &mut self.name
-    }
-
     // .google.protobuf.Any value = 2;
 
     pub fn clear_value(&mut self) {
@@ -1985,14 +1785,6 @@ impl Option {
 
     pub fn get_value(&self) -> &::protobuf::well_known_types::Any {
         self.value.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::Any::default_instance())
-    }
-
-    fn get_value_for_reflect(&self) -> &::protobuf::SingularPtrField<::protobuf::well_known_types::Any> {
-        &self.value
-    }
-
-    fn mut_value_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<::protobuf::well_known_types::Any> {
-        &mut self.value
     }
 }
 
@@ -2095,13 +1887,13 @@ impl ::protobuf::MessageStatic for Option {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
-                    Option::get_name_for_reflect,
-                    Option::mut_name_for_reflect,
+                    |m: &Option| { &m.name },
+                    |m: &mut Option| { &mut m.name },
                 ));
                 fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>>(
                     "value",
-                    Option::get_value_for_reflect,
-                    Option::mut_value_for_reflect,
+                    |m: &Option| { &m.value },
+                    |m: &mut Option| { &mut m.value },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Option>(
                     "Option",
