@@ -183,11 +183,16 @@ impl<'a> EnumGen<'a> {
             w.def_fn(&format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
                 w.match_expr("value", |w| {
                     let values = self.values_unique();
-                    for value in values {
+                    for value in values.iter() {
                         w.write_line(&format!("{} => ::std::option::Option::Some({}),",
                             value.number(), value.rust_name_outer()));
                     }
-                    w.write_line(&format!("_ => ::std::option::Option::None"));
+
+                    let first = values.first();
+                    if let Some(value) = first {
+                        w.write_line(&format!("_ => ::std::option::Option::Some({}),",
+                                              value.rust_name_outer()));
+                    }
                 });
             });
 
