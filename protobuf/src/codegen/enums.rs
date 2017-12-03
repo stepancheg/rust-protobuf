@@ -19,18 +19,14 @@ impl EnumValueGen {
         }
     }
 
-    // value name
-    fn name<'a>(&'a self) -> &'a str {
-        self.proto.get_name()
-    }
-
     // enum value
     fn number(&self) -> i32 {
         self.proto.get_number()
     }
 
+    // name of enum variant in generated rust code
     fn rust_name_inner(&self) -> String {
-        self.name().to_string()
+        self.proto.rust_name()
     }
 
     pub fn rust_name_outer(&self) -> String {
@@ -262,7 +258,7 @@ impl<'a> EnumGen<'a> {
                 w.write_line(&format!(
                     "{}::{}",
                     &self.type_name,
-                    &self.enum_with_scope.values()[0].get_name()
+                    &self.enum_with_scope.values()[0].rust_name()
                 ))
             });
         });
