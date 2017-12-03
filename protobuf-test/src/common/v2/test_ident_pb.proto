@@ -33,3 +33,11 @@ message TestType {
     repeated string struct = 2;
     repeated uint32 ref = 3;
 }
+
+// enum value which is a keyword
+
+enum MyLittleEnum {
+    UNKNOWN = 0;
+    fn = 2;
+    self = 3;
+}

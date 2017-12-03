@@ -434,6 +434,21 @@ impl<'a> EnumWithScope<'a> {
     }
 }
 
+pub trait EnumValueDescriptorEx {
+    fn rust_name(&self) -> String;
+}
+
+impl EnumValueDescriptorEx for EnumValueDescriptorProto {
+    fn rust_name(&self) -> String {
+        let mut r = String::new();
+        if rust::is_rust_keyword(self.get_name()) {
+            r.push_str("value_");
+        }
+        r.push_str(self.get_name());
+        r
+    }
+}
+
 impl<'a> WithScope<'a> for EnumWithScope<'a> {
     fn get_scope(&self) -> &Scope<'a> {
         &self.scope
