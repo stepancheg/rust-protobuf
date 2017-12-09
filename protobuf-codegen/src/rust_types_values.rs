@@ -1,8 +1,8 @@
 use std::fmt;
 use std::cmp;
 
-use descriptor::*;
-use descriptorx::*;
+use protobuf::descriptor::*;
+use protobuf::descriptorx::*;
 use super::well_known_types::is_well_known_type_full;
 
 

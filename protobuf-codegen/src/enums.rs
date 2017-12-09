@@ -1,8 +1,9 @@
 use std::collections::HashSet;
 
-use descriptor::*;
-use descriptorx::*;
-use code_writer::*;
+use protobuf::descriptor::*;
+use protobuf::descriptorx::*;
+
+use super::code_writer::*;
 
 
 #[derive(Clone)]

@@ -4,7 +4,7 @@
 use std::io::Write;
 
 // TODO: should not use wire_format here
-use wire_format;
+use protobuf::wire_format;
 
 /// Field visibility.
 pub enum Visibility {

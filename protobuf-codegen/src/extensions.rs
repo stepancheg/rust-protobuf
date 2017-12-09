@@ -1,6 +1,6 @@
-use descriptor::*;
-use descriptorx::*;
-use code_writer::CodeWriter;
+use protobuf::descriptor::*;
+use protobuf::descriptorx::*;
+use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 
 

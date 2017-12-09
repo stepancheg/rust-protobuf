@@ -1,14 +1,12 @@
-// TODO: move into separate crate
-#![doc(hidden)]
+extern crate protobuf;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write;
 
-use descriptor::*;
-use core::Message;
-use compiler_plugin;
-use code_writer::CodeWriter;
-use descriptorx::*;
+use protobuf::descriptor::*;
+use protobuf::Message;
+use protobuf::compiler_plugin;
+use protobuf::descriptorx::*;
 
 mod message;
 mod enums;
@@ -17,10 +15,12 @@ mod well_known_types;
 mod field;
 mod extensions;
 
+pub mod code_writer;
+
 use self::message::*;
 use self::enums::*;
 use self::extensions::*;
-
+use self::code_writer::CodeWriter;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -33,7 +33,7 @@ fn escape_byte(s: &mut String, b: u8) {
         write!(s, "\\{}", b as char).unwrap();
     } else if b == b'\0' {
         write!(s, "\\0").unwrap();
-    // ASCII printable except space
+        // ASCII printable except space
     } else if b > 0x20 && b < 0x7f {
         write!(s, "{}", b as char).unwrap();
     } else {
@@ -99,10 +99,10 @@ fn gen_file(
 
     if scope.get_messages().is_empty() && scope.get_enums().is_empty() &&
         file.get_extension().is_empty()
-    {
-        // protoc generates empty file descriptors for directories: skip them
-        return None;
-    }
+        {
+            // protoc generates empty file descriptors for directories: skip them
+            return None;
+        }
 
     let mut v = Vec::new();
 

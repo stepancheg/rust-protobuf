@@ -2,6 +2,7 @@ extern crate tempdir;
 
 extern crate protoc;
 extern crate protobuf;
+extern crate protobuf_codegen;
 
 use std::io;
 use std::io::Read;
@@ -73,7 +74,7 @@ pub fn run(args: Args) -> Result<()> {
         ));
     }
 
-    let gen_result = protobuf::codegen::gen(fds.get_file(), &files_to_generate);
+    let gen_result = protobuf_codegen::gen(fds.get_file(), &files_to_generate);
 
     for r in gen_result {
         let r: protobuf::compiler_plugin::GenResult = r;

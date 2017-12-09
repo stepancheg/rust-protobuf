@@ -19,15 +19,3 @@ with-bytes = ["bytes"]
 
 [dependencies]
 bytes = { version = "0.*", optional = true }
-
-[[bin]]
-
-name = "protoc-gen-rust"
-path = "protoc-gen-rust.rs"
-test = false
-
-[[bin]]
-
-name = "protobuf-bin-gen-rust-do-not-use"
-path = "protobuf-bin-gen-rust-do-not-use.rs"
-test = false
