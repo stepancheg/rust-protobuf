@@ -1,19 +1,19 @@
-use descriptor::*;
-use descriptorx::*;
-use rustproto;
-use wire_format;
-use rt;
-use rust;
-use text_format;
-use code_writer::CodeWriter;
-use types::ProtobufType;
-use reflect::ProtobufValue;
+use protobuf::descriptor::*;
+use protobuf::descriptorx::*;
+use protobuf::rustproto; // TODO: should probably live here
+use protobuf::wire_format;
+use protobuf::rt;
+use protobuf::rust;
+use protobuf::text_format;
+use protobuf::types::ProtobufType;
+use protobuf::reflect::ProtobufValue;
 
-use ext::ExtFieldOptional;
+use protobuf::ext::ExtFieldOptional;
 
 use super::message::*;
 use super::rust_types_values::*;
 use super::enums::*;
+use super::code_writer::CodeWriter;
 
 
 
@@ -26,7 +26,12 @@ fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
     }
 }
 
-impl FieldDescriptorProto_Type {
+trait FieldDescriptorProtoTypeExt {
+    fn read(&self, is: &str) -> String;
+    fn is_s_varint(&self) -> bool;
+}
+
+impl FieldDescriptorProtoTypeExt for FieldDescriptorProto_Type {
     fn read(&self, is: &str) -> String {
         format!("{}.read_{}()", is, protobuf_name(*self))
     }
@@ -42,7 +47,7 @@ impl FieldDescriptorProto_Type {
 }
 
 fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::WireType {
-    use stream::wire_format::*;
+    use protobuf::stream::wire_format::*;
     match field_type {
         FieldDescriptorProto_Type::TYPE_INT32 => WireTypeVarint,
         FieldDescriptorProto_Type::TYPE_INT64 => WireTypeVarint,

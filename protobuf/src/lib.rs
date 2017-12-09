@@ -38,13 +38,11 @@ pub use chars::Chars;
 // generated
 pub mod descriptor;
 pub mod plugin;
-mod rustproto;
+pub mod rustproto;
 
 mod core;
 pub mod rt;
 pub mod lazy;
-pub mod code_writer;
-pub mod codegen;
 pub mod compiler_plugin;
 mod repeated;
 mod singular;
@@ -67,7 +65,8 @@ mod zigzag;
 mod paginate;
 mod unknown;
 mod strx;
-mod rust;
+#[doc(hidden)] // used by codegen
+pub mod rust;
 mod cached_size;
 mod varint;
 #[cfg(feature = "bytes")]
@@ -82,7 +81,6 @@ mod buf_read_iter;
 mod protobuf {
     pub use descriptor;
     pub use descriptorx;
-    pub use codegen;
     pub use reflect;
     pub use core::*;
     pub use error::*;

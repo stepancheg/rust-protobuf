@@ -1,12 +1,11 @@
-use descriptor::*;
-use descriptorx::*;
-use code_writer::*;
-use rustproto;
+use protobuf::descriptor::*;
+use protobuf::descriptorx::*;
+use protobuf::rustproto;
 
 use super::enums::*;
 use super::rust_types_values::*;
 use super::field::*;
-
+use super::code_writer::*;
 
 
 /// Message info for codegen

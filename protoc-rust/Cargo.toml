@@ -15,4 +15,5 @@ doctest = false
 [dependencies]
 protoc   = { path = "../protoc", version = "1.4.1" }
 protobuf = { path = "../protobuf", version = "1.4.1" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "1.4.1" }
 tempdir  = "0.3"

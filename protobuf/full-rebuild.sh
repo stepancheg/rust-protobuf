@@ -8,7 +8,7 @@ die() {
 cd $(dirname $0)
 
 # Build protoc-gen-rust
-./build.sh
+cargo build --manifest-path ../protobuf-codegen/Cargo.toml
 
 protoc_ver=$(protoc --version)
 case "$protoc_ver" in
@@ -16,7 +16,7 @@ case "$protoc_ver" in
         # Generate from descriptor.proto
         ./regenerate.sh
         # Build again with regenerated descriptor.proto
-        ./build.sh
+        cargo build --all
         ;;
     "libprotoc 2"*)
 		echo "do not regenerate with proto 2"
@@ -26,6 +26,6 @@ case "$protoc_ver" in
         ;;
 esac
 
-./../protobuf-test/test.sh
+../protobuf-test/test.sh
 
 # vim: set ts=4 sw=4 et:

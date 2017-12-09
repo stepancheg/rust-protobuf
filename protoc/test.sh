@@ -4,8 +4,8 @@ cd $(dirname $0)
 
 (
     echo "building protoc-gen-rust"
-    cd ../protobuf
-    cargo build --features=$RUST_PROTOBUF_FEATURES --bin=protoc-gen-rust
+    cd ../protobuf-codegen
+    cargo build --bin=protoc-gen-rust
 )
 
 echo "cargo check in test-protoc"
