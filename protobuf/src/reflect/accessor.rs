@@ -212,11 +212,10 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
     }
 
     fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message {
-        match self.fns {
-            FieldAccessorFunctions::SingularHasGetSet {
-                get_set: SingularGetSet::Message(ref get), ..
-            } => get.get_message(message_down_cast(m)),
-            _ => panic!(),
+        match self.get_value_option(message_down_cast(m)) {
+            Some(ProtobufValueRef::Message(v)) => v,
+            Some(_) => panic!("wrong type"),
+            None => panic!("Optional message not set."), // TODO: return empty message?
         }
     }
 
