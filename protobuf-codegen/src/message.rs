@@ -316,13 +316,9 @@ impl<'a> MessageGen<'a> {
             });
             w.write_line("");
             w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
-                w.write_line("::protobuf::MessageStatic::descriptor_static(None::<Self>)");
+                w.write_line("::protobuf::Message::descriptor_static(None::<Self>)");
             });
-        });
-    }
-
-    fn write_impl_message_static(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::MessageStatic", &self.type_name, |w| {
+            w.write_line("");
             w.def_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line(&format!("{}::new()", self.type_name));
             });
@@ -428,8 +424,6 @@ impl<'a> MessageGen<'a> {
         self.write_impl_self(w);
         w.write_line("");
         self.write_impl_message(w);
-        w.write_line("");
-        self.write_impl_message_static(w);
         w.write_line("");
         self.write_impl_clear(w);
         if !self.lite_runtime {

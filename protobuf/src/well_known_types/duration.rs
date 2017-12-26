@@ -173,11 +173,9 @@ impl ::protobuf::Message for Duration {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Duration {
     fn new() -> Duration {
         Duration::new()
     }

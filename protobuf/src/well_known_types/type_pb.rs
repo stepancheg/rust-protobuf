@@ -384,11 +384,9 @@ impl ::protobuf::Message for Type {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Type {
     fn new() -> Type {
         Type::new()
     }
@@ -955,11 +953,9 @@ impl ::protobuf::Message for Field {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Field {
     fn new() -> Field {
         Field::new()
     }
@@ -1547,11 +1543,9 @@ impl ::protobuf::Message for Enum {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Enum {
     fn new() -> Enum {
         Enum::new()
     }
@@ -1832,11 +1826,9 @@ impl ::protobuf::Message for EnumValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for EnumValue {
     fn new() -> EnumValue {
         EnumValue::new()
     }
@@ -2076,11 +2068,9 @@ impl ::protobuf::Message for Option {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Option {
     fn new() -> Option {
         Option::new()
     }

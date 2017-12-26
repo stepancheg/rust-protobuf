@@ -13,7 +13,6 @@ use varint;
 use misc::remaining_capacity_as_slice_mut;
 use misc::remove_lifetime_mut;
 use core::Message;
-use core::MessageStatic;
 use core::ProtobufEnum;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
@@ -700,8 +699,8 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn read_message<M : Message + MessageStatic>(&mut self) -> ProtobufResult<M> {
-        let mut r: M = MessageStatic::new();
+    pub fn read_message<M : Message>(&mut self) -> ProtobufResult<M> {
+        let mut r: M = Message::new();
         self.merge_message(&mut r)?;
         r.check_initialized()?;
         Ok(r)

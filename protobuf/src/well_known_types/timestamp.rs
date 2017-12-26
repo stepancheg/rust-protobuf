@@ -173,11 +173,9 @@ impl ::protobuf::Message for Timestamp {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Timestamp {
     fn new() -> Timestamp {
         Timestamp::new()
     }

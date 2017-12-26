@@ -187,11 +187,9 @@ impl ::protobuf::Message for Any {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Any {
     fn new() -> Any {
         Any::new()
     }

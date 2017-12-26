@@ -247,11 +247,9 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for CodeGeneratorRequest {
     fn new() -> CodeGeneratorRequest {
         CodeGeneratorRequest::new()
     }
@@ -493,11 +491,9 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for CodeGeneratorResponse {
     fn new() -> CodeGeneratorResponse {
         CodeGeneratorResponse::new()
     }
@@ -790,11 +786,9 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for CodeGeneratorResponse_File {
     fn new() -> CodeGeneratorResponse_File {
         CodeGeneratorResponse_File::new()
     }

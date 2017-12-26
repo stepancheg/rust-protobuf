@@ -1,6 +1,5 @@
 use std::any::Any;
 use std::any::TypeId;
-use std::default::Default;
 use std::fmt;
 use std::io::Read;
 use std::io::Write;
@@ -23,11 +22,8 @@ use error::ProtobufResult;
 
 
 /// Trait implemented for all generated structs for protobuf messages.
+/// Also, generated messages implement `Clone + Default + PartialEq`
 pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
-    // All generated Message types also implement MessageStatic.
-    // However, rust doesn't allow these types to be extended by
-    // Message.
-
     /// Message descriptor for this message, used for reflection.
     fn descriptor(&self) -> &'static MessageDescriptor;
 
@@ -171,25 +167,22 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     // impl<M : Message> fmt::Debug for M {
     // ...
     // }
-}
 
-/// Not-object safe functions of the message.
-/// TODO: move functons to `Message` trait with `Self` bounds.
-pub trait MessageStatic: Message + Clone + Default + PartialEq {
     /// Create an empty message object.
-    fn new() -> Self;
+    fn new() -> Self where Self : Sized;
 
     /// Get message descriptor for message type.
     // http://stackoverflow.com/q/20342436/15018
-    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor {
+    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor
+        where Self : Sized
+    {
         panic!(
             "descriptor_static is not implemented for message, \
              LITE_RUNTIME must be used"
         );
     }
+
 }
-
-
 
 pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
@@ -228,8 +221,8 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
 }
 
 /// Parse message from stream.
-pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> ProtobufResult<M> {
-    let mut r: M = MessageStatic::new();
+pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+    let mut r: M = Message::new();
     r.merge_from(is)?;
     r.check_initialized()?;
     Ok(r)
@@ -237,19 +230,19 @@ pub fn parse_from<M : Message + MessageStatic>(is: &mut CodedInputStream) -> Pro
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M : Message + MessageStatic>(reader: &mut Read) -> ProtobufResult<M> {
+pub fn parse_from_reader<M : Message>(reader: &mut Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
 /// Parse message from byte array.
-pub fn parse_from_bytes<M : Message + MessageStatic>(bytes: &[u8]) -> ProtobufResult<M> {
+pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
 /// Parse message from `Bytes` object.
 /// Resulting message may share references to the passed bytes object.
 #[cfg(feature = "bytes")]
-pub fn parse_from_carllerche_bytes<M : Message + MessageStatic>(
+pub fn parse_from_carllerche_bytes<M : Message>(
     bytes: &Bytes,
 ) -> ProtobufResult<M> {
     // Call trait explicitly to avoid accidental construction from `&[u8]`
@@ -259,14 +252,14 @@ pub fn parse_from_carllerche_bytes<M : Message + MessageStatic>(
 /// Parse length-delimited message from stream.
 ///
 /// Read varint length first, and read messages of that length then.
-pub fn parse_length_delimited_from<M : Message + MessageStatic>(
+pub fn parse_length_delimited_from<M : Message>(
     is: &mut CodedInputStream,
 ) -> ProtobufResult<M> {
     is.read_message::<M>()
 }
 
 /// Parse length-delimited message from `Read`.
-pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(
+pub fn parse_length_delimited_from_reader<M : Message>(
     r: &mut Read,
 ) -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
@@ -275,7 +268,7 @@ pub fn parse_length_delimited_from_reader<M : Message + MessageStatic>(
 
 /// Parse length-delimited message from bytes.
 // TODO: currently it's not possible to know how many bytes read from slice.
-pub fn parse_length_delimited_from_bytes<M : Message + MessageStatic>(
+pub fn parse_length_delimited_from_bytes<M : Message>(
     bytes: &[u8],
 ) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| is.read_message::<M>())

@@ -2,7 +2,6 @@ extern crate protobuf;
 extern crate rand;
 extern crate time;
 
-use std::default::Default;
 use std::fs::File;
 use std::path::Path;
 
@@ -11,7 +10,6 @@ use rand::StdRng;
 use rand::SeedableRng;
 
 use protobuf::Message;
-use protobuf::MessageStatic;
 use perftest_data::PerftestData;
 
 mod perftest_data;
@@ -36,7 +34,7 @@ struct TestRunner {
 }
 
 impl TestRunner {
-    fn run_test<M : Message + MessageStatic>(&self, name: &str, data: &[M]) {
+    fn run_test<M : Message + Clone + PartialEq>(&self, name: &str, data: &[M]) {
         assert!(data.len() > 0, "empty string for test: {}", name);
 
         let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40][..]);
@@ -76,7 +74,7 @@ impl TestRunner {
             random_data.len() as u64,
             || {
                 let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-                let mut msg: M = Default::default();
+                let mut msg: M = Message::new();
                 let mut count = 0;
                 while !coded_input_stream.eof().unwrap() {
                     msg.clear();
@@ -90,7 +88,7 @@ impl TestRunner {
         assert_eq!(random_data.len(), merged);
     }
 
-    fn test<M : Message + MessageStatic>(&mut self, name: &str, data: &[M]) {
+    fn test<M : Message + Clone + PartialEq>(&mut self, name: &str, data: &[M]) {
         if self.selected.as_ref().map(|s| *s == name).unwrap_or(true) {
             self.run_test(name, data);
             self.any_matched = true;
