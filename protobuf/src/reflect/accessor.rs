@@ -1,5 +1,6 @@
 use std::hash::Hash;
 use std::collections::HashMap;
+use std::fmt;
 
 use core::Message;
 use core::ProtobufEnum;
@@ -156,6 +157,23 @@ enum FieldAccessorFunctions<M> {
     Map(Box<FieldAccessor2<M, ReflectMap>>),
 }
 
+impl<M> fmt::Debug for FieldAccessorFunctions<M> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            &FieldAccessorFunctions::SingularHasGetSet { .. } =>
+                write!(f, "SingularHasGetSet {{ .. }}"),
+            &FieldAccessorFunctions::Simple(..) =>
+                write!(f, "Simple(..)"),
+            &FieldAccessorFunctions::Optional(..) =>
+                write!(f, "Optional(..)"),
+            &FieldAccessorFunctions::Repeated(..) =>
+                write!(f, "Repeated(..)"),
+            &FieldAccessorFunctions::Map(..) =>
+                write!(f, "Map(..)"),
+        }
+    }
+}
+
 
 struct FieldAccessorImpl<M> {
     name: &'static str,
@@ -216,7 +234,7 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
             FieldAccessorFunctions::SingularHasGetSet {
                 get_set: SingularGetSet::Message(ref get), ..
             } => get.get_message(message_down_cast(m)),
-            _ => panic!(),
+            ref fns => panic!("unknown accessor type: {:?}", fns),
         }
     }
 
