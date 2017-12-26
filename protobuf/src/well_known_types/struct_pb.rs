@@ -138,11 +138,9 @@ impl ::protobuf::Message for Struct {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Struct {
     fn new() -> Struct {
         Struct::new()
     }
@@ -596,11 +594,9 @@ impl ::protobuf::Message for Value {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Value {
     fn new() -> Value {
         Value::new()
     }
@@ -806,11 +802,9 @@ impl ::protobuf::Message for ListValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for ListValue {
     fn new() -> ListValue {
         ListValue::new()
     }

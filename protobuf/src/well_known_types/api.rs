@@ -436,11 +436,9 @@ impl ::protobuf::Message for Api {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Api {
     fn new() -> Api {
         Api::new()
     }
@@ -895,11 +893,9 @@ impl ::protobuf::Message for Method {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Method {
     fn new() -> Method {
         Method::new()
     }
@@ -1148,11 +1144,9 @@ impl ::protobuf::Message for Mixin {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Mixin {
     fn new() -> Mixin {
         Mixin::new()
     }

@@ -98,11 +98,9 @@ impl ::protobuf::Message for Empty {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for Empty {
     fn new() -> Empty {
         Empty::new()
     }

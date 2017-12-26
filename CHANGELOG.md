@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- [Drop `MessageStatic` trait](https://github.com/stepancheg/rust-protobuf/issues/214)
 - [`protobuf-codegen` is a separate crate](https://github.com/stepancheg/rust-protobuf/pull/261)
 - [Drop old reflection
   accessors](https://github.com/stepancheg/rust-protobuf/commit/7a03aee4e67bdd25ae6c403f37386707a0ab5eb9).

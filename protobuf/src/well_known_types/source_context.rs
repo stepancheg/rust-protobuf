@@ -143,11 +143,9 @@ impl ::protobuf::Message for SourceContext {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+        ::protobuf::Message::descriptor_static(None::<Self>)
     }
-}
 
-impl ::protobuf::MessageStatic for SourceContext {
     fn new() -> SourceContext {
         SourceContext::new()
     }
