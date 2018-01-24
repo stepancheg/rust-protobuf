@@ -175,7 +175,7 @@ fn generate_pb_rs() {
 }
 
 fn main() {
-    env_logger::init().expect("env_logger");
+    env_logger::init();
 
     clean_old_files();
     generate_v_from_common();
