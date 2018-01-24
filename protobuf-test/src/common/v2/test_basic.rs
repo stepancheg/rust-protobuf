@@ -292,3 +292,26 @@ fn test_bug_sint() {
         test_serialize_deserialize("10 03", &x);
     }
 }
+
+/// Smoke test which validates that read from the network doesn't block
+#[test]
+fn test_parse_length_delimited_from_network_smoke() {
+    use std::net;
+    use std::thread;
+    use std::io::Write;
+
+    let listener = net::TcpListener::bind(("127.0.0.1", 0)).expect("bind");
+    let addr = listener.local_addr().expect("local_addr");
+    thread::spawn(move || {
+        let mut test1 = Test1::new();
+        test1.set_a(10);
+        let bytes = test1.write_length_delimited_to_bytes().expect("bytes");
+
+        let mut stream = listener.accept().expect("accept").0;
+        stream.write(&bytes).expect("write");
+    });
+
+    let mut tcp_stream = net::TcpStream::connect(addr).expect("connect");
+    let test1: Test1 = parse_length_delimited_from_reader(&mut tcp_stream).expect("parse...");
+    assert_eq!(10, test1.get_a());
+}
