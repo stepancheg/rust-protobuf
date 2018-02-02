@@ -5,11 +5,11 @@ pub fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
     }
 }
 
-pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> Option<&'s str> {
+pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
     if !s.ends_with(suffix) {
-        None
+        s
     } else {
-        Some(&s[..(s.len() - suffix.len())])
+        &s[..(s.len() - suffix.len())]
     }
 }
 
@@ -28,8 +28,8 @@ mod test {
 
     #[test]
     fn test_remove_suffix() {
-        assert_eq!(Some("bbb"), remove_suffix("bbbaaa", "aaa"));
-        assert_eq!(None, remove_suffix("aaa", "bbb"));
+        assert_eq!("bbb", remove_suffix("bbbaaa", "aaa"));
+        assert_eq!("aaa", remove_suffix("aaa", "bbb"));
     }
 
 }
