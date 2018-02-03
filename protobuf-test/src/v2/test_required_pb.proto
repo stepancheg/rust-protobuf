@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package test_required;
+
+message TestRequired {
+    required bool b = 5;
+}
+
+message TestRequiredOuter {
+    required TestRequired inner = 1;
+}

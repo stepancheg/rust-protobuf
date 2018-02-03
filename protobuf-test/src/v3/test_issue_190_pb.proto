@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package issue_190;
+
+message A {
+  enum Type {
+    STRING = 0;
+  }
+}
+
+message B {
+  message C {
+    oneof something {
+      A.Type type = 1;
+    }
+  }
+  repeated C somethings = 1;
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "rustproto.proto";
+
+option (rustproto.carllerche_bytes_for_bytes_all) = true;
+option (rustproto.carllerche_bytes_for_string_all) = true;
+
+message TestMapCarllerche {
+    map<string, uint32> string_to_int32 = 1;
+    map<int32, string> int32_to_string = 2;
+    map<int32, bytes> int32_to_bytes = 3;
+}

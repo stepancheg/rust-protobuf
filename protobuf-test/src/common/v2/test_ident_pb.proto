@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+// rust types defined in prelude
+
+message Vec { }
+
+message String { }
+
+message Option { }
+message None { }
+message Some { }
+
+message Message { }
+
+// rust keywords
+
+message struct { }
+
+message Self {
+    optional string s = 1;
+}
+
+message Outer {
+    message fn {}
+}
+
+// oneof named type
+
+message TestType {
+    oneof type {
+        string s = 1;
+    }
+    repeated string struct = 2;
+    repeated uint32 ref = 3;
+}
+
+// enum value which is a keyword
+
+enum MyLittleEnum {
+    UNKNOWN = 0;
+    fn = 2;
+    self = 3;
+}

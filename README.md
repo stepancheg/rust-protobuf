@@ -13,11 +13,23 @@ rust-protobuf
 * Has runtime library for generated code
   (Coded{Input|Output}Stream impl)
 
-## How to use rust-protobuf
+## How to generate rust code
+
+There are several ways to generate rust code from `.proto` files
+
+### Invoke protoc programmatically with protoc-rust crate (recommended)
+
+Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
+
+### Invoke protoc programmatically with protoc crate
+
+Have a look at readme in [protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc).
+
+### With protoc command and protoc-gen-rust plugin
 
 0) Install protobuf for `protoc` binary.
 
-On OS X [Homebrew](https://github.com/Homebrew/homebrew) can be used:
+On OS X [Homebrew](https://github.com/Homebrew/brew) can be used:
 
 ```
 brew install protobuf
@@ -52,35 +64,49 @@ protoc --rust_out . foo.proto
 
 This will generate .rs files in current directory.
 
-4) Add rust-protobuf as dependency to your project `Cargo.toml`:
-
-```
-[dependencies.protobuf]
-```
-
-5) Include generated files into your project .rs file:
-
-```
-extern crate protobuf; // depend on rust-protobuf runtime
-mod foo; // add generated file to the project
-```
-
-
 ## Generated code
 
 Have a look at generated files, used internally in rust-protobuf:
 
-* [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/src/lib/descriptor.rs)
-  for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/src/proto/google/protobuf/descriptor.proto)
+* [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf/src/descriptor.rs)
+  for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/proto/google/protobuf/descriptor.proto)
   (that is part of Google protobuf)
 
 ## Rustdoc
 
 docs.rs hosts [rustdoc for protobuf](https://docs.rs/protobuf/*/protobuf/).
 
-## TODO
+## Copy-on-write
 
-* Implement some rust-specific options
-* Deal better with namespaces
-* Protobuf reflection
-* Extensions
+Rust-protobuf can be used with [bytes crate](https://github.com/carllerche/bytes).
+
+To enable `Bytes` you need to:
+
+1. Enable `with-bytes` feature in rust-protobuf:
+
+```
+[dependencies]
+protobuf = { version = "1.3", features = ["with-bytes"] }
+```
+
+2. Enable bytes option in `.proto` file:
+
+```
+import "rustproto.proto";
+
+option (rustproto.carllerche_bytes_for_bytes_all) = true;
+option (rustproto.carllerche_bytes_for_string_all) = true;
+```
+
+With these options enabled, fields of type `bytes` or `string` are
+generated as `Bytes` or `Chars` respectively. When `CodedInputStream` is constructed
+from `Bytes` object, fields of these types get subslices of original `Bytes` object,
+instead of being allocated on heap.
+
+## Related projects
+
+* [quick-protobuf](https://github.com/tafia/quick-protobuf) — alternative protobuf implementation in Rust
+* [prost](https://github.com/danburkert/prost) — another protobuf implementation in Rust
+* [serde-protobuf](https://github.com/dflemstr/serde-protobuf)
+* [grpc-rust](https://github.com/stepancheg/grpc-rust) — implementation of gRPC based on this library
+* [grpc-rs](https://github.com/pingcap/grpc-rs/) — another gRPC implementation for Rust

@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+message M {
+    optional SubM sub_m = 1;
+}
+
+message SubM {
+    optional int32 n = 1;
+}

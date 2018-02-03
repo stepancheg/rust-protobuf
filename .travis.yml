@@ -1,15 +1,21 @@
 sudo: false
 
-env:
-  - PROTOBUF_VERSION=2.6.1
-  - PROTOBUF_VERSION=3.0.0-beta-2
-
 language: rust
 
-rust:
-  - stable
-  - beta
-  - nightly
+matrix:
+  include:
+  - rust: stable
+    env: PROTOBUF_VERSION=3.1.0
+  - rust: beta
+    env: PROTOBUF_VERSION=3.1.0
+  - rust: nightly
+    env: PROTOBUF_VERSION=3.1.0
+  - rust: stable
+    env: PROTOBUF_VERSION=2.6.1
+  - rust: stable
+    env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
+  - rust: nightly
+    env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
 
 before_install:
   - ./install-protobuf.sh
@@ -18,6 +24,12 @@ before_install:
 script:
   - rustc --version
   # Full rebuild with regenerate
-  - PATH=/home/travis/bin:$PATH src/full-rebuild.sh
-  # Test cargo configuration
-  - cargo test
+  - PATH=/home/travis/bin:$PATH protobuf/full-rebuild.sh
+  - PATH=/home/travis/bin:$PATH ./protoc/test.sh
+  - test "$TRAVIS_RUST_VERSION" != "nightly" || PATH=/home/travis/bin:$PATH cargo build --all --features=with-bytes --bins --tests --examples --benches
+
+notifications:
+  email:
+    on_success: never
+
+# vim: set ts=2 sw=2 et:

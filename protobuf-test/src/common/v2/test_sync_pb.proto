@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message TestSync {
+    optional int32 int32_field = 3;
+}
+

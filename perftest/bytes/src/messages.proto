@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+message TestMessage {
+    optional string s1 = 1;
+    optional bytes b1 = 2;
+    repeated string sr = 3;
+    repeated bytes br = 4;
+
+    optional TestMessage nested = 11;
+}
+
+message TestMessageWithBytes {
+    option (rustproto.carllerche_bytes_for_bytes) = true;
+    option (rustproto.carllerche_bytes_for_string) = true;
+
+    optional string s1 = 1;
+    optional bytes b1 = 2;
+    repeated string sr = 3;
+    repeated bytes br = 4;
+
+    optional TestMessageWithBytes nested = 11;
+}

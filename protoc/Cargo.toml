@@ -1,0 +1,16 @@
+[package]
+name = "protoc"
+version = "1.4.1"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/stepancheg/rust-protobuf/protoc/"
+repository = "https://github.com/stepancheg/rust-protobuf/protoc/"
+description = """
+Protobuf protoc command as API
+"""
+
+[lib]
+doctest = false
+
+[dependencies]
+log = "0.*"

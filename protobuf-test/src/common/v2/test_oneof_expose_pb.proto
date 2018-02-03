@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+option (rustproto.expose_oneof_all) = true;
+
+message TestOneofExpose {
+    oneof aaa {
+        string s = 1;
+        int32 x = 2;
+    }
+}

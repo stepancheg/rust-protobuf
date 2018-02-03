@@ -1,29 +1,11 @@
-[package]
-
-name = "protobuf"
-version = "1.0.24"
-authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
-license = "MIT/Apache-2.0"
-homepage = "https://github.com/stepancheg/rust-protobuf/"
-repository = "https://github.com/stepancheg/rust-protobuf/"
-description = """
-Rust implementation of Google protocol buffers
-"""
-
-[lib]
-
-name = "protobuf"
-path = "src/lib/protobuf.rs"
-
-[[bin]]
-
-name = "protoc-gen-rust"
-path = "src/protoc-gen-rust.rs"
-test = false
-
-[[bin]]
-
-name = "protobuf-bin-gen-rust-do-not-use"
-path = "src/protobuf-bin-gen-rust-do-not-use.rs"
-test = false
-
+[workspace]
+members = [
+    "protoc",
+    "protoc/test-protoc",
+    "protoc-rust",
+    "protobuf",
+    "protobuf-codegen",
+    "protobuf-test",
+    "perftest/vs-cxx",
+    "perftest/bytes",
+]
