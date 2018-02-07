@@ -251,7 +251,7 @@ impl<'ignore> BufReadIter<'ignore> {
         let len = cmp::min(rem.len(), buf.len());
         &mut buf[..len].copy_from_slice(&rem[..len]);
         self.pos_within_buf += len;
-        Ok((len))
+        Ok(len)
     }
 
     pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
