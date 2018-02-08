@@ -13,6 +13,8 @@
 - [Implement `std::io` traits by `CodedInputStream` and
   `CodedOutputStream`](https://github.com/stepancheg/rust-protobuf/pull/232)
 - [Implement conversions for `Repeated*`](https://github.com/stepancheg/rust-protobuf/pull/236)
+- [Generated code now uses closures instead of private functions
+  for reflection](https://github.com/stepancheg/rust-protobuf/pull/267)
 
 ## [1.4.3] - 2017-12-03
 - [Allow enum variants to be named `Self`](https://github.com/stepancheg/rust-protobuf/pull/259)
