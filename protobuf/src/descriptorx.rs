@@ -23,8 +23,7 @@ fn ident_continue(c: char) -> bool {
 
 pub fn proto_path_to_rust_mod(path: &str) -> String {
     let without_dir = strx::remove_to(path, '/');
-    let without_suffix = strx::remove_suffix(without_dir, ".proto")
-        .expect(&format!("file name must end with .proto: {}", path));
+    let without_suffix = strx::remove_suffix(without_dir, ".proto");
 
     let name = without_suffix
         .chars()
@@ -615,4 +614,25 @@ pub fn find_enum_by_rust_name<'a>(
         .into_iter()
         .find(|e| e.rust_name() == rust_name)
         .unwrap()
+}
+
+#[cfg(test)]
+mod test {
+
+    use super::proto_path_to_rust_mod;
+
+    #[test]
+    fn test_mod_path_proto_ext() {
+        assert_eq!("proto", proto_path_to_rust_mod("proto.proto"));
+    }
+
+    #[test]
+    fn test_mod_path_unknown_ext() {
+        assert_eq!("proto_proto3", proto_path_to_rust_mod("proto.proto3"));
+    }
+
+    #[test]
+    fn test_mod_path_empty_ext() {
+        assert_eq!("proto", proto_path_to_rust_mod("proto"));
+    }
 }
