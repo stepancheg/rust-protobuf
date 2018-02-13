@@ -22,3 +22,6 @@ mod test_oneof_default_value_pb;
 mod test_oneof_default_value;
 
 mod struct_pb;
+
+mod test_unknown_suffix;
+mod test_unknown_suffix_pb_proto3;

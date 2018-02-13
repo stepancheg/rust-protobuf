@@ -30,6 +30,9 @@ fn clean_old_files() {
     for f in glob_simple("src/**/*_pb.rs") {
         fs::remove_file(f).expect("rm");
     }
+    for f in glob_simple("src/**/*_pb_proto3.rs") {
+        fs::remove_file(f).expect("rm");
+    }
 }
 
 
@@ -125,7 +128,10 @@ fn generate_pb_rs() {
     fn gen_v2_v3(dir: &str) {
         info!("generating protos in {}", dir);
 
-        let protos = glob_simple(&format!("{}/*.proto", dir));
+        let mut protos = Vec::new();
+        for suffix in &[".proto", ".proto3"] {
+            protos.extend(glob_simple(&format!("{}/*{}", dir, suffix)));
+        }
 
         assert!(!protos.is_empty());
 
