@@ -15,7 +15,7 @@
 - [Implement conversions for `Repeated*`](https://github.com/stepancheg/rust-protobuf/pull/236)
 - [Generated code now uses closures instead of private functions
   for reflection](https://github.com/stepancheg/rust-protobuf/pull/267)
-- [Proto files with suffixes others than .proto
+- [Proto files with suffixes others than `.proto`
   are now supported](https://github.com/stepancheg/rust-protobuf/pull/265)
 
 ## [1.4.3] - 2017-12-03
