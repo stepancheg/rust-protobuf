@@ -50,6 +50,7 @@ static RUST_KEYWORDS: &'static [&'static str] = &[
     "abstract",
     "final",
     "override",
+    "macro",
 ];
 
 pub fn is_rust_keyword(ident: &str) -> bool {
