@@ -18,6 +18,9 @@
 - [Proto files with suffixes others than `.proto`
   are now supported](https://github.com/stepancheg/rust-protobuf/pull/265)
 
+## [1.4.4] - 2018-03-05
+- [Escape macro keyword](https://github.com/stepancheg/rust-protobuf/pull/269)
+
 ## [1.4.3] - 2017-12-03
 - [Allow enum variants to be named `Self`](https://github.com/stepancheg/rust-protobuf/pull/259)
 
