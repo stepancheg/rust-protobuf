@@ -1435,6 +1435,19 @@ impl<'a> FieldGen<'a> {
             FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
                 self.write_merge_from_field_message_string_bytes(w);
             }
+            FieldElem::Enum(..) => {
+                let version = match field.flag {
+                    SingularFieldFlag::WithFlag { .. } => "proto2",
+                    SingularFieldFlag::WithoutFlag => "proto3",
+                };
+                w.write_line(&format!(
+                    "::protobuf::rt::read_{}_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    version,
+                    wire_type_var,
+                    self.rust_name,
+                    self.proto_field.number()
+                ));
+            }
             _ => {
                 let read_proc = format!("{}?", self.proto_type.read("is"));
 
@@ -1457,6 +1470,14 @@ impl<'a> FieldGen<'a> {
             FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..) |
             FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
                 self.write_merge_from_field_message_string_bytes(w);
+            }
+            FieldElem::Enum(..) => {
+                w.write_line(&format!(
+                    "::protobuf::rt::read_repeated_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    wire_type_var,
+                    self.rust_name,
+                    self.proto_field.number()
+                ));
             }
             _ => {
                 w.write_line(&format!(

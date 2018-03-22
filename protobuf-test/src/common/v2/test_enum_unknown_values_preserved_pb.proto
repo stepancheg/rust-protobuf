@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package unknown_values_preserved;
+
+enum OldEnum {
+    // Add _OLD suffix to field name to avoid collision with NewEnum
+    UNKNOWN_OLD = 0;
+    A_OLD = 10;
+    B_OLD = 20;
+}
+
+enum NewEnum {
+    UNKNOWN = 0;
+    A = 10;
+    B = 20;
+    C = 30;
+}
+
+message OldMessage {
+    optional OldEnum eee = 1;
+}
+
+message NewMessage {
+    optional NewEnum eee = 1;
+}
