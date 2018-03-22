@@ -226,7 +226,7 @@ impl RustType {
     // expression to convert `v` of type `self` to type `target`
     pub fn into_target(&self, target: &RustType, v: &str) -> String {
         self.try_into_target(target, v)
-            .expect(&format!("failed to convert {} into {}", self, target))
+            .expect(&format!("failed to convert {:?} into {:?}", self, target))
     }
 
     fn try_into_target(&self, target: &RustType, v: &str) -> Result<String, ()> {
