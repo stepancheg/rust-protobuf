@@ -212,7 +212,7 @@ impl<'a> MessageGen<'a> {
                     for f in &self.fields_except_group() {
                         let number = f.proto_field.number();
                         w.case_block(number.to_string(), |w| {
-                            f.write_merge_from_field(w);
+                            f.write_merge_from_field("wire_type", w);
                         });
                     }
                     w.case_block("_", |w| {
