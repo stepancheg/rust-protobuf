@@ -1336,6 +1336,8 @@ impl<'a> FieldGen<'a> {
     }
 
 
+    // Write `merge_from` part for this singular or repeated field
+    // of type message, string or bytes
     fn write_merge_from_field_message_string_bytes(&self, w: &mut CodeWriter) {
         let singular_or_repeated = match self.kind {
             FieldKind::Repeated(..) => "repeated",
@@ -1362,8 +1364,22 @@ impl<'a> FieldGen<'a> {
         ));
     }
 
-    fn write_merge_from_oneof(&self, f: &OneofField, w: &mut CodeWriter) {
-        w.assert_wire_type(self.wire_type);
+    fn write_error_unexpected_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
+        w.write_line(&format!(
+            "return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type({}));",
+            wire_type_var
+        ));
+    }
+
+    fn write_assert_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
+        w.if_stmt(&format!("{} != ::protobuf::wire_format::{:?}", wire_type_var, self.wire_type), |w| {
+            self.write_error_unexpected_wire_type(wire_type_var, w);
+        });
+    }
+
+    // Write `merge_from` part for this oneof field
+    fn write_merge_from_oneof(&self, f: &OneofField, wire_type_var: &str, w: &mut CodeWriter) {
+        self.write_assert_wire_type(wire_type_var, w);
 
         let typed = RustValueTyped {
             value: format!("{}?", self.proto_type.read("is")),
@@ -1380,6 +1396,7 @@ impl<'a> FieldGen<'a> {
         )); // TODO: into_type
     }
 
+    // Write `merge_from` part for this map field
     fn write_merge_from_map(&self, w: &mut CodeWriter) {
         let &MapField { ref key, ref value, .. } = self.map();
         w.write_line(&format!(
@@ -1390,33 +1407,59 @@ impl<'a> FieldGen<'a> {
         ));
     }
 
-    pub fn write_merge_from_field(&self, w: &mut CodeWriter) {
-        match self.kind {
-            FieldKind::Oneof(ref f) => self.write_merge_from_oneof(&f, w),
-            FieldKind::Map(..) => self.write_merge_from_map(w),
-            _ => {
-                if !self.elem_type_is_copy() {
-                    self.write_merge_from_field_message_string_bytes(w);
-                } else {
-                    let wire_type = field_type_wire_type(self.proto_type);
-                    let read_proc = format!("{}?", self.proto_type.read("is"));
+    // Write `merge_from` part for this singular field
+    fn write_merge_from_singular(&self, wire_type_var: &str, w: &mut CodeWriter) {
+        let field = match self.kind {
+            FieldKind::Singular(ref field) => field,
+            _ => panic!(),
+        };
 
-                    match self.kind {
-                        FieldKind::Singular(..) => {
-                            w.assert_wire_type(wire_type);
-                            w.write_line(&format!("let tmp = {};", read_proc));
-                            self.write_self_field_assign_some(w, "tmp");
-                        }
-                        FieldKind::Repeated(..) => {
-                            w.write_line(&format!(
-                                "::protobuf::rt::read_repeated_{}_into(wire_type, is, &mut self.{})?;",
-                                protobuf_name(self.proto_type),
-                                self.rust_name));
-                        }
-                        _ => unreachable!(),
-                    }
-                }
+        match field.elem {
+            FieldElem::Message(..) |
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..) |
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
+                self.write_merge_from_field_message_string_bytes(w);
             }
+            _ => {
+                let read_proc = format!("{}?", self.proto_type.read("is"));
+
+                self.write_assert_wire_type(wire_type_var, w);
+                w.write_line(&format!("let tmp = {};", read_proc));
+                self.write_self_field_assign_some(w, "tmp");
+            }
+        }
+    }
+
+    // Write `merge_from` part for this repeated field
+    fn write_merge_from_repeated(&self, wire_type_var: &str, w: &mut CodeWriter) {
+        let field = match self.kind {
+            FieldKind::Repeated(ref field) => field,
+            _ => panic!(),
+        };
+
+        match field.elem {
+            FieldElem::Message(..) |
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..) |
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
+                self.write_merge_from_field_message_string_bytes(w);
+            }
+            _ => {
+                w.write_line(&format!(
+                    "::protobuf::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                    protobuf_name(self.proto_type),
+                    wire_type_var,
+                    self.rust_name));
+            }
+        }
+    }
+
+    // Write `merge_from` part for this field
+    pub fn write_merge_from_field(&self, wire_type_var: &str, w: &mut CodeWriter) {
+        match self.kind {
+            FieldKind::Oneof(ref f) => self.write_merge_from_oneof(&f, wire_type_var, w),
+            FieldKind::Map(..) => self.write_merge_from_map(w),
+            FieldKind::Singular(..) => self.write_merge_from_singular(wire_type_var, w),
+            FieldKind::Repeated(..) => self.write_merge_from_repeated(wire_type_var, w),
         }
     }
 
