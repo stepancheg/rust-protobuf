@@ -1354,13 +1354,13 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_field_message_string_bytes(&self, w: &mut CodeWriter) {
         let singular_or_repeated = match self.kind {
             FieldKind::Repeated(..) => "repeated",
-            FieldKind::Map(..) => "repeated", // TODO
             FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. }) => {
                 "singular"
             }
             FieldKind::Singular(SingularField { flag: SingularFieldFlag::WithoutFlag, .. }) => {
                 "singular_proto3"
             }
+            FieldKind::Map(..) |
             FieldKind::Oneof(..) => unreachable!(),
         };
         let carllerche = match self.kind.primitive_type_variant() {
