@@ -3,9 +3,6 @@
 
 use std::io::Write;
 
-// TODO: should not use wire_format here
-use protobuf::wire_format;
-
 /// Field visibility.
 pub enum Visibility {
     Public,
@@ -370,18 +367,5 @@ impl<'a> CodeWriter<'a> {
 
     pub fn case_expr<S1 : AsRef<str>, S2 : AsRef<str>>(&mut self, cond: S1, body: S2) {
         self.write_line(&format!("{} => {},", cond.as_ref(), body.as_ref()));
-    }
-
-    pub fn error_unexpected_wire_type(&mut self, wire_type: &str) {
-        self.write_line(&format!(
-            "return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type({}));",
-            wire_type
-        ));
-    }
-
-    pub fn assert_wire_type(&mut self, wire_type: wire_format::WireType) {
-        self.if_stmt(&format!("wire_type != ::protobuf::wire_format::{:?}", wire_type), |w| {
-            w.error_unexpected_wire_type("wire_type");
-        });
     }
 }
