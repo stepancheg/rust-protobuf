@@ -104,9 +104,9 @@ impl<'a> MessageGen<'a> {
                         let ref field = variant.field;
                         let (refv, vtype) =
                             if !field.elem_type_is_copy() {
-                                ("ref v", field.elem().rust_type().ref_type())
+                                ("ref v", field.elem().rust_storage_type().ref_type())
                             } else {
-                                ("v", field.elem().rust_type())
+                                ("v", field.elem().rust_storage_type())
                             };
                         w.case_block(format!("&{}({})", variant.path(), refv), |w| {
                             cb(w, &variant, "v", &vtype);
