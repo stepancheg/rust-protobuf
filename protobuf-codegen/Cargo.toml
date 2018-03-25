@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen"
-version = "1.4.1"
+version = "1.6.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
 [dependencies.protobuf]
