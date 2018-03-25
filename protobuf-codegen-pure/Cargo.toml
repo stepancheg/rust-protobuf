@@ -1,0 +1,20 @@
+[package]
+name = "protobuf-codegen-pure"
+version = "1.6.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
+repository = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
+description = """
+Codegen for protobuf using protobuf-parser crate
+
+WIP
+"""
+
+[lib]
+doctest = false
+
+[dependencies]
+protobuf = { path = "../protobuf", version = "1.6.0" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "1.6.0" }
+protobuf-parser = { git = "https://github.com/tafia/protobuf-parser/" }

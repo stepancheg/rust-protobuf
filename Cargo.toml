@@ -5,6 +5,7 @@ members = [
     "protoc-rust",
     "protobuf",
     "protobuf-codegen",
+    "protobuf-codegen-pure",
     "protobuf-test",
     "perftest/vs-cxx",
     "perftest/bytes",
