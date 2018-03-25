@@ -18,6 +18,9 @@
 - [Proto files with suffixes others than `.proto`
   are now supported](https://github.com/stepancheg/rust-protobuf/pull/265)
 
+## [1.5.0] - 2018-03-25
+- [Unknown enum values are now stored in unknown fields](https://github.com/stepancheg/rust-protobuf/pull/276)
+
 ## [1.4.4] - 2018-03-05
 - [Escape macro keyword](https://github.com/stepancheg/rust-protobuf/pull/269)
 
