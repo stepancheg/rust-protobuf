@@ -45,10 +45,13 @@ pub fn run(args: Args) -> io::Result<()> {
         fs::File::open(input)?.read_to_end(&mut content)?;
         let file_descriptor = protobuf_parser::FileDescriptor::parse(&content)
             .map_err(|_e| io::Error::new(io::ErrorKind::Other, "failed to parse"))?;
+
+        let import_paths = file_descriptor.import_paths.clone();
+
         let proto = convert::file_descriptor(relative.to_owned(), file_descriptor);
         file_descriptors.push(proto);
 
-        for import_path in file_descriptor.import_paths {
+        for import_path in import_paths {
             // TODO: handle imports
         }
     }
