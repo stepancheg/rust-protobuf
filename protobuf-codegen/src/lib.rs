@@ -1,7 +1,11 @@
 extern crate protobuf;
 
 use std::collections::hash_map::HashMap;
-use std::fmt::Write;
+use std::fmt::Write as FmtWrite;
+use std::path::Path;
+use std::fs::File;
+use std::io;
+use std::io::Write as Write;
 
 use protobuf::descriptor::*;
 use protobuf::Message;
@@ -167,6 +171,25 @@ pub fn gen(
         results.extend(gen_file(file, &files_map, &root_scope));
     }
     results
+}
+
+pub fn gen_and_write(
+    file_descriptors: &[FileDescriptorProto],
+    files_to_generate: &[String],
+    out_dir: &Path)
+    -> io::Result<()>
+{
+    let results = gen(file_descriptors, files_to_generate);
+
+    for r in &results {
+        let mut file_path = out_dir.to_owned();
+        file_path.push(&r.name);
+        let mut file_writer = File::create(&file_path)?;
+        file_writer.write_all(&r.content)?;
+        file_writer.flush()?;
+    }
+
+    Ok(())
 }
 
 pub fn protoc_gen_rust_main() {

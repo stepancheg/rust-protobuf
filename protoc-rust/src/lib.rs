@@ -6,8 +6,8 @@ extern crate protobuf_codegen;
 
 use std::io;
 use std::io::Read;
-use std::io::Write;
 use std::fs;
+use std::path::Path;
 
 pub use protoc::Error;
 pub use protoc::Result;
@@ -74,17 +74,7 @@ pub fn run(args: Args) -> Result<()> {
         ));
     }
 
-    let gen_result = protobuf_codegen::gen(fds.get_file(), &files_to_generate);
-
-    for r in gen_result {
-        let r: protobuf::compiler_plugin::GenResult = r;
-        let file = format!("{}/{}", args.out_dir, r.name);
-        let mut file = fs::File::create(&file)?;
-        file.write_all(&r.content)?;
-        file.flush()?;
-    }
-
-    Ok(())
+    protobuf_codegen::gen_and_write(fds.get_file(), &files_to_generate, &Path::new(&args.out_dir))
 }
 
 fn remove_dot_slash(path: &str) -> &str {

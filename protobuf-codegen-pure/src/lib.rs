@@ -58,8 +58,5 @@ pub fn run(args: Args) -> io::Result<()> {
 
     // TODO: resolve includes
 
-    // TODO: write
-    protobuf_codegen::gen(&file_descriptors, &relative_paths);
-
-    Ok(())
+    protobuf_codegen::gen_and_write(&file_descriptors, &relative_paths, &Path::new(&args.out_dir))
 }

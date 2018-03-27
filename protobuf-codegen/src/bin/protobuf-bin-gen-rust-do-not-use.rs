@@ -3,7 +3,6 @@ extern crate protobuf_codegen;
 
 use std::fs::*;
 use std::io::Read;
-use std::io::Write;
 use std::path::Path;
 
 use protobuf::parse_from_reader;
@@ -19,12 +18,7 @@ fn write_file(bin: &str) {
         .iter()
         .map(|f| f.get_name().to_string())
         .collect();
-    let results = gen(fds.get_file(), &file_names);
-
-    for r in &results {
-        let mut file_writer = File::create(&Path::new(&r.name)).unwrap();
-        file_writer.write(&r.content).unwrap();
-    }
+    gen_and_write(fds.get_file(), &file_names, Path::new(".")).expect("gen_and_write");
 }
 
 fn main() {
