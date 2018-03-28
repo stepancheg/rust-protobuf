@@ -2,7 +2,7 @@ use protobuf::text_format::print_to_string;
 
 use super::test_map_pb::*;
 
-use test::*;
+use protobuf_test_common::*;
 
 #[test]
 fn test_map() {

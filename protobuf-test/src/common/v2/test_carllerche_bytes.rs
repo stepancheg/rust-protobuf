@@ -3,7 +3,7 @@ use protobuf::Chars;
 
 use super::test_carllerche_bytes_pb::*;
 
-use test::*;
+use protobuf_test_common::*;
 
 #[test]
 fn test() {

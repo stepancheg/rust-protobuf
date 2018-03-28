@@ -1,4 +1,4 @@
-use test::*;
+use protobuf_test_common::*;
 
 use super::test_zeros_are_not_written_pb::*;
 

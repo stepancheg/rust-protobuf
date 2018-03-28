@@ -1,8 +1,11 @@
 [project]
-name = "protobuf-test"
+name = "protobuf-test-common"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
+description = """
+Common code of protobuf tests
+"""
 
 [lib]
 doctest = false
@@ -12,16 +15,10 @@ default-features = []
 proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
 
-[build-dependencies]
-protoc      = { path = "../protoc" }
-protoc-rust = { path = "../protoc-rust" }
-protobuf-test-common = { path = "../protobuf-test-common" }
+[dependencies]
 glob        = "0.2"
 log         = "0.*"
 env_logger  = "0.5.*"
-
-[dependencies]
-protobuf-test-common = { path = "../protobuf-test-common" }
 
 [dependencies.protobuf]
 path = "../protobuf"

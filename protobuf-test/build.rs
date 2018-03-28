@@ -6,34 +6,14 @@ extern crate env_logger;
 extern crate protoc;
 extern crate protoc_rust;
 
+extern crate protobuf_test_common;
+
 use std::io::Read;
 use std::io::Write;
 use std::fs;
 use std::path;
 
-
-fn glob_simple(pattern: &str) -> Vec<String> {
-    glob::glob(pattern)
-        .expect("glob")
-        .map(|g| {
-            g.expect("item")
-                .as_path()
-                .to_str()
-                .expect("utf-8")
-                .to_owned()
-        })
-        .collect()
-}
-
-
-fn clean_old_files() {
-    for f in glob_simple("src/**/*_pb.rs") {
-        fs::remove_file(f).expect("rm");
-    }
-    for f in glob_simple("src/**/*_pb_proto3.rs") {
-        fs::remove_file(f).expect("rm");
-    }
-}
+use protobuf_test_common::build::*;
 
 
 fn generate_v_from_common() {
@@ -126,20 +106,11 @@ fn generate_v_from_common() {
 fn generate_pb_rs() {
 
     fn gen_v2_v3(dir: &str) {
-        info!("generating protos in {}", dir);
-
-        let mut protos = Vec::new();
-        for suffix in &[".proto", ".proto3"] {
-            protos.extend(glob_simple(&format!("{}/*{}", dir, suffix)));
-        }
-
-        assert!(!protos.is_empty());
-
-        protoc_rust::run(protoc_rust::Args {
-            out_dir: dir,
-            input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
-            includes: &["../proto", dir],
-        }).expect("protoc");
+        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes }| {
+            protoc_rust::run(protoc_rust::Args {
+                out_dir, input, includes
+            })
+        });
     }
 
     gen_v2_v3("src/v2");

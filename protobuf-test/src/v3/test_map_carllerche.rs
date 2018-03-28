@@ -2,7 +2,7 @@ use bytes::Bytes;
 
 use protobuf::*;
 
-use test::*;
+use protobuf_test_common::*;
 
 use super::test_map_carllerche_pb::*;
 

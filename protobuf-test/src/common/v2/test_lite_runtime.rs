@@ -1,4 +1,4 @@
-use test::*;
+use protobuf_test_common::*;
 
 use super::test_lite_runtime_pb::*;
 

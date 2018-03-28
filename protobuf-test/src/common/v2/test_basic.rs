@@ -2,7 +2,7 @@ use protobuf::hex::decode_hex;
 
 use protobuf::*;
 
-use test::*;
+use protobuf_test_common::*;
 
 use super::test_basic_pb::*;
 

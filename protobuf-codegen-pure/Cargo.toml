@@ -6,7 +6,7 @@ license = "MIT/Apache-2.0"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
 repository = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
 description = """
-Codegen for protobuf using protobuf-parser crate
+Pure-rust codegen for protobuf using protobuf-parser crate
 
 WIP
 """

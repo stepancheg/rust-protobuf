@@ -2,6 +2,8 @@
 
 extern crate protobuf;
 
+extern crate protobuf_test_common;
+
 #[cfg(feature = "with-bytes")]
 extern crate bytes;
 
@@ -17,4 +19,3 @@ mod common;
 #[cfg(proto3)]
 mod google;
 
-mod test;

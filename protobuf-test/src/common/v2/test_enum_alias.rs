@@ -2,7 +2,7 @@ use protobuf::ProtobufEnum;
 
 use super::test_enum_alias_pb::*;
 
-use test::*;
+use protobuf_test_common::*;
 
 #[test]
 fn test_enum() {
