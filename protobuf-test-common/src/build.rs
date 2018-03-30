@@ -1,5 +1,7 @@
 //! Common code of `build.rs` of two tests
 
+pub use protobuf_codegen::Customize;
+
 use std::fs;
 use std::fmt;
 
@@ -29,10 +31,12 @@ pub fn clean_old_files() {
     }
 }
 
+#[derive(Default)]
 pub struct GenInDirArgs<'a> {
     pub out_dir: &'a str,
     pub input: &'a [&'a str],
     pub includes: &'a [&'a str],
+    pub customize: Customize,
 }
 
 pub fn gen_in_dir<F, E>(dir: &str, gen: F)
@@ -53,6 +57,7 @@ pub fn gen_in_dir<F, E>(dir: &str, gen: F)
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
         includes: &["../proto", dir],
+        .. Default::default()
     }).expect("protoc");
 }
 

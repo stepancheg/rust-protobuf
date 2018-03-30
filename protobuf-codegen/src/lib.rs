@@ -17,7 +17,11 @@ mod enums;
 mod rust_types_values;
 mod well_known_types;
 mod field;
+mod customize;
 mod extensions;
+
+pub use customize::Customize;
+use customize::customize_from_rustproto_for_file;
 
 pub mod code_writer;
 
@@ -98,7 +102,13 @@ fn gen_file(
     file: &FileDescriptorProto,
     _files_map: &HashMap<&str, &FileDescriptorProto>,
     root_scope: &RootScope,
+    customize: &Customize,
 ) -> Option<compiler_plugin::GenResult> {
+    // TODO: use it
+    let mut customize = customize.clone();
+    // options specified in invocation have precedence over options specified in file
+    customize.set_defaults_from(&customize_from_rustproto_for_file(file.get_options()));
+
     let scope = FileScope { file_descriptor: file }.to_scope();
 
     if scope.get_messages().is_empty() && scope.get_enums().is_empty() &&
@@ -153,6 +163,7 @@ fn gen_file(
 pub fn gen(
     file_descriptors: &[FileDescriptorProto],
     files_to_generate: &[String],
+    customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
     let root_scope = RootScope { file_descriptors: file_descriptors };
 
@@ -168,7 +179,7 @@ pub fn gen(
             file_name,
             all_file_names
         ));
-        results.extend(gen_file(file, &files_map, &root_scope));
+        results.extend(gen_file(file, &files_map, &root_scope, customize));
     }
     results
 }
@@ -176,10 +187,11 @@ pub fn gen(
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     files_to_generate: &[String],
-    out_dir: &Path)
+    out_dir: &Path,
+    customize: &Customize)
     -> io::Result<()>
 {
-    let results = gen(file_descriptors, files_to_generate);
+    let results = gen(file_descriptors, files_to_generate, customize);
 
     for r in &results {
         let mut file_path = out_dir.to_owned();
@@ -193,5 +205,5 @@ pub fn gen_and_write(
 }
 
 pub fn protoc_gen_rust_main() {
-    compiler_plugin::plugin_main(gen);
+    compiler_plugin::plugin_main(|fds, files| gen(fds, files, &Default::default()));
 }

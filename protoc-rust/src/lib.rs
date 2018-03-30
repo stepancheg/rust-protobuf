@@ -12,6 +12,8 @@ use std::path::Path;
 pub use protoc::Error;
 pub use protoc::Result;
 
+pub use protobuf_codegen::Customize;
+
 
 #[derive(Debug, Default)]
 pub struct Args<'a> {
@@ -21,6 +23,8 @@ pub struct Args<'a> {
     pub includes: &'a [&'a str],
     /// List of .proto files to compile
     pub input: &'a [&'a str],
+    /// Customize code generation
+    pub customize: Customize,
 }
 
 /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
@@ -74,7 +78,11 @@ pub fn run(args: Args) -> Result<()> {
         ));
     }
 
-    protobuf_codegen::gen_and_write(fds.get_file(), &files_to_generate, &Path::new(&args.out_dir))
+    protobuf_codegen::gen_and_write(
+        fds.get_file(),
+        &files_to_generate,
+        &Path::new(&args.out_dir),
+        &args.customize)
 }
 
 fn remove_dot_slash(path: &str) -> &str {

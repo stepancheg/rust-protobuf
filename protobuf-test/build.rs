@@ -95,6 +95,7 @@ fn generate_v_from_common() {
                 out_dir: &format!("src/common/v{}", v),
                 includes: &[&format!("src/common/v{}", v), "../proto"],
                 input: &[&format!("src/common/v{}/{}_pb.proto", v, without_suffix)],
+                .. Default::default()
             }).expect("protoc");
         }
     }
@@ -106,9 +107,9 @@ fn generate_v_from_common() {
 fn generate_pb_rs() {
 
     fn gen_v2_v3(dir: &str) {
-        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes }| {
+        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
             protoc_rust::run(protoc_rust::Args {
-                out_dir, input, includes
+                out_dir, input, includes, customize
             })
         });
     }
@@ -127,6 +128,7 @@ fn generate_pb_rs() {
             out_dir: "src/google/protobuf",
             input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
             includes: &["../proto", "src"],
+            .. Default::default()
         }).expect("protoc");
     } else {
         info!("generating stubs in src/v3");

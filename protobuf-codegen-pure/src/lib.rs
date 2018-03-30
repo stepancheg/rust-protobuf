@@ -10,6 +10,8 @@ use std::io;
 use std::io::Read;
 use std::fs;
 
+pub use protobuf_codegen::Customize;
+
 
 // TODO: merge with protoc-rust def
 #[derive(Debug, Default)]
@@ -20,6 +22,8 @@ pub struct Args<'a> {
     pub includes: &'a [&'a str],
     /// List of .proto files to compile
     pub input: &'a [&'a str],
+    /// Customize code generation
+    pub customize: Customize,
 }
 
 /// Convert OS path to protobuf path (with slashes)
@@ -149,7 +153,10 @@ pub fn run(args: Args) -> io::Result<()> {
         run.parsed_files.into_iter().map(|(_, v)| v.descriptor).collect();
 
     protobuf_codegen::gen_and_write(
-        &file_descriptors, &relative_paths, &Path::new(&run.args.out_dir))
+        &file_descriptors,
+        &relative_paths,
+        &Path::new(&run.args.out_dir),
+        &run.args.customize)
 }
 
 #[cfg(test)]

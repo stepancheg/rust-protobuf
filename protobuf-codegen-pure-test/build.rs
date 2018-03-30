@@ -12,9 +12,9 @@ use protobuf_test_common::build::*;
 fn generate_pb_rs() {
 
     fn gen_v2_v3(dir: &str) {
-        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes }| {
+        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
             protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-                out_dir, input, includes
+                out_dir, input, includes, customize
             })
         });
     }

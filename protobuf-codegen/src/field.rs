@@ -1,19 +1,16 @@
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
-use protobuf::rustproto; // TODO: should probably live here
 use protobuf::wire_format;
 use protobuf::rt;
 use protobuf::rust;
 use protobuf::text_format;
-use protobuf::types::ProtobufType;
-use protobuf::reflect::ProtobufValue;
-
-use protobuf::ext::ExtFieldOptional;
 
 use super::message::*;
 use super::rust_types_values::*;
 use super::enums::*;
 use super::code_writer::CodeWriter;
+
+use super::customize::customize_from_rustproto_for_field;
 
 
 
@@ -325,23 +322,6 @@ impl FieldElem {
     }
 }
 
-fn join_field_ext<A : ProtobufValue + Clone, T : ProtobufType<Value = A>>(
-    source: &FieldWithContext,
-    field_ext: ExtFieldOptional<FieldOptions, T>,
-    message_ext: ExtFieldOptional<MessageOptions, T>,
-    file_ext: ExtFieldOptional<FileOptions, T>,
-) -> Option<A> {
-    if let Some(v) = field_ext.get(source.field.get_options()) {
-        return Some(v);
-    }
-    for m in source.containing_messages() {
-        if let Some(v) = message_ext.get(m.get_options()) {
-            return Some(v);
-        }
-    }
-    return file_ext.get(source.message.scope.get_file_descriptor().get_options());
-}
-
 fn field_elem(
     field: &FieldWithContext,
     root_scope: &RootScope,
@@ -408,18 +388,9 @@ fn field_elem(
             _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
         }
     } else if field.field.has_field_type() {
-        let carllerche_for_bytes = join_field_ext(
-            field,
-            rustproto::exts::carllerche_bytes_for_bytes_field,
-            rustproto::exts::carllerche_bytes_for_bytes,
-            rustproto::exts::carllerche_bytes_for_bytes_all,
-        ).unwrap_or(false);
-        let carllerche_for_string = join_field_ext(
-            field,
-            rustproto::exts::carllerche_bytes_for_string_field,
-            rustproto::exts::carllerche_bytes_for_string,
-            rustproto::exts::carllerche_bytes_for_string_all,
-        ).unwrap_or(false);
+        let options = customize_from_rustproto_for_field(field);
+        let carllerche_for_bytes = options.carllerche_bytes_for_bytes.unwrap_or(false);
+        let carllerche_for_string = options.carllerche_bytes_for_string.unwrap_or(false);
 
         let elem = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_STRING if carllerche_for_string => {
@@ -491,19 +462,10 @@ impl<'a> FieldGen<'a> {
 
         let default_expose_field = field.message.scope.file_scope.syntax() == Syntax::PROTO3;
 
-        let expose_field = join_field_ext(
-            &field,
-            rustproto::exts::expose_fields_field,
-            rustproto::exts::expose_fields,
-            rustproto::exts::expose_fields_all,
-        ).unwrap_or(default_expose_field);
+        let options = customize_from_rustproto_for_field(&field);
 
-        let generate_accessors = join_field_ext(
-            &field,
-            rustproto::exts::generate_accessors_field,
-            rustproto::exts::generate_accessors,
-            rustproto::exts::generate_accessors_all,
-        ).unwrap_or(true);
+        let expose_field = options.expose_fields.unwrap_or(default_expose_field);
+        let generate_accessors = options.generate_accessors.unwrap_or(true);
 
         let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
             match (elem, true) {

@@ -18,7 +18,8 @@ fn write_file(bin: &str) {
         .iter()
         .map(|f| f.get_name().to_string())
         .collect();
-    gen_and_write(fds.get_file(), &file_names, Path::new(".")).expect("gen_and_write");
+    gen_and_write(fds.get_file(), &file_names, Path::new("."), &Default::default())
+        .expect("gen_and_write");
 }
 
 fn main() {
