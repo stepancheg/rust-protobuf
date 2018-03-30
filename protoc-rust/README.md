@@ -9,8 +9,11 @@ extern crate protoc_rust;
 
 protoc_rust::run(protoc_rust::Args {
     out_dir: "src/protos",
-    input: &["protos/a.proto", "b.proto"],
+    input: &["protos/a.proto", "protos/b.proto"],
     includes: &["protos"],
+    customize: Customize {
+      ..Default::default()
+    },
 }).expect("protoc");
 ```
 
