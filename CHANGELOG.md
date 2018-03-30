@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Generated code can now be customized not only with `rustproto.proto`
+  but also when invoked programmatically with
+  [`protoc-rust`](https://github.com/stepancheg/rust-protobuf/blob/b8573bd53cf5a9611598abbf02b71c49e59a8891/protobuf-codegen/src/customize.rs#L9)
 - [Drop `MessageStatic` trait](https://github.com/stepancheg/rust-protobuf/issues/214)
 - [`protobuf-codegen` is a separate crate](https://github.com/stepancheg/rust-protobuf/pull/261)
 - [Drop old reflection
