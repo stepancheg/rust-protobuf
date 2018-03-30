@@ -1,8 +1,4 @@
-use protobuf::descriptorx::FieldWithContext;
 use protobuf::rustproto;
-use protobuf::reflect::ProtobufValue;
-use protobuf::types::ProtobufType;
-use protobuf::ext::ExtFieldOptional;
 use protobuf::descriptor::FieldOptions;
 use protobuf::descriptor::MessageOptions;
 use protobuf::descriptor::FileOptions;
@@ -52,34 +48,27 @@ impl Customize {
 }
 
 
-pub fn customize_from_rustproto_for_field(source: &FieldWithContext) -> Customize {
-    // doesn't have sense for field
-    let expose_oneof = None;
-    let expose_fields = join_field_ext(
-        source,
-        rustproto::exts::expose_fields_field,
-        rustproto::exts::expose_fields,
-        rustproto::exts::expose_fields_all,
-    );
-    let generate_accessors = join_field_ext(
-        source,
-        rustproto::exts::generate_accessors_field,
-        rustproto::exts::generate_accessors,
-        rustproto::exts::generate_accessors_all,
-    );
-    let carllerche_bytes_for_bytes = join_field_ext(
-        source,
-        rustproto::exts::carllerche_bytes_for_bytes_field,
-        rustproto::exts::carllerche_bytes_for_bytes,
-        rustproto::exts::carllerche_bytes_for_bytes_all,
-    );
-    let carllerche_bytes_for_string = join_field_ext(
-        source,
-        rustproto::exts::carllerche_bytes_for_string_field,
-        rustproto::exts::carllerche_bytes_for_string,
-        rustproto::exts::carllerche_bytes_for_string_all,
-    );
+pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customize {
+    let expose_oneof = rustproto::exts::expose_oneof.get(source);
+    let expose_fields = rustproto::exts::expose_fields.get(source);
+    let generate_accessors = rustproto::exts::generate_accessors.get(source);
+    let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(source);
+    let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string.get(source);
+    Customize {
+        expose_oneof,
+        expose_fields,
+        generate_accessors,
+        carllerche_bytes_for_bytes,
+        carllerche_bytes_for_string,
+    }
+}
 
+pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
+    let expose_oneof = None;
+    let expose_fields = rustproto::exts::expose_fields_field.get(source);
+    let generate_accessors = rustproto::exts::generate_accessors_field.get(source);
+    let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_field.get(source);
+    let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_field.get(source);
     Customize {
         expose_oneof,
         expose_fields,
@@ -103,21 +92,3 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         carllerche_bytes_for_string,
     }
 }
-
-fn join_field_ext<A : ProtobufValue + Clone, T : ProtobufType<Value = A>>(
-    source: &FieldWithContext,
-    field_ext: ExtFieldOptional<FieldOptions, T>,
-    message_ext: ExtFieldOptional<MessageOptions, T>,
-    file_ext: ExtFieldOptional<FileOptions, T>,
-) -> Option<A> {
-    if let Some(v) = field_ext.get(source.field.get_options()) {
-        return Some(v);
-    }
-    for m in source.containing_messages() {
-        if let Some(v) = message_ext.get(m.get_options()) {
-            return Some(v);
-        }
-    }
-    return file_ext.get(source.message.scope.get_file_descriptor().get_options());
-}
-

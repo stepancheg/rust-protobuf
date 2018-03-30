@@ -4,6 +4,7 @@ use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 
 use super::code_writer::*;
+use super::customize::Customize;
 
 
 #[derive(Clone)]
@@ -50,6 +51,7 @@ impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
         current_file: &FileDescriptorProto,
+        _customize: &Customize
     ) -> EnumGen<'a> {
         let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
             current_file.get_name()

@@ -107,7 +107,7 @@ fn gen_file(
     // TODO: use it
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
-    customize.set_defaults_from(&customize_from_rustproto_for_file(file.get_options()));
+    customize.update_with(&customize_from_rustproto_for_file(file.get_options()));
 
     let scope = FileScope { file_descriptor: file }.to_scope();
 
@@ -135,12 +135,12 @@ fn gen_file(
             // ignore map entries, because they are not used in map fields
             if message.map_entry().is_none() {
                 w.write_line("");
-                MessageGen::new(message, &root_scope).write(&mut w);
+                MessageGen::new(message, &root_scope, &customize).write(&mut w);
             }
         }
         for enum_type in &scope.get_enums() {
             w.write_line("");
-            EnumGen::new(enum_type, file).write(&mut w);
+            EnumGen::new(enum_type, file, &customize).write(&mut w);
         }
 
         write_extensions(file, &root_scope, &mut w);

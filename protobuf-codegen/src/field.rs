@@ -10,6 +10,7 @@ use super::rust_types_values::*;
 use super::enums::*;
 use super::code_writer::CodeWriter;
 
+use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_field;
 
 
@@ -326,6 +327,7 @@ fn field_elem(
     field: &FieldWithContext,
     root_scope: &RootScope,
     parse_map: bool,
+    customize: &Customize,
 ) -> (FieldElem, Option<EnumValueGen>) {
     if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         (FieldElem::Group, None)
@@ -352,8 +354,8 @@ fn field_elem(
                     (parse_map, message_with_scope.map_entry())
                 {
                     Some(Box::new(EntryKeyValue(
-                        field_elem(&key, root_scope, false).0,
-                        field_elem(&value, root_scope, false).0,
+                        field_elem(&key, root_scope, false, customize).0,
+                        field_elem(&value, root_scope, false, customize).0,
                     )))
                 } else {
                     None
@@ -370,6 +372,7 @@ fn field_elem(
                 let e = EnumGen::new(
                     &enum_with_scope,
                     field.message.get_scope().get_file_descriptor(),
+                    customize,
                 );
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()
@@ -388,9 +391,8 @@ fn field_elem(
             _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
         }
     } else if field.field.has_field_type() {
-        let options = customize_from_rustproto_for_field(field);
-        let carllerche_for_bytes = options.carllerche_bytes_for_bytes.unwrap_or(false);
-        let carllerche_for_string = options.carllerche_bytes_for_string.unwrap_or(false);
+        let carllerche_for_bytes = customize.carllerche_bytes_for_bytes.unwrap_or(false);
+        let carllerche_for_string = customize.carllerche_bytes_for_string.unwrap_or(false);
 
         let elem = match field.field.get_field_type() {
             FieldDescriptorProto_Type::TYPE_STRING if carllerche_for_string => {
@@ -457,15 +459,18 @@ pub struct FieldGen<'a> {
 }
 
 impl<'a> FieldGen<'a> {
-    pub fn parse(field: FieldWithContext<'a>, root_scope: &'a RootScope<'a>) -> FieldGen<'a> {
-        let (elem, enum_default_value) = field_elem(&field, root_scope, true);
+    pub fn parse(field: FieldWithContext<'a>, root_scope: &'a RootScope<'a>, customize: &Customize)
+        -> FieldGen<'a>
+    {
+        let mut customize = customize.clone();
+        customize.update_with(&customize_from_rustproto_for_field(&field.field.get_options()));
+
+        let (elem, enum_default_value) = field_elem(&field, root_scope, true, &customize);
 
         let default_expose_field = field.message.scope.file_scope.syntax() == Syntax::PROTO3;
 
-        let options = customize_from_rustproto_for_field(&field);
-
-        let expose_field = options.expose_fields.unwrap_or(default_expose_field);
-        let generate_accessors = options.generate_accessors.unwrap_or(true);
+        let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
+        let generate_accessors = customize.generate_accessors.unwrap_or(true);
 
         let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
             match (elem, true) {
@@ -1966,16 +1971,20 @@ pub struct OneofGen<'a> {
     oneof: OneofWithContext<'a>,
     type_name: RustType,
     lite_runtime: bool,
+    customize: Customize,
 }
 
 impl<'a> OneofGen<'a> {
-    pub fn parse(message: &'a MessageGen, oneof: OneofWithContext<'a>) -> OneofGen<'a> {
+    pub fn parse(message: &'a MessageGen, oneof: OneofWithContext<'a>, customize: &Customize)
+        -> OneofGen<'a>
+    {
         let rust_name = oneof.rust_name();
         OneofGen {
             message: message,
             oneof: oneof,
             type_name: RustType::Oneof(rust_name),
             lite_runtime: message.lite_runtime,
+            customize: customize.clone(),
         }
     }
 

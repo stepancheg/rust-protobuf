@@ -6,6 +6,8 @@ use super::enums::*;
 use super::rust_types_values::*;
 use super::field::*;
 use super::code_writer::*;
+use super::customize::Customize;
+use super::customize::customize_from_rustproto_for_message;
 
 
 /// Message info for codegen
@@ -15,14 +17,23 @@ pub struct MessageGen<'a> {
     type_name: String,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
+    customize: Customize,
 }
 
 impl<'a> MessageGen<'a> {
-    pub fn new(message: &'a MessageWithScope<'a>, root_scope: &'a RootScope<'a>) -> MessageGen<'a> {
+    pub fn new(
+        message: &'a MessageWithScope<'a>,
+        root_scope: &'a RootScope<'a>,
+        customize: &Customize)
+        -> MessageGen<'a>
+    {
+        let mut customize = customize.clone();
+        customize.update_with(&customize_from_rustproto_for_message(message.message.get_options()));
+
         let fields: Vec<_> = message
             .fields()
             .into_iter()
-            .map(|field| FieldGen::parse(field, root_scope))
+            .map(|field| FieldGen::parse(field, root_scope, &customize))
             .collect();
         MessageGen {
             message: message,
@@ -34,6 +45,7 @@ impl<'a> MessageGen<'a> {
                 .get_options()
                 .get_optimize_for() ==
                 FileOptions_OptimizeMode::LITE_RUNTIME,
+            customize,
         }
     }
 
@@ -48,7 +60,7 @@ impl<'a> MessageGen<'a> {
         self.message
             .oneofs()
             .into_iter()
-            .map(|oneof| OneofGen::parse(self, oneof))
+            .map(|oneof| OneofGen::parse(self, oneof, &self.customize))
             .collect()
     }
 
@@ -447,13 +459,14 @@ impl<'a> MessageGen<'a> {
             // ignore map entries, because they are not used in map fields
             if nested.map_entry().is_none() {
                 w.write_line("");
-                MessageGen::new(nested, self.root_scope).write(w);
+                MessageGen::new(nested, self.root_scope, &self.customize).write(w);
             }
         }
 
         for enum_type in &self.message.to_scope().get_enums() {
             w.write_line("");
-            EnumGen::new(enum_type, self.message.get_scope().get_file_descriptor()).write(w);
+            let current_file = self.message.get_scope().get_file_descriptor();
+            EnumGen::new(enum_type, current_file, &self.customize).write(w);
         }
     }
 }
