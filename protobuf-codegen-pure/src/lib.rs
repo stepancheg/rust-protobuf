@@ -65,7 +65,7 @@ impl<'a> Run<'a> {
         result: &mut HashMap<String, FileDescriptorPair>)
     {
         for import in &parsed.import_paths {
-            self.get_file_and_all_deps_already_parsed(import.to_str().unwrap(), result);
+            self.get_file_and_all_deps_already_parsed(import, result);
         }
     }
 
@@ -84,7 +84,7 @@ impl<'a> Run<'a> {
             })?;
 
         for import_path in &parsed.import_paths {
-            self.add_imported_file(import_path.to_str().unwrap())?;
+            self.add_imported_file(import_path)?;
         }
 
         let mut this_file_deps = HashMap::new();

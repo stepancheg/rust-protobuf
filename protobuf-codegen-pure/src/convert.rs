@@ -1,5 +1,7 @@
 //! Convert protobuf_parser model to rust-protobuf model
 
+use std::iter;
+
 use protobuf_parser;
 use protobuf;
 
@@ -116,7 +118,7 @@ impl<'a> Resolver<'a> {
     {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.set_label(label(input.frequency.clone()));
+        output.set_label(label(input.rule));
 
         let (t, t_name) = self.field_type(&input.typ, path_in_file);
         output.set_field_type(t);
@@ -157,9 +159,16 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn resolve_message_or_enum(&self, name: &str, path_in_file: &PathInFile) -> (String, MessageOrEnum) {
+    fn resolve_message_or_enum(&self, name: &str, path_in_file: &PathInFile)
+        -> (String, MessageOrEnum)
+    {
         if name.starts_with(".") {
-            unimplemented!("absolute paths are to be implemented");
+            for _file in iter::once(self.current_file).chain(self.deps) {
+                unimplemented!("absolute paths are to be implemented");
+            }
+
+            // TODO: error instead of panic
+            panic!("type is not found: {}", name);
         }
 
         if name.contains(".") {
@@ -208,18 +217,14 @@ impl<'a> Resolver<'a> {
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FLOAT, None),
             protobuf_parser::FieldType::Double =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_DOUBLE, None),
-            protobuf_parser::FieldType::String_ =>
+            protobuf_parser::FieldType::String =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING, None),
             protobuf_parser::FieldType::Bytes =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES, None),
-            protobuf_parser::FieldType::Message(ref name) => {
+            protobuf_parser::FieldType::MessageOrEnum(ref name) => {
                 let (name, me) = self.resolve_message_or_enum(&name, path_in_file);
                 (me.descriptor_type(), Some(name))
             }
-            protobuf_parser::FieldType::Enum(ref _name) => {
-                // TODO: https://github.com/tafia/protobuf-parser/pull/3
-                unreachable!("protobuf-parser cannot distinguish between message and enum")
-            },
             protobuf_parser::FieldType::Map(..) => unimplemented!(),
         }
     }
@@ -231,10 +236,10 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn enumeration(&self, input: &protobuf_parser::Enumerator) -> protobuf::descriptor::EnumDescriptorProto {
+    fn enumeration(&self, input: &protobuf_parser::Enumeration) -> protobuf::descriptor::EnumDescriptorProto {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.set_value(input.fields.iter().map(|&(ref n, v)| self.enum_value(&n, v)).collect());
+        output.set_value(input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect());
         output
     }
 
@@ -253,13 +258,13 @@ fn syntax(input: protobuf_parser::Syntax) -> String {
     }
 }
 
-fn label(input: protobuf_parser::Frequency) -> protobuf::descriptor::FieldDescriptorProto_Label {
+fn label(input: protobuf_parser::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label {
     match input {
-        protobuf_parser::Frequency::Optional =>
+        protobuf_parser::Rule::Optional =>
             protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
-        protobuf_parser::Frequency::Required =>
+        protobuf_parser::Rule::Required =>
             protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED,
-        protobuf_parser::Frequency::Repeated =>
+        protobuf_parser::Rule::Repeated =>
             protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED,
     }
 }

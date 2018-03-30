@@ -17,4 +17,4 @@ doctest = false
 [dependencies]
 protobuf = { path = "../protobuf", version = "1.6.0" }
 protobuf-codegen = { path = "../protobuf-codegen", version = "1.6.0" }
-protobuf-parser = { git = "https://github.com/tafia/protobuf-parser/" }
+protobuf-parser = "=0.1.0"
