@@ -10,11 +10,11 @@ mod test_import_root_imported_pb;
 mod test_import_nonunique_pb;
 mod test_import_nonunique_1_pb;
 mod test_import_nonunique_2_pb;
-mod test_required_pb;
 mod test_sanitize_file_name_pb;
 mod test_special_characters_file_name__pb;
 
 mod test_required;
+mod test_required_pb;
 
 mod test_default_values;
 mod test_default_values_pb;
