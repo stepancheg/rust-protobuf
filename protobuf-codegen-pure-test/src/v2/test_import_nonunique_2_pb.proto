@@ -1,5 +1,0 @@
-syntax = "proto2";
-
-package nonunique_2;
-
-message Nonunique {}

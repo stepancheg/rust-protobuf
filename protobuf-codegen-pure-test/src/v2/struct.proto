@@ -1,3 +1,0 @@
-// this file just checks that file name is properly escaped,
-// because `struct` is a keyword in rust
-message KeepTheFile {}

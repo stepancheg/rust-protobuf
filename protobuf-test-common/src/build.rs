@@ -25,6 +25,7 @@ pub fn glob_simple(pattern: &str) -> Vec<String> {
 
 
 pub fn clean_old_files() {
+    // TODO: use .gitignore
     for f in glob_simple("src/**/*_pb.rs") {
         fs::remove_file(f).expect("rm");
     }
