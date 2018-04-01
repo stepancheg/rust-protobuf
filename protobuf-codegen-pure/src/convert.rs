@@ -6,33 +6,6 @@ use protobuf_parser;
 use protobuf;
 
 
-struct PackageName {
-    /// Empty for root, starts with dot otherwise
-    name: String,
-}
-
-impl PackageName {
-    fn root() -> PackageName {
-        PackageName::package(String::new())
-    }
-
-    fn package(name: String) -> PackageName {
-        assert!(name.is_empty() || name.starts_with("."));
-        PackageName {
-            name
-        }
-    }
-
-    fn package_without_dot(name: &str) -> PackageName {
-        if name.is_empty() {
-            PackageName::root()
-        } else {
-            PackageName::package(format!(".{}", name))
-        }
-    }
-}
-
-
 enum MessageOrEnum {
     Message,
     Enum,
@@ -48,30 +21,150 @@ impl MessageOrEnum {
 }
 
 
-struct PathInFile {
+struct RelativePath {
     path: String,
 }
 
-impl PathInFile {
-    fn root() -> PathInFile {
-        PathInFile::new(String::new())
+impl RelativePath {
+    fn empty() -> RelativePath {
+        RelativePath::new(String::new())
     }
 
-    fn new(path: String) -> PathInFile {
+    fn is_empty(&self) -> bool {
+        self.path.is_empty()
+    }
+
+    fn new(path: String) -> RelativePath {
         assert!(!path.starts_with("."));
 
-        PathInFile {
+        RelativePath {
             path
         }
     }
 
-    fn append(&self, simple: &str) -> PathInFile {
+    fn append(&self, simple: &str) -> RelativePath {
         if self.path.is_empty() {
-            PathInFile::new(simple.to_owned())
+            RelativePath::new(simple.to_owned())
         } else {
-            PathInFile::new(format!("{}.{}", self.path, simple))
+            RelativePath::new(format!("{}.{}", self.path, simple))
         }
     }
+
+    fn split(&self) -> Option<(String, RelativePath)> {
+        if self.is_empty() {
+            None
+        } else {
+            Some(match self.path.find('.') {
+                Some(dot) => {
+                    (
+                        self.path[..dot].to_owned(),
+                        RelativePath::new(self.path[dot+1..].to_owned())
+                    )
+                }
+                None => {
+                    (
+                        self.path.clone(),
+                        RelativePath::empty()
+                    )
+                }
+            })
+        }
+    }
+}
+
+
+#[derive(Clone)]
+struct AbsolutePath {
+    path: String,
+}
+
+impl AbsolutePath {
+    fn root() -> AbsolutePath {
+        AbsolutePath::new(String::new())
+    }
+
+    fn new(path: String) -> AbsolutePath {
+        assert!(path.is_empty() || path.starts_with("."));
+        assert!(!path.ends_with("."));
+        AbsolutePath { path }
+    }
+
+    fn from_path_without_dot(path: &str) -> AbsolutePath {
+        if path.is_empty() {
+            AbsolutePath::root()
+        } else {
+            assert!(!path.starts_with("."));
+            assert!(!path.ends_with("."));
+            AbsolutePath::new(format!(".{}", path))
+        }
+    }
+
+    fn push_simple(&mut self, simple: &str) {
+        assert!(!simple.is_empty());
+        assert!(!simple.contains('.'));
+        self.path.push('.');
+        self.path.push_str(simple);
+    }
+}
+
+
+enum LookupScope<'a> {
+    File(&'a protobuf_parser::FileDescriptor),
+    Message(&'a protobuf_parser::Message),
+}
+
+impl<'a> LookupScope<'a> {
+    fn messages(&self) -> &[protobuf_parser::Message] {
+        match self {
+            &LookupScope::File(file) => &file.messages,
+            &LookupScope::Message(messasge) => &messasge.messages,
+        }
+    }
+
+    fn enums(&self) -> &[protobuf_parser::Enumeration] {
+        match self {
+            &LookupScope::File(file) => &file.enums,
+            &LookupScope::Message(messasge) => &messasge.enums,
+        }
+    }
+
+    fn members(&self) -> Vec<(&str, MessageOrEnum)> {
+        let mut r = Vec::new();
+        r.extend(self.enums().into_iter().map(|e| (&e.name[..], MessageOrEnum::Enum)));
+        r.extend(self.messages().into_iter().map(|e| (&e.name[..], MessageOrEnum::Message)));
+        r
+    }
+
+    fn resolve_message_or_enum(&self, current_path: &AbsolutePath, path: &RelativePath)
+        -> Option<(AbsolutePath, MessageOrEnum)>
+    {
+        let (first, rem) = match path.split() {
+            Some(x) => x,
+            None => return None,
+        };
+
+        if rem.is_empty() {
+            for member in self.members() {
+                if member.0 == first {
+                    let mut result_path = current_path.clone();
+                    result_path.push_simple(member.0);
+                    return Some((result_path, member.1));
+                }
+            }
+            None
+        } else {
+            for message in self.messages() {
+                if message.name == first {
+                    let mut message_path = current_path.clone();
+                    message_path.push_simple(&message.name);
+                    let message_scope = LookupScope::Message(message);
+                    return message_scope.resolve_message_or_enum(&message_path, &rem);
+                }
+            }
+            None
+        }
+    }
+
 }
 
 
@@ -81,11 +174,7 @@ struct Resolver<'a> {
 }
 
 impl<'a> Resolver<'a> {
-    fn current_file_package(&self) -> PackageName {
-        PackageName::package_without_dot(&self.current_file.package)
-    }
-
-    fn message(&self, input: &protobuf_parser::Message, path_in_file: &PathInFile)
+    fn message(&self, input: &protobuf_parser::Message, path_in_file: &RelativePath)
         -> protobuf::descriptor::DescriptorProto
     {
         let nested_path_in_file = path_in_file.append(&input.name);
@@ -113,7 +202,7 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn field(&self, input: &protobuf_parser::Field, path_in_file: &PathInFile)
+    fn field(&self, input: &protobuf_parser::Field, path_in_file: &RelativePath)
         -> protobuf::descriptor::FieldDescriptorProto
     {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
@@ -123,7 +212,7 @@ impl<'a> Resolver<'a> {
         let (t, t_name) = self.field_type(&input.typ, path_in_file);
         output.set_field_type(t);
         if let Some(t_name) = t_name {
-            output.set_type_name(t_name);
+            output.set_type_name(t_name.path);
         }
 
         output.set_number(input.number);
@@ -159,36 +248,42 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn resolve_message_or_enum(&self, name: &str, path_in_file: &PathInFile)
-        -> (String, MessageOrEnum)
+    fn all_files(&self) -> Vec<&protobuf_parser::FileDescriptor> {
+        iter::once(self.current_file).chain(self.deps).collect()
+    }
+
+    fn current_file_package_files(&self) -> Vec<&protobuf_parser::FileDescriptor> {
+        self.all_files().into_iter()
+            .filter(|f| f.package == self.current_file.package)
+            .collect()
+    }
+
+    fn resolve_message_or_enum(&self, name: &str, _path_in_file: &RelativePath)
+        -> (AbsolutePath, MessageOrEnum)
     {
         if name.starts_with(".") {
-            for _file in iter::once(self.current_file).chain(self.deps) {
+            for _file in self.all_files() {
                 unimplemented!("absolute paths are to be implemented");
             }
 
             // TODO: error instead of panic
             panic!("type is not found: {}", name);
-        }
-
-        if name.contains(".") {
-            unimplemented!("non-root names are not implemented either")
-        }
-
-        let message_or_enum;
-        if self.current_file.messages.iter().any(|m| m.name == name) {
-            message_or_enum = MessageOrEnum::Message;
-        } else if self.current_file.enums.iter().any(|e| e.name == name) {
-            message_or_enum = MessageOrEnum::Enum;
         } else {
-            unimplemented!("name could be relative");
-        }
+            for file in self.current_file_package_files() {
+                if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
+                    &AbsolutePath::from_path_without_dot(&file.package),
+                    &RelativePath::new(name.to_owned()))
+                {
+                    return (n, t)
+                }
+            }
 
-        (format!("{}.{}", self.current_file_package().name, name), message_or_enum)
+            panic!("TODO: lookup in parent messages");
+        }
     }
 
-    fn field_type(&self, input: &protobuf_parser::FieldType, path_in_file: &PathInFile)
-        -> (protobuf::descriptor::FieldDescriptorProto_Type, Option<String>)
+    fn field_type(&self, input: &protobuf_parser::FieldType, path_in_file: &RelativePath)
+        -> (protobuf::descriptor::FieldDescriptorProto_Type, Option<AbsolutePath>)
     {
         match *input {
             protobuf_parser::FieldType::Bool =>
@@ -286,7 +381,7 @@ pub fn file_descriptor(
     output.set_syntax(syntax(input.syntax));
 
     let messages = input.messages.iter()
-        .map(|m| resolver.message(m, &PathInFile::root()))
+        .map(|m| resolver.message(m, &RelativePath::empty()))
         .collect();
     output.set_message_type(messages);
 
