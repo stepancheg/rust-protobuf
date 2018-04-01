@@ -60,15 +60,10 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
         assert!(file_name.ends_with(".rs"));
         let mod_name = &file_name[..file_name.len() - ".rs".len()];
 
-        let with_bytes = cfg!(feature = "with-bytes");
-
-        let include_mod = with_bytes || !mod_name.contains("carllerche");
-
-        if include_mod {
-            writeln!(mod_rs, "mod {};", mod_name).expect("write");
-        } else {
-            writeln!(mod_rs, "// mod {};", mod_name).expect("write");
+        if mod_name.contains("carllerche") {
+            writeln!(mod_rs, r#"#[cfg(feature = "with-bytes")]"#).expect("write");
         }
+        writeln!(mod_rs, "mod {};", mod_name).expect("write");
     }
 
     mod_rs.flush().expect("flush");
