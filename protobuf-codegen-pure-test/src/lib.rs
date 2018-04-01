@@ -5,3 +5,4 @@ extern crate protobuf;
 extern crate protobuf_test_common;
 
 mod v2;
+mod v3;

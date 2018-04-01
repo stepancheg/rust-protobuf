@@ -44,6 +44,15 @@ fn copy_tests(dir: &str) {
 }
 
 
+fn gen_in_dir_pure(dir: &str) {
+    gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
+        protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
+            out_dir, input, includes, customize
+        })
+    });
+}
+
+
 fn generate_pb_rs() {
 
     copy_tests("src/v2");
@@ -51,24 +60,16 @@ fn generate_pb_rs() {
     // TODO: implement group
     fs::remove_file("src/v2/test_group_pb.proto").expect("rm");
 
-    fn gen_v2_v3(dir: &str) {
-        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
-            protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-                out_dir, input, includes, customize
-            })
-        });
-    }
+    copy_tests("src/v3");
+    // TODO
+    fs::remove_file("src/v3/test_issue_190_pb.proto").expect("rm");
+    fs::remove_file("src/v3/test_map_carllerche_pb.proto").expect("rm");
+    fs::remove_file("src/v3/test_map_carllerche.rs").expect("rm");
+    fs::remove_file("src/v3/test_map_pb.proto").expect("rm");
+    fs::remove_file("src/v3/test_map.rs").expect("rm");
 
-    gen_v2_v3("src/v2");
-
-//    gen_v2_v3("src/v3");
-//
-//    let protos = glob_simple("src/google/protobuf/*.proto");
-//    protoc_rust::run(protoc_rust::Args {
-//        out_dir: "src/google/protobuf",
-//        input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
-//        includes: &["../proto", "src"],
-//    }).expect("protoc");
+    gen_in_dir_pure("src/v2");
+    gen_in_dir_pure("src/v3");
 }
 
 
