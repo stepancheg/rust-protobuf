@@ -10,7 +10,7 @@ doctest = false
 [features]
 default-features = []
 proto3 = []
-with-bytes = ["bytes", "protobuf/with-bytes"]
+with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 
 [build-dependencies]
 protoc      = { path = "../protoc" }

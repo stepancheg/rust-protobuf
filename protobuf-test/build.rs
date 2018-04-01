@@ -22,12 +22,6 @@ fn generate_v_from_common() {
         .expect("version")
         .is_3();
 
-    let mut mod_v2 = fs::File::create("src/common/v2/mod.rs").expect("mod.rs");
-    let mut mod_v3 = fs::File::create("src/common/v3/mod.rs").expect("mod.rs");
-
-    write!(mod_v2, "// generated\n").expect("write");
-    write!(mod_v3, "// generated\n").expect("write");
-
     for f in glob_simple("src/common/v2/*.rs") {
         let f = path::PathBuf::from(f);
         let base_name = f.as_path()
@@ -44,17 +38,6 @@ fn generate_v_from_common() {
 
         if without_suffix.ends_with("_pb") {
             continue;
-        }
-
-        let carllerche = without_suffix.contains("carllerche");
-
-        for mod_v in &mut [&mut mod_v2, &mut mod_v3] {
-            for suffix in &["", "_pb"] {
-                if carllerche {
-                    write!(mod_v, "#[cfg(feature = \"bytes\")]").expect("write");
-                }
-                write!(mod_v, "mod {}{};\n", without_suffix, suffix).expect("write");
-            }
         }
 
         let mut p2f = fs::File::open(&format!("src/common/v2/{}_pb.proto", without_suffix))
@@ -97,11 +80,10 @@ fn generate_v_from_common() {
                 input: &[&format!("src/common/v{}/{}_pb.proto", v, without_suffix)],
                 .. Default::default()
             }).expect("protoc");
+
+            gen_mod_rs_in_dir(&format!("src/common/v{}", v));
         }
     }
-
-    mod_v2.flush().expect("flush");
-    mod_v3.flush().expect("flush");
 }
 
 fn generate_pb_rs() {
