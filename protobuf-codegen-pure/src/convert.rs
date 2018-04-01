@@ -247,10 +247,19 @@ impl<'a> Resolver<'a> {
 
         output.set_enum_type(input.enums.iter().map(|e| self.enumeration(e)).collect());
 
-        let fields = input.fields.iter()
-            .map(|f| self.field(f, &nested_path_in_file))
-            .collect();
-        output.set_field(fields);
+        {
+            let regular_fields = input.fields.iter()
+                .map(|f| self.field(f, None, &nested_path_in_file));
+
+            let oneof_fields = input.oneofs.iter().enumerate()
+                .flat_map(|(oneof_index, oneof)| {
+                    let oneof_index = oneof_index as i32;
+                    oneof.fields.iter().zip(iter::repeat(oneof_index))
+                        .map(|(f, oneof_index)| self.field(f, Some(oneof_index), &nested_path_in_file))
+                });
+
+            output.set_field(regular_fields.chain(oneof_fields).collect());
+        }
 
         let oneofs = input.oneofs.iter()
             .map(|o| self.oneof(o))
@@ -260,7 +269,7 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn field(&self, input: &protobuf_parser::Field, path_in_file: &RelativePath)
+    fn field(&self, input: &protobuf_parser::Field, oneof_index: Option<i32>, path_in_file: &RelativePath)
         -> protobuf::descriptor::FieldDescriptorProto
     {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
@@ -302,6 +311,11 @@ impl<'a> Resolver<'a> {
         if let Some(packed) = input.packed {
             output.mut_options().set_packed(packed);
         }
+
+        if let Some(oneof_index) = oneof_index {
+            output.set_oneof_index(oneof_index);
+        }
+
         output.mut_options().set_deprecated(input.deprecated);
         output
     }
@@ -410,7 +424,6 @@ impl<'a> Resolver<'a> {
     fn oneof(&self, input: &protobuf_parser::OneOf) -> protobuf::descriptor::OneofDescriptorProto {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
-        // TODO: fields
         output
     }
 }
