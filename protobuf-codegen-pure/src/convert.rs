@@ -21,6 +21,7 @@ impl MessageOrEnum {
 }
 
 
+#[derive(Debug, Eq, PartialEq)]
 struct RelativePath {
     path: String,
 }
@@ -73,7 +74,7 @@ impl RelativePath {
 }
 
 
-#[derive(Clone)]
+#[derive(Clone, Eq, PartialEq, Debug)]
 struct AbsolutePath {
     path: String,
 }
@@ -99,11 +100,68 @@ impl AbsolutePath {
         }
     }
 
+    fn from_path_maybe_dot(path: &str) -> AbsolutePath {
+        if path.starts_with(".") {
+            AbsolutePath::new(path.to_owned())
+        } else {
+            AbsolutePath::from_path_without_dot(path)
+        }
+    }
+
     fn push_simple(&mut self, simple: &str) {
         assert!(!simple.is_empty());
         assert!(!simple.contains('.'));
         self.path.push('.');
         self.path.push_str(simple);
+    }
+
+    fn remove_prefix(&self, prefix: &AbsolutePath) -> Option<RelativePath> {
+        if self.path.starts_with(&prefix.path) {
+            let rem = &self.path[prefix.path.len()..];
+            if rem.is_empty() {
+                return Some(RelativePath::empty());
+            }
+            if rem.starts_with('.') {
+                return Some(RelativePath::new(rem[1..].to_owned()));
+            }
+        }
+        None
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn absolute_path_push_simple() {
+        let mut foo = AbsolutePath::new(".foo".to_owned());
+        foo.push_simple("bar");
+        assert_eq!(AbsolutePath::new(".foo.bar".to_owned()), foo);
+
+        let mut foo = AbsolutePath::root();
+        foo.push_simple("bar");
+        assert_eq!(AbsolutePath::new(".bar".to_owned()), foo);
+    }
+
+    #[test]
+    fn absolute_path_remove_prefix() {
+        assert_eq!(
+            Some(RelativePath::empty()),
+            AbsolutePath::new(".foo".to_owned())
+                .remove_prefix(&AbsolutePath::new(".foo".to_owned())));
+        assert_eq!(
+            Some(RelativePath::new("bar".to_owned())),
+            AbsolutePath::new(".foo.bar".to_owned())
+                .remove_prefix(&AbsolutePath::new(".foo".to_owned())));
+        assert_eq!(
+            Some(RelativePath::new("baz.qux".to_owned())),
+            AbsolutePath::new(".foo.bar.baz.qux".to_owned())
+                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned())));
+        assert_eq!(
+            None,
+            AbsolutePath::new(".foo.barbaz".to_owned())
+                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned())));
     }
 }
 
@@ -261,14 +319,8 @@ impl<'a> Resolver<'a> {
     fn resolve_message_or_enum(&self, name: &str, _path_in_file: &RelativePath)
         -> (AbsolutePath, MessageOrEnum)
     {
-        if name.starts_with(".") {
-            for _file in self.all_files() {
-                unimplemented!("absolute paths are to be implemented");
-            }
-
-            // TODO: error instead of panic
-            panic!("type is not found: {}", name);
-        } else {
+        // find message or enum in current package
+        if !name.starts_with(".") {
             for file in self.current_file_package_files() {
                 if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
                     &AbsolutePath::from_path_without_dot(&file.package),
@@ -277,9 +329,26 @@ impl<'a> Resolver<'a> {
                     return (n, t)
                 }
             }
-
-            panic!("TODO: lookup in parent messages");
         }
+
+        // find message or enum in root package
+        {
+            let absolute_path = AbsolutePath::from_path_maybe_dot(name);
+            for file in self.all_files() {
+                let file_package = AbsolutePath::from_path_without_dot(&file.package);
+                if let Some(relative) = absolute_path.remove_prefix(&file_package) {
+                    if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
+                        &file_package,
+                        &relative)
+                    {
+                        return (n, t)
+                    }
+                }
+            }
+        }
+
+        // TODO: find names in outer messages
+        panic!("couldn't find message or enum {}", name);
     }
 
     fn field_type(&self, input: &protobuf_parser::FieldType, path_in_file: &RelativePath)
