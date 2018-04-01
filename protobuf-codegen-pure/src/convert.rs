@@ -426,7 +426,7 @@ impl<'a> Resolver<'a> {
         }
 
         // TODO: find names in outer messages
-        panic!("couldn't find message or enum {}", name);
+        panic!("couldn't find message or enum {} when parsing {}", name, self.current_file.package);
     }
 
     fn field_type(&self, name: &str, input: &protobuf_parser::FieldType, path_in_file: &RelativePath)
