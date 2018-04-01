@@ -65,8 +65,6 @@ fn generate_pb_rs() {
     fs::remove_file("src/v3/test_issue_190_pb.proto").expect("rm");
     fs::remove_file("src/v3/test_map_carllerche_pb.proto").expect("rm");
     fs::remove_file("src/v3/test_map_carllerche.rs").expect("rm");
-    fs::remove_file("src/v3/test_map_pb.proto").expect("rm");
-    fs::remove_file("src/v3/test_map.rs").expect("rm");
 
     gen_in_dir_pure("src/v2");
     gen_in_dir_pure("src/v3");

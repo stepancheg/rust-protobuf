@@ -115,6 +115,13 @@ impl AbsolutePath {
         self.path.push_str(simple);
     }
 
+    fn push_relative(&mut self, relative: &RelativePath) {
+        if !relative.is_empty() {
+            self.path.push('.');
+            self.path.push_str(&relative.path);
+        }
+    }
+
     fn remove_prefix(&self, prefix: &AbsolutePath) -> Option<RelativePath> {
         if self.path.starts_with(&prefix.path) {
             let rem = &self.path[prefix.path.len()..];
@@ -232,6 +239,49 @@ struct Resolver<'a> {
 }
 
 impl<'a> Resolver<'a> {
+    fn map_entry_name_for_field_name(field_name: &str) -> String {
+        format!("{}_MapEntry", field_name)
+    }
+
+    fn map_entry_field(
+        &self,
+        name: &str,
+        number: i32,
+        field_type: &protobuf_parser::FieldType,
+        path_in_file: &RelativePath)
+        -> protobuf::descriptor::FieldDescriptorProto
+    {
+        let mut output = protobuf::descriptor::FieldDescriptorProto::new();
+        output.set_name(name.to_owned());
+        output.set_number(number);
+
+        let (t, t_name) = self.field_type(name, field_type, path_in_file);
+        output.set_field_type(t);
+        if let Some(t_name) = t_name {
+            output.set_type_name(t_name.path);
+        }
+        
+        output
+    }
+
+    fn map_entry_message(
+        &self,
+        field_name: &str,
+        key: &protobuf_parser::FieldType,
+        value: &protobuf_parser::FieldType,
+        path_in_file: &RelativePath)
+        -> protobuf::descriptor::DescriptorProto
+    {
+        let mut output = protobuf::descriptor::DescriptorProto::new();
+
+        output.mut_options().set_map_entry(true);
+        output.set_name(Resolver::map_entry_name_for_field_name(field_name));
+        output.mut_field().push(self.map_entry_field("key", 1, key, path_in_file));
+        output.mut_field().push(self.map_entry_field("value", 2, value, path_in_file));
+
+        output
+    }
+
     fn message(&self, input: &protobuf_parser::Message, path_in_file: &RelativePath)
         -> protobuf::descriptor::DescriptorProto
     {
@@ -240,10 +290,19 @@ impl<'a> Resolver<'a> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
         output.set_name(input.name.clone());
 
-        let nested_messages = input.messages.iter()
-            .map(|m| self.message(m, &nested_path_in_file))
-            .collect();
-        output.set_nested_type(nested_messages);
+        let nested_messages_regular = input.messages.iter()
+            .map(|m| self.message(m, &nested_path_in_file));
+
+        let nested_messages_map = input.fields.iter().filter_map(|f| {
+            match f.typ {
+                protobuf_parser::FieldType::Map(ref t) => {
+                    Some(self.map_entry_message(&f.name, &t.0, &t.1, path_in_file))
+                }
+                _ => None,
+            }
+        });
+
+        output.set_nested_type(nested_messages_regular.chain(nested_messages_map).collect());
 
         output.set_enum_type(input.enums.iter().map(|e| self.enumeration(e)).collect());
 
@@ -274,9 +333,14 @@ impl<'a> Resolver<'a> {
     {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.set_label(label(input.rule));
 
-        let (t, t_name) = self.field_type(&input.typ, path_in_file);
+        if let protobuf_parser::FieldType::Map(..) = input.typ {
+            output.set_label(protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED);
+        } else {
+            output.set_label(label(input.rule));
+        }
+
+        let (t, t_name) = self.field_type(&input.name, &input.typ, path_in_file);
         output.set_field_type(t);
         if let Some(t_name) = t_name {
             output.set_type_name(t_name.path);
@@ -365,7 +429,7 @@ impl<'a> Resolver<'a> {
         panic!("couldn't find message or enum {}", name);
     }
 
-    fn field_type(&self, input: &protobuf_parser::FieldType, path_in_file: &RelativePath)
+    fn field_type(&self, name: &str, input: &protobuf_parser::FieldType, path_in_file: &RelativePath)
         -> (protobuf::descriptor::FieldDescriptorProto_Type, Option<AbsolutePath>)
     {
         match *input {
@@ -403,7 +467,15 @@ impl<'a> Resolver<'a> {
                 let (name, me) = self.resolve_message_or_enum(&name, path_in_file);
                 (me.descriptor_type(), Some(name))
             }
-            protobuf_parser::FieldType::Map(..) => unimplemented!(),
+            protobuf_parser::FieldType::Map(..) => {
+                let mut type_name = AbsolutePath::from_path_without_dot(&self.current_file.package);
+                type_name.push_relative(path_in_file);
+                type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
+                (
+                    protobuf::descriptor::FieldDescriptorProto_Type::TYPE_MESSAGE,
+                    Some(type_name)
+                )
+            }
         }
     }
 
