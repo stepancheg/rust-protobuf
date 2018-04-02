@@ -71,7 +71,7 @@ pub mod rust;
 mod cached_size;
 mod varint;
 #[cfg(feature = "bytes")]
-pub mod chars; // TODO: make private
+mod chars;
 
 mod misc;
 
