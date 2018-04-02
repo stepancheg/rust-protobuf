@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- [Protobuf no longer exposes internal `hex`
+  module](https://github.com/stepancheg/rust-protobuf/commit/8ad9687529a565c5ef2db93732cc20c8d8d22f00)
 - Generated code can now be customized not only with `rustproto.proto`
   but also when invoked programmatically with
   [`protoc-rust`](https://github.com/stepancheg/rust-protobuf/blob/b8573bd53cf5a9611598abbf02b71c49e59a8891/protobuf-codegen/src/customize.rs#L9)
