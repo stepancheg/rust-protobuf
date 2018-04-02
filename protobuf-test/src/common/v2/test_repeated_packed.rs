@@ -3,19 +3,49 @@ use super::test_repeated_packed_pb::*;
 use test::*;
 
 
+// varint field number = 4
+// unpacked tag = 20
+// packed tag   = 22
 
 #[test]
-fn test_read_unpacked_expect_packed() {
-    let mut test_packed_unpacked = TestPackedUnpacked::new();
-    test_packed_unpacked.set_packed(Vec::new());
-    test_packed_unpacked.set_unpacked([17i32, 1000].to_vec());
-    test_deserialize("20 11 20 e8 07", &test_packed_unpacked);
+fn test_write_unpacked() {
+    let mut test = TestUnpacked::new();
+    test.set_varints([17i32, 1000].to_vec());
+    test_serialize_deserialize("20 11 20 e8 07", &test);
 }
 
 #[test]
-fn test_read_packed_expect_unpacked() {
-    let mut test_packed_unpacked = TestPackedUnpacked::new();
-    test_packed_unpacked.set_packed([17i32, 1000].to_vec());
-    test_packed_unpacked.set_unpacked(Vec::new());
-    test_deserialize("2a 03 11 e8 07", &test_packed_unpacked);
+fn test_read_unpacked_to_unpacked() {
+    let mut test = TestUnpacked::new();
+    test.set_varints([17i32, 1000].to_vec());
+    test_deserialize("20 11 20 e8 07", &test);
+}
+
+#[test]
+fn test_read_packed_to_unpacked() {
+    let mut test = TestUnpacked::new();
+    test.set_varints([17i32, 1000].to_vec());
+    test_deserialize("22 03 11 e8 07", &test);
+}
+
+
+#[test]
+fn test_write_packed() {
+    let mut test = TestPacked::new();
+    test.set_varints([17i32, 1000].to_vec());
+    test_serialize_deserialize("22 03 11 e8 07", &test);
+}
+
+#[test]
+fn test_read_unpacked_to_packed() {
+    let mut test = TestPacked::new();
+    test.set_varints([17i32, 1000].to_vec());
+    test_deserialize("20 11 20 e8 07", &test);
+}
+
+#[test]
+fn test_read_packed_to_packed() {
+    let mut test = TestPacked::new();
+    test.set_varints([17i32, 1000].to_vec());
+    test_deserialize("22 03 11 e8 07", &test);
 }
