@@ -1318,9 +1318,9 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_fixed_size(&self) -> String {
         // zero is filtered outside
         format!(
-            "{} + ::protobuf::rt::compute_raw_varint32_size({}.len() as u32) + {}",
+            "{} + ::protobuf::rt::compute_raw_varint32_size({}) + {}",
             self.tag_size(),
-            self.self_field(),
+            self.self_field_vec_packed_fixed_data_size(),
             self.self_field_vec_packed_fixed_data_size()
         )
     }
