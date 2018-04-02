@@ -3,6 +3,8 @@
 pub use protobuf_codegen::Customize;
 
 use std::io::Write;
+use std::io::BufRead;
+use std::io::BufReader;
 use std::fs;
 use std::fmt;
 use std::path::Path;
@@ -24,14 +26,60 @@ pub fn glob_simple(pattern: &str) -> Vec<String> {
 }
 
 
+fn read_gitignore(dir: &Path) -> Vec<String> {
+    let mut patterns = Vec::new();
+
+    let gitignore = format!("{}/.gitignore", dir.display());
+    let gitignore = &Path::new(&gitignore);
+    if gitignore.exists() {
+        let gitignore = fs::File::open(gitignore).expect("open gitignore");
+        for line in BufReader::new(gitignore).lines() {
+            let line = line.expect("read_line");
+            if line.is_empty() || line.starts_with("#") {
+                continue;
+            }
+            patterns.push(line);
+        }
+    }
+
+    patterns
+}
+
+
+fn clean_recursively(dir: &Path, patterns: &[&str]) {
+    assert!(dir.is_dir());
+
+    let gitignore_patterns = read_gitignore(dir);
+
+    let mut patterns = patterns.to_vec();
+    patterns.extend(gitignore_patterns.iter().map(String::as_str));
+
+    let patterns_compiled: Vec<_> = patterns.iter()
+        .map(|&p| glob::Pattern::new(p).expect("failed to compile pattern"))
+        .collect();
+
+    for entry in fs::read_dir(dir).expect("read_dir") {
+        let entry = entry.expect("entry");
+        let entry_path = entry.path();
+        let file_name = entry_path.as_path().file_name().unwrap().to_str().unwrap();
+        if entry.metadata().expect("metadata").is_dir() {
+            clean_recursively(&entry_path, &patterns);
+        } else if file_name == ".gitignore" {
+            // keep it
+        } else {
+            for pattern in &patterns_compiled {
+                if pattern.matches(file_name) {
+                    fs::remove_file(&entry_path).expect("remove_file");
+                    break;
+                }
+            }
+        }
+    }
+}
+
+
 pub fn clean_old_files() {
-    // TODO: use .gitignore
-    for f in glob_simple("src/**/*_pb.rs") {
-        fs::remove_file(f).expect("rm");
-    }
-    for f in glob_simple("src/**/*_pb_proto3.rs") {
-        fs::remove_file(f).expect("rm");
-    }
+    clean_recursively(&Path::new("src"), &["*_pb.rs", "*_pb_proto3.rs"]);
 }
 
 #[derive(Default)]
