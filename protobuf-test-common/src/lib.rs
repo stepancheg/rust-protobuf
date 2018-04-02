@@ -9,5 +9,6 @@ extern crate log;
 mod test;
 
 pub mod build;
+pub mod hex;
 
 pub use test::*;

@@ -1,5 +1,5 @@
-use protobuf::hex::encode_hex;
-use protobuf::hex::decode_hex;
+use hex::encode_hex;
+use hex::decode_hex;
 
 use protobuf::*;
 

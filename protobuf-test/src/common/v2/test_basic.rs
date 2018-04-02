@@ -1,8 +1,7 @@
-use protobuf::hex::decode_hex;
-
 use protobuf::*;
 
 use protobuf_test_common::*;
+use protobuf_test_common::hex::decode_hex;
 
 use super::test_basic_pb::*;
 

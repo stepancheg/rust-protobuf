@@ -55,7 +55,9 @@ pub mod well_known_types;
 pub mod ext;
 
 // used by test
-pub mod hex;
+#[cfg(test)]
+#[path = "../../protobuf-test-common/src/hex.rs"]
+mod hex;
 
 // used by rust-grpc
 pub mod descriptorx;
