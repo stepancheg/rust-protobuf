@@ -180,6 +180,9 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
         );
     }
 
+    /// Return a pointer to default immutable message.
+    fn default_instance() -> &'static Self
+        where Self : Sized;
 }
 
 pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {

@@ -150,7 +150,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_default_instance(&self, w: &mut CodeWriter) {
-        w.pub_fn(&format!("default_instance() -> &'static {}", self.type_name), |w| {
+        w.def_fn(&format!("default_instance() -> &'static {}", self.type_name), |w| {
             w.lazy_static_decl_get_simple(
                 "instance",
                 &self.type_name,
@@ -194,12 +194,11 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
         w.impl_self_block(&self.type_name, |w| {
+            // TODO: new should probably be a part of Message trait
             w.pub_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
             });
 
-            w.write_line("");
-            self.write_default_instance(w);
             self.write_field_accessors(w);
         });
     }
@@ -345,6 +344,8 @@ impl<'a> MessageGen<'a> {
                 w.write_line("");
                 self.write_descriptor_static(w);
             }
+            w.write_line("");
+            self.write_default_instance(w);
         });
     }
 
