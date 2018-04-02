@@ -21,6 +21,9 @@
 - [Proto files with suffixes others than `.proto`
   are now supported](https://github.com/stepancheg/rust-protobuf/pull/265)
 
+## [1.5.1] - 2018-04-02
+- [Fix serialization or large repeated packed fields](https://github.com/stepancheg/rust-protobuf/issues/281)
+
 ## [1.5.0] - 2018-03-25
 - [Unknown enum values are now stored in unknown fields](https://github.com/stepancheg/rust-protobuf/pull/276)
 
