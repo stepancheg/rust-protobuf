@@ -12,8 +12,6 @@
 - [Drop old reflection
   accessors](https://github.com/stepancheg/rust-protobuf/commit/7a03aee4e67bdd25ae6c403f37386707a0ab5eb9).
   Now code may need to be regenerated when protobuf version changed.
-- [Better error message when `protoc` command is not
-  found](https://github.com/stepancheg/rust-protobuf/commit/d59eb368deea1d292a161c3f30ff1123a022046d)
 - [Option to specify recursion limit](https://github.com/stepancheg/rust-protobuf/pull/248)
 - [Implement `std::io` traits by `CodedInputStream` and
   `CodedOutputStream`](https://github.com/stepancheg/rust-protobuf/pull/232)
@@ -22,6 +20,10 @@
   for reflection](https://github.com/stepancheg/rust-protobuf/pull/267)
 - [Proto files with suffixes others than `.proto`
   are now supported](https://github.com/stepancheg/rust-protobuf/pull/265)
+
+## [1.5] branch
+- [Better error message when `protoc` command is not
+  found](https://github.com/stepancheg/rust-protobuf/commit/d59eb368deea1d292a161c3f30ff1123a022046d)
 
 ## [1.5.1] - 2018-04-02
 - [Fix serialization or large repeated packed fields](https://github.com/stepancheg/rust-protobuf/issues/281)
