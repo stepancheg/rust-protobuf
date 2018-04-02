@@ -1,0 +1,4 @@
+message TestPackedUnpacked {
+    repeated int32 unpacked = 4;
+    repeated int32 packed = 5 [packed=true];
+}
