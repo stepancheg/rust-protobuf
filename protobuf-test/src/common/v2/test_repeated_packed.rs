@@ -70,3 +70,14 @@ fn test_read_packed_to_packed() {
     test.set_sfixed32s([17i32, 1000].to_vec());
     test_deserialize("2a 08 11 00 00 00 e8 03 00 00", &test);
 }
+
+#[test]
+fn test_issue_281() {
+    // Data len len was incorrectly computed.
+    // For 100 elements, bytes len is 400
+    // and varint len of 400 is 2,
+    // while varint len of 100 is 1.
+    let mut test = TestIssue281::new();
+    test.set_values((0..100).collect());
+    test_serialize_deserialize_no_hex(&test);
+}

@@ -7,3 +7,7 @@ message TestUnpacked {
     repeated int32 varints = 4 [packed=false];
     repeated sfixed32 sfixed32s = 5 [packed=false];
 }
+
+message TestIssue281 {
+    repeated fixed32 values = 1 [packed=true];
+}
