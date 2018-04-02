@@ -17,6 +17,7 @@ mod unittest;
 mod unittest_no_arena_import;
 mod unittest_no_arena;
 mod unittest_mset_wire_format;
+mod unittest_empty;
 mod unittest_import_public_lite;
 mod unittest_mset;
 mod unittest_no_arena_lite;

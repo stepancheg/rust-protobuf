@@ -111,13 +111,6 @@ fn gen_file(
 
     let scope = FileScope { file_descriptor: file }.to_scope();
 
-    if scope.get_messages().is_empty() && scope.get_enums().is_empty() &&
-        file.get_extension().is_empty()
-        {
-            // protoc generates empty file descriptors for directories: skip them
-            return None;
-        }
-
     let mut v = Vec::new();
 
     {
