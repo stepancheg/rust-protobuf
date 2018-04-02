@@ -18,12 +18,6 @@ message Test4 {
     repeated int32 d = 4 [packed=true];
 }
 
-
-message TestPackedUnpacked {
-    repeated int32 unpacked = 4;
-    repeated int32 packed = 5 [packed=true];
-}
-
 message TestEmpty {
     optional int32 foo = 10;
 }
