@@ -75,7 +75,7 @@ impl fmt::Display for RustType {
             RustType::Oneof(ref name) => write!(f, "{}", name),
             RustType::Group => write!(f, "<group>"),
             RustType::Bytes => write!(f, "::bytes::Bytes"),
-            RustType::Chars => write!(f, "::protobuf::chars::Chars"),
+            RustType::Chars => write!(f, "::protobuf::Chars"),
         }
     }
 }
@@ -166,7 +166,7 @@ impl RustType {
             RustType::HashMap(..) => "::std::collections::HashMap::new()".to_string(),
             RustType::String => "::std::string::String::new()".to_string(),
             RustType::Bytes => "::bytes::Bytes::new()".to_string(),
-            RustType::Chars => "::protobuf::chars::Chars::new()".to_string(),
+            RustType::Chars => "::protobuf::Chars::new()".to_string(),
             RustType::Option(..) => "::std::option::Option::None".to_string(),
             RustType::SingularField(..) => "::protobuf::SingularField::none()".to_string(),
             RustType::SingularPtrField(..) => "::protobuf::SingularPtrField::none()".to_string(),
