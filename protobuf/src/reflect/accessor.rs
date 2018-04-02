@@ -27,6 +27,7 @@ pub trait FieldAccessor {
     fn name_generic(&self) -> &'static str;
     fn has_field_generic(&self, m: &Message) -> bool;
     fn len_field_generic(&self, m: &Message) -> usize;
+    // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message;
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
@@ -240,6 +241,12 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
             FieldAccessorFunctions::SingularHasGetSet {
                 get_set: SingularGetSet::Message(ref get), ..
             } => get.get_message(message_down_cast(m)),
+            FieldAccessorFunctions::Optional(ref t) => {
+                match t.get_field(message_down_cast(m)).to_option().expect("field unset").as_ref() {
+                    ProtobufValueRef::Message(m) => m,
+                    _ => panic!("not a message"),
+                }
+            }
             ref fns => panic!("unknown accessor type: {:?}", fns),
         }
     }
