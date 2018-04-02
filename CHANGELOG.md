@@ -27,6 +27,9 @@
 ## [1.5.0] - 2018-03-25
 - [Unknown enum values are now stored in unknown fields](https://github.com/stepancheg/rust-protobuf/pull/276)
 
+## [1.4.5] - 2018-04-02
+- [Fix serialization or large repeated packed fields](https://github.com/stepancheg/rust-protobuf/issues/281)
+
 ## [1.4.4] - 2018-03-05
 - [Escape macro keyword](https://github.com/stepancheg/rust-protobuf/pull/269)
 
