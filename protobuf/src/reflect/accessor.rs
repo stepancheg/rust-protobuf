@@ -217,7 +217,9 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
             FieldAccessorFunctions::Simple(ref a) => {
                 a.get_field(message_down_cast(m)).is_non_zero()
             }
-            _ => panic!(),
+            FieldAccessorFunctions::Map(..) | FieldAccessorFunctions::Repeated(..) => {
+                panic!("has_xxx is not implemented for repeated");
+            }
         }
     }
 
@@ -225,7 +227,11 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
         match self.fns {
             FieldAccessorFunctions::Repeated(ref a) => a.get_field(message_down_cast(m)).len(),
             FieldAccessorFunctions::Map(ref a) => a.get_field(message_down_cast(m)).len(),
-            _ => panic!("not repeated"),
+            FieldAccessorFunctions::Simple(..) |
+            FieldAccessorFunctions::SingularHasGetSet { .. } |
+            FieldAccessorFunctions::Optional(..) => {
+                panic!("not a repeated field");
+            }
         }
     }
 
