@@ -11,7 +11,6 @@ cp protobuf-git/src/google/protobuf/unittest*.proto ./
 rm -rf protobuf-git
 
 # TODO
-rm unittest_custom_options.proto
 # https://github.com/rust-lang/rust/issues/40119
 rm unittest_enormous_descriptor.proto
 rm *_proto3.proto
