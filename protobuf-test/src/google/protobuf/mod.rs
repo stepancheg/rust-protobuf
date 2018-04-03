@@ -28,3 +28,4 @@ mod unittest_proto3_arena_lite;
 mod unittest_lite_imports_nonlite;
 mod unittest_lazy_dependencies_enum;
 mod unittest_preserve_unknown_enum2;
+mod unittest_custom_options;
