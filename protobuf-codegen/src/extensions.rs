@@ -80,6 +80,10 @@ pub fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
 
         for field in file.get_extension() {
+            if field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
+                continue;
+            }
+
             w.write_line("");
             ExtGen {
                 file: file,

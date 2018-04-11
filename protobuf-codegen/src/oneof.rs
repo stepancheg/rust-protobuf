@@ -10,6 +10,7 @@ use protobuf::descriptor::FieldDescriptorProto;
 use message::MessageGen;
 use Customize;
 use code_writer::CodeWriter;
+use protobuf::descriptor::FieldDescriptorProto_Type;
 
 
 // oneof one { ... }
@@ -126,18 +127,22 @@ impl<'a> OneofGen<'a> {
         }
     }
 
-    pub fn variants(&'a self) -> Vec<OneofVariantGen<'a>> {
+    pub fn variants_except_group(&'a self) -> Vec<OneofVariantGen<'a>> {
         self.oneof
             .variants()
             .into_iter()
-            .map(|v| {
+            .filter_map(|v| {
                 let field = self.message
                     .fields
                     .iter()
                     .filter(|f| f.proto_field.name() == v.field.get_name())
                     .next()
                     .expect(&format!("field not found by name: {}", v.field.get_name()));
-                OneofVariantGen::parse(self, v, field)
+                match field.proto_type {
+                    FieldDescriptorProto_Type::TYPE_GROUP => None,
+                    _ => Some(OneofVariantGen::parse(self, v, field)),
+                }
+
             })
             .collect()
     }
@@ -153,7 +158,7 @@ impl<'a> OneofGen<'a> {
         }
         w.derive(&derive);
         w.pub_enum(&self.type_name.to_string(), |w| {
-            for variant in self.variants() {
+            for variant in self.variants_except_group() {
                 w.write_line(&format!(
                     "{}({}),",
                     variant.field.rust_name,

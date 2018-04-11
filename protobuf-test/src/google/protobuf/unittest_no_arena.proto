@@ -95,9 +95,9 @@ message TestAllTypes {
   optional   string optional_string   = 14;
   optional    bytes optional_bytes    = 15;
 
-//  optional group OptionalGroup = 16 {
-//    optional int32 a = 17;
-//  }
+  optional group OptionalGroup = 16 {
+    optional int32 a = 17;
+  }
 
   optional NestedMessage                        optional_nested_message  = 18;
   optional ForeignMessage                       optional_foreign_message = 19;
@@ -133,9 +133,9 @@ message TestAllTypes {
   repeated   string repeated_string   = 44;
   repeated    bytes repeated_bytes    = 45;
 
-//  repeated group RepeatedGroup = 46 {
-//    optional int32 a = 47;
-//  }
+  repeated group RepeatedGroup = 46 {
+    optional int32 a = 47;
+  }
 
   repeated NestedMessage                        repeated_nested_message  = 48;
   repeated ForeignMessage                       repeated_foreign_message = 49;

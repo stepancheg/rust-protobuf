@@ -72,9 +72,9 @@ message TestAllTypesLite {
   optional   string optional_string   = 14;
   optional    bytes optional_bytes    = 15;
 
-//  optional group OptionalGroup = 16 {
-//    optional int32 a = 17;
-//  }
+  optional group OptionalGroup = 16 {
+    optional int32 a = 17;
+  }
 
   optional NestedMessage      optional_nested_message  = 18;
   optional ForeignMessageLite optional_foreign_message = 19;
@@ -111,9 +111,9 @@ message TestAllTypesLite {
   repeated   string repeated_string   = 44;
   repeated    bytes repeated_bytes    = 45;
 
-//  repeated group RepeatedGroup = 46 {
-//    optional int32 a = 47;
-//  }
+  repeated group RepeatedGroup = 46 {
+    optional int32 a = 47;
+  }
 
   repeated NestedMessage      repeated_nested_message  = 48;
   repeated ForeignMessageLite repeated_foreign_message = 49;
@@ -217,9 +217,9 @@ extend TestAllExtensionsLite {
   optional   string optional_string_extension_lite   = 14;
   optional    bytes optional_bytes_extension_lite    = 15;
 
-//  optional group OptionalGroup_extension_lite = 16 {
-//    optional int32 a = 17;
-//  }
+  optional group OptionalGroup_extension_lite = 16 {
+    optional int32 a = 17;
+  }
 
   optional TestAllTypesLite.NestedMessage optional_nested_message_extension_lite
       = 18;
@@ -259,9 +259,9 @@ extend TestAllExtensionsLite {
   repeated   string repeated_string_extension_lite   = 44;
   repeated    bytes repeated_bytes_extension_lite    = 45;
 
-//  repeated group RepeatedGroup_extension_lite = 46 {
-//    optional int32 a = 47;
-//  }
+  repeated group RepeatedGroup_extension_lite = 46 {
+    optional int32 a = 47;
+  }
 
   repeated TestAllTypesLite.NestedMessage repeated_nested_message_extension_lite
       = 48;
@@ -355,24 +355,24 @@ message TestParsingMergeLite {
     repeated TestAllTypesLite field1 = 1;
     repeated TestAllTypesLite field2 = 2;
     repeated TestAllTypesLite field3 = 3;
-//    repeated group Group1 = 10 {
-//      optional TestAllTypesLite field1 = 11;
-//    }
-//    repeated group Group2 = 20 {
-//      optional TestAllTypesLite field1 = 21;
-//    }
+    repeated group Group1 = 10 {
+      optional TestAllTypesLite field1 = 11;
+    }
+    repeated group Group2 = 20 {
+      optional TestAllTypesLite field1 = 21;
+    }
     repeated TestAllTypesLite ext1 = 1000;
     repeated TestAllTypesLite ext2 = 1001;
   }
   required TestAllTypesLite required_all_types = 1;
   optional TestAllTypesLite optional_all_types = 2;
   repeated TestAllTypesLite repeated_all_types = 3;
-//  optional group OptionalGroup = 10 {
-//    optional TestAllTypesLite optional_group_all_types = 11;
-//  }
-//  repeated group RepeatedGroup = 20 {
-//    optional TestAllTypesLite repeated_group_all_types = 21;
-//  }
+  optional group OptionalGroup = 10 {
+    optional TestAllTypesLite optional_group_all_types = 11;
+  }
+  repeated group RepeatedGroup = 20 {
+    optional TestAllTypesLite repeated_group_all_types = 21;
+  }
   extensions 1000 to max;
   extend TestParsingMergeLite {
     optional TestAllTypesLite optional_ext = 1000;
@@ -420,9 +420,9 @@ message TestHugeFieldNumbersLite {
   optional bytes optional_bytes = 536870006;
   optional ForeignMessageLite optional_message = 536870007;
 
-//  optional group OptionalGroup = 536870008 {
-//    optional int32 group_a = 536870009;
-//  }
+  optional group OptionalGroup = 536870008 {
+    optional int32 group_a = 536870009;
+  }
 
   map<string, string> string_string_map = 536870010;
 
