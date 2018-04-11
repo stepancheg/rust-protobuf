@@ -8,6 +8,8 @@ use super::field::*;
 use super::code_writer::*;
 use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_message;
+use oneof::OneofGen;
+use oneof::OneofVariantGen;
 
 
 /// Message info for codegen

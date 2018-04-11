@@ -19,6 +19,7 @@ mod well_known_types;
 mod field;
 mod customize;
 mod extensions;
+mod oneof;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
