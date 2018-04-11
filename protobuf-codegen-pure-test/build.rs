@@ -56,9 +56,6 @@ fn gen_in_dir_pure(dir: &str) {
 fn generate_pb_rs() {
 
     copy_tests("src/v2");
-    // TODO: https://github.com/tafia/protobuf-parser/issues/10
-    // TODO: implement group
-    fs::remove_file("src/v2/test_group_pb.proto").expect("rm");
 
     copy_tests("src/v3");
     // TODO

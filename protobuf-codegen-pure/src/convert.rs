@@ -476,6 +476,9 @@ impl<'a> Resolver<'a> {
                     Some(type_name)
                 )
             }
+            protobuf_parser::FieldType::Group(..) => {
+                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_GROUP, None)
+            }
         }
     }
 
