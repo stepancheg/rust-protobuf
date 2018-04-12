@@ -20,6 +20,8 @@
   for reflection](https://github.com/stepancheg/rust-protobuf/pull/267)
 - [Proto files with suffixes others than `.proto`
   are now supported](https://github.com/stepancheg/rust-protobuf/pull/265)
+- [Oneof are now public by
+  default](https://github.com/stepancheg/rust-protobuf/commit/8bd911e2ea0d4461580105209ae11d9d3ec21fd0)
 
 ## [1.5] branch
 - [Better error message when `protoc` command is not
