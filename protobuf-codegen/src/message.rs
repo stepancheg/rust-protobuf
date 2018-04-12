@@ -1,6 +1,5 @@
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
-use protobuf::rustproto;
 
 use super::enums::*;
 use super::rust_types_values::*;
@@ -52,10 +51,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn expose_oneof(&self) -> bool {
-        let options = self.message.get_scope().get_file_descriptor().get_options();
-        rustproto::exts::expose_oneof_all
-            .get(options)
-            .unwrap_or(false)
+        self.customize.expose_oneof.unwrap_or(false)
     }
 
     fn oneofs(&'a self) -> Vec<OneofGen<'a>> {
