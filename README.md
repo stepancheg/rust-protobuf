@@ -28,7 +28,7 @@ Readme should be in
 
 ### Use protoc-gen-rust plugin
 
-Readme is [here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen)
+Readme is [here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen).
 
 ## Generated code
 
