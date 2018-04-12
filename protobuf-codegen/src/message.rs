@@ -51,7 +51,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn expose_oneof(&self) -> bool {
-        self.customize.expose_oneof.unwrap_or(false)
+        self.customize.expose_oneof.unwrap_or(true)
     }
 
     fn oneofs(&'a self) -> Vec<OneofGen<'a>> {
