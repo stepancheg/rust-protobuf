@@ -21,48 +21,14 @@ There are several ways to generate rust code from `.proto` files
 
 Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
 
-### Invoke protoc programmatically with protoc crate
+### Use pure rust protobuf parser and code generator (alpha)
 
-Have a look at readme in [protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc).
+Readme should be in
+[protobuf-codegen-pure crate](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure).
 
-### With protoc command and protoc-gen-rust plugin
+### Use protoc-gen-rust plugin
 
-0) Install protobuf for `protoc` binary.
-
-On OS X [Homebrew](https://github.com/Homebrew/brew) can be used:
-
-```
-brew install protobuf
-```
-
-On Ubuntu, `protobuf-compiler` package can be installed:
-
-```
-apt-get install protobuf-compiler
-```
-
-Protobuf is needed only for code generation, `rust-protobuf` runtime
-does not use `protobuf` library.
-
-1) Install `protoc-gen-rust` program (which is `protoc` plugin)
-
-It can be installed either from source or with `cargo install protobuf` command.
-
-2) Add `protoc-gen-rust` to $PATH
-
-If you installed it with cargo, it should be
-
-```
-PATH="$HOME/.cargo/bin:$PATH"
-```
-
-3) Generate .rs files:
-
-```
-protoc --rust_out . foo.proto
-```
-
-This will generate .rs files in current directory.
+Readme is [here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen)
 
 ## Generated code
 
