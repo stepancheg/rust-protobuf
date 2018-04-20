@@ -18,3 +18,9 @@ doctest = false
 protobuf = { path = "../protobuf", version = "1.6.0" }
 protobuf-codegen = { path = "../protobuf-codegen", version = "1.6.0" }
 protobuf-parser = "=0.1.2"
+
+[[bin]]
+
+name = "parse-and-typecheck"
+path = "src/bin/parse-and-typecheck.rs"
+test = false

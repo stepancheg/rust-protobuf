@@ -46,7 +46,7 @@ struct FileDescriptorPair {
 
 struct Run<'a> {
     parsed_files: HashMap<String, FileDescriptorPair>,
-    args: Args<'a>,
+    includes: &'a [&'a str],
 }
 
 impl<'a> Run<'a> {
@@ -106,7 +106,7 @@ impl<'a> Run<'a> {
     }
 
     fn add_imported_file(&mut self, protobuf_path: &str) -> io::Result<()> {
-        for include_dir in self.args.includes {
+        for include_dir in self.includes {
             let fs_path = Path::new(include_dir).join(protobuf_path);
             if fs_path.exists() {
                 return self.add_file(protobuf_path, &fs_path)
@@ -115,11 +115,11 @@ impl<'a> Run<'a> {
 
         Err(io::Error::new(io::ErrorKind::Other,
              format!("protobuf path {:?} is not found in import path {:?}",
-                 protobuf_path, self.args.includes)))
+                 protobuf_path, self.includes)))
     }
 
     fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<String> {
-        let relative_path = self.args.includes.iter()
+        let relative_path = self.includes.iter()
             .filter_map(|include_dir| fs_path.strip_prefix(include_dir).ok())
             .next();
 
@@ -132,31 +132,50 @@ impl<'a> Run<'a> {
             None => {
                 Err(io::Error::new(io::ErrorKind::Other,
                     format!("file {:?} must reside in include path {:?}",
-                        fs_path, self.args.includes)))
+                        fs_path, self.includes)))
             }
         }
     }
 }
 
-/// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
-/// commands in `$PATH`.
-pub fn run(args: Args) -> io::Result<()> {
-    let mut run = Run { parsed_files: HashMap::new(), args };
+#[doc(hidden)]
+pub struct ParsedAndTypechecked {
+    pub relative_paths: Vec<String>,
+    pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
+}
+
+#[doc(hidden)]
+pub fn parse_and_typecheck(includes: &[&str], input: &[&str]) -> io::Result<ParsedAndTypechecked> {
+    let mut run = Run {
+        parsed_files: HashMap::new(),
+        includes: includes,
+    };
 
     let mut relative_paths = Vec::new();
 
-    for input in run.args.input {
+    for input in input {
         relative_paths.push(run.add_fs_file(&Path::new(input))?);
     }
 
     let file_descriptors: Vec<_> =
         run.parsed_files.into_iter().map(|(_, v)| v.descriptor).collect();
 
+    Ok(ParsedAndTypechecked {
+        relative_paths,
+        file_descriptors,
+    })
+}
+
+/// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
+/// commands in `$PATH`.
+pub fn run(args: Args) -> io::Result<()> {
+    let p = parse_and_typecheck(args.includes, args.input)?;
+
     protobuf_codegen::gen_and_write(
-        &file_descriptors,
-        &relative_paths,
-        &Path::new(&run.args.out_dir),
-        &run.args.customize)
+        &p.file_descriptors,
+        &p.relative_paths,
+        &Path::new(&args.out_dir),
+        &args.customize)
 }
 
 #[cfg(test)]

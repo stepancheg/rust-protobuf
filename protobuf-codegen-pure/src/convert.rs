@@ -21,7 +21,7 @@ impl MessageOrEnum {
 }
 
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 struct RelativePath {
     path: String,
 }
@@ -29,10 +29,6 @@ struct RelativePath {
 impl RelativePath {
     fn empty() -> RelativePath {
         RelativePath::new(String::new())
-    }
-
-    fn is_empty(&self) -> bool {
-        self.path.is_empty()
     }
 
     fn new(path: String) -> RelativePath {
@@ -43,6 +39,51 @@ impl RelativePath {
         }
     }
 
+    fn is_empty(&self) -> bool {
+        self.path.is_empty()
+    }
+
+    fn _last_part(&self) -> Option<&str> {
+        match self.path.rfind('.') {
+            Some(pos) => Some(&self.path[pos + 1..]),
+            None => {
+                if self.path.is_empty() {
+                    None
+                } else {
+                    Some(&self.path)
+                }
+            }
+        }
+    }
+
+    fn parent(&self) -> Option<RelativePath> {
+        match self.path.rfind('.') {
+            Some(pos) => Some(RelativePath::new(self.path[..pos].to_owned())),
+            None => {
+                if self.path.is_empty() {
+                    None
+                } else {
+                    Some(RelativePath::empty())
+                }
+            }
+        }
+    }
+
+    fn self_and_parents(&self) -> Vec<RelativePath> {
+        let mut tmp = self.clone();
+        
+        let mut r = Vec::new();
+
+        r.push(self.clone());
+
+        while let Some(parent) = tmp.parent() {
+            r.push(parent.clone());
+            tmp = parent;
+        }
+        
+        r
+    }
+
     fn append(&self, simple: &str) -> RelativePath {
         if self.path.is_empty() {
             RelativePath::new(simple.to_owned())
@@ -51,25 +92,60 @@ impl RelativePath {
         }
     }
 
-    fn split(&self) -> Option<(String, RelativePath)> {
+    fn split_first_rem(&self) -> Option<(&str, RelativePath)> {
         if self.is_empty() {
             None
         } else {
             Some(match self.path.find('.') {
                 Some(dot) => {
                     (
-                        self.path[..dot].to_owned(),
+                        &self.path[..dot],
                         RelativePath::new(self.path[dot+1..].to_owned())
                     )
                 }
                 None => {
                     (
-                        self.path.clone(),
+                        &self.path,
                         RelativePath::empty()
                     )
                 }
             })
         }
+    }
+}
+
+#[cfg(test)]
+mod relative_path_test {
+    use super::*;
+
+    #[test]
+    fn parent() {
+        assert_eq!(None, RelativePath::empty().parent());
+        assert_eq!(Some(RelativePath::empty()), RelativePath::new("aaa".to_owned()).parent());
+        assert_eq!(
+            Some(RelativePath::new("abc".to_owned())),
+            RelativePath::new("abc.def".to_owned()).parent());
+        assert_eq!(
+            Some(RelativePath::new("abc.def".to_owned())),
+            RelativePath::new("abc.def.gh".to_owned()).parent());
+    }
+
+    #[test]
+    fn last_part() {
+        assert_eq!(None, RelativePath::empty()._last_part());
+        assert_eq!(Some("aaa"), RelativePath::new("aaa".to_owned())._last_part());
+        assert_eq!(Some("def"), RelativePath::new("abc.def".to_owned())._last_part());
+        assert_eq!(Some("gh"), RelativePath::new("abc.def.gh".to_owned())._last_part());
+    }
+
+    #[test]
+    fn self_and_parents() {
+        assert_eq!(vec![
+            RelativePath::new("ab.cde.fghi".to_owned()),
+            RelativePath::new("ab.cde".to_owned()),
+            RelativePath::new("ab".to_owned()),
+            RelativePath::empty(),
+        ], RelativePath::new("ab.cde.fghi".to_owned()).self_and_parents());
     }
 }
 
@@ -186,6 +262,10 @@ impl<'a> LookupScope<'a> {
         }
     }
 
+    fn find_message(&self, simple_name: &str) -> Option<&protobuf_parser::Message> {
+        self.messages().into_iter().find(|m| m.name == simple_name)
+    }
+
     fn enums(&self) -> &[protobuf_parser::Enumeration] {
         match self {
             &LookupScope::File(file) => &file.enums,
@@ -200,33 +280,41 @@ impl<'a> LookupScope<'a> {
         r
     }
 
+    fn find_member(&self, simple_name: &str) -> Option<MessageOrEnum> {
+        self.members().into_iter()
+            .filter_map(|(member_name, message_or_enum)| {
+                if member_name == simple_name { Some(message_or_enum) } else { None }
+            })
+            .next()
+    }
+
     fn resolve_message_or_enum(&self, current_path: &AbsolutePath, path: &RelativePath)
         -> Option<(AbsolutePath, MessageOrEnum)>
     {
-        let (first, rem) = match path.split() {
+        let (first, rem) = match path.split_first_rem() {
             Some(x) => x,
             None => return None,
         };
 
         if rem.is_empty() {
-            for member in self.members() {
-                if member.0 == first {
+            match self.find_member(&first) {
+                Some(message_or_enum) => {
                     let mut result_path = current_path.clone();
-                    result_path.push_simple(member.0);
-                    return Some((result_path, member.1));
+                    result_path.push_simple(&first);
+                    Some((result_path, message_or_enum))
                 }
+                None => None,
             }
-            None
         } else {
-            for message in self.messages() {
-                if message.name == first {
+            match self.find_message(&first) {
+                Some(message) => {
                     let mut message_path = current_path.clone();
                     message_path.push_simple(&message.name);
                     let message_scope = LookupScope::Message(message);
-                    return message_scope.resolve_message_or_enum(&message_path, &rem);
+                    message_scope.resolve_message_or_enum(&message_path, &rem)
                 }
+                None => None,
             }
-            None
         }
     }
 
@@ -394,17 +482,21 @@ impl<'a> Resolver<'a> {
             .collect()
     }
 
-    fn resolve_message_or_enum(&self, name: &str, _path_in_file: &RelativePath)
+    fn resolve_message_or_enum(&self, name: &str, path_in_file: &RelativePath)
         -> (AbsolutePath, MessageOrEnum)
     {
         // find message or enum in current package
         if !name.starts_with(".") {
-            for file in self.current_file_package_files() {
-                if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
-                    &AbsolutePath::from_path_without_dot(&file.package),
-                    &RelativePath::new(name.to_owned()))
-                {
-                    return (n, t)
+            for p in path_in_file.self_and_parents() {
+                let relative_path_with_name = p.clone();
+                let relative_path_with_name = relative_path_with_name.append(name);
+                for file in self.current_file_package_files() {
+                    if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
+                        &AbsolutePath::from_path_without_dot(&file.package),
+                        &relative_path_with_name)
+                    {
+                        return (n, t)
+                    }
                 }
             }
         }
@@ -425,7 +517,6 @@ impl<'a> Resolver<'a> {
             }
         }
 
-        // TODO: find names in outer messages
         panic!("couldn't find message or enum {} when parsing {}", name, self.current_file.package);
     }
 

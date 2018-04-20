@@ -59,7 +59,6 @@ fn generate_pb_rs() {
 
     copy_tests("src/v3");
     // TODO
-    fs::remove_file("src/v3/test_issue_190_pb.proto").expect("rm");
     fs::remove_file("src/v3/test_map_carllerche_pb.proto").expect("rm");
     fs::remove_file("src/v3/test_map_carllerche.rs").expect("rm");
 
