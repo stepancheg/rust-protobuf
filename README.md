@@ -55,7 +55,22 @@ To enable `Bytes` you need to:
 protobuf = { version = "1.3", features = ["with-bytes"] }
 ```
 
-2. Enable bytes option in `.proto` file:
+2. Enable bytes option
+
+with Customize when codegen is invoked programmatically:
+
+```
+protoc_rust::run(protoc_rust::Args {
+    ...
+    customize: Customize {
+        carllerche_bytes_for_bytes: Some(true),
+        carllerche_bytes_for_string: Some(true),
+        ..Default::default()
+    },
+ });
+ ```
+
+or in `.proto` file:
 
 ```
 import "rustproto.proto";
