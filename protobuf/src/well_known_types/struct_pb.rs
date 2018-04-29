@@ -182,7 +182,7 @@ impl ::protobuf::reflect::ProtobufValue for Struct {
 #[derive(PartialEq,Clone,Default)]
 pub struct Value {
     // message oneof groups
-    kind: ::std::option::Option<Value_oneof_kind>,
+    pub kind: ::std::option::Option<Value_oneof_kind>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
