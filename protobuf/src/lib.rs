@@ -17,7 +17,6 @@ pub use singular::SingularField;
 pub use singular::SingularPtrField;
 pub use clear::Clear;
 pub use core::Message;
-pub use core::ProtobufEnum;
 pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
 #[cfg(feature = "bytes")]
@@ -25,6 +24,7 @@ pub use core::parse_from_carllerche_bytes;
 pub use core::parse_length_delimited_from;
 pub use core::parse_length_delimited_from_reader;
 pub use core::parse_length_delimited_from_bytes;
+pub use enums::ProtobufEnum;
 pub use stream::CodedInputStream;
 pub use stream::CodedOutputStream;
 pub use stream::wire_format;
@@ -40,6 +40,7 @@ pub mod plugin;
 pub mod rustproto;
 
 mod core;
+mod enums;
 pub mod rt;
 pub mod lazy;
 pub mod compiler_plugin;
@@ -84,6 +85,7 @@ mod protobuf {
     pub use descriptorx;
     pub use reflect;
     pub use core::*;
+    pub use enums::ProtobufEnum;
     pub use error::*;
     pub use stream::*;
     pub use rt;

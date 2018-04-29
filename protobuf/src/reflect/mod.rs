@@ -5,7 +5,7 @@ use std::default::Default;
 use std::marker;
 
 use core::Message;
-use core::ProtobufEnum;
+use enums::ProtobufEnum;
 use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::FieldDescriptorProto;

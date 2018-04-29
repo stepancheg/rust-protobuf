@@ -13,7 +13,7 @@ use varint;
 use misc::remaining_capacity_as_slice_mut;
 use misc::remove_lifetime_mut;
 use core::Message;
-use core::ProtobufEnum;
+use enums::ProtobufEnum;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;

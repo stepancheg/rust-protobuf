@@ -9,8 +9,6 @@ use bytes::Bytes;
 
 use clear::Clear;
 use reflect::MessageDescriptor;
-use reflect::EnumDescriptor;
-use reflect::EnumValueDescriptor;
 use unknown::UnknownFields;
 use stream::WithCodedInputStream;
 use stream::WithCodedOutputStream;
@@ -189,37 +187,6 @@ pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
-
-/// Trait implemented by all protobuf enum types.
-pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
-    /// Get enum `i32` value.
-    fn value(&self) -> i32;
-
-    /// Try to create an enum from `i32` value.
-    /// Return `None` if value is unknown.
-    fn from_i32(v: i32) -> Option<Self>;
-
-    /// Get all enum values for enum type.
-    fn values() -> &'static [Self] {
-        panic!();
-    }
-
-    /// Get enum value descriptor.
-    fn descriptor(&self) -> &'static EnumValueDescriptor {
-        self.enum_descriptor().value_by_number(self.value())
-    }
-
-    /// Get enum descriptor.
-    fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        ProtobufEnum::enum_descriptor_static(None::<Self>)
-    }
-
-    /// Get enum descriptor by type.
-    // http://stackoverflow.com/q/20342436/15018
-    fn enum_descriptor_static(_: Option<Self>) -> &'static EnumDescriptor {
-        panic!();
-    }
-}
 
 /// Parse message from stream.
 pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {

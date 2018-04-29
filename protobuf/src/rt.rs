@@ -11,6 +11,7 @@ use bytes::Bytes;
 use chars::Chars;
 
 use core::*;
+use enums::ProtobufEnum;
 use zigzag::*;
 use stream::wire_format;
 use stream::wire_format::WireType;

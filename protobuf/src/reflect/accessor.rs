@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use std::fmt;
 
 use core::Message;
-use core::ProtobufEnum;
 use core::message_down_cast;
+use enums::ProtobufEnum;
 use reflect::EnumValueDescriptor;
 use types::*;
 
