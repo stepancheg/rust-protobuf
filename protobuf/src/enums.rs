@@ -23,12 +23,11 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
 
     /// Get enum descriptor.
     fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        ProtobufEnum::enum_descriptor_static(None::<Self>)
+        Self::enum_descriptor_static()
     }
 
     /// Get enum descriptor by type.
-    // http://stackoverflow.com/q/20342436/15018
-    fn enum_descriptor_static(_: Option<Self>) -> &'static EnumDescriptor {
+    fn enum_descriptor_static() -> &'static EnumDescriptor {
         panic!();
     }
 }

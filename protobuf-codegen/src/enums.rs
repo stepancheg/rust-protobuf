@@ -208,8 +208,7 @@ impl<'a> EnumGen<'a> {
 
             if !self.lite_runtime {
                 w.write_line("");
-                let ref type_name = self.type_name;
-                w.def_fn(&format!("enum_descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::EnumDescriptor", type_name), |w| {
+                w.def_fn(&format!("enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"), |w| {
                     w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
                         let ref type_name = self.type_name;
                         w.write_line(&format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));

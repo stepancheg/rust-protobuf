@@ -994,7 +994,7 @@ impl ::protobuf::ProtobufEnum for Field_Kind {
         values
     }
 
-    fn enum_descriptor_static(_: ::std::option::Option<Field_Kind>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
@@ -1055,7 +1055,7 @@ impl ::protobuf::ProtobufEnum for Field_Cardinality {
         values
     }
 
-    fn enum_descriptor_static(_: ::std::option::Option<Field_Cardinality>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
@@ -1926,7 +1926,7 @@ impl ::protobuf::ProtobufEnum for Syntax {
         values
     }
 
-    fn enum_descriptor_static(_: ::std::option::Option<Syntax>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
