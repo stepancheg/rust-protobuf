@@ -168,8 +168,7 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     fn new() -> Self where Self : Sized;
 
     /// Get message descriptor for message type.
-    // http://stackoverflow.com/q/20342436/15018
-    fn descriptor_static(_: Option<Self>) -> &'static MessageDescriptor
+    fn descriptor_static() -> &'static MessageDescriptor
         where Self : Sized
     {
         panic!(

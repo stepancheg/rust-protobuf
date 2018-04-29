@@ -154,7 +154,7 @@ pub struct MessageDescriptor {
 
 impl MessageDescriptor {
     pub fn for_type<M : Message>() -> &'static MessageDescriptor {
-        Message::descriptor_static(None::<M>)
+        M::descriptor_static()
     }
 
     pub fn new<M : 'static + Message + Default>(

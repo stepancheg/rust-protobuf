@@ -125,14 +125,14 @@ impl ::protobuf::Message for SourceContext {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> SourceContext {
         SourceContext::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<SourceContext>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,

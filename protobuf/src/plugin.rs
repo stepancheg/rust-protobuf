@@ -213,14 +213,14 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> CodeGeneratorRequest {
         CodeGeneratorRequest::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<CodeGeneratorRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -441,14 +441,14 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> CodeGeneratorResponse {
         CodeGeneratorResponse::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -712,14 +712,14 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> CodeGeneratorResponse_File {
         CodeGeneratorResponse_File::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<CodeGeneratorResponse_File>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,

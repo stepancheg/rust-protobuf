@@ -24,7 +24,7 @@ pub fn test_serialize_deserialize<M : Message + PartialEq>(hex: &str, msg: &M) {
         expected_hex,
         serialized_hex,
         "message {}",
-        M::descriptor_static(None).name()
+        M::descriptor_static().name()
     );
     let parsed = parse_from_bytes::<M>(&expected_bytes).unwrap();
     assert_eq!(*msg, parsed);

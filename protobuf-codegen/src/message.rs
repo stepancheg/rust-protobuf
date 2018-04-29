@@ -256,7 +256,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("descriptor_static(_: ::std::option::Option<{}>) -> &'static ::protobuf::reflect::MessageDescriptor", self.type_name), |w| {
+        w.def_fn(&format!("descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor"), |w| {
             w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
                 let fields = self.fields_except_group();
                 if fields.is_empty() {
@@ -332,7 +332,7 @@ impl<'a> MessageGen<'a> {
             });
             w.write_line("");
             w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
-                w.write_line("::protobuf::Message::descriptor_static(None::<Self>)");
+                w.write_line("Self::descriptor_static()");
             });
             w.write_line("");
             w.def_fn(&format!("new() -> {}", self.type_name), |w| {

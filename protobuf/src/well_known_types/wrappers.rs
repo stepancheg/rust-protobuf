@@ -118,14 +118,14 @@ impl ::protobuf::Message for DoubleValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> DoubleValue {
         DoubleValue::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<DoubleValue>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -274,14 +274,14 @@ impl ::protobuf::Message for FloatValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> FloatValue {
         FloatValue::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<FloatValue>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -430,14 +430,14 @@ impl ::protobuf::Message for Int64Value {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> Int64Value {
         Int64Value::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<Int64Value>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -586,14 +586,14 @@ impl ::protobuf::Message for UInt64Value {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> UInt64Value {
         UInt64Value::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<UInt64Value>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -742,14 +742,14 @@ impl ::protobuf::Message for Int32Value {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> Int32Value {
         Int32Value::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<Int32Value>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -898,14 +898,14 @@ impl ::protobuf::Message for UInt32Value {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> UInt32Value {
         UInt32Value::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<UInt32Value>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -1054,14 +1054,14 @@ impl ::protobuf::Message for BoolValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> BoolValue {
         BoolValue::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<BoolValue>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -1217,14 +1217,14 @@ impl ::protobuf::Message for StringValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> StringValue {
         StringValue::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<StringValue>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -1380,14 +1380,14 @@ impl ::protobuf::Message for BytesValue {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> BytesValue {
         BytesValue::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<BytesValue>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,

@@ -132,14 +132,14 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> FileDescriptorSet {
         FileDescriptorSet::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<FileDescriptorSet>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -776,14 +776,14 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> FileDescriptorProto {
         FileDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<FileDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -1402,14 +1402,14 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> DescriptorProto {
         DescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<DescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -1649,14 +1649,14 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> DescriptorProto_ExtensionRange {
         DescriptorProto_ExtensionRange::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<DescriptorProto_ExtensionRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -1848,14 +1848,14 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> DescriptorProto_ReservedRange {
         DescriptorProto_ReservedRange::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<DescriptorProto_ReservedRange>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -2386,14 +2386,14 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> FieldDescriptorProto {
         FieldDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<FieldDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -2813,14 +2813,14 @@ impl ::protobuf::Message for OneofDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> OneofDescriptorProto {
         OneofDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<OneofDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -3086,14 +3086,14 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> EnumDescriptorProto {
         EnumDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<EnumDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -3355,14 +3355,14 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> EnumValueDescriptorProto {
         EnumValueDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<EnumValueDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -3634,14 +3634,14 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> ServiceDescriptorProto {
         ServiceDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<ServiceDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -4028,14 +4028,14 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> MethodDescriptorProto {
         MethodDescriptorProto::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<MethodDescriptorProto>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -4751,14 +4751,14 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> FileOptions {
         FileOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<FileOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -5189,14 +5189,14 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> MessageOptions {
         MessageOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<MessageOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -5573,14 +5573,14 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> FieldOptions {
         FieldOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<FieldOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -5883,14 +5883,14 @@ impl ::protobuf::Message for OneofOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> OneofOptions {
         OneofOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<OneofOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -6119,14 +6119,14 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> EnumOptions {
         EnumOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<EnumOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -6334,14 +6334,14 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> EnumValueOptions {
         EnumValueOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<EnumValueOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -6543,14 +6543,14 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> ServiceOptions {
         ServiceOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<ServiceOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -6752,14 +6752,14 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> MethodOptions {
         MethodOptions::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<MethodOptions>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -7165,14 +7165,14 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> UninterpretedOption {
         UninterpretedOption::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<UninterpretedOption>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -7413,14 +7413,14 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> UninterpretedOption_NamePart {
         UninterpretedOption_NamePart::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<UninterpretedOption_NamePart>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -7589,14 +7589,14 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> SourceCodeInfo {
         SourceCodeInfo::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<SourceCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -7923,14 +7923,14 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> SourceCodeInfo_Location {
         SourceCodeInfo_Location::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<SourceCodeInfo_Location>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -8117,14 +8117,14 @@ impl ::protobuf::Message for GeneratedCodeInfo {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> GeneratedCodeInfo {
         GeneratedCodeInfo::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<GeneratedCodeInfo>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -8396,14 +8396,14 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> GeneratedCodeInfo_Annotation {
         GeneratedCodeInfo_Annotation::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<GeneratedCodeInfo_Annotation>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,

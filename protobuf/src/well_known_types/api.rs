@@ -366,14 +366,14 @@ impl ::protobuf::Message for Api {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> Api {
         Api::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<Api>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -763,14 +763,14 @@ impl ::protobuf::Message for Method {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> Method {
         Method::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<Method>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
@@ -998,14 +998,14 @@ impl ::protobuf::Message for Mixin {
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::Message::descriptor_static(None::<Self>)
+        Self::descriptor_static()
     }
 
     fn new() -> Mixin {
         Mixin::new()
     }
 
-    fn descriptor_static(_: ::std::option::Option<Mixin>) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
