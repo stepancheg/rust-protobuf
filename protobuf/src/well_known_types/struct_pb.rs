@@ -859,7 +859,7 @@ impl ::protobuf::ProtobufEnum for NullValue {
         values
     }
 
-    fn enum_descriptor_static(_: ::std::option::Option<NullValue>) -> &'static ::protobuf::reflect::EnumDescriptor {
+    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
             ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,

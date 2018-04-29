@@ -257,7 +257,7 @@ impl EnumDescriptor {
     }
 
     pub fn for_type<E : ProtobufEnum>() -> &'static EnumDescriptor {
-        ProtobufEnum::enum_descriptor_static(None::<E>)
+        E::enum_descriptor_static()
     }
 
     pub fn new(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
