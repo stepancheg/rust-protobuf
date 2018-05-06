@@ -14,6 +14,9 @@ mod parser;
 
 pub use protobuf_codegen::Customize;
 
+#[cfg(test)]
+mod test_against_protobuf_protos;
+
 
 // TODO: merge with protoc-rust def
 #[derive(Debug, Default)]
@@ -99,7 +102,11 @@ impl<'a> Run<'a> {
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v.parsed).collect();
 
         let descriptor = convert::file_descriptor(
-            protobuf_path.to_owned(), &parsed, &this_file_deps);
+            protobuf_path.to_owned(), &parsed, &this_file_deps)
+            .map_err(|e| {
+                io::Error::new(io::ErrorKind::Other,
+                    format!("failed to parse {:?}: {:?}", fs_path, e))
+            })?;
 
         self.parsed_files.insert(
             protobuf_path.to_owned(), FileDescriptorPair { parsed, descriptor });

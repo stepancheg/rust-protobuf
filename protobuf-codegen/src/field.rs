@@ -664,12 +664,15 @@ impl<'a> FieldGen<'a> {
     }
 
     fn defaut_value_from_proto_float(&self) -> String {
+        assert!(self.proto_field.field.has_default_value());
+
         let type_name = match self.proto_type {
             FieldDescriptorProto_Type::TYPE_FLOAT => "f32",
             FieldDescriptorProto_Type::TYPE_DOUBLE => "f64",
             _ => unreachable!(),
         };
         let proto_default = self.proto_field.field.get_default_value();
+        assert!(!proto_default.is_empty());
 
         fn parse_special_float(s: &str) -> Option<&'static str> {
             if s == "nan" {

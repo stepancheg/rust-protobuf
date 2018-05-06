@@ -6,6 +6,14 @@ use model;
 use protobuf;
 
 
+#[derive(Debug)]
+pub enum ConvertError {
+    WrongDefaultValue,
+}
+
+pub type ConvertResult<T> = Result<T, ConvertError>;
+
+
 enum MessageOrEnum {
     Message,
     Enum,
@@ -358,7 +366,7 @@ impl<'a> Resolver<'a> {
         key: &model::FieldType,
         value: &model::FieldType,
         path_in_file: &RelativePath)
-        -> protobuf::descriptor::DescriptorProto
+        -> ConvertResult<protobuf::descriptor::DescriptorProto>
     {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
@@ -367,45 +375,48 @@ impl<'a> Resolver<'a> {
         output.mut_field().push(self.map_entry_field("key", 1, key, path_in_file));
         output.mut_field().push(self.map_entry_field("value", 2, value, path_in_file));
 
-        output
+        Ok(output)
     }
 
     fn message(&self, input: &model::Message, path_in_file: &RelativePath)
-        -> protobuf::descriptor::DescriptorProto
+        -> ConvertResult<protobuf::descriptor::DescriptorProto>
     {
         let nested_path_in_file = path_in_file.append(&input.name);
 
         let mut output = protobuf::descriptor::DescriptorProto::new();
         output.set_name(input.name.clone());
 
-        let nested_messages_regular = input.messages.iter()
-            .map(|m| self.message(m, &nested_path_in_file));
+        let mut nested_messages = protobuf::RepeatedField::new();
 
-        let nested_messages_map = input.fields.iter().filter_map(|f| {
-            match f.typ {
-                model::FieldType::Map(ref t) => {
-                    Some(self.map_entry_message(&f.name, &t.0, &t.1, path_in_file))
-                }
-                _ => None,
+        for m in &input.messages {
+            nested_messages.push(self.message(m, &nested_path_in_file)?);
+        }
+
+        for f in &input.fields {
+            if let model::FieldType::Map(ref t) = f.typ {
+                nested_messages.push(self.map_entry_message(&f.name, &t.0, &t.1, path_in_file)?);
             }
-        });
+        }
 
-        output.set_nested_type(nested_messages_regular.chain(nested_messages_map).collect());
+        output.set_nested_type(nested_messages);
 
         output.set_enum_type(input.enums.iter().map(|e| self.enumeration(e)).collect());
 
         {
-            let regular_fields = input.fields.iter()
-                .map(|f| self.field(f, None, &nested_path_in_file));
+            let mut fields = protobuf::RepeatedField::new();
 
-            let oneof_fields = input.oneofs.iter().enumerate()
-                .flat_map(|(oneof_index, oneof)| {
-                    let oneof_index = oneof_index as i32;
-                    oneof.fields.iter().zip(iter::repeat(oneof_index))
-                        .map(|(f, oneof_index)| self.field(f, Some(oneof_index), &nested_path_in_file))
-                });
+            for f in &input.fields {
+                fields.push(self.field(f, None, &nested_path_in_file)?);
+            }
 
-            output.set_field(regular_fields.chain(oneof_fields).collect());
+            for (oneof_index, oneof) in input.oneofs.iter().enumerate() {
+                let oneof_index = oneof_index as i32;
+                for f in &oneof.fields {
+                    fields.push(self.field(f, Some(oneof_index as i32), &nested_path_in_file)?);
+                }
+            }
+
+            output.set_field(fields);
         }
 
         let oneofs = input.oneofs.iter()
@@ -413,11 +424,11 @@ impl<'a> Resolver<'a> {
             .collect();
         output.set_oneof_decl(oneofs);
 
-        output
+        Ok(output)
     }
 
     fn field(&self, input: &model::Field, oneof_index: Option<i32>, path_in_file: &RelativePath)
-        -> protobuf::descriptor::FieldDescriptorProto
+        -> ConvertResult<protobuf::descriptor::FieldDescriptorProto>
     {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.name.clone());
@@ -455,6 +466,10 @@ impl<'a> Resolver<'a> {
                     }
                 }
                 _ => {
+                    if default.is_empty() {
+                        return Err(ConvertError::WrongDefaultValue);
+                    }
+                    assert!(!default.is_empty());
                     default.clone()
                 }
             };
@@ -469,7 +484,7 @@ impl<'a> Resolver<'a> {
         }
 
         output.mut_options().set_deprecated(input.deprecated);
-        output
+        Ok(output)
     }
 
     fn all_files(&self) -> Vec<&model::FileDescriptor> {
@@ -616,7 +631,7 @@ pub fn file_descriptor(
     name: String,
     input: &model::FileDescriptor,
     deps: &[model::FileDescriptor])
-    -> protobuf::descriptor::FileDescriptorProto
+    -> ConvertResult<protobuf::descriptor::FileDescriptorProto>
 {
     let resolver = Resolver {
         current_file: &input,
@@ -628,11 +643,12 @@ pub fn file_descriptor(
     output.set_package(input.package.clone());
     output.set_syntax(syntax(input.syntax));
 
-    let messages = input.messages.iter()
-        .map(|m| resolver.message(m, &RelativePath::empty()))
-        .collect();
+    let mut messages = protobuf::RepeatedField::new();
+    for m in &input.messages {
+        messages.push(resolver.message(&m, &RelativePath::empty())?);
+    }
     output.set_message_type(messages);
 
     output.set_enum_type(input.enums.iter().map(|e| resolver.enumeration(e)).collect());
-    output
+    Ok(output)
 }

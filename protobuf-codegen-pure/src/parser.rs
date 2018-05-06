@@ -38,10 +38,14 @@ impl Loc {
 #[derive(Debug)]
 pub enum ParserError {
     IncorrectInput,
+    IncorrectFloatLit,
     NotUtf8,
     ExpectChar(char),
     ExpectConstant,
     ExpectIdent,
+    ExpectHexDigit,
+    ExpectOctDigit,
+    ExpectDecDigit,
     UnknownSyntax,
     UnexpectedEof,
     ParseIntError,
@@ -153,7 +157,7 @@ impl StrLit {
         };
         let mut r = String::new();
         while !lexer.eof() {
-            r.push(lexer.next_char_char_value()?);
+            r.push(lexer.next_char_value()?);
         }
         Ok(r)
     }
@@ -220,8 +224,10 @@ impl<'a> Lexer<'a> {
         if rem.is_empty() {
             None
         } else {
-            let c = rem.chars().next().unwrap();
-            self.pos += rem[..1].len();
+            let mut char_indices = rem.char_indices();
+            let (_, c) = char_indices.next().unwrap();
+            let c_len = char_indices.next().map(|(len, _)| len).unwrap_or(rem.len());
+            self.pos += c_len;
             if c == '\n' {
                 self.loc.line += 1;
                 self.loc.col = FIRST_COL;
@@ -431,7 +437,7 @@ impl<'a> Lexer<'a> {
             c if c >= '0' && c <= '9' => c as u32 - b'0' as u32,
             c if c >= 'A' && c <= 'F' => c as u32 - b'A' as u32 + 10,
             c if c >= 'a' && c <= 'f' => c as u32 - b'a' as u32 + 10,
-            _ => return Err(ParserError::IncorrectInput),
+            _ => return Err(ParserError::ExpectHexDigit),
         };
         *self = clone;
         Ok(r)
@@ -442,7 +448,7 @@ impl<'a> Lexer<'a> {
         let mut clone = self.clone();
         let r = match clone.next_char()? {
             c if c >= '0' && c <= '7' => c as u32 - b'0' as u32,
-            _ => return Err(ParserError::IncorrectInput),
+            _ => return Err(ParserError::ExpectOctDigit),
         };
         *self = clone;
         Ok(r)
@@ -453,7 +459,7 @@ impl<'a> Lexer<'a> {
         let mut clone = self.clone();
         let r = match clone.next_char()? {
             c if c >= '0' && c <= '9' => c as u32 - '0' as u32,
-            _ => return Err(ParserError::IncorrectInput),
+            _ => return Err(ParserError::ExpectDecDigit),
         };
         *self = clone;
         Ok(r)
@@ -504,7 +510,7 @@ impl<'a> Lexer<'a> {
                 self.next_exponent_opt()?;
             } else {
                 if self.next_exponent_opt()? == None {
-                    return Err(ParserError::IncorrectInput)
+                    return Err(ParserError::IncorrectFloatLit)
                 }
             }
         }
@@ -519,54 +525,44 @@ impl<'a> Lexer<'a> {
     // octEscape = '\' octalDigit octalDigit octalDigit
     // charEscape = '\' ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | '\' | "'" | '"' )
     // quote = "'" | '"'
-    fn next_char_value(&mut self) -> ParserResult<u8> {
+    fn next_char_value(&mut self) -> ParserResult<char> {
         match self.next_char()? {
             '"' | '\'' => Err(ParserError::InternalError),
             '\\' => {
                 match self.next_char()? {
-                    '\'' => Ok(b'\''),
-                    '"' => Ok(b'"'),
-                    '\\' => Ok(b'\\'),
-                    'a' => Ok(b'\x07'),
-                    'b' => Ok(b'\x08'),
-                    'f' => Ok(b'\x0c'),
-                    'n' => Ok(b'\n'),
-                    'r' => Ok(b'\r'),
-                    't' => Ok(b'\t'),
-                    'v' => Ok(b'\x0b'),
+                    '\'' => Ok('\''),
+                    '"' => Ok('"'),
+                    '\\' => Ok('\\'),
+                    'a' => Ok('\x07'),
+                    'b' => Ok('\x08'),
+                    'f' => Ok('\x0c'),
+                    'n' => Ok('\n'),
+                    'r' => Ok('\r'),
+                    't' => Ok('\t'),
+                    'v' => Ok('\x0b'),
                     'x' => {
-                        let d1 = self.next_hex_digit()?;
-                        let d2 = self.next_hex_digit()?;
-                        Ok(((d1 << 4) | d2) as u8)
+                        let d1 = self.next_hex_digit()? as u8;
+                        let d2 = self.next_hex_digit()? as u8;
+                        // TODO: do not decode as char if > 0x80
+                        Ok(((d1 << 4) | d2) as char)
                     }
                     d if d >= '0' && d <= '7' => {
-                        let mut r = d as u32 - b'0' as u32;
+                        let mut r = d as u8 - b'0';
                         for _ in 0..2 {
                             match self.next_octal_digit() {
                                 Err(_) => break,
-                                Ok(d) => r = (r << 3) + d,
+                                Ok(d) => r = (r << 3) + d as u8,
                             }
                         }
-                        Ok(r.to_u8()?)
+                        // TODO: do not decode as char if > 0x80
+                        Ok(r as char)
                     }
                     // https://github.com/google/protobuf/issues/4562
-                    c => Ok(c as u8),
+                    c => Ok(c),
                 }
             }
             '\n' | '\0' => Err(ParserError::IncorrectInput),
-            c if c as u32 <= 0x7f => Ok(c as u8),
-            _ => Err(ParserError::IncorrectInput),
-        }
-    }
-
-    fn next_char_char_value(&mut self) -> ParserResult<char> {
-        let mut clone = self.clone();
-        let c = clone.next_char_value()?;
-        if c <= 0x7f {
-            *self = clone;
-            Ok(c as char)
-        } else {
-            Err(ParserError::NotUtf8)
+            c => Ok(c),
         }
     }
 
@@ -621,7 +617,7 @@ impl<'a> Lexer<'a> {
         let mut clone = self.clone();
         let pos = clone.pos;
         if let Ok(_) = clone.next_float_lit() {
-            let mut lit = self.input[pos..self.pos].to_owned();
+            let mut lit = self.input[pos..clone.pos].to_owned();
             *self = clone;
             return Ok(Token::FloatLit(lit));
         }
@@ -1589,6 +1585,35 @@ impl<'a> Parser<'a> {
 mod test {
     use super::*;
 
+    fn lex<P, R>(input: &str, parse_what: P) -> R
+        where P : FnOnce(&mut Lexer) -> ParserResult<R>
+    {
+        let mut lexer = Lexer {
+            input,
+            pos: 0,
+            loc: Loc::start(),
+        };
+        let r = parse_what(&mut lexer)
+            .expect(&format!("lexer failed at {}", lexer.loc));
+        assert!(lexer.eof(), "check eof failed at {}", lexer.loc);
+        r
+    }
+
+    fn lex_opt<P, R>(input: &str, parse_what: P) -> R
+        where P : FnOnce(&mut Lexer) -> ParserResult<Option<R>>
+    {
+        let mut lexer = Lexer {
+            input,
+            pos: 0,
+            loc: Loc::start(),
+        };
+        let o = parse_what(&mut lexer)
+            .expect(&format!("lexer failed at {}", lexer.loc));
+        let r = o.expect(&format!("lexer returned none at {}", lexer.loc));
+        assert!(lexer.eof(), "check eof failed at {}", lexer.loc);
+        r
+    }
+
     fn parse<P, R>(input: &str, parse_what: P) -> R
         where P : FnOnce(&mut Parser) -> ParserResult<R>
     {
@@ -1612,6 +1637,22 @@ mod test {
     }
 
     #[test]
+    fn test_lexer_int_lit() {
+        let msg = r#"10"#;
+        let mess = lex_opt(msg, |p| p.next_int_lit_opt());
+        assert_eq!(10, mess);
+
+    }
+
+    #[test]
+    fn test_lexer_float_lit() {
+        let msg = r#"12.3"#;
+        let mess = lex(msg, |p| p.next_token_inner());
+        assert_eq!(Token::FloatLit("12.3".to_owned()), mess);
+
+    }
+
+    #[test]
     fn test_ident() {
         let msg = r#"  aabb_c  "#;
         let mess = parse(msg, |p| p.next_ident().map(|s| s.to_owned()));
@@ -1630,6 +1671,22 @@ mod test {
         let msg = r#"  syntax = "proto3";  "#;
         let mess = parse_opt(msg, |p| p.next_syntax());
         assert_eq!(Syntax::Proto3, mess);
+    }
+
+    #[test]
+    fn test_field_default_value_int() {
+        let msg = r#"  int64 f = 4 [default = 12];  "#;
+        let mess = parse(msg, |p| p.next_field(false));
+        assert_eq!("f", mess.name);
+        assert_eq!("12", mess.default.unwrap());
+    }
+
+    #[test]
+    fn test_field_default_value_float() {
+        let msg = r#"  float f = 2 [default = 10.0];  "#;
+        let mess = parse(msg, |p| p.next_field(false));
+        assert_eq!("f", mess.name);
+        assert_eq!("10.0", mess.default.unwrap());
     }
 
     #[test]
