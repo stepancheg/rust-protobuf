@@ -1,8 +1,8 @@
-//! Convert protobuf_parser model to rust-protobuf model
+//! Convert parser model to rust-protobuf model
 
 use std::iter;
 
-use protobuf_parser;
+use model;
 use protobuf;
 
 
@@ -250,23 +250,23 @@ mod test {
 
 
 enum LookupScope<'a> {
-    File(&'a protobuf_parser::FileDescriptor),
-    Message(&'a protobuf_parser::Message),
+    File(&'a model::FileDescriptor),
+    Message(&'a model::Message),
 }
 
 impl<'a> LookupScope<'a> {
-    fn messages(&self) -> &[protobuf_parser::Message] {
+    fn messages(&self) -> &[model::Message] {
         match self {
             &LookupScope::File(file) => &file.messages,
             &LookupScope::Message(messasge) => &messasge.messages,
         }
     }
 
-    fn find_message(&self, simple_name: &str) -> Option<&protobuf_parser::Message> {
+    fn find_message(&self, simple_name: &str) -> Option<&model::Message> {
         self.messages().into_iter().find(|m| m.name == simple_name)
     }
 
-    fn enums(&self) -> &[protobuf_parser::Enumeration] {
+    fn enums(&self) -> &[model::Enumeration] {
         match self {
             &LookupScope::File(file) => &file.enums,
             &LookupScope::Message(messasge) => &messasge.enums,
@@ -322,8 +322,8 @@ impl<'a> LookupScope<'a> {
 
 
 struct Resolver<'a> {
-    current_file: &'a protobuf_parser::FileDescriptor,
-    deps: &'a [protobuf_parser::FileDescriptor],
+    current_file: &'a model::FileDescriptor,
+    deps: &'a [model::FileDescriptor],
 }
 
 impl<'a> Resolver<'a> {
@@ -335,7 +335,7 @@ impl<'a> Resolver<'a> {
         &self,
         name: &str,
         number: i32,
-        field_type: &protobuf_parser::FieldType,
+        field_type: &model::FieldType,
         path_in_file: &RelativePath)
         -> protobuf::descriptor::FieldDescriptorProto
     {
@@ -355,8 +355,8 @@ impl<'a> Resolver<'a> {
     fn map_entry_message(
         &self,
         field_name: &str,
-        key: &protobuf_parser::FieldType,
-        value: &protobuf_parser::FieldType,
+        key: &model::FieldType,
+        value: &model::FieldType,
         path_in_file: &RelativePath)
         -> protobuf::descriptor::DescriptorProto
     {
@@ -370,7 +370,7 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn message(&self, input: &protobuf_parser::Message, path_in_file: &RelativePath)
+    fn message(&self, input: &model::Message, path_in_file: &RelativePath)
         -> protobuf::descriptor::DescriptorProto
     {
         let nested_path_in_file = path_in_file.append(&input.name);
@@ -383,7 +383,7 @@ impl<'a> Resolver<'a> {
 
         let nested_messages_map = input.fields.iter().filter_map(|f| {
             match f.typ {
-                protobuf_parser::FieldType::Map(ref t) => {
+                model::FieldType::Map(ref t) => {
                     Some(self.map_entry_message(&f.name, &t.0, &t.1, path_in_file))
                 }
                 _ => None,
@@ -416,13 +416,13 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn field(&self, input: &protobuf_parser::Field, oneof_index: Option<i32>, path_in_file: &RelativePath)
+    fn field(&self, input: &model::Field, oneof_index: Option<i32>, path_in_file: &RelativePath)
         -> protobuf::descriptor::FieldDescriptorProto
     {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.name.clone());
 
-        if let protobuf_parser::FieldType::Map(..) = input.typ {
+        if let model::FieldType::Map(..) = input.typ {
             output.set_label(protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED);
         } else {
             output.set_label(label(input.rule));
@@ -472,11 +472,11 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn all_files(&self) -> Vec<&protobuf_parser::FileDescriptor> {
+    fn all_files(&self) -> Vec<&model::FileDescriptor> {
         iter::once(self.current_file).chain(self.deps).collect()
     }
 
-    fn current_file_package_files(&self) -> Vec<&protobuf_parser::FileDescriptor> {
+    fn current_file_package_files(&self) -> Vec<&model::FileDescriptor> {
         self.all_files().into_iter()
             .filter(|f| f.package == self.current_file.package)
             .collect()
@@ -520,45 +520,45 @@ impl<'a> Resolver<'a> {
         panic!("couldn't find message or enum {} when parsing {}", name, self.current_file.package);
     }
 
-    fn field_type(&self, name: &str, input: &protobuf_parser::FieldType, path_in_file: &RelativePath)
+    fn field_type(&self, name: &str, input: &model::FieldType, path_in_file: &RelativePath)
         -> (protobuf::descriptor::FieldDescriptorProto_Type, Option<AbsolutePath>)
     {
         match *input {
-            protobuf_parser::FieldType::Bool =>
+            model::FieldType::Bool =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BOOL, None),
-            protobuf_parser::FieldType::Int32 =>
+            model::FieldType::Int32 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT32, None),
-            protobuf_parser::FieldType::Int64 =>
+            model::FieldType::Int64 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT64, None),
-            protobuf_parser::FieldType::Uint32 =>
+            model::FieldType::Uint32 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT32, None),
-            protobuf_parser::FieldType::Uint64 =>
+            model::FieldType::Uint64 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT64, None),
-            protobuf_parser::FieldType::Sint32 =>
+            model::FieldType::Sint32 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT32, None),
-            protobuf_parser::FieldType::Sint64 =>
+            model::FieldType::Sint64 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT64, None),
-            protobuf_parser::FieldType::Fixed32 =>
+            model::FieldType::Fixed32 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED32, None),
-            protobuf_parser::FieldType::Fixed64 =>
+            model::FieldType::Fixed64 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED64, None),
-            protobuf_parser::FieldType::Sfixed32 =>
+            model::FieldType::Sfixed32 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED32, None),
-            protobuf_parser::FieldType::Sfixed64 =>
+            model::FieldType::Sfixed64 =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED64, None),
-            protobuf_parser::FieldType::Float =>
+            model::FieldType::Float =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FLOAT, None),
-            protobuf_parser::FieldType::Double =>
+            model::FieldType::Double =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_DOUBLE, None),
-            protobuf_parser::FieldType::String =>
+            model::FieldType::String =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING, None),
-            protobuf_parser::FieldType::Bytes =>
+            model::FieldType::Bytes =>
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES, None),
-            protobuf_parser::FieldType::MessageOrEnum(ref name) => {
+            model::FieldType::MessageOrEnum(ref name) => {
                 let (name, me) = self.resolve_message_or_enum(&name, path_in_file);
                 (me.descriptor_type(), Some(name))
             }
-            protobuf_parser::FieldType::Map(..) => {
+            model::FieldType::Map(..) => {
                 let mut type_name = AbsolutePath::from_path_without_dot(&self.current_file.package);
                 type_name.push_relative(path_in_file);
                 type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
@@ -567,7 +567,7 @@ impl<'a> Resolver<'a> {
                     Some(type_name)
                 )
             }
-            protobuf_parser::FieldType::Group(..) => {
+            model::FieldType::Group(..) => {
                 (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_GROUP, None)
             }
         }
@@ -580,42 +580,42 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn enumeration(&self, input: &protobuf_parser::Enumeration) -> protobuf::descriptor::EnumDescriptorProto {
+    fn enumeration(&self, input: &model::Enumeration) -> protobuf::descriptor::EnumDescriptorProto {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_value(input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect());
         output
     }
 
-    fn oneof(&self, input: &protobuf_parser::OneOf) -> protobuf::descriptor::OneofDescriptorProto {
+    fn oneof(&self, input: &model::OneOf) -> protobuf::descriptor::OneofDescriptorProto {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
         output
     }
 }
 
-fn syntax(input: protobuf_parser::Syntax) -> String {
+fn syntax(input: model::Syntax) -> String {
     match input {
-        protobuf_parser::Syntax::Proto2 => "proto2".to_owned(),
-        protobuf_parser::Syntax::Proto3 => "proto3".to_owned(),
+        model::Syntax::Proto2 => "proto2".to_owned(),
+        model::Syntax::Proto3 => "proto3".to_owned(),
     }
 }
 
-fn label(input: protobuf_parser::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label {
+fn label(input: model::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label {
     match input {
-        protobuf_parser::Rule::Optional =>
+        model::Rule::Optional =>
             protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
-        protobuf_parser::Rule::Required =>
+        model::Rule::Required =>
             protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED,
-        protobuf_parser::Rule::Repeated =>
+        model::Rule::Repeated =>
             protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED,
     }
 }
 
 pub fn file_descriptor(
     name: String,
-    input: &protobuf_parser::FileDescriptor,
-    deps: &[protobuf_parser::FileDescriptor])
+    input: &model::FileDescriptor,
+    deps: &[model::FileDescriptor])
     -> protobuf::descriptor::FileDescriptorProto
 {
     let resolver = Resolver {

@@ -1,4 +1,3 @@
-extern crate protobuf_parser;
 extern crate protobuf;
 extern crate protobuf_codegen;
 
@@ -9,6 +8,9 @@ use std::path::Path;
 use std::io;
 use std::io::Read;
 use std::fs;
+
+mod model;
+mod parser;
 
 pub use protobuf_codegen::Customize;
 
@@ -40,7 +42,7 @@ pub(crate) fn relative_path_to_protobuf_path(path: &Path) -> String {
 
 #[derive(Clone)]
 struct FileDescriptorPair {
-    parsed: protobuf_parser:: FileDescriptor,
+    parsed: model::FileDescriptor,
     descriptor: protobuf::descriptor::FileDescriptorProto,
 }
 
@@ -65,7 +67,7 @@ impl<'a> Run<'a> {
 
     fn get_all_deps_already_parsed(
         &self,
-        parsed: &protobuf_parser::FileDescriptor,
+        parsed: &model::FileDescriptor,
         result: &mut HashMap<String, FileDescriptorPair>)
     {
         for import in &parsed.import_paths {
@@ -78,10 +80,10 @@ impl<'a> Run<'a> {
             return Ok(());
         }
 
-        let mut content = Vec::new();
-        fs::File::open(fs_path)?.read_to_end(&mut content)?;
+        let mut content = String::new();
+        fs::File::open(fs_path)?.read_to_string(&mut content)?;
 
-        let parsed = protobuf_parser::FileDescriptor::parse(content)
+        let parsed = model::FileDescriptor::parse(content)
             .map_err(|e| {
                 io::Error::new(io::ErrorKind::Other,
                     format!("failed to parse {:?}: {:?}", fs_path, e))
