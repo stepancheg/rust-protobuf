@@ -9,6 +9,8 @@ use parser::Loc;
 pub use parser::ParserError;
 pub use parser::ParserErrorWithLocation;
 
+use float;
+
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Syntax {
@@ -37,9 +39,7 @@ pub enum Rule {
 }
 
 /// Protobuf supported field types
-///
-/// TODO: Groups (even if deprecated)
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
     /// Protobuf int32
     ///
@@ -132,7 +132,7 @@ pub enum FieldType {
 }
 
 /// A Protobuf Field
-#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Field {
     /// Field name
     pub name: String,
@@ -143,7 +143,7 @@ pub struct Field {
     /// Tag number
     pub number: i32,
     /// Default value for the field
-    pub default: Option<String>,
+    pub default: Option<ProtobufConstant>,
     /// Packed property for repeated fields
     pub packed: Option<bool>,
     /// Is the field deprecated
@@ -215,6 +215,37 @@ pub struct Extension {
     pub field: Field,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum ProtobufConstant {
+    U64(u64),
+    I64(i64),
+    F64(f64), // TODO: eq
+    Bool(bool),
+    Ident(String),
+    String(String), // quoted
+    BracedExpr(String),
+}
+
+impl ProtobufConstant {
+    pub fn format(&self) -> String {
+        match *self {
+            ProtobufConstant::U64(u) => u.to_string(),
+            ProtobufConstant::I64(i) => i.to_string(),
+            ProtobufConstant::F64(f) => float::format_protobuf_float(f),
+            ProtobufConstant::Bool(b) => b.to_string(),
+            ProtobufConstant::Ident(ref i) => i.clone(),
+            ProtobufConstant::String(ref s) => s.clone(),
+            ProtobufConstant::BracedExpr(ref s) => s.clone(),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ProtobufOption {
+    pub name: String,
+    pub value: ProtobufConstant,
+}
+
 /// A File descriptor representing a whole .proto file
 #[derive(Debug, Default, Clone)]
 pub struct FileDescriptor {
@@ -230,6 +261,8 @@ pub struct FileDescriptor {
     pub enums: Vec<Enumeration>,
     /// Extensions
     pub extensions: Vec<Extension>,
+    /// Non-builtin options
+    pub options: Vec<ProtobufOption>,
 }
 
 impl FileDescriptor {

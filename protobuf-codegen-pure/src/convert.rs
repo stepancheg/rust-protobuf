@@ -8,7 +8,6 @@ use protobuf;
 
 #[derive(Debug)]
 pub enum ConvertError {
-    WrongDefaultValue,
 }
 
 pub type ConvertResult<T> = Result<T, ConvertError>;
@@ -449,28 +448,30 @@ impl<'a> Resolver<'a> {
         if let Some(ref default) = input.default {
             let default = match output.get_field_type() {
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING => {
-                    if default.starts_with('"') && default.ends_with('"') {
-                        default[1..default.len() - 1]
+                    if let &model::ProtobufConstant::String(ref s) = default {
+                        // TODO: proper type in parser
+                        assert!(s.starts_with('"') && s.ends_with('"'));
+                        s[1..s.len() - 1]
                             // TODO: properly decode
                             .replace("\\n", "\n")
                             .replace("\\t", "\t")
                     } else {
-                        default.clone()
+                        // TODO: not panic
+                        panic!("default value is not string literal");
                     }
                 }
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES => {
-                    if default.starts_with('"') && default.ends_with('"') {
-                        default[1..default.len() - 1].to_owned()
+                    if let &model::ProtobufConstant::String(ref s) = default {
+                        // TODO: proper type in parser
+                        assert!(s.starts_with('"') && s.ends_with('"'));
+                        s[1..s.len() - 1].to_owned()
                     } else {
-                        default.clone()
+                        // TODO: not panic
+                        panic!("default value is not string literal");
                     }
                 }
                 _ => {
-                    if default.is_empty() {
-                        return Err(ConvertError::WrongDefaultValue);
-                    }
-                    assert!(!default.is_empty());
-                    default.clone()
+                    default.format()
                 }
             };
             output.set_default_value(default);

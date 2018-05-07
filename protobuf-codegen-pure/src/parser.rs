@@ -1,8 +1,10 @@
 use std::str;
 use std::fmt;
 use std::num::ParseIntError;
+use std::f64;
 
 use model::*;
+use float;
 
 
 const FIRST_LINE: u32 = 1;
@@ -70,7 +72,7 @@ impl From<ParseIntError> for ParserError {
     }
 }
 
-type ParserResult<T> = Result<T, ParserError>;
+pub type ParserResult<T> = Result<T, ParserError>;
 
 
 trait ToU8 {
@@ -139,6 +141,24 @@ impl ToU8 for u32 {
     }
 }
 
+trait U64Extensions {
+    fn neg(&self) -> ParserResult<i64>;
+}
+
+impl U64Extensions for u64 {
+    fn neg(&self) -> ParserResult<i64> {
+        if *self <= 0x7fff_ffff_ffff_ffff {
+            Ok(-(*self as i64))
+        } else if *self == 0x8000_0000_0000_0000 {
+            Ok(-0x8000_0000_0000_0000)
+        } else {
+            Err(ParserError::IntegerOverflow)
+        }
+    }
+}
+
+
+
 
 #[derive(Clone, Eq, PartialEq, Debug)]
 struct StrLit {
@@ -164,14 +184,14 @@ impl StrLit {
 }
 
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum Token {
     Ident(String),
     Symbol(char),
     IntLit(u64),
     // including quotes
     StrLit(StrLit),
-    FloatLit(String),
+    FloatLit(f64),
 }
 
 impl Token {
@@ -182,7 +202,15 @@ impl Token {
             &Token::Symbol(c) => c.to_string(),
             &Token::IntLit(ref i) => i.to_string(),
             &Token::StrLit(ref s) => s.quoted.clone(),
-            &Token::FloatLit(ref f) => f.clone(),
+            &Token::FloatLit(ref f) => f.to_string(),
+        }
+    }
+
+    fn to_num_lit(&self) -> ParserResult<NumLit> {
+        match self {
+            &Token::IntLit(i) => Ok(NumLit::U64(i)),
+            &Token::FloatLit(f) => Ok(NumLit::F64(f)),
+            _ => Err(ParserError::IncorrectInput),
         }
     }
 }
@@ -606,8 +634,10 @@ impl<'a> Lexer<'a> {
 
     fn next_token_inner(&mut self) -> ParserResult<Token> {
         if let Some(ident) = self.next_ident_opt()? {
-            let token = if ident == "nan" || ident == "inf" {
-                Token::FloatLit(ident.to_owned())
+            let token = if ident == float::PROTOBUF_NAN {
+                Token::FloatLit(f64::NAN)
+            } else if ident == float::PROTOBUF_INF {
+                Token::FloatLit(f64::INFINITY)
             } else {
                 Token::Ident(ident.to_owned())
             };
@@ -617,9 +647,9 @@ impl<'a> Lexer<'a> {
         let mut clone = self.clone();
         let pos = clone.pos;
         if let Ok(_) = clone.next_float_lit() {
-            let mut lit = self.input[pos..clone.pos].to_owned();
+            let f = float::parse_protobuf_float(&self.input[pos..clone.pos])?;
             *self = clone;
-            return Ok(Token::FloatLit(lit));
+            return Ok(Token::FloatLit(f));
         }
 
         if let Some(lit) = self.next_int_lit_opt()? {
@@ -675,6 +705,23 @@ pub struct MessageBody {
     pub reserved_names: Vec<String>,
     pub messages: Vec<Message>,
     pub enums: Vec<Enumeration>,
+}
+
+#[derive(Copy, Clone)]
+enum NumLit {
+    U64(u64),
+    F64(f64),
+}
+
+impl NumLit {
+    fn to_option_value(&self, sign_is_plus: bool) -> ParserResult<ProtobufConstant> {
+        Ok(match (*self, sign_is_plus) {
+            (NumLit::U64(u), true) => ProtobufConstant::U64(u),
+            (NumLit::F64(f), true) => ProtobufConstant::F64(f),
+            (NumLit::U64(u), false) => ProtobufConstant::I64(u.neg()?),
+            (NumLit::F64(f), false) => ProtobufConstant::F64(-f),
+        })
+    }
 }
 
 impl<'a> Parser<'a> {
@@ -893,38 +940,33 @@ impl<'a> Parser<'a> {
 
     // Constant
 
-    fn next_num_lit(&mut self) -> ParserResult<String> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::IntLit(i) => Ok(i.to_string()),
-                &Token::FloatLit(ref s) => Ok(s.clone()),
-                _ => Err(ParserError::IncorrectInput),
-            }
-        })
+    fn next_num_lit(&mut self) -> ParserResult<NumLit> {
+        self.next_token_check_map(|token| token.to_num_lit())
     }
 
     // constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
     //            strLit | boolLit
-    fn next_constant(&mut self) -> ParserResult<String> {
+    fn next_constant(&mut self) -> ParserResult<ProtobufConstant> {
         // https://github.com/google/protobuf/blob/a21f225824e994ebd35e8447382ea4e0cd165b3c/src/google/protobuf/unittest_custom_options.proto#L350
         if self.lookahead_is_symbol('{')? {
-            return self.next_braces();
+            return Ok(ProtobufConstant::BracedExpr(self.next_braces()?));
         }
 
         if let Some(b) = self.next_bool_lit_opt()? {
-            return Ok(b.to_string());
+            return Ok(ProtobufConstant::Bool(b));
         }
 
         if let &Token::Symbol(c) = self.lookahead_some()? {
             if c == '+' || c == '-' {
                 self.advance()?;
-                return Ok(format!("{}{}", c, self.next_num_lit()?));
+                let sign = c == '+';
+                return Ok(self.next_num_lit()?.to_option_value(sign)?);
             }
         }
 
         if let Some(r) = self.next_token_if_map(|token| {
                 match token {
-                    &Token::StrLit(ref s) => Some(s.quoted.clone()),
+                    &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.quoted.clone())),
                     _ => None,
                 }
             })?
@@ -933,8 +975,12 @@ impl<'a> Parser<'a> {
         }
 
         match self.lookahead_some()? {
-            &Token::IntLit(..) | &Token::FloatLit(..) => return self.next_num_lit(),
-            &Token::Ident(..) => return self.next_full_ident(),
+            &Token::IntLit(..) | &Token::FloatLit(..) => {
+                return self.next_num_lit()?.to_option_value(true);
+            },
+            &Token::Ident(..) => {
+                return Ok(ProtobufConstant::Ident(self.next_full_ident()?));
+            },
             _ => {},
         }
 
@@ -1027,13 +1073,13 @@ impl<'a> Parser<'a> {
     }
 
     // option = "option" optionName  "=" constant ";"
-    fn next_option_opt(&mut self) -> ParserResult<Option<()>> {
+    fn next_option_opt(&mut self) -> ParserResult<Option<ProtobufOption>> {
         if self.next_ident_if_eq("option")? {
-            let _option_name = self.next_option_name()?;
+            let name = self.next_option_name()?;
             self.next_symbol_expect_eq('=')?;
-            self.next_constant()?;
+            let value = self.next_constant()?;
             self.next_symbol_expect_eq(';')?;
-            Ok(Some(()))
+            Ok(Some(ProtobufOption { name, value }))
         } else {
             Ok(None)
         }
@@ -1107,15 +1153,15 @@ impl<'a> Parser<'a> {
     }
 
     // fieldOption = optionName "=" constant
-    fn next_field_option(&mut self) -> ParserResult<(String, String)> {
+    fn next_field_option(&mut self) -> ParserResult<ProtobufOption> {
         let name = self.next_option_name()?;
         self.next_symbol_expect_eq('=')?;
         let value = self.next_constant()?;
-        Ok((name, value))
+        Ok(ProtobufOption { name, value })
     }
 
     // fieldOptions = fieldOption { ","  fieldOption }
-    fn next_field_options(&mut self) -> ParserResult<Vec<(String, String)>> {
+    fn next_field_options(&mut self) -> ParserResult<Vec<ProtobufOption>> {
         let mut options = Vec::new();
 
         options.push(self.next_field_option()?);
@@ -1168,22 +1214,18 @@ impl<'a> Parser<'a> {
             let mut deprecated = false;
 
             if self.next_symbol_if_eq('[')? {
-                for (n, v) in self.next_field_options()? {
-                    if n == "default" {
-                        default = Some(v);
-                    } else if n == "packed" {
-                        if v == "true" {
-                            packed = Some(true);
-                        } else if v == "false" {
-                            packed = Some(false);
+                for ProtobufOption { name, value } in self.next_field_options()? {
+                    if name == "default" {
+                        default = Some(value);
+                    } else if name == "packed" {
+                        if let ProtobufConstant::Bool(b) = value {
+                            packed = Some(b);
                         } else {
                             return Err(ParserError::IncorrectInput);
                         }
-                    } else if n == "deprecated" {
-                        if v == "true" {
-                            deprecated = true;
-                        } else if v == "false" {
-                            deprecated = false;
+                    } else if name == "deprecated" {
+                        if let ProtobufConstant::Bool(b) = value {
+                            deprecated = b;
                         } else {
                             return Err(ParserError::IncorrectInput);
                         }
@@ -1528,6 +1570,7 @@ impl<'a> Parser<'a> {
         let mut messages = Vec::new();
         let mut enums = Vec::new();
         let mut extensions = Vec::new();
+        let mut options = Vec::new();
 
         while !self.syntax_eof()? {
             if let Some(import_path) = self.next_import_opt()? {
@@ -1540,7 +1583,8 @@ impl<'a> Parser<'a> {
                 continue;
             }
 
-            if let Some(_option) = self.next_option_opt()? {
+            if let Some(option) = self.next_option_opt()? {
+                options.push(option);
                 continue;
             }
 
@@ -1577,6 +1621,7 @@ impl<'a> Parser<'a> {
             messages,
             enums,
             extensions,
+            options,
         })
     }
 }
@@ -1648,7 +1693,7 @@ mod test {
     fn test_lexer_float_lit() {
         let msg = r#"12.3"#;
         let mess = lex(msg, |p| p.next_token_inner());
-        assert_eq!(Token::FloatLit("12.3".to_owned()), mess);
+        assert_eq!(Token::FloatLit(12.3), mess);
 
     }
 
@@ -1678,7 +1723,7 @@ mod test {
         let msg = r#"  int64 f = 4 [default = 12];  "#;
         let mess = parse(msg, |p| p.next_field(false));
         assert_eq!("f", mess.name);
-        assert_eq!("12", mess.default.unwrap());
+        assert_eq!("12", mess.default.unwrap().format());
     }
 
     #[test]
@@ -1686,7 +1731,7 @@ mod test {
         let msg = r#"  float f = 2 [default = 10.0];  "#;
         let mess = parse(msg, |p| p.next_field(false));
         assert_eq!("f", mess.name);
-        assert_eq!("10.0", mess.default.unwrap());
+        assert_eq!("10.0", mess.default.unwrap().format());
     }
 
     #[test]
@@ -1843,7 +1888,7 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!("17", mess.fields[0].default.as_ref().expect("default"));
+        assert_eq!("17", mess.fields[0].default.as_ref().expect("default").format());
     }
 
     #[test]
@@ -1853,7 +1898,9 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(r#""ab\nc d\"g\'h\0\"z""#, mess.fields[0].default.as_ref().expect("default"));
+        assert_eq!(
+            r#""ab\nc d\"g\'h\0\"z""#,
+            mess.fields[0].default.as_ref().expect("default").format());
     }
 
     #[test]
@@ -1863,7 +1910,9 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(r#""ab\nc d\xfeE\"g\'h\0\"z""#, mess.fields[0].default.as_ref().expect("default"));
+        assert_eq!(
+            r#""ab\nc d\xfeE\"g\'h\0\"z""#,
+            mess.fields[0].default.as_ref().expect("default").format());
     }
 
     #[test]
