@@ -11,7 +11,6 @@ use std::fs;
 
 mod model;
 mod parser;
-mod float;
 
 pub use protobuf_codegen::Customize;
 

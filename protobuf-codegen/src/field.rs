@@ -13,6 +13,8 @@ use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_field;
 use oneof::OneofField;
 
+use float;
+
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
     match field_type {
@@ -672,24 +674,20 @@ impl<'a> FieldGen<'a> {
             _ => unreachable!(),
         };
         let proto_default = self.proto_field.field.get_default_value();
-        assert!(!proto_default.is_empty());
 
-        fn parse_special_float(s: &str) -> Option<&'static str> {
-            if s == "nan" {
-                Some("NAN")
-            } else if s == "inf" {
-                Some("INFINITY")
-            } else if s == "-inf" {
-                Some("NEG_INFINITY")
+        let f = float::parse_protobuf_float(proto_default)
+            .expect(&format!("failed to parse float: {:?}", proto_default));
+
+        if f.is_nan() {
+            format!("::std::{}::NAN", type_name)
+        } else if f.is_infinite() {
+            if f > 0.0 {
+                format!("::std::{}::INFINITY", type_name)
             } else {
-                None
+                format!("::std::{}::NEG_INFINITY", type_name)
             }
-        }
-
-        match parse_special_float(proto_default) {
-            Some(special) => format!("::std::{}::{}", type_name, special),
-            // hope it is decimal float
-            None => format!("{}{}", proto_default, type_name),
+        } else {
+            format!("{:?}{}", f, type_name)
         }
     }
 

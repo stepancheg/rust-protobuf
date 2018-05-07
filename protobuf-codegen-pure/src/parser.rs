@@ -4,7 +4,7 @@ use std::num::ParseIntError;
 use std::f64;
 
 use model::*;
-use float;
+use protobuf_codegen::float;
 
 
 const FIRST_LINE: u32 = 1;
@@ -69,6 +69,12 @@ pub struct ParserErrorWithLocation {
 impl From<ParseIntError> for ParserError {
     fn from(_: ParseIntError) -> Self {
         ParserError::ParseIntError
+    }
+}
+
+impl From<float::ProtobufFloatParseError> for ParserError {
+    fn from(_: float::ProtobufFloatParseError) -> Self {
+        ParserError::IncorrectFloatLit
     }
 }
 
