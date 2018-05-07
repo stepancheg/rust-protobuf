@@ -56,11 +56,7 @@ fn gen_in_dir(dir: &str) {
 fn generate_pb_rs() {
 
     copy_tests("src/v2");
-
     copy_tests("src/v3");
-    // TODO
-    fs::remove_file("src/v3/test_map_carllerche_pb.proto").expect("rm");
-    fs::remove_file("src/v3/test_map_carllerche.rs").expect("rm");
 
     gen_in_dir("src/v2");
     gen_in_dir("src/v3");

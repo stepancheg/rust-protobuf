@@ -3,11 +3,17 @@
 use std::iter;
 
 use model;
+
 use protobuf;
+use protobuf::Message;
 
 
 #[derive(Debug)]
 pub enum ConvertError {
+    UnsupportedOption(String),
+    ExtensionNotFound(String),
+    NotFileExtension(String),
+    UnsupportedExtensionType(String),
 }
 
 pub type ConvertResult<T> = Result<T, ConvertError>;
@@ -492,10 +498,14 @@ impl<'a> Resolver<'a> {
         iter::once(self.current_file).chain(self.deps).collect()
     }
 
-    fn current_file_package_files(&self) -> Vec<&model::FileDescriptor> {
+    fn package_files(&self, package: &str) -> Vec<&model::FileDescriptor> {
         self.all_files().into_iter()
-            .filter(|f| f.package == self.current_file.package)
+            .filter(|f| f.package == package)
             .collect()
+    }
+
+    fn current_file_package_files(&self) -> Vec<&model::FileDescriptor> {
+        self.package_files(&self.current_file.package)
     }
 
     fn resolve_message_or_enum(&self, name: &str, path_in_file: &RelativePath)
@@ -608,6 +618,60 @@ impl<'a> Resolver<'a> {
         output.set_name(input.name.clone());
         output
     }
+
+    fn find_extension(&self, option_name: &str)
+        -> ConvertResult<&model::Extension>
+    {
+        if !option_name.starts_with('(') || !option_name.ends_with(')') {
+            return Err(ConvertError::UnsupportedOption(option_name.to_owned()));
+        }
+        let path = &option_name[1..option_name.len() - 1];
+        let dot = match path.rfind('.') {
+            Some(dot) => dot,
+            None => return Err(ConvertError::UnsupportedOption(option_name.to_owned())),
+        };
+        let package = &path[..dot];
+        let name = &path[dot+1..];
+
+        for file in self.package_files(package) {
+            for ext in &file.extensions {
+                if ext.field.name == name {
+                    return Ok(ext);
+                }
+            }
+        }
+
+        Err(ConvertError::ExtensionNotFound(option_name.to_owned()))
+    }
+
+    fn file_options(&self, input: &[model::ProtobufOption])
+        -> ConvertResult<protobuf::descriptor::FileOptions>
+    {
+        let mut r = protobuf::descriptor::FileOptions::new();
+        for option in input {
+
+            // TODO: builtin options too
+            if !option.name.starts_with('(') {
+                continue;
+            }
+
+            let extension = self.find_extension(&option.name)?;
+            if extension.extendee != "google.protobuf.FileOptions" {
+                return Err(ConvertError::NotFileExtension(option.name.clone()));
+            }
+            if extension.field.typ != model::FieldType::Bool {
+                return Err(ConvertError::UnsupportedExtensionType(option.name.clone()));
+            }
+
+            let v = match option.value {
+                model::ProtobufConstant::Bool(b) => b,
+                _ => return Err(ConvertError::UnsupportedExtensionType(option.name.clone())),
+            };
+
+            r.mut_unknown_fields().add_varint(extension.field.number as u32, if v { 1 } else { 0 });
+        }
+        Ok(r)
+    }
 }
 
 fn syntax(input: model::Syntax) -> String {
@@ -651,5 +715,8 @@ pub fn file_descriptor(
     output.set_message_type(messages);
 
     output.set_enum_type(input.enums.iter().map(|e| resolver.enumeration(e)).collect());
+
+    output.set_options(resolver.file_options(&input.options)?);
+
     Ok(output)
 }

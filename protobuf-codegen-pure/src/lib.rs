@@ -11,6 +11,7 @@ use std::fs;
 
 mod model;
 mod parser;
+mod str_lit;
 
 pub use protobuf_codegen::Customize;
 

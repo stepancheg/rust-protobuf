@@ -222,7 +222,7 @@ pub enum ProtobufConstant {
     F64(f64), // TODO: eq
     Bool(bool),
     Ident(String),
-    String(String), // quoted
+    String(String), // quoted; TODO: store unquoted
     BracedExpr(String),
 }
 

@@ -5,6 +5,7 @@ use std::f64;
 
 use model::*;
 use protobuf_codegen::float;
+use str_lit::*;
 
 
 const FIRST_LINE: u32 = 1;
@@ -27,7 +28,7 @@ impl fmt::Display for Loc {
 }
 
 impl Loc {
-    fn start() -> Loc {
+    pub fn start() -> Loc {
         Loc {
             line: FIRST_LINE,
             col: FIRST_COL,
@@ -55,6 +56,7 @@ pub enum ParserError {
     LabelNotAllowed,
     LabelRequired,
     InternalError,
+    StrLitDecodeError(StrLitDecodeError),
 }
 
 #[derive(Debug)]
@@ -64,6 +66,12 @@ pub struct ParserErrorWithLocation {
     pub line: u32,
     /// 1-based
     pub col: u32,
+}
+
+impl From<StrLitDecodeError> for ParserError {
+    fn from(e: StrLitDecodeError) -> Self {
+        ParserError::StrLitDecodeError(e)
+    }
 }
 
 impl From<ParseIntError> for ParserError {
@@ -164,32 +172,6 @@ impl U64Extensions for u64 {
 }
 
 
-
-
-#[derive(Clone, Eq, PartialEq, Debug)]
-struct StrLit {
-    quoted: String,
-}
-
-impl StrLit {
-    /// May fail if not valid UTF8
-    fn decode_utf8(&self) -> ParserResult<String> {
-        assert!(self.quoted.len() >= 2);
-        assert!(self.quoted.as_bytes()[0] == self.quoted.as_bytes()[self.quoted.len() - 1]);
-        let mut lexer = Lexer {
-            input: &self.quoted[1 .. self.quoted.len() - 1],
-            pos: 0,
-            loc: Loc::start(),
-        };
-        let mut r = String::new();
-        while !lexer.eof() {
-            r.push(lexer.next_char_value()?);
-        }
-        Ok(r)
-    }
-}
-
-
 #[derive(Clone, Debug, PartialEq)]
 enum Token {
     Ident(String),
@@ -228,10 +210,10 @@ struct TokenWithLocation {
 }
 
 #[derive(Copy, Clone)]
-struct Lexer<'a> {
-    input: &'a str,
-    pos: usize,
-    loc: Loc,
+pub struct Lexer<'a> {
+    pub input: &'a str,
+    pub pos: usize,
+    pub loc: Loc,
 }
 
 fn is_letter(c: char) -> bool {
@@ -240,7 +222,7 @@ fn is_letter(c: char) -> bool {
 
 impl<'a> Lexer<'a> {
     /// No more chars
-    fn eof(&self) -> bool {
+    pub fn eof(&self) -> bool {
         self.pos == self.input.len()
     }
 
@@ -559,7 +541,7 @@ impl<'a> Lexer<'a> {
     // octEscape = '\' octalDigit octalDigit octalDigit
     // charEscape = '\' ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | '\' | "'" | '"' )
     // quote = "'" | '"'
-    fn next_char_value(&mut self) -> ParserResult<char> {
+    pub fn next_char_value(&mut self) -> ParserResult<char> {
         match self.next_char()? {
             '"' | '\'' => Err(ParserError::InternalError),
             '\\' => {

@@ -27,5 +27,6 @@ case "$protoc_ver" in
 esac
 
 ../protobuf-test/test.sh
+../protobuf-codegen-pure-test/test.sh
 
 # vim: set ts=4 sw=4 et:
