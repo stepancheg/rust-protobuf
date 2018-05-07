@@ -13,7 +13,7 @@ use glob;
 
 
 pub fn glob_simple(pattern: &str) -> Vec<String> {
-    glob::glob(pattern)
+    let mut r: Vec<_> = glob::glob(pattern)
         .expect("glob")
         .map(|g| {
             g.expect("item")
@@ -22,7 +22,10 @@ pub fn glob_simple(pattern: &str) -> Vec<String> {
                 .expect("utf-8")
                 .to_owned()
         })
-        .collect()
+        .collect();
+    // Make test stable
+    r.sort();
+    r
 }
 
 
@@ -118,7 +121,7 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
     mod_rs.flush().expect("flush");
 }
 
-pub fn gen_in_dir<F, E>(dir: &str, gen: F)
+pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
     where
         F : for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
         E : fmt::Debug,

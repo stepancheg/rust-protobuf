@@ -44,8 +44,8 @@ fn copy_tests(dir: &str) {
 }
 
 
-fn gen_in_dir_pure(dir: &str) {
-    gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
+fn gen_in_dir(dir: &str) {
+    gen_in_dir_impl(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
         protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
             out_dir, input, includes, customize
         })
@@ -62,8 +62,8 @@ fn generate_pb_rs() {
     fs::remove_file("src/v3/test_map_carllerche_pb.proto").expect("rm");
     fs::remove_file("src/v3/test_map_carllerche.rs").expect("rm");
 
-    gen_in_dir_pure("src/v2");
-    gen_in_dir_pure("src/v3");
+    gen_in_dir("src/v2");
+    gen_in_dir("src/v3");
 }
 
 

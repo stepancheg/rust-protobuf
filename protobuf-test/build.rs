@@ -86,24 +86,24 @@ fn generate_v_from_common() {
     }
 }
 
+fn gen_in_dir(dir: &str) {
+    gen_in_dir_impl(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
+        protoc_rust::run(protoc_rust::Args {
+            out_dir, input, includes, customize
+        })
+    });
+}
+
 fn generate_pb_rs() {
 
-    fn gen_v2_v3(dir: &str) {
-        gen_in_dir(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
-            protoc_rust::run(protoc_rust::Args {
-                out_dir, input, includes, customize
-            })
-        });
-    }
-
-    gen_v2_v3("src/v2");
+    gen_in_dir("src/v2");
 
     if protoc::Protoc::from_env_path()
         .version()
         .expect("version")
         .is_3()
     {
-        gen_v2_v3("src/v3");
+        gen_in_dir("src/v3");
 
         let protos = glob_simple("src/google/protobuf/*.proto");
         protoc_rust::run(protoc_rust::Args {
@@ -118,11 +118,10 @@ fn generate_pb_rs() {
         // Because `#[cfg(nonexistent)]` still requires module files to exist
         // https://github.com/rust-lang/rust/pull/36482
 
-        let g1 = glob::glob("src/v3/*.proto").expect("g1");
-        let g2 = glob::glob("src/google/protobuf/*.proto").expect("g2");
+        let g1 = glob_simple("src/v3/*.proto");
+        let g2 = glob_simple("src/google/protobuf/*.proto");
 
-        for f in g1.chain(g2) {
-            let mut f: String = f.expect("f").as_path().to_str().expect("utf-8").to_owned();
+        for mut f in g1.into_iter().chain(g2.into_iter()) {
             let suffix = ".proto";
             let len = f.len();
             f.truncate(len - suffix.len());
