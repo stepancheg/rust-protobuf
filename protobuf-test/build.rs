@@ -16,7 +16,7 @@ use std::path;
 use protobuf_test_common::build::*;
 
 
-fn generate_v_from_common() {
+fn generate_in_common() {
     let v3 = protoc::Protoc::from_env_path()
         .version()
         .expect("version")
@@ -80,9 +80,11 @@ fn generate_v_from_common() {
                 input: &[&format!("src/common/v{}/{}_pb.proto", v, without_suffix)],
                 .. Default::default()
             }).expect("protoc");
-
-            gen_mod_rs_in_dir(&format!("src/common/v{}", v));
         }
+    }
+
+    for &v in &[2, 3] {
+        gen_mod_rs_in_dir(&format!("src/common/v{}", v));
     }
 }
 
@@ -94,7 +96,7 @@ fn gen_in_dir(dir: &str) {
     });
 }
 
-fn generate_pb_rs() {
+fn generate_in_v2_v3() {
 
     gen_in_dir("src/v2");
 
@@ -138,8 +140,9 @@ fn main() {
     env_logger::init();
 
     clean_old_files();
-    generate_v_from_common();
-    generate_pb_rs();
+
+    generate_in_common();
+    generate_in_v2_v3();
 
     if protoc::Protoc::from_env_path()
         .version()
