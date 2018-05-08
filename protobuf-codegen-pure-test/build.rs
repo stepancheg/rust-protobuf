@@ -26,13 +26,18 @@ fn copy<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
 }
 
 
+// Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
     let src_dir = format!("../protobuf-test/{}", dir);
     for entry in fs::read_dir(&src_dir).expect(&format!("read_dir {}", src_dir)) {
         let file_name = entry.expect("entry").file_name().into_string().unwrap();
 
+        if !file_name.ends_with(".rs") && !file_name.ends_with(".proto") {
+            continue;
+        }
+
         // skip temporary and generated files
-        if file_name.starts_with(".") || file_name.ends_with("_pb.rs") {
+        if file_name.starts_with(".") || file_name.ends_with("_pb.rs") || file_name == "mod.rs" {
             continue;
         }
 
@@ -54,7 +59,6 @@ fn gen_in_dir(dir: &str) {
 
 
 fn generate_pb_rs() {
-
     copy_tests("src/v2");
     copy_tests("src/v3");
 

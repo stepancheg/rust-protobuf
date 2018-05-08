@@ -136,13 +136,17 @@ fn generate_in_v2_v3() {
     }
 }
 
+fn generate_pb_rs() {
+    generate_in_common();
+    generate_in_v2_v3();
+}
+
 fn main() {
     env_logger::init();
 
     clean_old_files();
 
-    generate_in_common();
-    generate_in_v2_v3();
+    generate_pb_rs();
 
     if protoc::Protoc::from_env_path()
         .version()
