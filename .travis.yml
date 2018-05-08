@@ -26,7 +26,7 @@ script:
   # Full rebuild with regenerate
   - PATH=/home/travis/bin:$PATH cargo build --manifest-path=protobuf-codegen/Cargo.toml
   # Regenerate only works when proto3
-  - PATH=/home/travis/bin:$PATH case $PROTOBUF_VERSION in 3*) protobuf/regenerate.sh ;; esac
+  - PATH=/home/travis/bin:$PATH case $PROTOBUF_VERSION in; 3*) protobuf/regenerate.sh ;; esac
   - PATH=/home/travis/bin:$PATH cargo test --all
   # `cargo test --all --features=FFF` doesn't work if there are crates without feature `FFF`
   # hence the explicit list of tests
