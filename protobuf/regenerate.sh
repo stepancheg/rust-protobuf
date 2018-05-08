@@ -15,7 +15,7 @@ case "$protoc_ver" in
     ;;
 esac
 
-where_am_i=$(cd `dirname $0`/..; pwd)
+where_am_i=$(cd ..; pwd)
 PATH="$where_am_i/target/debug:$PATH"
 
 rm -rf tmp-generated
