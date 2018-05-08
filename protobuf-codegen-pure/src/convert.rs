@@ -606,10 +606,17 @@ impl<'a> Resolver<'a> {
         output
     }
 
+    fn enum_options(&self, input: &model::EnumOptions) -> protobuf::descriptor::EnumOptions {
+        let mut options = protobuf::descriptor::EnumOptions::new();
+        options.set_allow_alias(input.allow_alias);
+        options
+    }
+
     fn enumeration(&self, input: &model::Enumeration) -> protobuf::descriptor::EnumDescriptorProto {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_value(input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect());
+        output.set_options(self.enum_options(&input.options));
         output
     }
 

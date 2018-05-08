@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+package test_enum_values;
+
 enum TestEnumValuesEnum {
     UNKNOWN = 0;
     WINTER = 11;

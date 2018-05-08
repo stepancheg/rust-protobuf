@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+package test_ident;
+
 // rust types defined in prelude
 
 message Vec { }

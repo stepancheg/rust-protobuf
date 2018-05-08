@@ -3,6 +3,7 @@
 pub use protobuf_codegen::Customize;
 
 use std::io::Write;
+use std::io::Read;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::fs;
@@ -143,4 +144,68 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
     }).expect("protoc");
 
     gen_mod_rs_in_dir(dir);
+}
+
+
+pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
+    let mut r = Vec::new();
+    for entry in fs::read_dir(dir).expect("read_dir") {
+        let entry = entry.expect("entry");
+        let entry_path = entry.path();
+        let file_name = entry_path.as_path().file_name().unwrap().to_str().unwrap();
+
+        // temporart files
+        if file_name.ends_with(".") {
+            continue;
+        }
+
+        if !file_name.ends_with(".rs") || file_name.ends_with("_pb.rs") {
+            continue;
+        }
+
+        if file_name == "mod.rs" {
+            continue;
+        }
+
+        r.push(file_name[..file_name.len() - ".rs".len()].to_owned());
+    }
+
+    // Make test stable
+    r.sort();
+
+    r
+}
+
+
+pub fn copy_tests_v2_v3(v2_dir: &str, v3_dir: &str) {
+    for test_name in list_tests_in_dir(v2_dir) {
+        let mut p2f = fs::File::open(&format!("{}/{}_pb.proto", v2_dir, test_name))
+            .expect("open v2 .proto");
+        let mut proto = String::new();
+        p2f.read_to_string(&mut proto).expect("read .proto");
+        drop(p2f);
+
+        let mut r2f = fs::File::open(&format!("{}/{}.rs", v2_dir, test_name))
+            .expect("open v2 .rs");
+        let mut rs = String::new();
+        r2f.read_to_string(&mut rs).expect("read .rs");
+        drop(r2f);
+
+        let mut p3f = fs::File::create(&format!("{}/{}_pb.proto", v3_dir, test_name))
+            .expect("create v3 .proto");
+        let mut r3f = fs::File::create(&format!("{}/{}.rs", v3_dir, test_name))
+            .expect("create v3 .rs");
+
+        // convert proto2 to proto3
+        let proto = proto.replace("optional ", "");
+        let proto = proto.replace("required ", "");
+        let proto = proto.replace("syntax = \"proto2\";", "syntax = \"proto3\";");
+        write!(p3f, "// generated\n").expect("write");
+        write!(p3f, "{}", proto).expect("write");
+        p3f.flush().expect("flush");
+
+        write!(r3f, "// generated\n").expect("write");
+        write!(r3f, "{}", rs).expect("write");
+        r3f.flush().expect("flush");
+    }
 }

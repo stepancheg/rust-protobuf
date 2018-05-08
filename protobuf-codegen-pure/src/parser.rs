@@ -42,6 +42,7 @@ impl Loc {
 pub enum ParserError {
     IncorrectInput,
     IncorrectFloatLit,
+    IncorrectOptionType,
     NotUtf8,
     ExpectChar(char),
     ExpectConstant,
@@ -1380,7 +1381,11 @@ impl<'a> Parser<'a> {
     fn next_enum_opt(&mut self) -> ParserResult<Option<Enumeration>> {
         if self.next_ident_if_eq("enum")? {
             let name = self.next_ident()?.to_owned();
+
             let mut values = Vec::new();
+
+            let mut options: EnumOptions = Default::default();
+
             self.next_symbol_expect_eq('{')?;
             while self.lookahead_if_symbol()? != Some('}') {
                 // emptyStatement
@@ -1388,14 +1393,20 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                if let Some(..) = self.next_option_opt()? {
+                if let Some(ProtobufOption { name, value }) = self.next_option_opt()? {
+                    if name == "allow_alias" {
+                        options.allow_alias = match value {
+                            ProtobufConstant::Bool(b) => b,
+                            _ => return Err(ParserError::IncorrectOptionType),
+                        };
+                    }
                     continue;
                 }
 
                 values.push(self.next_enum_field()?);
             }
             self.next_symbol_expect_eq('}')?;
-            Ok(Some(Enumeration { name, values }))
+            Ok(Some(Enumeration { name, values, options }))
         } else {
             Ok(None)
         }

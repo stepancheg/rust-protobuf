@@ -189,6 +189,12 @@ pub struct EnumValue {
     pub number: i32,
 }
 
+/// Enum options
+#[derive(Debug, Clone, Default)]
+pub struct EnumOptions {
+    pub allow_alias: bool,
+}
+
 /// A protobuf enumerator
 #[derive(Debug, Clone)]
 pub struct Enumeration {
@@ -196,6 +202,8 @@ pub struct Enumeration {
     pub name: String,
     /// enum values
     pub values: Vec<EnumValue>,
+    /// enum options
+    pub options: EnumOptions,
 }
 
 /// A OneOf

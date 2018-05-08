@@ -15,12 +15,15 @@ use std::path::Path;
 use protobuf_test_common::build::*;
 
 
-fn copy<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
+fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
     let mut content = Vec::new();
     fs::File::open(src.as_ref()).expect(&format!("open {}", src.as_ref().display()))
         .read_to_end(&mut content).expect("read_to_end");
 
     let mut write = fs::File::create(dst).expect("create");
+    writeln!(write, "// generated").expect("write");
+    writeln!(write, "// copied from {}", src.as_ref().display()).expect("write");
+    writeln!(write, "").expect("write");
     write.write_all(&content).expect("write_all");
     write.flush().expect("flush");
 }
@@ -41,7 +44,7 @@ fn copy_tests(dir: &str) {
             continue;
         }
 
-        copy(
+        copy_test(
             &format!("../protobuf-test/{}/{}", dir, file_name),
             &format!("{}/{}", dir, file_name),
         )
@@ -62,8 +65,13 @@ fn generate_pb_rs() {
     copy_tests("src/v2");
     copy_tests("src/v3");
 
+    copy_tests("src/common/v2");
+    copy_tests_v2_v3("src/common/v2", "src/common/v3");
+
     gen_in_dir("src/v2");
     gen_in_dir("src/v3");
+    gen_in_dir("src/common/v2");
+    gen_in_dir("src/common/v3");
 }
 
 

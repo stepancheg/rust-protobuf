@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+package test_oneof;
+
 enum EnumForOneof {
     UNKNOWN = 0;
     A = 10;
