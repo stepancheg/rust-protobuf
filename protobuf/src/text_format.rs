@@ -31,12 +31,14 @@ fn quote_escape_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push('"');
 }
 
+#[doc(hidden)]
 pub fn quote_escape_bytes(bytes: &[u8]) -> String {
     let mut r = String::new();
     quote_escape_bytes_to(bytes, &mut r);
     r
 }
 
+#[doc(hidden)]
 pub fn unescape_string(string: &str) -> Vec<u8> {
     fn parse_if_digit(chars: &mut std::str::Chars) -> u8 {
         let mut copy = chars.clone();
