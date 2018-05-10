@@ -190,7 +190,7 @@ impl Token {
             &Token::Ident(ref s) => s.clone(),
             &Token::Symbol(c) => c.to_string(),
             &Token::IntLit(ref i) => i.to_string(),
-            &Token::StrLit(ref s) => s.quoted.clone(),
+            &Token::StrLit(ref s) => s.quoted(),
             &Token::FloatLit(ref f) => f.to_string(),
         }
     }
@@ -607,8 +607,7 @@ impl<'a> Lexer<'a> {
             }
             self.next_char_expect_eq(q)?;
 
-            // TODO: do something with quotes inside concatenated idents
-            raw.push_str(&self.input[start..self.pos]);
+            raw.push_str(&self.input[start + 1 .. self.pos - 1]);
         }
         Ok(raw)
     }
@@ -645,8 +644,8 @@ impl<'a> Lexer<'a> {
             return Ok(Token::IntLit(lit));
         }
 
-        if let Some(lit) = self.next_str_lit_raw_opt()? {
-            return Ok(Token::StrLit(StrLit { quoted: lit.to_owned() }));
+        if let Some(escaped) = self.next_str_lit_raw_opt()? {
+            return Ok(Token::StrLit(StrLit { escaped }));
         }
 
         // This branch must be after str lit
@@ -955,7 +954,7 @@ impl<'a> Parser<'a> {
 
         if let Some(r) = self.next_token_if_map(|token| {
                 match token {
-                    &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.quoted.clone())),
+                    &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.quoted())),
                     _ => None,
                 }
             })?
@@ -1707,7 +1706,7 @@ mod test {
     fn test_str_lit() {
         let msg = r#"  "a\nb"  "#;
         let mess = parse(msg, |p| p.next_str_lit());
-        assert_eq!(StrLit { quoted: r#""a\nb""#.to_owned() }, mess);
+        assert_eq!(StrLit { escaped: r#"a\nb"#.to_owned() }, mess);
     }
 
     #[test]
