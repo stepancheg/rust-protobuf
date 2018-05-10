@@ -13,7 +13,7 @@ pub enum ConvertError {
     UnsupportedOption(String),
     ExtensionNotFound(String),
     NotFileExtension(String),
-    UnsupportedExtensionType(String),
+    UnsupportedExtensionType(String, String),
 }
 
 pub type ConvertResult<T> = Result<T, ConvertError>;
@@ -626,19 +626,11 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn find_extension(&self, option_name: &str)
-        -> ConvertResult<&model::Extension>
-    {
-        if !option_name.starts_with('(') || !option_name.ends_with(')') {
-            return Err(ConvertError::UnsupportedOption(option_name.to_owned()));
-        }
-        let path = &option_name[1..option_name.len() - 1];
-        let dot = match path.rfind('.') {
-            Some(dot) => dot,
-            None => return Err(ConvertError::UnsupportedOption(option_name.to_owned())),
+    fn find_extension_by_path(&self, path: &str) -> ConvertResult<&model::Extension> {
+        let (package, name) = match path.rfind('.') {
+            Some(dot) => (&path[..dot], &path[dot+1..]),
+            None => (self.current_file.package.as_str(), path),
         };
-        let package = &path[..dot];
-        let name = &path[dot+1..];
 
         for file in self.package_files(package) {
             for ext in &file.extensions {
@@ -648,7 +640,50 @@ impl<'a> Resolver<'a> {
             }
         }
 
-        Err(ConvertError::ExtensionNotFound(option_name.to_owned()))
+        Err(ConvertError::ExtensionNotFound(path.to_owned()))
+    }
+
+    fn find_extension(&self, option_name: &str)
+        -> ConvertResult<&model::Extension>
+    {
+        if !option_name.starts_with('(') || !option_name.ends_with(')') {
+            return Err(ConvertError::UnsupportedOption(option_name.to_owned()));
+        }
+        let path = &option_name[1..option_name.len() - 1];
+        self.find_extension_by_path(path)
+    }
+
+    fn option_value_to_unknown_value(
+        value: &model::ProtobufConstant, field_type: &model::FieldType, option_name: &str)
+        -> ConvertResult<protobuf::UnknownValue>
+    {
+        let v = match value {
+            &model::ProtobufConstant::Bool(b) => {
+                if field_type != &model::FieldType::Bool {
+                    Err(())
+                } else {
+                    Ok(protobuf::UnknownValue::Varint(if b { 1 } else { 0 }))
+                }
+            },
+            &model::ProtobufConstant::U64(v) => {
+                match field_type {
+                    &model::FieldType::Fixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
+                    // TODO: check overflow
+                    &model::FieldType::Int64 |
+                    &model::FieldType::Int32 |
+                    &model::FieldType::Uint64 |
+                    &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
+                    _ => Err(()),
+                }
+            }
+            _ => Err(()),
+        };
+
+        v.map_err(|()| {
+            ConvertError::UnsupportedExtensionType(
+                option_name.to_owned(),
+                format!("{:?}", field_type))
+        })
     }
 
     fn file_options(&self, input: &[model::ProtobufOption])
@@ -666,16 +701,18 @@ impl<'a> Resolver<'a> {
             if extension.extendee != "google.protobuf.FileOptions" {
                 return Err(ConvertError::NotFileExtension(option.name.clone()));
             }
-            if extension.field.typ != model::FieldType::Bool {
-                return Err(ConvertError::UnsupportedExtensionType(option.name.clone()));
-            }
 
-            let v = match option.value {
-                model::ProtobufConstant::Bool(b) => b,
-                _ => return Err(ConvertError::UnsupportedExtensionType(option.name.clone())),
+            let value = match Resolver::option_value_to_unknown_value(
+                &option.value, &extension.field.typ, &option.name)
+            {
+                Ok(value) => value,
+                Err(_) => {
+                    // TODO: return error
+                    continue
+                },
             };
 
-            r.mut_unknown_fields().add_varint(extension.field.number as u32, if v { 1 } else { 0 });
+            r.mut_unknown_fields().add_value(extension.field.number as u32, value);
         }
         Ok(r)
     }

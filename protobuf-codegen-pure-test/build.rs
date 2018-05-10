@@ -59,8 +59,8 @@ fn copy_tests(dir: &str) {
 }
 
 
-fn gen_in_dir(dir: &str) {
-    gen_in_dir_impl(dir, |GenInDirArgs { out_dir, input, includes, customize }| {
+fn gen_in_dir(dir: &str, include_dir: &str) {
+    gen_in_dir_impl(dir, include_dir, |GenInDirArgs { out_dir, input, includes, customize }| {
         protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
             out_dir, input, includes, customize
         })
@@ -70,15 +70,19 @@ fn gen_in_dir(dir: &str) {
 
 fn generate_pb_rs() {
     copy_tests("src/v2");
+    gen_in_dir("src/v2", "src/v2");
+
     copy_tests("src/v3");
+    gen_in_dir("src/v3", "src/v3");
 
     copy_tests("src/common/v2");
-    copy_tests_v2_v3("src/common/v2", "src/common/v3");
+    gen_in_dir("src/common/v2", "src/common/v2");
 
-    gen_in_dir("src/v2");
-    gen_in_dir("src/v3");
-    gen_in_dir("src/common/v2");
-    gen_in_dir("src/common/v3");
+    copy_tests_v2_v3("src/common/v2", "src/common/v3");
+    gen_in_dir("src/common/v3", "src/common/v3");
+
+    copy_tests("src/google/protobuf");
+    gen_in_dir("src/google/protobuf", "src");
 }
 
 

@@ -8,6 +8,8 @@ use std::path::Path;
 use std::io;
 use std::io::Read;
 use std::fs;
+use std::error::Error;
+use std::fmt;
 
 mod model;
 mod parser;
@@ -50,6 +52,42 @@ struct FileDescriptorPair {
     descriptor: protobuf::descriptor::FileDescriptorProto,
 }
 
+#[derive(Debug)]
+enum CodegenError {
+    ParserErrorWithLocation(parser::ParserErrorWithLocation),
+    ConvertError(convert::ConvertError),
+}
+
+impl From<parser::ParserErrorWithLocation> for CodegenError {
+    fn from(e: parser::ParserErrorWithLocation) -> Self {
+        CodegenError::ParserErrorWithLocation(e)
+    }
+}
+
+impl From<convert::ConvertError> for CodegenError {
+    fn from(e: convert::ConvertError) -> Self {
+        CodegenError::ConvertError(e)
+    }
+}
+
+#[derive(Debug)]
+struct WithFileError {
+    file: String,
+    error: CodegenError,
+}
+
+impl fmt::Display for WithFileError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "WithFileError")
+    }
+}
+
+impl Error for WithFileError {
+    fn description(&self) -> &str {
+        "WithFileError"
+    }
+}
+
 struct Run<'a> {
     parsed_files: HashMap<String, FileDescriptorPair>,
     includes: &'a [&'a str],
@@ -90,7 +128,10 @@ impl<'a> Run<'a> {
         let parsed = model::FileDescriptor::parse(content)
             .map_err(|e| {
                 io::Error::new(io::ErrorKind::Other,
-                    format!("failed to parse {:?}: {:?}", fs_path, e))
+                    WithFileError {
+                        file: format!("{}", fs_path.display()),
+                        error: e.into(),
+                    })
             })?;
 
         for import_path in &parsed.import_paths {
@@ -106,7 +147,10 @@ impl<'a> Run<'a> {
             protobuf_path.to_owned(), &parsed, &this_file_deps)
             .map_err(|e| {
                 io::Error::new(io::ErrorKind::Other,
-                    format!("failed to parse {:?}: {:?}", fs_path, e))
+                    WithFileError {
+                        file: format!("{}", fs_path.display()),
+                        error: e.into(),
+                    })
             })?;
 
         self.parsed_files.insert(

@@ -122,7 +122,7 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
     mod_rs.flush().expect("flush");
 }
 
-pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
+pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
     where
         F : for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
         E : fmt::Debug,
@@ -139,7 +139,7 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
     gen(GenInDirArgs {
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
-        includes: &["../proto", dir],
+        includes: &["../proto", include_dir],
         .. Default::default()
     }).expect("protoc");
 
