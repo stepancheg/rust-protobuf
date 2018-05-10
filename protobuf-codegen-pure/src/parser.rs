@@ -677,7 +677,6 @@ impl<'a> Lexer<'a> {
 }
 
 
-// TODO: do not Clone
 #[derive(Clone)]
 pub struct Parser<'a> {
     lexer: Lexer<'a>,
