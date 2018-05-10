@@ -58,6 +58,7 @@ pub enum ParserError {
     LabelRequired,
     InternalError,
     StrLitDecodeError(StrLitDecodeError),
+    GroupNameShouldStartWithUpperCase,
 }
 
 #[derive(Debug)]
@@ -908,8 +909,13 @@ impl<'a> Parser<'a> {
     // groupName = capitalLetter { letter | decimalDigit | "_" }
     fn next_group_name(&mut self) -> ParserResult<String> {
         // lexer cannot distinguish between group name and other ident
-        // TODO: check starts with upper case
-        self.next_ident()
+        let mut clone = self.clone();
+        let ident = clone.next_ident()?;
+        if !ident.chars().next().unwrap().is_ascii_uppercase() {
+            return Err(ParserError::GroupNameShouldStartWithUpperCase);
+        }
+        *self = clone;
+        Ok(ident)
     }
 
     // Boolean
