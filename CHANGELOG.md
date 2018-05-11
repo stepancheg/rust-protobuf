@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.6.0]
+
 - [Protobuf no longer exposes internal `hex`
   module](https://github.com/stepancheg/rust-protobuf/commit/8ad9687529a565c5ef2db93732cc20c8d8d22f00)
 - Generated code can now be customized not only with `rustproto.proto`
@@ -25,10 +27,6 @@
 - `*descriptor_static()` function signatures no longer include `Option` param
   ([1](https://github.com/stepancheg/rust-protobuf/commit/8723fca5fb29e279b3ab7d2a28c8fab79189c9c2),
   [2](https://github.com/stepancheg/rust-protobuf/commit/c5446983be3b9d8d49ee39b443ed4fabd8f35440))
-
-## [1.5] branch
-- [Better error message when `protoc` command is not
-  found](https://github.com/stepancheg/rust-protobuf/commit/d59eb368deea1d292a161c3f30ff1123a022046d)
 
 ## [1.5.1] - 2018-04-02
 - [Fix serialization or large repeated packed fields](https://github.com/stepancheg/rust-protobuf/issues/281)
