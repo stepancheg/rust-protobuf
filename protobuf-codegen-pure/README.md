@@ -11,7 +11,7 @@ protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
     out_dir: "src/protos",
     input: &["protos/a.proto", "protos/b.proto"],
     includes: &["protos"],
-    customize: Customize {
+    customize: protobuf_codegen_pure::Customize {
       ..Default::default()
     },
 }).expect("protoc");
@@ -21,7 +21,7 @@ And in `Cargo.toml`:
 
 ```
 [build-dependencies]
-protobuf_codegen_pure = "1.5"
+protobuf-codegen-pure = "1.6"
 ```
 
 The alternative is to use
