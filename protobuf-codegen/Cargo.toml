@@ -3,8 +3,8 @@ name = "protobuf-codegen"
 version = "1.6.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
-[dependencies.protobuf]
-path = "../protobuf"
+[dependencies]
+protobuf = { path = "../protobuf", version = "1.6.0" }
 
 [[bin]]
 
