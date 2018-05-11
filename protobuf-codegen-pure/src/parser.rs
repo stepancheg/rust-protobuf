@@ -59,6 +59,8 @@ pub enum ParserError {
     InternalError,
     StrLitDecodeError(StrLitDecodeError),
     GroupNameShouldStartWithUpperCase,
+    MapFieldNotAllowed,
+    DefaultValueNotAllowedInProto3
 }
 
 #[derive(Debug)]
@@ -685,6 +687,81 @@ pub struct Parser<'a> {
     next_token: Option<TokenWithLocation>,
 }
 
+#[derive(Copy, Clone)]
+enum MessageBodyParseMode {
+    MessageProto2,
+    MessageProto3,
+    Oneof,
+    ExtendProto2,
+    ExtendProto3,
+}
+
+impl MessageBodyParseMode {
+    fn label_allowed(&self, label: Rule) -> bool {
+        match label {
+            Rule::Repeated => {
+                match *self {
+                    MessageBodyParseMode::MessageProto2 |
+                    MessageBodyParseMode::MessageProto3 |
+                    MessageBodyParseMode::ExtendProto2 |
+                    MessageBodyParseMode::ExtendProto3 => true,
+                    MessageBodyParseMode::Oneof => false,
+                }
+            }
+            Rule::Optional | Rule::Required => {
+                match *self {
+                    MessageBodyParseMode::MessageProto2 |
+                    MessageBodyParseMode::ExtendProto2 => true,
+                    MessageBodyParseMode::MessageProto3 |
+                    MessageBodyParseMode::ExtendProto3 |
+                    MessageBodyParseMode::Oneof => false,
+                }
+
+            }
+        }
+    }
+
+    fn some_label_required(&self) -> bool {
+        match *self {
+            MessageBodyParseMode::MessageProto2 |
+            MessageBodyParseMode::ExtendProto2 => true,
+            MessageBodyParseMode::MessageProto3 |
+            MessageBodyParseMode::ExtendProto3 |
+            MessageBodyParseMode::Oneof => false,
+        }
+    }
+
+    fn map_allowed(&self) -> bool {
+        match *self {
+            MessageBodyParseMode::MessageProto2 |
+            MessageBodyParseMode::MessageProto3 |
+            MessageBodyParseMode::ExtendProto2 |
+            MessageBodyParseMode::ExtendProto3 => true,
+            MessageBodyParseMode::Oneof => false,
+        }
+    }
+
+    fn is_most_non_fields_allowed(&self) -> bool {
+        match *self {
+            MessageBodyParseMode::MessageProto2 |
+            MessageBodyParseMode::MessageProto3 => true,
+            MessageBodyParseMode::ExtendProto2 |
+            MessageBodyParseMode::ExtendProto3 |
+            MessageBodyParseMode::Oneof => false,
+        }
+    }
+
+    fn is_option_allowed(&self) -> bool {
+        match *self {
+            MessageBodyParseMode::MessageProto2 |
+            MessageBodyParseMode::MessageProto3 |
+            MessageBodyParseMode::Oneof => true,
+            MessageBodyParseMode::ExtendProto2 |
+            MessageBodyParseMode::ExtendProto3 => false,
+        }
+    }
+}
+
 #[derive(Default)]
 pub struct MessageBody {
     pub fields: Vec<Field>,
@@ -825,6 +902,13 @@ impl<'a> Parser<'a> {
 
     fn next_ident_if_eq(&mut self, word: &str) -> ParserResult<bool> {
         Ok(self.next_ident_if_in(&[word])? != None)
+    }
+
+    fn next_ident_if_eq_error(&mut self, word: &str) -> ParserResult<()> {
+        if self.clone().next_ident_if_eq(word)? {
+            return Err(ParserError::IncorrectInput);
+        }
+        Ok(())
     }
 
     fn next_symbol_if_eq(&mut self, symbol: char) -> ParserResult<bool> {
@@ -1081,7 +1165,7 @@ impl<'a> Parser<'a> {
     // Fields
 
     // label = "required" | "optional" | "repeated"
-    fn next_label(&mut self, with_labels: bool) -> ParserResult<Rule> {
+    fn next_label(&mut self, mode: MessageBodyParseMode) -> ParserResult<Rule> {
         let map = &[
             ("optional", Rule::Optional),
             ("required", Rule::Required),
@@ -1090,14 +1174,16 @@ impl<'a> Parser<'a> {
         for &(name, value) in map {
             let mut clone = self.clone();
             if clone.next_ident_if_eq(name)? {
-                if !with_labels && value != Rule::Repeated {
+                if !mode.label_allowed(value) {
                     return Err(ParserError::LabelNotAllowed);
                 }
+
                 *self = clone;
                 return Ok(value);
             }
         }
-        if with_labels {
+
+        if mode.some_label_required() {
             Err(ParserError::LabelRequired)
         } else {
             Ok(Rule::Optional)
@@ -1168,24 +1254,29 @@ impl<'a> Parser<'a> {
 
     // field = label type fieldName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
     // group = label "group" groupName "=" fieldNumber messageBody
-    fn next_field(&mut self, with_labels: bool) -> ParserResult<Field> {
+    fn next_field(&mut self, mode: MessageBodyParseMode) -> ParserResult<Field> {
         let rule = if self.clone().next_ident_if_eq("map")? {
+            if !mode.map_allowed() {
+                return Err(ParserError::MapFieldNotAllowed);
+            }
             Rule::Optional
         } else {
-            self.next_label(with_labels)?
+            self.next_label(mode)?
         };
         if self.next_ident_if_eq("group")? {
             let name = self.next_group_name()?.to_owned();
             self.next_symbol_expect_eq('=')?;
             let number = self.next_field_number()?;
 
-            let with_labels = self.syntax == Syntax::Proto2;
+            let mode = match self.syntax {
+                Syntax::Proto2 => MessageBodyParseMode::MessageProto2,
+                Syntax::Proto3 => MessageBodyParseMode::MessageProto3,
+            };
 
-            // TODO: some message body parts are not allowed in group
             let MessageBody {
                 fields,
                 ..
-            } = self.next_message_body(with_labels)?;
+            } = self.next_message_body(mode)?;
 
             Ok(Field {
                 name,
@@ -1209,6 +1300,9 @@ impl<'a> Parser<'a> {
             if self.next_symbol_if_eq('[')? {
                 for ProtobufOption { name, value } in self.next_field_options()? {
                     if name == "default" {
+                        if self.syntax == Syntax::Proto3 {
+                            return Err(ParserError::DefaultValueNotAllowedInProto3);
+                        }
                         default = Some(value);
                     } else if name == "packed" {
                         if let ProtobufConstant::Bool(b) = value {
@@ -1244,8 +1338,7 @@ impl<'a> Parser<'a> {
     fn next_oneof_opt(&mut self) -> ParserResult<Option<OneOf>> {
         if self.next_ident_if_eq("oneof")? {
             let name = self.next_ident()?.to_owned();
-            // TODO: use proper oneof fields parser
-            let MessageBody { fields, .. } = self.next_message_body(false)?;
+            let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
             Ok(Some(OneOf {
                 name,
                 fields,
@@ -1420,7 +1513,7 @@ impl<'a> Parser<'a> {
 
     // messageBody = "{" { field | enum | message | extend | extensions | group |
     //               option | oneof | mapField | reserved | emptyStatement } "}"
-    fn next_message_body(&mut self, with_labels: bool) -> ParserResult<MessageBody> {
+    fn next_message_body(&mut self, mode: MessageBodyParseMode) -> ParserResult<MessageBody> {
         self.next_symbol_expect_eq('{')?;
 
         let mut r = MessageBody::default();
@@ -1431,40 +1524,54 @@ impl<'a> Parser<'a> {
                 continue;
             }
 
-            if let Some((field_nums, field_names)) = self.next_reserved_opt()? {
-                r.reserved_nums.extend(field_nums);
-                r.reserved_names.extend(field_names);
-                continue;
+            if mode.is_most_non_fields_allowed() {
+                if let Some((field_nums, field_names)) = self.next_reserved_opt()? {
+                    r.reserved_nums.extend(field_nums);
+                    r.reserved_names.extend(field_names);
+                    continue;
+                }
+
+                if let Some(oneof) = self.next_oneof_opt()? {
+                    r.oneofs.push(oneof);
+                    continue;
+                }
+
+                if let Some(_extensions) = self.next_extensions_opt()? {
+                    continue;
+                }
+
+                if let Some(_extend) = self.next_extend_opt()? {
+                    continue;
+                }
+
+                if let Some(nested_message) = self.next_message_opt()? {
+                    r.messages.push(nested_message);
+                    continue;
+                }
+
+                if let Some(nested_enum) = self.next_enum_opt()? {
+                    r.enums.push(nested_enum);
+                    continue;
+                }
+
+            } else {
+                self.next_ident_if_eq_error("reserved")?;
+                self.next_ident_if_eq_error("oneof")?;
+                self.next_ident_if_eq_error("extensions")?;
+                self.next_ident_if_eq_error("extend")?;
+                self.next_ident_if_eq_error("message")?;
+                self.next_ident_if_eq_error("enum")?;
             }
 
-            if let Some(oneof) = self.next_oneof_opt()? {
-                r.oneofs.push(oneof);
-                continue;
+            if mode.is_option_allowed() {
+                if let Some(_option) = self.next_option_opt()? {
+                    continue;
+                }
+            } else {
+                self.next_ident_if_eq_error("option")?;
             }
 
-            if let Some(_option) = self.next_option_opt()? {
-                continue;
-            }
-
-            if let Some(_extensions) = self.next_extensions_opt()? {
-                continue;
-            }
-
-            if let Some(_extend) = self.next_extend_opt()? {
-                continue;
-            }
-
-            if let Some(nested_message) = self.next_message_opt()? {
-                r.messages.push(nested_message);
-                continue;
-            }
-
-            if let Some(nested_enum) = self.next_enum_opt()? {
-                r.enums.push(nested_enum);
-                continue;
-            }
-
-            r.fields.push(self.next_field(with_labels)?);
+            r.fields.push(self.next_field(mode)?);
         }
 
         self.next_symbol_expect_eq('}')?;
@@ -1477,7 +1584,10 @@ impl<'a> Parser<'a> {
         if self.next_ident_if_eq("message")? {
             let name = self.next_ident()?.to_owned();
 
-            let with_labels = self.syntax == Syntax::Proto2;
+            let mode = match self.syntax {
+                Syntax::Proto2 => MessageBodyParseMode::MessageProto2,
+                Syntax::Proto3 => MessageBodyParseMode::MessageProto3,
+            };
 
             let MessageBody {
                 fields,
@@ -1486,7 +1596,7 @@ impl<'a> Parser<'a> {
                 reserved_names,
                 messages,
                 enums,
-            } = self.next_message_body(with_labels)?;
+            } = self.next_message_body(mode)?;
 
             Ok(Some(Message {
                 name,
@@ -1506,13 +1616,21 @@ impl<'a> Parser<'a> {
 
     // extend = "extend" messageType "{" {field | group | emptyStatement} "}"
     fn next_extend_opt(&mut self) -> ParserResult<Option<Vec<Extension>>> {
-        if self.next_ident_if_eq("extend")? {
+        let mut clone = self.clone();
+        if clone.next_ident_if_eq("extend")? {
+            // According to spec `extend` is only for `proto2`, but it is used in `proto3`
+            // https://github.com/google/protobuf/issues/4610
+
+            *self = clone;
+
             let extendee = self.next_message_or_enum_type()?;
 
-            let with_labels = self.syntax == Syntax::Proto2;
+            let mode = match self.syntax {
+                Syntax::Proto2 => MessageBodyParseMode::ExtendProto2,
+                Syntax::Proto3 => MessageBodyParseMode::ExtendProto3,
+            };
 
-            // TODO: use specific parser
-            let MessageBody { fields, .. } = self.next_message_body(with_labels)?;
+            let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
             let extensions = fields.into_iter().map(|field| {
                 let extendee = extendee.clone();
@@ -1723,16 +1841,16 @@ mod test {
 
     #[test]
     fn test_field_default_value_int() {
-        let msg = r#"  int64 f = 4 [default = 12];  "#;
-        let mess = parse(msg, |p| p.next_field(false));
+        let msg = r#"  optional int64 f = 4 [default = 12];  "#;
+        let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.name);
         assert_eq!("12", mess.default.unwrap().format());
     }
 
     #[test]
     fn test_field_default_value_float() {
-        let msg = r#"  float f = 2 [default = 10.0];  "#;
-        let mess = parse(msg, |p| p.next_field(false));
+        let msg = r#"  optional float f = 2 [default = 10.0];  "#;
+        let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.name);
         assert_eq!("10.0", mess.default.unwrap().format());
     }
