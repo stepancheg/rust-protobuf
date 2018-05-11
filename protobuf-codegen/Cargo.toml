@@ -2,6 +2,16 @@
 name = "protobuf-codegen"
 version = "1.6.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/stepancheg/rust-protobuf/"
+repository = "https://github.com/stepancheg/rust-protobuf/"
+description = """
+Code generator for rust-protobuf.
+
+Includes a library and `protoc-gen-rust` binary.
+
+See `protoc-rust` and `protobuf-codegen-pure` crates.
+"""
 
 [dependencies]
 protobuf = { path = "../protobuf", version = "1.6.0" }
