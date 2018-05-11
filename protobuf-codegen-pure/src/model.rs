@@ -10,6 +10,7 @@ pub use parser::ParserError;
 pub use parser::ParserErrorWithLocation;
 
 use protobuf_codegen::float;
+use str_lit::StrLit;
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -230,7 +231,7 @@ pub enum ProtobufConstant {
     F64(f64), // TODO: eq
     Bool(bool),
     Ident(String),
-    String(String), // quoted; TODO: store unquoted
+    String(StrLit),
     BracedExpr(String),
 }
 
@@ -242,7 +243,7 @@ impl ProtobufConstant {
             ProtobufConstant::F64(f) => float::format_protobuf_float(f),
             ProtobufConstant::Bool(b) => b.to_string(),
             ProtobufConstant::Ident(ref i) => i.clone(),
-            ProtobufConstant::String(ref s) => s.clone(),
+            ProtobufConstant::String(ref s) => s.quoted(),
             ProtobufConstant::BracedExpr(ref s) => s.clone(),
         }
     }

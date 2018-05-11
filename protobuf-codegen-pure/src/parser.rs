@@ -1043,7 +1043,7 @@ impl<'a> Parser<'a> {
 
         if let Some(r) = self.next_token_if_map(|token| {
                 match token {
-                    &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.quoted())),
+                    &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.clone())),
                     _ => None,
                 }
             })?

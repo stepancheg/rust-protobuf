@@ -7,6 +7,8 @@ use model;
 use protobuf;
 use protobuf::Message;
 
+use str_lit::StrLitDecodeError;
+
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -14,6 +16,13 @@ pub enum ConvertError {
     ExtensionNotFound(String),
     NotFileExtension(String),
     UnsupportedExtensionType(String, String),
+    StrLitDecodeError(StrLitDecodeError),
+}
+
+impl From<StrLitDecodeError> for ConvertError {
+    fn from(e: StrLitDecodeError) -> Self {
+        ConvertError::StrLitDecodeError(e)
+    }
 }
 
 pub type ConvertResult<T> = Result<T, ConvertError>;
@@ -455,12 +464,7 @@ impl<'a> Resolver<'a> {
             let default = match output.get_field_type() {
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
-                        // TODO: proper type in parser
-                        assert!(s.starts_with('"') && s.ends_with('"'));
-                        s[1..s.len() - 1]
-                            // TODO: properly decode
-                            .replace("\\n", "\n")
-                            .replace("\\t", "\t")
+                        s.decode_utf8()?
                     } else {
                         // TODO: not panic
                         panic!("default value is not string literal");
@@ -468,9 +472,7 @@ impl<'a> Resolver<'a> {
                 }
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES => {
                     if let &model::ProtobufConstant::String(ref s) = default {
-                        // TODO: proper type in parser
-                        assert!(s.starts_with('"') && s.ends_with('"'));
-                        s[1..s.len() - 1].to_owned()
+                        s.escaped.clone()
                     } else {
                         // TODO: not panic
                         panic!("default value is not string literal");

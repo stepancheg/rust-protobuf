@@ -16,6 +16,7 @@ impl From<ParserError> for StrLitDecodeError {
 pub type StrLitDecodeResult<T> = Result<T, StrLitDecodeError>;
 
 
+/// String literal, both `string` and `bytes`.
 #[derive(Clone, Eq, PartialEq, Debug)]
 pub struct StrLit {
     pub escaped: String,
