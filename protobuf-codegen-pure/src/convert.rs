@@ -17,6 +17,7 @@ pub enum ConvertError {
     NotFileExtension(String),
     UnsupportedExtensionType(String, String),
     StrLitDecodeError(StrLitDecodeError),
+    DefaultValueIsNotStringLiteral,
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -466,16 +467,14 @@ impl<'a> Resolver<'a> {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.decode_utf8()?
                     } else {
-                        // TODO: not panic
-                        panic!("default value is not string literal");
+                        return Err(ConvertError::DefaultValueIsNotStringLiteral);
                     }
                 }
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.escaped.clone()
                     } else {
-                        // TODO: not panic
-                        panic!("default value is not string literal");
+                        return Err(ConvertError::DefaultValueIsNotStringLiteral);
                     }
                 }
                 _ => {
