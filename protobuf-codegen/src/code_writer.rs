@@ -78,7 +78,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn indented<F>(&mut self, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         cb(&mut CodeWriter {
             writer: self.writer,
@@ -134,7 +134,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn block<F>(&mut self, first_line: &str, last_line: &str, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.write_line(first_line);
         self.indented(cb);
@@ -143,14 +143,14 @@ impl<'a> CodeWriter<'a> {
 
     pub fn expr_block<F>(&mut self, prefix: &str, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.block(&format!("{} {{", prefix), "}", cb);
     }
 
     pub fn stmt_block<S : AsRef<str>, F>(&mut self, prefix: S, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.block(&format!("{} {{", prefix.as_ref()), "};", cb);
     }
@@ -305,7 +305,7 @@ impl<'a> CodeWriter<'a> {
     // if ... { ... }
     pub fn if_stmt<S : AsRef<str>, F>(&mut self, cond: S, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.expr_block(&format!("if {}", cond.as_ref()), cb);
     }
@@ -324,7 +324,7 @@ impl<'a> CodeWriter<'a> {
     // if let ... = ... { ... }
     pub fn if_let_stmt<F>(&mut self, decl: &str, expr: &str, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.if_stmt(&format!("let {} = {}", decl, expr), cb);
     }
@@ -346,7 +346,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn match_block<S : AsRef<str>, F>(&mut self, value: S, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.stmt_block(&format!("match {}", value.as_ref()), cb);
     }

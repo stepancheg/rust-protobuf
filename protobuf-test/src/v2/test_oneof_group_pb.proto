@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package test_oneof_group;
+
+message A {
+  oneof b {
+    group C = 1 {
+      optional int32 d = 2;
+    }
+  }
+}

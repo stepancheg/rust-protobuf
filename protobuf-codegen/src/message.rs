@@ -108,9 +108,15 @@ impl<'a> MessageGen<'a> {
         F : Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType),
     {
         for oneof in self.oneofs() {
+            let variants = oneof.variants_except_group();
+            if variants.is_empty() {
+                // Special case because
+                // https://github.com/rust-lang/rust/issues/50642
+                continue;
+            }
             w.if_let_stmt("::std::option::Option::Some(ref v)", &format!("self.{}", oneof.name())[..], |w| {
                 w.match_block("v", |w| {
-                    for variant in oneof.variants_except_group() {
+                    for variant in variants {
                         let ref field = variant.field;
                         let (refv, vtype) =
                             if !field.elem_type_is_copy() {
