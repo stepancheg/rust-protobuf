@@ -14,10 +14,11 @@ use str_lit::StrLitDecodeError;
 pub enum ConvertError {
     UnsupportedOption(String),
     ExtensionNotFound(String),
-    NotFileExtension(String),
+    WrongExtensionType(String, &'static str),
     UnsupportedExtensionType(String, String),
     StrLitDecodeError(StrLitDecodeError),
     DefaultValueIsNotStringLiteral,
+    WrongOptionType,
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -27,6 +28,32 @@ impl From<StrLitDecodeError> for ConvertError {
 }
 
 pub type ConvertResult<T> = Result<T, ConvertError>;
+
+
+
+trait ProtobufOptions {
+    fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant>;
+
+    fn by_name_bool(&self, name: &str) -> ConvertResult<Option<bool>> {
+        match self.by_name(name) {
+            Some(model::ProtobufConstant::Bool(b)) => Ok(Some(*b)),
+            Some(_) => Err(ConvertError::WrongOptionType),
+            None => Ok(None),
+        }
+    }
+}
+
+impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
+    fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
+        let option_name = name;
+        for model::ProtobufOption { name, value } in *self {
+            if name == option_name {
+                return Some(&value);
+            }
+        }
+        None
+    }
+}
 
 
 enum MessageOrEnum {
@@ -393,6 +420,14 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
+    fn message_options(&self, input: &[model::ProtobufOption])
+        -> ConvertResult<protobuf::descriptor::MessageOptions>
+    {
+        let mut r = protobuf::descriptor::MessageOptions::new();
+        self.custom_options(input, "google.protobuf.MessageOptions", r.mut_unknown_fields())?;
+        Ok(r)
+    }
+
     fn message(&self, input: &model::Message, path_in_file: &RelativePath)
         -> ConvertResult<protobuf::descriptor::DescriptorProto>
     {
@@ -415,7 +450,8 @@ impl<'a> Resolver<'a> {
 
         output.set_nested_type(nested_messages);
 
-        output.set_enum_type(input.enums.iter().map(|e| self.enumeration(e)).collect());
+        output.set_enum_type(
+            input.enums.iter().map(|e| self.enumeration(e)).collect::<Result<_, _>>()?);
 
         {
             let mut fields = protobuf::RepeatedField::new();
@@ -439,7 +475,61 @@ impl<'a> Resolver<'a> {
             .collect();
         output.set_oneof_decl(oneofs);
 
+        output.set_options(self.message_options(&input.options)?);
+
         Ok(output)
+    }
+
+    fn custom_options(
+        &self,
+        input: &[model::ProtobufOption],
+        extendee: &'static str,
+        unknown_fields: &mut protobuf::UnknownFields)
+        -> ConvertResult<()>
+    {
+        for option in input {
+
+            // TODO: builtin options too
+            if !option.name.starts_with('(') {
+                continue;
+            }
+
+            let extension = match self.find_extension(&option.name) {
+                Ok(e) => e,
+                // TODO: return error
+                Err(_) => continue,
+            };
+            if extension.extendee != extendee {
+                return Err(ConvertError::WrongExtensionType(option.name.clone(), extendee));
+            }
+
+            let value = match Resolver::option_value_to_unknown_value(
+                &option.value, &extension.field.typ, &option.name)
+                {
+                    Ok(value) => value,
+                    Err(_) => {
+                        // TODO: return error
+                        continue
+                    },
+                };
+
+            unknown_fields.add_value(extension.field.number as u32, value);
+        }
+        Ok(())
+    }
+
+    fn field_options(&self, input: &[model::ProtobufOption])
+        -> ConvertResult<protobuf::descriptor::FieldOptions>
+    {
+        let mut r = protobuf::descriptor::FieldOptions::new();
+        if let Some(deprecated) = input.by_name_bool("deprecated")? {
+            r.set_deprecated(deprecated);
+        }
+        if let Some(packed) = input.by_name_bool("packed")? {
+            r.set_packed(packed);
+        }
+        self.custom_options(input, "google.protobuf.FieldOptions", r.mut_unknown_fields())?;
+        Ok(r)
     }
 
     fn field(&self, input: &model::Field, oneof_index: Option<i32>, path_in_file: &RelativePath)
@@ -461,7 +551,7 @@ impl<'a> Resolver<'a> {
         }
 
         output.set_number(input.number);
-        if let Some(ref default) = input.default {
+        if let Some(ref default) = input.options.as_slice().by_name("default") {
             let default = match output.get_field_type() {
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
@@ -483,15 +573,13 @@ impl<'a> Resolver<'a> {
             };
             output.set_default_value(default);
         }
-        if let Some(packed) = input.packed {
-            output.mut_options().set_packed(packed);
-        }
+
+        output.set_options(self.field_options(&input.options)?);
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
         }
 
-        output.mut_options().set_deprecated(input.deprecated);
         Ok(output)
     }
 
@@ -607,18 +695,28 @@ impl<'a> Resolver<'a> {
         output
     }
 
-    fn enum_options(&self, input: &model::EnumOptions) -> protobuf::descriptor::EnumOptions {
-        let mut options = protobuf::descriptor::EnumOptions::new();
-        options.set_allow_alias(input.allow_alias);
-        options
+    fn enum_options(&self, input: &[model::ProtobufOption])
+        -> ConvertResult<protobuf::descriptor::EnumOptions>
+    {
+        let mut r = protobuf::descriptor::EnumOptions::new();
+        if let Some(allow_alias) = input.by_name_bool("allow_alias")? {
+            r.set_allow_alias(allow_alias);
+        }
+        if let Some(deprecated) = input.by_name_bool("deprecated")? {
+            r.set_deprecated(deprecated);
+        }
+        self.custom_options(input, "google.protobuf.EnumOptions", r.mut_unknown_fields())?;
+        Ok(r)
     }
 
-    fn enumeration(&self, input: &model::Enumeration) -> protobuf::descriptor::EnumDescriptorProto {
+    fn enumeration(&self, input: &model::Enumeration)
+        -> ConvertResult<protobuf::descriptor::EnumDescriptorProto>
+    {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_value(input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect());
-        output.set_options(self.enum_options(&input.options));
-        output
+        output.set_options(self.enum_options(&input.options)?);
+        Ok(output)
     }
 
     fn oneof(&self, input: &model::OneOf) -> protobuf::descriptor::OneofDescriptorProto {
@@ -691,30 +789,10 @@ impl<'a> Resolver<'a> {
         -> ConvertResult<protobuf::descriptor::FileOptions>
     {
         let mut r = protobuf::descriptor::FileOptions::new();
-        for option in input {
-
-            // TODO: builtin options too
-            if !option.name.starts_with('(') {
-                continue;
-            }
-
-            let extension = self.find_extension(&option.name)?;
-            if extension.extendee != "google.protobuf.FileOptions" {
-                return Err(ConvertError::NotFileExtension(option.name.clone()));
-            }
-
-            let value = match Resolver::option_value_to_unknown_value(
-                &option.value, &extension.field.typ, &option.name)
-            {
-                Ok(value) => value,
-                Err(_) => {
-                    // TODO: return error
-                    continue
-                },
-            };
-
-            r.mut_unknown_fields().add_value(extension.field.number as u32, value);
-        }
+        self.custom_options(
+            input,
+            "google.protobuf.FileOptions",
+            r.mut_unknown_fields())?;
         Ok(r)
     }
 }
@@ -759,7 +837,8 @@ pub fn file_descriptor(
     }
     output.set_message_type(messages);
 
-    output.set_enum_type(input.enums.iter().map(|e| resolver.enumeration(e)).collect());
+    output.set_enum_type(
+        input.enums.iter().map(|e| resolver.enumeration(e)).collect::<Result<_, _>>()?);
 
     output.set_options(resolver.file_options(&input.options)?);
 
