@@ -188,10 +188,6 @@ impl<'a> MessageGen<'a> {
 
     fn write_field_accessors(&self, w: &mut CodeWriter) {
         for f in self.fields_except_group() {
-            w.write_line("");
-            let reconstruct_def = f.reconstruct_def();
-            w.comment(&(reconstruct_def + ";"));
-            w.write_line("");
             f.write_message_single_field_accessors(w);
         }
     }

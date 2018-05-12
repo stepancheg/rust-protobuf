@@ -1874,6 +1874,11 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
+        w.write_line("");
+        let reconstruct_def = self.reconstruct_def();
+        w.comment(&(reconstruct_def + ";"));
+        w.write_line("");
+
         let clear_field_func = self.clear_field_func();
         w.pub_fn(&format!("{}(&mut self)", clear_field_func), |w| {
             self.write_clear(w);
