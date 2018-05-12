@@ -414,6 +414,7 @@ pub struct FieldGen<'a> {
     pub kind: FieldKind,
     pub expose_field: bool,
     pub generate_accessors: bool,
+    pub generate_getter: bool,
 }
 
 impl<'a> FieldGen<'a> {
@@ -425,11 +426,13 @@ impl<'a> FieldGen<'a> {
 
         let (elem, enum_default_value) = field_elem(&field, root_scope, true, &customize);
 
+        let syntax = field.message.scope.file_scope.syntax();
+
         let generate_accessors = customize.generate_accessors.unwrap_or(true);
 
-        let default_expose_field =
-            field.message.scope.file_scope.syntax() == Syntax::PROTO3
-            || !generate_accessors;
+        let generate_getter = generate_accessors || syntax == Syntax::PROTO2;
+
+        let default_expose_field = syntax == Syntax::PROTO3 || !generate_accessors;
 
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
 
@@ -477,6 +480,7 @@ impl<'a> FieldGen<'a> {
             kind: kind,
             expose_field: expose_field,
             generate_accessors: generate_accessors,
+            generate_getter: generate_getter,
         }
     }
 
@@ -1877,14 +1881,16 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
-        w.write_line("");
-        let reconstruct_def = self.reconstruct_def();
-        w.comment(&(reconstruct_def + ";"));
-        w.write_line("");
+        if self.generate_accessors || self.generate_getter {
+            w.write_line("");
+            let reconstruct_def = self.reconstruct_def();
+            w.comment(&(reconstruct_def + ";"));
+        }
 
-        // TODO: do not generate `get` when !proto2 and !generate_accessors`
-        w.write_line("");
-        self.write_message_field_get(w);
+        if self.generate_getter {
+            w.write_line("");
+            self.write_message_field_get(w);
+        }
 
         if !self.generate_accessors {
             return;
@@ -1892,6 +1898,7 @@ impl<'a> FieldGen<'a> {
 
         let clear_field_func = self.clear_field_func();
         w.pub_fn(&format!("{}(&mut self)", clear_field_func), |w| {
+            w.write_line("");
             self.write_clear(w);
         });
 
