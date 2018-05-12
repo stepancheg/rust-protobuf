@@ -21,6 +21,8 @@ extend google.protobuf.FileOptions {
     optional bool carllerche_bytes_for_bytes_all = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool carllerche_bytes_for_string_all = 17012;
+    // Use `std::Vec` to store repeated messages fields
+    optional bool repeated_field_vec_all = 17020;
 }
 
 extend google.protobuf.MessageOptions {
@@ -34,6 +36,8 @@ extend google.protobuf.MessageOptions {
     optional bool carllerche_bytes_for_bytes = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool carllerche_bytes_for_string = 17012;
+    // Use `std::Vec` to store repeated messages field
+    optional bool repeated_field_vec = 17020;
 }
 
 extend google.protobuf.FieldOptions {
@@ -45,4 +49,6 @@ extend google.protobuf.FieldOptions {
     optional bool carllerche_bytes_for_bytes_field = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool carllerche_bytes_for_string_field = 17012;
+    // Use `std::Vec` to store repeated messages field
+    optional bool repeated_field_vec_field = 17020;
 }

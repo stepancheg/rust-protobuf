@@ -770,7 +770,7 @@ pub fn read_singular_proto3_carllerche_bytes_into(
 }
 
 /// Read repeated `message` field.
-pub fn read_repeated_message_into<M : Message + Default>(
+pub fn read_repeated_message_into_repeated_field<M : Message + Default>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut RepeatedField<M>,
@@ -780,6 +780,29 @@ pub fn read_repeated_message_into<M : Message + Default>(
             is.incr_recursion()?;
             let tmp = target.push_default();
             let res = is.merge_message(tmp);
+            is.decr_recursion();
+            res
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+/// Read repeated `message` field.
+pub fn read_repeated_message_into_vec<M : Message + Default>(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut Vec<M>,
+) -> ProtobufResult<()> {
+    match wire_type {
+        WireTypeLengthDelimited => {
+            is.incr_recursion()?;
+            let res = match is.read_message() {
+                Ok(m) => {
+                    target.push(m);
+                    Ok(())
+                }
+                Err(e) => Err(e),
+            };
             is.decr_recursion();
             res
         }

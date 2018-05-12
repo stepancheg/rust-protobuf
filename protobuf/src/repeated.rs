@@ -15,7 +15,28 @@ use std::fmt;
 
 use clear::Clear;
 
+
+/// Implemented for both `Vec` and `RepeatedField`.
+/// Used to simplify codegen, should not be used directly.
+pub trait VecLike<T> {
+    fn push(&mut self, item: T);
+}
+
+impl<T> VecLike<T> for Vec<T> {
+    fn push(&mut self, item: T) {
+        Vec::push(self, item)
+    }
+}
+
+
 /// Wrapper around vector to avoid deallocations on clear.
+///
+/// It helps when needed to read lots of messages very quickly.
+///
+/// `RepeatedField` has the same API as `Vec`.
+///
+/// Note there's a codegen option to disable generation of `RepeatedField`
+/// and generate `Vec` instead.
 pub struct RepeatedField<T> {
     vec: Vec<T>,
     len: usize,
@@ -32,6 +53,12 @@ impl<T> RepeatedField<T> {
     #[inline]
     pub fn clear(&mut self) {
         self.len = 0;
+    }
+}
+
+impl<T> VecLike<T> for RepeatedField<T> {
+    fn push(&mut self, item: T) {
+        RepeatedField::push(self, item)
     }
 }
 

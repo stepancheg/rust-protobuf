@@ -159,12 +159,14 @@ impl SingularField {
 pub struct RepeatedField {
     pub elem: FieldElem,
     pub packed: bool,
+    pub repeated_field_vec: bool,
 }
 
 impl RepeatedField {
     fn rust_type(&self) -> RustType {
         if !self.elem.is_copy() &&
-            self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche
+            self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche &&
+            !self.repeated_field_vec
         {
             RustType::RepeatedField(Box::new(self.elem.rust_storage_type()))
         } else {
@@ -440,6 +442,7 @@ impl<'a> FieldGen<'a> {
                 (elem, _) => FieldKind::Repeated(RepeatedField {
                     elem,
                     packed: field.field.get_options().get_packed(),
+                    repeated_field_vec: customize.repeated_field_vec.unwrap_or(false),
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
@@ -1277,12 +1280,29 @@ impl<'a> FieldGen<'a> {
             PrimitiveTypeVariant::Default => "",
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
+        let into_what_suffix = match self.kind {
+            FieldKind::Repeated(
+                RepeatedField {
+                    elem: FieldElem::Message(..),
+                    repeated_field_vec,
+                    ..
+                }) =>
+            {
+                if repeated_field_vec {
+                    "_vec"
+                } else {
+                    "_repeated_field"
+                }
+            }
+            _ => "",
+        };
         w.write_line(&format!(
-            "::protobuf::rt::read_{}_{}{}_into(wire_type, is, &mut self.{})?;",
+            "::protobuf::rt::read_{}_{}{}_into{}(wire_type, is, &mut self.{})?;",
             singular_or_repeated,
             carllerche,
             type_name_for_fn,
-            self.rust_name
+            into_what_suffix,
+            self.rust_name,
         ));
     }
 

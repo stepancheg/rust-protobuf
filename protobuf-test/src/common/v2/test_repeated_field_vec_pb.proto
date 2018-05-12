@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+package test_repeated_field_vec;
+
+message Egg {
+    optional int32 size = 1;
+}
+
+message Basket {
+    option (rustproto.repeated_field_vec) = true;
+    option (rustproto.expose_fields) = true;
+
+    repeated Egg eggs = 1;
+}
