@@ -143,12 +143,8 @@ pub struct Field {
     pub typ: FieldType,
     /// Tag number
     pub number: i32,
-    /// Default value for the field
-    pub default: Option<ProtobufConstant>,
-    /// Packed property for repeated fields
-    pub packed: Option<bool>,
-    /// Is the field deprecated
-    pub deprecated: bool,
+    /// Non-builtin options
+    pub options: Vec<ProtobufOption>,
 }
 
 /// Extension range
@@ -179,6 +175,8 @@ pub struct Message {
     pub messages: Vec<Message>,
     /// Nested enums
     pub enums: Vec<Enumeration>,
+    /// Non-builtin options
+    pub options: Vec<ProtobufOption>,
 }
 
 /// A protobuf enumeration field
@@ -190,12 +188,6 @@ pub struct EnumValue {
     pub number: i32,
 }
 
-/// Enum options
-#[derive(Debug, Clone, Default)]
-pub struct EnumOptions {
-    pub allow_alias: bool,
-}
-
 /// A protobuf enumerator
 #[derive(Debug, Clone)]
 pub struct Enumeration {
@@ -204,7 +196,7 @@ pub struct Enumeration {
     /// enum values
     pub values: Vec<EnumValue>,
     /// enum options
-    pub options: EnumOptions,
+    pub options: Vec<ProtobufOption>,
 }
 
 /// A OneOf
@@ -249,7 +241,7 @@ impl ProtobufConstant {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ProtobufOption {
     pub name: String,
     pub value: ProtobufConstant,

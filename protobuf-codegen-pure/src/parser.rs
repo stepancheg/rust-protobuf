@@ -42,7 +42,6 @@ impl Loc {
 pub enum ParserError {
     IncorrectInput,
     IncorrectFloatLit,
-    IncorrectOptionType,
     NotUtf8,
     ExpectChar(char),
     ExpectConstant,
@@ -60,7 +59,6 @@ pub enum ParserError {
     StrLitDecodeError(StrLitDecodeError),
     GroupNameShouldStartWithUpperCase,
     MapFieldNotAllowed,
-    DefaultValueNotAllowedInProto3
 }
 
 #[derive(Debug)]
@@ -793,6 +791,7 @@ pub struct MessageBody {
     pub reserved_names: Vec<String>,
     pub messages: Vec<Message>,
     pub enums: Vec<Enumeration>,
+    pub options: Vec<ProtobufOption>,
 }
 
 #[derive(Copy, Clone)]
@@ -1310,9 +1309,7 @@ impl<'a> Parser<'a> {
                 rule,
                 typ: FieldType::Group(fields),
                 number,
-                default: None,
-                packed: None,
-                deprecated: false,
+                options: Vec::new(),
             })
         } else {
             let typ = self.next_field_type()?;
@@ -1320,30 +1317,11 @@ impl<'a> Parser<'a> {
             self.next_symbol_expect_eq('=')?;
             let number = self.next_field_number()?;
 
-            let mut default = None;
-            let mut packed = None;
-            let mut deprecated = false;
+            let mut options = Vec::new();
 
             if self.next_symbol_if_eq('[')? {
-                for ProtobufOption { name, value } in self.next_field_options()? {
-                    if name == "default" {
-                        if self.syntax == Syntax::Proto3 {
-                            return Err(ParserError::DefaultValueNotAllowedInProto3);
-                        }
-                        default = Some(value);
-                    } else if name == "packed" {
-                        if let ProtobufConstant::Bool(b) = value {
-                            packed = Some(b);
-                        } else {
-                            return Err(ParserError::IncorrectInput);
-                        }
-                    } else if name == "deprecated" {
-                        if let ProtobufConstant::Bool(b) = value {
-                            deprecated = b;
-                        } else {
-                            return Err(ParserError::IncorrectInput);
-                        }
-                    }
+                for o in self.next_field_options()? {
+                    options.push(o);
                 }
                 self.next_symbol_expect_eq(']')?;
             }
@@ -1353,9 +1331,7 @@ impl<'a> Parser<'a> {
                 rule,
                 typ,
                 number,
-                default,
-                packed,
-                deprecated,
+                options,
             })
         }
     }
@@ -1507,8 +1483,7 @@ impl<'a> Parser<'a> {
             let name = self.next_ident()?.to_owned();
 
             let mut values = Vec::new();
-
-            let mut options: EnumOptions = Default::default();
+            let mut options = Vec::new();
 
             self.next_symbol_expect_eq('{')?;
             while self.lookahead_if_symbol()? != Some('}') {
@@ -1517,13 +1492,8 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                if let Some(ProtobufOption { name, value }) = self.next_option_opt()? {
-                    if name == "allow_alias" {
-                        options.allow_alias = match value {
-                            ProtobufConstant::Bool(b) => b,
-                            _ => return Err(ParserError::IncorrectOptionType),
-                        };
-                    }
+                if let Some(o) = self.next_option_opt()? {
+                    options.push(o);
                     continue;
                 }
 
@@ -1591,7 +1561,8 @@ impl<'a> Parser<'a> {
             }
 
             if mode.is_option_allowed() {
-                if let Some(_option) = self.next_option_opt()? {
+                if let Some(option) = self.next_option_opt()? {
+                    r.options.push(option);
                     continue;
                 }
             } else {
@@ -1623,6 +1594,7 @@ impl<'a> Parser<'a> {
                 reserved_names,
                 messages,
                 enums,
+                options,
             } = self.next_message_body(mode)?;
 
             Ok(Some(Message {
@@ -1633,6 +1605,7 @@ impl<'a> Parser<'a> {
                 reserved_names,
                 messages,
                 enums,
+                options,
             }))
         } else {
             Ok(None)
@@ -1871,7 +1844,8 @@ mod test {
         let msg = r#"  optional int64 f = 4 [default = 12];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.name);
-        assert_eq!("12", mess.default.unwrap().format());
+        assert_eq!("default", mess.options[0].name);
+        assert_eq!("12", mess.options[0].value.format());
     }
 
     #[test]
@@ -1879,7 +1853,8 @@ mod test {
         let msg = r#"  optional float f = 2 [default = 10.0];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.name);
-        assert_eq!("10.0", mess.default.unwrap().format());
+        assert_eq!("default", mess.options[0].name);
+        assert_eq!("10.0", mess.options[0].value.format());
     }
 
     #[test]
@@ -2036,7 +2011,8 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!("17", mess.fields[0].default.as_ref().expect("default").format());
+        assert_eq!("default", mess.fields[0].options[0].name);
+        assert_eq!("17", mess.fields[0].options[0].value.format());
     }
 
     #[test]
@@ -2048,7 +2024,7 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\"g\'h\0\"z""#,
-            mess.fields[0].default.as_ref().expect("default").format());
+            mess.fields[0].options[0].value.format());
     }
 
     #[test]
@@ -2060,7 +2036,7 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\xfeE\"g\'h\0\"z""#,
-            mess.fields[0].default.as_ref().expect("default").format());
+            mess.fields[0].options[0].value.format());
     }
 
     #[test]
