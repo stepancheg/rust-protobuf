@@ -434,10 +434,13 @@ impl<'a> FieldGen<'a> {
 
         let (elem, enum_default_value) = field_elem(&field, root_scope, true, &customize);
 
-        let default_expose_field = field.message.scope.file_scope.syntax() == Syntax::PROTO3;
+        let generate_accessors = customize.generate_accessors.unwrap_or(true);
+
+        let default_expose_field =
+            field.message.scope.file_scope.syntax() == Syntax::PROTO3
+            || !generate_accessors;
 
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
-        let generate_accessors = customize.generate_accessors.unwrap_or(true);
 
         let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
             match (elem, true) {
@@ -1877,6 +1880,14 @@ impl<'a> FieldGen<'a> {
             self.write_clear(w);
         });
 
+        // TODO: do not generate `get` when !proto2 and !generate_accessors`
+        w.write_line("");
+        self.write_message_field_get(w);
+
+        if !self.generate_accessors {
+            return;
+        }
+
         if self.has_has() {
             w.write_line("");
             self.write_message_field_has(w);
@@ -1894,8 +1905,5 @@ impl<'a> FieldGen<'a> {
             w.write_line("");
             self.write_message_field_take(w);
         }
-
-        w.write_line("");
-        self.write_message_field_get(w);
     }
 }
