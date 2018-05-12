@@ -37,6 +37,10 @@ impl DoubleValue {
 
     // double value = 1;
 
+    pub fn get_value(&self) -> f64 {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = 0.;
     }
@@ -44,10 +48,6 @@ impl DoubleValue {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: f64) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> f64 {
-        self.value
     }
 }
 
@@ -160,7 +160,7 @@ impl ::protobuf::Message for DoubleValue {
 
 impl ::protobuf::Clear for DoubleValue {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = 0.;
         self.unknown_fields.clear();
     }
 }
@@ -193,6 +193,10 @@ impl FloatValue {
 
     // float value = 1;
 
+    pub fn get_value(&self) -> f32 {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = 0.;
     }
@@ -200,10 +204,6 @@ impl FloatValue {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: f32) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> f32 {
-        self.value
     }
 }
 
@@ -316,7 +316,7 @@ impl ::protobuf::Message for FloatValue {
 
 impl ::protobuf::Clear for FloatValue {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = 0.;
         self.unknown_fields.clear();
     }
 }
@@ -349,6 +349,10 @@ impl Int64Value {
 
     // int64 value = 1;
 
+    pub fn get_value(&self) -> i64 {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = 0;
     }
@@ -356,10 +360,6 @@ impl Int64Value {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: i64) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> i64 {
-        self.value
     }
 }
 
@@ -472,7 +472,7 @@ impl ::protobuf::Message for Int64Value {
 
 impl ::protobuf::Clear for Int64Value {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = 0;
         self.unknown_fields.clear();
     }
 }
@@ -505,6 +505,10 @@ impl UInt64Value {
 
     // uint64 value = 1;
 
+    pub fn get_value(&self) -> u64 {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = 0;
     }
@@ -512,10 +516,6 @@ impl UInt64Value {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: u64) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> u64 {
-        self.value
     }
 }
 
@@ -628,7 +628,7 @@ impl ::protobuf::Message for UInt64Value {
 
 impl ::protobuf::Clear for UInt64Value {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = 0;
         self.unknown_fields.clear();
     }
 }
@@ -661,6 +661,10 @@ impl Int32Value {
 
     // int32 value = 1;
 
+    pub fn get_value(&self) -> i32 {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = 0;
     }
@@ -668,10 +672,6 @@ impl Int32Value {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: i32) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> i32 {
-        self.value
     }
 }
 
@@ -784,7 +784,7 @@ impl ::protobuf::Message for Int32Value {
 
 impl ::protobuf::Clear for Int32Value {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = 0;
         self.unknown_fields.clear();
     }
 }
@@ -817,6 +817,10 @@ impl UInt32Value {
 
     // uint32 value = 1;
 
+    pub fn get_value(&self) -> u32 {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = 0;
     }
@@ -824,10 +828,6 @@ impl UInt32Value {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: u32) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> u32 {
-        self.value
     }
 }
 
@@ -940,7 +940,7 @@ impl ::protobuf::Message for UInt32Value {
 
 impl ::protobuf::Clear for UInt32Value {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = 0;
         self.unknown_fields.clear();
     }
 }
@@ -973,6 +973,10 @@ impl BoolValue {
 
     // bool value = 1;
 
+    pub fn get_value(&self) -> bool {
+        self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value = false;
     }
@@ -980,10 +984,6 @@ impl BoolValue {
     // Param is passed by value, moved
     pub fn set_value(&mut self, v: bool) {
         self.value = v;
-    }
-
-    pub fn get_value(&self) -> bool {
-        self.value
     }
 }
 
@@ -1096,7 +1096,7 @@ impl ::protobuf::Message for BoolValue {
 
 impl ::protobuf::Clear for BoolValue {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value = false;
         self.unknown_fields.clear();
     }
 }
@@ -1129,6 +1129,10 @@ impl StringValue {
 
     // string value = 1;
 
+    pub fn get_value(&self) -> &str {
+        &self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value.clear();
     }
@@ -1147,10 +1151,6 @@ impl StringValue {
     // Take field
     pub fn take_value(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.value, ::std::string::String::new())
-    }
-
-    pub fn get_value(&self) -> &str {
-        &self.value
     }
 }
 
@@ -1259,7 +1259,7 @@ impl ::protobuf::Message for StringValue {
 
 impl ::protobuf::Clear for StringValue {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1292,6 +1292,10 @@ impl BytesValue {
 
     // bytes value = 1;
 
+    pub fn get_value(&self) -> &[u8] {
+        &self.value
+    }
+
     pub fn clear_value(&mut self) {
         self.value.clear();
     }
@@ -1310,10 +1314,6 @@ impl BytesValue {
     // Take field
     pub fn take_value(&mut self) -> ::std::vec::Vec<u8> {
         ::std::mem::replace(&mut self.value, ::std::vec::Vec::new())
-    }
-
-    pub fn get_value(&self) -> &[u8] {
-        &self.value
     }
 }
 
@@ -1422,7 +1422,7 @@ impl ::protobuf::Message for BytesValue {
 
 impl ::protobuf::Clear for BytesValue {
     fn clear(&mut self) {
-        self.clear_value();
+        self.value.clear();
         self.unknown_fields.clear();
     }
 }

@@ -37,6 +37,10 @@ impl FileDescriptorSet {
 
     // repeated .google.protobuf.FileDescriptorProto file = 1;
 
+    pub fn get_file(&self) -> &[FileDescriptorProto] {
+        &self.file
+    }
+
     pub fn clear_file(&mut self) {
         self.file.clear();
     }
@@ -54,10 +58,6 @@ impl FileDescriptorSet {
     // Take field
     pub fn take_file(&mut self) -> ::protobuf::RepeatedField<FileDescriptorProto> {
         ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_file(&self) -> &[FileDescriptorProto] {
-        &self.file
     }
 }
 
@@ -174,7 +174,7 @@ impl ::protobuf::Message for FileDescriptorSet {
 
 impl ::protobuf::Clear for FileDescriptorSet {
     fn clear(&mut self) {
-        self.clear_file();
+        self.file.clear();
         self.unknown_fields.clear();
     }
 }
@@ -218,6 +218,13 @@ impl FileDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -245,14 +252,14 @@ impl FileDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
+    // optional string package = 2;
+
+    pub fn get_package(&self) -> &str {
+        match self.package.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string package = 2;
 
     pub fn clear_package(&mut self) {
         self.package.clear();
@@ -281,14 +288,11 @@ impl FileDescriptorProto {
         self.package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_package(&self) -> &str {
-        match self.package.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated string dependency = 3;
+
+    pub fn get_dependency(&self) -> &[::std::string::String] {
+        &self.dependency
+    }
 
     pub fn clear_dependency(&mut self) {
         self.dependency.clear();
@@ -309,11 +313,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.dependency, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_dependency(&self) -> &[::std::string::String] {
-        &self.dependency
-    }
-
     // repeated int32 public_dependency = 10;
+
+    pub fn get_public_dependency(&self) -> &[i32] {
+        &self.public_dependency
+    }
 
     pub fn clear_public_dependency(&mut self) {
         self.public_dependency.clear();
@@ -334,11 +338,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.public_dependency, ::std::vec::Vec::new())
     }
 
-    pub fn get_public_dependency(&self) -> &[i32] {
-        &self.public_dependency
-    }
-
     // repeated int32 weak_dependency = 11;
+
+    pub fn get_weak_dependency(&self) -> &[i32] {
+        &self.weak_dependency
+    }
 
     pub fn clear_weak_dependency(&mut self) {
         self.weak_dependency.clear();
@@ -359,11 +363,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.weak_dependency, ::std::vec::Vec::new())
     }
 
-    pub fn get_weak_dependency(&self) -> &[i32] {
-        &self.weak_dependency
-    }
-
     // repeated .google.protobuf.DescriptorProto message_type = 4;
+
+    pub fn get_message_type(&self) -> &[DescriptorProto] {
+        &self.message_type
+    }
 
     pub fn clear_message_type(&mut self) {
         self.message_type.clear();
@@ -384,11 +388,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.message_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_message_type(&self) -> &[DescriptorProto] {
-        &self.message_type
-    }
-
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
+
+    pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
+        &self.enum_type
+    }
 
     pub fn clear_enum_type(&mut self) {
         self.enum_type.clear();
@@ -409,11 +413,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
-        &self.enum_type
-    }
-
     // repeated .google.protobuf.ServiceDescriptorProto service = 6;
+
+    pub fn get_service(&self) -> &[ServiceDescriptorProto] {
+        &self.service
+    }
 
     pub fn clear_service(&mut self) {
         self.service.clear();
@@ -434,11 +438,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.service, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_service(&self) -> &[ServiceDescriptorProto] {
-        &self.service
-    }
-
     // repeated .google.protobuf.FieldDescriptorProto extension = 7;
+
+    pub fn get_extension(&self) -> &[FieldDescriptorProto] {
+        &self.extension
+    }
 
     pub fn clear_extension(&mut self) {
         self.extension.clear();
@@ -459,11 +463,11 @@ impl FileDescriptorProto {
         ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension(&self) -> &[FieldDescriptorProto] {
-        &self.extension
-    }
-
     // optional .google.protobuf.FileOptions options = 8;
+
+    pub fn get_options(&self) -> &FileOptions {
+        self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -492,11 +496,11 @@ impl FileDescriptorProto {
         self.options.take().unwrap_or_else(|| FileOptions::new())
     }
 
-    pub fn get_options(&self) -> &FileOptions {
-        self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
-    }
-
     // optional .google.protobuf.SourceCodeInfo source_code_info = 9;
+
+    pub fn get_source_code_info(&self) -> &SourceCodeInfo {
+        self.source_code_info.as_ref().unwrap_or_else(|| SourceCodeInfo::default_instance())
+    }
 
     pub fn clear_source_code_info(&mut self) {
         self.source_code_info.clear();
@@ -525,11 +529,14 @@ impl FileDescriptorProto {
         self.source_code_info.take().unwrap_or_else(|| SourceCodeInfo::new())
     }
 
-    pub fn get_source_code_info(&self) -> &SourceCodeInfo {
-        self.source_code_info.as_ref().unwrap_or_else(|| SourceCodeInfo::default_instance())
-    }
-
     // optional string syntax = 12;
+
+    pub fn get_syntax(&self) -> &str {
+        match self.syntax.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_syntax(&mut self) {
         self.syntax.clear();
@@ -556,13 +563,6 @@ impl FileDescriptorProto {
     // Take field
     pub fn take_syntax(&mut self) -> ::std::string::String {
         self.syntax.take().unwrap_or_else(|| ::std::string::String::new())
-    }
-
-    pub fn get_syntax(&self) -> &str {
-        match self.syntax.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
     }
 }
 
@@ -873,18 +873,18 @@ impl ::protobuf::Message for FileDescriptorProto {
 
 impl ::protobuf::Clear for FileDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_package();
-        self.clear_dependency();
-        self.clear_public_dependency();
-        self.clear_weak_dependency();
-        self.clear_message_type();
-        self.clear_enum_type();
-        self.clear_service();
-        self.clear_extension();
-        self.clear_options();
-        self.clear_source_code_info();
-        self.clear_syntax();
+        self.name.clear();
+        self.package.clear();
+        self.dependency.clear();
+        self.public_dependency.clear();
+        self.weak_dependency.clear();
+        self.message_type.clear();
+        self.enum_type.clear();
+        self.service.clear();
+        self.extension.clear();
+        self.options.clear();
+        self.source_code_info.clear();
+        self.syntax.clear();
         self.unknown_fields.clear();
     }
 }
@@ -926,6 +926,13 @@ impl DescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -953,14 +960,11 @@ impl DescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated .google.protobuf.FieldDescriptorProto field = 2;
+
+    pub fn get_field(&self) -> &[FieldDescriptorProto] {
+        &self.field
+    }
 
     pub fn clear_field(&mut self) {
         self.field.clear();
@@ -981,11 +985,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.field, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_field(&self) -> &[FieldDescriptorProto] {
-        &self.field
-    }
-
     // repeated .google.protobuf.FieldDescriptorProto extension = 6;
+
+    pub fn get_extension(&self) -> &[FieldDescriptorProto] {
+        &self.extension
+    }
 
     pub fn clear_extension(&mut self) {
         self.extension.clear();
@@ -1006,11 +1010,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension(&self) -> &[FieldDescriptorProto] {
-        &self.extension
-    }
-
     // repeated .google.protobuf.DescriptorProto nested_type = 3;
+
+    pub fn get_nested_type(&self) -> &[DescriptorProto] {
+        &self.nested_type
+    }
 
     pub fn clear_nested_type(&mut self) {
         self.nested_type.clear();
@@ -1031,11 +1035,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.nested_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_nested_type(&self) -> &[DescriptorProto] {
-        &self.nested_type
-    }
-
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
+
+    pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
+        &self.enum_type
+    }
 
     pub fn clear_enum_type(&mut self) {
         self.enum_type.clear();
@@ -1056,11 +1060,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enum_type(&self) -> &[EnumDescriptorProto] {
-        &self.enum_type
-    }
-
     // repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
+
+    pub fn get_extension_range(&self) -> &[DescriptorProto_ExtensionRange] {
+        &self.extension_range
+    }
 
     pub fn clear_extension_range(&mut self) {
         self.extension_range.clear();
@@ -1081,11 +1085,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.extension_range, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_extension_range(&self) -> &[DescriptorProto_ExtensionRange] {
-        &self.extension_range
-    }
-
     // repeated .google.protobuf.OneofDescriptorProto oneof_decl = 8;
+
+    pub fn get_oneof_decl(&self) -> &[OneofDescriptorProto] {
+        &self.oneof_decl
+    }
 
     pub fn clear_oneof_decl(&mut self) {
         self.oneof_decl.clear();
@@ -1106,11 +1110,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.oneof_decl, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_oneof_decl(&self) -> &[OneofDescriptorProto] {
-        &self.oneof_decl
-    }
-
     // optional .google.protobuf.MessageOptions options = 7;
+
+    pub fn get_options(&self) -> &MessageOptions {
+        self.options.as_ref().unwrap_or_else(|| MessageOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -1139,11 +1143,11 @@ impl DescriptorProto {
         self.options.take().unwrap_or_else(|| MessageOptions::new())
     }
 
-    pub fn get_options(&self) -> &MessageOptions {
-        self.options.as_ref().unwrap_or_else(|| MessageOptions::default_instance())
-    }
-
     // repeated .google.protobuf.DescriptorProto.ReservedRange reserved_range = 9;
+
+    pub fn get_reserved_range(&self) -> &[DescriptorProto_ReservedRange] {
+        &self.reserved_range
+    }
 
     pub fn clear_reserved_range(&mut self) {
         self.reserved_range.clear();
@@ -1164,11 +1168,11 @@ impl DescriptorProto {
         ::std::mem::replace(&mut self.reserved_range, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_reserved_range(&self) -> &[DescriptorProto_ReservedRange] {
-        &self.reserved_range
-    }
-
     // repeated string reserved_name = 10;
+
+    pub fn get_reserved_name(&self) -> &[::std::string::String] {
+        &self.reserved_name
+    }
 
     pub fn clear_reserved_name(&mut self) {
         self.reserved_name.clear();
@@ -1187,10 +1191,6 @@ impl DescriptorProto {
     // Take field
     pub fn take_reserved_name(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
         ::std::mem::replace(&mut self.reserved_name, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_reserved_name(&self) -> &[::std::string::String] {
-        &self.reserved_name
     }
 }
 
@@ -1489,16 +1489,16 @@ impl ::protobuf::Message for DescriptorProto {
 
 impl ::protobuf::Clear for DescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_field();
-        self.clear_extension();
-        self.clear_nested_type();
-        self.clear_enum_type();
-        self.clear_extension_range();
-        self.clear_oneof_decl();
-        self.clear_options();
-        self.clear_reserved_range();
-        self.clear_reserved_name();
+        self.name.clear();
+        self.field.clear();
+        self.extension.clear();
+        self.nested_type.clear();
+        self.enum_type.clear();
+        self.extension_range.clear();
+        self.oneof_decl.clear();
+        self.options.clear();
+        self.reserved_range.clear();
+        self.reserved_name.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1532,6 +1532,10 @@ impl DescriptorProto_ExtensionRange {
 
     // optional int32 start = 1;
 
+    pub fn get_start(&self) -> i32 {
+        self.start.unwrap_or(0)
+    }
+
     pub fn clear_start(&mut self) {
         self.start = ::std::option::Option::None;
     }
@@ -1545,11 +1549,11 @@ impl DescriptorProto_ExtensionRange {
         self.start = ::std::option::Option::Some(v);
     }
 
-    pub fn get_start(&self) -> i32 {
-        self.start.unwrap_or(0)
-    }
-
     // optional int32 end = 2;
+
+    pub fn get_end(&self) -> i32 {
+        self.end.unwrap_or(0)
+    }
 
     pub fn clear_end(&mut self) {
         self.end = ::std::option::Option::None;
@@ -1562,10 +1566,6 @@ impl DescriptorProto_ExtensionRange {
     // Param is passed by value, moved
     pub fn set_end(&mut self, v: i32) {
         self.end = ::std::option::Option::Some(v);
-    }
-
-    pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
     }
 }
 
@@ -1696,8 +1696,8 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
 
 impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
     fn clear(&mut self) {
-        self.clear_start();
-        self.clear_end();
+        self.start = ::std::option::Option::None;
+        self.end = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -1731,6 +1731,10 @@ impl DescriptorProto_ReservedRange {
 
     // optional int32 start = 1;
 
+    pub fn get_start(&self) -> i32 {
+        self.start.unwrap_or(0)
+    }
+
     pub fn clear_start(&mut self) {
         self.start = ::std::option::Option::None;
     }
@@ -1744,11 +1748,11 @@ impl DescriptorProto_ReservedRange {
         self.start = ::std::option::Option::Some(v);
     }
 
-    pub fn get_start(&self) -> i32 {
-        self.start.unwrap_or(0)
-    }
-
     // optional int32 end = 2;
+
+    pub fn get_end(&self) -> i32 {
+        self.end.unwrap_or(0)
+    }
 
     pub fn clear_end(&mut self) {
         self.end = ::std::option::Option::None;
@@ -1761,10 +1765,6 @@ impl DescriptorProto_ReservedRange {
     // Param is passed by value, moved
     pub fn set_end(&mut self, v: i32) {
         self.end = ::std::option::Option::Some(v);
-    }
-
-    pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
     }
 }
 
@@ -1895,8 +1895,8 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
 
 impl ::protobuf::Clear for DescriptorProto_ReservedRange {
     fn clear(&mut self) {
-        self.clear_start();
-        self.clear_end();
+        self.start = ::std::option::Option::None;
+        self.end = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -1938,6 +1938,13 @@ impl FieldDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -1965,14 +1972,11 @@ impl FieldDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional int32 number = 3;
+
+    pub fn get_number(&self) -> i32 {
+        self.number.unwrap_or(0)
+    }
 
     pub fn clear_number(&mut self) {
         self.number = ::std::option::Option::None;
@@ -1987,11 +1991,11 @@ impl FieldDescriptorProto {
         self.number = ::std::option::Option::Some(v);
     }
 
-    pub fn get_number(&self) -> i32 {
-        self.number.unwrap_or(0)
-    }
-
     // optional .google.protobuf.FieldDescriptorProto.Label label = 4;
+
+    pub fn get_label(&self) -> FieldDescriptorProto_Label {
+        self.label.unwrap_or(FieldDescriptorProto_Label::LABEL_OPTIONAL)
+    }
 
     pub fn clear_label(&mut self) {
         self.label = ::std::option::Option::None;
@@ -2006,11 +2010,11 @@ impl FieldDescriptorProto {
         self.label = ::std::option::Option::Some(v);
     }
 
-    pub fn get_label(&self) -> FieldDescriptorProto_Label {
-        self.label.unwrap_or(FieldDescriptorProto_Label::LABEL_OPTIONAL)
-    }
-
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
+
+    pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
+        self.field_type.unwrap_or(FieldDescriptorProto_Type::TYPE_DOUBLE)
+    }
 
     pub fn clear_field_type(&mut self) {
         self.field_type = ::std::option::Option::None;
@@ -2025,11 +2029,14 @@ impl FieldDescriptorProto {
         self.field_type = ::std::option::Option::Some(v);
     }
 
-    pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
-        self.field_type.unwrap_or(FieldDescriptorProto_Type::TYPE_DOUBLE)
-    }
-
     // optional string type_name = 6;
+
+    pub fn get_type_name(&self) -> &str {
+        match self.type_name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_type_name(&mut self) {
         self.type_name.clear();
@@ -2058,14 +2065,14 @@ impl FieldDescriptorProto {
         self.type_name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_type_name(&self) -> &str {
-        match self.type_name.as_ref() {
+    // optional string extendee = 2;
+
+    pub fn get_extendee(&self) -> &str {
+        match self.extendee.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string extendee = 2;
 
     pub fn clear_extendee(&mut self) {
         self.extendee.clear();
@@ -2094,14 +2101,14 @@ impl FieldDescriptorProto {
         self.extendee.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_extendee(&self) -> &str {
-        match self.extendee.as_ref() {
+    // optional string default_value = 7;
+
+    pub fn get_default_value(&self) -> &str {
+        match self.default_value.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string default_value = 7;
 
     pub fn clear_default_value(&mut self) {
         self.default_value.clear();
@@ -2130,14 +2137,11 @@ impl FieldDescriptorProto {
         self.default_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_default_value(&self) -> &str {
-        match self.default_value.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional int32 oneof_index = 9;
+
+    pub fn get_oneof_index(&self) -> i32 {
+        self.oneof_index.unwrap_or(0)
+    }
 
     pub fn clear_oneof_index(&mut self) {
         self.oneof_index = ::std::option::Option::None;
@@ -2152,11 +2156,14 @@ impl FieldDescriptorProto {
         self.oneof_index = ::std::option::Option::Some(v);
     }
 
-    pub fn get_oneof_index(&self) -> i32 {
-        self.oneof_index.unwrap_or(0)
-    }
-
     // optional string json_name = 10;
+
+    pub fn get_json_name(&self) -> &str {
+        match self.json_name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_json_name(&mut self) {
         self.json_name.clear();
@@ -2185,14 +2192,11 @@ impl FieldDescriptorProto {
         self.json_name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_json_name(&self) -> &str {
-        match self.json_name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional .google.protobuf.FieldOptions options = 8;
+
+    pub fn get_options(&self) -> &FieldOptions {
+        self.options.as_ref().unwrap_or_else(|| FieldOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2219,10 +2223,6 @@ impl FieldDescriptorProto {
     // Take field
     pub fn take_options(&mut self) -> FieldOptions {
         self.options.take().unwrap_or_else(|| FieldOptions::new())
-    }
-
-    pub fn get_options(&self) -> &FieldOptions {
-        self.options.as_ref().unwrap_or_else(|| FieldOptions::default_instance())
     }
 }
 
@@ -2473,16 +2473,16 @@ impl ::protobuf::Message for FieldDescriptorProto {
 
 impl ::protobuf::Clear for FieldDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_number();
-        self.clear_label();
-        self.clear_field_type();
-        self.clear_type_name();
-        self.clear_extendee();
-        self.clear_default_value();
-        self.clear_oneof_index();
-        self.clear_json_name();
-        self.clear_options();
+        self.name.clear();
+        self.number = ::std::option::Option::None;
+        self.label = ::std::option::Option::None;
+        self.field_type = ::std::option::Option::None;
+        self.type_name.clear();
+        self.extendee.clear();
+        self.default_value.clear();
+        self.oneof_index = ::std::option::Option::None;
+        self.json_name.clear();
+        self.options.clear();
         self.unknown_fields.clear();
     }
 }
@@ -2665,6 +2665,13 @@ impl OneofDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -2692,14 +2699,11 @@ impl OneofDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional .google.protobuf.OneofOptions options = 2;
+
+    pub fn get_options(&self) -> &OneofOptions {
+        self.options.as_ref().unwrap_or_else(|| OneofOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2726,10 +2730,6 @@ impl OneofDescriptorProto {
     // Take field
     pub fn take_options(&mut self) -> OneofOptions {
         self.options.take().unwrap_or_else(|| OneofOptions::new())
-    }
-
-    pub fn get_options(&self) -> &OneofOptions {
-        self.options.as_ref().unwrap_or_else(|| OneofOptions::default_instance())
     }
 }
 
@@ -2860,8 +2860,8 @@ impl ::protobuf::Message for OneofDescriptorProto {
 
 impl ::protobuf::Clear for OneofDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_options();
+        self.name.clear();
+        self.options.clear();
         self.unknown_fields.clear();
     }
 }
@@ -2896,6 +2896,13 @@ impl EnumDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -2923,14 +2930,11 @@ impl EnumDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated .google.protobuf.EnumValueDescriptorProto value = 2;
+
+    pub fn get_value(&self) -> &[EnumValueDescriptorProto] {
+        &self.value
+    }
 
     pub fn clear_value(&mut self) {
         self.value.clear();
@@ -2951,11 +2955,11 @@ impl EnumDescriptorProto {
         ::std::mem::replace(&mut self.value, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_value(&self) -> &[EnumValueDescriptorProto] {
-        &self.value
-    }
-
     // optional .google.protobuf.EnumOptions options = 3;
+
+    pub fn get_options(&self) -> &EnumOptions {
+        self.options.as_ref().unwrap_or_else(|| EnumOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2982,10 +2986,6 @@ impl EnumDescriptorProto {
     // Take field
     pub fn take_options(&mut self) -> EnumOptions {
         self.options.take().unwrap_or_else(|| EnumOptions::new())
-    }
-
-    pub fn get_options(&self) -> &EnumOptions {
-        self.options.as_ref().unwrap_or_else(|| EnumOptions::default_instance())
     }
 }
 
@@ -3138,9 +3138,9 @@ impl ::protobuf::Message for EnumDescriptorProto {
 
 impl ::protobuf::Clear for EnumDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_value();
-        self.clear_options();
+        self.name.clear();
+        self.value.clear();
+        self.options.clear();
         self.unknown_fields.clear();
     }
 }
@@ -3175,6 +3175,13 @@ impl EnumValueDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -3202,14 +3209,11 @@ impl EnumValueDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional int32 number = 2;
+
+    pub fn get_number(&self) -> i32 {
+        self.number.unwrap_or(0)
+    }
 
     pub fn clear_number(&mut self) {
         self.number = ::std::option::Option::None;
@@ -3224,11 +3228,11 @@ impl EnumValueDescriptorProto {
         self.number = ::std::option::Option::Some(v);
     }
 
-    pub fn get_number(&self) -> i32 {
-        self.number.unwrap_or(0)
-    }
-
     // optional .google.protobuf.EnumValueOptions options = 3;
+
+    pub fn get_options(&self) -> &EnumValueOptions {
+        self.options.as_ref().unwrap_or_else(|| EnumValueOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3255,10 +3259,6 @@ impl EnumValueDescriptorProto {
     // Take field
     pub fn take_options(&mut self) -> EnumValueOptions {
         self.options.take().unwrap_or_else(|| EnumValueOptions::new())
-    }
-
-    pub fn get_options(&self) -> &EnumValueOptions {
-        self.options.as_ref().unwrap_or_else(|| EnumValueOptions::default_instance())
     }
 }
 
@@ -3407,9 +3407,9 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
 
 impl ::protobuf::Clear for EnumValueDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_number();
-        self.clear_options();
+        self.name.clear();
+        self.number = ::std::option::Option::None;
+        self.options.clear();
         self.unknown_fields.clear();
     }
 }
@@ -3444,6 +3444,13 @@ impl ServiceDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -3471,14 +3478,11 @@ impl ServiceDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated .google.protobuf.MethodDescriptorProto method = 2;
+
+    pub fn get_method(&self) -> &[MethodDescriptorProto] {
+        &self.method
+    }
 
     pub fn clear_method(&mut self) {
         self.method.clear();
@@ -3499,11 +3503,11 @@ impl ServiceDescriptorProto {
         ::std::mem::replace(&mut self.method, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_method(&self) -> &[MethodDescriptorProto] {
-        &self.method
-    }
-
     // optional .google.protobuf.ServiceOptions options = 3;
+
+    pub fn get_options(&self) -> &ServiceOptions {
+        self.options.as_ref().unwrap_or_else(|| ServiceOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3530,10 +3534,6 @@ impl ServiceDescriptorProto {
     // Take field
     pub fn take_options(&mut self) -> ServiceOptions {
         self.options.take().unwrap_or_else(|| ServiceOptions::new())
-    }
-
-    pub fn get_options(&self) -> &ServiceOptions {
-        self.options.as_ref().unwrap_or_else(|| ServiceOptions::default_instance())
     }
 }
 
@@ -3686,9 +3686,9 @@ impl ::protobuf::Message for ServiceDescriptorProto {
 
 impl ::protobuf::Clear for ServiceDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_method();
-        self.clear_options();
+        self.name.clear();
+        self.method.clear();
+        self.options.clear();
         self.unknown_fields.clear();
     }
 }
@@ -3726,6 +3726,13 @@ impl MethodDescriptorProto {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -3753,14 +3760,14 @@ impl MethodDescriptorProto {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
+    // optional string input_type = 2;
+
+    pub fn get_input_type(&self) -> &str {
+        match self.input_type.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string input_type = 2;
 
     pub fn clear_input_type(&mut self) {
         self.input_type.clear();
@@ -3789,14 +3796,14 @@ impl MethodDescriptorProto {
         self.input_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_input_type(&self) -> &str {
-        match self.input_type.as_ref() {
+    // optional string output_type = 3;
+
+    pub fn get_output_type(&self) -> &str {
+        match self.output_type.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string output_type = 3;
 
     pub fn clear_output_type(&mut self) {
         self.output_type.clear();
@@ -3825,14 +3832,11 @@ impl MethodDescriptorProto {
         self.output_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_output_type(&self) -> &str {
-        match self.output_type.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional .google.protobuf.MethodOptions options = 4;
+
+    pub fn get_options(&self) -> &MethodOptions {
+        self.options.as_ref().unwrap_or_else(|| MethodOptions::default_instance())
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3861,11 +3865,11 @@ impl MethodDescriptorProto {
         self.options.take().unwrap_or_else(|| MethodOptions::new())
     }
 
-    pub fn get_options(&self) -> &MethodOptions {
-        self.options.as_ref().unwrap_or_else(|| MethodOptions::default_instance())
-    }
-
     // optional bool client_streaming = 5;
+
+    pub fn get_client_streaming(&self) -> bool {
+        self.client_streaming.unwrap_or(false)
+    }
 
     pub fn clear_client_streaming(&mut self) {
         self.client_streaming = ::std::option::Option::None;
@@ -3880,11 +3884,11 @@ impl MethodDescriptorProto {
         self.client_streaming = ::std::option::Option::Some(v);
     }
 
-    pub fn get_client_streaming(&self) -> bool {
-        self.client_streaming.unwrap_or(false)
-    }
-
     // optional bool server_streaming = 6;
+
+    pub fn get_server_streaming(&self) -> bool {
+        self.server_streaming.unwrap_or(false)
+    }
 
     pub fn clear_server_streaming(&mut self) {
         self.server_streaming = ::std::option::Option::None;
@@ -3897,10 +3901,6 @@ impl MethodDescriptorProto {
     // Param is passed by value, moved
     pub fn set_server_streaming(&mut self, v: bool) {
         self.server_streaming = ::std::option::Option::Some(v);
-    }
-
-    pub fn get_server_streaming(&self) -> bool {
-        self.server_streaming.unwrap_or(false)
     }
 }
 
@@ -4095,12 +4095,12 @@ impl ::protobuf::Message for MethodDescriptorProto {
 
 impl ::protobuf::Clear for MethodDescriptorProto {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_input_type();
-        self.clear_output_type();
-        self.clear_options();
-        self.clear_client_streaming();
-        self.clear_server_streaming();
+        self.name.clear();
+        self.input_type.clear();
+        self.output_type.clear();
+        self.options.clear();
+        self.client_streaming = ::std::option::Option::None;
+        self.server_streaming = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -4147,6 +4147,13 @@ impl FileOptions {
 
     // optional string java_package = 1;
 
+    pub fn get_java_package(&self) -> &str {
+        match self.java_package.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_java_package(&mut self) {
         self.java_package.clear();
     }
@@ -4174,14 +4181,14 @@ impl FileOptions {
         self.java_package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_java_package(&self) -> &str {
-        match self.java_package.as_ref() {
+    // optional string java_outer_classname = 8;
+
+    pub fn get_java_outer_classname(&self) -> &str {
+        match self.java_outer_classname.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string java_outer_classname = 8;
 
     pub fn clear_java_outer_classname(&mut self) {
         self.java_outer_classname.clear();
@@ -4210,14 +4217,11 @@ impl FileOptions {
         self.java_outer_classname.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_java_outer_classname(&self) -> &str {
-        match self.java_outer_classname.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional bool java_multiple_files = 10;
+
+    pub fn get_java_multiple_files(&self) -> bool {
+        self.java_multiple_files.unwrap_or(false)
+    }
 
     pub fn clear_java_multiple_files(&mut self) {
         self.java_multiple_files = ::std::option::Option::None;
@@ -4232,11 +4236,11 @@ impl FileOptions {
         self.java_multiple_files = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_multiple_files(&self) -> bool {
-        self.java_multiple_files.unwrap_or(false)
-    }
-
     // optional bool java_generate_equals_and_hash = 20;
+
+    pub fn get_java_generate_equals_and_hash(&self) -> bool {
+        self.java_generate_equals_and_hash.unwrap_or(false)
+    }
 
     pub fn clear_java_generate_equals_and_hash(&mut self) {
         self.java_generate_equals_and_hash = ::std::option::Option::None;
@@ -4251,11 +4255,11 @@ impl FileOptions {
         self.java_generate_equals_and_hash = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_generate_equals_and_hash(&self) -> bool {
-        self.java_generate_equals_and_hash.unwrap_or(false)
-    }
-
     // optional bool java_string_check_utf8 = 27;
+
+    pub fn get_java_string_check_utf8(&self) -> bool {
+        self.java_string_check_utf8.unwrap_or(false)
+    }
 
     pub fn clear_java_string_check_utf8(&mut self) {
         self.java_string_check_utf8 = ::std::option::Option::None;
@@ -4270,11 +4274,11 @@ impl FileOptions {
         self.java_string_check_utf8 = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_string_check_utf8(&self) -> bool {
-        self.java_string_check_utf8.unwrap_or(false)
-    }
-
     // optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
+
+    pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
+        self.optimize_for.unwrap_or(FileOptions_OptimizeMode::SPEED)
+    }
 
     pub fn clear_optimize_for(&mut self) {
         self.optimize_for = ::std::option::Option::None;
@@ -4289,11 +4293,14 @@ impl FileOptions {
         self.optimize_for = ::std::option::Option::Some(v);
     }
 
-    pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
-        self.optimize_for.unwrap_or(FileOptions_OptimizeMode::SPEED)
-    }
-
     // optional string go_package = 11;
+
+    pub fn get_go_package(&self) -> &str {
+        match self.go_package.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_go_package(&mut self) {
         self.go_package.clear();
@@ -4322,14 +4329,11 @@ impl FileOptions {
         self.go_package.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_go_package(&self) -> &str {
-        match self.go_package.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional bool cc_generic_services = 16;
+
+    pub fn get_cc_generic_services(&self) -> bool {
+        self.cc_generic_services.unwrap_or(false)
+    }
 
     pub fn clear_cc_generic_services(&mut self) {
         self.cc_generic_services = ::std::option::Option::None;
@@ -4344,11 +4348,11 @@ impl FileOptions {
         self.cc_generic_services = ::std::option::Option::Some(v);
     }
 
-    pub fn get_cc_generic_services(&self) -> bool {
-        self.cc_generic_services.unwrap_or(false)
-    }
-
     // optional bool java_generic_services = 17;
+
+    pub fn get_java_generic_services(&self) -> bool {
+        self.java_generic_services.unwrap_or(false)
+    }
 
     pub fn clear_java_generic_services(&mut self) {
         self.java_generic_services = ::std::option::Option::None;
@@ -4363,11 +4367,11 @@ impl FileOptions {
         self.java_generic_services = ::std::option::Option::Some(v);
     }
 
-    pub fn get_java_generic_services(&self) -> bool {
-        self.java_generic_services.unwrap_or(false)
-    }
-
     // optional bool py_generic_services = 18;
+
+    pub fn get_py_generic_services(&self) -> bool {
+        self.py_generic_services.unwrap_or(false)
+    }
 
     pub fn clear_py_generic_services(&mut self) {
         self.py_generic_services = ::std::option::Option::None;
@@ -4382,11 +4386,11 @@ impl FileOptions {
         self.py_generic_services = ::std::option::Option::Some(v);
     }
 
-    pub fn get_py_generic_services(&self) -> bool {
-        self.py_generic_services.unwrap_or(false)
-    }
-
     // optional bool deprecated = 23;
+
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
 
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
@@ -4401,11 +4405,11 @@ impl FileOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // optional bool cc_enable_arenas = 31;
+
+    pub fn get_cc_enable_arenas(&self) -> bool {
+        self.cc_enable_arenas.unwrap_or(false)
+    }
 
     pub fn clear_cc_enable_arenas(&mut self) {
         self.cc_enable_arenas = ::std::option::Option::None;
@@ -4420,11 +4424,14 @@ impl FileOptions {
         self.cc_enable_arenas = ::std::option::Option::Some(v);
     }
 
-    pub fn get_cc_enable_arenas(&self) -> bool {
-        self.cc_enable_arenas.unwrap_or(false)
-    }
-
     // optional string objc_class_prefix = 36;
+
+    pub fn get_objc_class_prefix(&self) -> &str {
+        match self.objc_class_prefix.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_objc_class_prefix(&mut self) {
         self.objc_class_prefix.clear();
@@ -4453,14 +4460,14 @@ impl FileOptions {
         self.objc_class_prefix.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_objc_class_prefix(&self) -> &str {
-        match self.objc_class_prefix.as_ref() {
+    // optional string csharp_namespace = 37;
+
+    pub fn get_csharp_namespace(&self) -> &str {
+        match self.csharp_namespace.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string csharp_namespace = 37;
 
     pub fn clear_csharp_namespace(&mut self) {
         self.csharp_namespace.clear();
@@ -4489,14 +4496,11 @@ impl FileOptions {
         self.csharp_namespace.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_csharp_namespace(&self) -> &str {
-        match self.csharp_namespace.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -4515,10 +4519,6 @@ impl FileOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -4863,21 +4863,21 @@ impl ::protobuf::Message for FileOptions {
 
 impl ::protobuf::Clear for FileOptions {
     fn clear(&mut self) {
-        self.clear_java_package();
-        self.clear_java_outer_classname();
-        self.clear_java_multiple_files();
-        self.clear_java_generate_equals_and_hash();
-        self.clear_java_string_check_utf8();
-        self.clear_optimize_for();
-        self.clear_go_package();
-        self.clear_cc_generic_services();
-        self.clear_java_generic_services();
-        self.clear_py_generic_services();
-        self.clear_deprecated();
-        self.clear_cc_enable_arenas();
-        self.clear_objc_class_prefix();
-        self.clear_csharp_namespace();
-        self.clear_uninterpreted_option();
+        self.java_package.clear();
+        self.java_outer_classname.clear();
+        self.java_multiple_files = ::std::option::Option::None;
+        self.java_generate_equals_and_hash = ::std::option::Option::None;
+        self.java_string_check_utf8 = ::std::option::Option::None;
+        self.optimize_for = ::std::option::Option::None;
+        self.go_package.clear();
+        self.cc_generic_services = ::std::option::Option::None;
+        self.java_generic_services = ::std::option::Option::None;
+        self.py_generic_services = ::std::option::Option::None;
+        self.deprecated = ::std::option::Option::None;
+        self.cc_enable_arenas = ::std::option::Option::None;
+        self.objc_class_prefix.clear();
+        self.csharp_namespace.clear();
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -4966,6 +4966,10 @@ impl MessageOptions {
 
     // optional bool message_set_wire_format = 1;
 
+    pub fn get_message_set_wire_format(&self) -> bool {
+        self.message_set_wire_format.unwrap_or(false)
+    }
+
     pub fn clear_message_set_wire_format(&mut self) {
         self.message_set_wire_format = ::std::option::Option::None;
     }
@@ -4979,11 +4983,11 @@ impl MessageOptions {
         self.message_set_wire_format = ::std::option::Option::Some(v);
     }
 
-    pub fn get_message_set_wire_format(&self) -> bool {
-        self.message_set_wire_format.unwrap_or(false)
-    }
-
     // optional bool no_standard_descriptor_accessor = 2;
+
+    pub fn get_no_standard_descriptor_accessor(&self) -> bool {
+        self.no_standard_descriptor_accessor.unwrap_or(false)
+    }
 
     pub fn clear_no_standard_descriptor_accessor(&mut self) {
         self.no_standard_descriptor_accessor = ::std::option::Option::None;
@@ -4998,11 +5002,11 @@ impl MessageOptions {
         self.no_standard_descriptor_accessor = ::std::option::Option::Some(v);
     }
 
-    pub fn get_no_standard_descriptor_accessor(&self) -> bool {
-        self.no_standard_descriptor_accessor.unwrap_or(false)
-    }
-
     // optional bool deprecated = 3;
+
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
 
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
@@ -5017,11 +5021,11 @@ impl MessageOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // optional bool map_entry = 7;
+
+    pub fn get_map_entry(&self) -> bool {
+        self.map_entry.unwrap_or(false)
+    }
 
     pub fn clear_map_entry(&mut self) {
         self.map_entry = ::std::option::Option::None;
@@ -5036,11 +5040,11 @@ impl MessageOptions {
         self.map_entry = ::std::option::Option::Some(v);
     }
 
-    pub fn get_map_entry(&self) -> bool {
-        self.map_entry.unwrap_or(false)
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -5059,10 +5063,6 @@ impl MessageOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -5251,11 +5251,11 @@ impl ::protobuf::Message for MessageOptions {
 
 impl ::protobuf::Clear for MessageOptions {
     fn clear(&mut self) {
-        self.clear_message_set_wire_format();
-        self.clear_no_standard_descriptor_accessor();
-        self.clear_deprecated();
-        self.clear_map_entry();
-        self.clear_uninterpreted_option();
+        self.message_set_wire_format = ::std::option::Option::None;
+        self.no_standard_descriptor_accessor = ::std::option::Option::None;
+        self.deprecated = ::std::option::Option::None;
+        self.map_entry = ::std::option::Option::None;
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -5294,6 +5294,10 @@ impl FieldOptions {
 
     // optional .google.protobuf.FieldOptions.CType ctype = 1;
 
+    pub fn get_ctype(&self) -> FieldOptions_CType {
+        self.ctype.unwrap_or(FieldOptions_CType::STRING)
+    }
+
     pub fn clear_ctype(&mut self) {
         self.ctype = ::std::option::Option::None;
     }
@@ -5307,11 +5311,11 @@ impl FieldOptions {
         self.ctype = ::std::option::Option::Some(v);
     }
 
-    pub fn get_ctype(&self) -> FieldOptions_CType {
-        self.ctype.unwrap_or(FieldOptions_CType::STRING)
-    }
-
     // optional bool packed = 2;
+
+    pub fn get_packed(&self) -> bool {
+        self.packed.unwrap_or(false)
+    }
 
     pub fn clear_packed(&mut self) {
         self.packed = ::std::option::Option::None;
@@ -5326,11 +5330,11 @@ impl FieldOptions {
         self.packed = ::std::option::Option::Some(v);
     }
 
-    pub fn get_packed(&self) -> bool {
-        self.packed.unwrap_or(false)
-    }
-
     // optional .google.protobuf.FieldOptions.JSType jstype = 6;
+
+    pub fn get_jstype(&self) -> FieldOptions_JSType {
+        self.jstype.unwrap_or(FieldOptions_JSType::JS_NORMAL)
+    }
 
     pub fn clear_jstype(&mut self) {
         self.jstype = ::std::option::Option::None;
@@ -5345,11 +5349,11 @@ impl FieldOptions {
         self.jstype = ::std::option::Option::Some(v);
     }
 
-    pub fn get_jstype(&self) -> FieldOptions_JSType {
-        self.jstype.unwrap_or(FieldOptions_JSType::JS_NORMAL)
-    }
-
     // optional bool lazy = 5;
+
+    pub fn get_lazy(&self) -> bool {
+        self.lazy.unwrap_or(false)
+    }
 
     pub fn clear_lazy(&mut self) {
         self.lazy = ::std::option::Option::None;
@@ -5364,11 +5368,11 @@ impl FieldOptions {
         self.lazy = ::std::option::Option::Some(v);
     }
 
-    pub fn get_lazy(&self) -> bool {
-        self.lazy.unwrap_or(false)
-    }
-
     // optional bool deprecated = 3;
+
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
 
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
@@ -5383,11 +5387,11 @@ impl FieldOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // optional bool weak = 10;
+
+    pub fn get_weak(&self) -> bool {
+        self.weak.unwrap_or(false)
+    }
 
     pub fn clear_weak(&mut self) {
         self.weak = ::std::option::Option::None;
@@ -5402,11 +5406,11 @@ impl FieldOptions {
         self.weak = ::std::option::Option::Some(v);
     }
 
-    pub fn get_weak(&self) -> bool {
-        self.weak.unwrap_or(false)
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -5425,10 +5429,6 @@ impl FieldOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -5645,13 +5645,13 @@ impl ::protobuf::Message for FieldOptions {
 
 impl ::protobuf::Clear for FieldOptions {
     fn clear(&mut self) {
-        self.clear_ctype();
-        self.clear_packed();
-        self.clear_jstype();
-        self.clear_lazy();
-        self.clear_deprecated();
-        self.clear_weak();
-        self.clear_uninterpreted_option();
+        self.ctype = ::std::option::Option::None;
+        self.packed = ::std::option::Option::None;
+        self.jstype = ::std::option::Option::None;
+        self.lazy = ::std::option::Option::None;
+        self.deprecated = ::std::option::Option::None;
+        self.weak = ::std::option::Option::None;
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -5788,6 +5788,10 @@ impl OneofOptions {
 
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
 
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
+
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
     }
@@ -5805,10 +5809,6 @@ impl OneofOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -5925,7 +5925,7 @@ impl ::protobuf::Message for OneofOptions {
 
 impl ::protobuf::Clear for OneofOptions {
     fn clear(&mut self) {
-        self.clear_uninterpreted_option();
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -5960,6 +5960,10 @@ impl EnumOptions {
 
     // optional bool allow_alias = 2;
 
+    pub fn get_allow_alias(&self) -> bool {
+        self.allow_alias.unwrap_or(false)
+    }
+
     pub fn clear_allow_alias(&mut self) {
         self.allow_alias = ::std::option::Option::None;
     }
@@ -5973,11 +5977,11 @@ impl EnumOptions {
         self.allow_alias = ::std::option::Option::Some(v);
     }
 
-    pub fn get_allow_alias(&self) -> bool {
-        self.allow_alias.unwrap_or(false)
-    }
-
     // optional bool deprecated = 3;
+
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
 
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
@@ -5992,11 +5996,11 @@ impl EnumOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -6015,10 +6019,6 @@ impl EnumOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -6171,9 +6171,9 @@ impl ::protobuf::Message for EnumOptions {
 
 impl ::protobuf::Clear for EnumOptions {
     fn clear(&mut self) {
-        self.clear_allow_alias();
-        self.clear_deprecated();
-        self.clear_uninterpreted_option();
+        self.allow_alias = ::std::option::Option::None;
+        self.deprecated = ::std::option::Option::None;
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -6207,6 +6207,10 @@ impl EnumValueOptions {
 
     // optional bool deprecated = 1;
 
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
+
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
     }
@@ -6220,11 +6224,11 @@ impl EnumValueOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -6243,10 +6247,6 @@ impl EnumValueOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -6381,8 +6381,8 @@ impl ::protobuf::Message for EnumValueOptions {
 
 impl ::protobuf::Clear for EnumValueOptions {
     fn clear(&mut self) {
-        self.clear_deprecated();
-        self.clear_uninterpreted_option();
+        self.deprecated = ::std::option::Option::None;
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -6416,6 +6416,10 @@ impl ServiceOptions {
 
     // optional bool deprecated = 33;
 
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
+
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
     }
@@ -6429,11 +6433,11 @@ impl ServiceOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -6452,10 +6456,6 @@ impl ServiceOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -6590,8 +6590,8 @@ impl ::protobuf::Message for ServiceOptions {
 
 impl ::protobuf::Clear for ServiceOptions {
     fn clear(&mut self) {
-        self.clear_deprecated();
-        self.clear_uninterpreted_option();
+        self.deprecated = ::std::option::Option::None;
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -6625,6 +6625,10 @@ impl MethodOptions {
 
     // optional bool deprecated = 33;
 
+    pub fn get_deprecated(&self) -> bool {
+        self.deprecated.unwrap_or(false)
+    }
+
     pub fn clear_deprecated(&mut self) {
         self.deprecated = ::std::option::Option::None;
     }
@@ -6638,11 +6642,11 @@ impl MethodOptions {
         self.deprecated = ::std::option::Option::Some(v);
     }
 
-    pub fn get_deprecated(&self) -> bool {
-        self.deprecated.unwrap_or(false)
-    }
-
     // repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
+        &self.uninterpreted_option
+    }
 
     pub fn clear_uninterpreted_option(&mut self) {
         self.uninterpreted_option.clear();
@@ -6661,10 +6665,6 @@ impl MethodOptions {
     // Take field
     pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
         ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_uninterpreted_option(&self) -> &[UninterpretedOption] {
-        &self.uninterpreted_option
     }
 }
 
@@ -6799,8 +6799,8 @@ impl ::protobuf::Message for MethodOptions {
 
 impl ::protobuf::Clear for MethodOptions {
     fn clear(&mut self) {
-        self.clear_deprecated();
-        self.clear_uninterpreted_option();
+        self.deprecated = ::std::option::Option::None;
+        self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
 }
@@ -6839,6 +6839,10 @@ impl UninterpretedOption {
 
     // repeated .google.protobuf.UninterpretedOption.NamePart name = 2;
 
+    pub fn get_name(&self) -> &[UninterpretedOption_NamePart] {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -6858,11 +6862,14 @@ impl UninterpretedOption {
         ::std::mem::replace(&mut self.name, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_name(&self) -> &[UninterpretedOption_NamePart] {
-        &self.name
-    }
-
     // optional string identifier_value = 3;
+
+    pub fn get_identifier_value(&self) -> &str {
+        match self.identifier_value.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_identifier_value(&mut self) {
         self.identifier_value.clear();
@@ -6891,14 +6898,11 @@ impl UninterpretedOption {
         self.identifier_value.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_identifier_value(&self) -> &str {
-        match self.identifier_value.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional uint64 positive_int_value = 4;
+
+    pub fn get_positive_int_value(&self) -> u64 {
+        self.positive_int_value.unwrap_or(0)
+    }
 
     pub fn clear_positive_int_value(&mut self) {
         self.positive_int_value = ::std::option::Option::None;
@@ -6913,11 +6917,11 @@ impl UninterpretedOption {
         self.positive_int_value = ::std::option::Option::Some(v);
     }
 
-    pub fn get_positive_int_value(&self) -> u64 {
-        self.positive_int_value.unwrap_or(0)
-    }
-
     // optional int64 negative_int_value = 5;
+
+    pub fn get_negative_int_value(&self) -> i64 {
+        self.negative_int_value.unwrap_or(0)
+    }
 
     pub fn clear_negative_int_value(&mut self) {
         self.negative_int_value = ::std::option::Option::None;
@@ -6932,11 +6936,11 @@ impl UninterpretedOption {
         self.negative_int_value = ::std::option::Option::Some(v);
     }
 
-    pub fn get_negative_int_value(&self) -> i64 {
-        self.negative_int_value.unwrap_or(0)
-    }
-
     // optional double double_value = 6;
+
+    pub fn get_double_value(&self) -> f64 {
+        self.double_value.unwrap_or(0.)
+    }
 
     pub fn clear_double_value(&mut self) {
         self.double_value = ::std::option::Option::None;
@@ -6951,11 +6955,14 @@ impl UninterpretedOption {
         self.double_value = ::std::option::Option::Some(v);
     }
 
-    pub fn get_double_value(&self) -> f64 {
-        self.double_value.unwrap_or(0.)
-    }
-
     // optional bytes string_value = 7;
+
+    pub fn get_string_value(&self) -> &[u8] {
+        match self.string_value.as_ref() {
+            Some(v) => &v,
+            None => &[],
+        }
+    }
 
     pub fn clear_string_value(&mut self) {
         self.string_value.clear();
@@ -6984,14 +6991,14 @@ impl UninterpretedOption {
         self.string_value.take().unwrap_or_else(|| ::std::vec::Vec::new())
     }
 
-    pub fn get_string_value(&self) -> &[u8] {
-        match self.string_value.as_ref() {
+    // optional string aggregate_value = 8;
+
+    pub fn get_aggregate_value(&self) -> &str {
+        match self.aggregate_value.as_ref() {
             Some(v) => &v,
-            None => &[],
+            None => "",
         }
     }
-
-    // optional string aggregate_value = 8;
 
     pub fn clear_aggregate_value(&mut self) {
         self.aggregate_value.clear();
@@ -7018,13 +7025,6 @@ impl UninterpretedOption {
     // Take field
     pub fn take_aggregate_value(&mut self) -> ::std::string::String {
         self.aggregate_value.take().unwrap_or_else(|| ::std::string::String::new())
-    }
-
-    pub fn get_aggregate_value(&self) -> &str {
-        match self.aggregate_value.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
     }
 }
 
@@ -7237,13 +7237,13 @@ impl ::protobuf::Message for UninterpretedOption {
 
 impl ::protobuf::Clear for UninterpretedOption {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_identifier_value();
-        self.clear_positive_int_value();
-        self.clear_negative_int_value();
-        self.clear_double_value();
-        self.clear_string_value();
-        self.clear_aggregate_value();
+        self.name.clear();
+        self.identifier_value.clear();
+        self.positive_int_value = ::std::option::Option::None;
+        self.negative_int_value = ::std::option::Option::None;
+        self.double_value = ::std::option::Option::None;
+        self.string_value.clear();
+        self.aggregate_value.clear();
         self.unknown_fields.clear();
     }
 }
@@ -7277,6 +7277,13 @@ impl UninterpretedOption_NamePart {
 
     // required string name_part = 1;
 
+    pub fn get_name_part(&self) -> &str {
+        match self.name_part.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name_part(&mut self) {
         self.name_part.clear();
     }
@@ -7304,14 +7311,11 @@ impl UninterpretedOption_NamePart {
         self.name_part.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name_part(&self) -> &str {
-        match self.name_part.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // required bool is_extension = 2;
+
+    pub fn get_is_extension(&self) -> bool {
+        self.is_extension.unwrap_or(false)
+    }
 
     pub fn clear_is_extension(&mut self) {
         self.is_extension = ::std::option::Option::None;
@@ -7324,10 +7328,6 @@ impl UninterpretedOption_NamePart {
     // Param is passed by value, moved
     pub fn set_is_extension(&mut self, v: bool) {
         self.is_extension = ::std::option::Option::Some(v);
-    }
-
-    pub fn get_is_extension(&self) -> bool {
-        self.is_extension.unwrap_or(false)
     }
 }
 
@@ -7460,8 +7460,8 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
 
 impl ::protobuf::Clear for UninterpretedOption_NamePart {
     fn clear(&mut self) {
-        self.clear_name_part();
-        self.clear_is_extension();
+        self.name_part.clear();
+        self.is_extension = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -7494,6 +7494,10 @@ impl SourceCodeInfo {
 
     // repeated .google.protobuf.SourceCodeInfo.Location location = 1;
 
+    pub fn get_location(&self) -> &[SourceCodeInfo_Location] {
+        &self.location
+    }
+
     pub fn clear_location(&mut self) {
         self.location.clear();
     }
@@ -7511,10 +7515,6 @@ impl SourceCodeInfo {
     // Take field
     pub fn take_location(&mut self) -> ::protobuf::RepeatedField<SourceCodeInfo_Location> {
         ::std::mem::replace(&mut self.location, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_location(&self) -> &[SourceCodeInfo_Location] {
-        &self.location
     }
 }
 
@@ -7631,7 +7631,7 @@ impl ::protobuf::Message for SourceCodeInfo {
 
 impl ::protobuf::Clear for SourceCodeInfo {
     fn clear(&mut self) {
-        self.clear_location();
+        self.location.clear();
         self.unknown_fields.clear();
     }
 }
@@ -7668,6 +7668,10 @@ impl SourceCodeInfo_Location {
 
     // repeated int32 path = 1;
 
+    pub fn get_path(&self) -> &[i32] {
+        &self.path
+    }
+
     pub fn clear_path(&mut self) {
         self.path.clear();
     }
@@ -7687,11 +7691,11 @@ impl SourceCodeInfo_Location {
         ::std::mem::replace(&mut self.path, ::std::vec::Vec::new())
     }
 
-    pub fn get_path(&self) -> &[i32] {
-        &self.path
-    }
-
     // repeated int32 span = 2;
+
+    pub fn get_span(&self) -> &[i32] {
+        &self.span
+    }
 
     pub fn clear_span(&mut self) {
         self.span.clear();
@@ -7712,11 +7716,14 @@ impl SourceCodeInfo_Location {
         ::std::mem::replace(&mut self.span, ::std::vec::Vec::new())
     }
 
-    pub fn get_span(&self) -> &[i32] {
-        &self.span
-    }
-
     // optional string leading_comments = 3;
+
+    pub fn get_leading_comments(&self) -> &str {
+        match self.leading_comments.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_leading_comments(&mut self) {
         self.leading_comments.clear();
@@ -7745,14 +7752,14 @@ impl SourceCodeInfo_Location {
         self.leading_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_leading_comments(&self) -> &str {
-        match self.leading_comments.as_ref() {
+    // optional string trailing_comments = 4;
+
+    pub fn get_trailing_comments(&self) -> &str {
+        match self.trailing_comments.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string trailing_comments = 4;
 
     pub fn clear_trailing_comments(&mut self) {
         self.trailing_comments.clear();
@@ -7781,14 +7788,11 @@ impl SourceCodeInfo_Location {
         self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_trailing_comments(&self) -> &str {
-        match self.trailing_comments.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated string leading_detached_comments = 6;
+
+    pub fn get_leading_detached_comments(&self) -> &[::std::string::String] {
+        &self.leading_detached_comments
+    }
 
     pub fn clear_leading_detached_comments(&mut self) {
         self.leading_detached_comments.clear();
@@ -7807,10 +7811,6 @@ impl SourceCodeInfo_Location {
     // Take field
     pub fn take_leading_detached_comments(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
         ::std::mem::replace(&mut self.leading_detached_comments, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_leading_detached_comments(&self) -> &[::std::string::String] {
-        &self.leading_detached_comments
     }
 }
 
@@ -7985,11 +7985,11 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
 
 impl ::protobuf::Clear for SourceCodeInfo_Location {
     fn clear(&mut self) {
-        self.clear_path();
-        self.clear_span();
-        self.clear_leading_comments();
-        self.clear_trailing_comments();
-        self.clear_leading_detached_comments();
+        self.path.clear();
+        self.span.clear();
+        self.leading_comments.clear();
+        self.trailing_comments.clear();
+        self.leading_detached_comments.clear();
         self.unknown_fields.clear();
     }
 }
@@ -8022,6 +8022,10 @@ impl GeneratedCodeInfo {
 
     // repeated .google.protobuf.GeneratedCodeInfo.Annotation annotation = 1;
 
+    pub fn get_annotation(&self) -> &[GeneratedCodeInfo_Annotation] {
+        &self.annotation
+    }
+
     pub fn clear_annotation(&mut self) {
         self.annotation.clear();
     }
@@ -8039,10 +8043,6 @@ impl GeneratedCodeInfo {
     // Take field
     pub fn take_annotation(&mut self) -> ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation> {
         ::std::mem::replace(&mut self.annotation, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_annotation(&self) -> &[GeneratedCodeInfo_Annotation] {
-        &self.annotation
     }
 }
 
@@ -8159,7 +8159,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
 
 impl ::protobuf::Clear for GeneratedCodeInfo {
     fn clear(&mut self) {
-        self.clear_annotation();
+        self.annotation.clear();
         self.unknown_fields.clear();
     }
 }
@@ -8195,6 +8195,10 @@ impl GeneratedCodeInfo_Annotation {
 
     // repeated int32 path = 1;
 
+    pub fn get_path(&self) -> &[i32] {
+        &self.path
+    }
+
     pub fn clear_path(&mut self) {
         self.path.clear();
     }
@@ -8214,11 +8218,14 @@ impl GeneratedCodeInfo_Annotation {
         ::std::mem::replace(&mut self.path, ::std::vec::Vec::new())
     }
 
-    pub fn get_path(&self) -> &[i32] {
-        &self.path
-    }
-
     // optional string source_file = 2;
+
+    pub fn get_source_file(&self) -> &str {
+        match self.source_file.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_source_file(&mut self) {
         self.source_file.clear();
@@ -8247,14 +8254,11 @@ impl GeneratedCodeInfo_Annotation {
         self.source_file.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_source_file(&self) -> &str {
-        match self.source_file.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // optional int32 begin = 3;
+
+    pub fn get_begin(&self) -> i32 {
+        self.begin.unwrap_or(0)
+    }
 
     pub fn clear_begin(&mut self) {
         self.begin = ::std::option::Option::None;
@@ -8269,11 +8273,11 @@ impl GeneratedCodeInfo_Annotation {
         self.begin = ::std::option::Option::Some(v);
     }
 
-    pub fn get_begin(&self) -> i32 {
-        self.begin.unwrap_or(0)
-    }
-
     // optional int32 end = 4;
+
+    pub fn get_end(&self) -> i32 {
+        self.end.unwrap_or(0)
+    }
 
     pub fn clear_end(&mut self) {
         self.end = ::std::option::Option::None;
@@ -8286,10 +8290,6 @@ impl GeneratedCodeInfo_Annotation {
     // Param is passed by value, moved
     pub fn set_end(&mut self, v: i32) {
         self.end = ::std::option::Option::Some(v);
-    }
-
-    pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
     }
 }
 
@@ -8453,10 +8453,10 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
 
 impl ::protobuf::Clear for GeneratedCodeInfo_Annotation {
     fn clear(&mut self) {
-        self.clear_path();
-        self.clear_source_file();
-        self.clear_begin();
-        self.clear_end();
+        self.path.clear();
+        self.source_file.clear();
+        self.begin = ::std::option::Option::None;
+        self.end = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }

@@ -37,6 +37,10 @@ impl SourceContext {
 
     // string file_name = 1;
 
+    pub fn get_file_name(&self) -> &str {
+        &self.file_name
+    }
+
     pub fn clear_file_name(&mut self) {
         self.file_name.clear();
     }
@@ -55,10 +59,6 @@ impl SourceContext {
     // Take field
     pub fn take_file_name(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.file_name, ::std::string::String::new())
-    }
-
-    pub fn get_file_name(&self) -> &str {
-        &self.file_name
     }
 }
 
@@ -167,7 +167,7 @@ impl ::protobuf::Message for SourceContext {
 
 impl ::protobuf::Clear for SourceContext {
     fn clear(&mut self) {
-        self.clear_file_name();
+        self.file_name.clear();
         self.unknown_fields.clear();
     }
 }

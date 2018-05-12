@@ -38,6 +38,10 @@ impl Any {
 
     // string type_url = 1;
 
+    pub fn get_type_url(&self) -> &str {
+        &self.type_url
+    }
+
     pub fn clear_type_url(&mut self) {
         self.type_url.clear();
     }
@@ -58,11 +62,11 @@ impl Any {
         ::std::mem::replace(&mut self.type_url, ::std::string::String::new())
     }
 
-    pub fn get_type_url(&self) -> &str {
-        &self.type_url
-    }
-
     // bytes value = 2;
+
+    pub fn get_value(&self) -> &[u8] {
+        &self.value
+    }
 
     pub fn clear_value(&mut self) {
         self.value.clear();
@@ -82,10 +86,6 @@ impl Any {
     // Take field
     pub fn take_value(&mut self) -> ::std::vec::Vec<u8> {
         ::std::mem::replace(&mut self.value, ::std::vec::Vec::new())
-    }
-
-    pub fn get_value(&self) -> &[u8] {
-        &self.value
     }
 }
 
@@ -208,8 +208,8 @@ impl ::protobuf::Message for Any {
 
 impl ::protobuf::Clear for Any {
     fn clear(&mut self) {
-        self.clear_type_url();
-        self.clear_value();
+        self.type_url.clear();
+        self.value.clear();
         self.unknown_fields.clear();
     }
 }

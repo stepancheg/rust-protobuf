@@ -38,6 +38,10 @@ impl Timestamp {
 
     // int64 seconds = 1;
 
+    pub fn get_seconds(&self) -> i64 {
+        self.seconds
+    }
+
     pub fn clear_seconds(&mut self) {
         self.seconds = 0;
     }
@@ -47,11 +51,11 @@ impl Timestamp {
         self.seconds = v;
     }
 
-    pub fn get_seconds(&self) -> i64 {
-        self.seconds
-    }
-
     // int32 nanos = 2;
+
+    pub fn get_nanos(&self) -> i32 {
+        self.nanos
+    }
 
     pub fn clear_nanos(&mut self) {
         self.nanos = 0;
@@ -60,10 +64,6 @@ impl Timestamp {
     // Param is passed by value, moved
     pub fn set_nanos(&mut self, v: i32) {
         self.nanos = v;
-    }
-
-    pub fn get_nanos(&self) -> i32 {
-        self.nanos
     }
 }
 
@@ -194,8 +194,8 @@ impl ::protobuf::Message for Timestamp {
 
 impl ::protobuf::Clear for Timestamp {
     fn clear(&mut self) {
-        self.clear_seconds();
-        self.clear_nanos();
+        self.seconds = 0;
+        self.nanos = 0;
         self.unknown_fields.clear();
     }
 }

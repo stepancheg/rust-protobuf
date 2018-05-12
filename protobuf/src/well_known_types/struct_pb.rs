@@ -37,6 +37,10 @@ impl Struct {
 
     // repeated .google.protobuf.Struct.FieldsEntry fields = 1;
 
+    pub fn get_fields(&self) -> &::std::collections::HashMap<::std::string::String, Value> {
+        &self.fields
+    }
+
     pub fn clear_fields(&mut self) {
         self.fields.clear();
     }
@@ -54,10 +58,6 @@ impl Struct {
     // Take field
     pub fn take_fields(&mut self) -> ::std::collections::HashMap<::std::string::String, Value> {
         ::std::mem::replace(&mut self.fields, ::std::collections::HashMap::new())
-    }
-
-    pub fn get_fields(&self) -> &::std::collections::HashMap<::std::string::String, Value> {
-        &self.fields
     }
 }
 
@@ -162,7 +162,7 @@ impl ::protobuf::Message for Struct {
 
 impl ::protobuf::Clear for Struct {
     fn clear(&mut self) {
-        self.clear_fields();
+        self.fields.clear();
         self.unknown_fields.clear();
     }
 }
@@ -205,6 +205,13 @@ impl Value {
 
     // .google.protobuf.NullValue null_value = 1;
 
+    pub fn get_null_value(&self) -> NullValue {
+        match self.kind {
+            ::std::option::Option::Some(Value_oneof_kind::null_value(v)) => v,
+            _ => NullValue::NULL_VALUE,
+        }
+    }
+
     pub fn clear_null_value(&mut self) {
         self.kind = ::std::option::Option::None;
     }
@@ -221,14 +228,14 @@ impl Value {
         self.kind = ::std::option::Option::Some(Value_oneof_kind::null_value(v))
     }
 
-    pub fn get_null_value(&self) -> NullValue {
+    // double number_value = 2;
+
+    pub fn get_number_value(&self) -> f64 {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::null_value(v)) => v,
-            _ => NullValue::NULL_VALUE,
+            ::std::option::Option::Some(Value_oneof_kind::number_value(v)) => v,
+            _ => 0.,
         }
     }
-
-    // double number_value = 2;
 
     pub fn clear_number_value(&mut self) {
         self.kind = ::std::option::Option::None;
@@ -246,14 +253,14 @@ impl Value {
         self.kind = ::std::option::Option::Some(Value_oneof_kind::number_value(v))
     }
 
-    pub fn get_number_value(&self) -> f64 {
+    // string string_value = 3;
+
+    pub fn get_string_value(&self) -> &str {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::number_value(v)) => v,
-            _ => 0.,
+            ::std::option::Option::Some(Value_oneof_kind::string_value(ref v)) => v,
+            _ => "",
         }
     }
-
-    // string string_value = 3;
 
     pub fn clear_string_value(&mut self) {
         self.kind = ::std::option::Option::None;
@@ -295,14 +302,14 @@ impl Value {
         }
     }
 
-    pub fn get_string_value(&self) -> &str {
+    // bool bool_value = 4;
+
+    pub fn get_bool_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::string_value(ref v)) => v,
-            _ => "",
+            ::std::option::Option::Some(Value_oneof_kind::bool_value(v)) => v,
+            _ => false,
         }
     }
-
-    // bool bool_value = 4;
 
     pub fn clear_bool_value(&mut self) {
         self.kind = ::std::option::Option::None;
@@ -320,14 +327,14 @@ impl Value {
         self.kind = ::std::option::Option::Some(Value_oneof_kind::bool_value(v))
     }
 
-    pub fn get_bool_value(&self) -> bool {
+    // .google.protobuf.Struct struct_value = 5;
+
+    pub fn get_struct_value(&self) -> &Struct {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::bool_value(v)) => v,
-            _ => false,
+            ::std::option::Option::Some(Value_oneof_kind::struct_value(ref v)) => v,
+            _ => Struct::default_instance(),
         }
     }
-
-    // .google.protobuf.Struct struct_value = 5;
 
     pub fn clear_struct_value(&mut self) {
         self.kind = ::std::option::Option::None;
@@ -369,14 +376,14 @@ impl Value {
         }
     }
 
-    pub fn get_struct_value(&self) -> &Struct {
+    // .google.protobuf.ListValue list_value = 6;
+
+    pub fn get_list_value(&self) -> &ListValue {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::struct_value(ref v)) => v,
-            _ => Struct::default_instance(),
+            ::std::option::Option::Some(Value_oneof_kind::list_value(ref v)) => v,
+            _ => ListValue::default_instance(),
         }
     }
-
-    // .google.protobuf.ListValue list_value = 6;
 
     pub fn clear_list_value(&mut self) {
         self.kind = ::std::option::Option::None;
@@ -415,13 +422,6 @@ impl Value {
             }
         } else {
             ListValue::new()
-        }
-    }
-
-    pub fn get_list_value(&self) -> &ListValue {
-        match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::list_value(ref v)) => v,
-            _ => ListValue::default_instance(),
         }
     }
 }
@@ -643,12 +643,12 @@ impl ::protobuf::Message for Value {
 
 impl ::protobuf::Clear for Value {
     fn clear(&mut self) {
-        self.clear_null_value();
-        self.clear_number_value();
-        self.clear_string_value();
-        self.clear_bool_value();
-        self.clear_struct_value();
-        self.clear_list_value();
+        self.kind = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -681,6 +681,10 @@ impl ListValue {
 
     // repeated .google.protobuf.Value values = 1;
 
+    pub fn get_values(&self) -> &[Value] {
+        &self.values
+    }
+
     pub fn clear_values(&mut self) {
         self.values.clear();
     }
@@ -698,10 +702,6 @@ impl ListValue {
     // Take field
     pub fn take_values(&mut self) -> ::protobuf::RepeatedField<Value> {
         ::std::mem::replace(&mut self.values, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_values(&self) -> &[Value] {
-        &self.values
     }
 }
 
@@ -818,7 +818,7 @@ impl ::protobuf::Message for ListValue {
 
 impl ::protobuf::Clear for ListValue {
     fn clear(&mut self) {
-        self.clear_values();
+        self.values.clear();
         self.unknown_fields.clear();
     }
 }

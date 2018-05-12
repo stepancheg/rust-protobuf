@@ -43,6 +43,10 @@ impl Api {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -63,11 +67,11 @@ impl Api {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // repeated .google.protobuf.Method methods = 2;
+
+    pub fn get_methods(&self) -> &[Method] {
+        &self.methods
+    }
 
     pub fn clear_methods(&mut self) {
         self.methods.clear();
@@ -88,11 +92,11 @@ impl Api {
         ::std::mem::replace(&mut self.methods, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_methods(&self) -> &[Method] {
-        &self.methods
-    }
-
     // repeated .google.protobuf.Option options = 3;
+
+    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
+        &self.options
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -113,11 +117,11 @@ impl Api {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
-        &self.options
-    }
-
     // string version = 4;
+
+    pub fn get_version(&self) -> &str {
+        &self.version
+    }
 
     pub fn clear_version(&mut self) {
         self.version.clear();
@@ -139,11 +143,11 @@ impl Api {
         ::std::mem::replace(&mut self.version, ::std::string::String::new())
     }
 
-    pub fn get_version(&self) -> &str {
-        &self.version
-    }
-
     // .google.protobuf.SourceContext source_context = 5;
+
+    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+    }
 
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -172,11 +176,11 @@ impl Api {
         self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
     }
 
-    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
-    }
-
     // repeated .google.protobuf.Mixin mixins = 6;
+
+    pub fn get_mixins(&self) -> &[Mixin] {
+        &self.mixins
+    }
 
     pub fn clear_mixins(&mut self) {
         self.mixins.clear();
@@ -197,11 +201,11 @@ impl Api {
         ::std::mem::replace(&mut self.mixins, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_mixins(&self) -> &[Mixin] {
-        &self.mixins
-    }
-
     // .google.protobuf.Syntax syntax = 7;
+
+    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
+        self.syntax
+    }
 
     pub fn clear_syntax(&mut self) {
         self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
@@ -210,10 +214,6 @@ impl Api {
     // Param is passed by value, moved
     pub fn set_syntax(&mut self, v: ::protobuf::well_known_types::Syntax) {
         self.syntax = v;
-    }
-
-    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
-        self.syntax
     }
 }
 
@@ -438,13 +438,13 @@ impl ::protobuf::Message for Api {
 
 impl ::protobuf::Clear for Api {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_methods();
-        self.clear_options();
-        self.clear_version();
-        self.clear_source_context();
-        self.clear_mixins();
-        self.clear_syntax();
+        self.name.clear();
+        self.methods.clear();
+        self.options.clear();
+        self.version.clear();
+        self.source_context.clear();
+        self.mixins.clear();
+        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
         self.unknown_fields.clear();
     }
 }
@@ -483,6 +483,10 @@ impl Method {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -503,11 +507,11 @@ impl Method {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // string request_type_url = 2;
+
+    pub fn get_request_type_url(&self) -> &str {
+        &self.request_type_url
+    }
 
     pub fn clear_request_type_url(&mut self) {
         self.request_type_url.clear();
@@ -529,11 +533,11 @@ impl Method {
         ::std::mem::replace(&mut self.request_type_url, ::std::string::String::new())
     }
 
-    pub fn get_request_type_url(&self) -> &str {
-        &self.request_type_url
-    }
-
     // bool request_streaming = 3;
+
+    pub fn get_request_streaming(&self) -> bool {
+        self.request_streaming
+    }
 
     pub fn clear_request_streaming(&mut self) {
         self.request_streaming = false;
@@ -544,11 +548,11 @@ impl Method {
         self.request_streaming = v;
     }
 
-    pub fn get_request_streaming(&self) -> bool {
-        self.request_streaming
-    }
-
     // string response_type_url = 4;
+
+    pub fn get_response_type_url(&self) -> &str {
+        &self.response_type_url
+    }
 
     pub fn clear_response_type_url(&mut self) {
         self.response_type_url.clear();
@@ -570,11 +574,11 @@ impl Method {
         ::std::mem::replace(&mut self.response_type_url, ::std::string::String::new())
     }
 
-    pub fn get_response_type_url(&self) -> &str {
-        &self.response_type_url
-    }
-
     // bool response_streaming = 5;
+
+    pub fn get_response_streaming(&self) -> bool {
+        self.response_streaming
+    }
 
     pub fn clear_response_streaming(&mut self) {
         self.response_streaming = false;
@@ -585,11 +589,11 @@ impl Method {
         self.response_streaming = v;
     }
 
-    pub fn get_response_streaming(&self) -> bool {
-        self.response_streaming
-    }
-
     // repeated .google.protobuf.Option options = 6;
+
+    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
+        &self.options
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -610,11 +614,11 @@ impl Method {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
-        &self.options
-    }
-
     // .google.protobuf.Syntax syntax = 7;
+
+    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
+        self.syntax
+    }
 
     pub fn clear_syntax(&mut self) {
         self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
@@ -623,10 +627,6 @@ impl Method {
     // Param is passed by value, moved
     pub fn set_syntax(&mut self, v: ::protobuf::well_known_types::Syntax) {
         self.syntax = v;
-    }
-
-    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
-        self.syntax
     }
 }
 
@@ -835,13 +835,13 @@ impl ::protobuf::Message for Method {
 
 impl ::protobuf::Clear for Method {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_request_type_url();
-        self.clear_request_streaming();
-        self.clear_response_type_url();
-        self.clear_response_streaming();
-        self.clear_options();
-        self.clear_syntax();
+        self.name.clear();
+        self.request_type_url.clear();
+        self.request_streaming = false;
+        self.response_type_url.clear();
+        self.response_streaming = false;
+        self.options.clear();
+        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
         self.unknown_fields.clear();
     }
 }
@@ -875,6 +875,10 @@ impl Mixin {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -895,11 +899,11 @@ impl Mixin {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // string root = 2;
+
+    pub fn get_root(&self) -> &str {
+        &self.root
+    }
 
     pub fn clear_root(&mut self) {
         self.root.clear();
@@ -919,10 +923,6 @@ impl Mixin {
     // Take field
     pub fn take_root(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.root, ::std::string::String::new())
-    }
-
-    pub fn get_root(&self) -> &str {
-        &self.root
     }
 }
 
@@ -1045,8 +1045,8 @@ impl ::protobuf::Message for Mixin {
 
 impl ::protobuf::Clear for Mixin {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_root();
+        self.name.clear();
+        self.root.clear();
         self.unknown_fields.clear();
     }
 }

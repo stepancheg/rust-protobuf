@@ -428,12 +428,13 @@ impl<'a> FieldGen<'a> {
 
         let syntax = field.message.scope.file_scope.syntax();
 
-        let generate_accessors = customize.generate_accessors.unwrap_or(true);
+        let default_generate_accessors = true;
+        let generate_accessors = customize.generate_accessors.unwrap_or(default_generate_accessors);
 
-        let generate_getter = generate_accessors || syntax == Syntax::PROTO2;
+        let default_generate_getter = generate_accessors || syntax == Syntax::PROTO2;
+        let generate_getter = customize.generate_getter.unwrap_or(default_generate_getter);
 
         let default_expose_field = syntax == Syntax::PROTO3 || !generate_accessors;
-
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
 
         let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
@@ -1896,9 +1897,9 @@ impl<'a> FieldGen<'a> {
             return;
         }
 
+        w.write_line("");
         let clear_field_func = self.clear_field_func();
         w.pub_fn(&format!("{}(&mut self)", clear_field_func), |w| {
-            w.write_line("");
             self.write_clear(w);
         });
 

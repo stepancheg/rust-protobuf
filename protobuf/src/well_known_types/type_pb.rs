@@ -42,6 +42,10 @@ impl Type {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -62,11 +66,11 @@ impl Type {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // repeated .google.protobuf.Field fields = 2;
+
+    pub fn get_fields(&self) -> &[Field] {
+        &self.fields
+    }
 
     pub fn clear_fields(&mut self) {
         self.fields.clear();
@@ -87,11 +91,11 @@ impl Type {
         ::std::mem::replace(&mut self.fields, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_fields(&self) -> &[Field] {
-        &self.fields
-    }
-
     // repeated string oneofs = 3;
+
+    pub fn get_oneofs(&self) -> &[::std::string::String] {
+        &self.oneofs
+    }
 
     pub fn clear_oneofs(&mut self) {
         self.oneofs.clear();
@@ -112,11 +116,11 @@ impl Type {
         ::std::mem::replace(&mut self.oneofs, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_oneofs(&self) -> &[::std::string::String] {
-        &self.oneofs
-    }
-
     // repeated .google.protobuf.Option options = 4;
+
+    pub fn get_options(&self) -> &[Option] {
+        &self.options
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -137,11 +141,11 @@ impl Type {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[Option] {
-        &self.options
-    }
-
     // .google.protobuf.SourceContext source_context = 5;
+
+    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+    }
 
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -170,11 +174,11 @@ impl Type {
         self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
     }
 
-    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
-    }
-
     // .google.protobuf.Syntax syntax = 6;
+
+    pub fn get_syntax(&self) -> Syntax {
+        self.syntax
+    }
 
     pub fn clear_syntax(&mut self) {
         self.syntax = Syntax::SYNTAX_PROTO2;
@@ -183,10 +187,6 @@ impl Type {
     // Param is passed by value, moved
     pub fn set_syntax(&mut self, v: Syntax) {
         self.syntax = v;
-    }
-
-    pub fn get_syntax(&self) -> Syntax {
-        self.syntax
     }
 }
 
@@ -389,12 +389,12 @@ impl ::protobuf::Message for Type {
 
 impl ::protobuf::Clear for Type {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_fields();
-        self.clear_oneofs();
-        self.clear_options();
-        self.clear_source_context();
-        self.clear_syntax();
+        self.name.clear();
+        self.fields.clear();
+        self.oneofs.clear();
+        self.options.clear();
+        self.source_context.clear();
+        self.syntax = Syntax::SYNTAX_PROTO2;
         self.unknown_fields.clear();
     }
 }
@@ -436,6 +436,10 @@ impl Field {
 
     // .google.protobuf.Field.Kind kind = 1;
 
+    pub fn get_kind(&self) -> Field_Kind {
+        self.kind
+    }
+
     pub fn clear_kind(&mut self) {
         self.kind = Field_Kind::TYPE_UNKNOWN;
     }
@@ -445,11 +449,11 @@ impl Field {
         self.kind = v;
     }
 
-    pub fn get_kind(&self) -> Field_Kind {
-        self.kind
-    }
-
     // .google.protobuf.Field.Cardinality cardinality = 2;
+
+    pub fn get_cardinality(&self) -> Field_Cardinality {
+        self.cardinality
+    }
 
     pub fn clear_cardinality(&mut self) {
         self.cardinality = Field_Cardinality::CARDINALITY_UNKNOWN;
@@ -460,11 +464,11 @@ impl Field {
         self.cardinality = v;
     }
 
-    pub fn get_cardinality(&self) -> Field_Cardinality {
-        self.cardinality
-    }
-
     // int32 number = 3;
+
+    pub fn get_number(&self) -> i32 {
+        self.number
+    }
 
     pub fn clear_number(&mut self) {
         self.number = 0;
@@ -475,11 +479,11 @@ impl Field {
         self.number = v;
     }
 
-    pub fn get_number(&self) -> i32 {
-        self.number
-    }
-
     // string name = 4;
+
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
 
     pub fn clear_name(&mut self) {
         self.name.clear();
@@ -501,11 +505,11 @@ impl Field {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // string type_url = 6;
+
+    pub fn get_type_url(&self) -> &str {
+        &self.type_url
+    }
 
     pub fn clear_type_url(&mut self) {
         self.type_url.clear();
@@ -527,11 +531,11 @@ impl Field {
         ::std::mem::replace(&mut self.type_url, ::std::string::String::new())
     }
 
-    pub fn get_type_url(&self) -> &str {
-        &self.type_url
-    }
-
     // int32 oneof_index = 7;
+
+    pub fn get_oneof_index(&self) -> i32 {
+        self.oneof_index
+    }
 
     pub fn clear_oneof_index(&mut self) {
         self.oneof_index = 0;
@@ -542,11 +546,11 @@ impl Field {
         self.oneof_index = v;
     }
 
-    pub fn get_oneof_index(&self) -> i32 {
-        self.oneof_index
-    }
-
     // bool packed = 8;
+
+    pub fn get_packed(&self) -> bool {
+        self.packed
+    }
 
     pub fn clear_packed(&mut self) {
         self.packed = false;
@@ -557,11 +561,11 @@ impl Field {
         self.packed = v;
     }
 
-    pub fn get_packed(&self) -> bool {
-        self.packed
-    }
-
     // repeated .google.protobuf.Option options = 9;
+
+    pub fn get_options(&self) -> &[Option] {
+        &self.options
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -582,11 +586,11 @@ impl Field {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[Option] {
-        &self.options
-    }
-
     // string json_name = 10;
+
+    pub fn get_json_name(&self) -> &str {
+        &self.json_name
+    }
 
     pub fn clear_json_name(&mut self) {
         self.json_name.clear();
@@ -608,11 +612,11 @@ impl Field {
         ::std::mem::replace(&mut self.json_name, ::std::string::String::new())
     }
 
-    pub fn get_json_name(&self) -> &str {
-        &self.json_name
-    }
-
     // string default_value = 11;
+
+    pub fn get_default_value(&self) -> &str {
+        &self.default_value
+    }
 
     pub fn clear_default_value(&mut self) {
         self.default_value.clear();
@@ -632,10 +636,6 @@ impl Field {
     // Take field
     pub fn take_default_value(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.default_value, ::std::string::String::new())
-    }
-
-    pub fn get_default_value(&self) -> &str {
-        &self.default_value
     }
 }
 
@@ -890,16 +890,16 @@ impl ::protobuf::Message for Field {
 
 impl ::protobuf::Clear for Field {
     fn clear(&mut self) {
-        self.clear_kind();
-        self.clear_cardinality();
-        self.clear_number();
-        self.clear_name();
-        self.clear_type_url();
-        self.clear_oneof_index();
-        self.clear_packed();
-        self.clear_options();
-        self.clear_json_name();
-        self.clear_default_value();
+        self.kind = Field_Kind::TYPE_UNKNOWN;
+        self.cardinality = Field_Cardinality::CARDINALITY_UNKNOWN;
+        self.number = 0;
+        self.name.clear();
+        self.type_url.clear();
+        self.oneof_index = 0;
+        self.packed = false;
+        self.options.clear();
+        self.json_name.clear();
+        self.default_value.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1103,6 +1103,10 @@ impl Enum {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -1123,11 +1127,11 @@ impl Enum {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // repeated .google.protobuf.EnumValue enumvalue = 2;
+
+    pub fn get_enumvalue(&self) -> &[EnumValue] {
+        &self.enumvalue
+    }
 
     pub fn clear_enumvalue(&mut self) {
         self.enumvalue.clear();
@@ -1148,11 +1152,11 @@ impl Enum {
         ::std::mem::replace(&mut self.enumvalue, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_enumvalue(&self) -> &[EnumValue] {
-        &self.enumvalue
-    }
-
     // repeated .google.protobuf.Option options = 3;
+
+    pub fn get_options(&self) -> &[Option] {
+        &self.options
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -1173,11 +1177,11 @@ impl Enum {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_options(&self) -> &[Option] {
-        &self.options
-    }
-
     // .google.protobuf.SourceContext source_context = 4;
+
+    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+    }
 
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -1206,11 +1210,11 @@ impl Enum {
         self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
     }
 
-    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
-    }
-
     // .google.protobuf.Syntax syntax = 5;
+
+    pub fn get_syntax(&self) -> Syntax {
+        self.syntax
+    }
 
     pub fn clear_syntax(&mut self) {
         self.syntax = Syntax::SYNTAX_PROTO2;
@@ -1219,10 +1223,6 @@ impl Enum {
     // Param is passed by value, moved
     pub fn set_syntax(&mut self, v: Syntax) {
         self.syntax = v;
-    }
-
-    pub fn get_syntax(&self) -> Syntax {
-        self.syntax
     }
 }
 
@@ -1411,11 +1411,11 @@ impl ::protobuf::Message for Enum {
 
 impl ::protobuf::Clear for Enum {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_enumvalue();
-        self.clear_options();
-        self.clear_source_context();
-        self.clear_syntax();
+        self.name.clear();
+        self.enumvalue.clear();
+        self.options.clear();
+        self.source_context.clear();
+        self.syntax = Syntax::SYNTAX_PROTO2;
         self.unknown_fields.clear();
     }
 }
@@ -1450,6 +1450,10 @@ impl EnumValue {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -1470,11 +1474,11 @@ impl EnumValue {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // int32 number = 2;
+
+    pub fn get_number(&self) -> i32 {
+        self.number
+    }
 
     pub fn clear_number(&mut self) {
         self.number = 0;
@@ -1485,11 +1489,11 @@ impl EnumValue {
         self.number = v;
     }
 
-    pub fn get_number(&self) -> i32 {
-        self.number
-    }
-
     // repeated .google.protobuf.Option options = 3;
+
+    pub fn get_options(&self) -> &[Option] {
+        &self.options
+    }
 
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -1508,10 +1512,6 @@ impl EnumValue {
     // Take field
     pub fn take_options(&mut self) -> ::protobuf::RepeatedField<Option> {
         ::std::mem::replace(&mut self.options, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_options(&self) -> &[Option] {
-        &self.options
     }
 }
 
@@ -1660,9 +1660,9 @@ impl ::protobuf::Message for EnumValue {
 
 impl ::protobuf::Clear for EnumValue {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_number();
-        self.clear_options();
+        self.name.clear();
+        self.number = 0;
+        self.options.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1696,6 +1696,10 @@ impl Option {
 
     // string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -1716,11 +1720,11 @@ impl Option {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     // .google.protobuf.Any value = 2;
+
+    pub fn get_value(&self) -> &::protobuf::well_known_types::Any {
+        self.value.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::Any::default_instance())
+    }
 
     pub fn clear_value(&mut self) {
         self.value.clear();
@@ -1747,10 +1751,6 @@ impl Option {
     // Take field
     pub fn take_value(&mut self) -> ::protobuf::well_known_types::Any {
         self.value.take().unwrap_or_else(|| ::protobuf::well_known_types::Any::new())
-    }
-
-    pub fn get_value(&self) -> &::protobuf::well_known_types::Any {
-        self.value.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::Any::default_instance())
     }
 }
 
@@ -1881,8 +1881,8 @@ impl ::protobuf::Message for Option {
 
 impl ::protobuf::Clear for Option {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_value();
+        self.name.clear();
+        self.value.clear();
         self.unknown_fields.clear();
     }
 }

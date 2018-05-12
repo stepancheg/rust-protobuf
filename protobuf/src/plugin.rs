@@ -39,6 +39,10 @@ impl CodeGeneratorRequest {
 
     // repeated string file_to_generate = 1;
 
+    pub fn get_file_to_generate(&self) -> &[::std::string::String] {
+        &self.file_to_generate
+    }
+
     pub fn clear_file_to_generate(&mut self) {
         self.file_to_generate.clear();
     }
@@ -58,11 +62,14 @@ impl CodeGeneratorRequest {
         ::std::mem::replace(&mut self.file_to_generate, ::protobuf::RepeatedField::new())
     }
 
-    pub fn get_file_to_generate(&self) -> &[::std::string::String] {
-        &self.file_to_generate
-    }
-
     // optional string parameter = 2;
+
+    pub fn get_parameter(&self) -> &str {
+        match self.parameter.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
 
     pub fn clear_parameter(&mut self) {
         self.parameter.clear();
@@ -91,14 +98,11 @@ impl CodeGeneratorRequest {
         self.parameter.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_parameter(&self) -> &str {
-        match self.parameter.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated .google.protobuf.FileDescriptorProto proto_file = 15;
+
+    pub fn get_proto_file(&self) -> &[::protobuf::descriptor::FileDescriptorProto] {
+        &self.proto_file
+    }
 
     pub fn clear_proto_file(&mut self) {
         self.proto_file.clear();
@@ -117,10 +121,6 @@ impl CodeGeneratorRequest {
     // Take field
     pub fn take_proto_file(&mut self) -> ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
         ::std::mem::replace(&mut self.proto_file, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_proto_file(&self) -> &[::protobuf::descriptor::FileDescriptorProto] {
-        &self.proto_file
     }
 }
 
@@ -265,9 +265,9 @@ impl ::protobuf::Message for CodeGeneratorRequest {
 
 impl ::protobuf::Clear for CodeGeneratorRequest {
     fn clear(&mut self) {
-        self.clear_file_to_generate();
-        self.clear_parameter();
-        self.clear_proto_file();
+        self.file_to_generate.clear();
+        self.parameter.clear();
+        self.proto_file.clear();
         self.unknown_fields.clear();
     }
 }
@@ -301,6 +301,13 @@ impl CodeGeneratorResponse {
 
     // optional string error = 1;
 
+    pub fn get_error(&self) -> &str {
+        match self.error.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_error(&mut self) {
         self.error.clear();
     }
@@ -328,14 +335,11 @@ impl CodeGeneratorResponse {
         self.error.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_error(&self) -> &str {
-        match self.error.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
-    }
-
     // repeated .google.protobuf.compiler.CodeGeneratorResponse.File file = 15;
+
+    pub fn get_file(&self) -> &[CodeGeneratorResponse_File] {
+        &self.file
+    }
 
     pub fn clear_file(&mut self) {
         self.file.clear();
@@ -354,10 +358,6 @@ impl CodeGeneratorResponse {
     // Take field
     pub fn take_file(&mut self) -> ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
         ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_file(&self) -> &[CodeGeneratorResponse_File] {
-        &self.file
     }
 }
 
@@ -488,8 +488,8 @@ impl ::protobuf::Message for CodeGeneratorResponse {
 
 impl ::protobuf::Clear for CodeGeneratorResponse {
     fn clear(&mut self) {
-        self.clear_error();
-        self.clear_file();
+        self.error.clear();
+        self.file.clear();
         self.unknown_fields.clear();
     }
 }
@@ -524,6 +524,13 @@ impl CodeGeneratorResponse_File {
 
     // optional string name = 1;
 
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => &v,
+            None => "",
+        }
+    }
+
     pub fn clear_name(&mut self) {
         self.name.clear();
     }
@@ -551,14 +558,14 @@ impl CodeGeneratorResponse_File {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_name(&self) -> &str {
-        match self.name.as_ref() {
+    // optional string insertion_point = 2;
+
+    pub fn get_insertion_point(&self) -> &str {
+        match self.insertion_point.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string insertion_point = 2;
 
     pub fn clear_insertion_point(&mut self) {
         self.insertion_point.clear();
@@ -587,14 +594,14 @@ impl CodeGeneratorResponse_File {
         self.insertion_point.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    pub fn get_insertion_point(&self) -> &str {
-        match self.insertion_point.as_ref() {
+    // optional string content = 15;
+
+    pub fn get_content(&self) -> &str {
+        match self.content.as_ref() {
             Some(v) => &v,
             None => "",
         }
     }
-
-    // optional string content = 15;
 
     pub fn clear_content(&mut self) {
         self.content.clear();
@@ -621,13 +628,6 @@ impl CodeGeneratorResponse_File {
     // Take field
     pub fn take_content(&mut self) -> ::std::string::String {
         self.content.take().unwrap_or_else(|| ::std::string::String::new())
-    }
-
-    pub fn get_content(&self) -> &str {
-        match self.content.as_ref() {
-            Some(v) => &v,
-            None => "",
-        }
     }
 }
 
@@ -764,9 +764,9 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
 
 impl ::protobuf::Clear for CodeGeneratorResponse_File {
     fn clear(&mut self) {
-        self.clear_name();
-        self.clear_insertion_point();
-        self.clear_content();
+        self.name.clear();
+        self.insertion_point.clear();
+        self.content.clear();
         self.unknown_fields.clear();
     }
 }

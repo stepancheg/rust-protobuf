@@ -37,6 +37,10 @@ impl FieldMask {
 
     // repeated string paths = 1;
 
+    pub fn get_paths(&self) -> &[::std::string::String] {
+        &self.paths
+    }
+
     pub fn clear_paths(&mut self) {
         self.paths.clear();
     }
@@ -54,10 +58,6 @@ impl FieldMask {
     // Take field
     pub fn take_paths(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
         ::std::mem::replace(&mut self.paths, ::protobuf::RepeatedField::new())
-    }
-
-    pub fn get_paths(&self) -> &[::std::string::String] {
-        &self.paths
     }
 }
 
@@ -166,7 +166,7 @@ impl ::protobuf::Message for FieldMask {
 
 impl ::protobuf::Clear for FieldMask {
     fn clear(&mut self) {
-        self.clear_paths();
+        self.paths.clear();
         self.unknown_fields.clear();
     }
 }
