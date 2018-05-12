@@ -1875,10 +1875,6 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
-        let clear_field_func = self.clear_field_func();
-        w.pub_fn(&format!("{}(&mut self)", clear_field_func), |w| {
-            self.write_clear(w);
-        });
 
         // TODO: do not generate `get` when !proto2 and !generate_accessors`
         w.write_line("");
@@ -1887,6 +1883,11 @@ impl<'a> FieldGen<'a> {
         if !self.generate_accessors {
             return;
         }
+
+        let clear_field_func = self.clear_field_func();
+        w.pub_fn(&format!("{}(&mut self)", clear_field_func), |w| {
+            self.write_clear(w);
+        });
 
         if self.has_has() {
             w.write_line("");
