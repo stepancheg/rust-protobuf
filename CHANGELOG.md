@@ -4,6 +4,7 @@
 
 - [Option to store repeated message fields in `Vec` instead of `RepeatedField`](
   https://github.com/stepancheg/rust-protobuf/issues/280). This option may be turned on by default later.
+- `generate_accessors` and `generate_getter` options to disable generation of accessor functions.
 
 ## [1.6.0] - 2018-05-11
 
