@@ -883,7 +883,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_clear(&self, w: &mut CodeWriter) {
+    pub fn write_clear(&self, w: &mut CodeWriter) {
         if self.is_oneof() {
             w.write_line(&format!(
                 "self.{} = ::std::option::Option::None;",

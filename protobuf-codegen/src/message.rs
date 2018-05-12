@@ -369,12 +369,8 @@ impl<'a> MessageGen<'a> {
     fn write_impl_clear(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::Clear", &self.type_name, |w| {
             w.def_fn("clear(&mut self)", |w| {
-                for f in self.fields_except_oneof_and_group() {
-                    let clear_op = f.full_storage_type().clear(&format!("self.{}", f.rust_name));
-                    w.write_line(&format!("{};", clear_op));
-                }
-                for f in self.oneofs() {
-                    w.write_line(&format!("self.{} = None;", f.name()));
+                for f in self.fields_except_group() {
+                    f.write_clear(w);
                 }
                 w.write_line("self.unknown_fields.clear();");
             });
