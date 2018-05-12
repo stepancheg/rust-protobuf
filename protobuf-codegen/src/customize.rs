@@ -5,6 +5,8 @@ use protobuf::descriptor::FileOptions;
 
 
 /// Specifies style of generated code.
+/// Generated files can be customized using this proto
+/// or using `rustproto.proto` options.
 #[derive(Default, Debug, Clone)]
 pub struct Customize {
     /// Make oneof enum public.

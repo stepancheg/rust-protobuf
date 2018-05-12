@@ -5,6 +5,9 @@ import "google/protobuf/descriptor.proto";
 // see https://github.com/gogo/protobuf/blob/master/gogoproto/gogo.proto
 // for the original idea
 
+// Generated files can be customized using this proto
+// or using `Customize` struct when codegen is invoked programmatically.
+
 package rustproto;
 
 extend google.protobuf.FileOptions {
