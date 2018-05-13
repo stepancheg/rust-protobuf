@@ -1,6 +1,17 @@
+extern crate protoc_rust;
+
 use std::env;
 use std::process;
 use std::io::Read;
+
+fn generate_protos() {
+    protoc_rust::run(protoc_rust::Args {
+        out_dir: "src",
+        input: &["src/messages.proto"],
+        includes: &["src", "../../proto"],
+        ..Default::default()
+    }).expect("protoc");
+}
 
 // % rustc +stable --version
 // rustc 1.26.0 (a77568041 2018-05-07)
@@ -12,7 +23,7 @@ fn version_is_nightly(version: &str) -> bool {
     version.contains("nightly")
 }
 
-fn main() {
+fn export_rustc_cfg() {
     let rustc = env::var("RUSTC").expect("RUSTC unset");
 
     let mut child = process::Command::new(rustc)
@@ -31,4 +42,10 @@ fn main() {
     if version_is_nightly(&rustc_version) {
         println!("cargo:rustc-cfg=rustc_nightly");
     }
+}
+
+fn main() {
+    generate_protos();
+
+    export_rustc_cfg();
 }
