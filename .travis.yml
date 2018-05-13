@@ -40,8 +40,7 @@ script:
   - PATH=/home/travis/bin:$PATH protobuf-test/test.sh
   - PATH=/home/travis/bin:$PATH protobuf-codegen-pure-test/test.sh
   - PATH=/home/travis/bin:$PATH protoc/test.sh
-  # `#[bench]` works only in nightly
-  - test "$TRAVIS_RUST_VERSION" != "nightly" || PATH=/home/travis/bin:$PATH cargo build --all --all-targets
+  - PATH=/home/travis/bin:$PATH cargo build --all --all-targets
 
 notifications:
   email:
