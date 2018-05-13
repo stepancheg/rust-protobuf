@@ -33,7 +33,7 @@ script:
   # Full rebuild with regenerate
   - protobuf/full-rebuild.sh
   - ./protoc/test.sh
-  - test "$TRAVIS_RUST_VERSION" != "nightly" || cargo build --all --features=with-bytes --bins --tests --examples --benches
+  - cargo build --all --features=with-bytes --bins --tests --examples --benches
 
 notifications:
   email:

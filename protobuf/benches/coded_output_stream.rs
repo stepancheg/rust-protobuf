@@ -1,3 +1,6 @@
+// `cargo test --benches` and `#[feature(test)]` work only in nightly
+#![cfg(rustc_nightly)]
+
 #![feature(test)]
 
 extern crate test;
