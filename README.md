@@ -86,7 +86,7 @@ To enable `Bytes` you need to:
 
 ```
 [dependencies]
-protobuf = { version = "1.3", features = ["with-bytes"] }
+protobuf = { version = "~1.7", features = ["with-bytes"] }
 ```
 
 2. Enable bytes option in `.proto` file:
