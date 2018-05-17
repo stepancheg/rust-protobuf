@@ -6,6 +6,11 @@
   https://github.com/stepancheg/rust-protobuf/issues/280). This option may be turned on by default later.
 - `generate_accessors` and `generate_getter` options to disable generation of accessor functions.
 
+## [1.7.1] - 2018-05-17
+
+- Rebublished branch 1.5 because of
+  [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
+
 ## [1.6.0] - 2018-05-11
 
 ### New features
