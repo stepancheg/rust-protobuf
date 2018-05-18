@@ -25,6 +25,7 @@ pub use core::parse_length_delimited_from;
 pub use core::parse_length_delimited_from_reader;
 pub use core::parse_length_delimited_from_bytes;
 pub use enums::ProtobufEnum;
+pub use oneof::Oneof;
 pub use stream::CodedInputStream;
 pub use stream::CodedOutputStream;
 pub use stream::wire_format;
@@ -41,6 +42,7 @@ pub mod rustproto;
 
 mod core;
 mod enums;
+mod oneof;
 pub mod rt;
 pub mod lazy;
 pub mod compiler_plugin;
@@ -86,6 +88,7 @@ mod protobuf {
     pub use reflect;
     pub use core::*;
     pub use enums::ProtobufEnum;
+    pub use oneof::Oneof;
     pub use error::*;
     pub use stream::*;
     pub use rt;

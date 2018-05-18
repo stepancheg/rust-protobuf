@@ -151,7 +151,7 @@ impl<'a> OneofGen<'a> {
         RustType::Option(Box::new(self.type_name.clone()))
     }
 
-    pub fn write_enum(&self, w: &mut CodeWriter) {
+    fn write_enum(&self, w: &mut CodeWriter) {
         let mut derive = vec!["Clone", "PartialEq"];
         if self.lite_runtime {
             derive.push("Debug");
@@ -166,5 +166,17 @@ impl<'a> OneofGen<'a> {
                 ));
             }
         });
+    }
+
+    fn write_impl_oneof(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::protobuf::Oneof", self.type_name.to_string(), |_w| {
+            // nothing here yet
+        });
+    }
+
+    pub fn write(&self, w: &mut CodeWriter) {
+        self.write_enum(w);
+        w.write_line("");
+        self.write_impl_oneof(w);
     }
 }

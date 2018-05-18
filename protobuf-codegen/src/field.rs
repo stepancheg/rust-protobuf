@@ -377,15 +377,12 @@ fn field_elem(
     }
 }
 
-pub enum AccessorStyle {
-    Lambda,
-    HasGet,
-}
 
 pub struct AccessorFn {
     name: String,
+    // function type params after first underscore
     type_params: Vec<String>,
-    pub style: AccessorStyle,
+    callback_params: Vec<String>,
 }
 
 impl AccessorFn {
@@ -400,6 +397,7 @@ impl AccessorFn {
         s
     }
 }
+
 
 #[derive(Clone)]
 pub struct FieldGen<'a> {
@@ -797,95 +795,166 @@ impl<'a> FieldGen<'a> {
         )
     }
 
-    pub fn accessor_fn(&self) -> AccessorFn {
+    fn accessor_fn_map(&self, map_field: &MapField) -> AccessorFn {
+        let MapField { ref key, ref value, .. } = map_field;
+        AccessorFn {
+            name: "make_map_accessor".to_owned(),
+            type_params: vec![key.lib_protobuf_type(), value.lib_protobuf_type()],
+            callback_params: self.make_accessor_fns_lambda(),
+        }
+    }
+
+    fn accessor_fn_repeated(&self, repeated_field: &RepeatedField) -> AccessorFn {
+        let RepeatedField { ref elem, .. } = repeated_field;
+        let coll = match self.full_storage_type() {
+            RustType::Vec(..) => "vec",
+            RustType::RepeatedField(..) => "repeated_field",
+            _ => unreachable!(),
+        };
+        let name = format!("make_{}_accessor", coll);
+        AccessorFn {
+            name: name,
+            type_params: vec![elem.lib_protobuf_type()],
+            callback_params: self.make_accessor_fns_lambda(),
+        }
+    }
+
+    fn accessor_fn_singular_without_flag(&self, elem: &FieldElem) -> AccessorFn {
+        if let &FieldElem::Message(ref name, ..) = elem {
+            // TODO: old style, needed because of default instance
+
+            AccessorFn {
+                name: "make_singular_message_accessor".to_owned(),
+                type_params: vec![name.clone()],
+                callback_params: self.make_accessor_fns_has_get(),
+            }
+        } else {
+            AccessorFn {
+                name: "make_simple_field_accessor".to_owned(),
+                type_params: vec![elem.lib_protobuf_type()],
+                callback_params: self.make_accessor_fns_lambda(),
+            }
+        }
+    }
+
+    fn accessor_fn_singular_with_flag(&self, elem: &FieldElem) -> AccessorFn {
+        let coll = match self.full_storage_type() {
+            RustType::Option(..) => "option",
+            RustType::SingularField(..) => "singular_field",
+            RustType::SingularPtrField(..) => "singular_ptr_field",
+            _ => unreachable!(),
+        };
+        let name = format!("make_{}_accessor", coll);
+        AccessorFn {
+            name,
+            type_params: vec![elem.lib_protobuf_type()],
+            callback_params: self.make_accessor_fns_lambda(),
+        }
+    }
+
+    fn accessor_fn_oneof(&self, oneof: &OneofField) -> AccessorFn {
+        let OneofField { ref elem, .. } = oneof;
+        // TODO: uses old style
+
+        // TODO: storage type is nonsense for oneof
+        if self.elem().rust_storage_type().is_copy() {
+            return AccessorFn {
+                name: "make_singular_copy_has_get_set_accessor".to_owned(),
+                type_params: vec![
+                    self.elem().protobuf_type_gen().rust_type(),
+                ],
+                callback_params: self.make_accessor_fns_has_get_set(),
+            };
+        }
+
+        let suffix = match &self.elem().rust_storage_type() {
+            t if t.is_primitive() => unreachable!(),
+            &RustType::Enum(..) => unreachable!(),
+            &RustType::String => "string".to_string(),
+            &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
+            &RustType::Message(..) => "message".to_string(),
+            t => panic!("unexpected field type: {}", t),
+        };
+
+        let name = format!("make_singular_{}_accessor", suffix);
+
+        let mut type_params = Vec::new();
+        match elem {
+            &FieldElem::Message(ref name, ..) |
+            &FieldElem::Enum(ref name, ..) => {
+                type_params.push(name.to_owned());
+            }
+            _ => (),
+        }
+
+        AccessorFn {
+            name,
+            type_params,
+            callback_params: self.make_accessor_fns_has_get(),
+        }
+    }
+
+    fn accessor_fn(&self) -> AccessorFn {
         match self.kind {
-            FieldKind::Repeated(RepeatedField { ref elem, .. }) => {
-                let coll = match self.full_storage_type() {
-                    RustType::Vec(..) => "vec",
-                    RustType::RepeatedField(..) => "repeated_field",
-                    _ => unreachable!(),
-                };
-                let name = format!("make_{}_accessor", coll);
-                AccessorFn {
-                    name: name,
-                    type_params: vec![elem.lib_protobuf_type()],
-                    style: AccessorStyle::Lambda,
-                }
-            }
-            FieldKind::Map(MapField { ref key, ref value, .. }) => {
-                AccessorFn {
-                    name: "make_map_accessor".to_owned(),
-                    type_params: vec![key.lib_protobuf_type(), value.lib_protobuf_type()],
-                    style: AccessorStyle::Lambda,
-                }
-            }
+            FieldKind::Repeated(ref repeated_field) => self.accessor_fn_repeated(repeated_field),
+            FieldKind::Map(ref map_field) => self.accessor_fn_map(map_field),
             FieldKind::Singular(SingularField {
                 ref elem,
                 flag: SingularFieldFlag::WithoutFlag,
             }) => {
-                if let &FieldElem::Message(ref name, ..) = elem {
-                    // TODO: old style, needed because of default instance
-
-                    AccessorFn {
-                        name: "make_singular_message_accessor".to_owned(),
-                        type_params: vec![name.clone()],
-                        style: AccessorStyle::HasGet,
-                    }
-                } else {
-                    AccessorFn {
-                        name: "make_simple_field_accessor".to_owned(),
-                        type_params: vec![elem.lib_protobuf_type()],
-                        style: AccessorStyle::Lambda,
-                    }
-                }
+                self.accessor_fn_singular_without_flag(elem)
             }
             FieldKind::Singular(SingularField {
                 ref elem,
                 flag: SingularFieldFlag::WithFlag { .. },
             }) => {
-                let coll = match self.full_storage_type() {
-                    RustType::Option(..) => "option",
-                    RustType::SingularField(..) => "singular_field",
-                    RustType::SingularPtrField(..) => "singular_ptr_field",
-                    _ => unreachable!(),
-                };
-                let name = format!("make_{}_accessor", coll);
-                AccessorFn {
-                    name: name,
-                    type_params: vec![elem.lib_protobuf_type()],
-                    style: AccessorStyle::Lambda,
-                }
+                self.accessor_fn_singular_with_flag(elem)
             }
-            FieldKind::Oneof(OneofField { ref elem, .. }) => {
-                // TODO: uses old style
-
-                let suffix = match &self.elem().rust_storage_type() {
-                    t if t.is_primitive() => format!("{}", t),
-                    &RustType::String => "string".to_string(),
-                    &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
-                    &RustType::Enum(..) => "enum".to_string(),
-                    &RustType::Message(..) => "message".to_string(),
-                    t => panic!("unexpected field type: {}", t),
-                };
-
-                let name = format!("make_singular_{}_accessor", suffix);
-
-                let mut type_params = Vec::new();
-                match elem {
-                    &FieldElem::Message(ref name, ..) |
-                    &FieldElem::Enum(ref name, ..) => {
-                        type_params.push(name.to_owned());
-                    }
-                    _ => (),
-                }
-
-                AccessorFn {
-                    name: name,
-                    type_params: type_params,
-                    style: AccessorStyle::HasGet,
-                }
+            FieldKind::Oneof(ref oneof) => {
+                self.accessor_fn_oneof(oneof)
             }
         }
+    }
+
+    fn make_accessor_fns_lambda(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get_set(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::set_{}", message, self.rust_name),
+        ]
+    }
+
+    pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
+        let accessor_fn = self.accessor_fn();
+        w.write_line(&format!(
+            "{}.push(::protobuf::reflect::accessor::{}(",
+            fields_var,
+            accessor_fn.sig()
+        ));
+        w.indented(|w| {
+            w.write_line(&format!("\"{}\",", self.proto_field.name()));
+            for callback in accessor_fn.callback_params {
+                w.write_line(&format!("{},", callback));
+            }
+        });
+        w.write_line("));");
     }
 
     pub fn write_clear(&self, w: &mut CodeWriter) {
