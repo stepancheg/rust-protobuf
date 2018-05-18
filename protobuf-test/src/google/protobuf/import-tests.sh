@@ -10,6 +10,7 @@ cp protobuf-git/src/google/protobuf/unittest*.proto ./
 
 rm -rf protobuf-git
 
+# These files duplicate similar files for proto2 and cannot be compiled together
 rm *_proto3.proto
 
 # vim: set ts=4 sw=4 et:
