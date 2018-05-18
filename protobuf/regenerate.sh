@@ -15,6 +15,8 @@ case "$protoc_ver" in
     ;;
 esac
 
+cargo build --manifest-path=../protobuf-codegen/Cargo.toml
+
 where_am_i=$(cd ..; pwd)
 
 rm -rf tmp-generated

@@ -39,7 +39,6 @@ before_install:
 
 script:
   - rustc --version
-  # Full rebuild with regenerate
   - PATH=/home/travis/bin:$PATH cargo build --manifest-path=protobuf-codegen/Cargo.toml
   - protobuf/regenerate.sh
   - cargo test --all
