@@ -5,6 +5,9 @@
 - [Option to store repeated message fields in `Vec` instead of `RepeatedField`](
   https://github.com/stepancheg/rust-protobuf/issues/280). This option may be turned on by default later.
 - `generate_accessors` and `generate_getter` options to disable generation of accessor functions.
+- `PartialEq` with large number of fields
+  [now panics](https://github.com/stepancheg/rust-protobuf/commit/4f1ca564a00e85b6e3821e91aace71ccb6592bf5).
+  Previosly it could cause stack overflow in the Rust compiler.
 
 ## [2.0.0] - 2018-05-17
 
