@@ -377,8 +377,18 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn supports_derive_partial_eq(&self) -> bool {
+        // There's stack overflow in the compiler when struct has too many fields
+        // https://github.com/rust-lang/rust/issues/40119
+        self.fields.len() <= 500
+    }
+
     fn write_struct(&self, w: &mut CodeWriter) {
-        let mut derive = vec!["PartialEq", "Clone", "Default"];
+        let mut derive = Vec::new();
+        if self.supports_derive_partial_eq() {
+            derive.push("PartialEq");
+        }
+        derive.extend(&["Clone", "Default"]);
         if self.lite_runtime {
             derive.push("Debug");
         }
@@ -430,8 +440,22 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn write_dummy_impl_partial_eq(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
+            w.def_fn("eq(&self, _: &Self) -> bool", |w| {
+                w.comment("https://github.com/rust-lang/rust/issues/40119");
+                w.unimplemented();
+            });
+        });
+    }
+
     pub fn write(&self, w: &mut CodeWriter) {
         self.write_struct(w);
+
+        if !self.supports_derive_partial_eq() {
+            w.write_line("");
+            self.write_dummy_impl_partial_eq(w);
+        }
 
         for oneof in self.oneofs() {
             w.write_line("");
