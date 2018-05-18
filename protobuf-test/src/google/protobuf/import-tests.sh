@@ -10,6 +10,9 @@ cp protobuf-git/src/google/protobuf/unittest*.proto ./
 
 rm -rf protobuf-git
 
+# This file causes memory overflow in `rustc` when executed on travis-ci
+rm unittest_enormous_descriptor.proto
+
 # These files duplicate similar files for proto2 and cannot be compiled together
 rm *_proto3.proto
 
