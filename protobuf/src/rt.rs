@@ -4,6 +4,8 @@
 use std::default::Default;
 use std::hash::Hash;
 use std::collections::HashMap;
+use std::any::Any;
+use std::mem;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -30,6 +32,7 @@ use stream::CodedOutputStream;
 use types::*;
 
 use unknown::UnknownFields;
+use reflect::ProtobufValueBox;
 
 
 /// Given `u64` value compute varint encoded length.
@@ -964,4 +967,18 @@ where
     }
 
     Ok(())
+}
+
+pub fn set_from_any<M : Message>(this: &mut M, mut message: Box<Any>) {
+    let message = (*message).downcast_mut().expect("wrong message type");
+    *this = mem::replace(message, M::new());
+}
+
+pub fn from_value_box<M : Message>(value: ProtobufValueBox) -> M {
+    if let ProtobufValueBox::Message(mut value) = value {
+        let value = (*value).as_any_mut().downcast_mut().expect("wrong message type");
+        mem::replace(value, M::new())
+    } else {
+        panic!("wrong type: {:?}", value);
+    }
 }

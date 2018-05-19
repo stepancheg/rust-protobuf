@@ -19,6 +19,8 @@ use super::optional::ReflectOptional;
 use super::value::ProtobufValue;
 use super::value::ProtobufValueRef;
 use super::ReflectFieldRef;
+use std::mem;
+use reflect::value::ProtobufValueBox;
 
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
@@ -40,20 +42,35 @@ pub trait FieldAccessor {
     fn get_f64_generic(&self, m: &Message) -> f64;
 
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a>;
+
+    fn set_singular_field(&self, m: &mut Message, value: ProtobufValueBox);
 }
 
 
-trait GetSingularMessage<M> {
+trait GetMutSetSingularMessage<M> {
     fn get_message<'a>(&self, m: &'a M) -> &'a Message;
+    fn mut_message<'a>(&self, m: &'a mut M) -> &'a mut Message;
+    fn set_message(&self, m: &mut M, field: Box<Message>);
 }
 
-struct GetSingularMessageImpl<M, N> {
-    get: for<'a> fn(&'a M) -> &'a N,
+struct GetMutSetSingularMessageImpl<M, F> {
+    get_field: for<'a> fn(&'a M) -> &'a F,
+    set_field: fn(&mut M, F),
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
 }
 
-impl<M : Message, N : Message + 'static> GetSingularMessage<M> for GetSingularMessageImpl<M, N> {
+impl<M : Message, F: Message + 'static> GetMutSetSingularMessage<M> for GetMutSetSingularMessageImpl<M, F> {
     fn get_message<'a>(&self, m: &'a M) -> &'a Message {
-        (self.get)(m)
+        (self.get_field)(m)
+    }
+
+    fn mut_message<'a>(&self, m: &'a mut M) -> &'a mut Message {
+        (self.mut_field)(m)
+    }
+
+    fn set_message(&self, m: &mut M, mut field: Box<Message>) {
+        let field = field.as_any_mut().downcast_mut().expect("wrong message type");
+        (self.set_field)(m, mem::replace(field, F::new()));
     }
 }
 
@@ -79,16 +96,21 @@ trait GetRepeatedEnum<M : Message + 'static> {
 
 trait GetSetCopyFns<M> {
     fn get_field<'a>(&self, m: &'a M) -> ProtobufValueRef<'a>;
+    fn set_field(&mut self, m: &mut M, value: ProtobufValueBox);
 }
 
 struct GetSetCopyFnsImpl<M, V : ProtobufValue + Copy> {
     get: fn(&M) -> V,
-    _set: fn(&mut M, V),
+    set: fn(&mut M, V),
 }
 
 impl<M, V : ProtobufValue + Copy> GetSetCopyFns<M> for GetSetCopyFnsImpl<M, V> {
     fn get_field<'a>(&self, m: &'a M) -> ProtobufValueRef<'a> {
         (&(self.get)(m) as &ProtobufValue).as_ref_copy()
+    }
+
+    fn set_field(&mut self, m: &mut M, value: ProtobufValueBox) {
+        (self.set)(m, V::from_value_box(value))
     }
 }
 
@@ -97,7 +119,7 @@ enum SingularGetSet<M> {
     Copy(Box<GetSetCopyFns<M>>),
     String(for<'a> fn(&'a M) -> &'a str, fn(&mut M, String)),
     Bytes(for<'a> fn(&'a M) -> &'a [u8], fn(&mut M, Vec<u8>)),
-    Message(Box<GetSingularMessage<M> + 'static>),
+    Message(Box<GetMutSetSingularMessage<M> + 'static>),
 }
 
 impl<M : Message + 'static> SingularGetSet<M> {
@@ -129,7 +151,7 @@ where
 
 
 enum FieldAccessorFunctions<M> {
-    // up to 1.0.24 optional or required
+    // still used for optional fields
     SingularHasGetSet {
         has: fn(&M) -> bool,
         get_set: SingularGetSet<M>,
@@ -361,14 +383,23 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
             }
         }
     }
+
+    fn set_singular_field(&self, _m: &mut Message, _value: ProtobufValueBox) {
+        match self.fns {
+            FieldAccessorFunctions::Repeated(..) |
+            FieldAccessorFunctions::Map(..) => {
+                panic!("set_singular field is called for repeated field")
+            },
+            FieldAccessorFunctions::SingularHasGetSet { get_set: _, .. } => {
+                unimplemented!()
+            }
+            _ => unimplemented!(),
+        }
+    }
 }
 
 
 // singular
-
-fn set_panic<A, B>(_: &mut A, _: B) {
-    panic!()
-}
 
 // TODO: make_singular_xxx_accessor are used only for oneof fields
 // oneof codegen should be changed
@@ -388,49 +419,57 @@ pub fn make_singular_copy_has_get_set_accessor<M, V>(
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
-            get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl { get, _set: set })),
+            get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl { get, set: set })),
         },
     })
 }
 
-pub fn make_singular_string_accessor<M : Message + 'static>(
+pub fn make_singular_string_has_get_set_accessor<M : Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a str,
+    set: fn(&mut M, String),
 ) -> Box<FieldAccessor + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has: has,
-            get_set: SingularGetSet::String(get, set_panic),
+            get_set: SingularGetSet::String(get, set),
         },
     })
 }
 
-pub fn make_singular_bytes_accessor<M : Message + 'static>(
+pub fn make_singular_bytes_has_get_set_accessor<M : Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a [u8],
+    set: fn(&mut M, Vec<u8>),
 ) -> Box<FieldAccessor + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has: has,
-            get_set: SingularGetSet::Bytes(get, set_panic),
+            get_set: SingularGetSet::Bytes(get, set),
         },
     })
 }
 
-pub fn make_singular_message_accessor<M : Message + 'static, F : Message + 'static>(
+pub fn make_singular_message_has_get_mut_set_accessor<M : Message + 'static, F : Message + 'static>(
     name: &'static str,
-    has: fn(&M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a F,
+    has_field: fn(&M) -> bool,
+    get_field: for<'a> fn(&'a M) -> &'a F,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
+    set_field: fn(&mut M, F),
 ) -> Box<FieldAccessor + 'static> {
     Box::new(FieldAccessorImpl {
-        name: name,
+        name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
-            has: has,
-            get_set: SingularGetSet::Message(Box::new(GetSingularMessageImpl { get: get })),
+            has: has_field,
+            get_set: SingularGetSet::Message(Box::new(GetMutSetSingularMessageImpl {
+                get_field,
+                set_field,
+                mut_field,
+            })),
         },
     })
 }

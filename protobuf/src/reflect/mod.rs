@@ -19,12 +19,14 @@ mod repeated;
 mod value;
 mod optional;
 mod enums;
+pub(crate) mod as_any;
 
 use self::repeated::ReflectRepeated;
 use self::map::ReflectMap;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueRef;
+pub use self::value::ProtobufValueBox;
 
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
@@ -113,6 +115,10 @@ impl FieldDescriptor {
 
     pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
         self.accessor.get_reflect(m)
+    }
+
+    pub fn set_singular_field(&self, m: &mut Message, value: ProtobufValueBox) {
+        self.accessor.set_singular_field(m, value)
     }
 }
 

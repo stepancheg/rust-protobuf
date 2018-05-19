@@ -300,16 +300,6 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_unknown_fields(w);
             w.write_line("");
-            w.def_fn("as_any(&self) -> &::std::any::Any", |w| {
-                w.write_line("self as &::std::any::Any");
-            });
-            w.def_fn("as_any_mut(&mut self) -> &mut ::std::any::Any", |w| {
-                w.write_line("self as &mut ::std::any::Any");
-            });
-            w.def_fn("into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any>", |w| {
-                w.write_line("self");
-            });
-            w.write_line("");
             w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
                 w.write_line("Self::descriptor_static()");
             });
@@ -328,11 +318,16 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef",
-                |w| w.write_line("::protobuf::reflect::ProtobufValueRef::Message(self)"),
-            )
-        })
+            w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
+                    w.write_line("::protobuf::reflect::ProtobufValueRef::Message(self)")
+                },
+            );
+            w.write_line("");
+            w.def_fn("from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self", |w| {
+                    w.write_line("::protobuf::rt::from_value_box(value)")
+                },
+            );
+        });
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {

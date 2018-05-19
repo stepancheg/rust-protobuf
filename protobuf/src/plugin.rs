@@ -202,16 +202,6 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -281,6 +271,10 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
 impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -430,16 +424,6 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -503,6 +487,10 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
 impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -701,16 +689,6 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -780,6 +758,10 @@ impl ::std::fmt::Debug for CodeGeneratorResponse_File {
 impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse_File {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 

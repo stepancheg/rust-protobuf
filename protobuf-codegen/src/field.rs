@@ -857,40 +857,38 @@ impl<'a> FieldGen<'a> {
         // TODO: uses old style
 
         // TODO: storage type is nonsense for oneof
-        if self.elem().rust_storage_type().is_copy() {
+        if elem.rust_storage_type().is_copy() {
             return AccessorFn {
                 name: "make_singular_copy_has_get_set_accessor".to_owned(),
                 type_params: vec![
-                    self.elem().protobuf_type_gen().rust_type(),
+                    elem.protobuf_type_gen().rust_type(),
                 ],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
 
+        if let RustType::Message(name) = elem.rust_storage_type() {
+            return AccessorFn {
+                name: "make_singular_message_has_get_mut_set_accessor".to_owned(),
+                type_params: vec![
+                    name.clone()
+                ],
+                callback_params: self.make_accessor_fns_has_get_mut_set(),
+            }
+        }
+
         let suffix = match &self.elem().rust_storage_type() {
-            t if t.is_primitive() => unreachable!(),
-            &RustType::Enum(..) => unreachable!(),
             &RustType::String => "string".to_string(),
             &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
-            &RustType::Message(..) => "message".to_string(),
             t => panic!("unexpected field type: {}", t),
         };
 
-        let name = format!("make_singular_{}_accessor", suffix);
-
-        let mut type_params = Vec::new();
-        match elem {
-            &FieldElem::Message(ref name, ..) |
-            &FieldElem::Enum(ref name, ..) => {
-                type_params.push(name.to_owned());
-            }
-            _ => (),
-        }
+        let name = format!("make_singular_{}_has_get_set_accessor", suffix);
 
         AccessorFn {
             name,
-            type_params,
-            callback_params: self.make_accessor_fns_has_get(),
+            type_params: Vec::new(),
+            callback_params: self.make_accessor_fns_has_get_set(),
         }
     }
 
@@ -937,6 +935,16 @@ impl<'a> FieldGen<'a> {
         vec![
             format!("{}::has_{}", message, self.rust_name),
             format!("{}::get_{}", message, self.rust_name),
+            format!("{}::set_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get_mut_set(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::mut_{}", message, self.rust_name),
             format!("{}::set_{}", message, self.rust_name),
         ]
     }

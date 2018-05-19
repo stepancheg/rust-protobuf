@@ -6,7 +6,8 @@ use descriptor::FileDescriptorProto;
 use descriptorx::find_enum_by_rust_name;
 
 
-#[derive(Clone)]
+// TODO: better `Debug`
+#[derive(Clone, Debug)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
 }

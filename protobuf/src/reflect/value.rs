@@ -1,5 +1,6 @@
 use std::any::Any;
 
+
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 #[cfg(feature = "bytes")]
@@ -7,11 +8,23 @@ use chars::Chars;
 
 use core::*;
 use super::*;
+use super::as_any::AsAny;
 
-pub trait ProtobufValue: Any + 'static {
-    fn as_ref(&self) -> ProtobufValueRef;
 
-    fn as_any(&self) -> &Any {
+// Hack against lack of upcasting
+pub trait AsProtobufValue {
+    fn as_protobuf_value(&self) -> &ProtobufValue;
+}
+
+impl<T : ProtobufValue> AsProtobufValue for T {
+    fn as_protobuf_value(&self) -> &ProtobufValue {
+        self
+    }
+}
+
+
+pub trait ProtobufValue : Any + 'static + AsAny + AsProtobufValue {
+    fn as_ref(&self) -> ProtobufValueRef {
         unimplemented!()
     }
 
@@ -36,11 +49,23 @@ pub trait ProtobufValue: Any + 'static {
             ProtobufValueRef::Message(..) => unreachable!(),
         }
     }
+
+    fn from_value_box(_value: ProtobufValueBox) -> Self where Self : Sized {
+        unimplemented!()
+    }
 }
 
 impl ProtobufValue for u32 {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::U32(*self)
+    }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::U32(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
@@ -48,11 +73,27 @@ impl ProtobufValue for u64 {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::U64(*self)
     }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::U64(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
+    }
 }
 
 impl ProtobufValue for i32 {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::I32(*self)
+    }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::I32(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
@@ -60,11 +101,27 @@ impl ProtobufValue for i64 {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::I64(*self)
     }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::I64(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
+    }
 }
 
 impl ProtobufValue for f32 {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::F32(*self)
+    }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::F32(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
@@ -72,11 +129,27 @@ impl ProtobufValue for f64 {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::F64(*self)
     }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::F64(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
+    }
 }
 
 impl ProtobufValue for bool {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::Bool(*self)
+    }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::Bool(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
@@ -84,17 +157,27 @@ impl ProtobufValue for String {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::String(*&self)
     }
-}
 
-impl ProtobufValue for str {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::String(self)
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::String(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
 impl ProtobufValue for Vec<u8> {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::Bytes(*&self)
+    }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::Bytes(v) = value {
+            v
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
@@ -103,12 +186,28 @@ impl ProtobufValue for Bytes {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::Bytes(&*self)
     }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::Bytes(v) = value {
+            v.into()
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
+    }
 }
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Chars {
     fn as_ref(&self) -> ProtobufValueRef {
         ProtobufValueRef::String(&*self)
+    }
+
+    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
+        if let ProtobufValueBox::String(v) = value {
+            v.into()
+        } else {
+            panic!("wrong value: {:?}", value);
+        }
     }
 }
 
@@ -159,3 +258,37 @@ impl<'a> ProtobufValueRef<'a> {
         }
     }
 }
+
+#[derive(Debug)]
+pub enum ProtobufValueBox {
+    U32(u32),
+    U64(u64),
+    I32(i32),
+    I64(i64),
+    F32(f32),
+    F64(f64),
+    Bool(bool),
+    String(String),
+    Bytes(Vec<u8>),
+    Enum(&'static EnumValueDescriptor),
+    Message(Box<Message>),
+}
+
+impl ProtobufValueBox {
+    pub fn as_value(&self) -> &ProtobufValue {
+        match self {
+            ProtobufValueBox::U32(v) => v,
+            ProtobufValueBox::U64(v) => v,
+            ProtobufValueBox::I32(v) => v,
+            ProtobufValueBox::I64(v) => v,
+            ProtobufValueBox::F32(v) => v,
+            ProtobufValueBox::F64(v) => v,
+            ProtobufValueBox::Bool(v) => v,
+            ProtobufValueBox::String(v) => v,
+            ProtobufValueBox::Bytes(v) => v,
+            ProtobufValueBox::Enum(_) => unimplemented!(),
+            ProtobufValueBox::Message(v) => v.as_protobuf_value(),
+        }
+    }
+}
+

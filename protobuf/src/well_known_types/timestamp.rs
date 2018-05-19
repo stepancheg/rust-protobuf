@@ -136,16 +136,6 @@ impl ::protobuf::Message for Timestamp {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -209,6 +199,10 @@ impl ::std::fmt::Debug for Timestamp {
 impl ::protobuf::reflect::ProtobufValue for Timestamp {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 

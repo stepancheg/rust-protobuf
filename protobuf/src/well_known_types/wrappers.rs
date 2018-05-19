@@ -107,16 +107,6 @@ impl ::protobuf::Message for DoubleValue {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -174,6 +164,10 @@ impl ::std::fmt::Debug for DoubleValue {
 impl ::protobuf::reflect::ProtobufValue for DoubleValue {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -263,16 +257,6 @@ impl ::protobuf::Message for FloatValue {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -330,6 +314,10 @@ impl ::std::fmt::Debug for FloatValue {
 impl ::protobuf::reflect::ProtobufValue for FloatValue {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -419,16 +407,6 @@ impl ::protobuf::Message for Int64Value {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -486,6 +464,10 @@ impl ::std::fmt::Debug for Int64Value {
 impl ::protobuf::reflect::ProtobufValue for Int64Value {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -575,16 +557,6 @@ impl ::protobuf::Message for UInt64Value {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -642,6 +614,10 @@ impl ::std::fmt::Debug for UInt64Value {
 impl ::protobuf::reflect::ProtobufValue for UInt64Value {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -731,16 +707,6 @@ impl ::protobuf::Message for Int32Value {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -798,6 +764,10 @@ impl ::std::fmt::Debug for Int32Value {
 impl ::protobuf::reflect::ProtobufValue for Int32Value {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -887,16 +857,6 @@ impl ::protobuf::Message for UInt32Value {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -954,6 +914,10 @@ impl ::std::fmt::Debug for UInt32Value {
 impl ::protobuf::reflect::ProtobufValue for UInt32Value {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -1043,16 +1007,6 @@ impl ::protobuf::Message for BoolValue {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -1110,6 +1064,10 @@ impl ::std::fmt::Debug for BoolValue {
 impl ::protobuf::reflect::ProtobufValue for BoolValue {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -1206,16 +1164,6 @@ impl ::protobuf::Message for StringValue {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -1273,6 +1221,10 @@ impl ::std::fmt::Debug for StringValue {
 impl ::protobuf::reflect::ProtobufValue for StringValue {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 
@@ -1369,16 +1321,6 @@ impl ::protobuf::Message for BytesValue {
         &mut self.unknown_fields
     }
 
-    fn as_any(&self) -> &::std::any::Any {
-        self as &::std::any::Any
-    }
-    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
-        self as &mut ::std::any::Any
-    }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
-        self
-    }
-
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
@@ -1436,6 +1378,10 @@ impl ::std::fmt::Debug for BytesValue {
 impl ::protobuf::reflect::ProtobufValue for BytesValue {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+
+    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
+        ::protobuf::rt::from_value_box(value)
     }
 }
 

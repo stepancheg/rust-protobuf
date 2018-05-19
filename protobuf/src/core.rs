@@ -1,5 +1,4 @@
 use std::any::Any;
-use std::any::TypeId;
 use std::fmt;
 use std::io::Read;
 use std::io::Write;
@@ -9,6 +8,7 @@ use bytes::Bytes;
 
 use clear::Clear;
 use reflect::MessageDescriptor;
+use reflect::ProtobufValue;
 use unknown::UnknownFields;
 use stream::WithCodedInputStream;
 use stream::WithCodedOutputStream;
@@ -21,7 +21,7 @@ use error::ProtobufResult;
 
 /// Trait implemented for all generated structs for protobuf messages.
 /// Also, generated messages implement `Clone + Default + PartialEq`
-pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
+pub trait Message : fmt::Debug + Clear + Any + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
     fn descriptor(&self) -> &'static MessageDescriptor;
 
@@ -141,29 +141,6 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// Get a mutable reference to unknown fields.
     fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
 
-    /// Get type id for downcasting.
-    fn type_id(&self) -> TypeId {
-        TypeId::of::<Self>()
-    }
-
-    /// View self as `Any`.
-    fn as_any(&self) -> &Any;
-
-    /// View self as mutable `Any`.
-    fn as_any_mut(&mut self) -> &mut Any {
-        panic!()
-    }
-
-    /// Convert boxed self to boxed `Any`.
-    fn into_any(self: Box<Self>) -> Box<Any> {
-        panic!()
-    }
-
-    // Rust does not allow implementation of trait for trait:
-    // impl<M : Message> fmt::Debug for M {
-    // ...
-    // }
-
     /// Create an empty message object.
     fn new() -> Self where Self : Sized;
 
@@ -181,6 +158,7 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     fn default_instance() -> &'static Self
         where Self : Sized;
 }
+
 
 pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
