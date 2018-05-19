@@ -129,7 +129,7 @@ impl ::protobuf::Message for FieldMask {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "paths",
                     |m: &FieldMask| { &m.paths },
                     |m: &mut FieldMask| { &mut m.paths },
@@ -168,13 +168,6 @@ impl ::std::fmt::Debug for FieldMask {
 }
 
 impl ::protobuf::reflect::ProtobufValue for FieldMask {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

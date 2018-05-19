@@ -125,7 +125,7 @@ impl ::protobuf::Message for Struct {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<Value>>(
+                fields.push(::protobuf::reflect::rt::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<Value>>(
                     "fields",
                     |m: &Struct| { &m.fields },
                     |m: &mut Struct| { &mut m.fields },
@@ -164,13 +164,6 @@ impl ::std::fmt::Debug for Struct {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Struct {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -578,38 +571,38 @@ impl ::protobuf::Message for Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeEnum<NullValue>>(
+                fields.push(::protobuf::reflect::rt::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeEnum<NullValue>>(
                     "null_value",
                     Value::has_null_value,
                     Value::get_null_value,
                     Value::set_null_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+                fields.push(::protobuf::reflect::rt::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
                     "number_value",
                     Value::has_number_value,
                     Value::get_number_value,
                     Value::set_number_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_string_has_get_set_accessor::<_>(
+                fields.push(::protobuf::reflect::rt::make_singular_string_has_get_set_accessor::<_>(
                     "string_value",
                     Value::has_string_value,
                     Value::get_string_value,
                     Value::set_string_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(::protobuf::reflect::rt::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "bool_value",
                     Value::has_bool_value,
                     Value::get_bool_value,
                     Value::set_bool_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_message_has_get_mut_set_accessor::<_, Struct>(
+                fields.push(::protobuf::reflect::rt::make_singular_message_has_get_mut_set_accessor::<_, Struct>(
                     "struct_value",
                     Value::has_struct_value,
                     Value::get_struct_value,
                     Value::mut_struct_value,
                     Value::set_struct_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_message_has_get_mut_set_accessor::<_, ListValue>(
+                fields.push(::protobuf::reflect::rt::make_singular_message_has_get_mut_set_accessor::<_, ListValue>(
                     "list_value",
                     Value::has_list_value,
                     Value::get_list_value,
@@ -655,13 +648,6 @@ impl ::std::fmt::Debug for Value {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -780,7 +766,7 @@ impl ::protobuf::Message for ListValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Value>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Value>>(
                     "values",
                     |m: &ListValue| { &m.values },
                     |m: &mut ListValue| { &mut m.values },
@@ -819,13 +805,6 @@ impl ::std::fmt::Debug for ListValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for ListValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -859,7 +838,7 @@ impl ::protobuf::ProtobufEnum for NullValue {
         };
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("NullValue", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new::<NullValue>("NullValue", file_descriptor_proto())
             })
         }
     }
@@ -875,9 +854,6 @@ impl ::std::default::Default for NullValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for NullValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

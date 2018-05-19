@@ -130,7 +130,7 @@ impl ::protobuf::Message for SourceContext {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_name",
                     |m: &SourceContext| { &m.file_name },
                     |m: &mut SourceContext| { &mut m.file_name },
@@ -169,13 +169,6 @@ impl ::std::fmt::Debug for SourceContext {
 }
 
 impl ::protobuf::reflect::ProtobufValue for SourceContext {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

@@ -152,12 +152,12 @@ impl ::protobuf::Message for Timestamp {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "seconds",
                     |m: &Timestamp| { &m.seconds },
                     |m: &mut Timestamp| { &mut m.seconds },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "nanos",
                     |m: &Timestamp| { &m.nanos },
                     |m: &mut Timestamp| { &mut m.nanos },
@@ -197,13 +197,6 @@ impl ::std::fmt::Debug for Timestamp {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Timestamp {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

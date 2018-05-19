@@ -11,7 +11,7 @@ use super::*;
 use super::as_any::AsAny;
 
 
-// Hack against lack of upcasting
+/// Hack against lack of upcasting in Rust
 pub trait AsProtobufValue {
     fn as_protobuf_value(&self) -> &ProtobufValue;
     fn as_protobuf_value_mut(&mut self) -> &mut ProtobufValue;
@@ -28,211 +28,59 @@ impl<T : ProtobufValue> AsProtobufValue for T {
 }
 
 
-pub trait ProtobufValue : Any + 'static + AsAny + AsProtobufValue {
-    fn as_ref(&self) -> ProtobufValueRef {
-        unimplemented!()
-    }
-
-    fn is_non_zero(&self) -> bool {
-        self.as_ref().is_non_zero()
-    }
-
-    fn as_ref_copy(&self) -> ProtobufValueRef<'static>
-//where Self : Copy // TODO
-    {
-        match self.as_ref() {
-            ProtobufValueRef::Bool(v) => ProtobufValueRef::Bool(v),
-            ProtobufValueRef::U32(v) => ProtobufValueRef::U32(v),
-            ProtobufValueRef::U64(v) => ProtobufValueRef::U64(v),
-            ProtobufValueRef::I32(v) => ProtobufValueRef::I32(v),
-            ProtobufValueRef::I64(v) => ProtobufValueRef::I64(v),
-            ProtobufValueRef::F32(v) => ProtobufValueRef::F32(v),
-            ProtobufValueRef::F64(v) => ProtobufValueRef::F64(v),
-            ProtobufValueRef::Enum(v) => ProtobufValueRef::Enum(v),
-            ProtobufValueRef::String(..) |
-            ProtobufValueRef::Bytes(..) |
-            ProtobufValueRef::Message(..) => unreachable!(),
-        }
-    }
-
-    fn from_value_box(_value: ProtobufValueBox) -> Self where Self : Sized {
-        unimplemented!()
-    }
+/// Type implemented by all protobuf singular types
+/// (primitives, string, messages, enums).
+///
+/// Used for dynamic casting in reflection.
+pub trait ProtobufValue : Any + AsAny + AsProtobufValue + 'static + Send + Sync {
 }
 
 impl ProtobufValue for u32 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::U32(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::U32(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for u64 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::U64(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::U64(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for i32 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::I32(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::I32(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for i64 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::I64(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::I64(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for f32 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::F32(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::F32(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for f64 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::F64(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::F64(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for bool {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Bool(*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::Bool(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for String {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::String(*&self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::String(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 impl ProtobufValue for Vec<u8> {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Bytes(*&self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::Bytes(v) = value {
-            v
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Bytes {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Bytes(&*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::Bytes(v) = value {
-            v.into()
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Chars {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::String(&*self)
-    }
-
-    fn from_value_box(value: ProtobufValueBox) -> Self where Self : Sized {
-        if let ProtobufValueBox::String(v) = value {
-            v.into()
-        } else {
-            panic!("wrong value: {:?}", value);
-        }
-    }
 }
 
 // conflicting implementations, so generated code is used instead
 /*
 impl<E : ProtobufEnum> ProtobufValue for E {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Enum(self.descriptor())
-    }
 }
 
 impl<M : Message> ProtobufValue for M {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Message(self)
-    }
 }
 */
 
 
-pub enum ProtobufValueRef<'a> {
+pub enum ReflectValueRef<'a> {
     U32(u32),
     U64(u64),
     I32(i32),
@@ -246,26 +94,26 @@ pub enum ProtobufValueRef<'a> {
     Message(&'a Message),
 }
 
-impl<'a> ProtobufValueRef<'a> {
+impl<'a> ReflectValueRef<'a> {
     pub fn is_non_zero(&self) -> bool {
         match *self {
-            ProtobufValueRef::U32(v) => v != 0,
-            ProtobufValueRef::U64(v) => v != 0,
-            ProtobufValueRef::I32(v) => v != 0,
-            ProtobufValueRef::I64(v) => v != 0,
-            ProtobufValueRef::F32(v) => v != 0.,
-            ProtobufValueRef::F64(v) => v != 0.,
-            ProtobufValueRef::Bool(v) => v,
-            ProtobufValueRef::String(v) => !v.is_empty(),
-            ProtobufValueRef::Bytes(v) => !v.is_empty(),
-            ProtobufValueRef::Enum(v) => v.value() != 0,
-            ProtobufValueRef::Message(_) => true,
+            ReflectValueRef::U32(v) => v != 0,
+            ReflectValueRef::U64(v) => v != 0,
+            ReflectValueRef::I32(v) => v != 0,
+            ReflectValueRef::I64(v) => v != 0,
+            ReflectValueRef::F32(v) => v != 0.,
+            ReflectValueRef::F64(v) => v != 0.,
+            ReflectValueRef::Bool(v) => v,
+            ReflectValueRef::String(v) => !v.is_empty(),
+            ReflectValueRef::Bytes(v) => !v.is_empty(),
+            ReflectValueRef::Enum(v) => v.value() != 0,
+            ReflectValueRef::Message(_) => true,
         }
     }
 }
 
 #[derive(Debug)]
-pub enum ProtobufValueBox {
+pub enum ReflectValueBox {
     U32(u32),
     U64(u64),
     I32(i32),
@@ -279,36 +127,42 @@ pub enum ProtobufValueBox {
     Message(Box<Message>),
 }
 
-impl ProtobufValueBox {
+fn _assert_value_box_send_sync() {
+    fn _assert_send_sync<T : Send + Sync>() {}
+    _assert_send_sync::<ReflectValueBox>();
+}
+
+
+impl ReflectValueBox {
     pub fn as_value(&self) -> &ProtobufValue {
         match self {
-            ProtobufValueBox::U32(v) => v,
-            ProtobufValueBox::U64(v) => v,
-            ProtobufValueBox::I32(v) => v,
-            ProtobufValueBox::I64(v) => v,
-            ProtobufValueBox::F32(v) => v,
-            ProtobufValueBox::F64(v) => v,
-            ProtobufValueBox::Bool(v) => v,
-            ProtobufValueBox::String(v) => v,
-            ProtobufValueBox::Bytes(v) => v,
-            ProtobufValueBox::Enum(_) => unimplemented!(),
-            ProtobufValueBox::Message(v) => v.as_protobuf_value(),
+            ReflectValueBox::U32(v) => v,
+            ReflectValueBox::U64(v) => v,
+            ReflectValueBox::I32(v) => v,
+            ReflectValueBox::I64(v) => v,
+            ReflectValueBox::F32(v) => v,
+            ReflectValueBox::F64(v) => v,
+            ReflectValueBox::Bool(v) => v,
+            ReflectValueBox::String(v) => v,
+            ReflectValueBox::Bytes(v) => v,
+            ReflectValueBox::Enum(v) => v.protobuf_value(),
+            ReflectValueBox::Message(v) => v.as_protobuf_value(),
         }
     }
 
     pub fn as_value_mut(&mut self) -> &mut ProtobufValue {
         match self {
-            ProtobufValueBox::U32(v) => v,
-            ProtobufValueBox::U64(v) => v,
-            ProtobufValueBox::I32(v) => v,
-            ProtobufValueBox::I64(v) => v,
-            ProtobufValueBox::F32(v) => v,
-            ProtobufValueBox::F64(v) => v,
-            ProtobufValueBox::Bool(v) => v,
-            ProtobufValueBox::String(v) => v,
-            ProtobufValueBox::Bytes(v) => v,
-            ProtobufValueBox::Enum(_) => unimplemented!(),
-            ProtobufValueBox::Message(v) => v.as_protobuf_value_mut(),
+            ReflectValueBox::U32(v) => v,
+            ReflectValueBox::U64(v) => v,
+            ReflectValueBox::I32(v) => v,
+            ReflectValueBox::I64(v) => v,
+            ReflectValueBox::F32(v) => v,
+            ReflectValueBox::F64(v) => v,
+            ReflectValueBox::Bool(v) => v,
+            ReflectValueBox::String(v) => v,
+            ReflectValueBox::Bytes(v) => v,
+            ReflectValueBox::Enum(_v) => panic!("enum value cannot be mutable"),
+            ReflectValueBox::Message(v) => v.as_protobuf_value_mut(),
         }
     }
 }

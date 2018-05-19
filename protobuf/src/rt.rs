@@ -32,7 +32,8 @@ use stream::CodedOutputStream;
 use types::*;
 
 use unknown::UnknownFields;
-use reflect::ProtobufValueBox;
+use reflect::ReflectValueBox;
+use reflect::runtime_types::RuntimeType;
 
 
 /// Given `u64` value compute varint encoded length.
@@ -870,11 +871,14 @@ pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
 
 
 /// Compute serialized size of `map` field and cache nested field sizes.
-pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Value>) -> u32
+pub fn compute_map_size<K, V>(
+    field_number: u32,
+    map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>)
+    -> u32
 where
     K : ProtobufType,
     V : ProtobufType,
-    K::Value : Eq + Hash,
+    <K::RuntimeType as RuntimeType>::Value : Eq + Hash,
 {
     let mut sum = 0;
     for (k, v) in map {
@@ -893,13 +897,13 @@ where
 /// Write map, message sizes must be already known.
 pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
-    map: &HashMap<K::Value, V::Value>,
+    map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
     os: &mut CodedOutputStream,
 ) -> ProtobufResult<()>
 where
     K : ProtobufType,
     V : ProtobufType,
-    K::Value : Eq + Hash,
+    <K::RuntimeType as RuntimeType>::Value : Eq + Hash,
 {
     for (k, v) in map {
 
@@ -923,12 +927,12 @@ where
 pub fn read_map_into<K, V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut HashMap<K::Value, V::Value>,
+    target: &mut HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
 ) -> ProtobufResult<()>
 where
     K : ProtobufType,
     V : ProtobufType,
-    K::Value : Eq + Hash,
+    <K::RuntimeType as RuntimeType>::Value : Eq + Hash,
 {
     if wire_type != WireType::WireTypeLengthDelimited {
         return Err(unexpected_wire_type(wire_type));
@@ -974,8 +978,8 @@ pub fn set_from_any<M : Message>(this: &mut M, mut message: Box<Any>) {
     *this = mem::replace(message, M::new());
 }
 
-pub fn from_value_box<M : Message>(value: ProtobufValueBox) -> M {
-    if let ProtobufValueBox::Message(mut value) = value {
+pub fn from_value_box<M : Message>(value: ReflectValueBox) -> M {
+    if let ReflectValueBox::Message(mut value) = value {
         let value = (*value).as_any_mut().downcast_mut().expect("wrong message type");
         mem::replace(value, M::new())
     } else {

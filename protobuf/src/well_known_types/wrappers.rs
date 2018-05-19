@@ -123,7 +123,7 @@ impl ::protobuf::Message for DoubleValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
                     "value",
                     |m: &DoubleValue| { &m.value },
                     |m: &mut DoubleValue| { &mut m.value },
@@ -162,13 +162,6 @@ impl ::std::fmt::Debug for DoubleValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for DoubleValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -273,7 +266,7 @@ impl ::protobuf::Message for FloatValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
                     "value",
                     |m: &FloatValue| { &m.value },
                     |m: &mut FloatValue| { &mut m.value },
@@ -312,13 +305,6 @@ impl ::std::fmt::Debug for FloatValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for FloatValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -423,7 +409,7 @@ impl ::protobuf::Message for Int64Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "value",
                     |m: &Int64Value| { &m.value },
                     |m: &mut Int64Value| { &mut m.value },
@@ -462,13 +448,6 @@ impl ::std::fmt::Debug for Int64Value {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Int64Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -573,7 +552,7 @@ impl ::protobuf::Message for UInt64Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "value",
                     |m: &UInt64Value| { &m.value },
                     |m: &mut UInt64Value| { &mut m.value },
@@ -612,13 +591,6 @@ impl ::std::fmt::Debug for UInt64Value {
 }
 
 impl ::protobuf::reflect::ProtobufValue for UInt64Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -723,7 +695,7 @@ impl ::protobuf::Message for Int32Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "value",
                     |m: &Int32Value| { &m.value },
                     |m: &mut Int32Value| { &mut m.value },
@@ -762,13 +734,6 @@ impl ::std::fmt::Debug for Int32Value {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Int32Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -873,7 +838,7 @@ impl ::protobuf::Message for UInt32Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
                     "value",
                     |m: &UInt32Value| { &m.value },
                     |m: &mut UInt32Value| { &mut m.value },
@@ -912,13 +877,6 @@ impl ::std::fmt::Debug for UInt32Value {
 }
 
 impl ::protobuf::reflect::ProtobufValue for UInt32Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1023,7 +981,7 @@ impl ::protobuf::Message for BoolValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "value",
                     |m: &BoolValue| { &m.value },
                     |m: &mut BoolValue| { &mut m.value },
@@ -1062,13 +1020,6 @@ impl ::std::fmt::Debug for BoolValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for BoolValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1180,7 +1131,7 @@ impl ::protobuf::Message for StringValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "value",
                     |m: &StringValue| { &m.value },
                     |m: &mut StringValue| { &mut m.value },
@@ -1219,13 +1170,6 @@ impl ::std::fmt::Debug for StringValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for StringValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1337,7 +1281,7 @@ impl ::protobuf::Message for BytesValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
                     "value",
                     |m: &BytesValue| { &m.value },
                     |m: &mut BytesValue| { &mut m.value },
@@ -1376,13 +1320,6 @@ impl ::std::fmt::Debug for BytesValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for BytesValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

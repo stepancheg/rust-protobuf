@@ -126,13 +126,6 @@ impl ::std::fmt::Debug for Empty {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Empty {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

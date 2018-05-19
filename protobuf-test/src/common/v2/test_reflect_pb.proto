@@ -1,9 +1,57 @@
 syntax = "proto2";
 
+package test_reflect;
+
 message M {
     optional SubM sub_m = 1;
 }
 
 message SubM {
     optional int32 n = 1;
+}
+
+
+enum TestEnum {
+    UNDEFINED = 0;
+    RED = 1;
+    BLUE = 2;
+    GREEN = 3;
+}
+
+message TestTypesSingular {
+    optional double double_field = 1;
+    optional float float_field = 2;
+    optional int32 int32_field = 3;
+    optional int64 int64_field = 4;
+    optional uint32 uint32_field = 5;
+    optional uint64 uint64_field = 6;
+    optional sint32 sint32_field = 7;
+    optional sint64 sint64_field = 8;
+    optional fixed32 fixed32_field = 9;
+    optional fixed64 fixed64_field = 10;
+    optional sfixed32 sfixed32_field = 11;
+    optional sfixed64 sfixed64_field = 12;
+    optional bool bool_field = 13;
+    optional string string_field = 14;
+    optional bytes bytes_field = 15;
+    optional TestEnum enum_field = 16;
+}
+
+message TestTypesRepeated {
+    repeated double double_field = 1;
+    repeated float float_field = 2;
+    repeated int32 int32_field = 3;
+    repeated int64 int64_field = 4;
+    repeated uint32 uint32_field = 5;
+    repeated uint64 uint64_field = 6;
+    repeated sint32 sint32_field = 7;
+    repeated sint64 sint64_field = 8;
+    repeated fixed32 fixed32_field = 9;
+    repeated fixed64 fixed64_field = 10;
+    repeated sfixed32 sfixed32_field = 11;
+    repeated sfixed64 sfixed64_field = 12;
+    repeated bool bool_field = 13;
+    repeated string string_field = 14;
+    repeated bytes bytes_field = 15;
+    repeated TestEnum enum_field = 16;
 }

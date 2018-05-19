@@ -35,6 +35,8 @@ pub use cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 pub use chars::Chars;
 
+pub use reflect::types;
+
 // generated
 pub mod descriptor;
 pub mod plugin;
@@ -53,7 +55,6 @@ pub mod reflect;
 pub mod text_format;
 pub mod stream;
 pub mod error;
-pub mod types;
 pub mod well_known_types;
 pub mod ext;
 
@@ -73,7 +74,6 @@ mod strx;
 pub mod rust;
 mod cached_size;
 mod varint;
-#[cfg(feature = "bytes")]
 mod chars;
 
 mod misc;
@@ -93,7 +93,7 @@ mod protobuf {
     pub use stream::*;
     pub use rt;
     pub use text_format;
-    pub use types;
+    pub use reflect::types;
     pub use lazy;
     pub use well_known_types;
     pub use ext;

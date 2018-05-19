@@ -218,17 +218,17 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_to_generate",
                     |m: &CodeGeneratorRequest| { &m.file_to_generate },
                     |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "parameter",
                     |m: &CodeGeneratorRequest| { &m.parameter },
                     |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
                     "proto_file",
                     |m: &CodeGeneratorRequest| { &m.proto_file },
                     |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -269,13 +269,6 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
 }
 
 impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -440,12 +433,12 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "error",
                     |m: &CodeGeneratorResponse| { &m.error },
                     |m: &mut CodeGeneratorResponse| { &mut m.error },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
                     |m: &CodeGeneratorResponse| { &m.file },
                     |m: &mut CodeGeneratorResponse| { &mut m.file },
@@ -485,13 +478,6 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
 }
 
 impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -705,17 +691,17 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &CodeGeneratorResponse_File| { &m.name },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "insertion_point",
                     |m: &CodeGeneratorResponse_File| { &m.insertion_point },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "content",
                     |m: &CodeGeneratorResponse_File| { &m.content },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.content },
@@ -756,13 +742,6 @@ impl ::std::fmt::Debug for CodeGeneratorResponse_File {
 }
 
 impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse_File {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

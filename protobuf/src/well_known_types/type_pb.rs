@@ -327,32 +327,32 @@ impl ::protobuf::Message for Type {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Type| { &m.name },
                     |m: &mut Type| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Field>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Field>>(
                     "fields",
                     |m: &Type| { &m.fields },
                     |m: &mut Type| { &mut m.fields },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "oneofs",
                     |m: &Type| { &m.oneofs },
                     |m: &mut Type| { &mut m.oneofs },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
                     |m: &Type| { &m.options },
                     |m: &mut Type| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(::protobuf::reflect::rt::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Type| { &m.source_context },
                     |m: &mut Type| { &mut m.source_context },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
                     "syntax",
                     |m: &Type| { &m.syntax },
                     |m: &mut Type| { &mut m.syntax },
@@ -396,13 +396,6 @@ impl ::std::fmt::Debug for Type {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Type {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -802,52 +795,52 @@ impl ::protobuf::Message for Field {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Kind>>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Kind>>(
                     "kind",
                     |m: &Field| { &m.kind },
                     |m: &mut Field| { &mut m.kind },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Cardinality>>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Cardinality>>(
                     "cardinality",
                     |m: &Field| { &m.cardinality },
                     |m: &mut Field| { &mut m.cardinality },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "number",
                     |m: &Field| { &m.number },
                     |m: &mut Field| { &mut m.number },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Field| { &m.name },
                     |m: &mut Field| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "type_url",
                     |m: &Field| { &m.type_url },
                     |m: &mut Field| { &mut m.type_url },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "oneof_index",
                     |m: &Field| { &m.oneof_index },
                     |m: &mut Field| { &mut m.oneof_index },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "packed",
                     |m: &Field| { &m.packed },
                     |m: &mut Field| { &mut m.packed },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
                     |m: &Field| { &m.options },
                     |m: &mut Field| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "json_name",
                     |m: &Field| { &m.json_name },
                     |m: &mut Field| { &mut m.json_name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "default_value",
                     |m: &Field| { &m.default_value },
                     |m: &mut Field| { &mut m.default_value },
@@ -895,13 +888,6 @@ impl ::std::fmt::Debug for Field {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Field {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -989,7 +975,7 @@ impl ::protobuf::ProtobufEnum for Field_Kind {
         };
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("Field_Kind", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new::<Field_Kind>("Field_Kind", file_descriptor_proto())
             })
         }
     }
@@ -1005,9 +991,6 @@ impl ::std::default::Default for Field_Kind {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Field_Kind {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -1050,7 +1033,7 @@ impl ::protobuf::ProtobufEnum for Field_Cardinality {
         };
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("Field_Cardinality", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new::<Field_Cardinality>("Field_Cardinality", file_descriptor_proto())
             })
         }
     }
@@ -1066,9 +1049,6 @@ impl ::std::default::Default for Field_Cardinality {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Field_Cardinality {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1342,27 +1322,27 @@ impl ::protobuf::Message for Enum {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Enum| { &m.name },
                     |m: &mut Enum| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValue>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValue>>(
                     "enumvalue",
                     |m: &Enum| { &m.enumvalue },
                     |m: &mut Enum| { &mut m.enumvalue },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
                     |m: &Enum| { &m.options },
                     |m: &mut Enum| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(::protobuf::reflect::rt::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Enum| { &m.source_context },
                     |m: &mut Enum| { &mut m.source_context },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
                     "syntax",
                     |m: &Enum| { &m.syntax },
                     |m: &mut Enum| { &mut m.syntax },
@@ -1405,13 +1385,6 @@ impl ::std::fmt::Debug for Enum {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Enum {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1595,17 +1568,17 @@ impl ::protobuf::Message for EnumValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &EnumValue| { &m.name },
                     |m: &mut EnumValue| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "number",
                     |m: &EnumValue| { &m.number },
                     |m: &mut EnumValue| { &mut m.number },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Option>>(
                     "options",
                     |m: &EnumValue| { &m.options },
                     |m: &mut EnumValue| { &mut m.options },
@@ -1646,13 +1619,6 @@ impl ::std::fmt::Debug for EnumValue {
 }
 
 impl ::protobuf::reflect::ProtobufValue for EnumValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1815,12 +1781,12 @@ impl ::protobuf::Message for Option {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Option| { &m.name },
                     |m: &mut Option| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>>(
+                fields.push(::protobuf::reflect::rt::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>>(
                     "value",
                     |m: &Option| { &m.value },
                     |m: &mut Option| { &mut m.value },
@@ -1860,13 +1826,6 @@ impl ::std::fmt::Debug for Option {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Option {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -1903,7 +1862,7 @@ impl ::protobuf::ProtobufEnum for Syntax {
         };
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("Syntax", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
             })
         }
     }
@@ -1919,9 +1878,6 @@ impl ::std::default::Default for Syntax {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Syntax {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

@@ -317,16 +317,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            w.def_fn("as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef", |w| {
-                    w.write_line("::protobuf::reflect::ProtobufValueRef::Message(self)")
-                },
-            );
-            w.write_line("");
-            w.def_fn("from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self", |w| {
-                    w.write_line("::protobuf::rt::from_value_box(value)")
-                },
-            );
+        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |_w| {
         });
     }
 

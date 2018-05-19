@@ -1,9 +1,10 @@
 use std;
 use std::fmt;
 use std::fmt::Write;
+
 use core::Message;
+use reflect::ReflectValueRef;
 use reflect::ReflectFieldRef;
-use reflect::ProtobufValueRef;
 
 
 fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
@@ -147,12 +148,12 @@ fn print_field(
     indent: usize,
     first: &mut bool,
     field_name: &str,
-    value: ProtobufValueRef,
+    value: ReflectValueRef,
 ) {
     print_start_field(buf, pretty, indent, first, field_name);
 
     match value {
-        ProtobufValueRef::Message(m) => {
+        ReflectValueRef::Message(m) => {
             buf.push_str(" {");
             if pretty {
                 buf.push_str("\n");
@@ -161,37 +162,37 @@ fn print_field(
             do_indent(buf, pretty, indent);
             buf.push_str("}");
         }
-        ProtobufValueRef::Enum(e) => {
+        ReflectValueRef::Enum(e) => {
             buf.push_str(": ");
             buf.push_str(e.name());
         }
-        ProtobufValueRef::String(s) => {
+        ReflectValueRef::String(s) => {
             buf.push_str(": ");
             print_str_to(s, buf);
         }
-        ProtobufValueRef::Bytes(b) => {
+        ReflectValueRef::Bytes(b) => {
             buf.push_str(": ");
             quote_escape_bytes_to(b, buf);
         }
-        ProtobufValueRef::I32(v) => {
+        ReflectValueRef::I32(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::I64(v) => {
+        ReflectValueRef::I64(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::U32(v) => {
+        ReflectValueRef::U32(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::U64(v) => {
+        ReflectValueRef::U64(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::Bool(v) => {
+        ReflectValueRef::Bool(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::F32(v) => {
+        ReflectValueRef::F32(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::F64(v) => {
+        ReflectValueRef::F64(v) => {
             write!(buf, ": {}", v).unwrap();
         }
     }
@@ -205,7 +206,7 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
     for f in d.fields() {
         match f.get_reflect(m) {
             ReflectFieldRef::Map(map) => {
-                for (k, v) in map {
+                for (k, v) in &map {
                     print_start_field(buf, pretty, indent, &mut first, f.name());
                     buf.push_str(" {");
                     if pretty {
@@ -214,14 +215,14 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
 
                     let mut entry_first = true;
 
-                    print_field(buf, pretty, indent + 1, &mut entry_first, "key", k.as_ref());
+                    print_field(buf, pretty, indent + 1, &mut entry_first, "key", k);
                     print_field(
                         buf,
                         pretty,
                         indent + 1,
                         &mut entry_first,
                         "value",
-                        v.as_ref(),
+                        v,
                     );
                     do_indent(buf, pretty, indent);
                     buf.push_str("}");
@@ -231,7 +232,7 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
             ReflectFieldRef::Repeated(repeated) => {
                 // TODO: do not print zeros for v3
                 for v in repeated {
-                    print_field(buf, pretty, indent, &mut first, f.name(), v.as_ref());
+                    print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
             }
             ReflectFieldRef::Optional(optional) => {

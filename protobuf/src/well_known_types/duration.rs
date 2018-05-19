@@ -152,12 +152,12 @@ impl ::protobuf::Message for Duration {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "seconds",
                     |m: &Duration| { &m.seconds },
                     |m: &mut Duration| { &mut m.seconds },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "nanos",
                     |m: &Duration| { &m.nanos },
                     |m: &mut Duration| { &mut m.nanos },
@@ -197,13 +197,6 @@ impl ::std::fmt::Debug for Duration {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Duration {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Message(self)
-    }
-
-    fn from_value_box(value: ::protobuf::reflect::ProtobufValueBox) -> Self {
-        ::protobuf::rt::from_value_box(value)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

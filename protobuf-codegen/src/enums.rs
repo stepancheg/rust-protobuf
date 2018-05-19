@@ -211,7 +211,10 @@ impl<'a> EnumGen<'a> {
                 w.def_fn(&format!("enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"), |w| {
                     w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
                         let ref type_name = self.type_name;
-                        w.write_line(&format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
+                        w.write_line(&format!(
+                            "::protobuf::reflect::EnumDescriptor::new::<{}>(\"{}\", file_descriptor_proto())",
+                            type_name,
+                            type_name));
                     });
                 });
             }
@@ -219,15 +222,7 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef",
-                |w| {
-                    w.write_line(
-                        "::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())",
-                    )
-                },
-            )
+        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |_w| {
         })
     }
 

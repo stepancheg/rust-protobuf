@@ -952,7 +952,7 @@ impl<'a> FieldGen<'a> {
     pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
         let accessor_fn = self.accessor_fn();
         w.write_line(&format!(
-            "{}.push(::protobuf::reflect::accessor::{}(",
+            "{}.push(::protobuf::reflect::rt::{}(",
             fields_var,
             accessor_fn.sig()
         ));

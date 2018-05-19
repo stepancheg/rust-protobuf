@@ -7,7 +7,6 @@ use std::io::Write;
 use bytes::Bytes;
 
 use clear::Clear;
-use reflect::MessageDescriptor;
 use reflect::ProtobufValue;
 use unknown::UnknownFields;
 use stream::WithCodedInputStream;
@@ -17,6 +16,7 @@ use stream::CodedOutputStream;
 use stream::with_coded_output_stream_to_bytes;
 use error::ProtobufError;
 use error::ProtobufResult;
+use reflect::MessageDescriptor;
 
 
 /// Trait implemented for all generated structs for protobuf messages.

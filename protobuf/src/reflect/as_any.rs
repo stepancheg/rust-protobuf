@@ -4,6 +4,7 @@
 use std::any::Any;
 use std::mem;
 
+/// Hack against lack of upcasting in Rust
 pub trait AsAny {
     fn as_any(&self) -> &Any;
     fn as_any_mut(&mut self) -> &mut Any;
