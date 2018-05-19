@@ -96,7 +96,7 @@ trait GetRepeatedEnum<M : Message + 'static> {
 
 trait GetSetCopyFns<M> {
     fn get_field<'a>(&self, m: &'a M) -> ProtobufValueRef<'a>;
-    fn set_field(&mut self, m: &mut M, value: ProtobufValueBox);
+    fn set_field(&self, m: &mut M, value: ProtobufValueBox);
 }
 
 struct GetSetCopyFnsImpl<M, V : ProtobufValue + Copy> {
@@ -109,7 +109,7 @@ impl<M, V : ProtobufValue + Copy> GetSetCopyFns<M> for GetSetCopyFnsImpl<M, V> {
         (&(self.get)(m) as &ProtobufValue).as_ref_copy()
     }
 
-    fn set_field(&mut self, m: &mut M, value: ProtobufValueBox) {
+    fn set_field(&self, m: &mut M, value: ProtobufValueBox) {
         (self.set)(m, V::from_value_box(value))
     }
 }
@@ -129,6 +129,30 @@ impl<M : Message + 'static> SingularGetSet<M> {
             &SingularGetSet::String(get, _) => ProtobufValueRef::String(get(m)),
             &SingularGetSet::Bytes(get, _) => ProtobufValueRef::Bytes(get(m)),
             &SingularGetSet::Message(ref get) => ProtobufValueRef::Message(get.get_message(m)),
+        }
+    }
+
+    fn set_singular_field(&self, m: &mut M, value: ProtobufValueBox) {
+        match self {
+            SingularGetSet::Copy(copy) => copy.set_field(m, value),
+            SingularGetSet::String(_, set) => {
+                match value {
+                    ProtobufValueBox::String(s) => set(m, s),
+                    _ => panic!("wrong type"),
+                }
+            }
+            SingularGetSet::Bytes(_, set) => {
+                match value {
+                    ProtobufValueBox::Bytes(b) => set(m, b),
+                    _ => panic!("wrong type"),
+                }
+            }
+            SingularGetSet::Message(ref fns) => {
+                match value {
+                    ProtobufValueBox::Message(f) => fns.set_message(m, f),
+                    _ => panic!("wrong type"),
+                }
+            }
         }
     }
 }
@@ -384,16 +408,25 @@ impl<M : Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
         }
     }
 
-    fn set_singular_field(&self, _m: &mut Message, _value: ProtobufValueBox) {
+    fn set_singular_field(&self, m: &mut Message, mut value: ProtobufValueBox) {
+        let m = m.as_any_mut().downcast_mut::<M>().expect("wrong_type");
         match self.fns {
             FieldAccessorFunctions::Repeated(..) |
             FieldAccessorFunctions::Map(..) => {
                 panic!("set_singular field is called for repeated field")
             },
-            FieldAccessorFunctions::SingularHasGetSet { get_set: _, .. } => {
-                unimplemented!()
+            FieldAccessorFunctions::SingularHasGetSet { ref get_set, .. } => {
+                get_set.set_singular_field(m, value)
             }
-            _ => unimplemented!(),
+            FieldAccessorFunctions::Simple(ref fns) => {
+                // TODO: doesn't work with enum
+                fns.mut_field(m).swap_with_any(value.as_value_mut().as_any_mut());
+            }
+            FieldAccessorFunctions::Optional(ref fns) => {
+                // TODO: clones, not moves
+                // TODO: doesn't work with enums
+                fns.mut_field(m).set_value(value.as_value());
+            }
         }
     }
 }

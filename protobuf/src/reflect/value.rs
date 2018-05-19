@@ -14,10 +14,15 @@ use super::as_any::AsAny;
 // Hack against lack of upcasting
 pub trait AsProtobufValue {
     fn as_protobuf_value(&self) -> &ProtobufValue;
+    fn as_protobuf_value_mut(&mut self) -> &mut ProtobufValue;
 }
 
 impl<T : ProtobufValue> AsProtobufValue for T {
     fn as_protobuf_value(&self) -> &ProtobufValue {
+        self
+    }
+
+    fn as_protobuf_value_mut(&mut self) -> &mut ProtobufValue {
         self
     }
 }
@@ -288,6 +293,22 @@ impl ProtobufValueBox {
             ProtobufValueBox::Bytes(v) => v,
             ProtobufValueBox::Enum(_) => unimplemented!(),
             ProtobufValueBox::Message(v) => v.as_protobuf_value(),
+        }
+    }
+
+    pub fn as_value_mut(&mut self) -> &mut ProtobufValue {
+        match self {
+            ProtobufValueBox::U32(v) => v,
+            ProtobufValueBox::U64(v) => v,
+            ProtobufValueBox::I32(v) => v,
+            ProtobufValueBox::I64(v) => v,
+            ProtobufValueBox::F32(v) => v,
+            ProtobufValueBox::F64(v) => v,
+            ProtobufValueBox::Bool(v) => v,
+            ProtobufValueBox::String(v) => v,
+            ProtobufValueBox::Bytes(v) => v,
+            ProtobufValueBox::Enum(_) => unimplemented!(),
+            ProtobufValueBox::Message(v) => v.as_protobuf_value_mut(),
         }
     }
 }
