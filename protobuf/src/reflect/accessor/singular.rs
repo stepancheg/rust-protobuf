@@ -18,6 +18,7 @@ use reflect::types::ProtobufTypeMessage;
 use SingularField;
 use reflect::ProtobufValue;
 use SingularPtrField;
+use core::message_down_cast_mut;
 
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
@@ -30,6 +31,7 @@ pub(crate) trait SingularFieldAccessor : 'static {
     fn has_field_generic(&self, m: &Message) -> bool;
     // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message;
+    fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message;
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
     fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8];
@@ -261,6 +263,11 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         }
     }
 
+    fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message {
+        let _m: &mut M = message_down_cast_mut(m);
+        unimplemented!()
+    }
+
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor {
         let m = message_down_cast(m);
         match self.fns {
@@ -352,7 +359,6 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         let m = message_down_cast(m);
         self.get_value_option(m)
     }
-
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
         let m: &mut M = m.as_any_mut().downcast_mut().expect("wrong_type");
         match self.fns {

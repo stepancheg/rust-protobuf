@@ -164,6 +164,10 @@ pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
+pub fn message_down_cast_mut<'a, M : Message + 'a>(m: &'a mut Message) -> &'a mut M {
+    m.as_any_mut().downcast_mut::<M>().unwrap()
+}
+
 
 /// Parse message from stream.
 pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {

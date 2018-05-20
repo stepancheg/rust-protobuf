@@ -95,6 +95,10 @@ impl FieldDescriptor {
         self.singular().get_message_generic(m)
     }
 
+    pub fn mut_message<'a>(&self, m: &'a mut Message) -> &'a mut Message {
+        self.singular().mut_message_generic(m)
+    }
+
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
         self.singular().get_enum_generic(m)
     }
