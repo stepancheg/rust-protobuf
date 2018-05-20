@@ -882,12 +882,11 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn accessor_fn_singular_with_flag(&self, elem: &FieldElem) -> AccessorFn {
-        let name = match self.full_storage_type() {
-            RustType::Option(..) => "make_option_accessor",
-            RustType::SingularField(..) => "make_singular_field_accessor",
-            RustType::SingularPtrField(..) => "make_singular_ptr_field_accessor",
-            _ => unreachable!(),
+    fn accessor_fn_singular_with_flag(&self, elem: &FieldElem, option_kind: OptionKind) -> AccessorFn {
+        let name = match option_kind {
+            OptionKind::Option => "make_option_accessor",
+            OptionKind::SingularField => "make_singular_field_accessor",
+            OptionKind::SingularPtrField => "make_singular_ptr_field_accessor",
         }.to_owned();
         AccessorFn {
             name,
@@ -948,9 +947,9 @@ impl<'a> FieldGen<'a> {
             }
             FieldKind::Singular(SingularField {
                 ref elem,
-                flag: SingularFieldFlag::WithFlag { .. },
+                flag: SingularFieldFlag::WithFlag { option_kind, .. },
             }) => {
-                self.accessor_fn_singular_with_flag(elem)
+                self.accessor_fn_singular_with_flag(elem, option_kind)
             }
             FieldKind::Oneof(ref oneof) => {
                 self.accessor_fn_oneof(oneof)
