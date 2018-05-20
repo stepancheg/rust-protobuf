@@ -7,10 +7,6 @@ use ProtobufEnum;
 use descriptor::FileDescriptorProto;
 use descriptorx::find_enum_by_rust_name;
 use reflect::ProtobufValue;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use reflect::runtime_types::RuntimeTypeEnum;
-use std::marker;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 
 
 #[derive(Clone)]
@@ -58,8 +54,6 @@ pub struct EnumDescriptor {
 
     index_by_name: HashMap<String, usize>,
     index_by_number: HashMap<i32, usize>,
-
-    runtime_type: Box<RuntimeTypeDynamic>,
 }
 
 impl EnumDescriptor {
@@ -98,7 +92,6 @@ impl EnumDescriptor {
             values,
             index_by_name,
             index_by_number,
-            runtime_type: Box::new(RuntimeTypeDynamicImpl::<RuntimeTypeEnum<E>>(marker::PhantomData)),
         }
     }
 
@@ -115,9 +108,5 @@ impl EnumDescriptor {
     pub fn value_by_number<'a>(&'a self, number: i32) -> &'a EnumValueDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.values[index]
-    }
-
-    pub(crate) fn dynamic(&self) -> &RuntimeTypeDynamic {
-        &*self.runtime_type
     }
 }

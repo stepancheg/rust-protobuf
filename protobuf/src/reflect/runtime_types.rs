@@ -25,7 +25,11 @@ use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 pub trait RuntimeType : Send + Sync + 'static {
     type Value : ProtobufValue + Clone + Sized + 'static;
 
-    fn dynamic() -> &'static RuntimeTypeDynamic;
+    fn dynamic() -> &'static RuntimeTypeDynamic
+        where Self : Sized
+    {
+        &RuntimeTypeDynamicImpl::<Self>(marker::PhantomData)
+    }
 
     /// Get enum descriptor for this type, panics if not enum
     fn enum_descriptor() -> &'static EnumDescriptor {
@@ -88,14 +92,8 @@ pub struct RuntimeTypeMessage<M : Message>(marker::PhantomData<M>);
 #[derive(Copy, Clone)]
 pub struct RuntimeTypeUnreachable;
 
-static DYNAMIC_F32: RuntimeTypeDynamicImpl<RuntimeTypeF32> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeF32 {
     type Value = f32;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_F32
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> f32 {
         match value_box {
@@ -116,14 +114,8 @@ impl RuntimeType for RuntimeTypeF32 {
     }
 }
 
-static DYNAMIC_F64: RuntimeTypeDynamicImpl<RuntimeTypeF64> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeF64 {
     type Value = f64;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_F64
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> f64 {
         match value_box {
@@ -145,14 +137,8 @@ impl RuntimeType for RuntimeTypeF64 {
     }
 }
 
-static DYNAMIC_I32: RuntimeTypeDynamicImpl<RuntimeTypeI32> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeI32 {
     type Value = i32;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_I32
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> i32 {
         match value_box {
@@ -174,14 +160,8 @@ impl RuntimeType for RuntimeTypeI32 {
     }
 }
 
-static DYNAMIC_I64: RuntimeTypeDynamicImpl<RuntimeTypeI64> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeI64 {
     type Value = i64;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_I64
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> i64 {
         match value_box {
@@ -203,14 +183,8 @@ impl RuntimeType for RuntimeTypeI64 {
     }
 }
 
-static DYNAMIC_U32: RuntimeTypeDynamicImpl<RuntimeTypeU32> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeU32 {
     type Value = u32;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_U32
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> u32 {
         match value_box {
@@ -232,14 +206,8 @@ impl RuntimeType for RuntimeTypeU32 {
     }
 }
 
-static DYNAMIC_U64: RuntimeTypeDynamicImpl<RuntimeTypeU64> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeU64 {
     type Value = u64;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_U64
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> u64 {
         match value_box {
@@ -261,14 +229,8 @@ impl RuntimeType for RuntimeTypeU64 {
     }
 }
 
-static DYNAMIC_BOOL: RuntimeTypeDynamicImpl<RuntimeTypeBool> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeBool {
     type Value = bool;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_BOOL
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> bool {
         match value_box {
@@ -290,14 +252,8 @@ impl RuntimeType for RuntimeTypeBool {
     }
 }
 
-static DYNAMIC_STRING: RuntimeTypeDynamicImpl<RuntimeTypeString> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeString {
     type Value = String;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_STRING
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> String {
         match value_box {
@@ -315,14 +271,8 @@ impl RuntimeType for RuntimeTypeString {
     }
 }
 
-static DYNAMIC_VEC_U8: RuntimeTypeDynamicImpl<RuntimeTypeVecU8> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
 impl RuntimeType for RuntimeTypeVecU8 {
     type Value = Vec<u8>;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_VEC_U8
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> Vec<u8> {
         match value_box {
@@ -341,15 +291,8 @@ impl RuntimeType for RuntimeTypeVecU8 {
 }
 
 #[cfg(feature = "bytes")]
-static DYNAMIC_CARLLERCHE_BYTES: RuntimeTypeDynamicImpl<RuntimeTypeCarllercheBytes> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
-#[cfg(feature = "bytes")]
 impl RuntimeType for RuntimeTypeCarllercheBytes {
     type Value = Bytes;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_CARLLERCHE_BYTES
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> Bytes {
         match value_box {
@@ -369,15 +312,8 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
 }
 
 #[cfg(feature = "bytes")]
-static DYNAMIC_CARLLERCHE_CHARS: RuntimeTypeDynamicImpl<RuntimeTypeCarllercheChars> = RuntimeTypeDynamicImpl(marker::PhantomData);
-
-#[cfg(feature = "bytes")]
 impl RuntimeType for RuntimeTypeCarllercheChars {
     type Value = Chars;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        &DYNAMIC_CARLLERCHE_CHARS
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> Chars {
         match value_box {
@@ -399,10 +335,6 @@ impl<E> RuntimeType for RuntimeTypeEnum<E>
     where E : ProtobufEnum + ProtobufValue
 {
     type Value = E;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        Self::enum_descriptor().dynamic()
-    }
 
     fn enum_descriptor() -> &'static EnumDescriptor {
         E::enum_descriptor_static()
@@ -429,10 +361,6 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
 {
     type Value = M;
 
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        Self::message_descriptor().dynamic()
-    }
-
     fn message_descriptor() -> &'static MessageDescriptor {
         M::descriptor_static()
     }
@@ -456,10 +384,6 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
 
 impl RuntimeType for RuntimeTypeUnreachable {
     type Value = u32;
-
-    fn dynamic() -> &'static RuntimeTypeDynamic {
-        unreachable!()
-    }
 
     fn from_value_box(_value_box: ReflectValueBox) -> u32 {
         unreachable!()

@@ -14,9 +14,6 @@ use reflect::EnumValueDescriptor;
 use reflect::ReflectValueBox;
 use reflect::ReflectValueRef;
 use reflect::EnumDescriptor;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
-use reflect::runtime_types::RuntimeTypeMessage;
 use reflect::repeated::ReflectRepeatedRef;
 use reflect::map::ReflectMapRef;
 use reflect::accessor::FieldAccessor;
@@ -155,13 +152,12 @@ impl FieldDescriptor {
 trait MessageFactory {
     fn new_instance(&self) -> Box<Message>;
     fn clone(&self, message: &Message) -> Box<Message>;
-    fn dynamic(&self) -> &RuntimeTypeDynamic;
 }
 
 struct MessageFactoryTyped<M>
     where M : 'static + Message + Default + Clone
 {
-    runtime_type: RuntimeTypeDynamicImpl<RuntimeTypeMessage<M>>,
+    _marker: marker::PhantomData<M>,
 }
 
 impl<M> MessageFactoryTyped<M>
@@ -169,7 +165,7 @@ impl<M> MessageFactoryTyped<M>
 {
     fn new() -> MessageFactoryTyped<M> {
         MessageFactoryTyped {
-            runtime_type: RuntimeTypeDynamicImpl(marker::PhantomData),
+            _marker: marker::PhantomData,
         }
     }
 }
@@ -185,10 +181,6 @@ impl<M> MessageFactory for MessageFactoryTyped<M>
     fn clone(&self, message: &Message) -> Box<Message> {
         let m: &M = message.as_any().downcast_ref().expect("wrong message type");
         Box::new(m.clone())
-    }
-
-    fn dynamic(&self) -> &RuntimeTypeDynamic {
-        &self.runtime_type
     }
 }
 
@@ -278,10 +270,6 @@ impl MessageDescriptor {
     pub fn field_by_number<'a>(&'a self, number: u32) -> &'a FieldDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.fields[index]
-    }
-
-    pub(crate) fn dynamic(&self) -> &RuntimeTypeDynamic {
-        self.factory.dynamic()
     }
 }
 
