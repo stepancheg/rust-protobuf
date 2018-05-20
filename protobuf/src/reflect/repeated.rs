@@ -5,15 +5,19 @@ use super::value::ReflectValueRef;
 
 use repeated::RepeatedField;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use reflect::ReflectValueBox;
+use std::fmt;
 
 
-pub(crate) trait ReflectRepeated : Sync + 'static {
+pub(crate) trait ReflectRepeated : Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &ProtobufValue;
+    fn set(&mut self, index: usize, value: ReflectValueBox);
+    fn push(&mut self, value: ReflectValueBox);
 }
 
-impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
+impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -27,10 +31,20 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
     fn get(&self, index: usize) -> &ProtobufValue {
         &self[index]
     }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self[index] = value;
+    }
+
+    fn push(&mut self, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self.push(value)
+    }
 }
 
 // useless
-impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
+impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -44,9 +58,18 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
     fn get(&self, index: usize) -> &ProtobufValue {
         &self[index]
     }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self[index] = value;
+    }
+
+    fn push(&mut self, _value: ReflectValueBox) {
+        panic!("push is not possible for [V]")
+    }
 }
 
-impl<V : ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
+impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -59,6 +82,16 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
 
     fn get(&self, index: usize) -> &ProtobufValue {
         &self[index]
+    }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self[index] = value;
+    }
+
+    fn push(&mut self, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self.push(value)
     }
 }
 
@@ -90,8 +123,8 @@ impl<'a> Iterator for ReflectRepeatedIter<'a> {
 }
 
 impl<'a> IntoIterator for &'a ReflectRepeated {
-    type IntoIter = ReflectRepeatedIter<'a>;
     type Item = &'a ProtobufValue;
+    type IntoIter = ReflectRepeatedIter<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.reflect_iter()
@@ -198,6 +231,11 @@ pub struct ReflectRepeatedRef<'a> {
     pub(crate) dynamic: &'static RuntimeTypeDynamic,
 }
 
+pub struct ReflectRepeatedMut<'a> {
+    pub(crate) repeated: &'a mut ReflectRepeated,
+    pub(crate) dynamic: &'static RuntimeTypeDynamic,
+}
+
 impl<'a> ReflectRepeatedRef<'a> {
     pub fn len(&self) -> usize {
         self.repeated.len()
@@ -205,6 +243,31 @@ impl<'a> ReflectRepeatedRef<'a> {
 
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
+    }
+}
+
+impl<'a> ReflectRepeatedMut<'a> {
+    fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
+        ReflectRepeatedRef {
+            repeated: self.repeated,
+            dynamic: self.dynamic,
+        }
+    }
+
+    pub fn len(&self) -> usize {
+        self.repeated.len()
+    }
+
+    pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
+        self.dynamic.value_to_ref(self.repeated.get(index))
+    }
+
+    pub fn set(&mut self, index: usize, value: ReflectValueBox) {
+        self.repeated.set(index, value);
+    }
+
+    pub fn push(&mut self, value: ReflectValueBox) {
+        self.repeated.push(value);
     }
 }
 
@@ -249,5 +312,27 @@ impl<'a> IntoIterator for ReflectRepeatedRef<'a> {
             repeated: self,
             index: 0,
         }
+    }
+}
+
+impl<'a> IntoIterator for &'a ReflectRepeatedMut<'a> {
+    type Item = ReflectValueRef<'a>;
+    type IntoIter = ReflectRepeatedRefIter<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.as_ref().into_iter()
+    }
+}
+
+
+impl<'a> fmt::Debug for ReflectRepeatedRef<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self.repeated, f)
+    }
+}
+
+impl<'a> fmt::Debug for ReflectRepeatedMut<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self.repeated, f)
     }
 }

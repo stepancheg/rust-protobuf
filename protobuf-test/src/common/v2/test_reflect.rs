@@ -84,3 +84,11 @@ fn test_singular() {
         test_field(&mut message, field);
     }
 }
+
+#[test]
+fn test_repeated_debug() {
+    let mut message = TestTypesRepeated::new();
+    message.set_int32_field(vec![10, 20, 30]);
+    let field = message.descriptor().field_by_name("int32_field").get_repeated(&message);
+    assert_eq!("[10, 20, 30]", format!("{:?}", field));
+}

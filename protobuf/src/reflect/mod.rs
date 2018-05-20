@@ -7,6 +7,7 @@ mod value;
 mod enums;
 mod message;
 pub(crate) mod as_any;
+pub(crate) mod transmute_eq;
 pub mod types;
 pub(crate) mod runtime_types;
 pub(crate) mod runtime_type_dynamic;

@@ -20,6 +20,8 @@ use reflect::map::ReflectMapRef;
 use reflect::accessor::FieldAccessor;
 use reflect::accessor::AccessorKind;
 use reflect::accessor::singular::SingularFieldAccessor;
+use reflect::accessor::repeated::RepeatedFieldAccessor;
+use reflect::repeated::ReflectRepeatedMut;
 
 
 pub struct FieldDescriptor {
@@ -92,6 +94,13 @@ impl FieldDescriptor {
         }
     }
 
+    fn repeated(&self) -> &RepeatedFieldAccessor {
+        match self.accessor.accessor {
+            AccessorKind::Repeated(ref a) => &**a,
+            _ => panic!("not a repeated field"),
+        }
+    }
+
     /// Get message field or default instance if field is unset.
     /// Panic if field type is not message.
     pub fn get_message<'a>(&self, m: &'a Message) -> &'a Message {
@@ -161,6 +170,14 @@ impl FieldDescriptor {
         }
     }
 
+    pub fn get_repeated<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a> {
+        self.repeated().get_reflect(m)
+    }
+
+    pub fn mut_repeated<'a>(&mut self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
+        self.repeated().mut_reflect(m)
+    }
+
     pub fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
         self.singular().set_singular_field(m, value)
     }
@@ -173,23 +190,9 @@ trait MessageFactory {
     fn clone(&self, message: &Message) -> Box<Message>;
 }
 
-struct MessageFactoryTyped<M>
-    where M : 'static + Message + Default + Clone
-{
-    _marker: marker::PhantomData<M>,
-}
+struct MessageFactoryImpl<M>(marker::PhantomData<M>);
 
-impl<M> MessageFactoryTyped<M>
-    where M : 'static + Message + Default + Clone
-{
-    fn new() -> MessageFactoryTyped<M> {
-        MessageFactoryTyped {
-            _marker: marker::PhantomData,
-        }
-    }
-}
-
-impl<M> MessageFactory for MessageFactoryTyped<M>
+impl<M> MessageFactory for MessageFactoryImpl<M>
     where M : 'static + Message + Default + Clone
 {
     fn new_instance(&self) -> Box<Message> {
@@ -210,7 +213,7 @@ impl<M> MessageFactory for MessageFactoryTyped<M>
 pub struct MessageDescriptor {
     full_name: String,
     proto: &'static DescriptorProto,
-    factory: Box<MessageFactory + 'static>,
+    factory: &'static MessageFactory,
     fields: Vec<FieldDescriptor>,
 
     index_by_name: HashMap<String, usize>,
@@ -250,7 +253,7 @@ impl MessageDescriptor {
         MessageDescriptor {
             full_name: full_name,
             proto: proto.message,
-            factory: Box::new(MessageFactoryTyped::<M>::new()),
+            factory: &MessageFactoryImpl(marker::PhantomData::<M>),
             fields: fields
                 .into_iter()
                 .map(|f| {
@@ -298,6 +301,10 @@ impl MessageDescriptor {
     pub fn field_by_number<'a>(&'a self, number: u32) -> &'a FieldDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.fields[index]
+    }
+
+    pub fn cast<M : 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {
+        message.downcast_box::<M>().map(|m| *m)
     }
 }
 

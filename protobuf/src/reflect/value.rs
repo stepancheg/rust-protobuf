@@ -1,4 +1,5 @@
 use std::any::Any;
+use std::any::TypeId;
 
 
 #[cfg(feature = "bytes")]
@@ -9,6 +10,7 @@ use chars::Chars;
 use core::*;
 use super::*;
 use super::as_any::AsAny;
+use reflect::transmute_eq::transmute_eq;
 
 
 /// Hack against lack of upcasting in Rust
@@ -132,6 +134,15 @@ fn _assert_value_box_send_sync() {
     _assert_send_sync::<ReflectValueBox>();
 }
 
+#[cfg(not(feature = "bytes"))]
+type VecU8OrBytes = Vec<u8>;
+#[cfg(feature = "bytes")]
+type VecU8OrBytes = Vec<u8>;
+#[cfg(not(feature = "bytes"))]
+type StringOrChars = String;
+#[cfg(feature = "bytes")]
+type StringOrChars = Chars;
+
 
 impl ReflectValueBox {
     pub fn as_value(&self) -> &ProtobufValue {
@@ -163,6 +174,46 @@ impl ReflectValueBox {
             ReflectValueBox::Bytes(v) => v,
             ReflectValueBox::Enum(_v) => panic!("enum value cannot be mutable"),
             ReflectValueBox::Message(v) => v.as_protobuf_value_mut(),
+        }
+    }
+
+    pub fn downcast<V : 'static>(self) -> Result<V, Self> {
+        match self {
+            ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),
+            ReflectValueBox::U64(v) => transmute_eq(v).map_err(ReflectValueBox::U64),
+            ReflectValueBox::I32(v) => transmute_eq(v).map_err(ReflectValueBox::I32),
+            ReflectValueBox::I64(v) => transmute_eq(v).map_err(ReflectValueBox::I64),
+            ReflectValueBox::F32(v) => transmute_eq(v).map_err(ReflectValueBox::F32),
+            ReflectValueBox::F64(v) => transmute_eq(v).map_err(ReflectValueBox::F64),
+            ReflectValueBox::Bool(v) => transmute_eq(v).map_err(ReflectValueBox::Bool),
+            ReflectValueBox::String(v) => {
+                if TypeId::of::<V>() == TypeId::of::<String>() {
+                    Ok(transmute_eq(v).unwrap())
+                } else if TypeId::of::<V>() == TypeId::of::<StringOrChars>() {
+                    Ok(transmute_eq(StringOrChars::from(v)).unwrap())
+                } else {
+                    Err(ReflectValueBox::String(v))
+                }
+            },
+            ReflectValueBox::Bytes(v) => {
+                if TypeId::of::<V>() == TypeId::of::<Vec<u8>>() {
+                    Ok(transmute_eq(v).unwrap())
+                } else if TypeId::of::<V>() == TypeId::of::<VecU8OrBytes>() {
+                    Ok(transmute_eq(VecU8OrBytes::from(v)).unwrap())
+                } else {
+                    Err(ReflectValueBox::Bytes(v))
+                }
+            },
+            ReflectValueBox::Enum(e) => {
+                if let Some(r) = e.cast() {
+                    Ok(r)
+                } else {
+                    Err(ReflectValueBox::Enum(e))
+                }
+            }
+            ReflectValueBox::Message(m) => {
+                m.descriptor().cast(m).map_err(ReflectValueBox::Message)
+            }
         }
     }
 }

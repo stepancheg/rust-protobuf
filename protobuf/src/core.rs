@@ -159,6 +159,19 @@ pub trait Message : fmt::Debug + Clear + Any + Send + Sync + ProtobufValue {
         where Self : Sized;
 }
 
+impl Message {
+    pub fn downcast_box<T : Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
+        if self.as_any().is::<T>() {
+            unsafe {
+                let raw: *mut Message = Box::into_raw(self);
+                Ok(Box::from_raw(raw as *mut T))
+            }
+        } else {
+            Err(self)
+        }
+    }
+}
+
 
 pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()

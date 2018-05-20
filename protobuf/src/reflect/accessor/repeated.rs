@@ -13,12 +13,16 @@ use reflect::repeated::ReflectRepeatedRef;
 use reflect::EnumDescriptor;
 use reflect::MessageDescriptor;
 use core::message_down_cast;
+use reflect::repeated::ReflectRepeatedMut;
+use core::message_down_cast_mut;
+use std::fmt;
 
 
 pub(crate) trait RepeatedFieldAccessor : 'static {
     fn len_field_generic(&self, m: &Message) -> usize;
 
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
+    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a>;
 
     /// Return enum descriptor for enum field, panics if field type is not enum.
     fn enum_descriptor(&self) -> &'static EnumDescriptor;
@@ -46,7 +50,7 @@ struct RepeatedFieldGetMutImpl<M, L>
 impl<M, V> RepeatedFieldGetMut<M, ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
     where
         M : Message + 'static,
-        V : ProtobufValue + 'static,
+        V : ProtobufValue + fmt::Debug + 'static,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
         (self.get_field)(m) as &ReflectRepeated
@@ -60,7 +64,7 @@ impl<M, V> RepeatedFieldGetMut<M, ReflectRepeated> for RepeatedFieldGetMutImpl<M
 impl<M, V> RepeatedFieldGetMut<M, ReflectRepeated> for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
     where
         M : Message + 'static,
-        V : ProtobufValue + 'static,
+        V : ProtobufValue + fmt::Debug + 'static,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
         (self.get_field)(m) as &ReflectRepeated
@@ -95,6 +99,15 @@ impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
         let m = message_down_cast(m);
         let repeated = self.fns.get_field(m);
         ReflectRepeatedRef {
+            repeated,
+            dynamic: V::RuntimeType::dynamic(),
+        }
+    }
+
+    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
+        let m = message_down_cast_mut(m);
+        let repeated = self.fns.mut_field(m);
+        ReflectRepeatedMut {
             repeated,
             dynamic: V::RuntimeType::dynamic(),
         }
