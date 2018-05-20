@@ -838,13 +838,12 @@ impl<'a> FieldGen<'a> {
     }
 
     fn accessor_fn_singular_with_flag(&self, elem: &FieldElem) -> AccessorFn {
-        let coll = match self.full_storage_type() {
-            RustType::Option(..) => "option",
-            RustType::SingularField(..) => "singular_field",
-            RustType::SingularPtrField(..) => "singular_ptr_field",
+        let name = match self.full_storage_type() {
+            RustType::Option(..) => "make_option_accessor",
+            RustType::SingularField(..) => "make_singular_field_accessor",
+            RustType::SingularPtrField(..) => "make_singular_ptr_field_accessor",
             _ => unreachable!(),
-        };
-        let name = format!("make_{}_accessor", coll);
+        }.to_owned();
         AccessorFn {
             name,
             type_params: vec![elem.lib_protobuf_type()],
