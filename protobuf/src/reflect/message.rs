@@ -295,7 +295,6 @@ pub enum ReflectFieldRef<'a> {
     Map(ReflectMapRef<'a>),
 }
 
-#[test]
 fn _assert_sync<'a>() {
     fn _assert_send_sync<T : Sync>() {}
     _assert_send_sync::<ReflectFieldRef<'a>>();
