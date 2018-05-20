@@ -111,10 +111,30 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
 }
 
 
+/// Optional fields can be stored are `Option<T>`, `SingularField<T>` or `SingularPtrField<T>`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum OptionKind {
+    Option,
+    SingularField,
+    SingularPtrField,
+}
+
+impl OptionKind {
+    fn wrap_element(&self, element_type: RustType) -> RustType {
+        let element_type = Box::new(element_type);
+        match self {
+            OptionKind::Option => RustType::Option(element_type),
+            OptionKind::SingularField => RustType::SingularField(element_type),
+            OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
+        }
+    }
+}
+
+
 #[derive(Clone, PartialEq, Eq)]
 pub enum SingularFieldFlag {
     // proto2 or proto3 message
-    WithFlag { required: bool },
+    WithFlag { required: bool, option_kind: OptionKind },
     // proto3
     WithoutFlag,
 }
@@ -122,7 +142,7 @@ pub enum SingularFieldFlag {
 impl SingularFieldFlag {
     pub fn is_required(&self) -> bool {
         match *self {
-            SingularFieldFlag::WithFlag { required } => required,
+            SingularFieldFlag::WithFlag { required, .. } => required,
             SingularFieldFlag::WithoutFlag => false,
         }
     }
@@ -137,20 +157,28 @@ pub struct SingularField {
 impl SingularField {
     fn rust_storage_type(&self) -> RustType {
         match self.flag {
-            SingularFieldFlag::WithFlag { .. } => {
-                match self.elem.proto_type() {
-                    FieldDescriptorProto_Type::TYPE_MESSAGE => RustType::SingularPtrField(
-                        Box::new(self.elem.rust_storage_type()),
-                    ),
-                    FieldDescriptorProto_Type::TYPE_STRING |
-                    FieldDescriptorProto_Type::TYPE_BYTES
-                        if self.elem.primitive_type_variant() == PrimitiveTypeVariant::Default => {
-                        RustType::SingularField(Box::new(self.elem.rust_storage_type()))
-                    }
-                    _ => RustType::Option(Box::new(self.elem.rust_storage_type())),
-                }
+            SingularFieldFlag::WithFlag { option_kind, .. } => {
+                option_kind.wrap_element(self.elem.rust_storage_type())
             }
             SingularFieldFlag::WithoutFlag => self.elem.rust_storage_type(),
+        }
+    }
+}
+
+
+/// Repeated field can be `Vec<T>` or `RepeatedField<T>`.
+#[derive(Eq, PartialEq, Copy, Clone)]
+pub enum RepeatedFieldKind {
+    Vec,
+    RepeatedField,
+}
+
+impl RepeatedFieldKind {
+    fn wrap_element(&self, element_type: RustType) -> RustType {
+        let element_type = Box::new(element_type);
+        match self {
+            RepeatedFieldKind::Vec => RustType::Vec(element_type),
+            RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
         }
     }
 }
@@ -163,17 +191,22 @@ pub struct RepeatedField {
 }
 
 impl RepeatedField {
-    fn rust_type(&self) -> RustType {
+    fn kind(&self) -> RepeatedFieldKind {
         if !self.elem.is_copy() &&
             self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche &&
             !self.repeated_field_vec
         {
-            RustType::RepeatedField(Box::new(self.elem.rust_storage_type()))
+            RepeatedFieldKind::RepeatedField
         } else {
-            RustType::Vec(Box::new(self.elem.rust_storage_type()))
+            RepeatedFieldKind::Vec
         }
     }
+
+    fn rust_type(&self) -> RustType {
+        self.kind().wrap_element(self.elem.rust_storage_type())
+    }
 }
+
 
 #[derive(Clone)]
 pub struct MapField {
@@ -458,8 +491,20 @@ impl<'a> FieldGen<'a> {
             {
                 SingularFieldFlag::WithoutFlag
             } else {
+                let required = field.field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED;
+                let option_kind = match field.field.get_field_type() {
+                    FieldDescriptorProto_Type::TYPE_MESSAGE => OptionKind::SingularPtrField,
+                    FieldDescriptorProto_Type::TYPE_STRING |
+                    FieldDescriptorProto_Type::TYPE_BYTES
+                    if elem.primitive_type_variant() == PrimitiveTypeVariant::Default => {
+                        OptionKind::SingularField
+                    }
+                    _ => OptionKind::Option,
+                };
+
                 SingularFieldFlag::WithFlag {
-                    required: field.field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED,
+                    required,
+                    option_kind,
                 }
             };
             FieldKind::Singular(SingularField {
