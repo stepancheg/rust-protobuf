@@ -30,7 +30,7 @@ pub(crate) trait SingularFieldAccessor : 'static {
 
     fn has_field_generic(&self, m: &Message) -> bool;
     // TODO: should it return default value or panic on unset field?
-    fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message;
+    fn get_message_generic<'a>(&self, m: &'a Message) -> Option<&'a Message>;
     fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message;
     fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
@@ -247,17 +247,24 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         }
     }
 
-    fn get_message_generic<'a>(&self, m: &'a Message) -> &'a Message {
+    fn get_message_generic<'a>(&self, m: &'a Message) -> Option<&'a Message> {
         let m = message_down_cast(m);
         match self.fns {
             FieldAccessorFunctions::SingularHasGetSet {
+                has,
                 get_set: SingularGetSet::Message(ref get), ..
-            } => get.get_message(m),
+            } => {
+                if has(m) {
+                    Some(get.get_message(m))
+                } else {
+                    None
+                }
+            },
             FieldAccessorFunctions::Optional(ref t) => {
-                match V::RuntimeType::as_ref(t.get_field(m).to_option_typed().expect("field unset")) {
+                t.get_field(m).to_option_typed().map(V::RuntimeType::as_ref).map(|v| match v {
                     ReflectValueRef::Message(m) => m,
                     _ => panic!("not a message"),
-                }
+                })
             }
             ref fns => panic!("unknown accessor type: {:?}", fns),
         }

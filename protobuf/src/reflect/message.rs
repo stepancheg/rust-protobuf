@@ -91,8 +91,13 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get message field or default instance if field is unset.
+    /// Panic if field type is not message.
     pub fn get_message<'a>(&self, m: &'a Message) -> &'a Message {
-        self.singular().get_message_generic(m)
+        match self.singular().get_message_generic(m) {
+            Some(m) => m,
+            None => self.message_descriptor().default_instance(),
+        }
     }
 
     pub fn mut_message<'a>(&self, m: &'a mut Message) -> &'a mut Message {
@@ -155,6 +160,7 @@ impl FieldDescriptor {
 
 trait MessageFactory {
     fn new_instance(&self) -> Box<Message>;
+    fn default_instance(&self) -> &Message;
     fn clone(&self, message: &Message) -> Box<Message>;
 }
 
@@ -180,6 +186,10 @@ impl<M> MessageFactory for MessageFactoryTyped<M>
     fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
         Box::new(m)
+    }
+
+    fn default_instance(&self) -> &Message {
+        M::default_instance() as &Message
     }
 
     fn clone(&self, message: &Message) -> Box<Message> {
@@ -247,6 +257,11 @@ impl MessageDescriptor {
     /// New empty message
     pub fn new_instance(&self) -> Box<Message> {
         self.factory.new_instance()
+    }
+
+    /// Shared immutable empty message
+    pub fn default_instance(&self) -> &Message {
+        self.factory.default_instance()
     }
 
     /// Clone a message
