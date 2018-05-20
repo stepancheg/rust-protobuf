@@ -882,16 +882,33 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn accessor_fn_singular_with_flag(&self, elem: &FieldElem, option_kind: OptionKind) -> AccessorFn {
-        let name = match option_kind {
-            OptionKind::Option => "make_option_accessor",
-            OptionKind::SingularField => "make_singular_field_accessor",
-            OptionKind::SingularPtrField => "make_singular_ptr_field_accessor",
-        }.to_owned();
-        AccessorFn {
-            name,
-            type_params: vec![elem.lib_protobuf_type()],
-            callback_params: self.make_accessor_fns_lambda(),
+    fn accessor_fn_singular_with_flag(&self, elem: &FieldElem, _option_kind: OptionKind) -> AccessorFn {
+        match elem {
+            FieldElem::Message(..) => {
+                AccessorFn {
+                    name: "make_option_accessor".to_owned(),
+                    type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
+                    callback_params: self.make_accessor_fns_lambda(),
+                }
+            }
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..) |
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
+                AccessorFn {
+                    name: "make_option_get_ref_accessor".to_owned(),
+                    type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
+                    callback_params: self.make_accessor_fns_lambda_get(),
+                }
+            }
+            FieldElem::Primitive(..) | FieldElem::Enum(..) => {
+                AccessorFn {
+                    name: "make_option_get_copy_accessor".to_owned(),
+                    type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
+                    callback_params: self.make_accessor_fns_lambda_get(),
+                }
+            }
+            FieldElem::Group => {
+                unreachable!("no accessor for group field");
+            }
         }
     }
 
@@ -962,6 +979,15 @@ impl<'a> FieldGen<'a> {
         vec![
             format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
             format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_lambda_get(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
         ]
     }
 

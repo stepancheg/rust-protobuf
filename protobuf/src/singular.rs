@@ -8,6 +8,28 @@ use std::mem;
 use clear::Clear;
 
 
+pub trait OptionLike<T> {
+    fn into_option(self) -> Option<T>;
+    fn as_option_ref(&self) -> Option<&T>;
+    fn set_value(&mut self, value: T);
+}
+
+
+impl<T> OptionLike<T> for Option<T> {
+    fn into_option(self) -> Option<T> {
+        self
+    }
+
+    fn as_option_ref(&self) -> Option<&T> {
+        self.as_ref()
+    }
+
+    fn set_value(&mut self, value: T) {
+        *self = Some(value);
+    }
+}
+
+
 /// Like `Option<T>`, but keeps the actual element on `clear`.
 pub struct SingularField<T> {
     value: T,
@@ -465,6 +487,37 @@ impl<'a, T> IntoIterator for &'a SingularPtrField<T> {
         self.iter()
     }
 }
+
+
+impl<T> OptionLike<T> for SingularField<T> {
+    fn into_option(self) -> Option<T> {
+        self.into_option()
+    }
+
+    fn as_option_ref(&self) -> Option<&T> {
+        self.as_ref()
+    }
+
+    fn set_value(&mut self, value: T) {
+        *self = SingularField::some(value);
+    }
+}
+
+impl<T> OptionLike<T> for SingularPtrField<T> {
+    fn into_option(self) -> Option<T> {
+        self.into_option()
+    }
+
+    fn as_option_ref(&self) -> Option<&T> {
+        self.as_ref()
+    }
+
+    fn set_value(&mut self, value: T) {
+        // TODO: unnecessary malloc
+        *self = SingularPtrField::some(value);
+    }
+}
+
 
 
 #[cfg(test)]

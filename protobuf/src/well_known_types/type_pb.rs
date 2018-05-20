@@ -347,7 +347,7 @@ impl ::protobuf::Message for Type {
                     |m: &Type| { &m.options },
                     |m: &mut Type| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::rt::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>, _>(
                     "source_context",
                     |m: &Type| { &m.source_context },
                     |m: &mut Type| { &mut m.source_context },
@@ -1337,7 +1337,7 @@ impl ::protobuf::Message for Enum {
                     |m: &Enum| { &m.options },
                     |m: &mut Enum| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::rt::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>, _>(
                     "source_context",
                     |m: &Enum| { &m.source_context },
                     |m: &mut Enum| { &mut m.source_context },
@@ -1786,7 +1786,7 @@ impl ::protobuf::Message for Option {
                     |m: &Option| { &m.name },
                     |m: &mut Option| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::rt::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>>(
+                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>, _>(
                     "value",
                     |m: &Option| { &m.value },
                     |m: &mut Option| { &mut m.value },

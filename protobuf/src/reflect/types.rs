@@ -31,8 +31,9 @@ use reflect::runtime_types::RuntimeTypeCarllercheChars;
 use reflect::runtime_types::RuntimeTypeEnum;
 use reflect::runtime_types::RuntimeTypeMessage;
 use reflect::runtime_types::RuntimeTypeUnreachable;
+use std::fmt;
 
-pub trait ProtobufType : Clone + 'static {
+pub trait ProtobufType : Send + Sync + Clone + 'static {
     type RuntimeType : RuntimeType;
 
     fn wire_type() -> WireType;
@@ -544,7 +545,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 }
 
-impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
+impl<E : ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
     type RuntimeType = RuntimeTypeEnum<E>;
 
     fn wire_type() -> WireType {

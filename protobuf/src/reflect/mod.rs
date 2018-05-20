@@ -4,7 +4,6 @@ mod accessor;
 mod map;
 mod repeated;
 mod value;
-mod optional;
 mod enums;
 mod message;
 pub(crate) mod as_any;

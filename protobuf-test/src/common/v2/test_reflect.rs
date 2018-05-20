@@ -68,6 +68,9 @@ fn value_for_field(field: &FieldDescriptor) -> ReflectValueBox {
 fn test_field(message: &mut Message, field: &FieldDescriptor) {
     assert!(!field.has_field(message));
 
+    // should not crash
+    field.get_singular_field_or_default(message);
+
     let value = value_for_field(field);
     field.set_singular_field(message, value);
 }

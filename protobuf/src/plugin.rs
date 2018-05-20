@@ -223,10 +223,11 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                     |m: &CodeGeneratorRequest| { &m.file_to_generate },
                     |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
                 ));
-                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                     "parameter",
                     |m: &CodeGeneratorRequest| { &m.parameter },
                     |m: &mut CodeGeneratorRequest| { &mut m.parameter },
+                    CodeGeneratorRequest::get_parameter,
                 ));
                 fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
                     "proto_file",
@@ -433,10 +434,11 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                     "error",
                     |m: &CodeGeneratorResponse| { &m.error },
                     |m: &mut CodeGeneratorResponse| { &mut m.error },
+                    CodeGeneratorResponse::get_error,
                 ));
                 fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
@@ -691,20 +693,23 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                     "name",
                     |m: &CodeGeneratorResponse_File| { &m.name },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.name },
+                    CodeGeneratorResponse_File::get_name,
                 ));
-                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                     "insertion_point",
                     |m: &CodeGeneratorResponse_File| { &m.insertion_point },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
+                    CodeGeneratorResponse_File::get_insertion_point,
                 ));
-                fields.push(::protobuf::reflect::rt::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                     "content",
                     |m: &CodeGeneratorResponse_File| { &m.content },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.content },
+                    CodeGeneratorResponse_File::get_content,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
                     "CodeGeneratorResponse_File",

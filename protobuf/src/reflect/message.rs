@@ -149,6 +149,10 @@ impl FieldDescriptor {
         self.singular().get_f64_generic(m)
     }
 
+    pub fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
+        self.singular().get_singular_field_or_default(m)
+    }
+
     pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => ReflectFieldRef::Optional(a.get_reflect(m)),

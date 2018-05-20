@@ -1,24 +1,24 @@
+use std::fmt;
+use std::mem;
+
+use Message;
 use reflect::EnumDescriptor;
 use reflect::MessageDescriptor;
-use Message;
 use reflect::EnumValueDescriptor;
 use reflect::ReflectValueRef;
 use reflect::ReflectValueBox;
-use std::mem;
 use reflect::runtime_types::RuntimeType;
 use reflect::types::ProtobufType;
-use reflect::optional::ReflectOptional;
-use std::fmt;
 use core::message_down_cast;
 use reflect::accessor::FieldAccessor;
 use reflect::accessor::AccessorKind;
 use reflect::types::ProtobufTypeString;
 use reflect::types::ProtobufTypeBytes;
 use reflect::types::ProtobufTypeMessage;
-use SingularField;
 use reflect::ProtobufValue;
-use SingularPtrField;
 use core::message_down_cast_mut;
+use singular::OptionLike;
+use reflect::runtime_types::RuntimeTypeWithDeref;
 
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
@@ -45,6 +45,7 @@ pub(crate) trait SingularFieldAccessor : 'static {
 
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
 
+    fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a>;
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox);
 }
 
@@ -131,7 +132,7 @@ impl<M, V> SingularGetSet<M, V>
     }
 }
 
-trait FieldAccessor2<M, R : ?Sized>
+trait GetMut<M, R : ?Sized>
     where
         M : Message + 'static,
 {
@@ -139,13 +140,85 @@ trait FieldAccessor2<M, R : ?Sized>
     fn mut_field<'a>(&self, message: &'a mut M) -> &'a mut R;
 }
 
-struct MessageGetMut<M, L>
+struct GetMutImpl<M, L>
     where
         M : Message + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a L,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut L,
 }
+
+impl<M, V, O> GetMut<M, OptionLike<V>> for GetMutImpl<M, O>
+    where
+        M : Message + 'static,
+        V : ProtobufValue + Clone + 'static,
+        O : OptionLike<V> + 'static,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a (OptionLike<V> + 'static) {
+        (self.get_field)(m) as &OptionLike<V>
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut (OptionLike<V> + 'static) {
+        (self.mut_field)(m) as &mut OptionLike<V>
+    }
+}
+
+
+impl<M, V> GetMut<M, ProtobufValue> for GetMutImpl<M, V>
+    where
+        M : Message + 'static,
+        V : ProtobufValue + Clone + 'static,
+{
+    fn get_field<'a>(&self, m: &'a M) -> &'a ProtobufValue {
+        (self.get_field)(m) as &ProtobufValue
+    }
+
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ProtobufValue {
+        (self.mut_field)(m) as &mut ProtobufValue
+    }
+}
+
+
+trait GetOrDefault<M> {
+    fn get_or_default<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
+}
+
+struct GetOrDefaultCopy<M, V>
+    where
+        M : Message,
+        V : RuntimeType,
+{
+    get: fn(&M) -> V::Value,
+}
+
+struct GetOrDefaultRef<M, V>
+    where
+        M : Message,
+        V : RuntimeTypeWithDeref,
+{
+    get: for<'a> fn(&'a M) -> &'a V::DerefTarget,
+}
+
+impl<M, V> GetOrDefault<M> for GetOrDefaultCopy<M, V>
+    where
+        M : Message,
+        V : RuntimeType,
+{
+    fn get_or_default<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
+        V::into_static_value_ref((self.get)(m))
+    }
+}
+
+impl<M, V> GetOrDefault<M> for GetOrDefaultRef<M, V>
+    where
+        M : Message,
+        V : RuntimeTypeWithDeref,
+{
+    fn get_or_default<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
+        V::defef_as_ref((self.get)(m))
+    }
+}
+
 
 
 enum FieldAccessorFunctions<M, V>
@@ -157,9 +230,11 @@ enum FieldAccessorFunctions<M, V>
         get_set: SingularGetSet<M, V::RuntimeType>,
     },
     // protobuf 3 simple field
-    FieldPointer(MessageGetMut<M, <V::RuntimeType as RuntimeType>::Value>),
+    FieldPointer(GetMutImpl<M, <V::RuntimeType as RuntimeType>::Value>),
     // optional, required or message
-    Optional(Box<FieldAccessor2<M, ReflectOptional<<V::RuntimeType as RuntimeType>::Value>>>),
+    Optional(
+        Box<GetMut<M, OptionLike<<V::RuntimeType as RuntimeType>::Value>> + 'static>,
+        Option<Box<GetOrDefault<M>>>),
 }
 
 impl<M, V> fmt::Debug for FieldAccessorFunctions<M, V>
@@ -193,10 +268,10 @@ impl<M, V> SingularFieldAccessorImpl<M, V>
 {
     fn get_value_option<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         match self.fns {
-            FieldAccessorFunctions::Optional(ref accessor2) => {
-                accessor2
+            FieldAccessorFunctions::Optional(ref accessor, ..) => {
+                accessor
                     .get_field(m)
-                    .to_option_typed()
+                    .as_option_ref()
                     .map(V::RuntimeType::as_ref)
             }
             FieldAccessorFunctions::FieldPointer(ref accessor2) => {
@@ -238,8 +313,8 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         let m = message_down_cast(m);
         match self.fns {
             FieldAccessorFunctions::SingularHasGetSet { has, .. } => has(m),
-            FieldAccessorFunctions::Optional(ref a) => {
-                a.get_field(m).to_option_typed().is_some()
+            FieldAccessorFunctions::Optional(ref a, ..) => {
+                a.get_field(m).as_option_ref().is_some()
             }
             FieldAccessorFunctions::FieldPointer(ref a) => {
                 V::RuntimeType::as_ref((a.get_field)(m)).is_non_zero()
@@ -260,8 +335,8 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
                     None
                 }
             },
-            FieldAccessorFunctions::Optional(ref t) => {
-                t.get_field(m).to_option_typed().map(V::RuntimeType::as_ref).map(|v| match v {
+            FieldAccessorFunctions::Optional(ref t, ..) => {
+                t.get_field(m).as_option_ref().map(V::RuntimeType::as_ref).map(|v| match v {
                     ReflectValueRef::Message(m) => m,
                     _ => panic!("not a message"),
                 })
@@ -367,6 +442,27 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         self.get_value_option(m)
     }
 
+    fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
+        let m: &M = message_down_cast(m);
+        match self.fns {
+            FieldAccessorFunctions::SingularHasGetSet { ref get_set, .. } => {
+                get_set.get_ref(m)
+            }
+            FieldAccessorFunctions::FieldPointer(ref fns) => {
+                V::RuntimeType::as_ref((fns.get_field)(m))
+            }
+            FieldAccessorFunctions::Optional(_, Some(ref get_or_default)) => {
+                get_or_default.get_or_default(m)
+            }
+            FieldAccessorFunctions::Optional(ref fns, None) => {
+                match fns.get_field(m).as_option_ref() {
+                    Some(v) => V::RuntimeType::as_ref(v),
+                    None => V::RuntimeType::default_value_ref(),
+                }
+            }
+        }
+    }
+
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
         let m: &mut M = m.as_any_mut().downcast_mut().expect("wrong_type");
         match self.fns {
@@ -376,9 +472,8 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
             FieldAccessorFunctions::FieldPointer(ref fns) => {
                 V::RuntimeType::set_from_value_box((fns.mut_field)(m), value);
             }
-            FieldAccessorFunctions::Optional(ref fns) => {
-                // TODO: clones, not moves
-                fns.mut_field(m).set_value(value.as_value());
+            FieldAccessorFunctions::Optional(ref fns, ..) => {
+                fns.mut_field(m).set_value(V::RuntimeType::from_value_box(value));
             }
         }
     }
@@ -467,127 +562,73 @@ pub fn make_singular_message_has_get_mut_set_accessor<M, F>(
     }
 }
 
-impl<M, V> FieldAccessor2<M, ReflectOptional<V>> for MessageGetMut<M, Option<V>>
-    where
-        M : Message + 'static,
-        V : ProtobufValue + Clone + 'static,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectOptional<V> {
-        (self.get_field)(m) as &ReflectOptional<V>
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectOptional<V> {
-        (self.mut_field)(m) as &mut ReflectOptional<V>
-    }
-}
-
-pub fn make_option_accessor<M, V>(
+pub fn make_option_accessor<M, V, O>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a Option<<V::RuntimeType as RuntimeType>::Value>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<<V::RuntimeType as RuntimeType>::Value>,
+    get_field: for<'a> fn(&'a M) -> &'a O,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
 ) -> FieldAccessor
     where
         M : Message + 'static,
         V : ProtobufType + 'static,
+        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + 'static,
 {
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V> {
-            fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<M, Option<<V::RuntimeType as RuntimeType>::Value>> {
+            fns: FieldAccessorFunctions::Optional(Box::new(GetMutImpl::<M, O> {
                 get_field,
                 mut_field,
-            })),
+            }), None),
         }))
     }
 }
 
-
-impl<M, V> FieldAccessor2<M, ReflectOptional<V>> for MessageGetMut<M, SingularField<V>>
-    where
-        M : Message + 'static,
-        V : ProtobufValue + Clone + 'static,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectOptional<V> {
-        (self.get_field)(m) as &ReflectOptional<V>
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectOptional<V> {
-        (self.mut_field)(m) as &mut ReflectOptional<V>
-    }
-}
-
-pub fn make_singular_field_accessor<M, V>(
+pub fn make_option_get_copy_accessor<M, V, O>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a SingularField<<V::RuntimeType as RuntimeType>::Value>,
-    mut_field: for<'a> fn(&'a mut M)
-        -> &'a mut SingularField<<V::RuntimeType as RuntimeType>::Value>,
+    get_field: for<'a> fn(&'a M) -> &'a O,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
+    get_value: fn(&M) -> <V::RuntimeType as RuntimeType>::Value,
 ) -> FieldAccessor
     where
         M : Message + 'static,
         V : ProtobufType + 'static,
+        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + 'static,
 {
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V> {
             fns: FieldAccessorFunctions::Optional(
-                Box::new(MessageGetMut::<M, SingularField<<V::RuntimeType as RuntimeType>::Value>> {
-                    get_field: get_field,
-                    mut_field: mut_field,
+                Box::new(GetMutImpl::<M, O> {
+                    get_field,
+                    mut_field,
                 }),
-            ),
+                Some(Box::new(GetOrDefaultCopy::<M, V::RuntimeType> { get: get_value }))),
         }))
     }
 }
 
-impl<M, V> FieldAccessor2<M, ReflectOptional<V>> for MessageGetMut<M, SingularPtrField<V>>
-    where
-        M : Message + 'static,
-        V : ProtobufValue + Clone + 'static,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectOptional<V> {
-        (self.get_field)(m) as &ReflectOptional<V>
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectOptional<V> {
-        (self.mut_field)(m) as &mut ReflectOptional<V>
-    }
-}
-
-pub fn make_singular_ptr_field_accessor<M, V>(
+pub fn make_option_get_ref_accessor<M, V, O>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M)
-        -> &'a SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
-    mut_field: for<'a> fn(&'a mut M)
-        -> &'a mut SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
+    get_field: for<'a> fn(&'a M) -> &'a O,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
+    get_value: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
 ) -> FieldAccessor
     where
         M : Message + 'static,
         V : ProtobufType + 'static,
+        V::RuntimeType : RuntimeTypeWithDeref,
+        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + 'static,
 {
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V> {
             fns: FieldAccessorFunctions::Optional(
-                Box::new(MessageGetMut::<M, SingularPtrField<<V::RuntimeType as RuntimeType>::Value>> {
-                    get_field: get_field,
-                    mut_field: mut_field,
+                Box::new(GetMutImpl::<M, O> {
+                    get_field,
+                    mut_field,
                 }),
-            ),
+                Some(Box::new(GetOrDefaultRef::<M, V::RuntimeType> { get: get_value }))),
         }))
-    }
-}
-
-impl<M, V> FieldAccessor2<M, ProtobufValue> for MessageGetMut<M, V>
-    where
-        M : Message + 'static,
-        V : ProtobufValue + Clone + 'static,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a ProtobufValue {
-        (self.get_field)(m) as &ProtobufValue
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ProtobufValue {
-        (self.mut_field)(m) as &mut ProtobufValue
     }
 }
 
@@ -603,7 +644,7 @@ pub fn make_simple_field_accessor<M, V>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V> {
-            fns: FieldAccessorFunctions::FieldPointer(MessageGetMut {
+            fns: FieldAccessorFunctions::FieldPointer(GetMutImpl {
                 get_field,
                 mut_field,
             }),
