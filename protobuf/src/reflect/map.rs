@@ -8,7 +8,7 @@ use reflect::ReflectValueRef;
 
 
 /// Implemented for `HashMap` with appropriate keys and values
-pub(crate) trait ReflectMap: 'static {
+pub(crate) trait ReflectMap : Send + Sync + 'static {
     fn reflect_iter(&self) -> ReflectMapIter;
 
     fn len(&self) -> usize;

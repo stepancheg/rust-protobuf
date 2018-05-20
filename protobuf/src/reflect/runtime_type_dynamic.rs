@@ -5,7 +5,7 @@ use reflect::ReflectValueRef;
 use reflect::runtime_types::RuntimeType;
 
 /// Dynamic version of `RuntimeType`
-pub trait RuntimeTypeDynamic {
+pub trait RuntimeTypeDynamic : Send + Sync + 'static {
     fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a>;
 }
 

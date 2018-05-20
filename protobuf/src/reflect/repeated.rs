@@ -7,7 +7,7 @@ use repeated::RepeatedField;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 
 
-pub(crate) trait ReflectRepeated : 'static {
+pub(crate) trait ReflectRepeated : Sync + 'static {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &ProtobufValue;

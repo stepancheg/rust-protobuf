@@ -22,7 +22,7 @@ use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 ///
 /// The downside is that we have to explicitly specify type parameters
 /// in a lot of places.
-pub trait RuntimeType : 'static {
+pub trait RuntimeType : Send + Sync + 'static {
     type Value : ProtobufValue + Clone + Sized + 'static;
 
     fn dynamic() -> &'static RuntimeTypeDynamic;
