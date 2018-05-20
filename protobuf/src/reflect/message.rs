@@ -4,6 +4,7 @@ use std::marker;
 use Message;
 
 use descriptor::FieldDescriptorProto_Label;
+use descriptor::FieldDescriptorProto_Type;
 use descriptor::FieldDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::FileDescriptorProto;
@@ -105,14 +106,17 @@ impl FieldDescriptor {
     }
 
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
+        assert_eq!(FieldDescriptorProto_Type::TYPE_ENUM, self.proto.get_field_type());
         self.singular().get_enum_generic(m)
     }
 
     pub fn get_str<'a>(&self, m: &'a Message) -> &'a str {
+        assert_eq!(FieldDescriptorProto_Type::TYPE_STRING, self.proto.get_field_type());
         self.singular().get_str_generic(m)
     }
 
     pub fn get_bytes<'a>(&self, m: &'a Message) -> &'a [u8] {
+        assert_eq!(FieldDescriptorProto_Type::TYPE_BYTES, self.proto.get_field_type());
         self.singular().get_bytes_generic(m)
     }
 
@@ -133,6 +137,7 @@ impl FieldDescriptor {
     }
 
     pub fn get_bool(&self, m: &Message) -> bool {
+        assert_eq!(FieldDescriptorProto_Type::TYPE_BOOL, self.proto.get_field_type());
         self.singular().get_bool_generic(m)
     }
 

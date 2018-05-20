@@ -366,6 +366,7 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         let m = message_down_cast(m);
         self.get_value_option(m)
     }
+
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
         let m: &mut M = m.as_any_mut().downcast_mut().expect("wrong_type");
         match self.fns {
