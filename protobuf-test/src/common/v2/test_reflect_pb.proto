@@ -11,7 +11,7 @@ message SubM {
 }
 
 
-enum TestEnum {
+enum TestReflectEnum {
     UNDEFINED = 0;
     RED = 1;
     BLUE = 2;
@@ -34,7 +34,7 @@ message TestTypesSingular {
     optional bool bool_field = 13;
     optional string string_field = 14;
     optional bytes bytes_field = 15;
-    optional TestEnum enum_field = 16;
+    optional TestReflectEnum enum_field = 16;
 }
 
 message TestTypesRepeated {
@@ -53,5 +53,5 @@ message TestTypesRepeated {
     repeated bool bool_field = 13;
     repeated string string_field = 14;
     repeated bytes bytes_field = 15;
-    repeated TestEnum enum_field = 16;
+    repeated TestReflectEnum enum_field = 16;
 }
