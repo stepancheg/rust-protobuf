@@ -3,6 +3,8 @@
 // TODO: add docs
 //#![deny(missing_docs)]
 
+#![cfg_attr(rustc_nightly, feature(specialization))]
+
 #[cfg(feature = "bytes")]
 extern crate bytes;
 
