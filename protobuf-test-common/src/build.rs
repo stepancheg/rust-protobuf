@@ -129,6 +129,8 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
 {
     info!("generating protos in {}", dir);
 
+    // TODO: assert that all files in `vN` has `syntax = "protoN"`
+
     let mut protos = Vec::new();
     for suffix in &[".proto", ".proto3"] {
         protos.extend(glob_simple(&format!("{}/*{}", dir, suffix)));
