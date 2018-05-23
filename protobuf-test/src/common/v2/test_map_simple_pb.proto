@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 message TestMap {
     map<string, uint32> m = 1;
@@ -6,5 +6,5 @@ message TestMap {
 }
 
 message TestMapEntry {
-  int64 v = 1;
+    optional int64 v = 1;
 }
