@@ -31,9 +31,9 @@ before_install:
 script:
   - rustc --version
   # Full rebuild with regenerate
-  - PATH=/home/travis/bin:$PATH protobuf/full-rebuild.sh
-  - PATH=/home/travis/bin:$PATH ./protoc/test.sh
-  - test "$TRAVIS_RUST_VERSION" != "nightly" || PATH=/home/travis/bin:$PATH cargo build --all --features=with-bytes --bins --tests --examples --benches
+  - protobuf/full-rebuild.sh
+  - ./protoc/test.sh
+  - test "$TRAVIS_RUST_VERSION" != "nightly" || cargo build --all --features=with-bytes --bins --tests --examples --benches
 
 notifications:
   email:
