@@ -24,6 +24,7 @@ matrix:
 before_install:
   - ./install-protobuf.sh
   - PATH=/home/travis/bin:$PATH protoc --version
+  - RUST_BACKTRACE=1
 
 script:
   - rustc --version
