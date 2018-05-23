@@ -5,6 +5,7 @@ use std::collections::hash_map;
 use super::value::ProtobufValue;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use reflect::ReflectValueRef;
+use reflect::ReflectValueBox;
 
 
 /// Implemented for `HashMap` with appropriate keys and values
@@ -12,16 +13,39 @@ pub(crate) trait ReflectMap : Send + Sync + 'static {
     fn reflect_iter(&self) -> ReflectMapIter;
 
     fn len(&self) -> usize;
+
+    fn is_empty(&self) -> bool;
+
+    fn get(&self, key: ReflectValueRef) -> Option<&ProtobufValue>;
+
+    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
 }
 
 impl<K : ProtobufValue + Eq + Hash + 'static, V : ProtobufValue + 'static> ReflectMap
-    for HashMap<K, V> {
+    for HashMap<K, V>
+{
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
         ReflectMapIter { imp: Box::new(ReflectMapIterImpl::<'a, K, V> { iter: self.iter() }) }
     }
 
     fn len(&self) -> usize {
         HashMap::len(self)
+    }
+
+    fn is_empty(&self) -> bool {
+        self.is_empty()
+    }
+
+    fn get(&self, key: ReflectValueRef) -> Option<&ProtobufValue> {
+        // TODO: malloc for string or bytes
+        let key: K = key.to_box().downcast().expect("wrong key type");
+        self.get(&key).map(|v| v as &ProtobufValue)
+    }
+
+    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
+        let key: K = key.downcast().expect("wrong key type");
+        let value: V = value.downcast().expect("wrong value type");
+        self.insert(key, value);
     }
 }
 
@@ -74,6 +98,52 @@ pub struct ReflectMapRef<'a> {
     pub(crate) map: &'a ReflectMap,
     pub(crate) key_dynamic: &'a RuntimeTypeDynamic,
     pub(crate) value_dynamic: &'a RuntimeTypeDynamic,
+}
+
+pub struct ReflectMapMut<'a> {
+    pub(crate) map: &'a mut ReflectMap,
+    pub(crate) key_dynamic: &'a RuntimeTypeDynamic,
+    pub(crate) value_dynamic: &'a RuntimeTypeDynamic,
+}
+
+impl<'a> ReflectMapRef<'a> {
+    pub fn len(&self) -> usize {
+        self.map.len()
+    }
+
+    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+        self.map.get(key).map(|v| self.value_dynamic.value_to_ref(v))
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.map.is_empty()
+    }
+}
+
+impl<'a> ReflectMapMut<'a> {
+    fn as_ref(&'a self) -> ReflectMapRef<'a> {
+        ReflectMapRef {
+            map: self.map,
+            key_dynamic: self.key_dynamic,
+            value_dynamic: self.value_dynamic,
+        }
+    }
+
+    pub fn len(&self) -> usize {
+        self.as_ref().len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.as_ref().is_empty()
+    }
+
+    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+        self.map.get(key).map(|v| self.value_dynamic.value_to_ref(v))
+    }
+
+    pub fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
+        self.map.insert(key, value)
+    }
 }
 
 pub struct ReflectMapRefIter<'a> {

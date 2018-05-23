@@ -9,11 +9,14 @@ use reflect::accessor::FieldAccessor;
 use reflect::types::ProtobufType;
 use reflect::accessor::AccessorKind;
 use reflect::map::ReflectMapRef;
+use reflect::map::ReflectMapMut;
+use core::message_down_cast_mut;
 
 
 pub(crate) trait MapFieldAccessor : 'static {
     fn len_field_generic(&self, m: &Message) -> usize;
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a>;
+    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a>;
 }
 
 struct MapFieldAccessorImpl<M, K, V>
@@ -23,7 +26,7 @@ struct MapFieldAccessorImpl<M, K, V>
         V : RuntimeType,
 {
     get_field: fn(&M) -> &HashMap<K::Value, V::Value>,
-    _mut_field: fn(&mut M) -> &mut HashMap<K::Value, V::Value>,
+    mut_field: fn(&mut M) -> &mut HashMap<K::Value, V::Value>,
 }
 
 impl<M, K, V> MapFieldAccessor for MapFieldAccessorImpl<M, K, V>
@@ -43,6 +46,16 @@ impl<M, K, V> MapFieldAccessor for MapFieldAccessorImpl<M, K, V>
         let m = message_down_cast(m);
         let map = (self.get_field)(m);
         ReflectMapRef {
+            map,
+            key_dynamic: K::dynamic(),
+            value_dynamic: V::dynamic(),
+        }
+    }
+
+    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
+        let m = message_down_cast_mut(m);
+        let map = (self.mut_field)(m);
+        ReflectMapMut {
             map,
             key_dynamic: K::dynamic(),
             value_dynamic: V::dynamic(),
@@ -68,7 +81,7 @@ pub fn make_map_accessor<M, K, V>(
         name,
         accessor: AccessorKind::Map(Box::new(MapFieldAccessorImpl::<M, K::RuntimeType, V::RuntimeType> {
             get_field,
-            _mut_field: mut_field,
+            mut_field: mut_field,
         })),
     }
 }

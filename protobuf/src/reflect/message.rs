@@ -22,6 +22,8 @@ use reflect::accessor::AccessorKind;
 use reflect::accessor::singular::SingularFieldAccessor;
 use reflect::accessor::repeated::RepeatedFieldAccessor;
 use reflect::repeated::ReflectRepeatedMut;
+use reflect::accessor::map::MapFieldAccessor;
+use reflect::map::ReflectMapMut;
 
 
 pub struct FieldDescriptor {
@@ -101,6 +103,13 @@ impl FieldDescriptor {
         }
     }
 
+    fn map(&self) -> &MapFieldAccessor {
+        match self.accessor.accessor {
+            AccessorKind::Map(ref a) => &**a,
+            _ => panic!("not a map field"),
+        }
+    }
+
     /// Get message field or default instance if field is unset.
     /// Panic if field type is not message.
     pub fn get_message<'a>(&self, m: &'a Message) -> &'a Message {
@@ -176,6 +185,14 @@ impl FieldDescriptor {
 
     pub fn mut_repeated<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
         self.repeated().mut_reflect(m)
+    }
+
+    pub fn get_map<'a>(&self, m: &'a Message) -> ReflectMapRef<'a> {
+        self.map().get_reflect(m)
+    }
+
+    pub fn mut_map<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
+        self.map().mut_reflect(m)
     }
 
     pub fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {

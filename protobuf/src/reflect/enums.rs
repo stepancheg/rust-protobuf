@@ -10,6 +10,8 @@ use reflect::ProtobufValue;
 use std::marker;
 use std::any::TypeId;
 use std::mem;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 
 #[derive(Clone)]
@@ -23,6 +25,12 @@ impl PartialEq for EnumValueDescriptor {
     fn eq(&self, other: &EnumValueDescriptor) -> bool {
         self.enum_descriptor() == other.enum_descriptor()
             && self.value() == other.value()
+    }
+}
+
+impl Hash for EnumValueDescriptor {
+    fn hash<H : Hasher>(&self, state: &mut H) {
+        Hash::hash(&self.value(), state)
     }
 }
 

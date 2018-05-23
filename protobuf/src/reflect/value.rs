@@ -10,6 +10,9 @@ use core::*;
 use super::*;
 use super::as_any::AsAny;
 use reflect::transmute_eq::transmute_eq;
+use std::hash::Hash;
+use std::hash::Hasher;
+use std::mem;
 
 
 /// Hack against lack of upcasting in Rust
@@ -110,6 +113,23 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::Bytes(v) => !v.is_empty(),
             ReflectValueRef::Enum(v) => v.value() != 0,
             ReflectValueRef::Message(_) => true,
+        }
+    }
+
+    // Clone to box
+    pub fn to_box(&self) -> ReflectValueBox {
+        match *self {
+            ReflectValueRef::U32(v) => ReflectValueBox::U32(v),
+            ReflectValueRef::U64(v) => ReflectValueBox::U64(v),
+            ReflectValueRef::I32(v) => ReflectValueBox::I32(v),
+            ReflectValueRef::I64(v) => ReflectValueBox::I64(v),
+            ReflectValueRef::F32(v) => ReflectValueBox::F32(v),
+            ReflectValueRef::F64(v) => ReflectValueBox::F64(v),
+            ReflectValueRef::Bool(v) => ReflectValueBox::Bool(v),
+            ReflectValueRef::String(v) => ReflectValueBox::String(v.to_owned()),
+            ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes(v.to_owned()),
+            ReflectValueRef::Enum(v) => ReflectValueBox::Enum(v),
+            ReflectValueRef::Message(v) => ReflectValueBox::Message(v.descriptor().clone(v)),
         }
     }
 }
@@ -262,5 +282,33 @@ impl<'a> PartialEq<ReflectValueRef<'a>> for ReflectValueBox {
 impl<'a> PartialEq<ReflectValueBox> for ReflectValueRef<'a> {
     fn eq(&self, other: &ReflectValueBox) -> bool {
         *self == other.as_value_ref()
+    }
+}
+
+// Panics if contained type is not hashable
+impl<'a> Hash for ReflectValueRef<'a> {
+    fn hash<H : Hasher>(&self, state: &mut H) {
+        use self::ReflectValueRef::*;
+        Hash::hash(&mem::discriminant(self), state);
+        match self {
+            U32(v) => Hash::hash(&v, state),
+            U64(v) => Hash::hash(&v, state),
+            I32(v) => Hash::hash(&v, state),
+            I64(v) => Hash::hash(&v, state),
+            Bool(v) => Hash::hash(&v, state),
+            String(v) => Hash::hash(&v, state),
+            Bytes(v) => Hash::hash(&v, state),
+            Enum(v) => Hash::hash(v, state),
+            F32(_) | F64(_) | Message(_) => {
+                panic!("not hashable: {:?}", self)
+            }
+        }
+    }
+}
+
+// Panics if contained type is not hashable
+impl Hash for ReflectValueBox {
+    fn hash<H : Hasher>(&self, state: &mut H) {
+        Hash::hash(&self.as_value_ref(), state)
     }
 }
