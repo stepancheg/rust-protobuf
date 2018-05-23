@@ -122,6 +122,56 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
     mod_rs.flush().expect("flush");
 }
 
+enum TestProtobufVersions {
+    V2,
+    V3,
+    Google,
+}
+
+#[derive(Eq, PartialEq, Debug)]
+enum ProtobufSyntax {
+    V2,
+    V3,
+}
+
+fn test_version_from_file_path(mut file_path: &Path) -> TestProtobufVersions {
+    loop {
+        let name = file_path.file_name().expect("file_name").to_str().expect("to_str");
+        if name == "v2" {
+            return TestProtobufVersions::V2;
+        } else if name == "v3" {
+            return TestProtobufVersions::V3;
+        } else if name == "google" {
+            return TestProtobufVersions::Google;
+        }
+
+        file_path = file_path.parent().expect("parent");
+    }
+}
+
+fn test_version_from_file_content(file_path: &Path) -> ProtobufSyntax {
+    let content = fs::read_to_string(file_path).expect("read_to_string");
+    if content.contains("syntax = \"proto2\"") {
+        return ProtobufSyntax::V2;
+    } else if content.contains("syntax = \"proto3\"") {
+        return ProtobufSyntax::V3;
+    } else {
+        panic!("cannot detect protobuf version from file content: {:?}", file_path);
+    }
+}
+
+fn check_test_version(file_path: &Path) {
+    let expected_version_from_file_name = match test_version_from_file_path(file_path) {
+        TestProtobufVersions::V2 => ProtobufSyntax::V2,
+        TestProtobufVersions::V3 => ProtobufSyntax::V3,
+        TestProtobufVersions::Google => return,
+    };
+
+    let version = test_version_from_file_content(file_path);
+    assert_eq!(expected_version_from_file_name, version, "for file: {:?}", file_path);
+}
+
+
 pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
     where
         F : for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
@@ -134,6 +184,10 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
     let mut protos = Vec::new();
     for suffix in &[".proto", ".proto3"] {
         protos.extend(glob_simple(&format!("{}/*{}", dir, suffix)));
+    }
+
+    for file_path in &protos {
+        check_test_version(Path::new(file_path));
     }
 
     assert!(!protos.is_empty());

@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 message TestPacked {
     repeated int32 varints = 4 [packed=true];
     repeated sfixed32 sfixed32s = 5 [packed=true];
