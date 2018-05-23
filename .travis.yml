@@ -33,14 +33,14 @@ script:
   # Full rebuild with regenerate
   - PATH=/home/travis/bin:$PATH cargo build --manifest-path=protobuf-codegen/Cargo.toml
   # Regenerate only works when proto3
-  - PATH=/home/travis/bin:$PATH protobuf/regenerate_if_proto3.sh
-  - PATH=/home/travis/bin:$PATH cargo test --all
+  - protobuf/regenerate_if_proto3.sh
+  - cargo test --all
   # `cargo test --all --features=FFF` doesn't work if there are crates without feature `FFF`
   # hence the explicit list of tests
-  - PATH=/home/travis/bin:$PATH protobuf-test/test.sh
-  - PATH=/home/travis/bin:$PATH protobuf-codegen-pure-test/test.sh
-  - PATH=/home/travis/bin:$PATH protoc/test.sh
-  - PATH=/home/travis/bin:$PATH cargo build --all --all-targets
+  - protobuf-test/test.sh
+  - protobuf-codegen-pure-test/test.sh
+  - protoc/test.sh
+  - cargo build --all --all-targets
 
 notifications:
   email:
