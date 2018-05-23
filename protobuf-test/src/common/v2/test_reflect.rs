@@ -134,3 +134,23 @@ fn test_repeated() {
         test_repeated_field(&mut message, field);
     }
 }
+
+
+fn test_map_field(message: &mut Message, field: &FieldDescriptor) {
+    assert!(field.get_map(message).is_empty());
+    assert_eq!(0, field.get_map(message).len());
+    assert!(field.mut_map(message).is_empty());
+    assert_eq!(0, field.mut_map(message).len());
+
+    // TODO: insert/query
+}
+
+#[test]
+fn test_map() {
+    let mut message = TestTypesMap::new();
+    let descriptor = message.descriptor();
+
+    for field in descriptor.fields() {
+        test_map_field(&mut message, field);
+    }
+}
