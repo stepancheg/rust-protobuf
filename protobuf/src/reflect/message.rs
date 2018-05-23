@@ -174,7 +174,7 @@ impl FieldDescriptor {
         self.repeated().get_reflect(m)
     }
 
-    pub fn mut_repeated<'a>(&mut self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
+    pub fn mut_repeated<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
         self.repeated().mut_reflect(m)
     }
 
@@ -188,12 +188,13 @@ trait MessageFactory {
     fn new_instance(&self) -> Box<Message>;
     fn default_instance(&self) -> &Message;
     fn clone(&self, message: &Message) -> Box<Message>;
+    fn eq(&self, a: &Message, b: &Message) -> bool;
 }
 
 struct MessageFactoryImpl<M>(marker::PhantomData<M>);
 
 impl<M> MessageFactory for MessageFactoryImpl<M>
-    where M : 'static + Message + Default + Clone
+    where M : 'static + Message + Default + Clone + PartialEq
 {
     fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
@@ -207,6 +208,12 @@ impl<M> MessageFactory for MessageFactoryImpl<M>
     fn clone(&self, message: &Message) -> Box<Message> {
         let m: &M = message.as_any().downcast_ref().expect("wrong message type");
         Box::new(m.clone())
+    }
+
+    fn eq(&self, a: &Message, b: &Message) -> bool {
+        let a: &M = a.as_any().downcast_ref().expect("wrong message type");
+        let b: &M = b.as_any().downcast_ref().expect("wrong message type");
+        a == b
     }
 }
 
@@ -225,7 +232,7 @@ impl MessageDescriptor {
         M::descriptor_static()
     }
 
-    pub fn new<M : 'static + Message + Default + Clone>(
+    pub fn new<M : 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
         file: &'static FileDescriptorProto,
@@ -281,6 +288,13 @@ impl MessageDescriptor {
         self.factory.clone(message)
     }
 
+    /// Check if two messages equal.
+    ///
+    /// Panic is any message has different type than this descriptor.
+    pub fn eq(&self, a: &Message, b: &Message) -> bool {
+        self.factory.eq(a, b)
+    }
+
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
     }
@@ -305,6 +319,14 @@ impl MessageDescriptor {
 
     pub fn cast<M : 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {
         message.downcast_box::<M>().map(|m| *m)
+    }
+}
+
+
+/// Identity comparison: message descriptor are equal if their addresses are equal
+impl PartialEq for MessageDescriptor {
+    fn eq(&self, other: &MessageDescriptor) -> bool {
+        self as *const MessageDescriptor == other as *const MessageDescriptor
     }
 }
 

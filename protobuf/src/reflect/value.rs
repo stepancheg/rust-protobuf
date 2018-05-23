@@ -1,5 +1,4 @@
 use std::any::Any;
-use std::any::TypeId;
 
 
 #[cfg(feature = "bytes")]
@@ -82,6 +81,7 @@ impl<M : Message> ProtobufValue for M {
 */
 
 
+#[derive(Debug)]
 pub enum ReflectValueRef<'a> {
     U32(u32),
     U64(u64),
@@ -114,7 +114,7 @@ impl<'a> ReflectValueRef<'a> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ReflectValueBox {
     U32(u32),
     U64(u64),
@@ -145,6 +145,23 @@ type StringOrChars = Chars;
 
 
 impl ReflectValueBox {
+    pub fn as_value_ref(&self) -> ReflectValueRef {
+        use std::ops::Deref;
+        match *self {
+            ReflectValueBox::U32(v) => ReflectValueRef::U32(v),
+            ReflectValueBox::U64(v) => ReflectValueRef::U64(v),
+            ReflectValueBox::I32(v) => ReflectValueRef::I32(v),
+            ReflectValueBox::I64(v) => ReflectValueRef::I64(v),
+            ReflectValueBox::F32(v) => ReflectValueRef::F32(v),
+            ReflectValueBox::F64(v) => ReflectValueRef::F64(v),
+            ReflectValueBox::Bool(v) => ReflectValueRef::Bool(v),
+            ReflectValueBox::String(ref v) => ReflectValueRef::String(v.as_str()),
+            ReflectValueBox::Bytes(ref v) => ReflectValueRef::Bytes(v.as_slice()),
+            ReflectValueBox::Enum(v) => ReflectValueRef::Enum(v),
+            ReflectValueBox::Message(ref v) => ReflectValueRef::Message(v.deref()),
+        }
+    }
+
     pub fn as_value(&self) -> &ProtobufValue {
         match self {
             ReflectValueBox::U32(v) => v,
@@ -187,29 +204,17 @@ impl ReflectValueBox {
             ReflectValueBox::F64(v) => transmute_eq(v).map_err(ReflectValueBox::F64),
             ReflectValueBox::Bool(v) => transmute_eq(v).map_err(ReflectValueBox::Bool),
             ReflectValueBox::String(v) => {
-                if TypeId::of::<V>() == TypeId::of::<String>() {
-                    Ok(transmute_eq(v).unwrap())
-                } else if TypeId::of::<V>() == TypeId::of::<StringOrChars>() {
-                    Ok(transmute_eq(StringOrChars::from(v)).unwrap())
-                } else {
-                    Err(ReflectValueBox::String(v))
-                }
+                transmute_eq::<String, _>(v)
+                    .or_else(|v| transmute_eq::<StringOrChars, _>(v))
+                    .map_err(ReflectValueBox::String)
             },
             ReflectValueBox::Bytes(v) => {
-                if TypeId::of::<V>() == TypeId::of::<Vec<u8>>() {
-                    Ok(transmute_eq(v).unwrap())
-                } else if TypeId::of::<V>() == TypeId::of::<VecU8OrBytes>() {
-                    Ok(transmute_eq(VecU8OrBytes::from(v)).unwrap())
-                } else {
-                    Err(ReflectValueBox::Bytes(v))
-                }
+                transmute_eq::<Vec<u8>, _>(v)
+                    .or_else(|v| transmute_eq::<VecU8OrBytes, _>(v))
+                    .map_err(ReflectValueBox::Bytes)
             },
             ReflectValueBox::Enum(e) => {
-                if let Some(r) = e.cast() {
-                    Ok(r)
-                } else {
-                    Err(ReflectValueBox::Enum(e))
-                }
+                e.cast().ok_or(ReflectValueBox::Enum(e))
             }
             ReflectValueBox::Message(m) => {
                 m.descriptor().cast(m).map_err(ReflectValueBox::Message)
@@ -218,3 +223,44 @@ impl ReflectValueBox {
     }
 }
 
+impl<'a> PartialEq for ReflectValueRef<'a> {
+    fn eq(&self, other: &ReflectValueRef) -> bool {
+        use self::ReflectValueRef::*;
+        match (self, other) {
+            (U32(a), U32(b)) => a == b,
+            (U64(a), U64(b)) => a == b,
+            (I32(a), I32(b)) => a == b,
+            (I64(a), I64(b)) => a == b,
+            // should probably NaN == NaN here
+            (F32(a), F32(b)) => a == b,
+            (F64(a), F64(b)) => a == b,
+            (Bool(a), Bool(b)) => a == b,
+            (String(a), String(b)) => a == b,
+            (Bytes(a), Bytes(b)) => a == b,
+            (Enum(a), Enum(b)) => a == b,
+            (Message(a), Message(b)) => {
+                use std::ops::Deref;
+                a.descriptor() == b.descriptor() && a.descriptor().eq(a.deref(), b.deref())
+            },
+            _ => false,
+        }
+    }
+}
+
+impl<'a> PartialEq for ReflectValueBox {
+    fn eq(&self, other: &Self) -> bool {
+        self.as_value_ref() == other.as_value_ref()
+    }
+}
+
+impl<'a> PartialEq<ReflectValueRef<'a>> for ReflectValueBox {
+    fn eq(&self, other: &ReflectValueRef) -> bool {
+        self.as_value_ref() == *other
+    }
+}
+
+impl<'a> PartialEq<ReflectValueBox> for ReflectValueRef<'a> {
+    fn eq(&self, other: &ReflectValueBox) -> bool {
+        *self == other.as_value_ref()
+    }
+}

@@ -241,10 +241,62 @@ impl<'a> ReflectRepeatedRef<'a> {
         self.repeated.len()
     }
 
+    // TODO: replace with index
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
     }
 }
+
+impl<'a> PartialEq for ReflectRepeatedRef<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        if self.len() != other.len() {
+            return false;
+        }
+
+        for i in 0..self.len() {
+            if self.get(i) != other.get(i) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+impl<'a> PartialEq<[ReflectValueBox]> for ReflectRepeatedRef<'a> {
+    fn eq(&self, other: &[ReflectValueBox]) -> bool {
+        if self.len() != other.len() {
+            return false;
+        }
+
+        for i in 0..self.len() {
+            if self.get(i) != other[i] {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+impl<'a> PartialEq<ReflectRepeatedRef<'a>> for [ReflectValueBox] {
+    fn eq(&self, other: &ReflectRepeatedRef) -> bool {
+        other == self
+    }
+}
+
+impl<'a> PartialEq<Vec<ReflectValueBox>> for ReflectRepeatedRef<'a> {
+    fn eq(&self, other: &Vec<ReflectValueBox>) -> bool {
+        self == other.as_slice()
+    }
+}
+
+impl<'a> PartialEq<ReflectRepeatedRef<'a>> for Vec<ReflectValueBox> {
+    fn eq(&self, other: &ReflectRepeatedRef) -> bool {
+        self.as_slice() == other
+    }
+}
+
 
 impl<'a> ReflectRepeatedMut<'a> {
     fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
@@ -334,5 +386,41 @@ impl<'a> fmt::Debug for ReflectRepeatedRef<'a> {
 impl<'a> fmt::Debug for ReflectRepeatedMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self.repeated, f)
+    }
+}
+
+impl<'a> PartialEq for ReflectRepeatedMut<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        self.as_ref() == other.as_ref()
+    }
+}
+
+impl<'a> PartialEq<ReflectRepeatedRef<'a>> for ReflectRepeatedMut<'a> {
+    fn eq(&self, other: &ReflectRepeatedRef) -> bool {
+        PartialEq::eq(&self.as_ref(), other)
+    }
+}
+
+impl<'a> PartialEq<[ReflectValueBox]> for ReflectRepeatedMut<'a> {
+    fn eq(&self, other: &[ReflectValueBox]) -> bool {
+        PartialEq::eq(&self.as_ref(), other)
+    }
+}
+
+impl<'a> PartialEq<ReflectRepeatedMut<'a>> for [ReflectValueBox] {
+    fn eq(&self, other: &ReflectRepeatedMut) -> bool {
+        PartialEq::eq(self, &other.as_ref())
+    }
+}
+
+impl<'a> PartialEq<Vec<ReflectValueBox>> for ReflectRepeatedMut<'a> {
+    fn eq(&self, other: &Vec<ReflectValueBox>) -> bool {
+        self == other.as_slice()
+    }
+}
+
+impl<'a> PartialEq<ReflectRepeatedMut<'a>> for Vec<ReflectValueBox> {
+    fn eq(&self, other: &ReflectRepeatedMut) -> bool {
+        self.as_slice() == other
     }
 }

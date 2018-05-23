@@ -35,6 +35,7 @@ message TestTypesSingular {
     optional string string_field = 14;
     optional bytes bytes_field = 15;
     optional TestReflectEnum enum_field = 16;
+    optional SubM message_field = 17;
 }
 
 message TestTypesRepeated {
@@ -54,4 +55,5 @@ message TestTypesRepeated {
     repeated string string_field = 14;
     repeated bytes bytes_field = 15;
     repeated TestReflectEnum enum_field = 16;
+    repeated SubM message_field = 17;
 }

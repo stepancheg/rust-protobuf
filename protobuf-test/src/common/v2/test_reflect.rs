@@ -65,7 +65,7 @@ fn value_for_field(field: &FieldDescriptor) -> ReflectValueBox {
     }
 }
 
-fn test_field(message: &mut Message, field: &FieldDescriptor) {
+fn test_singular_field(message: &mut Message, field: &FieldDescriptor) {
     assert!(!field.has_field(message));
 
     // should not crash
@@ -81,7 +81,7 @@ fn test_singular() {
     let descriptor = message.descriptor();
 
     for field in descriptor.fields() {
-        test_field(&mut message, field);
+        test_singular_field(&mut message, field);
     }
 }
 
@@ -91,4 +91,46 @@ fn test_repeated_debug() {
     message.set_int32_field(vec![10, 20, 30]);
     let field = message.descriptor().field_by_name("int32_field").get_repeated(&message);
     assert_eq!("[10, 20, 30]", format!("{:?}", field));
+}
+
+fn test_repeated_field(message: &mut Message, field: &FieldDescriptor) {
+    assert_eq!(0, field.len_field(message));
+    assert!(!field.has_field(message));
+
+    let mut expected = Vec::new();
+
+    // test mut interface
+    {
+        let mut repeated = field.mut_repeated(message);
+
+        for i in 0..3 {
+            let value = value_for_field(field);
+            expected.push(value.clone());
+            repeated.push(value.clone());
+            let fetched = repeated.get(i);
+            assert_eq!(value, fetched);
+        }
+
+        assert_eq!(expected, repeated);
+        assert_eq!(repeated, expected);
+    }
+
+    // test read interface
+    {
+        let repeated = field.get_repeated(message);
+        assert_eq!(3, repeated.len());
+
+        assert_eq!(expected, repeated);
+        assert_eq!(repeated, expected);
+    }
+}
+
+#[test]
+fn test_repeated() {
+    let mut message = TestTypesRepeated::new();
+    let descriptor = message.descriptor();
+
+    for field in descriptor.fields() {
+        test_repeated_field(&mut message, field);
+    }
 }

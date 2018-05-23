@@ -19,6 +19,13 @@ pub struct EnumValueDescriptor {
     get_descriptor: &'static GetEnumDescriptor,
 }
 
+impl PartialEq for EnumValueDescriptor {
+    fn eq(&self, other: &EnumValueDescriptor) -> bool {
+        self.enum_descriptor() == other.enum_descriptor()
+            && self.value() == other.value()
+    }
+}
+
 fn _assert_send_sync() {
     fn _assert_send_sync<T: Send + Sync>() {}
     _assert_send_sync::<EnumValueDescriptor>();
@@ -87,6 +94,13 @@ pub struct EnumDescriptor {
 
     index_by_name: HashMap<String, usize>,
     index_by_number: HashMap<i32, usize>,
+}
+
+/// Identity comparison: message descriptor are equal if their addresses are equal
+impl PartialEq for EnumDescriptor {
+    fn eq(&self, other: &EnumDescriptor) -> bool {
+        self as *const EnumDescriptor == other as *const EnumDescriptor
+    }
 }
 
 impl EnumDescriptor {

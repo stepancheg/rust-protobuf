@@ -172,6 +172,22 @@ impl Message {
     }
 }
 
+impl Clone for Box<Message> {
+    fn clone(&self) -> Self {
+        use std::ops::Deref;
+        self.descriptor().clone(self.deref())
+    }
+}
+
+#[cfg(off)] // don't need it
+impl PartialEq for Box<Message> {
+    fn eq(&self, other: &Box<Message>) -> bool {
+        use std::ops::Deref;
+        self.descriptor() == other.descriptor()
+            && self.descriptor().eq(self.deref(), other.deref())
+    }
+}
+
 
 pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
