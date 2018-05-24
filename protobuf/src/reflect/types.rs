@@ -1,4 +1,5 @@
 use std::marker;
+use std::fmt;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -31,10 +32,17 @@ use reflect::runtime_types::RuntimeTypeCarllercheChars;
 use reflect::runtime_types::RuntimeTypeEnum;
 use reflect::runtime_types::RuntimeTypeMessage;
 use reflect::runtime_types::RuntimeTypeUnreachable;
-use std::fmt;
+use reflect::type_dynamic::ProtobufTypeDynamic;
+use reflect::type_dynamic::ProtobufTypeDynamicImpl;
 
 pub trait ProtobufType : Send + Sync + Clone + 'static {
     type RuntimeType : RuntimeType;
+
+    fn dynamic() -> &'static ProtobufTypeDynamic
+        where Self : Sized
+    {
+        &ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
+    }
 
     fn wire_type() -> WireType;
 

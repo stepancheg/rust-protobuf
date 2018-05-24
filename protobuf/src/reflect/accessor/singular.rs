@@ -19,10 +19,11 @@ use reflect::ProtobufValue;
 use core::message_down_cast_mut;
 use singular::OptionLike;
 use reflect::runtime_types::RuntimeTypeWithDeref;
+use reflect::type_dynamic::ProtobufTypeDynamic;
 
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
-pub(crate) trait SingularFieldAccessor : 'static {
+pub(crate) trait SingularFieldAccessor : Send + Sync + 'static {
     /// Return enum descriptor for enum field, panics if field type is not enum.
     fn enum_descriptor(&self) -> &'static EnumDescriptor;
     /// Return message descriptor for message field, panics if field type is not message.
@@ -43,13 +44,14 @@ pub(crate) trait SingularFieldAccessor : 'static {
     fn get_f32_generic(&self, m: &Message) -> f32;
     fn get_f64_generic(&self, m: &Message) -> f64;
 
+    fn protobuf_type(&self) -> &ProtobufTypeDynamic;
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
 
     fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a>;
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox);
 }
 
-trait GetMutSetSingularMessage<M> {
+trait GetMutSetSingularMessage<M> : Send + Sync + 'static {
     fn get_message<'a>(&self, m: &'a M) -> &'a Message;
     fn mut_message<'a>(&self, m: &'a mut M) -> &'a mut Message;
     fn set_message(&self, m: &mut M, field: Box<Message>);
@@ -132,7 +134,7 @@ impl<M, V> SingularGetSet<M, V>
     }
 }
 
-trait GetMut<M, R : ?Sized>
+trait GetMut<M, R : ?Sized> : Send + Sync + 'static
     where
         M : Message + 'static,
 {
@@ -179,7 +181,7 @@ impl<M, V> GetMut<M, ProtobufValue> for GetMutImpl<M, V>
 }
 
 
-trait GetOrDefault<M> {
+trait GetOrDefault<M> : Send + Sync + 'static {
     fn get_or_default<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
 }
 
@@ -437,6 +439,10 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         }
     }
 
+    fn protobuf_type(&self) -> &ProtobufTypeDynamic {
+        V::dynamic()
+    }
+
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>> {
         let m = message_down_cast(m);
         self.get_value_option(m)
@@ -462,7 +468,6 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
             }
         }
     }
-
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
         let m: &mut M = m.as_any_mut().downcast_mut().expect("wrong_type");
         match self.fns {

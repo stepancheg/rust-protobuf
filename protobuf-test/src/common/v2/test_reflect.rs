@@ -1,9 +1,11 @@
 use protobuf::Message;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::FieldDescriptor;
-use protobuf::descriptor::FieldDescriptorProto_Type;
+use protobuf::reflect::RuntimeTypeDynamic;
+use protobuf::reflect::RuntimeTypeBox;
 
 use super::test_reflect_pb::*;
+
 
 #[test]
 fn test_get_sub_message_via_reflection() {
@@ -32,36 +34,21 @@ fn test_singular_basic() {
     assert_eq!(true, bool_field.get_bool(&message));
 }
 
-fn value_for_type(t: FieldDescriptorProto_Type) -> ReflectValueBox {
-    match t {
-        FieldDescriptorProto_Type::TYPE_DOUBLE => ReflectValueBox::F64(11.0),
-        FieldDescriptorProto_Type::TYPE_FLOAT => ReflectValueBox::F32(12.0),
-        FieldDescriptorProto_Type::TYPE_INT32    |
-        FieldDescriptorProto_Type::TYPE_SFIXED32 |
-        FieldDescriptorProto_Type::TYPE_SINT32  => ReflectValueBox::I32(13),
-        FieldDescriptorProto_Type::TYPE_UINT32   |
-        FieldDescriptorProto_Type::TYPE_FIXED32 => ReflectValueBox::U32(14),
-        FieldDescriptorProto_Type::TYPE_INT64    |
-        FieldDescriptorProto_Type::TYPE_SFIXED64 |
-        FieldDescriptorProto_Type::TYPE_SINT64  => ReflectValueBox::I64(13),
-        FieldDescriptorProto_Type::TYPE_UINT64   |
-        FieldDescriptorProto_Type::TYPE_FIXED64 => ReflectValueBox::U64(14),
-        FieldDescriptorProto_Type::TYPE_BOOL => ReflectValueBox::Bool(true),
-        FieldDescriptorProto_Type::TYPE_STRING => ReflectValueBox::String("aa".to_owned()),
-        FieldDescriptorProto_Type::TYPE_BYTES => ReflectValueBox::Bytes(b"bb".as_ref().to_owned()),
-        t => panic!("cannot generated value for type: {:?}", t),
-    }
-}
-
-fn value_for_field(field: &FieldDescriptor) -> ReflectValueBox {
-    match field.proto().get_field_type() {
-        FieldDescriptorProto_Type::TYPE_ENUM => {
-            ReflectValueBox::Enum(&field.enum_descriptor().values()[0])
-        }
-        FieldDescriptorProto_Type::TYPE_MESSAGE => {
-            ReflectValueBox::Message(field.message_descriptor().new_instance())
-        }
-        t => value_for_type(t),
+fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBox {
+    match field_type.runtime_type_box() {
+        RuntimeTypeBox::U32 => ReflectValueBox::U32(11),
+        RuntimeTypeBox::U64 => ReflectValueBox::U64(12),
+        RuntimeTypeBox::I32 => ReflectValueBox::I32(13),
+        RuntimeTypeBox::I64 => ReflectValueBox::I64(14),
+        RuntimeTypeBox::F32 => ReflectValueBox::F32(15.5),
+        RuntimeTypeBox::F64 => ReflectValueBox::F64(16.5),
+        RuntimeTypeBox::Bool => ReflectValueBox::Bool(true),
+        RuntimeTypeBox::String |
+        RuntimeTypeBox::Chars => ReflectValueBox::String("here".to_owned()),
+        RuntimeTypeBox::VecU8 |
+        RuntimeTypeBox::CarllercheBytes => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
+        RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(&e.values()[0]),
+        RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
 }
 
@@ -71,7 +58,7 @@ fn test_singular_field(message: &mut Message, field: &FieldDescriptor) {
     // should not crash
     field.get_singular_field_or_default(message);
 
-    let value = value_for_field(field);
+    let value = value_for_runtime_type(field.singular_runtime_type());
     field.set_singular_field(message, value);
 }
 
@@ -104,7 +91,7 @@ fn test_repeated_field(message: &mut Message, field: &FieldDescriptor) {
         let mut repeated = field.mut_repeated(message);
 
         for i in 0..3 {
-            let value = value_for_field(field);
+            let value = value_for_runtime_type(repeated.element_type());
             expected.push(value.clone());
             repeated.push(value.clone());
             let fetched = repeated.get(i);

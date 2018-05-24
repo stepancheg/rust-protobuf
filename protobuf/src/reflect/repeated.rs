@@ -245,6 +245,10 @@ impl<'a> ReflectRepeatedRef<'a> {
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
     }
+
+    pub fn element_type(&self) -> &RuntimeTypeDynamic {
+        self.dynamic
+    }
 }
 
 impl<'a> PartialEq for ReflectRepeatedRef<'a> {
@@ -312,6 +316,10 @@ impl<'a> ReflectRepeatedMut<'a> {
 
     pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
+    }
+    
+    pub fn element_type(&self) -> &RuntimeTypeDynamic {
+        self.dynamic
     }
 
     pub fn set(&mut self, index: usize, value: ReflectValueBox) {

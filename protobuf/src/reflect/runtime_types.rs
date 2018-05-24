@@ -13,6 +13,7 @@ use reflect::ReflectValueRef;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 use std::fmt;
+use reflect::runtime_type_box::RuntimeTypeBox;
 
 
 /// `RuntimeType` is not implemented by all protobuf types directly
@@ -31,6 +32,9 @@ pub trait RuntimeType : fmt::Debug + Send + Sync + 'static {
     {
         &RuntimeTypeDynamicImpl::<Self>(marker::PhantomData)
     }
+
+    fn runtime_type_box() -> RuntimeTypeBox
+        where Self : Sized;
 
     fn default_value_ref() -> ReflectValueRef<'static>;
 
@@ -106,6 +110,10 @@ pub struct RuntimeTypeUnreachable;
 impl RuntimeType for RuntimeTypeF32 {
     type Value = f32;
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::F32
+    }
+
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::F32(0.0)
     }
@@ -116,14 +124,13 @@ impl RuntimeType for RuntimeTypeF32 {
             _ => panic!("wrong type"),
         }
     }
-
     fn into_value_box(value: f32) -> ReflectValueBox {
         ReflectValueBox::F32(value)
     }
+
     fn into_static_value_ref(value: f32) -> ReflectValueRef<'static> {
         ReflectValueRef::F32(value)
     }
-
     fn as_ref(value: &f32) -> ReflectValueRef {
         ReflectValueRef::F32(*value)
     }
@@ -134,6 +141,10 @@ impl RuntimeType for RuntimeTypeF64 {
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::F64(0.0)
+    }
+
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::F64
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> f64 {
@@ -163,6 +174,10 @@ impl RuntimeType for RuntimeTypeI32 {
         ReflectValueRef::I32(0)
     }
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::I32
+    }
+
     fn from_value_box(value_box: ReflectValueBox) -> i32 {
         match value_box {
             ReflectValueBox::I32(v) => v,
@@ -190,6 +205,10 @@ impl RuntimeType for RuntimeTypeI64 {
         ReflectValueRef::I64(0)
     }
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::I64
+    }
+
     fn from_value_box(value_box: ReflectValueBox) -> i64 {
         match value_box {
             ReflectValueBox::I64(v) => v,
@@ -212,6 +231,10 @@ impl RuntimeType for RuntimeTypeI64 {
 
 impl RuntimeType for RuntimeTypeU32 {
     type Value = u32;
+
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::U32
+    }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::U32(0)
@@ -244,6 +267,10 @@ impl RuntimeType for RuntimeTypeU64 {
         ReflectValueRef::U64(0)
     }
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::U64
+    }
+
     fn from_value_box(value_box: ReflectValueBox) -> u64 {
         match value_box {
             ReflectValueBox::U64(v) => v,
@@ -271,6 +298,10 @@ impl RuntimeType for RuntimeTypeBool {
         ReflectValueRef::Bool(false)
     }
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::Bool
+    }
+
     fn from_value_box(value_box: ReflectValueBox) -> bool {
         match value_box {
             ReflectValueBox::Bool(v) => v,
@@ -293,6 +324,10 @@ impl RuntimeType for RuntimeTypeBool {
 
 impl RuntimeType for RuntimeTypeString {
     type Value = String;
+
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::String
+    }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::String("")
@@ -324,6 +359,10 @@ impl RuntimeTypeWithDeref for RuntimeTypeString {
 
 impl RuntimeType for RuntimeTypeVecU8 {
     type Value = Vec<u8>;
+
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::VecU8
+    }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Bytes(b"")
@@ -361,6 +400,10 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
         ReflectValueRef::Bytes(b"")
     }
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::CarllercheBytes
+    }
+
     fn from_value_box(value_box: ReflectValueBox) -> Bytes {
         match value_box {
             ReflectValueBox::Bytes(v) => v.into(),
@@ -395,6 +438,10 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
         ReflectValueRef::String("")
     }
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::Chars
+    }
+
     fn from_value_box(value_box: ReflectValueBox) -> Chars {
         match value_box {
             ReflectValueBox::String(v) => v.into(),
@@ -424,6 +471,10 @@ impl<E> RuntimeType for RuntimeTypeEnum<E>
     where E : ProtobufEnum + ProtobufValue + fmt::Debug
 {
     type Value = E;
+
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::Enum(Self::enum_descriptor())
+    }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(&Self::enum_descriptor().values()[0])
@@ -458,6 +509,10 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
 {
     type Value = M;
 
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        RuntimeTypeBox::Message(Self::message_descriptor())
+    }
+
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Message(Self::message_descriptor().default_instance())
     }
@@ -485,6 +540,10 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
 
 impl RuntimeType for RuntimeTypeUnreachable {
     type Value = u32;
+
+    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+        unreachable!()
+    }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         unreachable!()

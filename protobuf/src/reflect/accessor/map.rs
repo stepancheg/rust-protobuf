@@ -13,7 +13,7 @@ use reflect::map::ReflectMapMut;
 use core::message_down_cast_mut;
 
 
-pub(crate) trait MapFieldAccessor : 'static {
+pub(crate) trait MapFieldAccessor : Send + Sync + 'static {
     fn len_field_generic(&self, m: &Message) -> usize;
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a>;

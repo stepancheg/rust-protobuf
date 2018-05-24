@@ -6,10 +6,13 @@ mod repeated;
 mod value;
 mod enums;
 mod message;
+mod field;
 pub(crate) mod as_any;
 pub(crate) mod transmute_eq;
 pub mod types;
+pub mod type_dynamic;
 pub(crate) mod runtime_types;
+pub(crate) mod runtime_type_box;
 pub(crate) mod runtime_type_dynamic;
 
 pub mod rt;
@@ -22,5 +25,9 @@ pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
 
 pub use self::message::MessageDescriptor;
-pub use self::message::FieldDescriptor;
-pub use self::message::ReflectFieldRef;
+
+pub use self::field::FieldDescriptor;
+pub use self::field::ReflectFieldRef;
+
+pub use self::runtime_type_dynamic::RuntimeTypeDynamic;
+pub use self::runtime_type_box::RuntimeTypeBox;

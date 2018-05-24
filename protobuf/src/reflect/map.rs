@@ -118,6 +118,14 @@ impl<'a> ReflectMapRef<'a> {
     pub fn is_empty(&self) -> bool {
         self.map.is_empty()
     }
+
+    pub fn key_type(&self) -> &RuntimeTypeDynamic {
+        self.key_dynamic
+    }
+
+    pub fn value_type(&self) -> &RuntimeTypeDynamic {
+        self.value_dynamic
+    }
 }
 
 impl<'a> ReflectMapMut<'a> {
@@ -127,6 +135,14 @@ impl<'a> ReflectMapMut<'a> {
             key_dynamic: self.key_dynamic,
             value_dynamic: self.value_dynamic,
         }
+    }
+
+    pub fn key_type(&self) -> &RuntimeTypeDynamic {
+        self.key_dynamic
+    }
+
+    pub fn value_type(&self) -> &RuntimeTypeDynamic {
+        self.value_dynamic
     }
 
     pub fn len(&self) -> usize {

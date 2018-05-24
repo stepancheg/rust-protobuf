@@ -18,7 +18,7 @@ use core::message_down_cast_mut;
 use std::fmt;
 
 
-pub(crate) trait RepeatedFieldAccessor : 'static {
+pub(crate) trait RepeatedFieldAccessor : Send + Sync + 'static {
     fn len_field_generic(&self, m: &Message) -> usize;
 
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
@@ -31,7 +31,7 @@ pub(crate) trait RepeatedFieldAccessor : 'static {
 }
 
 
-trait RepeatedFieldGetMut<M, R : ?Sized>
+trait RepeatedFieldGetMut<M, R : ?Sized> : Send + Sync + 'static
     where
         M : Message + 'static,
 {
