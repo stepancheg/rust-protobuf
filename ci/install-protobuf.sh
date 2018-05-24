@@ -26,3 +26,5 @@ curl -sL https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION
 cd protobuf-$PROTOBUF_VERSION
 
 ./configure --prefix=/home/travis && make -j2 && make install
+
+test -x /home/travis/bin/protoc
