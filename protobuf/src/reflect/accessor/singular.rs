@@ -2,8 +2,6 @@ use std::fmt;
 use std::mem;
 
 use Message;
-use reflect::EnumDescriptor;
-use reflect::MessageDescriptor;
 use reflect::EnumValueDescriptor;
 use reflect::ReflectValueRef;
 use reflect::ReflectValueBox;
@@ -24,11 +22,6 @@ use reflect::type_dynamic::ProtobufTypeDynamic;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor : Send + Sync + 'static {
-    /// Return enum descriptor for enum field, panics if field type is not enum.
-    fn enum_descriptor(&self) -> &'static EnumDescriptor;
-    /// Return message descriptor for message field, panics if field type is not message.
-    fn message_descriptor(&self) -> &'static MessageDescriptor;
-
     fn has_field_generic(&self, m: &Message) -> bool;
     // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a Message) -> Option<&'a Message>;
@@ -303,14 +296,6 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         M : Message,
         V : ProtobufType,
 {
-    fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        V::RuntimeType::enum_descriptor()
-    }
-
-    fn message_descriptor(&self) -> &'static MessageDescriptor {
-        V::RuntimeType::message_descriptor()
-    }
-
     fn has_field_generic(&self, m: &Message) -> bool {
         let m = message_down_cast(m);
         match self.fns {

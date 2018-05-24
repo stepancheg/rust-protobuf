@@ -10,12 +10,11 @@ use reflect::accessor::FieldAccessor;
 use reflect::types::ProtobufType;
 use reflect::ProtobufValue;
 use reflect::repeated::ReflectRepeatedRef;
-use reflect::EnumDescriptor;
-use reflect::MessageDescriptor;
 use core::message_down_cast;
 use reflect::repeated::ReflectRepeatedMut;
 use core::message_down_cast_mut;
 use std::fmt;
+use reflect::type_dynamic::ProtobufTypeDynamic;
 
 
 pub(crate) trait RepeatedFieldAccessor : Send + Sync + 'static {
@@ -24,10 +23,7 @@ pub(crate) trait RepeatedFieldAccessor : Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a>;
 
-    /// Return enum descriptor for enum field, panics if field type is not enum.
-    fn enum_descriptor(&self) -> &'static EnumDescriptor;
-    /// Return message descriptor for message field, panics if field type is not message.
-    fn message_descriptor(&self) -> &'static MessageDescriptor;
+    fn element_protobuf_type(&self) -> &ProtobufTypeDynamic;
 }
 
 
@@ -113,12 +109,8 @@ impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
         }
     }
 
-    fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        V::RuntimeType::enum_descriptor()
-    }
-
-    fn message_descriptor(&self) -> &'static MessageDescriptor {
-        V::RuntimeType::message_descriptor()
+    fn element_protobuf_type(&self) -> &ProtobufTypeDynamic {
+        V::dynamic()
     }
 }
 

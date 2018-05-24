@@ -17,6 +17,7 @@ use reflect::repeated::ReflectRepeatedRef;
 use reflect::repeated::ReflectRepeatedMut;
 use reflect::map::ReflectMapRef;
 use reflect::map::ReflectMapMut;
+use reflect::RuntimeTypeBox;
 
 
 /// Reference to a value stored in a field, optional, repeated or map.
@@ -27,6 +28,12 @@ pub enum ReflectFieldRef<'a> {
     Repeated(ReflectRepeatedRef<'a>),
     /// Map field
     Map(ReflectMapRef<'a>),
+}
+
+pub enum RuntimeFieldType {
+    Singular(RuntimeTypeBox),
+    Repeated(RuntimeTypeBox),
+    Map(RuntimeTypeBox, RuntimeTypeBox),
 }
 
 fn _assert_sync<'a>() {
@@ -67,8 +74,8 @@ impl FieldDescriptor {
     /// Return enum descriptor for enum field, panics if field type is not enum.
     pub fn enum_descriptor(&self) -> &'static EnumDescriptor {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.enum_descriptor(),
-            AccessorKind::Repeated(ref a) => a.enum_descriptor(),
+            AccessorKind::Singular(ref a) => a.protobuf_type().runtime_type().enum_descriptor(),
+            AccessorKind::Repeated(ref a) => a.element_protobuf_type().runtime_type().enum_descriptor(),
             _ => panic!("not a singular or repeated field"),
         }
     }
@@ -76,8 +83,8 @@ impl FieldDescriptor {
     /// Return enum descriptor for message field, panics if field type is not message.
     pub fn message_descriptor(&self) -> &'static MessageDescriptor {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.message_descriptor(),
-            AccessorKind::Repeated(ref a) => a.message_descriptor(),
+            AccessorKind::Singular(ref a) => a.protobuf_type().runtime_type().message_descriptor(),
+            AccessorKind::Repeated(ref a) => a.element_protobuf_type().runtime_type().message_descriptor(),
             _ => panic!("not a singular or repeated field"),
         }
     }
@@ -190,11 +197,31 @@ impl FieldDescriptor {
         self.singular().set_singular_field(m, value)
     }
 
-    pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
+    pub fn runtime_field_type(&self) -> RuntimeFieldType {
+        use self::AccessorKind::*;
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => ReflectFieldRef::Optional(a.get_reflect(m)),
-            AccessorKind::Repeated(ref a) => ReflectFieldRef::Repeated(a.get_reflect(m)),
-            AccessorKind::Map(ref a) => ReflectFieldRef::Map(a.get_reflect(m)),
+            Singular(ref a) => {
+                RuntimeFieldType::Singular(a.protobuf_type().runtime_type().runtime_type_box())
+            },
+            Repeated(ref a) => {
+                let element_protobuf_type = a.element_protobuf_type();
+                RuntimeFieldType::Repeated(element_protobuf_type.runtime_type().runtime_type_box())
+            },
+            Map(ref a) => {
+                let (k, v) = a.entry_type();
+                RuntimeFieldType::Map(
+                    k.runtime_type().runtime_type_box(),
+                    v.runtime_type().runtime_type_box())
+            }
+        }
+    }
+
+    pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
+        use self::AccessorKind::*;
+        match self.accessor.accessor {
+            Singular(ref a) => ReflectFieldRef::Optional(a.get_reflect(m)),
+            Repeated(ref a) => ReflectFieldRef::Repeated(a.get_reflect(m)),
+            Map(ref a) => ReflectFieldRef::Map(a.get_reflect(m)),
         }
     }
 

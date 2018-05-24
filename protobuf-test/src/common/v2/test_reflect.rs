@@ -5,6 +5,7 @@ use protobuf::reflect::RuntimeTypeDynamic;
 use protobuf::reflect::RuntimeTypeBox;
 
 use super::test_reflect_pb::*;
+use protobuf::reflect::RuntimeFieldType;
 
 
 #[test]
@@ -128,6 +129,11 @@ fn test_map_field(message: &mut Message, field: &FieldDescriptor) {
     assert_eq!(0, field.get_map(message).len());
     assert!(field.mut_map(message).is_empty());
     assert_eq!(0, field.mut_map(message).len());
+
+    let (_k, _v) = match field.runtime_field_type() {
+        RuntimeFieldType::Map(k, v) => (k, v),
+        _ => panic!("not a map"),
+    };
 
     // TODO: insert/query
 }
