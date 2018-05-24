@@ -23,6 +23,9 @@ pub struct Customize {
     pub carllerche_bytes_for_string: Option<bool>,
     /// Use `std::Vec` to store repeated messages fields
     pub repeated_field_vec: Option<bool>,
+    /// Make sure `Customize` is always used with `..Default::default()`
+    /// for future compatibility.
+    _future_options: (),
 }
 
 impl Customize {
@@ -76,6 +79,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
         repeated_field_vec,
+        _future_options: (),
     }
 }
 
@@ -95,6 +99,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
         repeated_field_vec,
+        _future_options: (),
     }
 }
 
@@ -114,5 +119,6 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
         repeated_field_vec,
+        _future_options: (),
     }
 }
