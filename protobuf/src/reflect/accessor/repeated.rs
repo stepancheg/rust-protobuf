@@ -23,7 +23,7 @@ pub(crate) trait RepeatedFieldAccessor : Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a>;
 
-    fn element_protobuf_type(&self) -> &ProtobufTypeDynamic;
+    fn element_protobuf_type(&self) -> &'static ProtobufTypeDynamic;
 }
 
 
@@ -109,7 +109,7 @@ impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
         }
     }
 
-    fn element_protobuf_type(&self) -> &ProtobufTypeDynamic {
+    fn element_protobuf_type(&self) -> &'static ProtobufTypeDynamic {
         V::dynamic()
     }
 }

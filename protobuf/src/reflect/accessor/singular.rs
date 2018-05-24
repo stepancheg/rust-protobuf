@@ -37,7 +37,7 @@ pub(crate) trait SingularFieldAccessor : Send + Sync + 'static {
     fn get_f32_generic(&self, m: &Message) -> f32;
     fn get_f64_generic(&self, m: &Message) -> f64;
 
-    fn protobuf_type(&self) -> &ProtobufTypeDynamic;
+    fn protobuf_type(&self) -> &'static ProtobufTypeDynamic;
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
 
     fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a>;
@@ -424,7 +424,7 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         }
     }
 
-    fn protobuf_type(&self) -> &ProtobufTypeDynamic {
+    fn protobuf_type(&self) -> &'static ProtobufTypeDynamic {
         V::dynamic()
     }
 

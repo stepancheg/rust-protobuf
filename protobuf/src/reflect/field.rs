@@ -17,7 +17,6 @@ use reflect::repeated::ReflectRepeatedRef;
 use reflect::repeated::ReflectRepeatedMut;
 use reflect::map::ReflectMapRef;
 use reflect::map::ReflectMapMut;
-use reflect::RuntimeTypeBox;
 
 
 /// Reference to a value stored in a field, optional, repeated or map.
@@ -31,9 +30,9 @@ pub enum ReflectFieldRef<'a> {
 }
 
 pub enum RuntimeFieldType {
-    Singular(RuntimeTypeBox),
-    Repeated(RuntimeTypeBox),
-    Map(RuntimeTypeBox, RuntimeTypeBox),
+    Singular(&'static RuntimeTypeDynamic),
+    Repeated(&'static RuntimeTypeDynamic),
+    Map(&'static RuntimeTypeDynamic, &'static RuntimeTypeDynamic),
 }
 
 fn _assert_sync<'a>() {
@@ -201,17 +200,17 @@ impl FieldDescriptor {
         use self::AccessorKind::*;
         match self.accessor.accessor {
             Singular(ref a) => {
-                RuntimeFieldType::Singular(a.protobuf_type().runtime_type().runtime_type_box())
+                RuntimeFieldType::Singular(a.protobuf_type().runtime_type())
             },
             Repeated(ref a) => {
                 let element_protobuf_type = a.element_protobuf_type();
-                RuntimeFieldType::Repeated(element_protobuf_type.runtime_type().runtime_type_box())
+                RuntimeFieldType::Repeated(element_protobuf_type.runtime_type())
             },
             Map(ref a) => {
                 let (k, v) = a.entry_type();
                 RuntimeFieldType::Map(
-                    k.runtime_type().runtime_type_box(),
-                    v.runtime_type().runtime_type_box())
+                    k.runtime_type(),
+                    v.runtime_type())
             }
         }
     }

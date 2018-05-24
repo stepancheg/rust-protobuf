@@ -36,7 +36,7 @@ fn test_singular_basic() {
 }
 
 fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBox {
-    match field_type.runtime_type_box() {
+    match field_type.to_box() {
         RuntimeTypeBox::U32 => ReflectValueBox::U32(11),
         RuntimeTypeBox::U64 => ReflectValueBox::U64(12),
         RuntimeTypeBox::I32 => ReflectValueBox::I32(13),
@@ -130,12 +130,35 @@ fn test_map_field(message: &mut Message, field: &FieldDescriptor) {
     assert!(field.mut_map(message).is_empty());
     assert_eq!(0, field.mut_map(message).len());
 
-    let (_k, _v) = match field.runtime_field_type() {
+    let (k, v) = match field.runtime_field_type() {
         RuntimeFieldType::Map(k, v) => (k, v),
         _ => panic!("not a map"),
     };
 
-    // TODO: insert/query
+    {
+        let map = field.get_map(message);
+        assert!(map.is_empty());
+        assert_eq!(0, map.len());
+
+        assert_eq!(None, map.get(value_for_runtime_type(k).as_value_ref()));
+    }
+
+    {
+        let mut map = field.mut_map(message);
+        assert!(map.is_empty());
+        assert_eq!(0, map.len());
+
+        assert_eq!(None, map.get(value_for_runtime_type(k).as_value_ref()));
+
+        let key = value_for_runtime_type(k);
+        let value = value_for_runtime_type(v);
+
+        map.insert(key.clone(), value.clone());
+
+        assert_eq!(Some(value.as_value_ref()), map.get(key.as_value_ref()));
+
+        assert_eq!(1, map.len());
+    }
 }
 
 #[test]

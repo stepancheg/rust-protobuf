@@ -9,7 +9,7 @@ use reflect::EnumDescriptor;
 
 /// Dynamic version of `RuntimeType`
 pub trait RuntimeTypeDynamic : Send + Sync + 'static {
-    fn runtime_type_box(&self) -> RuntimeTypeBox;
+    fn to_box(&self) -> RuntimeTypeBox;
 
     fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a>;
 
@@ -21,7 +21,7 @@ pub trait RuntimeTypeDynamic : Send + Sync + 'static {
 pub(crate) struct RuntimeTypeDynamicImpl<T : RuntimeType>(pub marker::PhantomData<T>);
 
 impl<T : RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
-    fn runtime_type_box(&self) -> RuntimeTypeBox {
+    fn to_box(&self) -> RuntimeTypeBox {
         T::runtime_type_box()
     }
 
