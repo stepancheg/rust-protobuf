@@ -20,7 +20,6 @@ mod field;
 mod customize;
 mod extensions;
 mod oneof;
-pub mod float;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;

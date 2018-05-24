@@ -7,7 +7,7 @@ use model;
 use protobuf;
 use protobuf::Message;
 
-use str_lit::StrLitDecodeError;
+use protobuf::text_format::lexer::StrLitDecodeError;
 
 
 #[derive(Debug)]

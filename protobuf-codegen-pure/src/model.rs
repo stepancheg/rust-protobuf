@@ -3,14 +3,15 @@
 //! This crate can be seen as a rust transcription of the
 //! [descriptor.proto](https://github.com/google/protobuf/blob/master/src/google/protobuf/descriptor.proto) file
 
+use protobuf::text_format::lexer::float;
+use protobuf::text_format::lexer::Loc;
+use protobuf::text_format::lexer::StrLit;
+
 use parser::Parser;
-use parser::Loc;
 
 pub use parser::ParserError;
 pub use parser::ParserErrorWithLocation;
 
-use protobuf_codegen::float;
-use str_lit::StrLit;
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]

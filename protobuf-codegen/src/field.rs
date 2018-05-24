@@ -4,6 +4,7 @@ use protobuf::wire_format;
 use protobuf::rt;
 use protobuf::rust;
 use protobuf::text_format;
+use protobuf::text_format::lexer::float;
 
 use super::rust_types_values::*;
 use super::enums::*;
@@ -12,8 +13,6 @@ use super::code_writer::CodeWriter;
 use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_field;
 use oneof::OneofField;
-
-use float;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {

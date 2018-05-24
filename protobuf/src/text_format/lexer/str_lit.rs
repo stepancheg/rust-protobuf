@@ -1,14 +1,15 @@
-use parser::Loc;
-use parser::Lexer;
-use parser::ParserError;
+use super::loc::Loc;
+use super::lexer_impl::Lexer;
+use super::lexer_impl::LexerError;
+
 
 #[derive(Debug)]
 pub enum StrLitDecodeError {
     Error,
 }
 
-impl From<ParserError> for StrLitDecodeError {
-    fn from(_: ParserError) -> Self {
+impl From<LexerError> for StrLitDecodeError {
+    fn from(_: LexerError) -> Self {
         StrLitDecodeError::Error
     }
 }
