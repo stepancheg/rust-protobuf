@@ -17,8 +17,10 @@ matrix:
 
 before_install:
   - ci/install-protobuf.sh
-  - PATH=/home/travis/bin:$PATH protoc --version
-  - RUST_BACKTRACE=1
+  - export PATH="/home/travis/bin:$PATH"
+  - which protoc
+  - protoc --version
+  - export RUST_BACKTRACE=1
 
 script:
   - rustc --version
