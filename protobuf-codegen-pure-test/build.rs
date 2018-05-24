@@ -69,7 +69,22 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
 }
 
 
+fn print_rerun_if_changed<P : AsRef<Path>>(path: P) {
+    let path = path.as_ref();
+    // Doesn't seem to do anything
+    println!("rerun-if-changed={}", path.to_str().expect("to_str"));
+    if path.is_dir() {
+        for child in fs::read_dir(path).expect("read_dir") {
+            let child = child.expect("child").path();
+            print_rerun_if_changed(child);
+        }
+    }
+}
+
+
 fn generate_pb_rs() {
+    print_rerun_if_changed("../protobuf-test");
+
     copy_tests("src/v2");
     gen_in_dir("src/v2", "src/v2");
 
