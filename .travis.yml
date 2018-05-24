@@ -22,7 +22,7 @@ matrix:
     env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
 
 before_install:
-  - ./install-protobuf.sh
+  - ci/install-protobuf.sh
   - PATH=/home/travis/bin:$PATH protoc --version
   - RUST_BACKTRACE=1
 
