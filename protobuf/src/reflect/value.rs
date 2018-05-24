@@ -225,13 +225,13 @@ impl ReflectValueBox {
             ReflectValueBox::Bool(v) => transmute_eq(v).map_err(ReflectValueBox::Bool),
             ReflectValueBox::String(v) => {
                 transmute_eq::<String, _>(v)
-                    .or_else(|v| transmute_eq::<StringOrChars, _>(v))
-                    .map_err(ReflectValueBox::String)
+                    .or_else(|v: String| transmute_eq::<StringOrChars, _>(v.into()))
+                    .map_err(|v: StringOrChars| ReflectValueBox::String(v.into()))
             },
             ReflectValueBox::Bytes(v) => {
                 transmute_eq::<Vec<u8>, _>(v)
-                    .or_else(|v| transmute_eq::<VecU8OrBytes, _>(v))
-                    .map_err(ReflectValueBox::Bytes)
+                    .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
+                    .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into()))
             },
             ReflectValueBox::Enum(e) => {
                 e.cast().ok_or(ReflectValueBox::Enum(e))
