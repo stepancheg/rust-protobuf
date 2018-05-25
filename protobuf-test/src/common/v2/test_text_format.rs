@@ -2,7 +2,11 @@ use std::default::Default;
 
 use super::test_text_format_pb::*;
 
+use protobuf::Message;
 use protobuf::text_format::print_to_string;
+
+use protobuf_test_common::*;
+
 
 fn t<F : FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();
@@ -142,4 +146,11 @@ fn test_rust_identifier() {
     let mut m = TestTextFormatRustIdentifier::new();
     m.set_field_const(true);
     assert_eq!("const: true", &*format!("{:?}", m));
+}
+
+
+#[test]
+fn test_parse_basic() {
+    test_parse_text_format_vs_protoc("", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("test_enum_singular: DARK", TestTypes::descriptor_static());
 }

@@ -22,6 +22,7 @@ pub enum LexerError {
     ExpectOctDigit,
     ExpectDecDigit,
     StrLitDecodeError(StrLitDecodeError),
+    ExpectedIdent,
 }
 
 pub type LexerResult<T> = Result<T, LexerError>;
@@ -47,11 +48,17 @@ impl From<float::ProtobufFloatParseError> for LexerError {
 
 
 
+#[derive(Copy, Clone, Debug)]
+pub enum LexerCommentStyle {
+    Cpp,
+    Sh,
+}
 
 #[derive(Copy, Clone)]
 pub struct Lexer<'a> {
-    pub input: &'a str,
-    pub pos: usize,
+    comment_style: LexerCommentStyle,
+    input: &'a str,
+    pos: usize,
     pub loc: Loc,
 }
 
@@ -60,6 +67,15 @@ fn is_letter(c: char) -> bool {
 }
 
 impl<'a> Lexer<'a> {
+    pub fn new(input: &'a str, comment_style: LexerCommentStyle) -> Lexer<'a> {
+        Lexer {
+            comment_style,
+            input,
+            pos: 0,
+            loc: Loc::start(),
+        }
+    }
+
     /// No more chars
     pub fn eof(&self) -> bool {
         self.pos == self.input.len()
@@ -102,7 +118,7 @@ impl<'a> Lexer<'a> {
         self.take_while(|c| c.is_whitespace());
     }
 
-    fn skip_comment(&mut self) -> LexerResult<()> {
+    fn skip_c_comment(&mut self) -> LexerResult<()> {
         if self.skip_if_lookahead_is_str("/*") {
             let end = "*/";
             match self.rem_chars().find(end) {
@@ -120,7 +136,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn skip_block_comment(&mut self) {
+    fn skip_cpp_comment(&mut self) {
         if self.skip_if_lookahead_is_str("//") {
             loop {
                 match self.next_char_opt() {
@@ -131,12 +147,35 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn skip_ws(&mut self) -> LexerResult<()> {
+    fn skip_sh_comment(&mut self) {
+        if self.skip_if_lookahead_is_str("#") {
+            loop {
+                match self.next_char_opt() {
+                    Some('\n') | None => break,
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    fn skip_comment(&mut self) -> LexerResult<()> {
+        match self.comment_style {
+            LexerCommentStyle::Cpp => {
+                self.skip_c_comment()?;
+                self.skip_cpp_comment();
+            }
+            LexerCommentStyle::Sh => {
+                self.skip_sh_comment();
+            }
+        }
+        Ok(())
+    }
+
+    pub fn skip_ws(&mut self) -> LexerResult<()> {
         loop {
             let pos = self.pos;
             self.skip_whitespaces();
             self.skip_comment()?;
-            self.skip_block_comment();
             if pos == self.pos {
                 // Did not advance
                 return Ok(())
@@ -521,11 +560,7 @@ mod test {
     fn lex<P, R>(input: &str, parse_what: P) -> R
         where P : FnOnce(&mut Lexer) -> LexerResult<R>
     {
-        let mut lexer = Lexer {
-            input,
-            pos: 0,
-            loc: Loc::start(),
-        };
+        let mut lexer = Lexer::new(input, LexerCommentStyle::Cpp);
         let r = parse_what(&mut lexer)
             .expect(&format!("lexer failed at {}", lexer.loc));
         assert!(lexer.eof(), "check eof failed at {}", lexer.loc);
@@ -535,11 +570,7 @@ mod test {
     fn lex_opt<P, R>(input: &str, parse_what: P) -> R
         where P : FnOnce(&mut Lexer) -> LexerResult<Option<R>>
     {
-        let mut lexer = Lexer {
-            input,
-            pos: 0,
-            loc: Loc::start(),
-        };
+        let mut lexer = Lexer::new(input, LexerCommentStyle::Cpp);
         let o = parse_what(&mut lexer)
             .expect(&format!("lexer failed at {}", lexer.loc));
         let r = o.expect(&format!("lexer returned none at {}", lexer.loc));

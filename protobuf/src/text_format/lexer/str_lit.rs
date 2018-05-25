@@ -1,6 +1,6 @@
-use super::loc::Loc;
 use super::lexer_impl::Lexer;
 use super::lexer_impl::LexerError;
+use text_format::lexer::LexerCommentStyle;
 
 
 #[derive(Debug)]
@@ -26,11 +26,9 @@ pub struct StrLit {
 impl StrLit {
     /// May fail if not valid UTF8
     pub fn decode_utf8(&self) -> StrLitDecodeResult<String> {
-        let mut lexer = Lexer {
-            input: &self.escaped,
-            pos: 0,
-            loc: Loc::start(),
-        };
+        // comment style does not matter here
+        let comment_style = Lexer::new(&self.escaped, LexerCommentStyle::Cpp);
+        let mut lexer = comment_style;
         let mut r = String::new();
         while !lexer.eof() {
             r.push(lexer.next_char_value()?);

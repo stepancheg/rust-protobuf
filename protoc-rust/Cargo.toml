@@ -16,4 +16,4 @@ doctest = false
 protoc   = { path = "../protoc", version = "2.1.0" }
 protobuf = { path = "../protobuf", version = "2.1.0" }
 protobuf-codegen = { path = "../protobuf-codegen", version = "2.1.0" }
-tempdir  = "0.3"
+tempdir  = "~0.3"

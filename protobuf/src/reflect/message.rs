@@ -47,6 +47,7 @@ impl<M> MessageFactory for MessageFactoryImpl<M>
 
 pub struct MessageDescriptor {
     full_name: String,
+    file_descriptor_proto: &'static FileDescriptorProto,
     proto: &'static DescriptorProto,
     factory: &'static MessageFactory,
     fields: Vec<FieldDescriptor>,
@@ -63,9 +64,9 @@ impl MessageDescriptor {
     pub fn new<M : 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
-        file: &'static FileDescriptorProto,
+        file_descriptor_proto: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
-        let proto = find_message_by_rust_name(file, rust_name);
+        let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
         for field_proto in proto.message.get_field() {
@@ -79,7 +80,7 @@ impl MessageDescriptor {
             index_by_name.insert(f.get_name().to_string(), i);
         }
 
-        let mut full_name = file.get_package().to_string();
+        let mut full_name = file_descriptor_proto.get_package().to_string();
         if full_name.len() > 0 {
             full_name.push('.');
         }
@@ -98,7 +99,12 @@ impl MessageDescriptor {
                 .collect(),
             index_by_name,
             index_by_number,
+            file_descriptor_proto,
         }
+    }
+
+    pub fn file_descriptor_proto(&self) -> &FileDescriptorProto {
+        self.file_descriptor_proto
     }
 
     /// New empty message
@@ -135,14 +141,16 @@ impl MessageDescriptor {
         &self.fields
     }
 
-    pub fn field_by_name<'a>(&'a self, name: &str) -> &'a FieldDescriptor {
-        let &index = self.index_by_name.get(name).unwrap();
-        &self.fields[index]
+    /// Find message field by field name
+    pub fn field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+        let &index = self.index_by_name.get(name)?;
+        Some(&self.fields[index])
     }
 
-    pub fn field_by_number<'a>(&'a self, number: u32) -> &'a FieldDescriptor {
-        let &index = self.index_by_number.get(&number).unwrap();
-        &self.fields[index]
+    /// Find message field by field name
+    pub fn field_by_number<'a>(&'a self, number: u32) -> Option<&'a FieldDescriptor> {
+        let &index = self.index_by_number.get(&number)?;
+        Some(&self.fields[index])
     }
 
     pub fn cast<M : 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {

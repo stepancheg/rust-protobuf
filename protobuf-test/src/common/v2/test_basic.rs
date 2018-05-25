@@ -204,7 +204,7 @@ fn test_message_descriptor() {
     let mut t = TestDescriptor::new();
     t.set_stuff(55);
 
-    let field = d.field_by_name("stuff");
+    let field = d.field_by_name("stuff").unwrap();
     assert_eq!(55, field.get_i32(&t));
 }
 
@@ -216,7 +216,7 @@ fn test_enum_descriptor() {
         "TestEnumDescriptor",
         reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name()
     );
-    assert_eq!("GREEN", d.value_by_name("GREEN").name());
+    assert_eq!("GREEN", d.value_by_name("GREEN").unwrap().name());
 }
 
 #[test]

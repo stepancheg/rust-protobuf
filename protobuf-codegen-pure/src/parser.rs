@@ -8,6 +8,7 @@ use protobuf::text_format::lexer::LexerError;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::Token;
 use protobuf::text_format::lexer::TokenWithLocation;
+use protobuf::text_format::lexer::LexerCommentStyle;
 
 use model::*;
 
@@ -253,11 +254,7 @@ impl NumLitEx for NumLit {
 impl<'a> Parser<'a> {
     pub fn new(input: &'a str) -> Parser<'a> {
         Parser {
-            lexer: Lexer {
-                input,
-                pos: 0,
-                loc: Loc::start(),
-            },
+            lexer: Lexer::new(input, LexerCommentStyle::Cpp),
             syntax: Syntax::Proto2,
             next_token: None,
         }

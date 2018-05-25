@@ -14,12 +14,12 @@ fn test_get_sub_message_via_reflection() {
     m.mut_sub_m().set_n(42);
     assert!(m.has_sub_m());
 
-    let descriptor = m.descriptor().field_by_name("sub_m");
+    let descriptor = m.descriptor().field_by_name("sub_m").unwrap();
     assert_eq!("sub_m", descriptor.name());
 
     let sub_m = descriptor.get_message(&m);
     assert_eq!("test_reflect.SubM", sub_m.descriptor().full_name());
-    assert_eq!(42, sub_m.descriptor().field_by_name("n").get_i32(sub_m));
+    assert_eq!(42, sub_m.descriptor().field_by_name("n").unwrap().get_i32(sub_m));
 }
 
 #[test]
@@ -27,7 +27,7 @@ fn test_singular_basic() {
     let mut message = TestTypesSingular::new();
     let descriptor = message.descriptor();
 
-    let bool_field = descriptor.field_by_name("bool_field");
+    let bool_field = descriptor.field_by_name("bool_field").unwrap();
     assert!(!bool_field.has_field(&message));
 
     bool_field.set_singular_field(&mut message, ReflectValueBox::Bool(true));
@@ -77,7 +77,7 @@ fn test_singular() {
 fn test_repeated_debug() {
     let mut message = TestTypesRepeated::new();
     message.set_int32_field(vec![10, 20, 30]);
-    let field = message.descriptor().field_by_name("int32_field").get_repeated(&message);
+    let field = message.descriptor().field_by_name("int32_field").unwrap().get_repeated(&message);
     assert_eq!("[10, 20, 30]", format!("{:?}", field));
 }
 

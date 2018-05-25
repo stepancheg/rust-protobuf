@@ -19,6 +19,7 @@ with-bytes = ["bytes", "protobuf/with-bytes"]
 glob        = "0.2"
 log         = "0.*"
 env_logger  = "0.5.*"
+tempdir     = "~0.3"
 
 [dependencies.protobuf]
 path = "../protobuf"

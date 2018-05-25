@@ -9,6 +9,7 @@ mod num_lit;
 
 pub use self::lexer_impl::Lexer;
 pub use self::lexer_impl::LexerError;
+pub use self::lexer_impl::LexerCommentStyle;
 pub use self::loc::Loc;
 pub use self::token::Token;
 pub use self::token::TokenWithLocation;
