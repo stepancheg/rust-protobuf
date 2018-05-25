@@ -50,6 +50,9 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
     let mut encoded = Vec::new();
     protoc.stdout.take().expect("stdout").read_to_end(&mut encoded).expect("read_to_end");
 
+    let exit_status = protoc.wait().expect("wait");
+    assert!(exit_status.success(), "{:?}", exit_status);
+
     let mut expected = message_descriptor.new_instance();
     expected.merge_from_bytes(&encoded).expect("merge_from_bytes");
 
