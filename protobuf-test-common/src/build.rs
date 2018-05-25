@@ -197,7 +197,7 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
         includes: &["../proto", include_dir],
         .. Default::default()
-    }).expect("protoc");
+    }).expect("codegen failed");
 
     gen_mod_rs_in_dir(dir);
 }
