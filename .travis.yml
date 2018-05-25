@@ -5,15 +5,15 @@ language: rust
 matrix:
   include:
   - rust: stable
-    env: PROTOBUF_VERSION=3.1.0
+    env: PROTOBUF_VERSION=3.5.2
   - rust: beta
-    env: PROTOBUF_VERSION=3.1.0
+    env: PROTOBUF_VERSION=3.5.2
   - rust: nightly
-    env: PROTOBUF_VERSION=3.1.0
+    env: PROTOBUF_VERSION=3.5.2
   - rust: stable
-    env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
+    env: PROTOBUF_VERSION=3.5.2 RUST_PROTOBUF_FEATURES=with-bytes
   - rust: nightly
-    env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
+    env: PROTOBUF_VERSION=3.5.2 RUST_PROTOBUF_FEATURES=with-bytes
 
 before_install:
   - ci/install-protobuf.sh
