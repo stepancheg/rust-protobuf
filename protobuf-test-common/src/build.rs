@@ -188,7 +188,7 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
         check_test_version(Path::new(file_path));
     }
 
-    assert!(!protos.is_empty());
+    assert!(!protos.is_empty(), "no protos found in {}", dir);
 
     gen(GenInDirArgs {
         out_dir: dir,
