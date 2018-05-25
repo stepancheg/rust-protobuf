@@ -20,6 +20,7 @@ mod field;
 mod customize;
 mod extensions;
 mod oneof;
+mod amend_io_error_util;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
@@ -30,6 +31,8 @@ use self::message::*;
 use self::enums::*;
 use self::extensions::*;
 use self::code_writer::CodeWriter;
+#[doc(hidden)]
+pub use amend_io_error_util::amend_io_error;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -190,9 +193,12 @@ pub fn gen_and_write(
     for r in &results {
         let mut file_path = out_dir.to_owned();
         file_path.push(&r.name);
-        let mut file_writer = File::create(&file_path)?;
-        file_writer.write_all(&r.content)?;
-        file_writer.flush()?;
+        let mut file_writer = File::create(&file_path)
+            .map_err(|e| amend_io_error(e, format!("failed to create {:?}", file_path)))?;
+        file_writer.write_all(&r.content)
+            .map_err(|e| amend_io_error(e, format!("failed to write to {:?}", file_path)))?;
+        file_writer.flush()
+            .map_err(|e| amend_io_error(e, format!("failed to flush {:?}", file_path)))?;
     }
 
     Ok(())

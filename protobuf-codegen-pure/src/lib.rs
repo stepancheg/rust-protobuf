@@ -6,7 +6,6 @@ mod convert;
 use std::collections::HashMap;
 use std::path::Path;
 use std::io;
-use std::io::Read;
 use std::fs;
 use std::error::Error;
 use std::fmt;
@@ -15,6 +14,7 @@ mod model;
 mod parser;
 
 pub use protobuf_codegen::Customize;
+use protobuf_codegen::amend_io_error;
 
 #[cfg(test)]
 mod test_against_protobuf_protos;
@@ -121,8 +121,8 @@ impl<'a> Run<'a> {
             return Ok(());
         }
 
-        let mut content = String::new();
-        fs::File::open(fs_path)?.read_to_string(&mut content)?;
+        let content = fs::read_to_string(fs_path)
+            .map_err(|e| amend_io_error(e, format!("failed to read {:?}", fs_path)))?;
 
         let parsed = model::FileDescriptor::parse(content)
             .map_err(|e| {
@@ -162,7 +162,7 @@ impl<'a> Run<'a> {
         for include_dir in self.includes {
             let fs_path = Path::new(include_dir).join(protobuf_path);
             if fs_path.exists() {
-                return self.add_file(protobuf_path, &fs_path)
+                return self.add_file(protobuf_path, &fs_path);
             }
         }
 
