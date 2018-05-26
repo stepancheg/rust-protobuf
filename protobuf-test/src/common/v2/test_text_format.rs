@@ -152,9 +152,21 @@ fn test_rust_identifier() {
 #[test]
 fn test_parse_basic() {
     test_parse_text_format_vs_protoc("", TestTypes::descriptor_static());
+}
 
-    test_parse_text_format_vs_protoc("test_enum_singular: DARK", TestTypes::descriptor_static());
+#[test]
+fn test_parse_enum() {
+    test_parse_text_format_vs_protoc(
+        "test_enum_singular: DARK",
+        TestTypes::descriptor_static());
 
+    test_parse_text_format_vs_protoc(
+        "test_enum_repeated: DARK test_enum_repeated: LIGHT test_enum_repeated: LIGHT",
+        TestTypes::descriptor_static());
+}
+
+#[test]
+fn test_parse_int() {
     test_parse_text_format_vs_protoc("uint32_singular: 98", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("uint64_singular: 100", TestTypes::descriptor_static());
 
@@ -170,14 +182,30 @@ fn test_parse_basic() {
     test_parse_text_format_vs_protoc("sfixed32_singular: -98", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("sfixed64_singular: -100", TestTypes::descriptor_static());
 
+    test_parse_text_format_vs_protoc(
+        "int32_repeated: 98 int32_repeated: -99",
+        TestTypes::descriptor_static());
+}
+
+#[test]
+fn test_parse_float() {
     test_parse_text_format_vs_protoc("float_singular: 98.5", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("float_singular: -99.5", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("double_singular: 98.5", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("double_singular: -99.5", TestTypes::descriptor_static());
+}
 
+#[test]
+fn test_parse_bool() {
     test_parse_text_format_vs_protoc("bool_singular: true", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("bool_singular: false", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc(
+        "bool_repeated: false bool_repeated: false bool_repeated: true",
+        TestTypes::descriptor_static());
+}
 
+#[test]
+fn test_parse_string_bytes() {
     test_parse_text_format_vs_protoc("string_singular: \"\"", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("string_singular: \"a b\"", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("string_singular: \"a\\nb\"", TestTypes::descriptor_static());
@@ -186,4 +214,21 @@ fn test_parse_basic() {
     test_parse_text_format_vs_protoc("bytes_singular: \"a b\"", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("bytes_singular: \"a\\nb\"", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("bytes_singular: \"a\\xfeb\"", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc(
+        "string_repeated: \"ab\" bytes_repeated: \"cd\" string_repeated: \"ef\"",
+        TestTypes::descriptor_static());
+}
+
+#[test]
+fn test_parse_message() {
+    test_parse_text_format_vs_protoc("test_message_singular {}", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc(
+        "test_message_singular { value: 10 }",
+        TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc(
+        "test_message_repeated { value: 10 } test_message_repeated { value: 20 }",
+        TestTypes::descriptor_static());
 }

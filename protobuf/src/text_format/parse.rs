@@ -67,7 +67,13 @@ impl<'a> Parser<'a> {
         Ok(self.tokenizer.next_ident()?)
     }
 
+    fn read_colon(&mut self) -> ParseResult<()> {
+        Ok(self.tokenizer.next_symbol_expect_eq(':')?)
+    }
+
     fn read_enum<'e>(&mut self, e: &'e EnumDescriptor) -> ParseResult<&'e EnumValueDescriptor> {
+        self.read_colon()?;
+
         let ident = self.tokenizer.next_ident()?;
         let value = match e.value_by_name(&ident) {
             Some(value) => value,
@@ -76,7 +82,15 @@ impl<'a> Parser<'a> {
         Ok(value)
     }
 
+    fn read_u64(&mut self) -> ParseResult<u64> {
+        self.read_colon()?;
+
+        Ok(self.tokenizer.next_int_lit()?)
+    }
+
     fn read_u32(&mut self) -> ParseResult<u32> {
+        self.read_colon()?;
+
         let int_lit = self.tokenizer.next_int_lit()?;
         let value_u32 = int_lit as u32;
         if value_u32 as u64 != int_lit {
@@ -85,19 +99,9 @@ impl<'a> Parser<'a> {
         Ok(value_u32)
     }
 
-    fn read_u64(&mut self) -> ParseResult<u64> {
-        Ok(self.tokenizer.next_int_lit()?)
-    }
-
-    fn read_i32(&mut self) -> ParseResult<i32> {
-        let value = self.read_i64()?;
-        if value < i32::min_value() as i64 || value > i32::max_value() as i64 {
-            return Err(ParseError::IntegerOverflow);
-        }
-        Ok(value as i32)
-    }
-
     fn read_i64(&mut self) -> ParseResult<i64> {
+        self.read_colon()?;
+
         if self.tokenizer.next_symbol_if_eq('-')? {
             let int_lit = self.tokenizer.next_int_lit()?;
             Ok(int::neg(int_lit)?)
@@ -110,7 +114,17 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn read_i32(&mut self) -> ParseResult<i32> {
+        let value = self.read_i64()?;
+        if value < i32::min_value() as i64 || value > i32::max_value() as i64 {
+            return Err(ParseError::IntegerOverflow);
+        }
+        Ok(value as i32)
+    }
+
     fn read_f64(&mut self) -> ParseResult<f64> {
+        self.read_colon()?;
+
         Ok(if self.tokenizer.next_symbol_if_eq('-')? {
             -self.tokenizer.next_float_lit()?
         } else {
@@ -123,6 +137,8 @@ impl<'a> Parser<'a> {
     }
 
     fn read_bool(&mut self) -> ParseResult<bool> {
+        self.read_colon()?;
+
         if self.tokenizer.next_ident_if_eq("true")? {
             Ok(true)
         } else if self.tokenizer.next_ident_if_eq("false")? {
@@ -133,15 +149,26 @@ impl<'a> Parser<'a> {
     }
 
     fn read_string(&mut self) -> ParseResult<String> {
+        self.read_colon()?;
+
         Ok(self.tokenizer.next_str_lit().and_then(|s| s.decode_utf8().map_err(From::from))?)
     }
 
     fn read_bytes(&mut self) -> ParseResult<Vec<u8>> {
+        self.read_colon()?;
+
         Ok(self.tokenizer.next_str_lit().and_then(|s| s.decode_bytes().map_err(From::from))?)
     }
 
-    fn read_message(&mut self, _message_descriptor: &'static MessageDescriptor) -> ParseResult<Box<Message>> {
-        unimplemented!()
+    fn read_message(&mut self, descriptor: &'static MessageDescriptor) -> ParseResult<Box<Message>> {
+        let mut message = descriptor.new_instance();
+
+        self.tokenizer.next_symbol_expect_eq('{')?;
+        while !self.tokenizer.lookahead_is_symbol('}')? {
+            self.merge_field(&mut *message, descriptor)?;
+        }
+        self.tokenizer.next_symbol_expect_eq('}')?;
+        Ok(message)
     }
 
     fn read_value_of_type(&mut self, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
@@ -166,8 +193,6 @@ impl<'a> Parser<'a> {
         -> ParseResult<()>
     {
         let field_name = self.next_field_name()?;
-
-        self.tokenizer.next_symbol_expect_eq(':')?;
 
         let field = match descriptor.field_by_name(&field_name) {
             Some(field) => field,
