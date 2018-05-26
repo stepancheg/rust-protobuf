@@ -109,21 +109,21 @@ impl FieldDescriptor {
     fn singular(&self) -> &SingularFieldAccessor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => &**a,
-            _ => panic!("not a singular field"),
+            _ => panic!("not a singular field: {}", self.name()),
         }
     }
 
     fn repeated(&self) -> &RepeatedFieldAccessor {
         match self.accessor.accessor {
             AccessorKind::Repeated(ref a) => &**a,
-            _ => panic!("not a repeated field"),
+            _ => panic!("not a repeated field: {}", self.name()),
         }
     }
 
     fn map(&self) -> &MapFieldAccessor {
         match self.accessor.accessor {
             AccessorKind::Map(ref a) => &**a,
-            _ => panic!("not a map field"),
+            _ => panic!("not a map field: {}", self.name()),
         }
     }
 
