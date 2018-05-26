@@ -163,6 +163,27 @@ fn test_parse_basic() {
     test_parse_text_format_vs_protoc("int32_singular: -98", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("int64_singular: -100", TestTypes::descriptor_static());
 
+    test_parse_text_format_vs_protoc("fixed32_singular: 98", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("fixed64_singular: 100", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("sfixed32_singular: 98", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("sfixed64_singular: 100", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("sfixed32_singular: -98", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("sfixed64_singular: -100", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc("float_singular: 98.5", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("float_singular: -99.5", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("double_singular: 98.5", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("double_singular: -99.5", TestTypes::descriptor_static());
+
     test_parse_text_format_vs_protoc("bool_singular: true", TestTypes::descriptor_static());
     test_parse_text_format_vs_protoc("bool_singular: false", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc("string_singular: \"\"", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("string_singular: \"a b\"", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("string_singular: \"a\\nb\"", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc("bytes_singular: \"\"", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("bytes_singular: \"a b\"", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("bytes_singular: \"a\\nb\"", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("bytes_singular: \"a\\xfeb\"", TestTypes::descriptor_static());
 }

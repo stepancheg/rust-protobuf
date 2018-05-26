@@ -36,6 +36,17 @@ impl StrLit {
         Ok(r)
     }
 
+    pub fn decode_bytes(&self) -> StrLitDecodeResult<Vec<u8>> {
+        // comment style does not matter here
+        let comment_style = Lexer::new(&self.escaped, LexerCommentStyle::Cpp);
+        let mut lexer = comment_style;
+        let mut r = Vec::new();
+        while !lexer.eof() {
+            r.push(lexer.next_byte_value()?);
+        }
+        Ok(r)
+    }
+
     pub fn quoted(&self) -> String {
         format!("\"{}\"", self.escaped)
     }

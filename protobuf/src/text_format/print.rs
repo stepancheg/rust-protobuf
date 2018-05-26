@@ -198,12 +198,16 @@ pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
 #[cfg(test)]
 mod test {
 
-    use super::super::unescape_string;
+    use text_format::lexer::StrLit;
 
     fn escape(data: &[u8]) -> String {
         let mut s = String::with_capacity(data.len() * 4);
         super::quote_bytes_to(data, &mut s);
         s
+    }
+
+    fn unescape_string(escaped: &str) -> Vec<u8> {
+        StrLit { escaped: escaped.to_owned() }.decode_bytes().expect("decode_bytes")
     }
 
     fn test_escape_unescape(text: &str, escaped: &str) {

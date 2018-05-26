@@ -460,6 +460,47 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    pub fn next_byte_value(&mut self) -> LexerResult<u8> {
+        match self.next_char()? {
+            '"' | '\'' => Err(LexerError::InternalError),
+            '\\' => {
+                match self.next_char()? {
+                    '\'' => Ok(b'\''),
+                    '"' => Ok(b'"'),
+                    '\\' => Ok(b'\\'),
+                    'a' => Ok(b'\x07'),
+                    'b' => Ok(b'\x08'),
+                    'f' => Ok(b'\x0c'),
+                    'n' => Ok(b'\n'),
+                    'r' => Ok(b'\r'),
+                    't' => Ok(b'\t'),
+                    'v' => Ok(b'\x0b'),
+                    'x' => {
+                        let d1 = self.next_hex_digit()? as u8;
+                        let d2 = self.next_hex_digit()? as u8;
+                        Ok(((d1 << 4) | d2) as u8)
+                    }
+                    d if d >= '0' && d <= '7' => {
+                        let mut r = d as u8 - b'0';
+                        for _ in 0..2 {
+                            match self.next_octal_digit() {
+                                Err(_) => break,
+                                Ok(d) => r = (r << 3) + d as u8,
+                            }
+                        }
+                        Ok(r)
+                    }
+                    // https://github.com/google/protobuf/issues/4562
+                    // TODO: overflow
+                    c => Ok(c as u8),
+                }
+            }
+            '\n' | '\0' => Err(LexerError::IncorrectInput),
+            // TODO: check overflow
+            c => Ok(c as u8),
+        }
+    }
+
     // https://github.com/google/protobuf/issues/4564
     // strLit = ( "'" { charValue } "'" ) | ( '"' { charValue } '"' )
     fn next_str_lit_raw(&mut self) -> LexerResult<String> {

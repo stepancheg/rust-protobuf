@@ -771,7 +771,8 @@ impl<'a> FieldGen<'a> {
                 FieldDescriptorProto_Type::TYPE_STRING => rust::quote_escape_str(proto_default),
                 // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
                 FieldDescriptorProto_Type::TYPE_BYTES => rust::quote_escape_bytes(
-                    &text_format::unescape_string(proto_default),
+                    &text_format::lexer::StrLit { escaped: proto_default.to_owned() }
+                        .decode_bytes().expect("decoded bytes default value")
                 ),
                 // TODO: resolve outer message prefix
                 FieldDescriptorProto_Type::TYPE_GROUP |
