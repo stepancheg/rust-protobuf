@@ -274,7 +274,7 @@ impl FileDescriptor {
         match parser.next_proto() {
             Ok(r) => Ok(r),
             Err(error) => {
-                let Loc { line, col } = parser.loc();
+                let Loc { line, col } = parser.tokenizer.loc();
                 Err(ParserErrorWithLocation { error, line, col })
             }
         }

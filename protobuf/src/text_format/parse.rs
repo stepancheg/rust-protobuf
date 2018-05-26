@@ -2,12 +2,8 @@ use std::str;
 
 use Message;
 
-use text_format::lexer::Lexer;
 use text_format::lexer::Loc;
 use text_format::lexer::LexerCommentStyle;
-use text_format::lexer::LexerError;
-use text_format::lexer::TokenWithLocation;
-use text_format::lexer::Token;
 use reflect::MessageDescriptor;
 use reflect::RuntimeFieldType;
 use reflect::ReflectValueBox;
@@ -15,26 +11,23 @@ use reflect::RuntimeTypeDynamic;
 use reflect::RuntimeTypeBox;
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
-use text_format::lexer::StrLit;
 use text_format::lexer::StrLitDecodeError;
+use text_format::lexer::Tokenizer;
+use text_format::lexer::TokenizerError;
+use text_format::lexer::int;
 
 #[derive(Debug)]
 pub enum ParseError {
-    LexerError(LexerError),
+    TokenizerError(TokenizerError),
     StrLitDecodeError(StrLitDecodeError),
-    UnexpectedEof,
-    ExpectChar(char),
-    ExpectIdent,
-    ExpectStrLit,
-    InternalError,
-    IncorrectInput, // TODO: something better
     UnknownField(String),
     UnknownEnumValue(String),
+    IntegerOverflow,
 }
 
-impl From<LexerError> for ParseError {
-    fn from(e: LexerError) -> Self {
-        ParseError::LexerError(e)
+impl From<TokenizerError> for ParseError {
+    fn from(e: TokenizerError) -> Self {
+        ParseError::TokenizerError(e)
     }
 }
 
@@ -43,6 +36,13 @@ impl From<StrLitDecodeError> for ParseError {
         ParseError::StrLitDecodeError(e)
     }
 }
+
+impl From<int::Overflow> for ParseError {
+    fn from(_: int::Overflow) -> Self {
+        ParseError::IntegerOverflow
+    }
+}
+
 
 #[derive(Debug)]
 pub struct ParseErrorWithLoc {
@@ -55,173 +55,18 @@ pub type ParseWithLocResult<A> = Result<A, ParseErrorWithLoc>;
 
 #[derive(Clone)]
 struct Parser<'a> {
-    lexer: Lexer<'a>,
-    next_token: Option<TokenWithLocation>,
+    tokenizer: Tokenizer<'a>,
 }
 
 impl<'a> Parser<'a> {
-    pub fn loc(&self) -> Loc {
-        self.next_token.clone().map_or(self.lexer.loc, |n| n.loc)
-    }
-
-    fn lookahead(&mut self) -> ParseResult<Option<&Token>> {
-        Ok(match self.next_token {
-            Some(ref token) => Some(&token.token),
-            None => {
-                self.next_token = self.lexer.next_token()?;
-                match self.next_token {
-                    Some(ref token) => Some(&token.token),
-                    None => None,
-                }
-            }
-        })
-    }
-
-    fn lookahead_some(&mut self) -> ParseResult<&Token> {
-        match self.lookahead()? {
-            Some(token) => Ok(token),
-            None => Err(ParseError::UnexpectedEof),
-        }
-    }
-
-    fn next(&mut self) -> ParseResult<Option<Token>> {
-        self.lookahead()?;
-        Ok(self.next_token.take().map(|TokenWithLocation { token, .. }| token))
-    }
-
-    fn next_some(&mut self) -> ParseResult<Token> {
-        match self.next()? {
-            Some(token) => Ok(token),
-            None => Err(ParseError::UnexpectedEof),
-        }
-    }
-
-    /// Can be called only after lookahead, otherwise it's error
-    fn advance(&mut self) -> ParseResult<Token> {
-        self.next_token.take()
-            .map(|TokenWithLocation { token, .. }| token)
-            .ok_or(ParseError::InternalError)
-    }
-
-    /// No more tokens
-    fn syntax_eof(&mut self) -> ParseResult<bool> {
-        Ok(self.lookahead()?.is_none())
-    }
-
-    fn next_token_if_map<P, R>(&mut self, p: P) -> ParseResult<Option<R>>
-        where P : FnOnce(&Token) -> Option<R>
-    {
-        self.lookahead()?;
-        let v = match self.next_token {
-            Some(ref token) => {
-                match p(&token.token) {
-                    Some(v) => v,
-                    None => return Ok(None),
-                }
-            }
-            _ => return Ok(None),
-        };
-        self.next_token = None;
-        Ok(Some(v))
-    }
-
-    fn next_token_check_map<P, R>(&mut self, p: P) -> ParseResult<R>
-        where P : FnOnce(&Token) -> ParseResult<R>
-    {
-        self.lookahead()?;
-        let r = match self.next_token {
-            Some(ref token) => p(&token.token)?,
-            None => return Err(ParseError::UnexpectedEof),
-        };
-        self.next_token = None;
-        Ok(r)
-    }
-
-    fn next_token_if<P>(&mut self, p: P) -> ParseResult<Option<Token>>
-        where P : FnOnce(&Token) -> bool
-    {
-        self.next_token_if_map(|token| if p(token) { Some(token.clone()) } else { None })
-    }
-
-    fn next_ident_if_in(&mut self, idents: &[&str]) -> ParseResult<Option<String>> {
-        let v = match self.lookahead()? {
-            Some(&Token::Ident(ref next)) => {
-                if idents.into_iter().find(|&i| i == next).is_some() {
-                    next.clone()
-                } else {
-                    return Ok(None);
-                }
-            }
-            _ => return Ok(None),
-        };
-        self.advance()?;
-        Ok(Some(v))
-    }
-
-    fn next_ident_if_eq(&mut self, word: &str) -> ParseResult<bool> {
-        Ok(self.next_ident_if_in(&[word])? != None)
-    }
-
-    fn next_ident_if_eq_error(&mut self, word: &str) -> ParseResult<()> {
-        if self.clone().next_ident_if_eq(word)? {
-            return Err(ParseError::IncorrectInput);
-        }
-        Ok(())
-    }
-
-    fn next_symbol_if_eq(&mut self, symbol: char) -> ParseResult<bool> {
-        Ok(self.next_token_if(|token| match token {
-            &Token::Symbol(c) if c == symbol => true,
-            _ => false,
-        })? != None)
-    }
-
-    fn next_symbol_expect_eq(&mut self, symbol: char) -> ParseResult<()> {
-        if self.lookahead_is_symbol(symbol)? {
-            self.advance()?;
-            Ok(())
-        } else {
-            Err(ParseError::ExpectChar(symbol))
-        }
-    }
-
-    fn lookahead_if_symbol(&mut self) -> ParseResult<Option<char>> {
-        Ok(match self.lookahead()? {
-            Some(&Token::Symbol(c)) => Some(c),
-            _ => None,
-        })
-    }
-
-    fn lookahead_is_symbol(&mut self, symbol: char) -> ParseResult<bool> {
-        Ok(self.lookahead_if_symbol()? == Some(symbol))
-    }
-
     // Text format
 
-    fn next_ident(&mut self) -> ParseResult<String> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::Ident(ref ident) => Ok(ident.clone()),
-                _ => Err(ParseError::ExpectIdent),
-            }
-        })
-    }
-
-    fn next_str_lit(&mut self) -> ParseResult<StrLit> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::StrLit(ref str_lit) => Ok(str_lit.clone()),
-                _ => Err(ParseError::ExpectStrLit),
-            }
-        })
-    }
-
     fn next_field_name(&mut self) -> ParseResult<String> {
-        self.next_ident()
+        Ok(self.tokenizer.next_ident()?)
     }
 
     fn read_enum<'e>(&mut self, e: &'e EnumDescriptor) -> ParseResult<&'e EnumValueDescriptor> {
-        let ident = self.next_ident()?;
+        let ident = self.tokenizer.next_ident()?;
         let value = match e.value_by_name(&ident) {
             Some(value) => value,
             None => return Err(ParseError::UnknownEnumValue(ident)),
@@ -229,16 +74,80 @@ impl<'a> Parser<'a> {
         Ok(value)
     }
 
+    fn read_u32(&mut self) -> ParseResult<u32> {
+        let int_lit = self.tokenizer.next_int_lit()?;
+        let value_u32 = int_lit as u32;
+        if value_u32 as u64 != int_lit {
+            return Err(ParseError::IntegerOverflow);
+        }
+        Ok(value_u32)
+    }
+
+    fn read_u64(&mut self) -> ParseResult<u64> {
+        Ok(self.tokenizer.next_int_lit()?)
+    }
+
+    fn read_i32(&mut self) -> ParseResult<i32> {
+        let value = self.read_i64()?;
+        if value < i32::min_value() as i64 || value > i32::max_value() as i64 {
+            return Err(ParseError::IntegerOverflow);
+        }
+        Ok(value as i32)
+    }
+
+    fn read_i64(&mut self) -> ParseResult<i64> {
+        if self.tokenizer.next_symbol_if_eq('-')? {
+            let int_lit = self.tokenizer.next_int_lit()?;
+            Ok(int::neg(int_lit)?)
+        } else {
+            let int_lit = self.tokenizer.next_int_lit()?;
+            if int_lit > i64::max_value() as u64 {
+                return Err(ParseError::IntegerOverflow);
+            }
+            Ok(int_lit as i64)
+        }
+    }
+
+    fn read_f32(&mut self) -> ParseResult<f32> {
+        unimplemented!();
+    }
+
+    fn read_f64(&mut self) -> ParseResult<f64> {
+        unimplemented!();
+    }
+
+    fn read_bool(&mut self) -> ParseResult<bool> {
+        unimplemented!();
+    }
+
     fn read_string(&mut self) -> ParseResult<String> {
-        self.next_str_lit().and_then(|s| s.decode_utf8().map_err(From::from))
+        Ok(self.tokenizer.next_str_lit().and_then(|s| s.decode_utf8().map_err(From::from))?)
+    }
+
+    fn read_bytes(&mut self) -> ParseResult<Vec<u8>> {
+        unimplemented!()
+    }
+
+    fn read_message(&mut self, _message_descriptor: &'static MessageDescriptor) -> ParseResult<Box<Message>> {
+        unimplemented!()
     }
 
     fn read_value_of_type(&mut self, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
-        match t.to_box() {
-            RuntimeTypeBox::Enum(e) => Ok(ReflectValueBox::Enum(self.read_enum(e)?)),
-            RuntimeTypeBox::String => Ok(ReflectValueBox::String(self.read_string()?)),
-            _ => unimplemented!(),
-        }
+        Ok(match t.to_box() {
+            RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(self.read_enum(e)?),
+            RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
+            RuntimeTypeBox::U64 => ReflectValueBox::U64(self.read_u64()?),
+            RuntimeTypeBox::I32 => ReflectValueBox::I32(self.read_i32()?),
+            RuntimeTypeBox::I64 => ReflectValueBox::I64(self.read_i64()?),
+            RuntimeTypeBox::F32 => ReflectValueBox::F32(self.read_f32()?),
+            RuntimeTypeBox::F64 => ReflectValueBox::F64(self.read_f64()?),
+            RuntimeTypeBox::Bool => ReflectValueBox::Bool(self.read_bool()?),
+            RuntimeTypeBox::String |
+            RuntimeTypeBox::Chars => ReflectValueBox::String(self.read_string()?),
+            RuntimeTypeBox::VecU8 |
+            RuntimeTypeBox::CarllercheBytes => ReflectValueBox::Bytes(self.read_bytes()?),
+            RuntimeTypeBox::Message(m) => ReflectValueBox::Message(self.read_message(m)?),
+        })
     }
 
     fn merge_field(&mut self, message: &mut Message, descriptor: &MessageDescriptor)
@@ -246,7 +155,7 @@ impl<'a> Parser<'a> {
     {
         let field_name = self.next_field_name()?;
 
-        self.next_symbol_expect_eq(':')?;
+        self.tokenizer.next_symbol_expect_eq(':')?;
 
         let field = match descriptor.field_by_name(&field_name) {
             Some(field) => field,
@@ -273,8 +182,7 @@ impl<'a> Parser<'a> {
 
     fn merge_inner(&mut self, message: &mut Message) -> ParseResult<()> {
         loop {
-            self.lexer.skip_ws()?;
-            if self.lexer.eof() {
+            if self.tokenizer.syntax_eof()? {
                 break;
             }
             let descriptor = message.descriptor();
@@ -288,17 +196,15 @@ impl<'a> Parser<'a> {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseErrorWithLoc {
                 error,
-                loc: self.lexer.loc,
+                loc: self.tokenizer.loc(),
             })
         }
     }
 }
 
 pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<()> {
-    let lexer = Lexer::new(input, LexerCommentStyle::Sh);
     let mut parser = Parser {
-        lexer,
-        next_token: None,
+        tokenizer: Tokenizer::new(input, LexerCommentStyle::Sh)
     };
     parser.merge(message)
 }

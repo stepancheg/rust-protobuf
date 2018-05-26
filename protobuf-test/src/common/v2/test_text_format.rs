@@ -152,5 +152,14 @@ fn test_rust_identifier() {
 #[test]
 fn test_parse_basic() {
     test_parse_text_format_vs_protoc("", TestTypes::descriptor_static());
+
     test_parse_text_format_vs_protoc("test_enum_singular: DARK", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc("uint32_singular: 98", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("uint64_singular: 100", TestTypes::descriptor_static());
+
+    test_parse_text_format_vs_protoc("int32_singular: 98", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("int64_singular: 100", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("int32_singular: -98", TestTypes::descriptor_static());
+    test_parse_text_format_vs_protoc("int64_singular: -100", TestTypes::descriptor_static());
 }
