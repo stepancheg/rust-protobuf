@@ -23,6 +23,7 @@ pub enum ParseError {
     UnknownField(String),
     UnknownEnumValue(String),
     IntegerOverflow,
+    ExpectingBool,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -117,7 +118,13 @@ impl<'a> Parser<'a> {
     }
 
     fn read_bool(&mut self) -> ParseResult<bool> {
-        unimplemented!();
+        if self.tokenizer.next_ident_if_eq("true")? {
+            Ok(true)
+        } else if self.tokenizer.next_ident_if_eq("false")? {
+            Ok(false)
+        } else {
+            Err(ParseError::ExpectingBool)
+        }
     }
 
     fn read_string(&mut self) -> ParseResult<String> {
