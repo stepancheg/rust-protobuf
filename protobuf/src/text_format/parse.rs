@@ -125,11 +125,15 @@ impl<'a> Parser<'a> {
     fn read_f64(&mut self) -> ParseResult<f64> {
         self.read_colon()?;
 
-        Ok(if self.tokenizer.next_symbol_if_eq('-')? {
-            -self.tokenizer.next_float_lit()?
+        let minus = self.tokenizer.next_symbol_if_eq('-')?;
+
+        let value = if let Ok(value) = self.tokenizer.next_int_lit() {
+            value as f64
         } else {
             self.tokenizer.next_float_lit()?
-        })
+        };
+
+        Ok(if minus { -value } else { value })
     }
 
     fn read_f32(&mut self) -> ParseResult<f32> {
