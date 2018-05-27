@@ -7,4 +7,5 @@ members = [
     "protobuf-test",
     "perftest/vs-cxx",
     "perftest/bytes",
+    "update-version",
 ]
