@@ -54,6 +54,8 @@ fn read_gitignore(dir: &Path) -> Vec<String> {
 fn clean_recursively(dir: &Path, patterns: &[&str]) {
     assert!(dir.is_dir());
 
+    eprintln!("cleaning ignored files in {:?}", dir);
+
     let gitignore_patterns = read_gitignore(dir);
 
     let mut patterns = patterns.to_vec();
