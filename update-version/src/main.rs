@@ -57,7 +57,7 @@ fn find_repo_root() -> PathBuf {
     for dir in candidates {
         let dir = Path::new(dir).to_owned();
         let mut file = dir.clone();
-        file.push("CHANGELOG.md");
+        file.push("protobuf-test");
         if file.exists() {
             return dir;
         }
