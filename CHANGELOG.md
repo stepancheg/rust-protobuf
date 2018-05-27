@@ -8,6 +8,8 @@
 - `PartialEq` with large number of fields
   [now panics](https://github.com/stepancheg/rust-protobuf/commit/4f1ca564a00e85b6e3821e91aace71ccb6592bf5).
   Previosly it could cause stack overflow in the Rust compiler.
+- Text format parsing is implemented (previously it was only possible to print to text format)
+- Reflection can now mutate data (previously reflection could only read data)
   
 ## [2.0.1] - 2018-05-27
 
