@@ -190,10 +190,15 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
 
     assert!(!protos.is_empty(), "no protos found in {}", dir);
 
+    let includes = ["../proto", include_dir];
+
+    eprintln!("invoking protobubf compiler: out_dir: {:?}, input: {:?}, includes: {:?}",
+        dir, protos, includes);
+
     gen(GenInDirArgs {
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
-        includes: &["../proto", include_dir],
+        includes: &includes,
         .. Default::default()
     }).expect("codegen failed");
 

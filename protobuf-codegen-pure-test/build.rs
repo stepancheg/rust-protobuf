@@ -16,6 +16,7 @@ use protobuf_test_common::build::*;
 
 
 fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
+    eprintln!("copy {:?} to {:?}", src.as_ref(), dst.as_ref());
     let mut content = Vec::new();
     fs::File::open(src.as_ref()).expect(&format!("open {}", src.as_ref().display()))
         .read_to_end(&mut content).expect("read_to_end");
@@ -30,32 +31,49 @@ fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
 }
 
 
+enum FileNameClass {
+    ModRs,
+    TestRs,
+    Proto,
+    GeneratedRs,
+    Ignore,
+}
+
+fn classify_file_name(name: &str) -> FileNameClass {
+    if name.starts_with(".") || name.ends_with(".md") || name.ends_with(".sh") {
+        FileNameClass::Ignore
+    } else if name.ends_with(".pb_rs") || name.ends_with("_pb_proto3.rs") {
+        FileNameClass::GeneratedRs
+    } else if name == "mod.rs" {
+        FileNameClass::ModRs
+    } else if name.ends_with(".proto") || name.ends_with(".proto3") {
+        FileNameClass::Proto
+    } else if name.ends_with(".rs") {
+        FileNameClass::TestRs
+    } else {
+        panic!("unknown test file: {}", name);
+    }
+}
+
+
 // Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
     let src_dir = format!("../protobuf-test/{}", dir);
     for entry in fs::read_dir(&src_dir).expect(&format!("read_dir {}", src_dir)) {
         let file_name = entry.expect("entry").file_name().into_string().unwrap();
 
-        // Only copy rust and proto files
-        if !file_name.ends_with(".rs")
-            && !file_name.ends_with(".proto") && !file_name.ends_with(".proto3")
-        {
-            continue;
+        match classify_file_name(&file_name) {
+            FileNameClass::ModRs |
+            FileNameClass::Ignore |
+            FileNameClass::GeneratedRs => {}
+            FileNameClass::TestRs |
+            FileNameClass::Proto => {
+                copy_test(
+                    &format!("../protobuf-test/{}/{}", dir, file_name),
+                    &format!("{}/{}", dir, file_name),
+                )
+            }
         }
-
-        // Generated proto files
-        if file_name.ends_with("_pb.rs") || file_name.ends_with("_pb_proto3.rs") {
-            continue;
-        }
-
-        if file_name.starts_with(".") || file_name == "mod.rs" {
-            continue;
-        }
-
-        copy_test(
-            &format!("../protobuf-test/{}/{}", dir, file_name),
-            &format!("{}/{}", dir, file_name),
-        )
     }
 }
 
