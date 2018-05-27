@@ -36,7 +36,8 @@ fn read_gitignore(dir: &Path) -> Vec<String> {
     let gitignore = format!("{}/.gitignore", dir.display());
     let gitignore = &Path::new(&gitignore);
     if gitignore.exists() {
-        let gitignore = fs::File::open(gitignore).expect("open gitignore");
+        let gitignore = fs::File::open(gitignore)
+            .expect(&format!("open gitignore {:?}", gitignore));
         for line in BufReader::new(gitignore).lines() {
             let line = line.expect("read_line");
             if line.is_empty() || line.starts_with("#") {
@@ -66,14 +67,14 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
         let entry = entry.expect("entry");
         let entry_path = entry.path();
         let file_name = entry_path.as_path().file_name().unwrap().to_str().unwrap();
-        if entry.metadata().expect("metadata").is_dir() {
+        if entry.metadata().expect(&format!("metadata of {:?}", entry_path)).is_dir() {
             clean_recursively(&entry_path, &patterns);
         } else if file_name == ".gitignore" {
             // keep it
         } else {
             for pattern in &patterns_compiled {
                 if pattern.matches(file_name) {
-                    fs::remove_file(&entry_path).expect("remove_file");
+                    fs::remove_file(&entry_path).expect(&format!("remove_file {:?}", entry_path));
                     break;
                 }
             }
