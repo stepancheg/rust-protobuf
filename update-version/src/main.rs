@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use std::fs;
 use std::path::Path;
 use std::collections::BTreeMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
@@ -140,6 +141,9 @@ fn patch_crate(repo_root: &Path, member: &ParsedMember, new_version: &str) {
 
     let mut output = String::new();
 
+    let mut version_patched = false;
+    let mut internal_deps_seen = HashSet::new();
+
     for line in read.lines() {
         let line = line.expect("line");
 
@@ -155,6 +159,9 @@ fn patch_crate(repo_root: &Path, member: &ParsedMember, new_version: &str) {
             match where_we_are {
                 WhereWeAre::Package => {
                     if line.starts_with("version =") {
+                        assert!(!version_patched, "in {}", member.name);
+                        version_patched = true;
+
                         writeln!(output, "version = \"{}\"", new_version).expect("write");
                         line_written = true;
                     }
@@ -162,6 +169,9 @@ fn patch_crate(repo_root: &Path, member: &ParsedMember, new_version: &str) {
                 WhereWeAre::Dependencies => {
                     for dep in &member.internal_deps {
                         if line.starts_with(&format!("{} ", dep.name)) {
+                            let inserted = internal_deps_seen.insert(dep.name.clone());
+                            assert!(inserted, "dep more than once in {}", member.name);
+
                             writeln!(
                                 output,
                                 "{} = {{ path = \"{}\", version = \"={}\" }}",
@@ -180,6 +190,9 @@ fn patch_crate(repo_root: &Path, member: &ParsedMember, new_version: &str) {
             writeln!(output, "{}", line).expect("write");
         }
     }
+
+    assert!(version_patched, "in {}", member.name);
+    assert_eq!(member.internal_deps.len(), internal_deps_seen.len(), "in {}", member.name);
 
     fs::write(&manifest_path, &output).expect("write patched manifest back");
 }
