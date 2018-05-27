@@ -1,6 +1,6 @@
 [package]
 name = "protoc-rust"
-version = "2.1.0"
+version = "3.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT/Apache-2.0"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust/"
@@ -13,7 +13,7 @@ protoc --rust_out=... available as API. protoc needs to be in $PATH, protoc-gen-
 doctest = false
 
 [dependencies]
-protoc = { path = "../protoc", version = "=2.1.0" }
-protobuf = { path = "../protobuf", version = "=2.1.0" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "=2.1.0" }
+protoc = { path = "../protoc", version = "=3.0.0" }
+protobuf = { path = "../protobuf", version = "=3.0.0" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0" }
 tempdir  = "~0.3"
