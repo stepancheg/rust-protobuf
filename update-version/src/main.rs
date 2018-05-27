@@ -265,4 +265,5 @@ fn main() {
     for member in &publish_members {
         println!("cargo publish --manifest-path={}/Cargo.toml", member.member);
     }
+    println!("git tag v{}", new_version);
 }
