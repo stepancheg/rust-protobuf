@@ -21,6 +21,7 @@ mod customize;
 mod extensions;
 mod oneof;
 pub mod float;
+mod ident;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
