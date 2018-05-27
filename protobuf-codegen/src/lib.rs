@@ -22,6 +22,7 @@ mod extensions;
 mod oneof;
 mod amend_io_error_util;
 mod map;
+mod ident;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
