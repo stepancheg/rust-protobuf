@@ -8,6 +8,11 @@
 - `PartialEq` with large number of fields
   [now panics](https://github.com/stepancheg/rust-protobuf/commit/4f1ca564a00e85b6e3821e91aace71ccb6592bf5).
   Previosly it could cause stack overflow in the Rust compiler.
+  
+## [2.0.1] - 2018-05-27
+
+- Fix codegen with enum with
+  [default value a reserved rust keyword](https://github.com/stepancheg/rust-protobuf/issues/295)
 
 ## [2.0.0] - 2018-05-17
 
