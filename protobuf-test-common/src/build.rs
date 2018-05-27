@@ -150,7 +150,8 @@ fn test_version_from_file_path(mut file_path: &Path) -> TestProtobufVersions {
 }
 
 fn test_version_from_file_content(file_path: &Path) -> ProtobufSyntax {
-    let content = fs::read_to_string(file_path).expect("read_to_string");
+    let content = fs::read_to_string(file_path)
+        .expect(&format!("read_to_string {:?}", file_path));
     if content.contains("syntax = \"proto2\"") {
         return ProtobufSyntax::V2;
     } else if content.contains("syntax = \"proto3\"") {
