@@ -19,6 +19,11 @@
 - Rebublished branch 2.0 because of
   [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
 
+## [1.7.2] - 2018-05-27
+
+- Fix codegen with enum with
+  [default value a reserved rust keyword](https://github.com/stepancheg/rust-protobuf/issues/295)
+
 ## [1.7.1] - 2018-05-17
 
 - Rebublished branch 1.5 because of
