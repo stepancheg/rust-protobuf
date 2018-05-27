@@ -13,6 +13,8 @@ pub trait RuntimeTypeDynamic : Send + Sync + 'static {
 
     fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a>;
 
+    fn default_value_ref(&self) -> ReflectValueRef;
+
     fn enum_descriptor(&self) -> &'static EnumDescriptor;
 
     fn message_descriptor(&self) -> &'static MessageDescriptor;
@@ -30,10 +32,13 @@ impl<T : RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
         T::as_ref(value)
     }
 
+    fn default_value_ref(&self) -> ReflectValueRef {
+        T::default_value_ref()
+    }
+
     fn enum_descriptor(&self) -> &'static EnumDescriptor {
         T::enum_descriptor()
     }
-
     fn message_descriptor(&self) -> &'static MessageDescriptor {
         T::message_descriptor()
     }

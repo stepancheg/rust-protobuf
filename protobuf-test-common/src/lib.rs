@@ -15,3 +15,6 @@ pub use serialize_deserialize_tests::*;
 
 mod text_format_tests;
 pub use text_format_tests::*;
+
+mod reflect_tests;
+pub use reflect_tests::*;

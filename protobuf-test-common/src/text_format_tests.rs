@@ -96,7 +96,8 @@ fn print_using_protoc(message: &Message) -> String {
     protoc.stdout.take().expect("stdout").read_to_string(&mut decoded).expect("read_to_end");
 
     let exit_status = protoc.wait().expect("wait");
-    assert!(exit_status.success(), "exit status: {:?}", exit_status);
+    assert!(exit_status.success(),
+        "exit status: {:?} while printing: {:?}", exit_status, message);
 
     decoded
 }
@@ -119,4 +120,17 @@ pub fn test_text_format_str_message(expected: &str, message: &Message) {
     assert_eq!(expected, &*print_to_string(message));
 
     test_text_format_str_descriptor(expected, message.descriptor());
+}
+
+pub fn test_text_format_message(message: &Message) {
+    let descriptor = message.descriptor();
+
+    let printed_with_rust_protobuf = print_to_string(message);
+    let printed_with_protoc = print_using_protoc(message);
+
+    let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, descriptor);
+    let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, descriptor);
+
+    assert!(descriptor.eq(&*message, &*from_protoc), "{:?} != {:?}", message, from_protoc);
+    assert!(descriptor.eq(&*message, &*from_protobuf), "{:?} != {:?}", message, from_protobuf);
 }

@@ -23,6 +23,7 @@ pub enum ParseError {
     StrLitDecodeError(StrLitDecodeError),
     UnknownField(String),
     UnknownEnumValue(String),
+    MapFieldIsSpecifiedMoreThanOnce(String),
     IntegerOverflow,
     ExpectingBool,
 }
@@ -175,6 +176,45 @@ impl<'a> Parser<'a> {
         Ok(message)
     }
 
+    fn read_map_entry(&mut self, k: &RuntimeTypeDynamic, v: &RuntimeTypeDynamic)
+        -> ParseResult<(ReflectValueBox, ReflectValueBox)>
+    {
+        let key_field_name: &str = "key";
+        let value_field_name: &str = "value";
+
+        let mut key = None;
+        let mut value = None;
+        self.tokenizer.next_symbol_expect_eq('{')?;
+        while !self.tokenizer.lookahead_is_symbol('}')? {
+            let ident = self.next_field_name()?;
+            let (field, field_type) = if ident == key_field_name {
+                (&mut key, k)
+            } else if ident == value_field_name {
+                (&mut value, v)
+            } else {
+                return Err(ParseError::UnknownField(ident));
+            };
+
+            if let Some(..) = *field {
+                return Err(ParseError::MapFieldIsSpecifiedMoreThanOnce(ident));
+            }
+
+            let field_value = self.read_value_of_type(field_type)?;
+
+            *field = Some(field_value);
+        }
+        self.tokenizer.next_symbol_expect_eq('}')?;
+        let key = match key {
+            Some(key) => key,
+            None => k.default_value_ref().to_box(),
+        };
+        let value = match value {
+            Some(value) => value,
+            None => v.default_value_ref().to_box(),
+        };
+        Ok((key, value))
+    }
+
     fn read_value_of_type(&mut self, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
         Ok(match t.to_box() {
             RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(self.read_enum(e)?),
@@ -215,7 +255,10 @@ impl<'a> Parser<'a> {
                 let value = self.read_value_of_type(t)?;
                 field.mut_repeated(message).push(value);
             }
-            _ => unimplemented!(),
+            RuntimeFieldType::Map(k, v) => {
+                let (k, v) = self.read_map_entry(k, v)?;
+                field.mut_map(message).insert(k, v);
+            }
         };
 
         Ok(())

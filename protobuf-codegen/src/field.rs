@@ -13,6 +13,7 @@ use super::code_writer::CodeWriter;
 use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_field;
 use oneof::OneofField;
+use map::map_entry;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
@@ -341,7 +342,7 @@ fn field_elem(
                 MessageOrEnumWithScope::Message(message_with_scope),
             ) => {
                 let entry_key_value = if let (true, Some((key, value))) =
-                    (parse_map, message_with_scope.map_entry())
+                    (parse_map, map_entry(&message_with_scope))
                 {
                     Some(Box::new(EntryKeyValue(
                         field_elem(&key, root_scope, false, customize).0,

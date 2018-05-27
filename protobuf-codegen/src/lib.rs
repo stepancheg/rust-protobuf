@@ -21,6 +21,7 @@ mod customize;
 mod extensions;
 mod oneof;
 mod amend_io_error_util;
+mod map;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
@@ -33,6 +34,7 @@ use self::extensions::*;
 use self::code_writer::CodeWriter;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
+use map::map_entry;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -130,7 +132,7 @@ fn gen_file(
 
         for message in &scope.get_messages() {
             // ignore map entries, because they are not used in map fields
-            if message.map_entry().is_none() {
+            if map_entry(message).is_none() {
                 w.write_line("");
                 MessageGen::new(message, &root_scope, &customize).write(&mut w);
             }

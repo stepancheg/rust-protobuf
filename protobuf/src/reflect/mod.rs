@@ -21,6 +21,12 @@ pub use self::value::ProtobufValue;
 pub use self::value::ReflectValueRef;
 pub use self::value::ReflectValueBox;
 
+pub use self::repeated::ReflectRepeatedRef;
+pub use self::repeated::ReflectRepeatedMut;
+
+pub use self::map::ReflectMapRef;
+pub use self::map::ReflectMapMut;
+
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
 

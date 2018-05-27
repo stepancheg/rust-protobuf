@@ -9,6 +9,7 @@ use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_message;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
+use map::map_entry;
 
 
 /// Message info for codegen
@@ -443,7 +444,7 @@ impl<'a> MessageGen<'a> {
 
         for nested in &self.message.to_scope().get_messages() {
             // ignore map entries, because they are not used in map fields
-            if nested.map_entry().is_none() {
+            if map_entry(nested).is_none() {
                 w.write_line("");
                 MessageGen::new(nested, self.root_scope, &self.customize).write(w);
             }

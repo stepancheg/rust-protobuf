@@ -6,6 +6,7 @@ use model;
 
 use protobuf;
 use protobuf::Message;
+use protobuf::descriptor::FieldDescriptorProto_Label;
 
 use protobuf::text_format::lexer::StrLitDecodeError;
 
@@ -377,8 +378,28 @@ struct Resolver<'a> {
 }
 
 impl<'a> Resolver<'a> {
+    // copy-paste from Google Protobuf
+    fn camel_case(input: &str) -> String {
+        let mut capitalize_next = true;
+        let mut result = String::new();
+        result.reserve(input.len());
+
+        for c in input.chars() {
+            if c == '_' {
+                capitalize_next = true;
+            } else if capitalize_next {
+                result.push(c.to_ascii_uppercase());
+                capitalize_next = false;
+            } else {
+                result.push(c);
+            }
+        }
+
+        return result;
+    }
+
     fn map_entry_name_for_field_name(field_name: &str) -> String {
-        format!("{}_MapEntry", field_name)
+        format!("{}Entry", Resolver::camel_case(field_name))
     }
 
     fn map_entry_field(
@@ -389,7 +410,10 @@ impl<'a> Resolver<'a> {
         path_in_file: &RelativePath)
         -> protobuf::descriptor::FieldDescriptorProto
     {
+        // should be consisent with DescriptorBuilder::ValidateMapEntry
+
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
+
         output.set_name(name.to_owned());
         output.set_number(number);
 
@@ -398,6 +422,8 @@ impl<'a> Resolver<'a> {
         if let Some(t_name) = t_name {
             output.set_type_name(t_name.path);
         }
+
+        output.set_label(FieldDescriptorProto_Label::LABEL_OPTIONAL);
         
         output
     }

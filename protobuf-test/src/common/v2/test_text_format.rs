@@ -3,6 +3,7 @@ use protobuf::Message;
 use protobuf_test_common::*;
 
 use super::test_text_format_pb::*;
+use protobuf::reflect::RuntimeFieldType;
 
 
 #[test]
@@ -124,4 +125,25 @@ fn test_message() {
     test_text_format_str_descriptor(
         "test_message_repeated { value: 10 } test_message_repeated { value: 20 }",
         TestTypes::descriptor_static());
+}
+
+#[test]
+fn test_reflect() {
+    for field in TestTypes::descriptor_static().fields() {
+        let mut m = TestTypes::new();
+        match field.runtime_field_type() {
+            RuntimeFieldType::Singular(t) => {
+                field.set_singular_field(&mut m, value_for_runtime_type(t));
+            }
+            RuntimeFieldType::Repeated(t) => {
+                field.mut_repeated(&mut m).push(value_for_runtime_type(t));
+            }
+            RuntimeFieldType::Map(k, v) => {
+                let k = value_for_runtime_type(k);
+                let v = value_for_runtime_type(v);
+                field.mut_map(&mut m).insert(k, v);
+            }
+        }
+        test_text_format_message(&m);
+    }
 }

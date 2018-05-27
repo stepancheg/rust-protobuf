@@ -390,23 +390,6 @@ impl<'a> MessageWithScope<'a> {
     pub fn oneof_by_index(&'a self, index: u32) -> OneofWithContext<'a> {
         self.oneofs().swap_remove(index as usize)
     }
-
-    /// Pair of (key, value) if this message is map entry
-    pub fn map_entry(&'a self) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
-        if self.message.get_options().get_map_entry() {
-            let key = self.fields()
-                .into_iter()
-                .find(|f| f.field.get_number() == 1)
-                .unwrap();
-            let value = self.fields()
-                .into_iter()
-                .find(|f| f.field.get_number() == 2)
-                .unwrap();
-            Some((key, value))
-        } else {
-            None
-        }
-    }
 }
 
 
