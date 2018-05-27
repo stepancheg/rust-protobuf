@@ -15,8 +15,8 @@ WIP
 doctest = false
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "2.1.0" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "2.1.0" }
+protobuf = { path = "../protobuf", version = "=2.1.0" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "=2.1.0" }
 
 [[bin]]
 
