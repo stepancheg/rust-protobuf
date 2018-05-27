@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen-pure"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT/Apache-2.0"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
@@ -15,8 +15,8 @@ WIP
 doctest = false
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "2.0.0" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "2.0.0" }
+protobuf = { path = "../protobuf", version = "2.0.1" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "2.0.1" }
 
 [[bin]]
 
