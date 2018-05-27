@@ -13,6 +13,25 @@ rust-protobuf
 * Has runtime library for generated code
   (Coded{Input|Output}Stream impl)
 
+## About versions and branches
+
+- `2.0.*` is the latest stable version
+- `1.7.*` is previous stable version
+- `1.6.*` was republished as `2.0.*` and no longer maintained. Should be compatible with `2.0.*`.
+  If you are using `1.6.*` please update to `2.0.*`.
+- `1.5.*` was republished as `1.7.*` and no longer maintained. Should be compatible with `1.7.*`.
+  If you are using `1.5.*` please update to `1.7.*`.
+
+`1.7+` `2.*` versions should follow semver conventions. However, if you are developing critical library
+it's probably better to specify version as `~2.0` (`>= 2.0` and `<= 2.1`), but not as `2.0` (`>= 2.0` and `<= 3.0`).
+
+Version `3.*` will **not** follow semver conventions, releases from master will be published as `3.*`.
+`3.*` branch can be considered experimental.
+
+Eventually some `3.*` version will be stable enough and will be re-released as `4.0`.
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and compatility issues between versions.
+
 ## How to generate rust code
 
 There are several ways to generate rust code from `.proto` files
