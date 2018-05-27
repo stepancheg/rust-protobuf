@@ -4,6 +4,7 @@ use std::cmp;
 use descriptor::*;
 use descriptorx::*;
 use super::well_known_types::is_well_known_type_full;
+use codegen::ident::RustIdent;
 
 
 // Represent subset of rust types used in generated code
@@ -32,7 +33,7 @@ pub enum RustType {
     // protobuf message
     Message(String),
     // protobuf enum, not any enum
-    Enum(String, String),
+    Enum(String, RustIdent),
     // oneof enum
     Oneof(String),
     // bytes::Bytes

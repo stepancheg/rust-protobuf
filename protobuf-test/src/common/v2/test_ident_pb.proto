@@ -41,3 +41,25 @@ enum MyLittleEnum {
     fn = 2;
     self = 3;
 }
+
+message MessageRefencesEnum {
+    optional MyLittleEnum e1 = 1;
+    required MyLittleEnum e2 = 2;
+    repeated MyLittleEnum e3 = 3;
+    oneof one_enum {
+        MyLittleEnum e4 = 4;
+    }
+}
+
+enum EnumWithDefaultValueReserved {
+    in = 0;
+}
+
+message MessageReferencesEnumWithDefaultValueReserved {
+    optional EnumWithDefaultValueReserved e1 = 1;
+    required EnumWithDefaultValueReserved e2 = 2;
+    repeated EnumWithDefaultValueReserved e3 = 3;
+    oneof one_enum {
+        EnumWithDefaultValueReserved e4 = 4;
+    }
+}

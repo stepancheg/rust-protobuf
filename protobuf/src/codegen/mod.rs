@@ -13,6 +13,7 @@ mod rust_types_values;
 mod well_known_types;
 mod field;
 mod extensions;
+mod ident;
 
 use self::message::*;
 use self::enums::*;

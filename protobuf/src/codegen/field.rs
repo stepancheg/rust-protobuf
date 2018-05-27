@@ -15,6 +15,7 @@ use super::message::*;
 use super::rust_types_values::*;
 use super::enums::*;
 
+use codegen::ident::RustIdent;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
@@ -260,7 +261,7 @@ pub enum FieldElem {
     // name, file name, entry
     Message(String, String, Option<Box<EntryKeyValue>>),
     // name, file name, default value
-    Enum(String, String, String),
+    Enum(String, String, RustIdent),
     Group,
 }
 
@@ -395,7 +396,7 @@ fn field_elem(
                     FieldElem::Enum(
                         rust_relative_name,
                         file_name,
-                        enum_with_scope.values()[0].get_name().to_owned(),
+                        RustIdent(enum_with_scope.values()[0].rust_name().to_owned()),
                     ),
                     Some(ev),
                 )
