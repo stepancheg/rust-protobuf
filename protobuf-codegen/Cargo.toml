@@ -14,7 +14,7 @@ See `protoc-rust` and `protobuf-codegen-pure` crates.
 """
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "2.0.1" }
+protobuf = { path = "../protobuf", version = "=2.0.1" }
 
 [[bin]]
 

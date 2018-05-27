@@ -13,7 +13,7 @@ protoc --rust_out=... available as API. protoc needs to be in $PATH, protoc-gen-
 doctest = false
 
 [dependencies]
-protoc   = { path = "../protoc", version = "2.0.1" }
-protobuf = { path = "../protobuf", version = "2.0.1" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "2.0.1" }
+protoc   = { path = "../protoc", version = "=2.0.1" }
+protobuf = { path = "../protobuf", version = "=2.0.1" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "=2.0.1" }
 tempdir  = "0.3"
