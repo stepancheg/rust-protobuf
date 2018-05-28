@@ -25,6 +25,10 @@
 - Rebublished branch 2.0 because of
   [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
 
+## [1.7.3] - 2018-05-29
+
+- Make rust-protobuf compatible with rust 1.23.0
+
 ## [1.7.2] - 2018-05-27
 
 - Fix codegen with enum with
