@@ -4,8 +4,8 @@ language: rust
 
 matrix:
   include:
-  - rust: stable
-    env: PROTOBUF_VERSION=1.23.0
+  - rust: 1.23.0
+    env: PROTOBUF_VERSION=3.1.0
   - rust: stable
     env: PROTOBUF_VERSION=3.1.0
   - rust: beta
