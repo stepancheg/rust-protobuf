@@ -55,6 +55,7 @@ mod singular;
 mod clear;
 pub mod reflect;
 pub mod text_format;
+pub mod json;
 pub mod stream;
 pub mod error;
 pub mod well_known_types;

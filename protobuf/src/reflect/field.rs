@@ -62,8 +62,13 @@ impl FieldDescriptor {
         self.proto
     }
 
-    pub fn name(&self) -> &'static str {
+    pub fn name(&self) -> &str {
         self.accessor.name
+    }
+
+    pub fn json_name(&self) -> &str {
+        // TODO: Message field names are mapped to lowerCamelCase and become JSON object keys.
+        self.name()
     }
 
     pub fn is_repeated(&self) -> bool {
