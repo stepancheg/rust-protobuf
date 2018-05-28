@@ -34,6 +34,10 @@ script:
   - protobuf/full-rebuild.sh
   - ./protoc/test.sh
   - cargo build --all --features=with-bytes --bins --tests --examples --benches
+  # Work around for concurrent `build.rs` execution:
+  # https://github.com/stepancheg/rust-protobuf/issues/294
+  - cargo build --all --benches
+  - cargo build --all --all-targets
 
 notifications:
   email:
