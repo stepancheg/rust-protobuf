@@ -5,6 +5,8 @@ language: rust
 matrix:
   include:
   - rust: stable
+    env: PROTOBUF_VERSION=1.23.0
+  - rust: stable
     env: PROTOBUF_VERSION=3.1.0
   - rust: beta
     env: PROTOBUF_VERSION=3.1.0
@@ -12,6 +14,8 @@ matrix:
     env: PROTOBUF_VERSION=3.1.0
   - rust: stable
     env: PROTOBUF_VERSION=2.6.1
+  - rust: 1.23.0
+    env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
   - rust: stable
     env: PROTOBUF_VERSION=3.1.0 RUST_PROTOBUF_FEATURES=with-bytes
   - rust: nightly
