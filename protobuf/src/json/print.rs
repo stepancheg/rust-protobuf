@@ -87,12 +87,28 @@ impl Printer {
         }
     }
 
-    fn print_repeated(&mut self, _repeated: &ReflectRepeatedRef) -> fmt::Result {
-        unimplemented!()
+    fn print_repeated(&mut self, repeated: &ReflectRepeatedRef) -> fmt::Result {
+        write!(self.buf, "[")?;
+        for (i, item) in repeated.into_iter().enumerate() {
+            if i != 0 {
+                write!(self.buf, ", ")?;
+            }
+            self.print_value(&item)?;
+        }
+        write!(self.buf, "]")?;
+        Ok(())
     }
 
-    fn print_map(&mut self, _map: &ReflectMapRef) -> fmt::Result {
-        unimplemented!()
+    fn print_map(&mut self, map: &ReflectMapRef) -> fmt::Result {
+        write!(self.buf, "{{")?;
+        for (i, (_k, _v)) in map.into_iter().enumerate() {
+            if i != 0 {
+                write!(self.buf, ", ")?;
+            }
+            unimplemented!();
+        }
+        write!(self.buf, "}}")?;
+        Ok(())
     }
 
     fn print_message(&mut self, message: &Message) -> fmt::Result {
