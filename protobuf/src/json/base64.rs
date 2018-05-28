@@ -2,20 +2,11 @@
 
 /// Available encoding character sets
 #[derive(Clone, Copy, Debug)]
-pub enum CharacterSet {
+enum _CharacterSet {
     /// The standard character set (uses `+` and `/`)
-    Standard,
+    _Standard,
     /// The URL safe character set (uses `-` and `_`)
-    UrlSafe
-}
-
-/// Available newline types
-#[derive(Clone, Copy, Debug)]
-pub enum Newline {
-    /// A linefeed (i.e. Unix-style newline)
-    LF,
-    /// A carriage return and a linefeed (i.e. Windows-style newline)
-    CRLF
+    _UrlSafe
 }
 
 static STANDARD_CHARS: &'static[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
@@ -32,7 +23,7 @@ pub fn encode(input: &[u8]) -> String {
     let len = input.len();
 
     // Preallocate memory.
-    let mut prealloc_len = (len + 2) / 3 * 4;
+    let prealloc_len = (len + 2) / 3 * 4;
     let mut out_bytes = vec![b'='; prealloc_len];
 
     // Deal with padding bytes
@@ -40,8 +31,6 @@ pub fn encode(input: &[u8]) -> String {
 
     // Use iterators to reduce branching
     {
-        let mut cur_length = 0;
-
         let mut s_in = input[..len - mod_len].iter().map(|&x| x as u32);
         let mut s_out = out_bytes.iter_mut();
 
@@ -60,8 +49,6 @@ pub fn encode(input: &[u8]) -> String {
             write(enc((n >> 12) & 63));
             write(enc((n >> 6 ) & 63));
             write(enc((n >> 0 ) & 63));
-
-            cur_length += 4;
         }
 
         // Heh, would be cool if we knew this was exhaustive
@@ -96,7 +83,7 @@ pub enum FromBase64Error {
     InvalidBase64Length,
 }
 
-fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
+pub fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
     let mut r = Vec::with_capacity(input.len());
     let mut buf: u32 = 0;
     let mut modulus = 0;

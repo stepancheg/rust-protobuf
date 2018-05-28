@@ -8,6 +8,7 @@ use reflect::ReflectRepeatedRef;
 use json::float;
 use std::f32;
 use std::f64;
+use reflect::ReflectMapRef;
 
 struct Printer {
     buf: String,
@@ -78,15 +79,19 @@ impl Printer {
             ReflectValueRef::F32(v) => v.write_to_json(&mut self.buf),
             ReflectValueRef::F64(v) => v.write_to_json(&mut self.buf),
             ReflectValueRef::Bool(v) => write!(self.buf, "{}", v),
-            ReflectValueRef::String(v) => unimplemented!(),
-            ReflectValueRef::Bytes(v) => unimplemented!(),
+            ReflectValueRef::String(_v) => unimplemented!(),
+            ReflectValueRef::Bytes(_v) => unimplemented!(),
             // TODO: option to output JSON as number
-            ReflectValueRef::Enum(v) => write!(self.buf, "{}", v.name()),
+            ReflectValueRef::Enum(v) => write!(self.buf, "\"{}\"", v.name()),
             ReflectValueRef::Message(v) => self.print_message(*v),
         }
     }
 
-    fn print_repeated(&mut self, repeated: ReflectRepeatedRef) -> fmt::Result {
+    fn print_repeated(&mut self, _repeated: &ReflectRepeatedRef) -> fmt::Result {
+        unimplemented!()
+    }
+
+    fn print_map(&mut self, _map: &ReflectMapRef) -> fmt::Result {
         unimplemented!()
     }
 
@@ -107,12 +112,13 @@ impl Printer {
                 }
                 ReflectFieldRef::Repeated(v) => {
                     write!(self.buf, "{}: ", field.json_name())?;
+                    self.print_repeated(&v)?;
                 }
                 ReflectFieldRef::Map(v) => {
                     write!(self.buf, "{}: ", field.json_name())?;
+                    self.print_map(&v)?;
                 }
             }
-            unimplemented!();
         }
 
         write!(self.buf, "}}")?;
