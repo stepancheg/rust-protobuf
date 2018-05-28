@@ -400,8 +400,14 @@ impl<'a> Lexer<'a> {
         self.next_char_if(|c| c >= 'A' && c <= 'Z')
     }
 
+    fn is_ascii_alphanumeric(c: char) -> bool {
+        (c >= 'A' && c <= 'Z')
+        || (c >= 'a' && c <= 'z')
+        || (c >= '0' && c <= '9')
+    }
+
     fn next_ident_part(&mut self) -> Option<char> {
-        self.next_char_if(|c| c.is_ascii_alphanumeric() || c == '_')
+        self.next_char_if(|c| Lexer::is_ascii_alphanumeric(c) || c == '_')
     }
 
     // Identifiers
@@ -422,14 +428,24 @@ impl<'a> Lexer<'a> {
 
     // Integer literals
 
+    fn is_ascii_hexdigit(c: char) -> bool {
+        (c >= '0' && c <= '9')
+        || (c >= 'a' && c <= 'f')
+        || (c >= 'A' && c <= 'F')
+    }
+
     // hexLit     = "0" ( "x" | "X" ) hexDigit { hexDigit }
     fn next_hex_lit(&mut self) -> ParserResult<Option<u64>> {
         Ok(if self.skip_if_lookahead_is_str("0x") || self.skip_if_lookahead_is_str("0X") {
-            let s = self.take_while(|c| c.is_ascii_hexdigit());
+            let s = self.take_while(Lexer::is_ascii_hexdigit);
             Some(u64::from_str_radix(s, 16)? as u64)
         } else {
             None
         })
+    }
+
+    fn is_ascii_digit(c: char) -> bool {
+        c >= '0' && c <= '9'
     }
 
     // decimalLit = ( "1" … "9" ) { decimalDigit }
@@ -440,8 +456,8 @@ impl<'a> Lexer<'a> {
 
         let pos = clone.pos;
 
-        Ok(if clone.next_char_if(|c| c.is_ascii_digit()) != None {
-            clone.take_while(|c| c.is_ascii_digit());
+        Ok(if clone.next_char_if(Lexer::is_ascii_digit) != None {
+            clone.take_while(Lexer::is_ascii_digit);
             let value = clone.input[pos..clone.pos].parse()?;
             *self = clone;
             Some(value)
@@ -623,6 +639,14 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn is_ascii_punctuation(c: char) -> bool {
+        match c {
+            '.' | ',' | ':' | ';' | '/' | '\\' | '=' | '%' | '+' | '-' | '*' |
+            '<' | '>' | '(' | ')' | '{' | '}' | '[' | ']' => true,
+            _ => false,
+        }
+    }
+
     fn next_token_inner(&mut self) -> ParserResult<Token> {
         if let Some(ident) = self.next_ident_opt()? {
             let token = if ident == float::PROTOBUF_NAN {
@@ -652,7 +676,7 @@ impl<'a> Lexer<'a> {
         }
 
         // This branch must be after str lit
-        if let Some(c) = self.next_char_if(|c| c.is_ascii_punctuation()) {
+        if let Some(c) = self.next_char_if(Lexer::is_ascii_punctuation) {
             return Ok(Token::Symbol(c));
         }
 
@@ -990,12 +1014,16 @@ impl<'a> Parser<'a> {
         Ok(full_name)
     }
 
+    fn is_ascii_uppercase(c: char) -> bool {
+        c >= 'A' && c <= 'Z'
+    }
+
     // groupName = capitalLetter { letter | decimalDigit | "_" }
     fn next_group_name(&mut self) -> ParserResult<String> {
         // lexer cannot distinguish between group name and other ident
         let mut clone = self.clone();
         let ident = clone.next_ident()?;
-        if !ident.chars().next().unwrap().is_ascii_uppercase() {
+        if !Parser::is_ascii_uppercase(ident.chars().next().unwrap()) {
             return Err(ParserError::GroupNameShouldStartWithUpperCase);
         }
         *self = clone;

@@ -1,13 +1,15 @@
 use std::env;
 use std::path::PathBuf;
-use std::fs;
 use std::path::Path;
 use std::collections::BTreeMap;
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
+use std::io::Read;
+use std::io::Write;
 use std::fmt::Write as fmt_Write;
+use std::io;
 
 extern crate tempdir;
 extern crate regex;
@@ -65,6 +67,14 @@ fn find_repo_root() -> PathBuf {
     panic!("cannot find repository root");
 }
 
+/// Copy-paste from rust stdlib for compatibility with rust 1.0.23
+fn read_to_string<P: AsRef<Path>>(path: P) -> io::Result<String> {
+    let mut file = File::open(path)?;
+    let mut string = String::new();
+    file.read_to_string(&mut string)?;
+    Ok(string)
+}
+
 /// Read `Cargo.toml` from specified directory.
 fn read_crate_manifest(crate_path: &Path) -> TomlManifest {
     assert!(crate_path.is_dir());
@@ -72,7 +82,7 @@ fn read_crate_manifest(crate_path: &Path) -> TomlManifest {
     let mut cargo_toml = crate_path.to_owned();
     cargo_toml.push("Cargo.toml");
 
-    let content = fs::read_to_string(&cargo_toml).expect(&format!("read {:?}", cargo_toml));
+    let content = read_to_string(&cargo_toml).expect(&format!("read {:?}", cargo_toml));
 
     toml::from_str(&content)
         .expect(&format!("parse toml {:?}", cargo_toml))
@@ -194,7 +204,10 @@ fn patch_crate(repo_root: &Path, member: &ParsedMember, new_version: &str) {
     assert!(version_patched, "in {}", member.name);
     assert_eq!(member.internal_deps.len(), internal_deps_seen.len(), "in {}", member.name);
 
-    fs::write(&manifest_path, &output).expect("write patched manifest back");
+    File::create(&manifest_path)
+        .expect(&format!("File create {:?}", manifest_path))
+        .write_all(output.as_bytes())
+        .expect(&format!("write patched manifest back to {:?}", manifest_path));
 }
 
 

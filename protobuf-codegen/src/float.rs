@@ -22,8 +22,14 @@ pub fn format_protobuf_float(f: f64) -> String {
             format!("-{}", PROTOBUF_INF)
         }
     } else {
-        // TODO: make sure doesn't lose precision
-        format!("{:?}", f)
+        let i = f as i64;
+        if i as f64 == f {
+            // Older rust versions did print float without `.0` suffix
+            format!("{:?}.0", i)
+        } else {
+            // TODO: make sure doesn't lose precision
+            format!("{:?}", f)
+        }
     }
 }
 
@@ -54,5 +60,8 @@ mod test {
     #[test]
     fn test_format_protobuf_float() {
         assert_eq!("10.0", format_protobuf_float(10.0));
+        assert_eq!("-10.0", format_protobuf_float(-10.0));
+        assert_eq!("10.5", format_protobuf_float(10.5));
+        assert_eq!("-10.5", format_protobuf_float(-10.5));
     }
 }
