@@ -13,6 +13,7 @@ WIP
 
 [lib]
 doctest = false
+bench = false
 
 [dependencies]
 protobuf = { path = "../protobuf", version = "=3.0.0" }

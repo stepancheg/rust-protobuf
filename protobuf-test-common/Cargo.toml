@@ -9,6 +9,7 @@ Common code of protobuf tests
 
 [lib]
 doctest = false
+bench = false
 
 [features]
 default-features = []

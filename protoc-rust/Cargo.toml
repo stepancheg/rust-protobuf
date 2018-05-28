@@ -11,6 +11,7 @@ protoc --rust_out=... available as API. protoc needs to be in $PATH, protoc-gen-
 
 [lib]
 doctest = false
+bench = false
 
 [dependencies]
 protoc = { path = "../protoc", version = "=3.0.0" }
