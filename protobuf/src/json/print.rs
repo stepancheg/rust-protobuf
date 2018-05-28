@@ -6,6 +6,8 @@ use reflect::ReflectFieldRef;
 use reflect::ReflectValueRef;
 use reflect::ReflectRepeatedRef;
 use json::float;
+use std::f32;
+use std::f64;
 
 struct Printer {
     buf: String,
@@ -31,29 +33,29 @@ trait JsonFloat : fmt::Display {
 
 impl JsonFloat for f32 {
     fn is_nan(&self) -> bool {
-        self.is_nan()
+        f32::is_nan(*self)
     }
 
     fn is_pos_infinity(&self) -> bool {
-        self.is_infinite() && self > &0.0
+        f32::is_infinite(*self) && self > &0.0
     }
 
     fn is_neg_infinity(&self) -> bool {
-        self.is_infinite() && self < &0.0
+        f32::is_infinite(*self) && self < &0.0
     }
 }
 
 impl JsonFloat for f64 {
     fn is_nan(&self) -> bool {
-        self.is_nan()
+        f64::is_nan(*self)
     }
 
     fn is_pos_infinity(&self) -> bool {
-        self.is_infinite() && self > &0.0
+        f64::is_infinite(*self) && self > &0.0
     }
 
     fn is_neg_infinity(&self) -> bool {
-        self.is_infinite() && self < &0.0
+        f64::is_infinite(*self) && self < &0.0
     }
 }
 
