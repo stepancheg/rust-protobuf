@@ -27,9 +27,9 @@ before_install:
   - which protoc
   - protoc --version
   - export RUST_BACKTRACE=1
+  - rustc --version
 
 script:
-  - rustc --version
   # Full rebuild with regenerate
   - protobuf/full-rebuild.sh
   - ./protoc/test.sh
