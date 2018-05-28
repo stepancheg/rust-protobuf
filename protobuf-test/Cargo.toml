@@ -6,6 +6,7 @@ publish = false
 
 [lib]
 doctest = false
+bench = false
 
 [features]
 default-features = []
