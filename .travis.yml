@@ -40,9 +40,6 @@ script:
   - protobuf-test/test.sh
   - protobuf-codegen-pure-test/test.sh
   - protoc/test.sh
-  # Work around for concurrent `build.rs` execution:
-  # https://github.com/stepancheg/rust-protobuf/issues/294
-  - cargo build --all --benches
   - cargo build --all --all-targets
 
 notifications:
