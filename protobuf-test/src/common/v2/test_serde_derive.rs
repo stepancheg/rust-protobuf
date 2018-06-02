@@ -1,8 +1,7 @@
-use super::test_serde_enum_pb::*;
+use super::test_serde_derive_pb::*;
 
-#[derive(Serialize)]
-struct Serializable {
-}
+#[derive(Serialize, Deserialize)]
+struct Proto(TestSerde);
 
 #[test]
 fn test_serialize() {

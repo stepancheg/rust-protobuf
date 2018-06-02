@@ -4,7 +4,7 @@ import "rustproto.proto";
 
 option (rustproto.serde_derive_all) = true;
 
-message TestSerdeEnum {
+message TestSerde {
     optional SerdeEnum test = 1;
 }
 
