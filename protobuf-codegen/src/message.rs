@@ -347,6 +347,8 @@ impl<'a> MessageGen<'a> {
         self.fields.len() <= 500
     }
 
+    fn supports_serde(&self) -> bool { self.customize.serde_derive.unwrap_or(false) }
+
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
         if self.supports_derive_partial_eq() {
@@ -356,7 +358,7 @@ impl<'a> MessageGen<'a> {
         if self.lite_runtime {
             derive.push("Debug");
         }
-        if self.customize.serde_derive.unwrap_or(false) {
+        if self.supports_serde() {
             derive.push("Serialize,Deserialize");
         }
         w.derive(&derive);
@@ -401,8 +403,15 @@ impl<'a> MessageGen<'a> {
                 }
             }
             w.comment("special fields");
+
+            if self.supports_serde() {
+                w.write_line("#[serde(skip)]");
+            }
             // TODO: make public
             w.field_decl("unknown_fields", "::protobuf::UnknownFields");
+            if self.supports_serde() {
+                w.write_line("#[serde(skip)]");
+            }
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }
