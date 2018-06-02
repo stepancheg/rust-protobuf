@@ -359,7 +359,7 @@ impl<'a> MessageGen<'a> {
             derive.push("Debug");
         }
         if self.serde_derive_enabled() {
-            derive.extend(&["Serialize,Deserialize"]);
+            derive.extend(&["Serialize", "Deserialize"]);
         }
         w.derive(&derive);
         w.pub_struct(&self.type_name, |w| {
@@ -384,6 +384,7 @@ impl<'a> MessageGen<'a> {
                                 FieldKind::Oneof(..) => unreachable!(),
                             }
                         };
+
                         w.field_decl_vis(
                             vis,
                             &field.rust_name,
@@ -399,14 +400,18 @@ impl<'a> MessageGen<'a> {
                         true => Visibility::Public,
                         false => Visibility::Default,
                     };
-                    if self.serde_derive_enabled() {
-                        w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_oneof\")]");
-                        w.write_line("#[serde(serialize_with = \"::protobuf_serde::serialize_oneof\")]");
-                    }
                     w.field_decl_vis(vis, oneof.name(), &oneof.full_storage_type().to_string());
                 }
             }
             w.comment("special fields");
+
+            /*
+            TODO: Figuring out where this needs to go
+            if self.serde_derive_enabled() {
+                w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_oneof\")]");
+                w.write_line("#[serde(serialize_with = \"::protobuf_serde::serialize_oneof\")]");
+            }
+            */
 
             if self.serde_derive_enabled() {
                 w.write_line("#[serde(skip)]");
