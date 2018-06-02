@@ -15,7 +15,7 @@ bench = false
 default-features = []
 proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
-with-serde = ["serde", "serde_derive", "protobuf/with-serde"]
+with-serde = ["serde", "serde_derive"]
 
 [dependencies]
 glob        = "0.2"

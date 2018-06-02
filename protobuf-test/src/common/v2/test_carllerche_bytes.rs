@@ -7,7 +7,6 @@ use protobuf_test_common::*;
 
 #[test]
 fn test() {
-    assert!(false);
     let mut m = TestCarllercheBytes::new();
     m.set_b1(Bytes::from("aabb"));
     m.set_s1(Chars::from("ccdd"));

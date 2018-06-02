@@ -14,6 +14,10 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+// TODO: Remove once with-serde works
+extern crate serde;
+extern crate serde_derive;
+
 mod v2;
 
 // `cfg(proto3)` is emitted by `build.rs`
