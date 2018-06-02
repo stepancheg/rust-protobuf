@@ -7,14 +7,6 @@ extern crate protobuf_test_common;
 #[cfg(feature = "with-bytes")]
 extern crate bytes;
 
-#[cfg(feature = "with-serde")]
-extern crate serde;
-
-#[cfg(feature = "with-serde")]
-#[macro_use]
-extern crate serde_derive;
-
-// TODO: Remove once with-serde works
 extern crate serde;
 extern crate serde_derive;
 
