@@ -141,10 +141,8 @@ option (rustproto.serde_derive_all) = true;
 You may now `Serialize` and `Deserialize` messages:
 
 ```rs
-#[derive(Serialize, Deserialize)]
-struct MyStruct {
-  example: MyGeneratedProtoEnum
-}
+let my_message = MyMessage::new();
+serde_json::to_string(&my_message).unwrap();
 ```
 
 ## Related projects
