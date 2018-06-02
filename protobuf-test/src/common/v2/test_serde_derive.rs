@@ -14,8 +14,11 @@ fn serialize_deserialize () {
     let pasta = Pasta::new();
     oneof.set_pasta(pasta);
 
+    let mut repeated= vec![1, 2, 3];
+
     original_data.set_test_map(map);
     original_data.set_test_oneof(oneof);
+    original_data.set_test_repeated(repeated);
 
     let serialized = serde_json::to_string(&original_data).unwrap();
 
