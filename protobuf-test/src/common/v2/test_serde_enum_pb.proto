@@ -1,5 +1,9 @@
 syntax = "proto2";
 
+import "rustproto.proto";
+
+option (rustproto.serde_derive_for_enums_all) = true;
+
 message TestSerdeEnum {
     optional SerdeEnum test = 1;
 }
