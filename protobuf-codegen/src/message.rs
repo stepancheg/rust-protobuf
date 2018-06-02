@@ -347,6 +347,10 @@ impl<'a> MessageGen<'a> {
         self.fields.len() <= 500
     }
 
+    fn supports_serde(&self) -> bool {
+        self.customize.serde_derive.is_some() && self.customize.serde_derive.unwrap()
+    }
+
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
         if self.supports_derive_partial_eq() {
@@ -355,6 +359,9 @@ impl<'a> MessageGen<'a> {
         derive.extend(&["Clone", "Default"]);
         if self.lite_runtime {
             derive.push("Debug");
+        }
+        if self.supports_serde() {
+            derive.push("Serialize,Deserialize");
         }
         w.derive(&derive);
         w.pub_struct(&self.type_name, |w| {
