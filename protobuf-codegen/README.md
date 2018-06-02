@@ -38,7 +38,7 @@ does not use `protobuf` library.
 
 1) Install `protoc-gen-rust` program (which is `protoc` plugin)
 
-It can be installed either from source or with `cargo install protobuf` command.
+It can be installed either from source or with `cargo install protobuf-codegen` command.
 
 2) Add `protoc-gen-rust` to $PATH
 
