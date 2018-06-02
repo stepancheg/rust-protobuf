@@ -7,6 +7,13 @@ extern crate protobuf_test_common;
 #[cfg(feature = "with-bytes")]
 extern crate bytes;
 
+#[cfg(feature = "with-serde")]
+extern crate serde;
+
+#[cfg(feature = "with-serde")]
+#[macro_use]
+extern crate serde_derive;
+
 mod v2;
 
 // `cfg(proto3)` is emitted by `build.rs`
