@@ -1,0 +1,16 @@
+[package]
+name = "protobuf-serde"
+version = "3.0.0"
+authors = ["Chinedu Francis Nwafili <frankie.nwafili@gmail.com>"]
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/stepancheg/rust-protobuf/"
+repository = "https://github.com/stepancheg/rust-protobuf/"
+description = """"
+rust-protobuf serde support
+"""
+
+[lib]
+bench = false
+
+[dependencies]
+serde = "1.0"
