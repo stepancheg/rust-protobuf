@@ -359,7 +359,7 @@ impl<'a> MessageGen<'a> {
             derive.push("Debug");
         }
         if self.serde_derive_enabled() {
-            derive.push("Serialize,Deserialize");
+            derive.extend(&["Serialize,Deserialize"]);
         }
         w.derive(&derive);
         w.pub_struct(&self.type_name, |w| {
