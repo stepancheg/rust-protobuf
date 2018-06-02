@@ -5,9 +5,11 @@ import "rustproto.proto";
 option (rustproto.serde_derive_all) = true;
 
 message TestSerde {
-    optional SerdeEnum test = 1;
+    optional SerdeEnum test_enum = 1;
+    map<uint32, uint32> somemap = 2;
 }
 
 enum SerdeEnum {
     TEST = 0;
 }
+
