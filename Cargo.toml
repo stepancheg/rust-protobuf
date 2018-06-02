@@ -9,6 +9,7 @@ members = [
     "protobuf-codegen-pure-test",
     "protobuf-test",
     "protobuf-test-common",
+    "protobuf-serde",
     "perftest/vs-cxx",
     "perftest/bytes",
     "update-version",

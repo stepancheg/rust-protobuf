@@ -399,6 +399,10 @@ impl<'a> MessageGen<'a> {
                         true => Visibility::Public,
                         false => Visibility::Default,
                     };
+                    if self.serde_derive_enabled() {
+                        w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_oneof\")]");
+                        w.write_line("#[serde(serialize_with = \"::protobuf_serde::serialize_oneof\")]");
+                    }
                     w.field_decl_vis(vis, oneof.name(), &oneof.full_storage_type().to_string());
                 }
             }
