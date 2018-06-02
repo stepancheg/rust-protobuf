@@ -7,9 +7,6 @@ If protobuf 3 is installed, command will include test for protobuf 3 generated c
 If `--features=with-bytes` flag is specified, tests will include test for `with-bytes` feature,
 which is not enabled by default.
 
-If `--features=with-serde` flag is specified, tests will include test for `with-serde` feature,
-which is not enabled by default.
-
 `./test.sh` is to be used from [travis-ci](https://travis-ci.org/stepancheg/rust-protobuf/),
 and not needed for local development.
 
