@@ -109,16 +109,9 @@ Rust-protobuf can be used with [serde](https://github.com/serde-rs/serde).
 
 To enable `serde` you need to:
 
-1. Enable `with-serde` feature in rust-protobuf:
+1. Enable serde option
 
-```
-[dependencies]
-protobuf = { version = "~2.0", features = ["with-serde"] }
-```
-
-2. Enable serde option
-
-with Customize when codegen is invoked programmatically:
+with `Customize` when codegen is invoked programmatically:
 
 ```
 protoc_rust::run(protoc_rust::Args {
