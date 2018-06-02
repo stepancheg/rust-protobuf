@@ -148,7 +148,7 @@ impl<'a> EnumGen<'a> {
             );
         }
         if self.customize.serde_derive.unwrap_or(false) {
-            derive.push("Serialize,Deserialize");
+            derive.extend(&["Serialize,Deserialize"]);
         }
         w.derive(&derive);
         let ref type_name = self.type_name;
