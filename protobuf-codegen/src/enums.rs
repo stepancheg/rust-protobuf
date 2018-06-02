@@ -85,10 +85,6 @@ impl<'a> EnumGen<'a> {
         self.enum_with_scope.en.get_options().get_allow_alias()
     }
 
-    fn supports_serde(&self) -> bool {
-        self.customize.serde_derive.is_some() && self.customize.serde_derive.unwrap()
-    }
-
     fn values_all(&self) -> Vec<EnumValueGen> {
         let mut r = Vec::new();
         for p in self.enum_with_scope.values() {
@@ -151,7 +147,7 @@ impl<'a> EnumGen<'a> {
                 "Note: you cannot use pattern matching for enums with allow_alias option",
             );
         }
-        if self.supports_serde() {
+        if self.customize.serde_derive.unwrap_or(false) {
             derive.push("Serialize,Deserialize");
         }
         w.derive(&derive);
