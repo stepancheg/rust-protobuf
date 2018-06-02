@@ -6,10 +6,23 @@ option (rustproto.serde_derive_all) = true;
 
 message TestSerde {
     optional SerdeEnum test_enum = 1;
-    map<uint32, uint32> somemap = 2;
+    map<uint32, uint32> test_map = 2;
+    optional SerdeOneOf test_oneof = 3;
 }
 
 enum SerdeEnum {
     TEST = 0;
 }
 
+message SerdeOneOf {
+    oneof food {
+        Rice rice = 1;
+        Pasta pasta = 2;
+    }
+}
+
+message Rice {
+}
+
+message Pasta {
+}

@@ -9,11 +9,17 @@ fn serialize_deserialize () {
 
     let mut map = HashMap::new();
     map.insert(5, 10);
-    original_data.set_somemap(map);
+
+    let mut oneof = SerdeOneOf::new();
+    let pasta = Pasta::new();
+    oneof.set_pasta(pasta);
+
+    original_data.set_test_map(map);
+    original_data.set_test_oneof(oneof);
 
     let serialized = serde_json::to_string(&original_data).unwrap();
 
-    assert_eq!(serialized, r#"{"test_enum":"TEST","somemap":{"5":10}}"#);
+    assert_eq!(serialized, r#"{"test_enum":"TEST","test_map":{"5":10}},"test_oneof":{"pasta": {}}"#);
 
     let deserialized: TestSerde = serde_json::from_str(&serialized).unwrap();
     assert_eq!(deserialized, original_data);
