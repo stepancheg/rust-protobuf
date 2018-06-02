@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+message TestSerdeEnum {
+    optional SerdeEnum test = 1;
+}
+
+enum SerdeEnum {
+    TEST = 0;
+}
