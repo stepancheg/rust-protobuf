@@ -116,7 +116,7 @@ To enable `serde` you need to:
 protobuf = { version = "~2.0", features = ["with-serde"] }
 ```
 
-2. Enable bytes option
+2. Enable serde option
 
 with Customize when codegen is invoked programmatically:
 
