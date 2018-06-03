@@ -4,28 +4,28 @@ import "rustproto.proto";
 
 option (rustproto.serde_derive_all) = true;
 
-/*
-message TestSerde {
-    optional SerdeEnum test_enum = 1;
-    map<uint32, uint32> test_map = 2;
-    optional SerdeOneOf test_oneof = 3;
-    repeated uint32 test_repeated = 4;
-}
-*/
-
 enum AnEnum {
     TEST = 0;
 }
 
-message SerdeOneOf {
+message OneOf {
     oneof food {
-        Rice rice = 1;
-        Pasta pasta = 2;
+        uint32 rice = 1;
+        uint32 pasta = 2;
     }
 }
 
-message Rice {
+message TestSingularPtrField {
+    optional SomeMessage test = 1;
 }
 
-message Pasta {
+message SomeMessage {
+}
+
+message Repeated {
+    repeated uint32 test_repeated = 1;
+}
+
+message TestSerdeMap {
+    map<uint32, uint32> test_map = 1;
 }

@@ -15,36 +15,51 @@ fn test_enum() {
 }
 
 #[test]
-fn test_map() {
-println!("TODO");
+fn test_oneof() {
+    let mut one_of = OneOf::new();
+    one_of.set_rice(50);
+
+    let serialized = serde_json::to_string(&one_of).unwrap();
+    assert_eq!(serialized, r#"{"food":{"rice":50}}"#);
+
+    let deserialized: OneOf = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, one_of);
 }
 
-
-// r#"{"test_enum":"TEST","test_map":{"5":10},"test_oneof":{"food":{"pasta":{}}},"test_repeated":[1,2,3]}"#
-
-/*
 #[test]
-fn serialize_deserialize () {
-    let mut original_data = TestSerde::new();
-    original_data.set_test_enum(SerdeEnum::TEST);
+fn test_singular_ptr_field() {
+    let mut spf = TestSingularPtrField::new();
+    let msg = SomeMessage::new();
+    spf.set_test(msg);
 
-    let mut map = HashMap::new();
-    map.insert(5, 10);
+    let serialized = serde_json::to_string(&spf).unwrap();
+    assert_eq!(serialized, r#"{"test":{}}"#);
 
-    let mut oneof = SerdeOneOf::new();
-    let pasta = Pasta::new();
-    oneof.set_pasta(pasta);
-
-    let repeated= vec![1, 2, 3];
-
-    original_data.set_test_map(map);
-    original_data.set_test_oneof(oneof);
-    original_data.set_test_repeated(repeated);
-
-    let serialized = serde_json::to_string(&original_data).unwrap();
-    assert_eq!(serialized, r#"{"test_enum":"TEST","test_map":{"5":10},"test_oneof":{"food":{"pasta":{}}},"test_repeated":[1,2,3]}"#);
-
-    let deserialized: TestSerde = serde_json::from_str(&serialized).unwrap();
-    assert_eq!(deserialized, original_data);
+    let deserialized: TestSingularPtrField = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, spf);
 }
-*/
+
+#[test]
+fn test_repeated() {
+    let mut repeated = Repeated::new();
+    repeated.set_test_repeated(vec![1, 2, 3]);
+
+    let serialized = serde_json::to_string(&repeated).unwrap();
+    assert_eq!(serialized, r#"{"test_repeated":[1,2,3]}"#);
+
+    let deserialized: Repeated = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, repeated);
+}
+
+#[test]
+fn test_map() {
+    let mut map = TestSerdeMap::new();
+    let mut hash = HashMap::new();
+    hash.insert(1, 2);
+    map.set_test_map(hash);
+
+    assert_eq!(serialized, r#"{"test_map":{"1":2}"#);
+
+    let deserialized: TestSerdeMap = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, map);
+}
