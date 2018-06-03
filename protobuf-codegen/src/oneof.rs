@@ -157,6 +157,7 @@ impl<'a> OneofGen<'a> {
             derive.push("Debug");
         }
         if self.customize.serde_derive.unwrap_or(false) {
+            // derive.extend(&["Serialize", "Deserialize"]);
             derive.extend(&["Serialize", "Deserialize"]);
         }
         w.derive(&derive);
