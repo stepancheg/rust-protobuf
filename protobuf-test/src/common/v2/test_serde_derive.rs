@@ -1,9 +1,6 @@
 use super::test_serde_derive_pb::*;
 use serde_json;
 use std::collections::HashMap;
-use serde::Deserialize;
-use serde::Serialize;
-use std::fmt::Debug;
 
 #[test]
 fn test_enum() {
@@ -41,7 +38,7 @@ fn test_include_optional_singular_ptr_field() {
 
 #[test]
 fn test_exclude_optional_singular_ptr_field() {
-    let mut unset_spf = TestSingularPtrField::new();
+    let unset_spf = TestSingularPtrField::new();
 
     let serialized = serde_json::to_string(&unset_spf).unwrap();
     // TODO: Ideally we'd omit optional fields when serializing instead of setting to `null`.
