@@ -14,14 +14,13 @@ fn serialize_deserialize () {
     let pasta = Pasta::new();
     oneof.set_pasta(pasta);
 
-    let mut repeated= vec![1, 2, 3];
+    let repeated= vec![1, 2, 3];
 
     original_data.set_test_map(map);
     original_data.set_test_oneof(oneof);
     original_data.set_test_repeated(repeated);
 
     let serialized = serde_json::to_string(&original_data).unwrap();
-
     assert_eq!(serialized, r#"{"test_enum":"TEST","test_map":{"5":10},"test_oneof":{"food":{"pasta":{}}},"test_repeated":[1,2,3]}"#);
 
     let deserialized: TestSerde = serde_json::from_str(&serialized).unwrap();

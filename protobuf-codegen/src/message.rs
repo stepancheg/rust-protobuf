@@ -387,8 +387,8 @@ impl<'a> MessageGen<'a> {
 
                         let field_type = &field.full_storage_type().to_string();
                         if self.serde_derive_enabled() && field_type.contains("::protobuf::SingularPtrField<") {
-                            w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_singular_ptr_field\")]");
                             w.write_line("#[serde(serialize_with = \"::protobuf_serde::serialize_singular_ptr_field\")]");
+                            w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_singular_ptr_field\")]");
                         }
 
                         w.field_decl_vis(
