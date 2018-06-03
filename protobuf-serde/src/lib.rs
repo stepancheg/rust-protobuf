@@ -10,9 +10,9 @@ use serde::ser::Serializer;
 use serde::Deserializer;
 
 // TODO: Work in progress
-pub fn serialize_singular_ptr_field<'a, T: Serialize, S>(spf: &SingularPtrField<T>, serializer: &'a mut S)
-    -> Result<<&'a mut S as Serializer>::Ok, <&'a mut S as Serializer>::Error>
-    where &'a mut S: Serializer {
+pub fn serialize_singular_ptr_field<'a, T: Serialize, S>(spf: &SingularPtrField<T>, serializer: S)
+    -> Result<<S as Serializer>::Ok, <S as Serializer>::Error>
+    where S: Serializer {
     // spf.unwrap().serialize(serializer)
     "hello".serialize(serializer)
 }
