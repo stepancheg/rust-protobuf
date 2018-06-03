@@ -76,7 +76,7 @@ protobuf = { version = "~2.0", features = ["with-bytes"] }
 
 2. Enable bytes option
 
-with Customize when codegen is invoked programmatically:
+with `Customize` when codegen is invoked programmatically:
 
 ```
 protoc_rust::run(protoc_rust::Args {
