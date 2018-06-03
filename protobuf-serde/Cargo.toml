@@ -13,4 +13,5 @@ rust-protobuf serde support
 bench = false
 
 [dependencies]
+protobuf = { path = "../protobuf", version = "=3.0.0" }
 serde = "1.0"
