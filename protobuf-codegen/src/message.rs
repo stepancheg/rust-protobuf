@@ -347,7 +347,9 @@ impl<'a> MessageGen<'a> {
         self.fields.len() <= 500
     }
 
-    fn serde_derive_enabled(&self) -> bool { self.customize.serde_derive.unwrap_or(false) }
+    fn serde_derive_enabled(&self) -> bool {
+        self.customize.serde_derive.unwrap_or(false)
+    }
 
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
