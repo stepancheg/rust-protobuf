@@ -22,7 +22,7 @@ fn serialize_deserialize () {
 
     let serialized = serde_json::to_string(&original_data).unwrap();
 
-    assert_eq!(serialized, r#"{"test_enum":"TEST","test_map":{"5":10}},"test_oneof":{"pasta": {}}"#);
+    assert_eq!(serialized, r#"{"test_enum":"TEST","test_map":{"5":10},"test_oneof":{"food":{"pasta":{}}},"test_repeated":[1,2,3]}"#);
 
     let deserialized: TestSerde = serde_json::from_str(&serialized).unwrap();
     assert_eq!(deserialized, original_data);
