@@ -44,6 +44,8 @@ fn test_exclude_optional_singular_ptr_field() {
     let mut unset_spf = TestSingularPtrField::new();
 
     let serialized = serde_json::to_string(&unset_spf).unwrap();
+    // TODO: Ideally we'd omit optional fields when serializing instead of setting to `null`.
+    // so this test would be: r#"{}"#;
     assert_eq!(serialized, r#"{"test":null}"#);
 
     let deserialized: TestSingularPtrField = serde_json::from_str(&serialized).unwrap();
