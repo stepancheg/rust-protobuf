@@ -4,9 +4,10 @@ extern crate protobuf;
 use protobuf::SingularPtrField;
 
 use serde::Serialize;
-use serde::Serializer;
-use serde::Deserializer;
 use serde::Deserialize;
+
+use serde::ser::Serializer;
+use serde::Deserializer;
 
 // TODO: Work in progress
 pub fn serialize_singular_ptr_field<'a, T: Serialize, S>(spf: &SingularPtrField<T>, serializer: &'a mut S)
