@@ -27,16 +27,27 @@ fn test_oneof() {
 }
 
 #[test]
-fn test_singular_ptr_field() {
-    let mut spf = TestSingularPtrField::new();
+fn test_include_optional_singular_ptr_field() {
+    let mut set_spf = TestSingularPtrField::new();
     let msg = SomeMessage::new();
-    spf.set_test(msg);
+    set_spf.set_test(msg);
 
-    let serialized = serde_json::to_string(&spf).unwrap();
+    let serialized = serde_json::to_string(&set_spf).unwrap();
     assert_eq!(serialized, r#"{"test":{}}"#);
 
     let deserialized: TestSingularPtrField = serde_json::from_str(&serialized).unwrap();
-    assert_eq!(deserialized, spf);
+    assert_eq!(deserialized, set_spf);
+}
+
+#[test]
+fn test_exclude_optional_singular_ptr_field() {
+    let mut unset_spf = TestSingularPtrField::new();
+
+    let serialized = serde_json::to_string(&unset_spf).unwrap();
+    assert_eq!(serialized, r#"{"test":null}"#);
+
+    let deserialized: TestSingularPtrField = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, unset_spf);
 }
 
 #[test]
