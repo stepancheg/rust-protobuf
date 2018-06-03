@@ -105,6 +105,8 @@ instead of being allocated on heap.
 
 ## serde_derive support
 
+(Only in master, not released yet)
+
 Rust-protobuf can be used with [serde](https://github.com/serde-rs/serde).
 
 To enable `serde` you need to:
