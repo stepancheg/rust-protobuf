@@ -347,6 +347,10 @@ impl<'a> MessageGen<'a> {
         self.fields.len() <= 500
     }
 
+    fn serde_derive_enabled(&self) -> bool {
+        self.customize.serde_derive.unwrap_or(false)
+    }
+
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
         if self.supports_derive_partial_eq() {
@@ -355,6 +359,9 @@ impl<'a> MessageGen<'a> {
         derive.extend(&["Clone", "Default"]);
         if self.lite_runtime {
             derive.push("Debug");
+        }
+        if self.serde_derive_enabled() {
+            derive.extend(&["Serialize", "Deserialize"]);
         }
         w.derive(&derive);
         w.pub_struct(&self.type_name, |w| {
@@ -379,6 +386,18 @@ impl<'a> MessageGen<'a> {
                                 FieldKind::Oneof(..) => unreachable!(),
                             }
                         };
+
+                        if self.serde_derive_enabled() {
+                            if let FieldKind::Singular(ref singular) = field.kind {
+                                if let SingularFieldFlag::WithFlag {option_kind, ..} = singular.flag {
+                                    if option_kind == OptionKind::SingularPtrField {
+                                        w.write_line("#[serde(serialize_with = \"::protobuf_serde::serialize_singular_ptr_field\")]");
+                                        w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_singular_ptr_field\")]");
+                                    }
+                                }
+                            }
+                        }
+
                         w.field_decl_vis(
                             vis,
                             &field.rust_name,
@@ -398,8 +417,15 @@ impl<'a> MessageGen<'a> {
                 }
             }
             w.comment("special fields");
+
+            if self.serde_derive_enabled() {
+                w.write_line("#[serde(skip)]");
+            }
             // TODO: make public
             w.field_decl("unknown_fields", "::protobuf::UnknownFields");
+            if self.serde_derive_enabled() {
+                w.write_line("#[serde(skip)]");
+            }
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }

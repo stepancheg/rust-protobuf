@@ -45,13 +45,14 @@ pub struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
     type_name: String,
     lite_runtime: bool,
+    customize: Customize
 }
 
 impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
         current_file: &FileDescriptorProto,
-        _customize: &Customize
+        customize: &Customize
     ) -> EnumGen<'a> {
         let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
             current_file.get_name()
@@ -76,6 +77,7 @@ impl<'a> EnumGen<'a> {
                 .get_options()
                 .get_optimize_for() ==
                 FileOptions_OptimizeMode::LITE_RUNTIME,
+            customize: customize.clone()
         }
     }
 
@@ -144,6 +146,9 @@ impl<'a> EnumGen<'a> {
             w.comment(
                 "Note: you cannot use pattern matching for enums with allow_alias option",
             );
+        }
+        if self.customize.serde_derive.unwrap_or(false) {
+            derive.extend(&["Serialize", "Deserialize"]);
         }
         w.derive(&derive);
         let ref type_name = self.type_name;

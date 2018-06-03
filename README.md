@@ -103,6 +103,41 @@ generated as `Bytes` or `Chars` respectively. When `CodedInputStream` is constru
 from `Bytes` object, fields of these types get subslices of original `Bytes` object,
 instead of being allocated on heap.
 
+## serde_derive support
+
+Rust-protobuf can be used with [serde](https://github.com/serde-rs/serde).
+
+To enable `serde` you need to:
+
+1. Enable serde option
+
+with `Customize` when codegen is invoked programmatically:
+
+```
+protoc_rust::run(protoc_rust::Args {
+    ...
+    customize: Customize {
+        serde_derive: Some(true),
+        ..Default::default()
+    },
+ });
+ ```
+
+or in `.proto` file:
+
+```
+import "rustproto.proto";
+
+option (rustproto.serde_derive_all) = true;
+```
+
+You may now `Serialize` and `Deserialize` messages:
+
+```rs
+let my_message = MyMessage::new();
+serde_json::to_string(&my_message).unwrap();
+```
+
 ## Related projects
 
 * [quick-protobuf](https://github.com/tafia/quick-protobuf) — alternative protobuf implementation in Rust

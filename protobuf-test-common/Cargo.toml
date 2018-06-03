@@ -17,10 +17,13 @@ proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
 
 [dependencies]
-glob        = "0.2"
-log         = "0.*"
-env_logger  = "0.5.*"
-tempdir     = "~0.3"
+glob         = "0.2"
+log          = "0.*"
+env_logger   = "0.5.*"
+tempdir      = "~0.3"
+serde        = "1.0"
+serde_derive = "1.0"
+serde_json   = "1.0"
 
 [dependencies.protobuf]
 path = "../protobuf"
