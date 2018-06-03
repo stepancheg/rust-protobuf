@@ -9,7 +9,7 @@ use serde::Deserialize;
 use serde::ser::Serializer;
 use serde::Deserializer;
 
-pub fn serialize_singular_ptr_field<'a, T: Serialize, S>(spf: &SingularPtrField<T>, serializer: S)
+pub fn serialize_singular_ptr_field<T: Serialize, S>(spf: &SingularPtrField<T>, serializer: S)
         -> Result<<S as Serializer>::Ok, <S as Serializer>::Error>
     where S: Serializer
 {
