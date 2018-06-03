@@ -4,14 +4,16 @@ import "rustproto.proto";
 
 option (rustproto.serde_derive_all) = true;
 
+/*
 message TestSerde {
     optional SerdeEnum test_enum = 1;
     map<uint32, uint32> test_map = 2;
     optional SerdeOneOf test_oneof = 3;
     repeated uint32 test_repeated = 4;
 }
+*/
 
-enum SerdeEnum {
+enum AnEnum {
     TEST = 0;
 }
 
