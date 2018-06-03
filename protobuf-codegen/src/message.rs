@@ -387,8 +387,6 @@ impl<'a> MessageGen<'a> {
                             }
                         };
 
-                        let field_type = &field.full_storage_type().to_string();
-
                         if self.serde_derive_enabled() {
                             if let FieldKind::Singular(ref singular) = field.kind {
                                 if let SingularFieldFlag::WithFlag {option_kind, ..} = singular.flag {
@@ -403,7 +401,7 @@ impl<'a> MessageGen<'a> {
                         w.field_decl_vis(
                             vis,
                             &field.rust_name,
-                            &field_type.to_string(),
+                            &field.full_storage_type().to_string(),
                         );
                     }
                 }
