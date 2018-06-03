@@ -15,7 +15,8 @@ fn test_enum() {
 }
 
 #[test]
-test_map() {
+fn test_map() {
+println!("TODO");
 }
 
 
