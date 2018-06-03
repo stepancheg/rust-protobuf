@@ -17,7 +17,7 @@ See `protoc-rust` and `protobuf-codegen-pure` crates.
 bench = false
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "=3.0.0" }
+protobuf             = { path = "../protobuf", version = "=3.0.0" }
 
 [[bin]]
 

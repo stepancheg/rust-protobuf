@@ -58,7 +58,8 @@ fn test_map() {
     hash.insert(1, 2);
     map.set_test_map(hash);
 
-    assert_eq!(serialized, r#"{"test_map":{"1":2}"#);
+    let serialized = serde_json::to_string(&map).unwrap();
+    assert_eq!(serialized, r#"{"test_map":{"1":2}}"#);
 
     let deserialized: TestSerdeMap = serde_json::from_str(&serialized).unwrap();
     assert_eq!(deserialized, map);
