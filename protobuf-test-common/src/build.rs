@@ -117,7 +117,7 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
         let mod_name = &file_name[..file_name.len() - ".rs".len()];
 
         if mod_name.contains("carllerche") {
-            writeln!(mod_rs, r#"#[cfg(feature = "with-bytes")]"#).expect("write");
+            writeln!(mod_rs, r#"#[cfg(feature = "with-bytes")]"#).expect("write carllerche");
         }
         writeln!(mod_rs, "mod {};", mod_name).expect("write");
     }
@@ -242,6 +242,8 @@ pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
 
 pub fn copy_tests_v2_v3(v2_dir: &str, v3_dir: &str) {
     for test_name in list_tests_in_dir(v2_dir) {
+        debug!("Copying tests v2 -> v3 from test: {}", test_name);
+
         let mut p2f = fs::File::open(&format!("{}/{}_pb.proto", v2_dir, test_name))
             .expect("open v2 .proto");
         let mut proto = String::new();
