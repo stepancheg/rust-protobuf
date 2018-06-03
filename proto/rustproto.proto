@@ -25,6 +25,8 @@ extend google.protobuf.FileOptions {
     optional bool carllerche_bytes_for_string_all = 17012;
     // Use `std::Vec` to store repeated messages fields
     optional bool repeated_field_vec_all = 17020;
+    // Use `serde_derive` to implement `Serialize` and `Deserialize`
+    optional bool serde_derive_all = 17030;
 }
 
 extend google.protobuf.MessageOptions {
@@ -42,6 +44,8 @@ extend google.protobuf.MessageOptions {
     optional bool carllerche_bytes_for_string = 17012;
     // Use `std::Vec` to store repeated messages field
     optional bool repeated_field_vec = 17020;
+    // Use `serde_derive` to implement `Serialize` and `Deserialize`
+    optional bool serde_derive = 17030;
 }
 
 extend google.protobuf.FieldOptions {
