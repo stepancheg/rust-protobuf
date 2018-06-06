@@ -50,6 +50,19 @@ fn test_exclude_optional_singular_ptr_field() {
 }
 
 #[test]
+fn test_singular_int() {
+    let mut m = TestSingularInt::new();
+
+    m.set_iii(10);
+
+    let serialized = serde_json::to_string(&m).unwrap();
+    assert_eq!(serialized, r#"{"iii":10}"#);
+
+    let deserialized: TestSingularInt = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, m);
+}
+
+#[test]
 fn test_repeated() {
     let mut repeated = Repeated::new();
     repeated.set_test_repeated(vec![1, 2, 3]);

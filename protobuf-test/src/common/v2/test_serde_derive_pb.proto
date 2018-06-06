@@ -19,6 +19,10 @@ message TestSingularPtrField {
     optional SomeMessage test = 1;
 }
 
+message TestSingularInt {
+    optional uint32 iii = 3;
+}
+
 message SomeMessage {
 }
 
