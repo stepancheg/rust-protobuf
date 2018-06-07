@@ -1,7 +1,7 @@
 all:
 	protobuf/regenerate_if_proto3.sh
-	rm protobuf -rf
-	cp protobuf-dev protobuf -a
+	cp protobuf-dev/src/{lib.rs,enums.rs,rt.rs,stream.rs} protobuf/src/
+	cp protobuf-dev/src/reflect/* protobuf/src/reflect/ -a
 	cargo build
 
 clean:

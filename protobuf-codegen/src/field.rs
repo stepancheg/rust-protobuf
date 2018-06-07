@@ -749,7 +749,8 @@ impl<'a> FieldGen<'a> {
     fn default_value_from_proto(&self) -> Option<String> {
         assert!(self.is_singular() || self.is_oneof());
         if self.enum_default_value.is_some() {
-            Some(self.enum_default_value.as_ref().unwrap().rust_name_outer())
+            let full_name =self.enum_default_value.as_ref().unwrap().rust_name_outer();
+            Some(format!("::protobuf::ProtobufEnum::from_enum({})", full_name))
         } else if self.proto_field.field.has_default_value() {
             let proto_default = self.proto_field.field.get_default_value();
             Some(match self.proto_type {
@@ -1524,11 +1525,8 @@ impl<'a> FieldGen<'a> {
                     SingularFieldFlag::WithoutFlag => "proto3",
                 };
                 w.write_line(&format!(
-                    "::protobuf::rt::read_{}_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
-                    version,
-                    wire_type_var,
-                    self.rust_name,
-                    self.proto_field.number()
+                    "::protobuf::rt::read_{}_enum_into({}, is, &mut self.{})?",
+                    version, wire_type_var, self.rust_name
                 ));
             }
             _ => {

@@ -71,8 +71,8 @@ impl fmt::Display for RustType {
             }
             RustType::Uniq(ref param) => write!(f, "::std::boxed::Box<{}>", **param),
             RustType::Ref(ref param) => write!(f, "&{}", **param),
+            RustType::Enum(ref name, _) => write!(f, "::protobuf::ProtobufEnum<{}>", name),
             RustType::Message(ref name) |
-            RustType::Enum(ref name, _) |
             RustType::Oneof(ref name) => write!(f, "{}", name),
             RustType::Group => write!(f, "<group>"),
             RustType::Bytes => write!(f, "::bytes::Bytes"),
@@ -180,7 +180,7 @@ impl RustType {
                 }
             }
             // Note: default value of enum type may not be equal to default value of field
-            RustType::Enum(ref name, ref default) => format!("{}::{}", name, default),
+            RustType::Enum(ref name, ref default) => format!("::protobuf::ProtobufEnum::from_enum({}::{})", name, default),
             _ => panic!("cannot create default value for: {}", *self),
         }
     }
