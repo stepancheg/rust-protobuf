@@ -16,3 +16,4 @@ target/
 Cargo.lock
 .idea
 *.iml
+protobuf-dev
