@@ -13,7 +13,7 @@ use varint;
 use misc::remaining_capacity_as_slice_mut;
 use misc::remove_lifetime_mut;
 use core::Message;
-use enums::ProtobufEnum;
+use enums::{ProtobufEnum, ProtoEnum};
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
@@ -395,12 +395,8 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_varint32().map(|v| v != 0)
     }
 
-    pub fn read_enum<E : ProtobufEnum>(&mut self) -> ProtobufResult<E> {
-        let i = self.read_int32()?;
-        match ProtobufEnum::from_i32(i) {
-            Some(e) => Ok(e),
-            None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i))),
-        }
+    pub fn read_enum<E: ProtoEnum>(&mut self) -> ProtobufResult<ProtobufEnum<E>> {
+        Ok(ProtobufEnum::from_i32(self.read_int32()?))
     }
 
     pub fn read_repeated_packed_double_into(
@@ -582,9 +578,9 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn read_repeated_packed_enum_into<E : ProtobufEnum>(
+    pub fn read_repeated_packed_enum_into<E: ProtoEnum>(
         &mut self,
-        target: &mut Vec<E>,
+        target: &mut Vec<ProtobufEnum<E>>,
     ) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
@@ -1079,9 +1075,9 @@ impl<'a> CodedOutputStream<'a> {
         self.write_int32_no_tag(value)
     }
 
-    pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> ProtobufResult<()>
+    pub fn write_enum_obj_no_tag<E>(&mut self, value: ProtobufEnum<E>) -> ProtobufResult<()>
     where
-        E : ProtobufEnum,
+        E : ProtoEnum,
     {
         self.write_enum_no_tag(value.value())
     }
@@ -1167,9 +1163,9 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
-    pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> ProtobufResult<()>
+    pub fn write_enum_obj<E>(&mut self, field_number: u32, value: ProtobufEnum<E>) -> ProtobufResult<()>
     where
-        E : ProtobufEnum,
+        E : ProtoEnum,
     {
         self.write_enum(field_number, value.value())
     }

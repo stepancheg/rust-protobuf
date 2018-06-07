@@ -72,7 +72,7 @@ impl FieldDescriptor {
     }
 
     pub fn is_repeated(&self) -> bool {
-        self.proto.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED
+        self.proto.get_label().unwrap() == FieldDescriptorProto_Label::LABEL_REPEATED
     }
 
     /// Return enum descriptor for enum field, panics if field type is not enum.
@@ -146,17 +146,17 @@ impl FieldDescriptor {
     }
 
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_ENUM, self.proto.get_field_type());
+        assert_eq!(FieldDescriptorProto_Type::TYPE_ENUM, self.proto.get_field_type().unwrap());
         self.singular().get_enum_generic(m)
     }
 
     pub fn get_str<'a>(&self, m: &'a Message) -> &'a str {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_STRING, self.proto.get_field_type());
+        assert_eq!(FieldDescriptorProto_Type::TYPE_STRING, self.proto.get_field_type().unwrap());
         self.singular().get_str_generic(m)
     }
 
     pub fn get_bytes<'a>(&self, m: &'a Message) -> &'a [u8] {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_BYTES, self.proto.get_field_type());
+        assert_eq!(FieldDescriptorProto_Type::TYPE_BYTES, self.proto.get_field_type().unwrap());
         self.singular().get_bytes_generic(m)
     }
 
@@ -177,7 +177,7 @@ impl FieldDescriptor {
     }
 
     pub fn get_bool(&self, m: &Message) -> bool {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_BOOL, self.proto.get_field_type());
+        assert_eq!(FieldDescriptorProto_Type::TYPE_BOOL, self.proto.get_field_type().unwrap());
         self.singular().get_bool_generic(m)
     }
 

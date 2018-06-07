@@ -10,7 +10,7 @@ use stream::CodedInputStream;
 use stream::CodedOutputStream;
 use error::ProtobufResult;
 use core::Message;
-use enums::ProtobufEnum;
+use enums::{ProtoEnum, ProtobufEnum};
 use wire_format::WireType;
 use rt;
 use reflect::ProtobufValue;
@@ -130,7 +130,7 @@ pub struct ProtobufTypeCarllercheBytes;
 pub struct ProtobufTypeCarllercheChars;
 
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeEnum<E : ProtobufEnum>(marker::PhantomData<E>);
+pub struct ProtobufTypeEnum<E: ProtoEnum>(marker::PhantomData<ProtobufEnum<E>>);
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeMessage<M : Message>(marker::PhantomData<M>);
 
@@ -553,24 +553,24 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 }
 
-impl<E : ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
+impl<E : ProtoEnum + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
     type RuntimeType = RuntimeTypeEnum<E>;
 
     fn wire_type() -> WireType {
         WireType::WireTypeVarint
     }
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<E> {
+    fn read(is: &mut CodedInputStream) -> ProtobufResult<ProtobufEnum<E>> {
         is.read_enum()
     }
 
-    fn compute_size(value: &E) -> u32 {
+    fn compute_size(value: &ProtobufEnum<E>) -> u32 {
         rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
     }
 
     fn write_with_cached_size(
         field_number: u32,
-        value: &E,
+        value: &ProtobufEnum<E>,
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_enum_obj(field_number, *value)

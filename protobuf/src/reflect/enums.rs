@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use descriptor::EnumValueDescriptorProto;
 use descriptor::EnumDescriptorProto;
-use ProtobufEnum;
+use {ProtobufEnum, ProtoEnum};
 use descriptor::FileDescriptorProto;
 use descriptorx::find_enum_by_rust_name;
 use reflect::ProtobufValue;
@@ -80,9 +80,9 @@ trait GetEnumDescriptor: Send + Sync + 'static {
     unsafe fn copy_to(&self, value: i32, dest: *mut ());
 }
 
-struct GetDescriptorImpl<E : ProtobufEnum>(marker::PhantomData<E>);
+struct GetDescriptorImpl<E: ProtoEnum>(marker::PhantomData<ProtobufEnum<E>>);
 
-impl<E : ProtobufEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
+impl<E: ProtoEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
     fn descriptor(&self) -> &EnumDescriptor {
         E::enum_descriptor_static()
     }
@@ -116,12 +116,12 @@ impl EnumDescriptor {
         self.proto.get_name()
     }
 
-    pub fn for_type<E : ProtobufEnum>() -> &'static EnumDescriptor {
+    pub fn for_type<E: ProtoEnum>() -> &'static EnumDescriptor {
         E::enum_descriptor_static()
     }
 
     pub fn new<E>(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
-        where E : ProtobufEnum
+        where E : ProtoEnum
     {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
@@ -135,7 +135,7 @@ impl EnumDescriptor {
         let code_values = E::values();
         assert_eq!(proto_values.len(), code_values.len());
 
-        let get_descriptor = &GetDescriptorImpl(marker::PhantomData::<E>);
+        let get_descriptor = &GetDescriptorImpl(marker::PhantomData::<ProtobufEnum<E>>);
 
         let values = proto_values.iter().zip(code_values).map(|(p, c)| {
             EnumValueDescriptor {

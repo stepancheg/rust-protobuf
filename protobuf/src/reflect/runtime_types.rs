@@ -1,4 +1,4 @@
-use ProtobufEnum;
+use {ProtobufEnum, ProtoEnum};
 use std::marker;
 use Message;
 use reflect::ReflectValueBox;
@@ -100,7 +100,7 @@ pub struct RuntimeTypeCarllercheBytes;
 pub struct RuntimeTypeCarllercheChars;
 
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E : ProtobufEnum>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnum<E: ProtoEnum>(marker::PhantomData<ProtobufEnum<E>>);
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M : Message>(marker::PhantomData<M>);
 
@@ -467,10 +467,8 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
     }
 }
 
-impl<E> RuntimeType for RuntimeTypeEnum<E>
-    where E : ProtobufEnum + ProtobufValue + fmt::Debug
-{
-    type Value = E;
+impl<E: ProtoEnum + fmt::Debug> RuntimeType for RuntimeTypeEnum<E> {
+    type Value = ProtobufEnum<E>;
 
     fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
         RuntimeTypeBox::Enum(Self::enum_descriptor())
@@ -484,22 +482,22 @@ impl<E> RuntimeType for RuntimeTypeEnum<E>
         E::enum_descriptor_static()
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> E {
+    fn from_value_box(value_box: ReflectValueBox) -> ProtobufEnum<E> {
         match value_box {
-            ReflectValueBox::Enum(v) => E::from_i32(v.value()).expect("unknown enum value"),
+            ReflectValueBox::Enum(v) => ProtobufEnum::from_i32(v.value()),
             _ => panic!("wrong type"),
         }
     }
 
-    fn into_value_box(value: E) -> ReflectValueBox {
+    fn into_value_box(value: ProtobufEnum<E>) -> ReflectValueBox {
         ReflectValueBox::Enum(value.descriptor())
     }
 
-    fn into_static_value_ref(value: E) -> ReflectValueRef<'static> {
+    fn into_static_value_ref(value: ProtobufEnum<E>) -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(value.descriptor())
     }
 
-    fn as_ref(value: &E) -> ReflectValueRef {
+    fn as_ref(value: &ProtobufEnum<E>) -> ReflectValueRef {
         ReflectValueRef::Enum(value.descriptor())
     }
 }

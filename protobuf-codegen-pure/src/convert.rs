@@ -5,7 +5,7 @@ use std::iter;
 use model;
 
 use protobuf;
-use protobuf::Message;
+use protobuf::{Message, ProtobufEnum};
 use protobuf::descriptor::FieldDescriptorProto_Label;
 
 use protobuf::text_format::lexer::StrLitDecodeError;
@@ -418,12 +418,12 @@ impl<'a> Resolver<'a> {
         output.set_number(number);
 
         let (t, t_name) = self.field_type(name, field_type, path_in_file);
-        output.set_field_type(t);
+        output.set_field_type(ProtobufEnum::from_enum(t));
         if let Some(t_name) = t_name {
             output.set_type_name(t_name.path);
         }
 
-        output.set_label(FieldDescriptorProto_Label::LABEL_OPTIONAL);
+        output.set_label(ProtobufEnum::from_enum(FieldDescriptorProto_Label::LABEL_OPTIONAL));
         
         output
     }
@@ -565,20 +565,20 @@ impl<'a> Resolver<'a> {
         output.set_name(input.name.clone());
 
         if let model::FieldType::Map(..) = input.typ {
-            output.set_label(protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED);
+            output.set_label(ProtobufEnum::from_enum(protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED));
         } else {
-            output.set_label(label(input.rule));
+            output.set_label(ProtobufEnum::from_enum(label(input.rule)));
         }
 
         let (t, t_name) = self.field_type(&input.name, &input.typ, path_in_file);
-        output.set_field_type(t);
+        output.set_field_type(ProtobufEnum::from_enum(t));
         if let Some(t_name) = t_name {
             output.set_type_name(t_name.path);
         }
 
         output.set_number(input.number);
         if let Some(ref default) = input.options.as_slice().by_name("default") {
-            let default = match output.get_field_type() {
+            let default = match output.get_field_type().unwrap() {
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.decode_utf8()?

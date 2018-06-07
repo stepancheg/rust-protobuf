@@ -97,7 +97,7 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
     if field.has_type_name() {
         field.get_type_name()
     } else {
-        type_protobuf_name(field.get_field_type())
+        type_protobuf_name(field.get_field_type().unwrap())
     }
 }
 
@@ -321,7 +321,7 @@ fn field_elem(
     parse_map: bool,
     customize: &Customize,
 ) -> (FieldElem, Option<EnumValueGen>) {
-    if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
+    if field.field.get_field_type().unwrap() == FieldDescriptorProto_Type::TYPE_GROUP {
         (FieldElem::Group, None)
     } else if field.field.has_type_name() {
         let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
@@ -337,7 +337,7 @@ fn field_elem(
             false,
             root_scope,
         );
-        match (field.field.get_field_type(), message_or_enum) {
+        match (field.field.get_field_type().unwrap(), message_or_enum) {
             (
                 FieldDescriptorProto_Type::TYPE_MESSAGE,
                 MessageOrEnumWithScope::Message(message_with_scope),
@@ -386,7 +386,7 @@ fn field_elem(
         let carllerche_for_bytes = customize.carllerche_bytes_for_bytes.unwrap_or(false);
         let carllerche_for_string = customize.carllerche_bytes_for_string.unwrap_or(false);
 
-        let elem = match field.field.get_field_type() {
+        let elem = match field.field.get_field_type().unwrap() {
             FieldDescriptorProto_Type::TYPE_STRING if carllerche_for_string => {
                 FieldElem::Primitive(
                     FieldDescriptorProto_Type::TYPE_STRING,
@@ -469,7 +469,7 @@ impl<'a> FieldGen<'a> {
         let default_expose_field = syntax == Syntax::PROTO3 || !generate_accessors;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
 
-        let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
+        let kind = if field.field.get_label().unwrap() == FieldDescriptorProto_Label::LABEL_REPEATED {
             match (elem, true) {
                 // map field
                 (FieldElem::Message(name, _, Some(key_value)), true) => FieldKind::Map(MapField {
@@ -488,12 +488,12 @@ impl<'a> FieldGen<'a> {
             FieldKind::Oneof(OneofField::parse(&oneof, field.field, elem))
         } else {
             let flag = if field.message.scope.file_scope.syntax() == Syntax::PROTO3 &&
-                field.field.get_field_type() != FieldDescriptorProto_Type::TYPE_MESSAGE
+                field.field.get_field_type().unwrap() != FieldDescriptorProto_Type::TYPE_MESSAGE
             {
                 SingularFieldFlag::WithoutFlag
             } else {
-                let required = field.field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED;
-                let option_kind = match field.field.get_field_type() {
+                let required = field.field.get_label().unwrap() == FieldDescriptorProto_Label::LABEL_REQUIRED;
+                let option_kind = match field.field.get_field_type().unwrap() {
                     FieldDescriptorProto_Type::TYPE_MESSAGE => OptionKind::SingularPtrField,
                     FieldDescriptorProto_Type::TYPE_STRING |
                     FieldDescriptorProto_Type::TYPE_BYTES
@@ -518,8 +518,8 @@ impl<'a> FieldGen<'a> {
             root_scope: root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: field.rust_name(),
-            proto_type: field.field.get_field_type(),
-            wire_type: field_type_wire_type(field.field.get_field_type()),
+            proto_type: field.field.get_field_type().unwrap(),
+            wire_type: field_type_wire_type(field.field.get_field_type().unwrap()),
             enum_default_value: enum_default_value,
             proto_field: field,
             kind: kind,
@@ -828,7 +828,7 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn reconstruct_def(&self) -> String {
-        let prefix = match (self.proto_field.field.get_label(), self.syntax) {
+        let prefix = match (self.proto_field.field.get_label().unwrap(), self.syntax) {
             (FieldDescriptorProto_Label::LABEL_REPEATED, _) => "repeated ",
             (_, Syntax::PROTO3) => "",
             (FieldDescriptorProto_Label::LABEL_OPTIONAL, _) => "optional ",

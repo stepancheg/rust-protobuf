@@ -145,7 +145,7 @@ fn gen_file(
 
         write_extensions(file, &root_scope, &mut w);
 
-        if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {
+        if file.get_options().get_optimize_for().unwrap() != FileOptions_OptimizeMode::LITE_RUNTIME {
             w.write_line("");
             write_file_descriptor_data(file, &mut w);
         }

@@ -1,34 +1,74 @@
+use std::hash::{Hash,Hasher};
+
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
 use reflect::ProtobufValue;
 
-
-/// Trait implemented by all protobuf enum types.
-pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue {
-    /// Get enum `i32` value.
+/// A helper trait for construct `ProtobufEnum`.
+pub trait ProtoEnum: Sized + Copy + Send + Sync + ProtobufValue + 'static {
+    fn from_i32(v: i32) -> Result<Self, i32>;
     fn value(&self) -> i32;
+    fn values() -> &'static [Self];
+    /// Get enum descriptor by type.
+    fn enum_descriptor_static() -> &'static EnumDescriptor;
+}
 
-    /// Try to create an enum from `i32` value.
-    /// Return `None` if value is unknown.
-    fn from_i32(v: i32) -> Option<Self>;
+#[derive(Debug, Copy, Clone)]
+pub struct ProtobufEnum<E>(Result<E, i32>);
+
+impl<E: ProtoEnum> ProtobufEnum<E> {
+    /// Get enum `i32` value.
+    pub fn value(&self) -> i32 {
+        match self.0 {
+            Ok(e) => e.value(),
+            Err(v) => v,
+        }
+    }
+
+    /// Create an enum from `i32` value.
+    pub fn from_i32(v: i32) -> Self {
+        ProtobufEnum(E::from_i32(v))
+    }
 
     /// Get all enum values for enum type.
-    fn values() -> &'static [Self] {
-        panic!();
+    pub fn values() -> &'static [E] {
+        E::values()
     }
 
     /// Get enum value descriptor.
-    fn descriptor(&self) -> &'static EnumValueDescriptor {
-        self.enum_descriptor().value_by_number(self.value()).unwrap()
+    pub fn descriptor(&self) -> &'static EnumValueDescriptor {
+        E::enum_descriptor_static().value_by_number(self.value()).unwrap()
     }
 
-    /// Get enum descriptor.
-    fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        Self::enum_descriptor_static()
+    pub fn result(self) -> Result<E, i32> {
+        self.0
     }
 
-    /// Get enum descriptor by type.
-    fn enum_descriptor_static() -> &'static EnumDescriptor {
-        panic!();
+    pub fn unwrap(&self) -> E {
+        self.result().unwrap()
+    }
+
+    pub fn from_enum(e: E) -> Self {
+        ProtobufEnum(Ok(e))
     }
 }
+
+impl<E: ProtoEnum + Default> Default for ProtobufEnum<E> {
+    fn default() -> Self {
+        ProtobufEnum(Ok(E::default()))
+    }
+}
+
+impl<E: ProtoEnum> PartialEq for ProtobufEnum<E> {
+    fn eq(&self, other: &Self) -> bool {
+        self.value() == other.value()
+    }
+}
+
+impl<E: ProtoEnum> Hash for ProtobufEnum<E> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        state.write_i32(self.value())
+    }
+}
+
+impl<E: ProtoEnum> ProtobufValue for ProtobufEnum<E> {}

@@ -45,8 +45,7 @@ impl<'a> MessageGen<'a> {
             lite_runtime: message
                 .get_file_descriptor()
                 .get_options()
-                .get_optimize_for() ==
-                FileOptions_OptimizeMode::LITE_RUNTIME,
+                .get_optimize_for().unwrap() == FileOptions_OptimizeMode::LITE_RUNTIME,
             customize,
         }
     }

@@ -43,8 +43,7 @@ impl EnumValueGen {
 
 pub struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
-    proto_type_name: String, // EnumNameFromProto
-    rust_type_name: String, // ::protobuf::ProtobufEnum<EnumnameFromProto>,
+    type_name: String, // EnumNameFromProto
     lite_runtime: bool,
     customize: Customize
 }
@@ -55,7 +54,7 @@ impl<'a> EnumGen<'a> {
         current_file: &FileDescriptorProto,
         customize: &Customize
     ) -> EnumGen<'a> {
-        let proto_type_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
+        let type_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
             current_file.get_name()
         {
             // field type is a message or enum declared in the same file
@@ -69,17 +68,14 @@ impl<'a> EnumGen<'a> {
                 enum_with_scope.rust_name()
             )
         };
-        let rust_type_name = format!("::protobuf::ProtobufEnum<{}>", proto_type_name);
         EnumGen {
             enum_with_scope: enum_with_scope,
-            proto_type_name: proto_type_name,
-            rust_type_name: rust_type_name,
+            type_name: type_name,
             lite_runtime: enum_with_scope
                 .get_scope()
                 .get_file_descriptor()
                 .get_options()
-                .get_optimize_for() ==
-                FileOptions_OptimizeMode::LITE_RUNTIME,
+                .get_optimize_for().unwrap() == FileOptions_OptimizeMode::LITE_RUNTIME,
             customize: customize.clone()
         }
     }
@@ -91,7 +87,7 @@ impl<'a> EnumGen<'a> {
     fn values_all(&self) -> Vec<EnumValueGen> {
         let mut r = Vec::new();
         for p in self.enum_with_scope.values() {
-            r.push(EnumValueGen::parse(p, &self.proto_type_name));
+            r.push(EnumValueGen::parse(p, &self.type_name));
         }
         r
     }
@@ -105,14 +101,14 @@ impl<'a> EnumGen<'a> {
             if !used.insert(p.get_number()) {
                 continue;
             }
-            r.push(EnumValueGen::parse(p, &self.proto_type_name));
+            r.push(EnumValueGen::parse(p, &self.type_name));
         }
         r
     }
 
     // find enum value by name
     pub fn value_by_name(&'a self, name: &str) -> EnumValueGen {
-        EnumValueGen::parse(self.enum_with_scope.value_by_name(name), &self.proto_type_name)
+        EnumValueGen::parse(self.enum_with_scope.value_by_name(name), &self.type_name)
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
@@ -130,6 +126,8 @@ impl<'a> EnumGen<'a> {
             w.write_line("");
             self.write_impl_default(w);
         }
+        w.write_line("");
+        self.write_impl_value(w);
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
@@ -152,7 +150,7 @@ impl<'a> EnumGen<'a> {
             derive.extend(&["Serialize", "Deserialize"]);
         }
         w.derive(&derive);
-        w.expr_block(&format!("pub enum {}", self.proto_type_name), |w| {
+        w.expr_block(&format!("pub enum {}", self.type_name), |w| {
             for value in self.values_all() {
                 if self.allow_alias() {
                     w.write_line(&format!(
@@ -182,7 +180,7 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_proto_enum(&self, w: &mut CodeWriter) {
-        let type_name = &self.proto_type_name;
+        let type_name = &self.type_name;
         w.impl_for_block("::protobuf::ProtoEnum", type_name, |w| {
             self.write_fn_value(w);
             w.write_line("");
@@ -224,9 +222,13 @@ impl<'a> EnumGen<'a> {
         });
     }
 
+    fn write_impl_value(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |_w| {
+        })
+    }
     fn write_impl_eq(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::cmp::PartialEq", &self.proto_type_name, |w| {
+        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
             w.def_fn("eq(&self, other: &Self) -> bool", |w| {
                 w.write_line("self.value() == other.value()");
             });
@@ -235,7 +237,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_hash(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::hash::Hash", &self.proto_type_name, |w| {
+        w.impl_for_block("::std::hash::Hash", &self.type_name, |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
                 w.write_line("state.write_i32(self.value())");
             });
@@ -244,11 +246,11 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_default(&self, w: &mut CodeWriter) {
         assert!(self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3);
-        w.impl_for_block("::std::default::Default", &self.proto_type_name, |w| {
+        w.impl_for_block("::std::default::Default", &self.type_name, |w| {
             w.def_fn("default() -> Self", |w| {
                 w.write_line(&format!(
                     "{}::{}",
-                    &self.proto_type_name,
+                    &self.type_name,
                     &self.enum_with_scope.values()[0].rust_name()
                 ))
             });

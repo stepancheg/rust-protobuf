@@ -26,8 +26,8 @@ pub fn map_entry<'a>(d: &'a MessageWithScope) -> Option<(FieldWithContext<'a>, F
         assert_eq!(1, key.number());
         assert_eq!(2, value.number());
 
-        assert_eq!(FieldDescriptorProto_Label::LABEL_OPTIONAL, key.field.get_label());
-        assert_eq!(FieldDescriptorProto_Label::LABEL_OPTIONAL, value.field.get_label());
+        assert_eq!(FieldDescriptorProto_Label::LABEL_OPTIONAL, key.field.get_label().unwrap());
+        assert_eq!(FieldDescriptorProto_Label::LABEL_OPTIONAL, value.field.get_label().unwrap());
 
         Some((key, value))
     } else {
