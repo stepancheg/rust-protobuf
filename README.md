@@ -61,6 +61,11 @@ Have a look at generated files, used internally in rust-protobuf:
 
 docs.rs hosts [rustdoc for protobuf](https://docs.rs/protobuf/*/protobuf/).
 
+## Getting help
+
+Feel free to [open an issue](https://github.com/stepancheg/rust-protobuf/issues/new)
+if you need help with rust-protobuf.
+
 ## Copy-on-write
 
 Rust-protobuf can be used with [bytes crate](https://github.com/carllerche/bytes).
