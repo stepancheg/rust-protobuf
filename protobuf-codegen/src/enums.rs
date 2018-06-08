@@ -122,8 +122,6 @@ impl<'a> EnumGen<'a> {
         }
         w.write_line("");
         self.write_impl_enum(w);
-        w.write_line("");
-        self.write_impl_copy(w);
         if self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3 {
             w.write_line("");
             self.write_impl_default(w);
@@ -135,6 +133,7 @@ impl<'a> EnumGen<'a> {
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
         derive.push("Clone");
+        derive.push("Copy");
         if !self.allow_alias() {
             derive.push("PartialEq");
         }
@@ -229,10 +228,6 @@ impl<'a> EnumGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |_w| {
         })
-    }
-
-    fn write_impl_copy(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::marker::Copy", &self.type_name, |_w| {});
     }
 
     fn write_impl_eq(&self, w: &mut CodeWriter) {
