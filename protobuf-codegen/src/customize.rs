@@ -27,7 +27,7 @@ pub struct Customize {
     pub serde_derive: Option<bool>,
     /// Make sure `Customize` is always used with `..Default::default()`
     /// for future compatibility.
-    _future_options: (),
+    pub _future_options: (),
 }
 
 impl Customize {
