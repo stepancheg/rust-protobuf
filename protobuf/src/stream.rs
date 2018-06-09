@@ -623,12 +623,19 @@ impl<'a> CodedInputStream<'a> {
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
     /// overwritten.
     pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
+        let count = count as usize;
+
+        // TODO: also do some limits when reading from unlimited source
+        if count as u64 > self.source.bytes_until_limit() {
+            return Err(ProtobufError::WireError(WireError::OverRecursionLimit));
+        }
+
         unsafe {
             target.set_len(0);
         }
-        target.reserve(count as usize);
+        target.reserve(count);
         unsafe {
-            target.set_len(count as usize);
+            target.set_len(count);
         }
         self.read(target)?;
         Ok(())

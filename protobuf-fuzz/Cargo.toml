@@ -1,0 +1,36 @@
+[package]
+name = "protobuf-fuzz"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+publish = false
+
+[lib]
+doctest = false
+bench = false
+
+[features]
+default-features = []
+proto3 = []
+with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
+
+[build-dependencies]
+protoc      = { path = "../protoc" }
+protoc-rust = { path = "../protoc-rust" }
+protobuf-test-common = { path = "../protobuf-test-common" }
+glob        = "0.2"
+log         = "0.*"
+env_logger  = "0.5.*"
+
+[dependencies]
+protobuf-test-common = { path = "../protobuf-test-common" }
+protobuf-serde       = { path = "../protobuf-serde" }
+serde        = "1.0"
+serde_derive = "1.0"
+serde_json   = "1.0"
+
+[dependencies.protobuf]
+path = "../protobuf"
+
+[dependencies.bytes]
+version = "0.*"
+optional = true

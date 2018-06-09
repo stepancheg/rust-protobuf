@@ -102,7 +102,7 @@ impl<'ignore> BufReadIter<'ignore> {
             pos_within_buf: 0,
             limit_within_buf: bytes.len(),
             pos_of_buf_start: 0,
-            limit: NO_LIMIT,
+            limit: bytes.len() as u64,
         }
     }
 
@@ -114,7 +114,7 @@ impl<'ignore> BufReadIter<'ignore> {
             pos_within_buf: 0,
             limit_within_buf: bytes.len(),
             pos_of_buf_start: 0,
-            limit: NO_LIMIT,
+            limit: bytes.len() as u64,
         }
     }
 
@@ -186,6 +186,7 @@ impl<'ignore> BufReadIter<'ignore> {
         self.limit_within_buf - self.pos_within_buf
     }
 
+    #[inline(always)]
     pub fn bytes_until_limit(&self) -> u64 {
         if self.limit == NO_LIMIT {
             NO_LIMIT
