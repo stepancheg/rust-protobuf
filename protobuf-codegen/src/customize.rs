@@ -26,7 +26,7 @@ pub struct Customize {
 
     /// Make sure `Customize` is always used with `..Default::default()`
     /// for future compatibility.
-    _future_options: (),
+    pub _future_options: (),
 }
 
 #[derive(Debug)]
