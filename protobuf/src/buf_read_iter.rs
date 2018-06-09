@@ -243,7 +243,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    fn _read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
+    pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
         self.fill_buf()?;
 
         let rem = &self.buf[self.pos_within_buf..self.limit_within_buf];

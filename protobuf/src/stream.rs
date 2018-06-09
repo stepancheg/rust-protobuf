@@ -1,4 +1,4 @@
-use std::mem;
+use std::{mem, io};
 use std::io::{BufRead, Read};
 use std::io::Write;
 use std::slice;
@@ -30,6 +30,8 @@ use buf_read_iter::BufReadIter;
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
+// Max allocated vec when reading length-delimited from unknown input stream
+const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
 
 pub mod wire_format {
     // TODO: temporary
@@ -120,6 +122,16 @@ pub mod wire_format {
 
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
+}
+
+struct CodedInputStreamAsRead<'a, 'b> {
+    coded_input_stream: &'b mut CodedInputStream<'a>,
+}
+
+impl<'a, 'b> io::Read for CodedInputStreamAsRead<'a, 'b> {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        self.coded_input_stream.source.read(buf).map_err(|e| io::Error::new(io::ErrorKind::Other, e))
+    }
 }
 
 impl<'a> CodedInputStream<'a> {
@@ -592,14 +604,37 @@ impl<'a> CodedInputStream<'a> {
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
     /// overwritten.
     pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
+        let count = count as usize;
+
+        // TODO: also do some limits when reading from unlimited source
+        if count as u64 > self.source.bytes_until_limit() {
+            return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+        }
+
         unsafe {
             target.set_len(0);
         }
-        target.reserve(count as usize);
-        unsafe {
-            target.set_len(count as usize);
+
+        if count >= READ_RAW_BYTES_MAX_ALLOC {
+            // avoid calling `reserve` on buf with very large buffer: could be a malformed message
+
+            let as_read = CodedInputStreamAsRead {
+                coded_input_stream: self,
+            };
+            let mut take = as_read.take(count as u64);
+            take.read_to_end(target)?;
+
+            if target.len() != count {
+                return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+            }
+        } else {
+            target.reserve(count);
+            unsafe {
+                target.set_len(count);
+            }
+
+            self.source.read_exact(target)?;
         }
-        self.read(target)?;
         Ok(())
     }
 
@@ -1196,6 +1231,7 @@ mod test {
     use super::wire_format;
     use super::CodedInputStream;
     use super::CodedOutputStream;
+    use super::READ_RAW_BYTES_MAX_ALLOC;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
@@ -1344,6 +1380,32 @@ mod test {
             let r2 = is.read_raw_bytes(2).unwrap();
             assert_eq!(&[0xbb as u8, 0xcc], &r2[..]);
         });
+    }
+
+    #[test]
+    fn test_input_stream_read_raw_bytes_into_huge() {
+        let mut v = Vec::new();
+        for i in 0..READ_RAW_BYTES_MAX_ALLOC + 1000 {
+            v.push((i % 10) as u8);
+        }
+
+        let mut slice: &[u8] = v.as_slice();
+
+        let mut is = CodedInputStream::new(&mut slice);
+
+        let mut buf = Vec::new();
+
+        is.read_raw_bytes_into(READ_RAW_BYTES_MAX_ALLOC as u32 + 10, &mut buf).expect("read");
+
+        assert_eq!(READ_RAW_BYTES_MAX_ALLOC + 10, buf.len());
+
+        buf.clear();
+
+        is.read_raw_bytes_into(1000 - 10, &mut buf).expect("read");
+
+        assert_eq!(1000 - 10, buf.len());
+
+        assert!(is.eof().expect("eof"));
     }
 
     fn test_write<F>(expected: &str, mut gen: F)
