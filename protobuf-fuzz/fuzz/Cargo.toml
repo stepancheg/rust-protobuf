@@ -19,3 +19,7 @@ members = ["."]
 [[bin]]
 name = "empty_message"
 path = "fuzz_targets/empty_message.rs"
+
+[[bin]]
+name = "empty_message_read"
+path = "fuzz_targets/empty_message_read.rs"

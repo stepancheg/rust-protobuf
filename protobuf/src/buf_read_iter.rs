@@ -102,7 +102,7 @@ impl<'ignore> BufReadIter<'ignore> {
             pos_within_buf: 0,
             limit_within_buf: bytes.len(),
             pos_of_buf_start: 0,
-            limit: bytes.len() as u64,
+            limit: NO_LIMIT,
         }
     }
 
@@ -114,7 +114,7 @@ impl<'ignore> BufReadIter<'ignore> {
             pos_within_buf: 0,
             limit_within_buf: bytes.len(),
             pos_of_buf_start: 0,
-            limit: bytes.len() as u64,
+            limit: NO_LIMIT,
         }
     }
 

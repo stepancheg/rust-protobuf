@@ -33,6 +33,9 @@ const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 // Default recursion level limit. 100 is the default value of C++'s implementation.
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
 
+// Max allocated vec when reading length-delimited from unknown input stream
+const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
+
 
 pub mod wire_format {
     // TODO: temporary
@@ -628,19 +631,30 @@ impl<'a> CodedInputStream<'a> {
 
         // TODO: also do some limits when reading from unlimited source
         if count as u64 > self.source.bytes_until_limit() {
-            return Err(ProtobufError::WireError(WireError::OverRecursionLimit));
+            return Err(ProtobufError::WireError(WireError::TruncatedMessage));
         }
 
         unsafe {
             target.set_len(0);
         }
-        target.reserve(count);
-        unsafe {
-            target.set_len(count);
+
+        if count >= READ_RAW_BYTES_MAX_ALLOC {
+            // avoid calling `reserve` on buf with very large buffer: could be a malformed message
+
+            let mut take = self.by_ref().take(count as u64);
+            take.read_to_end(target)?;
+
+            if target.len() != count {
+                return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+            }
+        } else {
+            target.reserve(count);
+            unsafe {
+                target.set_len(count);
+            }
+
+            self.source.read_exact(target)?;
         }
-        // () is here to make sure correct overload is called
-        // TODO: rename `read` function
-        let () = self.read(target)?;
         Ok(())
     }
 
@@ -1266,6 +1280,7 @@ mod test {
     use super::wire_format;
     use super::CodedInputStream;
     use super::CodedOutputStream;
+    use super::READ_RAW_BYTES_MAX_ALLOC;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
@@ -1434,6 +1449,32 @@ mod test {
             );
             BufRead::consume(is, 3);
         });
+    }
+
+    #[test]
+    fn test_input_stream_read_raw_bytes_into_huge() {
+        let mut v = Vec::new();
+        for i in 0..READ_RAW_BYTES_MAX_ALLOC + 1000 {
+            v.push((i % 10) as u8);
+        }
+
+        let mut slice: &[u8] = v.as_slice();
+
+        let mut is = CodedInputStream::new(&mut slice);
+
+        let mut buf = Vec::new();
+
+        is.read_raw_bytes_into(READ_RAW_BYTES_MAX_ALLOC as u32 + 10, &mut buf).expect("read");
+
+        assert_eq!(READ_RAW_BYTES_MAX_ALLOC + 10, buf.len());
+
+        buf.clear();
+
+        is.read_raw_bytes_into(1000 - 10, &mut buf).expect("read");
+
+        assert_eq!(1000 - 10, buf.len());
+
+        assert!(is.eof().expect("eof"));
     }
 
     fn test_write<F>(expected: &str, mut gen: F)
