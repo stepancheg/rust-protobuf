@@ -10,6 +10,7 @@
   Previosly it could cause stack overflow in the Rust compiler.
 - Text format parsing is implemented (previously it was only possible to print to text format)
 - Reflection can now mutate data (previously reflection could only read data)
+- Fix OOM on malformed input
 
 ## [2.0.2] - 2018-05-29
 
