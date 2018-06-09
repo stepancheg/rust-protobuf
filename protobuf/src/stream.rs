@@ -180,6 +180,7 @@ impl<'a> CodedInputStream<'a> {
         self.source.bytes_until_limit()
     }
 
+    // TODO: overload with `Read::read`
     pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         self.source.read_exact(buf)?;
         Ok(())
@@ -637,7 +638,9 @@ impl<'a> CodedInputStream<'a> {
         unsafe {
             target.set_len(count);
         }
-        self.read(target)?;
+        // () is here to make sure correct overload is called
+        // TODO: rename `read` function
+        let () = self.read(target)?;
         Ok(())
     }
 
