@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package test_singular_concar;
+
+message TestSingularConcat {
+    optional string s = 1;
+    optional bytes b = 2;
+}
