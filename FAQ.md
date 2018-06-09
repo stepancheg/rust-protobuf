@@ -28,10 +28,16 @@ Create a protobuf message, which you can later convert to the type that you requ
 ```rust
 let bytes: Vec<u8> = myBytes;
 
-// create a protobuf::Message
-let message: protobuf::Message = protobuf::parse_from_bytes().unwrap();
-
-// TODO cleanly convert message to myproto::MyMessage
+// create MyMessage
+let my_message: myproto:MyMessage = match protobuf::parse_from_bytes(bytes.as_ref()) {
+  Ok(m) => {
+    m
+  },
+  Err(e) => {
+    println!("I've got an error {:?}", e);
+    return Err(e);
+  }
+};
 
 ```
 
