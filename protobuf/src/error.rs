@@ -19,6 +19,7 @@ pub enum WireError {
     Utf8Error,
     InvalidEnumValue(i32),
     OverRecursionLimit,
+    TruncatedMessage,
     Other,
 }
 
@@ -57,6 +58,7 @@ impl Error for ProtobufError {
                     WireError::IncompleteMap => "incomplete map",
                     WireError::UnexpectedEof => "unexpected EOF",
                     WireError::OverRecursionLimit => "over recursion limit",
+                    WireError::TruncatedMessage => "truncated message",
                     WireError::Other => "other error",
                 }
             }
