@@ -31,3 +31,11 @@ path = "fuzz_targets/singular.rs"
 [[bin]]
 name = "singular_read"
 path = "fuzz_targets/singular_read.rs"
+
+[[bin]]
+name = "repeated"
+path = "fuzz_targets/repeated.rs"
+
+[[bin]]
+name = "repeated_read"
+path = "fuzz_targets/repeated_read.rs"

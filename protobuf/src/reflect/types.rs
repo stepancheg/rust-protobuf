@@ -89,6 +89,11 @@ pub trait ProtobufType : Send + Sync + Clone + 'static {
     ) -> ProtobufResult<()>;
 }
 
+/// All fixed size types
+pub trait ProtobufTypeFixed : ProtobufType {
+    fn encoded_size() -> u32;
+}
+
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeFloat;
 #[derive(Copy, Clone)]
@@ -149,7 +154,7 @@ impl ProtobufType for ProtobufTypeFloat {
     }
 
     fn compute_size(_value: &f32) -> u32 {
-        4
+        Self::encoded_size()
     }
 
     fn write_with_cached_size(
@@ -160,6 +165,12 @@ impl ProtobufType for ProtobufTypeFloat {
         os.write_float(field_number, *value)
     }
 
+}
+
+impl ProtobufTypeFixed for ProtobufTypeFloat {
+    fn encoded_size() -> u32 {
+        4
+    }
 }
 
 impl ProtobufType for ProtobufTypeDouble {
@@ -174,7 +185,7 @@ impl ProtobufType for ProtobufTypeDouble {
     }
 
     fn compute_size(_value: &f64) -> u32 {
-        8
+        Self::encoded_size()
     }
 
     fn write_with_cached_size(
@@ -183,6 +194,12 @@ impl ProtobufType for ProtobufTypeDouble {
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_double(field_number, *value)
+    }
+}
+
+impl ProtobufTypeFixed for ProtobufTypeDouble {
+    fn encoded_size() -> u32 {
+        8
     }
 }
 
@@ -342,7 +359,7 @@ impl ProtobufType for ProtobufTypeFixed32 {
     }
 
     fn compute_size(_value: &u32) -> u32 {
-        4
+        Self::encoded_size()
     }
 
     fn write_with_cached_size(
@@ -351,6 +368,12 @@ impl ProtobufType for ProtobufTypeFixed32 {
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_fixed32(field_number, *value)
+    }
+}
+
+impl ProtobufTypeFixed for ProtobufTypeFixed32 {
+    fn encoded_size() -> u32 {
+        4
     }
 }
 
@@ -366,7 +389,7 @@ impl ProtobufType for ProtobufTypeFixed64 {
     }
 
     fn compute_size(_value: &u64) -> u32 {
-        8
+        Self::encoded_size()
     }
 
     fn write_with_cached_size(
@@ -375,6 +398,12 @@ impl ProtobufType for ProtobufTypeFixed64 {
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_fixed64(field_number, *value)
+    }
+}
+
+impl ProtobufTypeFixed for ProtobufTypeFixed64 {
+    fn encoded_size() -> u32 {
+        8
     }
 }
 
@@ -390,7 +419,7 @@ impl ProtobufType for ProtobufTypeSfixed32 {
     }
 
     fn compute_size(_value: &i32) -> u32 {
-        4
+        Self::encoded_size()
     }
 
     fn write_with_cached_size(
@@ -399,6 +428,12 @@ impl ProtobufType for ProtobufTypeSfixed32 {
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_sfixed32(field_number, *value)
+    }
+}
+
+impl ProtobufTypeFixed for ProtobufTypeSfixed32 {
+    fn encoded_size() -> u32 {
+        4
     }
 }
 
@@ -423,6 +458,12 @@ impl ProtobufType for ProtobufTypeSfixed64 {
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_sfixed64(field_number, *value)
+    }
+}
+
+impl ProtobufTypeFixed for ProtobufTypeSfixed64 {
+    fn encoded_size() -> u32 {
+        8
     }
 }
 
