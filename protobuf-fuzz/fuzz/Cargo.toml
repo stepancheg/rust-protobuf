@@ -39,3 +39,11 @@ path = "fuzz_targets/repeated.rs"
 [[bin]]
 name = "repeated_read"
 path = "fuzz_targets/repeated_read.rs"
+
+[[bin]]
+name = "map"
+path = "fuzz_targets/map.rs"
+
+[[bin]]
+name = "map_read"
+path = "fuzz_targets/map_read.rs"

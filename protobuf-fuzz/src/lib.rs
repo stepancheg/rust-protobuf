@@ -38,3 +38,11 @@ pub fn fuzz_target_repeated(bytes: &[u8]) {
 pub fn fuzz_target_repeated_read(bytes: &[u8]) {
     test_read::<all_types_pb::TestTypesRepeated>(bytes);
 }
+
+pub fn fuzz_target_map(bytes: &[u8]) {
+    test_bytes::<all_types_pb::TestTypesMap>(bytes);
+}
+
+pub fn fuzz_target_map_read(bytes: &[u8]) {
+    test_read::<all_types_pb::TestTypesMap>(bytes);
+}
