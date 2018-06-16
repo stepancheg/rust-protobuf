@@ -15,7 +15,7 @@ pub fn serialize_singular_ptr_field<T: Serialize, S>(spf: &SingularPtrField<T>, 
 {
     match spf.as_ref() {
         Some(value) => value.serialize(serializer),
-        None => serializer.serialize_none()
+        None => serializer.serialize_none(),
     }
 }
 
@@ -23,14 +23,6 @@ pub fn deserialize_singular_ptr_field<'de, D, T>(deserializer: D)
         -> Result<SingularPtrField<T>, D::Error>
     where D: Deserializer<'de>, T: Deserialize<'de>
 {
-    match Option::deserialize(deserializer) {
-        Ok(spf) => {
-            match spf {
-                Some(value) => Ok(SingularPtrField::some(value)),
-                None => Ok(SingularPtrField::none())
-            }
-        }
-        Err(err) => Err(err)
-    }
+    Option::deserialize(deserializer).map(From::from)
 }
 

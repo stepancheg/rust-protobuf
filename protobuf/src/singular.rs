@@ -395,6 +395,18 @@ impl<T> Default for SingularPtrField<T> {
     }
 }
 
+impl<T : Default> From<Option<T>> for SingularField<T> {
+    fn from(o: Option<T>) -> Self {
+        SingularField::from_option(o)
+    }
+}
+
+impl<T> From<Option<T>> for SingularPtrField<T> {
+    fn from(o: Option<T>) -> Self {
+        SingularPtrField::from_option(o)
+    }
+}
+
 impl<T : Clone + Default> Clone for SingularField<T> {
     #[inline]
     fn clone(&self) -> SingularField<T> {
