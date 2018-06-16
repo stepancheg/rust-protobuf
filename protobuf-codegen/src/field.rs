@@ -129,6 +129,19 @@ impl OptionKind {
             OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
         }
     }
+
+    fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
+        match self {
+            OptionKind::Option => None,
+            OptionKind::SingularPtrField => Some((
+                "::protobuf_serde::serialize_singular_ptr_field",
+                "::protobuf_serde::deserialize_singular_ptr_field",
+            )),
+            OptionKind::SingularField => {
+                panic!("SingularField is not supported with serde")
+            }
+        }
+    }
 }
 
 
@@ -145,6 +158,13 @@ impl SingularFieldFlag {
         match *self {
             SingularFieldFlag::WithFlag { required, .. } => required,
             SingularFieldFlag::WithoutFlag => false,
+        }
+    }
+
+    fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
+        match self {
+            SingularFieldFlag::WithFlag { option_kind, .. } => option_kind.serde_functions(),
+            SingularFieldFlag::WithoutFlag => None,
         }
     }
 }
@@ -180,6 +200,16 @@ impl RepeatedFieldKind {
         match self {
             RepeatedFieldKind::Vec => RustType::Vec(element_type),
             RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
+        }
+    }
+
+    fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
+        match self {
+            RepeatedFieldKind::Vec => None,
+            RepeatedFieldKind::RepeatedField => Some((
+                "::protobuf_serde::serialize_repeated_field",
+                "::protobuf_serde::deserialize_repeated_field",
+            )),
         }
     }
 }
@@ -242,6 +272,14 @@ impl FieldKind {
 
     fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
         self.elem().primitive_type_variant()
+    }
+
+    pub fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
+        match self {
+            FieldKind::Singular(s) => s.flag.serde_functions(),
+            FieldKind::Repeated(r) => r.kind().serde_functions(),
+            FieldKind::Map(..) | FieldKind::Oneof(..) => None,
+        }
     }
 }
 

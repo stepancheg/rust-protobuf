@@ -63,14 +63,29 @@ fn test_singular_int() {
 }
 
 #[test]
-fn test_repeated() {
-    let mut repeated = Repeated::new();
+fn test_repeated_int() {
+    let mut repeated = RepeatedInt::new();
     repeated.set_test_repeated(vec![1, 2, 3]);
 
     let serialized = serde_json::to_string(&repeated).unwrap();
     assert_eq!(serialized, r#"{"test_repeated":[1,2,3]}"#);
 
-    let deserialized: Repeated = serde_json::from_str(&serialized).unwrap();
+    let deserialized: RepeatedInt = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, repeated);
+}
+
+#[test]
+fn test_repeated_message() {
+    let mut repeated = RepeatedMessage::new();
+    repeated.set_test_repeated(vec![
+        { let mut m = MessageInRepeatedMessage::new(); m.set_x(10); m },
+        { let mut m = MessageInRepeatedMessage::new(); m.set_x(20); m },
+    ].into());
+
+    let serialized = serde_json::to_string(&repeated).unwrap();
+    assert_eq!(serialized, r#"{"test_repeated":[{"x":10},{"x":20}]}"#);
+
+    let deserialized: RepeatedMessage = serde_json::from_str(&serialized).unwrap();
     assert_eq!(deserialized, repeated);
 }
 

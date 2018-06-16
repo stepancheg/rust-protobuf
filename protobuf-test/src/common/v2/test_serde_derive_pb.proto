@@ -15,6 +15,9 @@ message OneOf {
     }
 }
 
+message SomeMessage {
+}
+
 message TestSingularPtrField {
     optional SomeMessage test = 1;
 }
@@ -23,11 +26,16 @@ message TestSingularInt {
     optional uint32 iii = 3;
 }
 
-message SomeMessage {
+message RepeatedInt {
+    repeated uint32 test_repeated = 1;
 }
 
-message Repeated {
-    repeated uint32 test_repeated = 1;
+message MessageInRepeatedMessage {
+    optional uint32 x = 1;
+}
+
+message RepeatedMessage {
+    repeated MessageInRepeatedMessage test_repeated = 1;
 }
 
 message TestSerdeMap {

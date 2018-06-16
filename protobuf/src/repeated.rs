@@ -109,6 +109,11 @@ impl<T> RepeatedField<T> {
 
     /// View data as mutable slice.
     #[inline]
+    pub fn as_slice<'a>(&'a self) -> &'a [T] {
+        &self.vec[..self.len]
+    }
+
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         &mut self.vec[..self.len]
     }

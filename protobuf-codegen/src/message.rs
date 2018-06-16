@@ -388,13 +388,9 @@ impl<'a> MessageGen<'a> {
                         };
 
                         if self.serde_derive_enabled() {
-                            if let FieldKind::Singular(ref singular) = field.kind {
-                                if let SingularFieldFlag::WithFlag {option_kind, ..} = singular.flag {
-                                    if option_kind == OptionKind::SingularPtrField {
-                                        w.write_line("#[serde(serialize_with = \"::protobuf_serde::serialize_singular_ptr_field\")]");
-                                        w.write_line("#[serde(deserialize_with = \"::protobuf_serde::deserialize_singular_ptr_field\")]");
-                                    }
-                                }
+                            if let Some((serialize, deserialize)) = field.kind.serde_functions() {
+                                w.write_line(&format!("#[serde(serialize_with = \"{}\")]", serialize));
+                                w.write_line(&format!("#[serde(deserialize_with = \"{}\")]", deserialize));
                             }
                         }
 
