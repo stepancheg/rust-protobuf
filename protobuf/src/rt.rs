@@ -25,7 +25,6 @@ use error::ProtobufError;
 use error::ProtobufResult;
 use error::WireError;
 use singular::SingularField;
-use singular::SingularPtrField;
 use repeated::RepeatedField;
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
@@ -34,6 +33,7 @@ use types::*;
 use unknown::UnknownFields;
 use reflect::ReflectValueBox;
 use reflect::runtime_types::RuntimeType;
+use singular::OptionLike;
 
 
 /// Given `u64` value compute varint encoded length.
@@ -815,11 +815,15 @@ pub fn read_repeated_message_into_vec<M : Message + Default>(
 }
 
 /// Read singular `message` field.
-pub fn read_singular_message_into<M : Message + Default>(
+pub fn read_singular_message_into<M, O>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut SingularPtrField<M>,
-) -> ProtobufResult<()> {
+    target: &mut O,
+) -> ProtobufResult<()>
+    where
+        M : Message + Default,
+        O : OptionLike<M>,
+{
     match wire_type {
         WireTypeLengthDelimited => {
             is.incr_recursion()?;

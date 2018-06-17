@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+package test_singular_field_option;
+
+message Inner {
+    optional int32 size = 1;
+}
+
+message WithOptionBox {
+    option (rustproto.singular_field_option_box) = true;
+    option (rustproto.singular_field_option) = false;
+    option (rustproto.expose_fields) = true;
+
+    optional Inner inner = 1;
+    optional string s = 2;
+    optional bytes b = 3;
+}
+
+message WithOption {
+    option (rustproto.singular_field_option_box) = false;
+    option (rustproto.singular_field_option) = true;
+    option (rustproto.expose_fields) = true;
+
+    optional Inner inner = 1;
+    optional string s = 2;
+    optional bytes b = 3;
+}
+
+message WithSingularField {
+    option (rustproto.singular_field_option_box) = false;
+    option (rustproto.singular_field_option) = false;
+    option (rustproto.expose_fields) = true;
+
+    optional Inner inner = 1;
+    optional string s = 2;
+    optional bytes b = 3;
+}

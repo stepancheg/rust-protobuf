@@ -258,7 +258,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn fn_block<F>(&mut self, public: bool, sig: &str, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         if public {
             self.expr_block(&format!("pub fn {}", sig), cb);
@@ -269,7 +269,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn pub_fn<F>(&mut self, sig: &str, cb: F)
     where
-        F : Fn(&mut CodeWriter),
+        F : FnOnce(&mut CodeWriter),
     {
         self.fn_block(true, sig, cb);
     }

@@ -21,8 +21,13 @@ pub struct Customize {
     pub carllerche_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub carllerche_bytes_for_string: Option<bool>,
-    /// Use `std::Vec` to store repeated messages fields
+    /// Use `std::Vec<T>` to store repeated messages fields
     pub repeated_field_vec: Option<bool>,
+    /// Use `std::Option<std::Box<T>>` to store singular messages fields
+    pub singular_field_option_box: Option<bool>,
+    /// Use `std::Option<T>` to store singular messages fields.
+    /// Note, it's not possible to have recursive messages with this option enabled.
+    pub singular_field_option: Option<bool>,
     /// Implement serde_derive for messages
     pub serde_derive: Option<bool>,
     /// Make sure `Customize` is always used with `..Default::default()`
@@ -54,6 +59,12 @@ impl Customize {
         if let Some(v) = that.repeated_field_vec {
             self.repeated_field_vec = Some(v);
         }
+        if let Some(v) = that.singular_field_option_box {
+            self.singular_field_option_box = Some(v);
+        }
+        if let Some(v) = that.singular_field_option {
+            self.singular_field_option = Some(v);
+        }
         if let Some(v) = that.serde_derive {
             self.serde_derive = Some(v);
         }
@@ -76,6 +87,8 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string.get(source);
     let repeated_field_vec = rustproto::exts::repeated_field_vec.get(source);
+    let singular_field_option_box = rustproto::exts::singular_field_option_box.get(source);
+    let singular_field_option = rustproto::exts::singular_field_option.get(source);
     let serde_derive = rustproto::exts::serde_derive.get(source);
     Customize {
         expose_oneof,
@@ -85,6 +98,8 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
         repeated_field_vec,
+        singular_field_option_box,
+        singular_field_option,
         serde_derive,
         _future_options: (),
     }
@@ -98,6 +113,8 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_field.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_field.get(source);
     let repeated_field_vec = rustproto::exts::repeated_field_vec_field.get(source);
+    let singular_field_option_box = rustproto::exts::singular_field_option_box_field.get(source);
+    let singular_field_option = rustproto::exts::singular_field_option_field.get(source);
     let serde_derive = None;
     Customize {
         expose_oneof,
@@ -107,6 +124,8 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
         repeated_field_vec,
+        singular_field_option_box,
+        singular_field_option,
         serde_derive,
         _future_options: (),
     }
@@ -120,6 +139,8 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_all.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_all.get(source);
     let repeated_field_vec = rustproto::exts::repeated_field_vec_all.get(source);
+    let singular_field_option_box = rustproto::exts::singular_field_option_box_all.get(source);
+    let singular_field_option = rustproto::exts::singular_field_option_all.get(source);
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     Customize {
         expose_oneof,
@@ -129,6 +150,8 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
         repeated_field_vec,
+        singular_field_option_box,
+        singular_field_option,
         serde_derive,
         _future_options: (),
     }

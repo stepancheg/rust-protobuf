@@ -212,18 +212,6 @@ impl RustType {
         }
     }
 
-    // wrap value in storage type
-    pub fn wrap_value(&self, value: &str) -> String {
-        match *self {
-            RustType::Option(..) => format!("::std::option::Option::Some({})", value),
-            RustType::SingularField(..) => format!("::protobuf::SingularField::some({})", value),
-            RustType::SingularPtrField(..) => {
-                format!("::protobuf::SingularPtrField::some({})", value)
-            }
-            _ => panic!("not a wrapper type: {}", *self),
-        }
-    }
-
     // expression to convert `v` of type `self` to type `target`
     pub fn into_target(&self, target: &RustType, v: &str) -> String {
         self.try_into_target(target, v)
@@ -297,6 +285,7 @@ impl RustType {
             &RustType::RepeatedField(ref p) => RustType::Slice(p.clone()),
             &RustType::Bytes => RustType::Slice(Box::new(RustType::u8())),
             &RustType::Message(ref p) => RustType::Message(p.clone()),
+            &RustType::Uniq(ref p) => p.ref_type(),
             x => panic!("no ref type for {}", x),
         }))
     }

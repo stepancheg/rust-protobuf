@@ -48,7 +48,7 @@ impl OneofField {
     }
 
     pub fn rust_type(&self) -> RustType {
-        let t = self.elem.rust_storage_type();
+        let t = self.elem.rust_storage_elem_type();
 
         if self.boxed {
             RustType::Uniq(Box::new(t))

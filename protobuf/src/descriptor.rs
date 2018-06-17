@@ -620,10 +620,10 @@ impl ::protobuf::Message for FileDescriptorProto {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<FileOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_code_info)?;
+                    ::protobuf::rt::read_singular_message_into::<SourceCodeInfo, _>(wire_type, is, &mut self.source_code_info)?;
                 },
                 12 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.syntax)?;
@@ -1242,7 +1242,7 @@ impl ::protobuf::Message for DescriptorProto {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.oneof_decl)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<MessageOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 9 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.reserved_range)?;
@@ -2219,7 +2219,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.json_name)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<FieldOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2678,7 +2678,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<OneofOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2930,7 +2930,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.value)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<EnumOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3190,7 +3190,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                     self.number = ::std::option::Option::Some(tmp);
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<EnumValueOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3455,7 +3455,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.method)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<ServiceOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3808,7 +3808,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.output_type)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    ::protobuf::rt::read_singular_message_into::<MethodOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {

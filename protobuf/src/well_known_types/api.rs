@@ -259,7 +259,7 @@ impl ::protobuf::Message for Api {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.version)?;
                 },
                 5 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_context)?;
+                    ::protobuf::rt::read_singular_message_into::<::protobuf::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.mixins)?;

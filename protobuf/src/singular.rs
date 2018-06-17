@@ -8,10 +8,12 @@ use std::mem;
 use clear::Clear;
 
 
+/// Option-like objects
 pub trait OptionLike<T> {
     fn into_option(self) -> Option<T>;
     fn as_option_ref(&self) -> Option<&T>;
     fn set_value(&mut self, value: T);
+    fn set_default(&mut self) -> &mut T where T : Default + Clear;
 }
 
 
@@ -26,6 +28,43 @@ impl<T> OptionLike<T> for Option<T> {
 
     fn set_value(&mut self, value: T) {
         *self = Some(value);
+    }
+
+    fn set_default(&mut self) -> &mut T where T : Default + Clear {
+        if self.is_some() {
+            let v = self.as_mut().unwrap();
+            v.clear();
+            v
+        } else {
+            *self = Some(Default::default());
+            self.as_mut().unwrap()
+        }
+    }
+}
+
+impl<T> OptionLike<T> for Option<Box<T>> {
+    fn into_option(self) -> Option<T> {
+        self.map(|b| *b)
+    }
+
+    fn as_option_ref(&self) -> Option<&T> {
+        self.as_ref().map(|b| b.as_ref())
+    }
+
+    fn set_value(&mut self, value: T) {
+        // TODO: reuse allocation
+        *self = Some(Box::new(value))
+    }
+
+    fn set_default(&mut self) -> &mut T where T : Default + Clear {
+        if self.is_some() {
+            let v = self.as_mut().unwrap();
+            v.clear();
+            v
+        } else {
+            *self = Some(Box::new(Default::default()));
+            self.as_mut().unwrap()
+        }
     }
 }
 
@@ -341,14 +380,10 @@ impl<T : Default + Clear> SingularField<T> {
         self.value
     }
 
-    /// Initialize this object with default value.
-    /// This operation can be more efficient then construction of clear element,
-    /// because it may reuse previously contained object.
+    // TODO: inline
     #[inline]
     pub fn set_default<'a>(&'a mut self) -> &'a mut T {
-        self.set = true;
-        self.value.clear();
-        &mut self.value
+        OptionLike::set_default(self)
     }
 }
 
@@ -366,18 +401,10 @@ impl<T : Default + Clear> SingularPtrField<T> {
         }
     }
 
-    /// Initialize this object with default value.
-    /// This operation can be more efficient then construction of clear element,
-    /// because it may reuse previously contained object.
+    // TODO: inline
     #[inline]
     pub fn set_default<'a>(&'a mut self) -> &'a mut T {
-        self.set = true;
-        if self.value.is_some() {
-            self.value.as_mut().unwrap().clear();
-        } else {
-            self.value = Some(Default::default());
-        }
-        self.as_mut().unwrap()
+        OptionLike::set_default(self)
     }
 }
 
@@ -513,6 +540,16 @@ impl<T> OptionLike<T> for SingularField<T> {
     fn set_value(&mut self, value: T) {
         *self = SingularField::some(value);
     }
+
+    /// Initialize this object with default value.
+    /// This operation can be more efficient then construction of clear element,
+    /// because it may reuse previously contained object.
+    #[inline]
+    fn set_default<'a>(&'a mut self) -> &'a mut T where T : Default + Clear {
+        self.set = true;
+        self.value.clear();
+        &mut self.value
+    }
 }
 
 impl<T> OptionLike<T> for SingularPtrField<T> {
@@ -527,6 +564,20 @@ impl<T> OptionLike<T> for SingularPtrField<T> {
     fn set_value(&mut self, value: T) {
         // TODO: unnecessary malloc
         *self = SingularPtrField::some(value);
+    }
+
+    /// Initialize this object with default value.
+    /// This operation can be more efficient then construction of clear element,
+    /// because it may reuse previously contained object.
+    #[inline]
+    fn set_default<'a>(&'a mut self) -> &'a mut T where T : Default + Clear {
+        self.set = true;
+        if self.value.is_some() {
+            self.value.as_mut().unwrap().clear();
+        } else {
+            self.value = Some(Default::default());
+        }
+        self.as_mut().unwrap()
     }
 }
 

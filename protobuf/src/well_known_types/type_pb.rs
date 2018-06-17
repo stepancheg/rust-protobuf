@@ -227,7 +227,7 @@ impl ::protobuf::Message for Type {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
                 },
                 5 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_context)?;
+                    ::protobuf::rt::read_singular_message_into::<::protobuf::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
                     ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 6, &mut self.unknown_fields)?
@@ -1222,7 +1222,7 @@ impl ::protobuf::Message for Enum {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_context)?;
+                    ::protobuf::rt::read_singular_message_into::<::protobuf::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
                 },
                 5 => {
                     ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 5, &mut self.unknown_fields)?
@@ -1708,7 +1708,7 @@ impl ::protobuf::Message for Option {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.value)?;
+                    ::protobuf::rt::read_singular_message_into::<::protobuf::well_known_types::Any, _>(wire_type, is, &mut self.value)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
