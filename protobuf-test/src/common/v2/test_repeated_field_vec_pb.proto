@@ -8,8 +8,15 @@ message Egg {
     optional int32 size = 1;
 }
 
-message Basket {
+message BasketVec {
     option (rustproto.repeated_field_vec) = true;
+    option (rustproto.expose_fields) = true;
+
+    repeated Egg eggs = 1;
+}
+
+message BasketRepeatedField {
+    option (rustproto.repeated_field_vec) = false;
     option (rustproto.expose_fields) = true;
 
     repeated Egg eggs = 1;
