@@ -24,8 +24,10 @@ And in `Cargo.toml`:
 protoc-rust = "1.5"
 ```
 
-Note this API requires `protoc` command present in `$PATH`.
+Note 1: This API requires `protoc` command present in `$PATH`.
 Although `protoc-gen-rust` command is not needed.
+
+Note 2: Is advisable that `protoc-rust` build-dependecy version be the same as `protobuf` dependency. 
 
 The alternative is to use
 [pure-rust .proto parser and code generator](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure).
