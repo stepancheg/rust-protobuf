@@ -24,8 +24,7 @@ before_install:
 
 script:
   - rustc --version
-  # Regenerate only works when proto3
-  - protobuf/regenerate_if_proto3.sh
+  - protobuf/regenerate.sh
   - cargo test --all
   # `cargo test --all --features=FFF` doesn't work if there are crates without feature `FFF`
   # hence the explicit list of tests
