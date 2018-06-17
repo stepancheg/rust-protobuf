@@ -4,7 +4,7 @@
 
 - [Option to store repeated message fields in `Vec` instead of `RepeatedField`](
   https://github.com/stepancheg/rust-protobuf/issues/280). This option may be turned on by default later.
-- Similarly, [pption to store singular field on `Option` instead of `SingularPtrField`](
+- Similarly, [option to store singular field on `Option` instead of `SingularPtrField`](
   https://github.com/stepancheg/rust-protobuf/issues/300), which also may be turned on by default later.
 - `generate_accessors` and `generate_getter` options to disable generation of accessor functions.
 - `PartialEq` with large number of fields
