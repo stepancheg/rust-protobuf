@@ -15,6 +15,7 @@ use super::customize::customize_from_rustproto_for_field;
 use oneof::OneofField;
 use map::map_entry;
 use ident::RustIdent;
+use code_writer::Visibility;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
@@ -531,6 +532,7 @@ pub struct FieldGen<'a> {
     pub expose_field: bool,
     pub generate_accessors: bool,
     pub generate_getter: bool,
+    customize: Customize,
 }
 
 impl<'a> FieldGen<'a> {
@@ -607,17 +609,18 @@ impl<'a> FieldGen<'a> {
         };
 
         FieldGen {
-            root_scope: root_scope,
+            root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: RustIdent(field.rust_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
-            enum_default_value: enum_default_value,
+            enum_default_value,
             proto_field: field,
-            kind: kind,
-            expose_field: expose_field,
-            generate_accessors: generate_accessors,
-            generate_getter: generate_getter,
+            kind,
+            expose_field,
+            generate_accessors,
+            generate_getter,
+            customize,
         }
     }
 
@@ -1277,6 +1280,50 @@ impl<'a> FieldGen<'a> {
 
         self.as_option_type()
             .value(format!("{}{}", self.self_field(), suffix))
+    }
+
+    /// Field visibility in message struct
+    fn visibility(&self) -> Visibility {
+        if self.expose_field {
+            Visibility::Public
+        } else {
+            match self.kind {
+                FieldKind::Repeated(..) => Visibility::Default,
+                FieldKind::Singular(SingularField { ref flag, .. }) => {
+                    match *flag {
+                        SingularFieldFlag::WithFlag { .. } => Visibility::Default,
+                        SingularFieldFlag::WithoutFlag => Visibility::Public,
+                    }
+                }
+                FieldKind::Map(..) => Visibility::Public,
+                FieldKind::Oneof(..) => unreachable!(),
+            }
+        }
+    }
+
+    fn serde_derive_enabled(&self) -> bool {
+        self.customize.serde_derive.unwrap_or(false)
+    }
+
+    pub fn write_struct_field(&self, w: &mut CodeWriter) {
+        if self.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
+            w.comment(&format!("{}: <group>", &self.rust_name));
+        } else {
+            let vis = self.visibility();
+
+            if self.serde_derive_enabled() {
+                if let Some((serialize, deserialize)) = self.kind.serde_functions() {
+                    w.write_line(&format!("#[serde(serialize_with = \"{}\")]", serialize));
+                    w.write_line(&format!("#[serde(deserialize_with = \"{}\")]", deserialize));
+                }
+            }
+
+            w.field_decl_vis(
+                vis,
+                &self.rust_name.0,
+                &self.full_storage_type().to_string(),
+            );
+        }
     }
 
     fn write_if_let_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)

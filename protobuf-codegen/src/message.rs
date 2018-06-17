@@ -368,38 +368,7 @@ impl<'a> MessageGen<'a> {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
-                    if field.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
-                        w.comment(&format!("{}: <group>", &field.rust_name));
-                    } else {
-                        let vis = if field.expose_field {
-                            Visibility::Public
-                        } else {
-                            match field.kind {
-                                FieldKind::Repeated(..) => Visibility::Default,
-                                FieldKind::Singular(SingularField { ref flag, .. }) => {
-                                    match *flag {
-                                        SingularFieldFlag::WithFlag { .. } => Visibility::Default,
-                                        SingularFieldFlag::WithoutFlag => Visibility::Public,
-                                    }
-                                }
-                                FieldKind::Map(..) => Visibility::Public,
-                                FieldKind::Oneof(..) => unreachable!(),
-                            }
-                        };
-
-                        if self.serde_derive_enabled() {
-                            if let Some((serialize, deserialize)) = field.kind.serde_functions() {
-                                w.write_line(&format!("#[serde(serialize_with = \"{}\")]", serialize));
-                                w.write_line(&format!("#[serde(deserialize_with = \"{}\")]", deserialize));
-                            }
-                        }
-
-                        w.field_decl_vis(
-                            vis,
-                            &field.rust_name.0,
-                            &field.full_storage_type().to_string(),
-                        );
-                    }
+                    field.write_struct_field(w);
                 }
             }
             if !self.oneofs().is_empty() {
