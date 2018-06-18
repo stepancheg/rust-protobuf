@@ -20,11 +20,17 @@ use clear::Clear;
 /// Used to simplify codegen, should not be used directly.
 pub trait VecLike<T> {
     fn push(&mut self, item: T);
+    fn push_default(&mut self) -> &mut T where T : Default + Clear;
 }
 
 impl<T> VecLike<T> for Vec<T> {
     fn push(&mut self, item: T) {
         Vec::push(self, item)
+    }
+
+    fn push_default(&mut self) -> &mut T where T : Default + Clear {
+        self.push(Default::default());
+        self.last_mut().unwrap()
     }
 }
 
@@ -59,6 +65,16 @@ impl<T> RepeatedField<T> {
 impl<T> VecLike<T> for RepeatedField<T> {
     fn push(&mut self, item: T) {
         RepeatedField::push(self, item)
+    }
+
+    fn push_default(&mut self) -> &mut T where T : Default + Clear {
+        if self.len == self.vec.len() {
+            self.vec.push(Default::default());
+        } else {
+            self.vec[self.len].clear();
+        }
+        self.len += 1;
+        &mut self.vec[self.len - 1]
     }
 }
 

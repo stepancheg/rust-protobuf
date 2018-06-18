@@ -13,6 +13,8 @@ message BasketVec {
     option (rustproto.expose_fields) = true;
 
     repeated Egg eggs = 1;
+    repeated string s = 2;
+    repeated bytes b = 3;
 }
 
 message BasketRepeatedField {
@@ -20,4 +22,6 @@ message BasketRepeatedField {
     option (rustproto.expose_fields) = true;
 
     repeated Egg eggs = 1;
+    repeated string s = 2;
+    repeated bytes b = 3;
 }

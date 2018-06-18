@@ -34,6 +34,7 @@ use unknown::UnknownFields;
 use reflect::ReflectValueBox;
 use reflect::runtime_types::RuntimeType;
 use singular::OptionLike;
+use repeated::VecLike;
 
 
 /// Given `u64` value compute varint encoded length.
@@ -594,11 +595,13 @@ pub fn read_proto2_enum_with_unknown_fields_into<E : ProtobufEnum>(
 }
 
 /// Read repeated `string` field into given vec.
-pub fn read_repeated_string_into(
+pub fn read_repeated_string_into<V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut RepeatedField<String>,
-) -> ProtobufResult<()> {
+    target: &mut V,
+) -> ProtobufResult<()>
+    where V : VecLike<String>
+{
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.push_default();
@@ -610,11 +613,13 @@ pub fn read_repeated_string_into(
 
 /// Read repeated `Chars` field into given vec.
 #[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_string_into(
+pub fn read_repeated_carllerche_string_into<V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut Vec<Chars>,
-) -> ProtobufResult<()> {
+    target: &mut V,
+) -> ProtobufResult<()>
+    where V : VecLike<Chars>
+{
     match wire_type {
         WireTypeLengthDelimited => {
             target.push(is.read_carllerche_chars()?);
@@ -684,11 +689,13 @@ pub fn read_singular_proto3_carllerche_string_into(
 }
 
 /// Read repeated `bytes` field into given vec.
-pub fn read_repeated_bytes_into(
+pub fn read_repeated_bytes_into<V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut RepeatedField<Vec<u8>>,
-) -> ProtobufResult<()> {
+    target: &mut V,
+) -> ProtobufResult<()>
+    where V : VecLike<Vec<u8>>
+{
     match wire_type {
         WireTypeLengthDelimited => {
             let tmp = target.push_default();
@@ -700,11 +707,13 @@ pub fn read_repeated_bytes_into(
 
 /// Read repeated `Bytes` field into given vec.
 #[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_bytes_into(
+pub fn read_repeated_carllerche_bytes_into<V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut Vec<Bytes>,
-) -> ProtobufResult<()> {
+    target: &mut V,
+) -> ProtobufResult<()>
+    where V : VecLike<Bytes>
+{
     match wire_type {
         WireTypeLengthDelimited => {
             target.push(is.read_carllerche_bytes()?);
