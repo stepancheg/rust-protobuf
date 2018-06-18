@@ -13,5 +13,4 @@ members = [
     "protobuf-serde",
     "perftest/vs-cxx",
     "perftest/bytes",
-    "update-version",
 ]
