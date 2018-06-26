@@ -20,3 +20,5 @@ with-bytes = ["bytes"]
 
 [dependencies]
 bytes = { version = "0.4", optional = true }
+serde        = "1.0"
+serde_derive = "1.0"

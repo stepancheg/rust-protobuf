@@ -21,7 +21,7 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq,Clone,Default,Serialize,Deserialize)]
 pub struct Timestamp {
     // message fields
     pub seconds: i64,
