@@ -855,9 +855,6 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// `CodedOutputStream` which writes directly to `Vec<u8>`.
-    ///
-    /// Caller should call `flush` at the end to guarantee vec contains
-    /// all written data.
     pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
         CodedOutputStream {
             target: OutputTarget::Vec(vec),
@@ -899,6 +896,11 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Flush to buffer to the underlying buffer.
+    /// Note that `CodedOutputStream` does `flush` in the descructor,
+    /// however, if `flush` in desctructor fails, then destructor panics
+    /// and program terminates. So it's advisable to explicitly call flush
+    /// before destructor.
     pub fn flush(&mut self) -> ProtobufResult<()> {
         match self.target {
             OutputTarget::Bytes => Ok(()),
@@ -1226,6 +1228,13 @@ impl<'a> Write for CodedOutputStream<'a> {
 
     fn flush(&mut self) -> io::Result<()> {
         CodedOutputStream::flush(self).map_err(Into::into)
+    }
+}
+
+impl<'a> Drop for CodedOutputStream<'a> {
+    fn drop(&mut self) {
+        // This may panic
+        CodedOutputStream::flush(self).expect("failed to flush");
     }
 }
 
