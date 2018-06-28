@@ -13,6 +13,7 @@
 - Text format parsing is implemented (previously it was only possible to print to text format)
 - Reflection can now mutate data (previously reflection could only read data)
 - Fix OOM on malformed input
+- [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
 ## [2.0 Branch Unreleased]
 
