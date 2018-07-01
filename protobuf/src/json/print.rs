@@ -9,6 +9,7 @@ use json::float;
 use std::f32;
 use std::f64;
 use reflect::ReflectMapRef;
+use json::base64;
 
 struct Printer {
     buf: String,
@@ -70,6 +71,23 @@ impl Printer {
         }
     }
 
+    fn print_json_string(&mut self, value: &str) -> fmt::Result {
+        write!(self.buf, "\"")?;
+        for c in value.chars() {
+            match c {
+                '"' => write!(self.buf, "\\\""),
+                '\\' => write!(self.buf, "\\\\"),
+                '\n' => write!(self.buf, "\\n"),
+                '\r' => write!(self.buf, "\\r"),
+                '\t' => write!(self.buf, "\\t"),
+                c if c.is_control() => write!(self.buf, "\\u{:04x}", c as u32),
+                c => write!(self.buf, "{}", c),
+            }?;
+        }
+        write!(self.buf, "\"")?;
+        Ok(())
+    }
+
     fn print_value(&mut self, value: &ReflectValueRef) -> fmt::Result {
         match value {
             ReflectValueRef::U32(v) => write!(self.buf, "{}", v),
@@ -79,8 +97,11 @@ impl Printer {
             ReflectValueRef::F32(v) => v.write_to_json(&mut self.buf),
             ReflectValueRef::F64(v) => v.write_to_json(&mut self.buf),
             ReflectValueRef::Bool(v) => write!(self.buf, "{}", v),
-            ReflectValueRef::String(_v) => unimplemented!(),
-            ReflectValueRef::Bytes(_v) => unimplemented!(),
+            ReflectValueRef::String(v) => self.print_json_string(v),
+            ReflectValueRef::Bytes(v) => {
+                let encoded = base64::encode(&v);
+                self.print_json_string(&encoded)
+            }
             // TODO: option to output JSON as number
             ReflectValueRef::Enum(v) => write!(self.buf, "\"{}\"", v.name()),
             ReflectValueRef::Message(v) => self.print_message(*v),
@@ -127,12 +148,16 @@ impl Printer {
                     self.print_value(&v)?;
                 }
                 ReflectFieldRef::Repeated(v) => {
-                    write!(self.buf, "{}: ", field.json_name())?;
-                    self.print_repeated(&v)?;
+                    if !v.is_empty() {
+                        write!(self.buf, "{}: ", field.json_name())?;
+                        self.print_repeated(&v)?;
+                    }
                 }
                 ReflectFieldRef::Map(v) => {
-                    write!(self.buf, "{}: ", field.json_name())?;
-                    self.print_map(&v)?;
+                    if !v.is_empty() {
+                        write!(self.buf, "{}: ", field.json_name())?;
+                        self.print_map(&v)?;
+                    }
                 }
             }
         }

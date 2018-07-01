@@ -2,7 +2,7 @@ use protobuf::Message;
 
 use protobuf_test_common::*;
 
-use super::test_text_format_pb::*;
+use super::test_fmt_text_format_pb::*;
 use protobuf::reflect::RuntimeFieldType;
 
 

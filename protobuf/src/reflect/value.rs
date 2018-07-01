@@ -149,6 +149,72 @@ pub enum ReflectValueBox {
     Message(Box<Message>),
 }
 
+impl From<u32> for ReflectValueBox {
+    fn from(v: u32) -> Self {
+        ReflectValueBox::U32(v)
+    }
+}
+
+impl From<u64> for ReflectValueBox {
+    fn from(v: u64) -> Self {
+        ReflectValueBox::U64(v)
+    }
+}
+
+impl From<i32> for ReflectValueBox {
+    fn from(v: i32) -> Self {
+        ReflectValueBox::I32(v)
+    }
+}
+
+impl From<i64> for ReflectValueBox {
+    fn from(v: i64) -> Self {
+        ReflectValueBox::I64(v)
+    }
+}
+
+impl From<f32> for ReflectValueBox {
+    fn from(v: f32) -> Self {
+        ReflectValueBox::F32(v)
+    }
+}
+
+impl From<f64> for ReflectValueBox {
+    fn from(v: f64) -> Self {
+        ReflectValueBox::F64(v)
+    }
+}
+
+impl From<bool> for ReflectValueBox {
+    fn from(v: bool) -> Self {
+        ReflectValueBox::Bool(v)
+    }
+}
+
+impl From<String> for ReflectValueBox {
+    fn from(v: String) -> Self {
+        ReflectValueBox::String(v)
+    }
+}
+
+impl From<Vec<u8>> for ReflectValueBox {
+    fn from(v: Vec<u8>) -> Self {
+        ReflectValueBox::Bytes(v)
+    }
+}
+
+impl From<&'static EnumValueDescriptor> for ReflectValueBox {
+    fn from(v: &'static EnumValueDescriptor) -> Self {
+        ReflectValueBox::Enum(v)
+    }
+}
+
+impl From<Box<Message>> for ReflectValueBox {
+    fn from(v: Box<Message>) -> Self {
+        ReflectValueBox::Message(v)
+    }
+}
+
 fn _assert_value_box_send_sync() {
     fn _assert_send_sync<T : Send + Sync>() {}
     _assert_send_sync::<ReflectValueBox>();

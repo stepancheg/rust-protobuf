@@ -111,12 +111,12 @@ impl<'a> ReflectMapRef<'a> {
         self.map.len()
     }
 
-    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
-        self.map.get(key).map(|v| self.value_dynamic.value_to_ref(v))
-    }
-
     pub fn is_empty(&self) -> bool {
         self.map.is_empty()
+    }
+
+    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+        self.map.get(key).map(|v| self.value_dynamic.value_to_ref(v))
     }
 
     pub fn key_type(&self) -> &RuntimeTypeDynamic {

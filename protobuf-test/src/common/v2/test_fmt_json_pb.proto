@@ -1,5 +1,12 @@
 syntax = "proto2";
 
+package test_fmt_json;
+
+import "rustproto.proto";
+
+option (rustproto.expose_fields_all) = true;
+
+
 enum TestEnum {
     UNKNOWN = 0;
     DARK = 1;
@@ -66,6 +73,6 @@ message TestTypes {
     map<string, TestMessage> message_map_field = 317;
 }
 
-message TestTextFormatRustIdentifier {
+message TestRustIdentifier {
     optional bool const = 1;
 }

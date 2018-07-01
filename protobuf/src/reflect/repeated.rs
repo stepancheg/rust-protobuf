@@ -15,6 +15,7 @@ pub(crate) trait ReflectRepeated : Sync + 'static + fmt::Debug {
     fn get(&self, index: usize) -> &ProtobufValue;
     fn set(&mut self, index: usize, value: ReflectValueBox);
     fn push(&mut self, value: ReflectValueBox);
+    fn clear(&mut self);
 }
 
 impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
@@ -41,6 +42,10 @@ impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
         let value = value.downcast().expect("wrong type");
         self.push(value)
     }
+
+    fn clear(&mut self) {
+        self.clear()
+    }
 }
 
 // useless
@@ -65,7 +70,11 @@ impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
     }
 
     fn push(&mut self, _value: ReflectValueBox) {
-        panic!("push is not possible for [V]")
+        panic!("push is not possible for [V]");
+    }
+
+    fn clear(&mut self) {
+        panic!("clear is not possible for [V]");
     }
 }
 
@@ -92,6 +101,10 @@ impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField
     fn push(&mut self, value: ReflectValueBox) {
         let value = value.downcast().expect("wrong type");
         self.push(value)
+    }
+
+    fn clear(&mut self) {
+        self.clear()
     }
 }
 
@@ -241,6 +254,10 @@ impl<'a> ReflectRepeatedRef<'a> {
         self.repeated.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     // TODO: replace with index
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
@@ -314,6 +331,10 @@ impl<'a> ReflectRepeatedMut<'a> {
         self.repeated.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
     }
@@ -328,6 +349,10 @@ impl<'a> ReflectRepeatedMut<'a> {
 
     pub fn push(&mut self, value: ReflectValueBox) {
         self.repeated.push(value);
+    }
+
+    pub fn clear(&mut self) {
+        self.repeated.clear();
     }
 }
 
