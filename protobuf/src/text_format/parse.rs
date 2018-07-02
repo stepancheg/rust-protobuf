@@ -3,7 +3,7 @@ use std::str;
 use Message;
 
 use text_format::lexer::Loc;
-use text_format::lexer::LexerCommentStyle;
+use text_format::lexer::ParserLanguage;
 use reflect::MessageDescriptor;
 use reflect::RuntimeFieldType;
 use reflect::ReflectValueBox;
@@ -288,7 +288,7 @@ impl<'a> Parser<'a> {
 
 pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
-        tokenizer: Tokenizer::new(input, LexerCommentStyle::Sh)
+        tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat)
     };
     parser.merge(message)
 }

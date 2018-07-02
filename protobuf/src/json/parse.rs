@@ -4,7 +4,7 @@ use Message;
 use text_format::lexer::TokenizerError;
 use text_format::lexer::Loc;
 use text_format::lexer::Tokenizer;
-use text_format::lexer::LexerCommentStyle;
+use text_format::lexer::ParserLanguage;
 use reflect::FieldDescriptor;
 use reflect::RuntimeFieldType;
 use reflect::RuntimeTypeDynamic;
@@ -16,14 +16,29 @@ use reflect::MessageDescriptor;
 use json::base64::FromBase64Error;
 use text_format::lexer::Lexer;
 use text_format::lexer::LexerError;
+use text_format::lexer::Token;
+use std::num::ParseIntError;
+use std::num::ParseFloatError;
+
+use std::f32;
+use std::f64;
+
+use super::float;
 
 #[derive(Debug)]
 pub enum ParseError {
     TokenizerError(TokenizerError),
     UnknownFieldName(String),
+    UnknownEnumVariantName(String),
+    UnknownEnumVariantNumber(i32),
     FromBase64Error(FromBase64Error),
     IncorrectStrLit(LexerError),
+    ParseIntError(ParseIntError),
+    ParseFloatError(ParseFloatError),
     ExpectingBool,
+    ExpectingStrOrInt,
+    ExpectingNumber,
+    PrecisionLoss,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -35,6 +50,18 @@ impl From<TokenizerError> for ParseError {
 impl From<FromBase64Error> for ParseError {
     fn from(e: FromBase64Error) -> Self {
         ParseError::FromBase64Error(e)
+    }
+}
+
+impl From<ParseIntError> for ParseError {
+    fn from(e: ParseIntError) -> Self {
+        ParseError::ParseIntError(e)
+    }
+}
+
+impl From<ParseFloatError> for ParseError {
+    fn from(e: ParseFloatError) -> Self {
+        ParseError::ParseFloatError(e)
     }
 }
 
@@ -53,6 +80,113 @@ struct Parser<'a> {
     tokenizer: Tokenizer<'a>,
 }
 
+trait FromJsonNumber : Sized {
+    fn from_f64(v: f64) -> Self;
+    fn to_f64(&self) -> f64;
+    fn from_string(v: &str) -> ParseResult<Self>;
+}
+
+impl FromJsonNumber for u32 {
+    fn from_f64(v: f64) -> Self {
+        v as u32
+    }
+
+    fn to_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn from_string(v: &str) -> Result<Self, ParseError> {
+        Ok(v.parse()?)
+    }
+}
+
+impl FromJsonNumber for u64 {
+    fn from_f64(v: f64) -> Self {
+        v as u64
+    }
+
+    fn to_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn from_string(v: &str) -> Result<Self, ParseError> {
+        Ok(v.parse()?)
+    }
+}
+
+impl FromJsonNumber for i32 {
+    fn from_f64(v: f64) -> Self {
+        v as i32
+    }
+
+    fn to_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn from_string(v: &str) -> Result<Self, ParseError> {
+        Ok(v.parse()?)
+    }
+}
+
+impl FromJsonNumber for i64 {
+    fn from_f64(v: f64) -> Self {
+        v as i64
+    }
+
+    fn to_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn from_string(v: &str) -> Result<Self, ParseError> {
+        Ok(v.parse()?)
+    }
+}
+
+impl FromJsonNumber for f32 {
+    fn from_f64(v: f64) -> Self {
+        v as f32
+    }
+
+    fn to_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn from_string(v: &str) -> Result<Self, ParseError> {
+        if v == float::PROTOBUF_JSON_INF {
+            Ok(f32::INFINITY)
+        } else if v == float::PROTOBUF_JSON_MINUS_INF {
+            Ok(f32::NEG_INFINITY)
+        } else if v == float::PROTOBUF_JSON_NAN {
+            Ok(f32::NAN)
+        } else {
+            Ok(v.parse()?)
+        }
+    }
+}
+
+impl FromJsonNumber for f64 {
+    fn from_f64(v: f64) -> Self {
+        v
+    }
+
+    fn to_f64(&self) -> f64 {
+        *self
+    }
+
+    fn from_string(v: &str) -> Result<Self, ParseError> {
+        if v == float::PROTOBUF_JSON_INF {
+            Ok(f64::INFINITY)
+        } else if v == float::PROTOBUF_JSON_MINUS_INF {
+            Ok(f64::NEG_INFINITY)
+        } else if v == float::PROTOBUF_JSON_NAN {
+            Ok(f64::NAN)
+        } else {
+            Ok(v.parse()?)
+        }
+    }
+}
+
+
 impl<'a> Parser<'a> {
     fn read_bool(&mut self) -> ParseResult<bool> {
         if self.tokenizer.next_ident_if_eq("true")? {
@@ -64,34 +198,58 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn read_json_number_opt(&mut self) -> ParseResult<Option<f64>> {
+        Ok(self.tokenizer.next_token_if_map(|t| {
+            match t {
+                Token::JsonNumber(v) => Some(*v),
+                _ => None,
+            }
+        })?)
+    }
+
+    fn read_number<V : FromJsonNumber + PartialEq>(&mut self) -> ParseResult<V> {
+        if let Some(v) = self.read_json_number_opt()? {
+            let i = V::from_f64(v);
+            if v != i.to_f64() {
+                return Err(ParseError::PrecisionLoss);
+            }
+            Ok(i)
+        } else if self.tokenizer.lookahead_is_str_lit()? {
+            let v = self.read_string()?;
+            V::from_string(&v)
+        } else {
+            Err(ParseError::ExpectingNumber)
+        }
+    }
+
     fn read_u32(&mut self) -> ParseResult<u32> {
-        unimplemented!()
+        self.read_number()
     }
 
     fn read_u64(&mut self) -> ParseResult<u64> {
-        unimplemented!()
+        self.read_number()
     }
 
     fn read_i32(&mut self) -> ParseResult<i32> {
-        unimplemented!()
+        self.read_number()
     }
 
     fn read_i64(&mut self) -> ParseResult<i64> {
-        unimplemented!()
+        self.read_number()
     }
 
     fn read_f32(&mut self) -> ParseResult<f32> {
-        unimplemented!()
+        self.read_number()
     }
 
     fn read_f64(&mut self) -> ParseResult<f64> {
-        unimplemented!()
+        self.read_number()
     }
 
     fn read_string(&mut self) -> ParseResult<String> {
         let str_lit = self.tokenizer.next_str_lit()?;
 
-        let mut lexer = Lexer::new(&str_lit.escaped, LexerCommentStyle::None);
+        let mut lexer = Lexer::new(&str_lit.escaped, ParserLanguage::Json);
         let mut r = String::new();
         while !lexer.eof() {
             r.push(lexer.next_json_char_value().map_err(ParseError::IncorrectStrLit)?);
@@ -104,12 +262,31 @@ impl<'a> Parser<'a> {
         Ok(base64::decode(&s)?)
     }
 
-    fn read_enum(&mut self, _e: &EnumDescriptor) -> ParseResult<&'static EnumValueDescriptor> {
-        unimplemented!()
+    fn read_enum<'e>(&mut self, descriptor: &'e EnumDescriptor)
+        -> ParseResult<&'e EnumValueDescriptor>
+    {
+        if self.tokenizer.lookahead_is_str_lit()? {
+            let name = self.read_string()?;
+            match descriptor.value_by_name(&name) {
+                Some(v) => Ok(v),
+                None => Err(ParseError::UnknownEnumVariantName(name)),
+            }
+        } else if self.tokenizer.lookahead_is_json_number()? {
+            let number = self.read_i32()?;
+            match descriptor.value_by_number(number) {
+                Some(v) => Ok(v),
+                // TODO: EnumValueOrUnknown
+                None => Err(ParseError::UnknownEnumVariantNumber(number)),
+            }
+        } else {
+            Err(ParseError::ExpectingStrOrInt)
+        }
     }
 
-    fn read_message(&mut self, _m: &MessageDescriptor) -> ParseResult<Box<Message>> {
-        unimplemented!()
+    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<Message>> {
+        let mut m = descriptor.new_instance();
+        self.merge_inner(&mut *m)?;
+        Ok(m)
     }
 
     fn read_value(&mut self, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
@@ -216,7 +393,7 @@ impl<'a> Parser<'a> {
 
 pub fn merge_from_str(message: &mut Message, json: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
-        tokenizer: Tokenizer::new(json, LexerCommentStyle::None),
+        tokenizer: Tokenizer::new(json, ParserLanguage::Json),
     };
     parser.merge(message)
 }

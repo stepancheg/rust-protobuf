@@ -4,7 +4,7 @@ use protobuf::text_format::lexer::NumLit;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::LexerError;
 use protobuf::text_format::lexer::Token;
-use protobuf::text_format::lexer::LexerCommentStyle;
+use protobuf::text_format::lexer::ParserLanguage;
 
 use model::*;
 use protobuf::text_format::lexer::Tokenizer;
@@ -245,7 +245,7 @@ impl NumLitEx for NumLit {
 impl<'a> Parser<'a> {
     pub fn new(input: &'a str) -> Parser<'a> {
         Parser {
-            tokenizer: Tokenizer::new(input, LexerCommentStyle::Cpp),
+            tokenizer: Tokenizer::new(input, ParserLanguage::Proto),
             syntax: Syntax::Proto2,
         }
     }

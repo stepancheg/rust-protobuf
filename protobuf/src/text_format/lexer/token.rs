@@ -8,10 +8,14 @@ use super::lexer_impl::LexerResult;
 pub enum Token {
     Ident(String),
     Symbol(char),
+    // Protobuf tokenizer has separate tokens for int and float.
+    // Tokens do not include sign.
     IntLit(u64),
+    FloatLit(f64),
+    // Sequence of character according to JSON number grammar
+    JsonNumber(f64),
     // including quotes
     StrLit(StrLit),
-    FloatLit(f64),
 }
 
 impl Token {
@@ -23,6 +27,7 @@ impl Token {
             &Token::IntLit(ref i) => i.to_string(),
             &Token::StrLit(ref s) => s.quoted(),
             &Token::FloatLit(ref f) => f.to_string(),
+            &Token::JsonNumber(ref f) => f.to_string(),
         }
     }
 

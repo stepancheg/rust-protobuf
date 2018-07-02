@@ -1,6 +1,6 @@
 use text_format::lexer::Lexer;
 use text_format::lexer::TokenWithLocation;
-use text_format::lexer::LexerCommentStyle;
+use text_format::lexer::ParserLanguage;
 use text_format::lexer::Loc;
 use text_format::lexer::Token;
 use text_format::lexer::LexerError;
@@ -44,7 +44,7 @@ pub struct Tokenizer<'a> {
 }
 
 impl<'a> Tokenizer<'a> {
-    pub fn new(input: &'a str, comment_style: LexerCommentStyle) -> Tokenizer<'a> {
+    pub fn new(input: &'a str, comment_style: ParserLanguage) -> Tokenizer<'a> {
         Tokenizer {
             lexer: Lexer::new(input, comment_style),
             next_token: None,
@@ -178,6 +178,27 @@ impl<'a> Tokenizer<'a> {
         }
     }
 
+    pub fn lookahead_is_str_lit(&mut self) -> TokenizerResult<bool> {
+        Ok(match self.lookahead()? {
+            Some(&Token::StrLit(..)) => true,
+            _ => false,
+        })
+    }
+
+    pub fn lookahead_is_int_lit(&mut self) -> TokenizerResult<bool> {
+        Ok(match self.lookahead()? {
+            Some(&Token::IntLit(..)) => true,
+            _ => false,
+        })
+    }
+
+    pub fn lookahead_is_json_number(&mut self) -> TokenizerResult<bool> {
+        Ok(match self.lookahead()? {
+            Some(&Token::JsonNumber(..)) => true,
+            _ => false,
+        })
+    }
+
     pub fn lookahead_if_symbol(&mut self) -> TokenizerResult<Option<char>> {
         Ok(match self.lookahead()? {
             Some(&Token::Symbol(c)) => Some(c),
@@ -235,7 +256,7 @@ mod test {
     fn tokenize<P, R>(input: &str, what: P) -> R
         where P : FnOnce(&mut Tokenizer) -> TokenizerResult<R>
     {
-        let mut tokenizer = Tokenizer::new(input, LexerCommentStyle::Cpp);
+        let mut tokenizer = Tokenizer::new(input, ParserLanguage::Proto);
         let r = what(&mut tokenizer)
             .expect(&format!("parse failed at {}", tokenizer.loc()));
         let eof = tokenizer.syntax_eof().expect(&format!("check eof failed at {}", tokenizer.loc()));
