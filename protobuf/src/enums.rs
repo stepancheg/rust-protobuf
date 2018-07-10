@@ -6,7 +6,7 @@ use reflect::ProtobufValue;
 
 
 /// Trait implemented by all protobuf enum types.
-pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug {
+pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
     /// Get enum `i32` value.
     fn value(&self) -> i32;
 

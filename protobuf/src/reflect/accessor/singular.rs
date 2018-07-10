@@ -535,7 +535,7 @@ pub fn make_singular_message_has_get_mut_set_accessor<M, F>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
     set_field: fn(&mut M, F),
 ) -> FieldAccessor
-    where M : Message + 'static, F : Message + Clone + 'static
+    where M : Message + 'static, F : Message + Default + Clone + 'static
 {
     FieldAccessor {
         name,

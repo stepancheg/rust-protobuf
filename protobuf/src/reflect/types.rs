@@ -618,7 +618,7 @@ impl<E : ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTyp
     }
 }
 
-impl<M : Message + Clone + ProtobufValue> ProtobufType for ProtobufTypeMessage<M> {
+impl<M : Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
     type RuntimeType = RuntimeTypeMessage<M>;
 
     fn wire_type() -> WireType {

@@ -25,7 +25,7 @@ use reflect::runtime_type_box::RuntimeTypeBox;
 /// The downside is that we have to explicitly specify type parameters
 /// in a lot of places.
 pub trait RuntimeType : fmt::Debug + Send + Sync + 'static {
-    type Value : ProtobufValue + Clone + Sized + fmt::Debug;
+    type Value : ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
     fn dynamic() -> &'static RuntimeTypeDynamic
         where Self : Sized
@@ -505,7 +505,7 @@ impl<E> RuntimeType for RuntimeTypeEnum<E>
 }
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
-    where M : Message + Clone + ProtobufValue
+    where M : Message + Clone + ProtobufValue + Default
 {
     type Value = M;
 

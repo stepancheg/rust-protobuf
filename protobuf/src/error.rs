@@ -14,6 +14,7 @@ pub enum WireError {
     UnexpectedEof,
     UnexpectedWireType(WireType),
     IncorrectTag(u32),
+    // unused since https://github.com/stepancheg/rust-protobuf/issues/318
     IncompleteMap,
     IncorrectVarint,
     Utf8Error,
