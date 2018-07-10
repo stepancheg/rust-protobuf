@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- [`Default` is implemented for enums even in proto2](
+  https://github.com/stepancheg/rust-protobuf/commit/166966627ebc1e5ce650acd1593489e52757178e)
 - [Option to store repeated message fields in `Vec` instead of `RepeatedField`](
   https://github.com/stepancheg/rust-protobuf/issues/280). This option may be turned on by default later.
 - Similarly, [option to store singular field on `Option` instead of `SingularPtrField`](
