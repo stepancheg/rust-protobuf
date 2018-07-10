@@ -3,7 +3,7 @@ use std::process;
 use std::io::Write;
 use std::io::Read;
 
-use tempdir::TempDir;
+use tempfile;
 
 use protobuf::Message;
 use protobuf::reflect::MessageDescriptor;
@@ -21,7 +21,8 @@ fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor)
 }
 
 fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<Message> {
-    let temp_dir = TempDir::new(message_descriptor.name()).expect("temp dir");
+    let temp_dir = tempfile::Builder::new().prefix(message_descriptor.name()).tempdir()
+        .expect("temp dir");
 
     let mut fds = FileDescriptorSet::new();
     fds.mut_file().push(message_descriptor.file_descriptor_proto().clone());
@@ -65,7 +66,8 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
 fn print_using_protoc(message: &Message) -> String {
     let message_descriptor = message.descriptor();
 
-    let temp_dir = TempDir::new(message_descriptor.name()).expect("temp dir");
+    let temp_dir = tempfile::Builder::new().prefix(message_descriptor.name()).tempdir()
+        .expect("temp dir");
 
     let mut fds = FileDescriptorSet::new();
     fds.mut_file().push(message_descriptor.file_descriptor_proto().clone());

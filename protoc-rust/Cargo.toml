@@ -17,4 +17,4 @@ bench = false
 protoc = { path = "../protoc", version = "=3.0.0" }
 protobuf = { path = "../protobuf", version = "=3.0.0" }
 protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0" }
-tempdir  = "~0.3"
+tempfile = "3"

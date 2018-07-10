@@ -37,7 +37,11 @@ impl TestRunner {
     fn run_test<M : Message + Clone + PartialEq>(&self, name: &str, data: &[M]) {
         assert!(data.len() > 0, "empty string for test: {}", name);
 
-        let mut rng: StdRng = SeedableRng::from_seed(&[10, 20, 30, 40][..]);
+        let mut rng: StdRng = SeedableRng::from_seed([
+            10, 20, 30, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        ]);
+
         let mut random_data: Vec<M> = Vec::new();
 
         let mut total_size = 0;
