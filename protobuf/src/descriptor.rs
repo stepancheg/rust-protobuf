@@ -2526,6 +2526,13 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     }
 }
 
+// Note, `Default` is implemented although default value is not 0
+impl ::std::default::Default for FieldDescriptorProto_Type {
+    fn default() -> Self {
+        FieldDescriptorProto_Type::TYPE_DOUBLE
+    }
+}
+
 impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Type {
 }
 
@@ -2569,6 +2576,13 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
                 ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Label>("FieldDescriptorProto_Label", file_descriptor_proto())
             })
         }
+    }
+}
+
+// Note, `Default` is implemented although default value is not 0
+impl ::std::default::Default for FieldDescriptorProto_Label {
+    fn default() -> Self {
+        FieldDescriptorProto_Label::LABEL_OPTIONAL
     }
 }
 
@@ -4810,6 +4824,13 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     }
 }
 
+// Note, `Default` is implemented although default value is not 0
+impl ::std::default::Default for FileOptions_OptimizeMode {
+    fn default() -> Self {
+        FileOptions_OptimizeMode::SPEED
+    }
+}
+
 impl ::protobuf::reflect::ProtobufValue for FileOptions_OptimizeMode {
 }
 
@@ -5562,6 +5583,12 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     }
 }
 
+impl ::std::default::Default for FieldOptions_CType {
+    fn default() -> Self {
+        FieldOptions_CType::STRING
+    }
+}
+
 impl ::protobuf::reflect::ProtobufValue for FieldOptions_CType {
 }
 
@@ -5605,6 +5632,12 @@ impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
                 ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_JSType>("FieldOptions_JSType", file_descriptor_proto())
             })
         }
+    }
+}
+
+impl ::std::default::Default for FieldOptions_JSType {
+    fn default() -> Self {
+        FieldOptions_JSType::JS_NORMAL
     }
 }
 
