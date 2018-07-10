@@ -126,10 +126,8 @@ impl<'a> EnumGen<'a> {
         self.write_impl_enum(w);
         w.write_line("");
         self.write_impl_copy(w);
-        if self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3 {
-            w.write_line("");
-            self.write_impl_default(w);
-        }
+        w.write_line("");
+        self.write_impl_default(w);
         w.write_line("");
         self.write_impl_value(w);
     }
@@ -259,13 +257,23 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_default(&self, w: &mut CodeWriter) {
-        assert!(self.enum_with_scope.scope.file_scope.syntax() == Syntax::PROTO3);
+        let first_value = &self.enum_with_scope.values()[0];
+        if first_value.get_number() != 0 {
+            // This warning is emitted only for proto2
+            // (because in proto3 first enum variant number is always 0).
+            // `Default` implemented unconditionally to simplify certain
+            // generic operations, e. g. reading a map.
+            // Also, note that even in proto2 some operations fallback to
+            // first enum value, e. g. `get_xxx` for unset field,
+            // so this implementation is not completely unreasonable.
+            w.comment("Note, `Default` is implemented although default value is not 0");
+        }
         w.impl_for_block("::std::default::Default", &self.type_name, |w| {
             w.def_fn("default() -> Self", |w| {
                 w.write_line(&format!(
                     "{}::{}",
                     &self.type_name,
-                    &self.enum_with_scope.values()[0].rust_name()
+                    &first_value.rust_name()
                 ))
             });
         });
