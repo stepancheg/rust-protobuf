@@ -1,4 +1,4 @@
-extern crate tempdir;
+extern crate tempfile;
 
 extern crate protoc;
 extern crate protobuf;
@@ -32,7 +32,7 @@ pub fn run(args: Args) -> Result<()> {
     let protoc = protoc::Protoc::from_env_path();
     protoc.check()?;
 
-    let temp_dir = tempdir::TempDir::new("protoc-rust")?;
+    let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
     let temp_file = temp_dir.path().join("descriptor.pbbin");
     let temp_file = temp_file.to_str().expect("utf-8 file name");
 

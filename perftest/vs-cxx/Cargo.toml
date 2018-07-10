@@ -16,7 +16,7 @@ path = "../../protobuf"
 git = "http://github.com/rust-lang/time"
 
 [dependencies]
-rand = "~0.4"
+rand = "~0.5"
 
 [build-dependencies]
 protoc-rust = { path = "../../protoc-rust" }
