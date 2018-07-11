@@ -17,10 +17,12 @@
 - Fix OOM on malformed input
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
-## [2.0 Branch Unreleased]
+## [2.0.3] - 2018-07-11
 
 - [Fix panic on singular string field appeared more than
   once](https://github.com/stepancheg/rust-protobuf/commit/28adf07a0b0027ddc8ff57f04ffeb69f35f65620)
+- [Properly handle map fields with key or value skipped in binary proto](
+  https://github.com/stepancheg/rust-protobuf/issues/318)
 
 ## [2.0.2] - 2018-05-29
 
@@ -36,10 +38,12 @@
 - Rebublished branch 2.0 because of
   [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
 
-## [1.7 Branch Unreleased]
+## [1.7.4] - 2018-07-11
 
 - [Fix panic on singular string field appeared more than
   once](https://github.com/stepancheg/rust-protobuf/commit/28adf07a0b0027ddc8ff57f04ffeb69f35f65620)
+- [Properly handle map fields with key or value skipped in binary proto](
+  https://github.com/stepancheg/rust-protobuf/issues/318)
 
 ## [1.7.3] - 2018-05-29
 
