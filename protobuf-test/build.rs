@@ -92,6 +92,6 @@ fn main() {
         .expect("version")
         .is_3()
     {
-        println!("cargo:rustc-cfg=proto3");
+        println!("cargo:rustc-cfg=protoc3");
     }
 }

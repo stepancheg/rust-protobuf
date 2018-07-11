@@ -91,4 +91,6 @@ fn main() {
 
     clean_old_files();
     generate_pb_rs();
+
+    println!("cargo:rustc-cfg=protoc3");
 }
