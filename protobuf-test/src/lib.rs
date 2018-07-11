@@ -7,14 +7,14 @@ extern crate bytes;
 
 mod v2;
 
-// `cfg(proto3)` is emitted by `build.rs`
+// `cfg(protoc3)` is emitted by `build.rs`
 
-#[cfg(proto3)]
+#[cfg(protoc3)]
 mod v3;
 
 mod common;
 
-#[cfg(proto3)]
+#[cfg(protoc3)]
 mod google;
 
 mod test;
