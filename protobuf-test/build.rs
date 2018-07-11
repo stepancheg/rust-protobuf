@@ -25,6 +25,12 @@ fn glob_simple(pattern: &str) -> Vec<String> {
         .collect()
 }
 
+fn protoc_is_v3() -> bool {
+    protoc::Protoc::from_env_path()
+        .version()
+        .expect("version")
+        .is_3()
+}
 
 fn clean_old_files() {
     for f in glob_simple("src/**/*_pb.rs") {
@@ -138,11 +144,7 @@ fn generate_pb_rs() {
 
     gen_v2_v3("src/v2");
 
-    if protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3()
-    {
+    if protoc_is_v3() {
         gen_v2_v3("src/v3");
 
         let protos = glob_simple("src/google/protobuf/*.proto");
