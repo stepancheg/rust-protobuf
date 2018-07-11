@@ -902,14 +902,15 @@ pub fn read_map_into<K, V>(
 where
     K : ProtobufType,
     V : ProtobufType,
-    K::Value : Eq + Hash,
+    K::Value : Eq + Hash + Default,
+    V::Value : Default,
 {
     if wire_type != WireType::WireTypeLengthDelimited {
         return Err(unexpected_wire_type(wire_type));
     }
 
-    let mut key = None;
-    let mut value = None;
+    let mut key = Default::default();
+    let mut value = Default::default();
 
     let len = is.read_raw_varint32()?;
     let old_limit = is.push_limit(len as u64)?;
@@ -920,25 +921,20 @@ where
                 if wire_type != K::wire_type() {
                     return Err(unexpected_wire_type(wire_type));
                 }
-                key = Some(K::read(is)?);
+                key = K::read(is)?;
             }
             2 => {
                 if wire_type != V::wire_type() {
                     return Err(unexpected_wire_type(wire_type));
                 }
-                value = Some(V::read(is)?);
+                value = V::read(is)?;
             }
             _ => is.skip_field(wire_type)?,
         }
     }
     is.pop_limit(old_limit);
 
-    match (key, value) {
-        (None, _) | (_, None) => return Err(ProtobufError::WireError(WireError::IncompleteMap)),
-        (Some(key), Some(value)) => {
-            target.insert(key, value);
-        }
-    }
+    target.insert(key, value);
 
     Ok(())
 }
