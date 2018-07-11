@@ -14,8 +14,16 @@ use std::fs;
 use protobuf_test_common::build::*;
 
 
+fn protoc_is_v3() -> bool {
+    protoc::Protoc::from_env_path()
+        .version()
+        .expect("version")
+        .is_3()
+}
+
 fn gen_in_dir(dir: &str, include_dir: &str) {
-    gen_in_dir_impl(dir, include_dir, |GenInDirArgs { out_dir, input, includes, customize }| {
+    let v3 = protoc_is_v3();
+    gen_in_dir_impl(dir, include_dir, v3, |GenInDirArgs { out_dir, input, includes, customize }| {
         protoc_rust::run(protoc_rust::Args {
             out_dir, input, includes, customize
         })
@@ -23,14 +31,9 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
 }
 
 fn generate_in_common() {
-    let v3 = protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3();
-
     gen_in_dir("src/common/v2", "src/common/v2");
 
-    if v3 {
+    if protoc_is_v3() {
         copy_tests_v2_v3("src/common/v2", "src/common/v3");
         gen_in_dir("src/common/v3", "src/common/v3");
     } else {
@@ -45,11 +48,7 @@ fn generate_in_v2_v3() {
 
     gen_in_dir("src/v2", "src/v2");
 
-    if protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3()
-    {
+    if protoc_is_v3() {
         gen_in_dir("src/v3", "src/v3");
 
         gen_in_dir("src/google/protobuf", "src");

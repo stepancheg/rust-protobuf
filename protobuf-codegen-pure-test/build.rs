@@ -60,7 +60,7 @@ fn copy_tests(dir: &str) {
 
 
 fn gen_in_dir(dir: &str, include_dir: &str) {
-    gen_in_dir_impl(dir, include_dir, |GenInDirArgs { out_dir, input, includes, customize }| {
+    gen_in_dir_impl(dir, include_dir, true, |GenInDirArgs { out_dir, input, includes, customize }| {
         protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
             out_dir, input, includes, customize
         })
