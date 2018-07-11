@@ -37,6 +37,24 @@ fn test_map_with_object() {
 }
 
 #[test]
+fn test_map_unset_default_fields() {
+    // unset key and value
+    let mut m = TestMap::new();
+    m.m.insert("".to_owned(), 0);
+    test_deserialize("0a 00", &m);
+
+    // unset value
+    let mut m = TestMap::new();
+    m.m.insert("ab".to_owned(), 0);
+    test_deserialize("0a 04 0a 02 61 62", &m);
+
+    // unset key
+    let mut m = TestMap::new();
+    m.m.insert("".to_owned(), 17);
+    test_deserialize("0a 02 10 11", &m);
+}
+
+#[test]
 fn text_format() {
     let mut map = TestMap::new();
 
