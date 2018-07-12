@@ -40,11 +40,6 @@ fn clean_old_files() {
 
 
 fn generate_v_from_common() {
-    let v3 = protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3();
-
     let mut mod_v2 = fs::File::create("src/common/v2/mod.rs").expect("mod.rs");
     let mut mod_v3 = fs::File::create("src/common/v3/mod.rs").expect("mod.rs");
 
@@ -66,6 +61,11 @@ fn generate_v_from_common() {
         }
 
         if without_suffix.ends_with("_pb") {
+            continue;
+        }
+
+        // protoc 2.6.1 doesn't support map in proto2
+        if without_suffix == "test_map_simple" && !protoc_is_v3() {
             continue;
         }
 
@@ -110,7 +110,7 @@ fn generate_v_from_common() {
         r3f.flush().expect("flush");
 
         for &v in &[2, 3] {
-            if v == 3 && !v3 {
+            if v == 3 && !protoc_is_v3() {
                 continue;
             }
 
