@@ -17,6 +17,10 @@
 - Fix OOM on malformed input
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
+## [2.0] unreleased
+
+- Minimum bytes version is 0.4 now (since protobuf doesn't work with 0.3 anyway)
+
 ## [2.0.3] - 2018-07-11
 
 - [Fix panic on singular string field appeared more than
