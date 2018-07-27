@@ -7,6 +7,8 @@ Example code:
 ```
 extern crate protoc_rust;
 
+use protoc_rust::Customize;
+
 protoc_rust::run(protoc_rust::Args {
     out_dir: "src/protos",
     input: &["protos/a.proto", "protos/b.proto"],
