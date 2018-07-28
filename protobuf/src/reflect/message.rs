@@ -129,6 +129,24 @@ impl MessageDescriptor {
         self.factory.eq(a, b)
     }
 
+    /// Similar to `eq`, but considers `NaN` values equal.
+    ///
+    /// Panics is any message has different type than this descriptor.
+    pub fn deep_eq(&self, a: &Message, b: &Message) -> bool {
+        // Explicitly force panic even if field list is empty
+        assert_eq!(self as *const MessageDescriptor, a.descriptor() as *const MessageDescriptor);
+        assert_eq!(self as *const MessageDescriptor, b.descriptor() as *const MessageDescriptor);
+
+        for field in self.fields() {
+            let af = field.get_reflect(a);
+            let bf = field.get_reflect(b);
+            if !af.deep_eq(&bf) {
+                return false;
+            }
+        }
+        true
+    }
+
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
     }

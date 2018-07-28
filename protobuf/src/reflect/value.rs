@@ -13,6 +13,7 @@ use reflect::transmute_eq::transmute_eq;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 
 
 /// Hack against lack of upcasting in Rust
@@ -130,6 +131,48 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes(v.to_owned()),
             ReflectValueRef::Enum(v) => ReflectValueBox::Enum(v),
             ReflectValueRef::Message(v) => ReflectValueBox::Message(v.descriptor().clone(v)),
+        }
+    }
+}
+
+impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
+    fn reflect_deep_eq(&self, that: &Self) -> bool {
+        use super::ReflectValueRef::*;
+        match (self, that) {
+            (U32(a), U32(b)) => a == b,
+            (U64(a), U64(b)) => a == b,
+            (I32(a), I32(b)) => a == b,
+            (I64(a), I64(b)) => a == b,
+            (F32(a), F32(b)) => {
+                if a.is_nan() || b.is_nan() {
+                    a.is_nan() == b.is_nan()
+                } else {
+                    a == b
+                }
+            }
+            (F64(a), F64(b)) => {
+                if a.is_nan() || b.is_nan() {
+                    a.is_nan() == b.is_nan()
+                } else {
+                    a == b
+                }
+            }
+            (Bool(a), Bool(b)) => a == b,
+            (String(a), String(b)) => a == b,
+            (Bytes(a), Bytes(b)) => a == b,
+            (Enum(a), Enum(b)) => {
+                let ad = a.enum_descriptor();
+                let bd = b.enum_descriptor();
+                assert_eq!(ad as *const EnumDescriptor, bd as *const EnumDescriptor);
+                a.value() == b.value()
+            }
+            (Message(a), Message(b)) => {
+                let ad = a.descriptor();
+                let bd = a.descriptor();
+                assert_eq!(ad as *const MessageDescriptor, bd as *const MessageDescriptor);
+                ad.deep_eq(*a, *b)
+            }
+            _ => unreachable!(),
         }
     }
 }

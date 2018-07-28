@@ -4,6 +4,7 @@ use descriptor::FieldDescriptorProto_Label;
 use reflect::EnumDescriptor;
 use reflect::accessor::AccessorKind;
 use reflect::MessageDescriptor;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 use Message;
 use reflect::accessor::singular::SingularFieldAccessor;
 use reflect::accessor::repeated::RepeatedFieldAccessor;
@@ -27,6 +28,27 @@ pub enum ReflectFieldRef<'a> {
     Repeated(ReflectRepeatedRef<'a>),
     /// Map field
     Map(ReflectMapRef<'a>),
+}
+
+impl<'a> ReflectFieldRef<'a> {
+    pub(crate) fn deep_eq(&self, that: &Self) -> bool {
+        match (self, that) {
+            (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => {
+                match (a, b) {
+                    (Some(av), Some(bv)) => av.reflect_deep_eq(&bv),
+                    (None, None) => true,
+                    _ => false,
+                }
+            }
+            (ReflectFieldRef::Repeated(a), ReflectFieldRef::Repeated(b)) => {
+                a.reflect_deep_eq(b)
+            }
+            (ReflectFieldRef::Map(a), ReflectFieldRef::Map(b)) => {
+                a.reflect_deep_eq(b)
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 pub enum RuntimeFieldType {

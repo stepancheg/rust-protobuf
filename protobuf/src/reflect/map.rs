@@ -6,6 +6,7 @@ use super::value::ProtobufValue;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use reflect::ReflectValueRef;
 use reflect::ReflectValueBox;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 
 
 /// Implemented for `HashMap` with appropriate keys and values
@@ -125,6 +126,29 @@ impl<'a> ReflectMapRef<'a> {
 
     pub fn value_type(&self) -> &RuntimeTypeDynamic {
         self.value_dynamic
+    }
+}
+
+impl<'a> ReflectDeepEq for ReflectMapRef<'a> {
+    fn reflect_deep_eq(&self, that: &Self) -> bool {
+        let len = self.len();
+
+        if len != that.len() {
+            return false;
+        }
+
+        for (k, va) in self {
+            let vb = match that.get(k) {
+                Some(v) => v,
+                None => return false,
+            };
+
+            if !va.reflect_deep_eq(&vb) {
+                return false;
+            }
+        }
+
+        true
     }
 }
 

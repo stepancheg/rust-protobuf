@@ -7,6 +7,7 @@ use repeated::RepeatedField;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use reflect::ReflectValueBox;
 use std::fmt;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 
 
 pub(crate) trait ReflectRepeated : Sync + 'static + fmt::Debug {
@@ -266,6 +267,27 @@ impl<'a> ReflectRepeatedRef<'a> {
     pub fn element_type(&self) -> &RuntimeTypeDynamic {
         self.dynamic
     }
+}
+
+impl<'a> ReflectDeepEq for ReflectRepeatedRef<'a> {
+    fn reflect_deep_eq(&self, that: &Self) -> bool {
+        let len = self.len();
+
+        if len != that.len() {
+            return false;
+        }
+
+        for i in 0..len {
+            let a = self.get(i);
+            let b = that.get(i);
+            if !a.reflect_deep_eq(&b) {
+                return false;
+            }
+        }
+
+        true
+    }
+
 }
 
 impl<'a> PartialEq for ReflectRepeatedRef<'a> {

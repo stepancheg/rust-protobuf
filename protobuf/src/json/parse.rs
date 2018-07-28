@@ -24,6 +24,7 @@ use std::f32;
 use std::f64;
 
 use super::float;
+use text_format::lexer::JsonNumberLit;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -38,7 +39,6 @@ pub enum ParseError {
     ExpectingBool,
     ExpectingStrOrInt,
     ExpectingNumber,
-    PrecisionLoss,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -198,10 +198,10 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn read_json_number_opt(&mut self) -> ParseResult<Option<f64>> {
+    fn read_json_number_opt(&mut self) -> ParseResult<Option<JsonNumberLit>> {
         Ok(self.tokenizer.next_token_if_map(|t| {
             match t {
-                Token::JsonNumber(v) => Some(*v),
+                Token::JsonNumber(v) => Some(v.clone()),
                 _ => None,
             }
         })?)
@@ -209,11 +209,7 @@ impl<'a> Parser<'a> {
 
     fn read_number<V : FromJsonNumber + PartialEq>(&mut self) -> ParseResult<V> {
         if let Some(v) = self.read_json_number_opt()? {
-            let i = V::from_f64(v);
-            if v != i.to_f64() {
-                return Err(ParseError::PrecisionLoss);
-            }
-            Ok(i)
+            V::from_string(&v.0)
         } else if self.tokenizer.lookahead_is_str_lit()? {
             let v = self.read_string()?;
             V::from_string(&v)

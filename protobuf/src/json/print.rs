@@ -15,20 +15,20 @@ struct Printer {
     buf: String,
 }
 
-trait JsonFloat : fmt::Display {
+trait JsonFloat : fmt::Display + fmt::Debug {
     fn is_nan(&self) -> bool;
     fn is_pos_infinity(&self) -> bool;
     fn is_neg_infinity(&self) -> bool;
 
     fn write_to_json(&self, w: &mut String) -> fmt::Result {
         if self.is_nan() {
-            write!(w, "{}", float::PROTOBUF_JSON_NAN)
+            write!(w, "\"{}\"", float::PROTOBUF_JSON_NAN)
         } else if self.is_pos_infinity() {
-            write!(w, "{}", float::PROTOBUF_JSON_INF)
+            write!(w, "\"{}\"", float::PROTOBUF_JSON_INF)
         } else if self.is_neg_infinity() {
-            write!(w, "{}", float::PROTOBUF_JSON_MINUS_INF)
+            write!(w, "\"{}\"", float::PROTOBUF_JSON_MINUS_INF)
         } else {
-            write!(w, "{}", self)
+            write!(w, "{:?}", self)
         }
     }
 }

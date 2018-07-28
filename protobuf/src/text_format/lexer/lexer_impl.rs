@@ -11,6 +11,7 @@ use super::token::TokenWithLocation;
 use super::float;
 use super::ParserLanguage;
 use std::num::ParseFloatError;
+use text_format::lexer::JsonNumberLit;
 
 
 #[derive(Debug)]
@@ -584,7 +585,8 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn next_json_number_opt(&mut self) -> LexerResult<Option<f64>> {
+    /// Parse next token as JSON number
+    fn next_json_number_opt(&mut self) -> LexerResult<Option<JsonNumberLit>> {
         assert_eq!(ParserLanguage::Json, self.language);
 
         fn is_digit(c: char) -> bool {
@@ -632,7 +634,7 @@ impl<'a> Lexer<'a> {
             }
         }
 
-        Ok(Some(s.parse()?))
+        Ok(Some(JsonNumberLit(s)))
     }
 
     fn next_token_inner(&mut self) -> LexerResult<Token> {

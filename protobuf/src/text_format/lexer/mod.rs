@@ -9,6 +9,7 @@ mod num_lit;
 pub mod float;
 pub mod int;
 mod parser_language;
+mod json_number_lit;
 
 pub use self::lexer_impl::Lexer;
 pub use self::lexer_impl::LexerError;
@@ -22,3 +23,4 @@ pub use self::num_lit::NumLit;
 pub use self::str_lit::StrLit;
 pub use self::str_lit::StrLitDecodeError;
 pub use self::parser_language::ParserLanguage;
+pub use self::json_number_lit::JsonNumberLit;

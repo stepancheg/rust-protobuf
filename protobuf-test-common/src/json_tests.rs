@@ -14,7 +14,7 @@ pub fn test_json_parse_message(s: &str, m: &Message) {
     let mut new = descriptor.new_instance();
     json::merge_from_str(&mut *new, s).expect("parse");
     assert!(
-        descriptor.eq(m, &*new),
+        descriptor.deep_eq(m, &*new),
         "{:?} should be == {:?}",
         text_format::print_to_string(m),
         text_format::print_to_string(&*new));

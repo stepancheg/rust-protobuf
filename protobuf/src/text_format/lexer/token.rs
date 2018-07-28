@@ -3,6 +3,7 @@ use super::num_lit::NumLit;
 use super::loc::Loc;
 use super::lexer_impl::LexerError;
 use super::lexer_impl::LexerResult;
+use text_format::lexer::JsonNumberLit;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
@@ -12,8 +13,7 @@ pub enum Token {
     // Tokens do not include sign.
     IntLit(u64),
     FloatLit(f64),
-    // Sequence of character according to JSON number grammar
-    JsonNumber(f64),
+    JsonNumber(JsonNumberLit),
     // including quotes
     StrLit(StrLit),
 }

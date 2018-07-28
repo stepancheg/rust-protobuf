@@ -15,6 +15,8 @@ pub(crate) mod runtime_types;
 pub(crate) mod runtime_type_box;
 pub(crate) mod runtime_type_dynamic;
 
+mod reflect_deep_eq;
+
 pub mod rt;
 
 pub use self::value::ProtobufValue;
