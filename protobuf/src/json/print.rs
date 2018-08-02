@@ -91,9 +91,9 @@ impl Printer {
     fn print_value(&mut self, value: &ReflectValueRef) -> fmt::Result {
         match value {
             ReflectValueRef::U32(v) => write!(self.buf, "{}", v),
-            ReflectValueRef::U64(v) => write!(self.buf, "{}", v),
+            ReflectValueRef::U64(v) => write!(self.buf, "\"{}\"", v),
             ReflectValueRef::I32(v) => write!(self.buf, "{}", v),
-            ReflectValueRef::I64(v) => write!(self.buf, "{}", v),
+            ReflectValueRef::I64(v) => write!(self.buf, "\"{}\"", v),
             ReflectValueRef::F32(v) => v.write_to_json(&mut self.buf),
             ReflectValueRef::F64(v) => v.write_to_json(&mut self.buf),
             ReflectValueRef::Bool(v) => write!(self.buf, "{}", v),

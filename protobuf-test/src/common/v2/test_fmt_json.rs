@@ -48,6 +48,133 @@ fn test_double() {
 }
 
 #[test]
+fn test_int32() {
+    let mut m = TestTypes::new();
+    m.set_int32_singular(1234);
+    test_json_print_parse_message("{int32_singular: 1234}", &m);
+
+    let mut m = TestTypes::new();
+    m.int32_repeated.push(10);
+    m.int32_repeated.push(-20);
+    test_json_print_parse_message("{int32_repeated: [10, -20]}", &m);
+}
+
+#[test]
+fn test_int64() {
+    let mut m = TestTypes::new();
+    m.set_int64_singular(1234567890123456789);
+    test_json_print_parse_message("{int64_singular: \"1234567890123456789\"}", &m);
+
+    let mut m = TestTypes::new();
+    m.int64_repeated.push(2345678901234567890);
+    m.int64_repeated.push(-2345678901234567890);
+    test_json_print_parse_message(
+        "{int64_repeated: [\"2345678901234567890\", \"-2345678901234567890\"]}", &m);
+}
+
+#[test]
+fn test_sint32() {
+    let mut m = TestTypes::new();
+    m.set_sint32_singular(1234);
+    test_json_print_parse_message("{sint32_singular: 1234}", &m);
+
+    let mut m = TestTypes::new();
+    m.sint32_repeated.push(10);
+    m.sint32_repeated.push(-20);
+    test_json_print_parse_message("{sint32_repeated: [10, -20]}", &m);
+}
+
+#[test]
+fn test_sint64() {
+    let mut m = TestTypes::new();
+    m.set_sint64_singular(1234567890123456789);
+    test_json_print_parse_message("{sint64_singular: \"1234567890123456789\"}", &m);
+
+    let mut m = TestTypes::new();
+    m.sint64_repeated.push(2345678901234567890);
+    m.sint64_repeated.push(-2345678901234567890);
+    test_json_print_parse_message(
+        "{sint64_repeated: [\"2345678901234567890\", \"-2345678901234567890\"]}", &m);
+}
+
+#[test]
+fn test_sfixed32() {
+    let mut m = TestTypes::new();
+    m.set_sfixed32_singular(1234);
+    test_json_print_parse_message("{sfixed32_singular: 1234}", &m);
+
+    let mut m = TestTypes::new();
+    m.sfixed32_repeated.push(10);
+    m.sfixed32_repeated.push(-20);
+    test_json_print_parse_message("{sfixed32_repeated: [10, -20]}", &m);
+}
+
+#[test]
+fn test_sfixed64() {
+    let mut m = TestTypes::new();
+    m.set_sfixed64_singular(1234567890123456789);
+    test_json_print_parse_message("{sfixed64_singular: \"1234567890123456789\"}", &m);
+
+    let mut m = TestTypes::new();
+    m.sfixed64_repeated.push(2345678901234567890);
+    m.sfixed64_repeated.push(-2345678901234567890);
+    test_json_print_parse_message(
+        "{sfixed64_repeated: [\"2345678901234567890\", \"-2345678901234567890\"]}", &m);
+}
+
+#[test]
+fn test_uint32() {
+    let mut m = TestTypes::new();
+    m.set_uint32_singular(1234);
+    test_json_print_parse_message("{uint32_singular: 1234}", &m);
+
+    let mut m = TestTypes::new();
+    m.uint32_repeated.push(10);
+    m.uint32_repeated.push(20300);
+    test_json_print_parse_message("{uint32_repeated: [10, 20300]}", &m);
+}
+
+#[test]
+fn test_uint64() {
+    let mut m = TestTypes::new();
+    m.set_uint64_singular(1234567890123456789);
+    test_json_print_parse_message(
+        "{uint64_singular: \"1234567890123456789\"}", &m);
+
+    let mut m = TestTypes::new();
+    m.uint64_repeated.push(2345678901234567890);
+    m.uint64_repeated.push(1345678901234567890);
+    test_json_print_parse_message(
+        "{uint64_repeated: [\"2345678901234567890\", \"1345678901234567890\"]}", &m);
+}
+
+#[test]
+fn test_fixed32() {
+    let mut m = TestTypes::new();
+    m.set_fixed32_singular(1234);
+    test_json_print_parse_message("{fixed32_singular: 1234}", &m);
+
+    let mut m = TestTypes::new();
+    m.fixed32_repeated.push(10);
+    m.fixed32_repeated.push(20300);
+    test_json_print_parse_message("{fixed32_repeated: [10, 20300]}", &m);
+}
+
+#[test]
+fn test_fixed64() {
+    let mut m = TestTypes::new();
+    m.set_fixed64_singular(1234567890123456789);
+    test_json_print_parse_message(
+        "{fixed64_singular: \"1234567890123456789\"}", &m);
+
+    let mut m = TestTypes::new();
+    m.fixed64_repeated.push(2345678901234567890);
+    m.fixed64_repeated.push(1345678901234567890);
+    test_json_print_parse_message(
+        "{fixed64_repeated: [\"2345678901234567890\", \"1345678901234567890\"]}", &m);
+}
+
+#[test]
 fn test_string() {
     let mut m = TestTypes::new();
     m.set_string_singular("ab".to_owned());
