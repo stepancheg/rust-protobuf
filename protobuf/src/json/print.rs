@@ -122,11 +122,13 @@ impl Printer {
 
     fn print_map(&mut self, map: &ReflectMapRef) -> fmt::Result {
         write!(self.buf, "{{")?;
-        for (i, (_k, _v)) in map.into_iter().enumerate() {
+        for (i, (k, v)) in map.into_iter().enumerate() {
             if i != 0 {
                 write!(self.buf, ", ")?;
             }
-            unimplemented!();
+            self.print_value(&k)?;
+            write!(self.buf, ": ")?;
+            self.print_value(&v)?;
         }
         write!(self.buf, "}}")?;
         Ok(())

@@ -1,6 +1,8 @@
 use std::f32;
 use std::f64;
 
+use protobuf::Message;
+
 use protobuf_test_common::*;
 
 use super::test_fmt_json_pb::*;
@@ -207,4 +209,11 @@ fn test_enum() {
     m.set_test_enum_repeated(vec![TestEnum::DARK, TestEnum::LIGHT]);
     test_json_print_parse_message("{test_enum_repeated: [\"DARK\", \"LIGHT\"]}", &m);
     test_json_parse_message("{test_enum_repeated: [\"DARK\", 20]}", &m);
+}
+
+#[test]
+fn test_reflect() {
+    for m in special_messages(TestTypes::descriptor_static()) {
+        test_json_message(&*m);
+    }
 }

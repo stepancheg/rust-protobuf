@@ -345,11 +345,43 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    fn merge_map_field(
+        &mut self,
+        message: &mut Message,
+        field: &FieldDescriptor,
+        kt: &RuntimeTypeDynamic,
+        vt: &RuntimeTypeDynamic)
+        -> ParseResult<()>
+    {
+        let mut map = field.mut_map(message);
+        map.clear();
+
+        if self.tokenizer.next_ident_if_eq("null")? {
+            return Ok(())
+        }
+
+        self.tokenizer.next_symbol_expect_eq('{')?;
+        let mut first = true;
+        while !self.tokenizer.next_symbol_if_eq('}')? {
+            if !first {
+                self.tokenizer.next_symbol_expect_eq(',')?;
+            }
+            first = false;
+
+            let k = self.read_value(kt)?;
+            self.tokenizer.next_symbol_expect_eq(':')?;
+            let v = self.read_value(vt)?;
+            map.insert(k, v);
+        }
+
+        Ok(())
+    }
+
     fn merge_field(&mut self, message: &mut Message, field: &FieldDescriptor) -> ParseResult<()> {
         match field.runtime_field_type() {
             RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, t),
             RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, t),
-            RuntimeFieldType::Map(..) => unimplemented!(),
+            RuntimeFieldType::Map(kt, vt) => self.merge_map_field(message, field, kt, vt),
         }
     }
 

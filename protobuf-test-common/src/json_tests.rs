@@ -20,3 +20,17 @@ pub fn test_json_parse_message(s: &str, m: &Message) {
         text_format::print_to_string(&*new));
 }
 
+/// Print message to string, parse the string,
+/// then check resulting message is equal to the original.
+pub fn test_json_message(m: &Message) {
+    let descriptor = m.descriptor();
+
+    let s = json::print_to_string(m);
+    let mut new = descriptor.new_instance();
+    json::merge_from_str(&mut *new, &s).expect("parse");
+    assert!(
+        descriptor.deep_eq(m, &*new),
+        "{:?} should be == {:?}",
+        text_format::print_to_string(m),
+        text_format::print_to_string(&*new));
+}

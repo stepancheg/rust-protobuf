@@ -127,6 +127,13 @@ fn test_message() {
 }
 
 #[test]
+fn test_map_keys_sorted() {
+    // TODO
+    // When generating text format for a .proto, maps are sorted by key.
+    // Numeric keys are sorted numerically.
+}
+
+#[test]
 fn test_reflect() {
     for m in special_messages(TestTypes::descriptor_static()) {
         test_text_format_message(&*m);

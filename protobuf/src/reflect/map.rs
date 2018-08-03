@@ -20,6 +20,8 @@ pub(crate) trait ReflectMap : Send + Sync + 'static {
     fn get(&self, key: ReflectValueRef) -> Option<&ProtobufValue>;
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
+
+    fn clear(&mut self);
 }
 
 impl<K : ProtobufValue + Eq + Hash + 'static, V : ProtobufValue + 'static> ReflectMap
@@ -47,6 +49,10 @@ impl<K : ProtobufValue + Eq + Hash + 'static, V : ProtobufValue + 'static> Refle
         let key: K = key.downcast().expect("wrong key type");
         let value: V = value.downcast().expect("wrong value type");
         self.insert(key, value);
+    }
+
+    fn clear(&mut self) {
+        self.clear();
     }
 }
 
@@ -183,6 +189,10 @@ impl<'a> ReflectMapMut<'a> {
 
     pub fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
         self.map.insert(key, value)
+    }
+
+    pub fn clear(&mut self) {
+        self.map.clear();
     }
 }
 
