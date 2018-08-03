@@ -10,6 +10,7 @@ use descriptorx::find_message_by_rust_name;
 
 use reflect::accessor::FieldAccessor;
 use reflect::FieldDescriptor;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 
 
 trait MessageFactory : Send + Sync + 'static {
@@ -140,7 +141,7 @@ impl MessageDescriptor {
         for field in self.fields() {
             let af = field.get_reflect(a);
             let bf = field.get_reflect(b);
-            if !af.deep_eq(&bf) {
+            if !af.reflect_deep_eq(&bf) {
                 return false;
             }
         }

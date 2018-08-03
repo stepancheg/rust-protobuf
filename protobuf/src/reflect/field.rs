@@ -30,8 +30,8 @@ pub enum ReflectFieldRef<'a> {
     Map(ReflectMapRef<'a>),
 }
 
-impl<'a> ReflectFieldRef<'a> {
-    pub(crate) fn deep_eq(&self, that: &Self) -> bool {
+impl<'a> ReflectDeepEq for ReflectFieldRef<'a> {
+    fn reflect_deep_eq(&self, that: &Self) -> bool {
         match (self, that) {
             (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => {
                 match (a, b) {
