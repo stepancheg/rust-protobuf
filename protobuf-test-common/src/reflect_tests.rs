@@ -115,11 +115,15 @@ pub fn special_values_for_field(f: &FieldDescriptor, d: &MessageDescriptor) -> V
             }
         }
         RuntimeFieldType::Repeated(t) => {
+            // TODO: empty repeated
+            // TODO: repeated of more than one element
             let mut m = d.new_instance();
             f.mut_repeated(&mut *m).push(value_for_runtime_type(t));
             r.push(m);
         }
         RuntimeFieldType::Map(k, v) => {
+            // TODO: empty map
+            // TODO: map of more than one element
             let mut m = d.new_instance();
             let k = value_for_runtime_type(k);
             let v = value_for_runtime_type(v);
