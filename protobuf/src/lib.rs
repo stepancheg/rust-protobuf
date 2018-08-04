@@ -7,6 +7,9 @@
 
 #[cfg(feature = "bytes")]
 extern crate bytes;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 
 pub use unknown::UnknownFields;
 pub use unknown::UnknownFieldsIter;
