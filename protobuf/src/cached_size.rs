@@ -1,10 +1,14 @@
+#[cfg(feature = "with-serde")]
 use serde::ser::{Serialize, Serializer, SerializeStruct};
+#[cfg(feature = "with-serde")]
 use serde::{Deserializer, Deserialize};
+#[cfg(feature = "with-serde")]
 use serde::de;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 use std::hash::Hash;
 use std::hash::Hasher;
+#[cfg(feature = "with-serde")]
 use std::fmt;
 
 /// Cached size field used in generated code.
@@ -25,6 +29,7 @@ impl CachedSize {
     }
 }
 
+#[cfg(feature = "with-serde")]
 impl Serialize for CachedSize {
 
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -37,6 +42,7 @@ impl Serialize for CachedSize {
     }
 }
 
+#[cfg(feature = "with-serde")]
 impl<'de> Deserialize<'de> for CachedSize {
     fn deserialize<D>(deserializer: D) -> Result<CachedSize, D::Error>
     where
