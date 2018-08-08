@@ -54,6 +54,7 @@ pub struct MessageDescriptor {
     fields: Vec<FieldDescriptor>,
 
     index_by_name: HashMap<String, usize>,
+    index_by_name_or_json_name: HashMap<String, usize>,
     index_by_number: HashMap<u32, usize>,
 }
 
@@ -75,10 +76,16 @@ impl MessageDescriptor {
         }
 
         let mut index_by_name = HashMap::new();
+        let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, f) in proto.message.get_field().iter().enumerate() {
-            index_by_number.insert(f.get_number() as u32, i);
-            index_by_name.insert(f.get_name().to_string(), i);
+            assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
+            assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
+            assert!(index_by_name_or_json_name.insert(f.get_name().to_owned(), i).is_none());
+            if f.get_json_name() != f.get_name() {
+                let json_name = f.get_json_name().to_owned();
+                assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
+            }
         }
 
         let mut full_name = file_descriptor_proto.get_package().to_string();
@@ -99,6 +106,7 @@ impl MessageDescriptor {
                 })
                 .collect(),
             index_by_name,
+            index_by_name_or_json_name,
             index_by_number,
             file_descriptor_proto,
         }
@@ -163,6 +171,12 @@ impl MessageDescriptor {
     /// Find message field by field name
     pub fn field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
         let &index = self.index_by_name.get(name)?;
+        Some(&self.fields[index])
+    }
+
+    /// Find message field by field name or field JSON name
+    pub fn field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+        let &index = self.index_by_name_or_json_name.get(name)?;
         Some(&self.fields[index])
     }
 

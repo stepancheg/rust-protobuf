@@ -18,6 +18,7 @@ use reflect::repeated::ReflectRepeatedRef;
 use reflect::repeated::ReflectRepeatedMut;
 use reflect::map::ReflectMapRef;
 use reflect::map::ReflectMapMut;
+use json::json_name;
 
 
 /// Reference to a value stored in a field, optional, repeated or map.
@@ -66,6 +67,7 @@ fn _assert_sync<'a>() {
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
     accessor: FieldAccessor,
+    json_name: String,
 }
 
 impl FieldDescriptor {
@@ -77,6 +79,8 @@ impl FieldDescriptor {
         FieldDescriptor {
             proto,
             accessor,
+            // probably could be lazy-init
+            json_name: json_name(proto.get_name()),
         }
     }
 
@@ -89,8 +93,7 @@ impl FieldDescriptor {
     }
 
     pub fn json_name(&self) -> &str {
-        // TODO: Message field names are mapped to lowerCamelCase and become JSON object keys.
-        self.name()
+        &self.json_name
     }
 
     pub fn is_repeated(&self) -> bool {
