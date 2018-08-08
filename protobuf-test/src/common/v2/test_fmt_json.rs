@@ -42,6 +42,7 @@ fn test_double() {
     let mut m = TestTypes::new();
     m.set_double_singular(12.0);
     test_json_print_parse_message("{double_singular: 12.0}", &m);
+    test_json_parse_message("{double_singular: \"12.0\"}", &m);
 
     let mut m = TestTypes::new();
     m.double_repeated.push(13.0);
@@ -168,12 +169,16 @@ fn test_fixed64() {
     m.set_fixed64_singular(1234567890123456789);
     test_json_print_parse_message(
         "{fixed64_singular: \"1234567890123456789\"}", &m);
+    test_json_parse_message(
+        "{fixed64_singular: 1234567890123456789}", &m);
 
     let mut m = TestTypes::new();
     m.fixed64_repeated.push(2345678901234567890);
     m.fixed64_repeated.push(1345678901234567890);
     test_json_print_parse_message(
         "{fixed64_repeated: [\"2345678901234567890\", \"1345678901234567890\"]}", &m);
+    test_json_parse_message(
+        "{fixed64_repeated: [\"2345678901234567890\", 1345678901234567890]}", &m);
 }
 
 #[test]
