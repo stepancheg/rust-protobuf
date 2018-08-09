@@ -68,6 +68,10 @@ message TestTypes {
     map<string, TestMessage> message_map_field = 317;
 }
 
+message TestTypesList {
+    repeated TestTypes ts = 1;
+}
+
 message TestTextFormatRustIdentifier {
     optional bool const = 1;
 }

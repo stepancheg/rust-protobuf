@@ -141,3 +141,11 @@ pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<Message>> {
     }
     r
 }
+
+pub fn special_messages_typed<M : Message>() -> Vec<M> {
+    let mut r = Vec::new();
+    for m in special_messages(M::descriptor_static()) {
+        r.push(*m.downcast_box().unwrap());
+    }
+    r
+}

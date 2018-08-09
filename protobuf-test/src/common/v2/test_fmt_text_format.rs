@@ -135,7 +135,17 @@ fn test_map_keys_sorted() {
 
 #[test]
 fn test_reflect() {
-    for m in special_messages(TestTypes::descriptor_static()) {
-        test_text_format_message(&*m);
+    for m in special_messages_typed::<TestTypes>() {
+        test_text_format_message(&m);
+        // This slow test is equivalent to the fast test below.
+        // Do just one iteration as smoke test.
+        // `break` statement can be commented out for easier debugging.
+        break;
     }
+
+    let mut l = TestTypesList::new();
+    // TODO: make `ts` field public in codegen
+    l.set_ts(special_messages_typed().into());
+    test_text_format_message(&l);
+
 }
