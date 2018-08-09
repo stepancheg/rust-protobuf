@@ -12,6 +12,8 @@ use reflect::accessor::FieldAccessor;
 use reflect::FieldDescriptor;
 use reflect::reflect_deep_eq::ReflectDeepEq;
 
+use json;
+
 
 trait MessageFactory : Send + Sync + 'static {
     fn new_instance(&self) -> Box<Message>;
@@ -82,8 +84,14 @@ impl MessageDescriptor {
             assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
             assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
             assert!(index_by_name_or_json_name.insert(f.get_name().to_owned(), i).is_none());
-            if f.get_json_name() != f.get_name() {
-                let json_name = f.get_json_name().to_owned();
+
+            let json_name = json::json_name(f.get_name());
+
+            if !f.get_json_name().is_empty() {
+                assert_eq!(json_name, f.get_json_name());
+            }
+
+            if json_name != f.get_name() {
                 assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
             }
         }
