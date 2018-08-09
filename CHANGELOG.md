@@ -16,6 +16,8 @@
 - Reflection can now mutate data (previously reflection could only read data)
 - Fix OOM on malformed input
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
+- [`unknown_fields` field is public
+  now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516)
 
 ## [2.0.4] - 2018-07-19
 
