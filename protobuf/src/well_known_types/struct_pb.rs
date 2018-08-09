@@ -26,7 +26,7 @@ pub struct Struct {
     // message fields
     pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -171,7 +171,7 @@ pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<Value_oneof_kind>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -655,7 +655,7 @@ pub struct ListValue {
     // message fields
     pub values: ::protobuf::RepeatedField<Value>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

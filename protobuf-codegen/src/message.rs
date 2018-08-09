@@ -386,8 +386,7 @@ impl<'a> MessageGen<'a> {
             if self.serde_derive_enabled() {
                 w.write_line("#[serde(skip)]");
             }
-            // TODO: make public
-            w.field_decl("unknown_fields", "::protobuf::UnknownFields");
+            w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
             if self.serde_derive_enabled() {
                 w.write_line("#[serde(skip)]");
             }

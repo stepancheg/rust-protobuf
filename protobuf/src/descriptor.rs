@@ -26,7 +26,7 @@ pub struct FileDescriptorSet {
     // message fields
     file: ::protobuf::RepeatedField<FileDescriptorProto>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -194,7 +194,7 @@ pub struct FileDescriptorProto {
     source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
     syntax: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -892,7 +892,7 @@ pub struct DescriptorProto {
     reserved_range: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>,
     reserved_name: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1486,7 +1486,7 @@ pub struct DescriptorProto_ExtensionRange {
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1674,7 +1674,7 @@ pub struct DescriptorProto_ReservedRange {
     start: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1870,7 +1870,7 @@ pub struct FieldDescriptorProto {
     json_name: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<FieldOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -2595,7 +2595,7 @@ pub struct OneofDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     options: ::protobuf::SingularPtrField<OneofOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -2814,7 +2814,7 @@ pub struct EnumDescriptorProto {
     value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
     options: ::protobuf::SingularPtrField<EnumOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -3081,7 +3081,7 @@ pub struct EnumValueDescriptorProto {
     number: ::std::option::Option<i32>,
     options: ::protobuf::SingularPtrField<EnumValueOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -3339,7 +3339,7 @@ pub struct ServiceDescriptorProto {
     method: ::protobuf::RepeatedField<MethodDescriptorProto>,
     options: ::protobuf::SingularPtrField<ServiceOptions>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -3609,7 +3609,7 @@ pub struct MethodDescriptorProto {
     client_streaming: ::std::option::Option<bool>,
     server_streaming: ::std::option::Option<bool>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -4022,7 +4022,7 @@ pub struct FileOptions {
     csharp_namespace: ::protobuf::SingularField<::std::string::String>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -4843,7 +4843,7 @@ pub struct MessageOptions {
     map_entry: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -5162,7 +5162,7 @@ pub struct FieldOptions {
     weak: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -5649,7 +5649,7 @@ pub struct OneofOptions {
     // message fields
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -5808,7 +5808,7 @@ pub struct EnumOptions {
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -6044,7 +6044,7 @@ pub struct EnumValueOptions {
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -6241,7 +6241,7 @@ pub struct ServiceOptions {
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -6438,7 +6438,7 @@ pub struct MethodOptions {
     deprecated: ::std::option::Option<bool>,
     uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -6640,7 +6640,7 @@ pub struct UninterpretedOption {
     string_value: ::protobuf::SingularField<::std::vec::Vec<u8>>,
     aggregate_value: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -7071,7 +7071,7 @@ pub struct UninterpretedOption_NamePart {
     name_part: ::protobuf::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -7277,7 +7277,7 @@ pub struct SourceCodeInfo {
     // message fields
     location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -7438,7 +7438,7 @@ pub struct SourceCodeInfo_Location {
     trailing_comments: ::protobuf::SingularField<::std::string::String>,
     leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -7781,7 +7781,7 @@ pub struct GeneratedCodeInfo {
     // message fields
     annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -7941,7 +7941,7 @@ pub struct GeneratedCodeInfo_Annotation {
     begin: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

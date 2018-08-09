@@ -27,7 +27,7 @@ pub struct Any {
     pub type_url: ::std::string::String,
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

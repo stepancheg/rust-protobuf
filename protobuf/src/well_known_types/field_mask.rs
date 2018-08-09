@@ -26,7 +26,7 @@ pub struct FieldMask {
     // message fields
     pub paths: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

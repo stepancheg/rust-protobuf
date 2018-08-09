@@ -24,7 +24,7 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[derive(PartialEq,Clone,Default)]
 pub struct Empty {
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

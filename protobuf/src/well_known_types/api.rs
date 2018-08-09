@@ -32,7 +32,7 @@ pub struct Api {
     pub mixins: ::protobuf::RepeatedField<Mixin>,
     pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -459,7 +459,7 @@ pub struct Method {
     pub options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
     pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -838,7 +838,7 @@ pub struct Mixin {
     pub name: ::std::string::String,
     pub root: ::std::string::String,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

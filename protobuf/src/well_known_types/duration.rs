@@ -27,7 +27,7 @@ pub struct Duration {
     pub seconds: i64,
     pub nanos: i32,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

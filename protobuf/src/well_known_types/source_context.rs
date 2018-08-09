@@ -26,7 +26,7 @@ pub struct SourceContext {
     // message fields
     pub file_name: ::std::string::String,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

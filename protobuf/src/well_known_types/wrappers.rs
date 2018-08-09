@@ -26,7 +26,7 @@ pub struct DoubleValue {
     // message fields
     pub value: f64,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -169,7 +169,7 @@ pub struct FloatValue {
     // message fields
     pub value: f32,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -312,7 +312,7 @@ pub struct Int64Value {
     // message fields
     pub value: i64,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -455,7 +455,7 @@ pub struct UInt64Value {
     // message fields
     pub value: u64,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -598,7 +598,7 @@ pub struct Int32Value {
     // message fields
     pub value: i32,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -741,7 +741,7 @@ pub struct UInt32Value {
     // message fields
     pub value: u32,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -884,7 +884,7 @@ pub struct BoolValue {
     // message fields
     pub value: bool,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1027,7 +1027,7 @@ pub struct StringValue {
     // message fields
     pub value: ::std::string::String,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1177,7 +1177,7 @@ pub struct BytesValue {
     // message fields
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 

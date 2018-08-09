@@ -31,7 +31,7 @@ pub struct Type {
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -412,7 +412,7 @@ pub struct Field {
     pub json_name: ::std::string::String,
     pub default_value: ::std::string::String,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1054,7 +1054,7 @@ pub struct Enum {
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1388,7 +1388,7 @@ pub struct EnumValue {
     pub number: i32,
     pub options: ::protobuf::RepeatedField<Option>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1621,7 +1621,7 @@ pub struct Option {
     pub name: ::std::string::String,
     pub value: ::protobuf::SingularPtrField<::protobuf::well_known_types::Any>,
     // special fields
-    unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: ::protobuf::UnknownFields,
     cached_size: ::protobuf::CachedSize,
 }
 
