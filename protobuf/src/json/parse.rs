@@ -1,3 +1,9 @@
+use std::num::ParseIntError;
+use std::num::ParseFloatError;
+
+use std::f32;
+use std::f64;
+
 use super::base64;
 
 use Message;
@@ -17,14 +23,10 @@ use json::base64::FromBase64Error;
 use text_format::lexer::Lexer;
 use text_format::lexer::LexerError;
 use text_format::lexer::Token;
-use std::num::ParseIntError;
-use std::num::ParseFloatError;
-
-use std::f32;
-use std::f64;
 
 use super::float;
 use text_format::lexer::JsonNumberLit;
+use well_known_types::Duration;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -34,6 +36,7 @@ pub enum ParseError {
     UnknownEnumVariantNumber(i32),
     FromBase64Error(FromBase64Error),
     IncorrectStrLit(LexerError),
+    IncorrectDuration,
     ParseIntError(ParseIntError),
     ParseFloatError(ParseFloatError),
     ExpectingBool,
@@ -386,6 +389,10 @@ impl<'a> Parser<'a> {
     }
 
     fn merge_inner(&mut self, message: &mut Message) -> ParseResult<()> {
+        if let Some(duration) = message.as_any_mut().downcast_mut() {
+            return self.merge_duration(duration)
+        }
+
         let descriptor = message.descriptor();
 
         self.tokenizer.next_symbol_expect_eq('{')?;
@@ -406,6 +413,67 @@ impl<'a> Parser<'a> {
             };
             self.tokenizer.next_symbol_expect_eq(':')?;
             self.merge_field(message, field)?;
+        }
+        Ok(())
+    }
+
+    fn merge_duration(&mut self, duration: &mut Duration) -> ParseResult<()> {
+        let s = self.read_string()?;
+        let mut lexer = Lexer::new(&s, ParserLanguage::Json);
+
+        fn next_dec(lexer: &mut Lexer) -> ParseResult<(u64, u32)> {
+            let s = lexer.take_while(|c| c >= '0' && c <= '9');
+
+            if s.len() == 0 {
+                Ok((0, 0))
+            } else {
+                match s.parse() {
+                    Ok(n) => Ok((n, s.len() as u32)),
+                    Err(_) => Err(ParseError::IncorrectDuration),
+                }
+            }
+        }
+
+        let minus = lexer.next_char_if_eq('-');
+        let seconds = match next_dec(&mut lexer)? {
+            (_, 0) => return Err(ParseError::IncorrectDuration),
+            (s, _) => s,
+        };
+        let nanos =
+            if lexer.next_char_if_eq('.') {
+                let (mut a, mut b) = next_dec(&mut lexer)?;
+                if b > 9 {
+                    return Err(ParseError::IncorrectDuration);
+                }
+                while b != 9 {
+                    b += 1;
+                    a *= 10;
+                }
+
+                if a > 999_999_999 {
+                    return Err(ParseError::IncorrectDuration);
+                }
+
+                a
+            } else {
+                0
+            };
+
+        // The suffix "s" is required
+        if !lexer.next_char_if_eq('s') {
+            return Err(ParseError::IncorrectDuration);
+        }
+
+        if !lexer.eof() {
+            return Err(ParseError::IncorrectDuration);
+        }
+
+        if minus {
+            duration.seconds = -(seconds as i64);
+            duration.nanos = -(nanos as i32);
+        } else {
+            duration.seconds = seconds as i64;
+            duration.nanos = nanos as i32;
         }
         Ok(())
     }

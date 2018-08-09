@@ -93,8 +93,12 @@ impl<'a> Lexer<'a> {
         &self.input[self.pos..]
     }
 
+    pub fn lookahead_char_is<P: FnOnce(char) -> bool>(&self, p: P) -> bool {
+        self.lookahead_char().map_or(false, p)
+    }
+
     fn lookahead_char_is_in(&self, alphabet: &str) -> bool {
-        self.lookahead_char().map_or(false, |c| alphabet.contains(c))
+        self.lookahead_char_is(|c| alphabet.contains(c))
     }
 
     fn next_char_opt(&mut self) -> Option<char> {
@@ -192,7 +196,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn take_while<F>(&mut self, f: F) -> &'a str
+    pub fn take_while<F>(&mut self, f: F) -> &'a str
         where F : Fn(char) -> bool
     {
         let start = self.pos;
@@ -234,7 +238,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn next_char_if_eq(&mut self, expect: char) -> bool {
+    pub fn next_char_if_eq(&mut self, expect: char) -> bool {
         self.next_char_if(|c| c == expect) != None
     }
 

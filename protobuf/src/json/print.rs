@@ -10,6 +10,7 @@ use std::f32;
 use std::f64;
 use reflect::ReflectMapRef;
 use json::base64;
+use well_known_types::Duration;
 
 struct Printer {
     buf: String,
@@ -137,6 +138,10 @@ impl Printer {
     fn print_message(&mut self, message: &Message) -> fmt::Result {
         let descriptor = message.descriptor();
 
+        if let Some(duration) = message.as_any().downcast_ref() {
+            return self.print_duration(duration);
+        }
+
         write!(self.buf, "{{")?;
 
         let mut first = true;
@@ -166,6 +171,11 @@ impl Printer {
 
         write!(self.buf, "}}")?;
         Ok(())
+    }
+
+    fn print_duration(&mut self, duration: &Duration) -> fmt::Result {
+        let sign = if duration.seconds >= 0 { "" } else { "-" };
+        write!(self.buf, "\"{}{}.{:09}s\"", sign, duration.seconds.abs(), duration.nanos.abs())
     }
 }
 

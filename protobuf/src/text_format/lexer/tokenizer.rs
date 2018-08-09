@@ -52,6 +52,7 @@ impl<'a> Tokenizer<'a> {
     }
 
     pub fn loc(&self) -> Loc {
+        // TODO: last known token loc
         self.next_token.clone().map_or(self.lexer.loc, |n| n.loc)
     }
 
