@@ -227,6 +227,13 @@ impl<'a> Tokenizer<'a> {
         Ok(self.lookahead_if_symbol()? == Some(symbol))
     }
 
+    pub fn lookahead_is_ident(&mut self, ident: &str) -> TokenizerResult<bool> {
+        Ok(match self.lookahead()? {
+            Some(Token::Ident(i)) => i == ident,
+            _ => false,
+        })
+    }
+
     pub fn next_ident(&mut self) -> TokenizerResult<String> {
         self.next_token_check_map(|token| {
             match token {

@@ -13,6 +13,8 @@ use json::base64;
 
 use well_known_types::Duration;
 use well_known_types::NullValue;
+use well_known_types::Value;
+use well_known_types::Value_oneof_kind;
 use reflect::EnumValueDescriptor;
 
 struct Printer {
@@ -92,15 +94,27 @@ impl Printer {
         Ok(())
     }
 
+    fn print_json_null(&mut self) -> fmt::Result {
+        write!(self.buf, "null")
+    }
+
+    fn print_json_bool(&mut self, b: bool) -> fmt::Result {
+        write!(self.buf, "{}", b)
+    }
+
+    fn print_json_float<F : JsonFloat>(&mut self, f: F) -> fmt::Result {
+        f.write_to_json(&mut self.buf)
+    }
+
     fn print_value(&mut self, value: &ReflectValueRef) -> fmt::Result {
         match value {
             ReflectValueRef::U32(v) => write!(self.buf, "{}", v),
             ReflectValueRef::U64(v) => write!(self.buf, "\"{}\"", v),
             ReflectValueRef::I32(v) => write!(self.buf, "{}", v),
             ReflectValueRef::I64(v) => write!(self.buf, "\"{}\"", v),
-            ReflectValueRef::F32(v) => v.write_to_json(&mut self.buf),
-            ReflectValueRef::F64(v) => v.write_to_json(&mut self.buf),
-            ReflectValueRef::Bool(v) => write!(self.buf, "{}", v),
+            ReflectValueRef::F32(v) => self.print_json_float(*v),
+            ReflectValueRef::F64(v) => self.print_json_float(*v),
+            ReflectValueRef::Bool(v) => self.print_json_bool(*v),
             ReflectValueRef::String(v) => self.print_json_string(v),
             ReflectValueRef::Bytes(v) => {
                 let encoded = base64::encode(&v);
@@ -139,7 +153,7 @@ impl Printer {
 
     fn print_enum(&mut self, value: &EnumValueDescriptor) -> fmt::Result {
         if let Some(null_value) = value.cast() {
-            self.print_null_value(&null_value)
+            self.print_wk_null_value(&null_value)
         } else {
             // TODO: option to output JSON as number
             write!(self.buf, "\"{}\"", value.name())
@@ -150,9 +164,9 @@ impl Printer {
         let descriptor = message.descriptor();
 
         if let Some(duration) = message.as_any().downcast_ref() {
-            return self.print_duration(duration);
-        } else if let Some(null_value) = message.as_any().downcast_ref() {
-            return self.print_null_value(null_value);
+            return self.print_wk_duration(duration);
+        } else if let Some(value) = message.as_any().downcast_ref() {
+            return self.print_wk_value(value);
         }
 
         write!(self.buf, "{{")?;
@@ -186,13 +200,26 @@ impl Printer {
         Ok(())
     }
 
-    fn print_duration(&mut self, duration: &Duration) -> fmt::Result {
+    fn print_wk_duration(&mut self, duration: &Duration) -> fmt::Result {
         let sign = if duration.seconds >= 0 { "" } else { "-" };
         write!(self.buf, "\"{}{}.{:09}s\"", sign, duration.seconds.abs(), duration.nanos.abs())
     }
 
-    fn print_null_value(&mut self, _null_value: &NullValue) -> fmt::Result {
-        write!(self.buf, "null")
+    fn print_wk_null_value(&mut self, _null_value: &NullValue) -> fmt::Result {
+        self.print_json_null()
+    }
+
+    fn print_wk_value(&mut self, value: &Value) -> fmt::Result {
+        match value.kind {
+            // None should not be possible here, but it's better to print null than crash
+            None => self.print_json_null(),
+            Some(Value_oneof_kind::null_value(null_value)) => self.print_wk_null_value(&null_value),
+            Some(Value_oneof_kind::bool_value(b)) => self.print_json_bool(b),
+            Some(Value_oneof_kind::number_value(n)) => self.print_json_float(n),
+            Some(Value_oneof_kind::string_value(ref s)) => self.print_json_string(&s),
+            Some(Value_oneof_kind::struct_value(_)) => unimplemented!(),
+            Some(Value_oneof_kind::list_value(_)) => unimplemented!(),
+        }
     }
 }
 

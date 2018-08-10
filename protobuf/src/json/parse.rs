@@ -30,6 +30,10 @@ use text_format::lexer::JsonNumberLit;
 
 use well_known_types::Duration;
 use well_known_types::NullValue;
+use well_known_types::Value;
+use well_known_types::Value_oneof_kind;
+use well_known_types::ListValue;
+use well_known_types::Struct;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -45,6 +49,7 @@ pub enum ParseError {
     ExpectingBool,
     ExpectingStrOrInt,
     ExpectingNumber,
+    UnexpectedToken,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -268,8 +273,7 @@ impl<'a> Parser<'a> {
         -> ParseResult<&'e EnumValueDescriptor>
     {
         if descriptor.is::<NullValue>() {
-            self.tokenizer.next_ident_expect_eq("null")?;
-            return Ok(NullValue::NULL_VALUE.descriptor());
+            return Ok(self.read_wk_null_value()?.descriptor());
         }
 
         if self.tokenizer.lookahead_is_str_lit()? {
@@ -288,6 +292,11 @@ impl<'a> Parser<'a> {
         } else {
             Err(ParseError::ExpectingStrOrInt)
         }
+    }
+
+    fn read_wk_null_value(&mut self) -> ParseResult<NullValue> {
+        self.tokenizer.next_ident_expect_eq("null")?;
+        Ok(NullValue::NULL_VALUE)
     }
 
     fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<Message>> {
@@ -398,7 +407,11 @@ impl<'a> Parser<'a> {
 
     fn merge_inner(&mut self, message: &mut Message) -> ParseResult<()> {
         if let Some(duration) = message.as_any_mut().downcast_mut() {
-            return self.merge_duration(duration)
+            return self.merge_wk_duration(duration);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut() {
+            return self.merge_wk_value(value);
         }
 
         let descriptor = message.descriptor();
@@ -425,7 +438,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_duration(&mut self, duration: &mut Duration) -> ParseResult<()> {
+    fn merge_wk_duration(&mut self, duration: &mut Duration) -> ParseResult<()> {
         let s = self.read_string()?;
         let mut lexer = Lexer::new(&s, ParserLanguage::Json);
 
@@ -482,6 +495,35 @@ impl<'a> Parser<'a> {
         } else {
             duration.seconds = seconds as i64;
             duration.nanos = nanos as i32;
+        }
+        Ok(())
+    }
+
+    fn read_wk_list_value(&mut self) -> ParseResult<ListValue> {
+        unimplemented!()
+    }
+
+    fn read_wk_struct(&mut self) -> ParseResult<Struct> {
+        unimplemented!()
+    }
+
+    fn merge_wk_value(&mut self, value: &mut Value) -> ParseResult<()> {
+        if self.tokenizer.lookahead_is_ident("null")? {
+            value.kind = Some(Value_oneof_kind::null_value(self.read_wk_null_value()?));
+        } else if self.tokenizer.lookahead_is_ident("true")?
+            || self.tokenizer.lookahead_is_ident("false")?
+        {
+            value.kind = Some(Value_oneof_kind::bool_value(self.read_bool()?));
+        } else if self.tokenizer.lookahead_is_json_number()? {
+            value.kind = Some(Value_oneof_kind::number_value(self.read_f64()?));
+        } else if self.tokenizer.lookahead_is_str_lit()? {
+            value.kind = Some(Value_oneof_kind::string_value(self.read_string()?));
+        } else if self.tokenizer.lookahead_is_symbol('[')? {
+            value.kind = Some(Value_oneof_kind::list_value(self.read_wk_list_value()?));
+        } else if self.tokenizer.lookahead_is_symbol('{')? {
+            value.kind = Some(Value_oneof_kind::struct_value(self.read_wk_struct()?));
+        } else {
+            return Err(ParseError::UnexpectedToken);
         }
         Ok(())
     }
