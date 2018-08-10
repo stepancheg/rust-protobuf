@@ -450,6 +450,7 @@ fn field_elem(
                     &enum_with_scope,
                     field.message.get_scope().get_file_descriptor(),
                     customize,
+                    root_scope,
                 );
                 let ev = if field.field.has_default_value() {
                     e.value_by_name(field.field.get_default_value()).clone()

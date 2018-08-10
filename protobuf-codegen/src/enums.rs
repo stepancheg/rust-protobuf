@@ -5,6 +5,7 @@ use protobuf::descriptorx::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
+use rust_types_values::type_name_to_rust_relative;
 
 
 #[derive(Clone)]
@@ -52,7 +53,8 @@ impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
         current_file: &FileDescriptorProto,
-        customize: &Customize
+        customize: &Customize,
+        root_scope: &RootScope,
     ) -> EnumGen<'a> {
         let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
             current_file.get_name()
@@ -60,16 +62,14 @@ impl<'a> EnumGen<'a> {
             // field type is a message or enum declared in the same file
             enum_with_scope.rust_name()
         } else {
-            format!(
-                "super::{}::{}",
-                proto_path_to_rust_mod(
-                    enum_with_scope.get_scope().get_file_descriptor().get_name(),
-                ),
-                enum_with_scope.rust_name()
-            )
+            type_name_to_rust_relative(
+                &enum_with_scope.name_absolute(),
+                current_file,
+                false,
+                root_scope)
         };
         EnumGen {
-            enum_with_scope: enum_with_scope,
+            enum_with_scope,
             type_name: rust_name,
             lite_runtime: enum_with_scope
                 .get_scope()
