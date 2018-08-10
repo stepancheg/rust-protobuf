@@ -33,6 +33,8 @@ use well_known_types::NullValue;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
 use well_known_types::ListValue;
+use well_known_types::DoubleValue;
+use well_known_types::FloatValue;
 use well_known_types::Struct;
 
 #[derive(Debug)]
@@ -414,6 +416,14 @@ impl<'a> Parser<'a> {
             return self.merge_wk_value(value);
         }
 
+        if let Some(value) = message.as_any_mut().downcast_mut() {
+            return self.merge_wk_double_value(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut() {
+            return self.merge_wk_float_value(value);
+        }
+
         let descriptor = message.descriptor();
 
         self.tokenizer.next_symbol_expect_eq('{')?;
@@ -505,6 +515,16 @@ impl<'a> Parser<'a> {
 
     fn read_wk_struct(&mut self) -> ParseResult<Struct> {
         unimplemented!()
+    }
+
+    fn merge_wk_double_value(&mut self, value: &mut DoubleValue) -> ParseResult<()> {
+        value.value = self.read_number()?;
+        Ok(())
+    }
+
+    fn merge_wk_float_value(&mut self, value: &mut FloatValue) -> ParseResult<()> {
+        value.value = self.read_number()?;
+        Ok(())
     }
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResult<()> {

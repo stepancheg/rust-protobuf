@@ -15,6 +15,8 @@ use well_known_types::Duration;
 use well_known_types::NullValue;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
+use well_known_types::DoubleValue;
+use well_known_types::FloatValue;
 use reflect::EnumValueDescriptor;
 
 struct Printer {
@@ -167,6 +169,10 @@ impl Printer {
             return self.print_wk_duration(duration);
         } else if let Some(value) = message.as_any().downcast_ref() {
             return self.print_wk_value(value);
+        } else if let Some(value) = message.as_any().downcast_ref() {
+            return self.print_wk_double_value(value);
+        } else if let Some(value) = message.as_any().downcast_ref() {
+            return self.print_wk_float_value(value);
         }
 
         write!(self.buf, "{{")?;
@@ -207,6 +213,14 @@ impl Printer {
 
     fn print_wk_null_value(&mut self, _null_value: &NullValue) -> fmt::Result {
         self.print_json_null()
+    }
+
+    fn print_wk_double_value(&mut self, value: &DoubleValue) -> fmt::Result {
+        self.print_json_float(value.value)
+    }
+
+    fn print_wk_float_value(&mut self, value: &FloatValue) -> fmt::Result {
+        self.print_json_float(value.value)
     }
 
     fn print_wk_value(&mut self, value: &Value) -> fmt::Result {

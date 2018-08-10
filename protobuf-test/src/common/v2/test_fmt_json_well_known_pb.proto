@@ -15,4 +15,14 @@ message TestFmtJsonWellKnownTypes {
     optional .google.protobuf.Duration duration = 3;
     repeated .google.protobuf.NullValue null_values = 10;
     optional .google.protobuf.Value value = 12;
+
+    optional .google.protobuf.DoubleValue double_value = 31;
+    optional .google.protobuf.FloatValue float_value = 32;
+    optional .google.protobuf.Int64Value int64_value = 33;
+    optional .google.protobuf.UInt64Value uint64_value = 34;
+    optional .google.protobuf.Int32Value int32_value = 35;
+    optional .google.protobuf.UInt32Value uint32_value = 36;
+    optional .google.protobuf.BoolValue bool_value = 37;
+    optional .google.protobuf.StringValue string_value = 38;
+    optional .google.protobuf.BytesValue bytes_value = 39;
 }

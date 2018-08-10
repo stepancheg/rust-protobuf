@@ -41,3 +41,22 @@ fn test_value() {
     // TODO: list
     // TODO: struct
 }
+
+#[test]
+fn test_wrappers() {
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_double_value().value = 10.0;
+    test_json_print_parse_message("{doubleValue: 10.0}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_float_value().value = 12.0;
+    test_json_print_parse_message("{floatValue: 12.0}", &m);
+
+    // TODO
+    // int64_value
+    // uint64_value
+    // int32_value
+    // uint32_value
+    // bool_value
+    // string_value
+    // bytes_value
+}
