@@ -443,6 +443,7 @@ pub fn type_name_to_rust_relative(
     subm: bool,
     root_scope: &RootScope,
 ) -> String {
+    assert!(type_name.starts_with("."), "type name must start with dot: {}", type_name);
     let message_or_enum = root_scope.find_message_or_enum(type_name);
     if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
         // field type is a message or enum declared in the same file
