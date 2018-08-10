@@ -307,6 +307,19 @@ pub trait WithScope<'a> {
         r
     }
 
+    /// Return absolute name starting with dot
+    fn name_absolute(&self) -> String {
+        let mut r = String::new();
+        r.push_str(".");
+        let package = self.get_file_descriptor().get_package();
+        if !package.is_empty() {
+            r.push_str(package);
+            r.push_str(".");
+        }
+        r.push_str(&self.name_to_package());
+        r
+    }
+
     // rust type name of this descriptor
     fn rust_name(&self) -> String {
         let mut r = self.get_scope().rust_prefix();

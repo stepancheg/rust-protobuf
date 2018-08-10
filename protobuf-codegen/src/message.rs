@@ -483,7 +483,7 @@ impl<'a> MessageGen<'a> {
         for enum_type in &self.message.to_scope().get_enums() {
             w.write_line("");
             let current_file = self.message.get_scope().get_file_descriptor();
-            EnumGen::new(enum_type, current_file, &self.customize).write(w);
+            EnumGen::new(enum_type, current_file, &self.customize, self.root_scope).write(w);
         }
     }
 }
