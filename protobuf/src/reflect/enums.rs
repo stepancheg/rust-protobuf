@@ -169,8 +169,12 @@ impl EnumDescriptor {
         Some(&self.values[index])
     }
 
+    pub fn is<E : 'static>(&self) -> bool {
+        TypeId::of::<E>() == self.type_id
+    }
+
     pub fn cast<E : 'static>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() == self.type_id {
+        if self.is::<E>() {
             unsafe {
                 let mut r = mem::uninitialized();
                 self.get_descriptor.copy_to(value, &mut r as *mut E as *mut ());

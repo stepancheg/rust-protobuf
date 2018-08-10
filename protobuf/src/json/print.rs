@@ -10,7 +10,10 @@ use std::f32;
 use std::f64;
 use reflect::ReflectMapRef;
 use json::base64;
+
 use well_known_types::Duration;
+use well_known_types::NullValue;
+use reflect::EnumValueDescriptor;
 
 struct Printer {
     buf: String,
@@ -103,8 +106,7 @@ impl Printer {
                 let encoded = base64::encode(&v);
                 self.print_json_string(&encoded)
             }
-            // TODO: option to output JSON as number
-            ReflectValueRef::Enum(v) => write!(self.buf, "\"{}\"", v.name()),
+            ReflectValueRef::Enum(v) => self.print_enum(v),
             ReflectValueRef::Message(v) => self.print_message(*v),
         }
     }
@@ -135,11 +137,22 @@ impl Printer {
         Ok(())
     }
 
+    fn print_enum(&mut self, value: &EnumValueDescriptor) -> fmt::Result {
+        if let Some(null_value) = value.cast() {
+            self.print_null_value(&null_value)
+        } else {
+            // TODO: option to output JSON as number
+            write!(self.buf, "\"{}\"", value.name())
+        }
+    }
+
     fn print_message(&mut self, message: &Message) -> fmt::Result {
         let descriptor = message.descriptor();
 
         if let Some(duration) = message.as_any().downcast_ref() {
             return self.print_duration(duration);
+        } else if let Some(null_value) = message.as_any().downcast_ref() {
+            return self.print_null_value(null_value);
         }
 
         write!(self.buf, "{{")?;
@@ -176,6 +189,10 @@ impl Printer {
     fn print_duration(&mut self, duration: &Duration) -> fmt::Result {
         let sign = if duration.seconds >= 0 { "" } else { "-" };
         write!(self.buf, "\"{}{}.{:09}s\"", sign, duration.seconds.abs(), duration.nanos.abs())
+    }
+
+    fn print_null_value(&mut self, _null_value: &NullValue) -> fmt::Result {
+        write!(self.buf, "null")
     }
 }
 

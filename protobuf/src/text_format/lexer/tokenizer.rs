@@ -19,6 +19,7 @@ pub enum TokenizerError {
     ExpectIntLit,
     ExpectFloatLit,
     ExpectIdent,
+    ExpectNamedIdent(String),
     ExpectChar(char),
 }
 
@@ -154,6 +155,14 @@ impl<'a> Tokenizer<'a> {
 
     pub fn next_ident_if_eq(&mut self, word: &str) -> TokenizerResult<bool> {
         Ok(self.next_ident_if_in(&[word])? != None)
+    }
+
+    pub fn next_ident_expect_eq(&mut self, word: &str) -> TokenizerResult<()> {
+        if self.next_ident_if_eq(word)? {
+            Ok(())
+        } else {
+            Err(TokenizerError::ExpectNamedIdent(word.to_owned()))
+        }
     }
 
     pub fn next_ident_if_eq_error(&mut self, word: &str) -> TokenizerResult<()> {

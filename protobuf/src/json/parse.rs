@@ -7,6 +7,7 @@ use std::f64;
 use super::base64;
 
 use Message;
+use enums::ProtobufEnum;
 use text_format::lexer::TokenizerError;
 use text_format::lexer::Loc;
 use text_format::lexer::Tokenizer;
@@ -26,7 +27,9 @@ use text_format::lexer::Token;
 
 use super::float;
 use text_format::lexer::JsonNumberLit;
+
 use well_known_types::Duration;
+use well_known_types::NullValue;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -264,6 +267,11 @@ impl<'a> Parser<'a> {
     fn read_enum<'e>(&mut self, descriptor: &'e EnumDescriptor)
         -> ParseResult<&'e EnumValueDescriptor>
     {
+        if descriptor.is::<NullValue>() {
+            self.tokenizer.next_ident_expect_eq("null")?;
+            return Ok(NullValue::NULL_VALUE.descriptor());
+        }
+
         if self.tokenizer.lookahead_is_str_lit()? {
             let name = self.read_string()?;
             match descriptor.value_by_name(&name) {
