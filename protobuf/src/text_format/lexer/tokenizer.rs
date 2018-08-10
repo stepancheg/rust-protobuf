@@ -42,6 +42,7 @@ impl From<StrLitDecodeError> for TokenizerError {
 pub struct Tokenizer<'a> {
     lexer: Lexer<'a>,
     next_token: Option<TokenWithLocation>,
+    last_token_loc: Option<Loc>,
 }
 
 impl<'a> Tokenizer<'a> {
@@ -49,12 +50,17 @@ impl<'a> Tokenizer<'a> {
         Tokenizer {
             lexer: Lexer::new(input, comment_style),
             next_token: None,
+            last_token_loc: None,
         }
     }
 
     pub fn loc(&self) -> Loc {
-        // TODO: last known token loc
-        self.next_token.clone().map_or(self.lexer.loc, |n| n.loc)
+        // After lookahead return the location of the next token
+        self.next_token.as_ref().map(|t| t.loc.clone())
+            // After token consumed return the location of that token
+            .or(self.last_token_loc.clone())
+            // Otherwise return the position of lexer
+            .unwrap_or(self.lexer.loc)
     }
 
     fn lookahead(&mut self) -> TokenizerResult<Option<&Token>> {
@@ -62,6 +68,7 @@ impl<'a> Tokenizer<'a> {
             Some(ref token) => Some(&token.token),
             None => {
                 self.next_token = self.lexer.next_token()?;
+                self.last_token_loc = self.next_token.as_ref().map(|t| t.loc.clone());
                 match self.next_token {
                     Some(ref token) => Some(&token.token),
                     None => None,
