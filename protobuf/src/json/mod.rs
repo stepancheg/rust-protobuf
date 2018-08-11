@@ -6,6 +6,7 @@ mod parse;
 mod float;
 mod base64;
 mod json_name;
+mod well_known_wrapper;
 
 pub use self::print::print_to_string;
 pub use self::parse::merge_from_str;

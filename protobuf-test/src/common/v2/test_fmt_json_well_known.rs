@@ -65,15 +65,27 @@ fn test_wrappers() {
     let mut m = TestFmtJsonWellKnownTypes::new();
     m.mut_float_value().value = 12.0;
     test_json_print_parse_message("{floatValue: 12.0}", &m);
-
-    // TODO
-    // int64_value
-    // uint64_value
-    // int32_value
-    // uint32_value
-    // bool_value
-    // string_value
-    // bytes_value
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_int64_value().value = -13;
+    test_json_print_parse_message("{int64Value: \"-13\"}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_uint64_value().value = 13;
+    test_json_print_parse_message("{uint64Value: \"13\"}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_int32_value().value = -13;
+    test_json_print_parse_message("{int32Value: -13}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_uint32_value().value = 13;
+    test_json_print_parse_message("{uint32Value: 13}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_bool_value().value = true;
+    test_json_print_parse_message("{boolValue: true}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_string_value().value = "ab".to_owned();
+    test_json_print_parse_message("{stringValue: \"ab\"}", &m);
+    let mut m = TestFmtJsonWellKnownTypes::new();
+    m.mut_bytes_value().value = b"ab".to_vec();
+    test_json_print_parse_message("{bytesValue: \"YWI=\"}", &m);
 }
 
 #[test]

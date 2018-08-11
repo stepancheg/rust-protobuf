@@ -35,7 +35,15 @@ use well_known_types::Value_oneof_kind;
 use well_known_types::ListValue;
 use well_known_types::DoubleValue;
 use well_known_types::FloatValue;
+use well_known_types::Int64Value;
+use well_known_types::UInt64Value;
+use well_known_types::Int32Value;
+use well_known_types::UInt32Value;
+use well_known_types::BoolValue;
+use well_known_types::StringValue;
+use well_known_types::BytesValue;
 use well_known_types::Struct;
+use json::well_known_wrapper::WellKnownWrapper;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -93,7 +101,7 @@ struct Parser<'a> {
     tokenizer: Tokenizer<'a>,
 }
 
-trait FromJsonNumber : Sized {
+trait FromJsonNumber : PartialEq + Sized {
     fn from_f64(v: f64) -> Self;
     fn to_f64(&self) -> f64;
     fn from_string(v: &str) -> ParseResult<Self>;
@@ -220,7 +228,7 @@ impl<'a> Parser<'a> {
         })?)
     }
 
-    fn read_number<V : FromJsonNumber + PartialEq>(&mut self) -> ParseResult<V> {
+    fn read_number<V : FromJsonNumber>(&mut self) -> ParseResult<V> {
         if let Some(v) = self.read_json_number_opt()? {
             V::from_string(&v.0)
         } else if self.tokenizer.lookahead_is_str_lit()? {
@@ -229,6 +237,30 @@ impl<'a> Parser<'a> {
         } else {
             Err(ParseError::ExpectingNumber)
         }
+    }
+
+    fn merge_wrapper<W>(&mut self, w: &mut W) -> ParseResult<()>
+        where
+            W : WellKnownWrapper,
+            W::Underlying : FromJsonNumber,
+    {
+        *w.get_mut() = self.read_number()?;
+        Ok(())
+    }
+
+    fn merge_bool_value(&mut self, w: &mut BoolValue) -> ParseResult<()> {
+        w.value = self.read_bool()?;
+        Ok(())
+    }
+
+    fn merge_string_value(&mut self, w: &mut StringValue) -> ParseResult<()> {
+        w.value = self.read_string()?;
+        Ok(())
+    }
+
+    fn merge_bytes_value(&mut self, w: &mut BytesValue) -> ParseResult<()> {
+        w.value = self.read_bytes()?;
+        Ok(())
     }
 
     fn read_u32(&mut self) -> ParseResult<u32> {
@@ -416,12 +448,40 @@ impl<'a> Parser<'a> {
             return self.merge_wk_value(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut() {
-            return self.merge_wk_double_value(value);
+        if let Some(value) = message.as_any_mut().downcast_mut::<DoubleValue>() {
+            return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut() {
-            return self.merge_wk_float_value(value);
+        if let Some(value) = message.as_any_mut().downcast_mut::<FloatValue>() {
+            return self.merge_wrapper(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<Int64Value>() {
+            return self.merge_wrapper(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<UInt64Value>() {
+            return self.merge_wrapper(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<Int32Value>() {
+            return self.merge_wrapper(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<UInt32Value>() {
+            return self.merge_wrapper(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<BoolValue>() {
+            return self.merge_bool_value(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<StringValue>() {
+            return self.merge_string_value(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<BytesValue>() {
+            return self.merge_bytes_value(value);
         }
 
         let descriptor = message.descriptor();
@@ -515,16 +575,6 @@ impl<'a> Parser<'a> {
 
     fn read_wk_struct(&mut self) -> ParseResult<Struct> {
         unimplemented!()
-    }
-
-    fn merge_wk_double_value(&mut self, value: &mut DoubleValue) -> ParseResult<()> {
-        value.value = self.read_number()?;
-        Ok(())
-    }
-
-    fn merge_wk_float_value(&mut self, value: &mut FloatValue) -> ParseResult<()> {
-        value.value = self.read_number()?;
-        Ok(())
     }
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResult<()> {
