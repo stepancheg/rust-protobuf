@@ -370,16 +370,9 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_repeated_field(
-        &mut self,
-        message: &mut Message,
-        field: &FieldDescriptor,
-        t: &RuntimeTypeDynamic)
-        -> ParseResult<()>
+    fn read_list<C>(&mut self, mut read_item: C) -> ParseResult<()>
+        where C : for<'b> FnMut(&'b mut Self) -> ParseResult<()>
     {
-        let mut repeated = field.mut_repeated(message);
-        repeated.clear();
-
         if self.tokenizer.next_ident_if_eq("null")? {
             return Ok(());
         }
@@ -393,7 +386,62 @@ impl<'a> Parser<'a> {
             }
             first = false;
 
-            repeated.push(self.read_value(t)?);
+            read_item(self)?;
+        }
+
+        Ok(())
+    }
+
+    fn merge_repeated_field(
+        &mut self,
+        message: &mut Message,
+        field: &FieldDescriptor,
+        t: &RuntimeTypeDynamic)
+        -> ParseResult<()>
+    {
+        let mut repeated = field.mut_repeated(message);
+        repeated.clear();
+
+        self.read_list(|s| {
+            repeated.push(s.read_value(t)?);
+            Ok(())
+        })
+    }
+
+    fn merge_wk_list_value(
+        &mut self,
+        list: &mut ListValue)
+        -> ParseResult<()>
+    {
+        list.values.clear();
+
+        self.read_list(|s| {
+            list.values.push(s.read_wk_value()?);
+            Ok(())
+        })
+    }
+
+    fn read_map<K, Fk, Fi>(&mut self, mut read_key: Fk, mut read_value_and_insert: Fi)
+        -> ParseResult<()>
+        where
+            Fk : for<'b> FnMut(&mut Self) -> ParseResult<K>,
+            Fi : for<'b> FnMut(&mut Self, K) -> ParseResult<()>,
+    {
+        if self.tokenizer.next_ident_if_eq("null")? {
+            return Ok(())
+        }
+
+        self.tokenizer.next_symbol_expect_eq('{')?;
+        let mut first = true;
+        while !self.tokenizer.next_symbol_if_eq('}')? {
+            if !first {
+                self.tokenizer.next_symbol_expect_eq(',')?;
+            }
+            first = false;
+
+            let k = read_key(self)?;
+            self.tokenizer.next_symbol_expect_eq(':')?;
+            read_value_and_insert(self, k)?;
         }
 
         Ok(())
@@ -410,25 +458,25 @@ impl<'a> Parser<'a> {
         let mut map = field.mut_map(message);
         map.clear();
 
-        if self.tokenizer.next_ident_if_eq("null")? {
-            return Ok(())
-        }
-
-        self.tokenizer.next_symbol_expect_eq('{')?;
-        let mut first = true;
-        while !self.tokenizer.next_symbol_if_eq('}')? {
-            if !first {
-                self.tokenizer.next_symbol_expect_eq(',')?;
-            }
-            first = false;
-
-            let k = self.read_value(kt)?;
-            self.tokenizer.next_symbol_expect_eq(':')?;
-            let v = self.read_value(vt)?;
+        self.read_map(|s| s.read_value(kt), |s, k| {
+            let v = s.read_value(vt)?;
             map.insert(k, v);
-        }
+            Ok(())
+        })
+    }
 
-        Ok(())
+    fn merge_wk_struct(
+        &mut self,
+        struct_value: &mut Struct)
+        -> ParseResult<()>
+    {
+        struct_value.fields.clear();
+
+        self.read_map(|s| s.read_string(), |s, k| {
+            let v = s.read_wk_value()?;
+            struct_value.fields.insert(k, v);
+            Ok(())
+        })
     }
 
     fn merge_field(&mut self, message: &mut Message, field: &FieldDescriptor) -> ParseResult<()> {
@@ -482,6 +530,14 @@ impl<'a> Parser<'a> {
 
         if let Some(value) = message.as_any_mut().downcast_mut::<BytesValue>() {
             return self.merge_bytes_value(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<ListValue>() {
+            return self.merge_wk_list_value(value);
+        }
+
+        if let Some(value) = message.as_any_mut().downcast_mut::<Struct>() {
+            return self.merge_wk_struct(value);
         }
 
         let descriptor = message.descriptor();
@@ -570,11 +626,15 @@ impl<'a> Parser<'a> {
     }
 
     fn read_wk_list_value(&mut self) -> ParseResult<ListValue> {
-        unimplemented!()
+        let mut r = ListValue::new();
+        self.merge_wk_list_value(&mut r)?;
+        Ok(r)
     }
 
     fn read_wk_struct(&mut self) -> ParseResult<Struct> {
-        unimplemented!()
+        let mut r = Struct::new();
+        self.merge_wk_struct(&mut r)?;
+        Ok(r)
     }
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResult<()> {
@@ -596,6 +656,12 @@ impl<'a> Parser<'a> {
             return Err(ParseError::UnexpectedToken);
         }
         Ok(())
+    }
+
+    fn read_wk_value(&mut self) -> ParseResult<Value> {
+        let mut v = Value::new();
+        self.merge_wk_value(&mut v)?;
+        Ok(v)
     }
 
     fn merge(&mut self, message: &mut Message) -> ParseWithLocResult<()> {

@@ -15,6 +15,8 @@ message TestFmtJsonWellKnownTypes {
     optional .google.protobuf.Duration duration = 3;
     repeated .google.protobuf.NullValue null_values = 10;
     optional .google.protobuf.Value value = 12;
+    optional .google.protobuf.ListValue list_value = 13;
+    optional .google.protobuf.Struct struct_value = 14;
 
     optional .google.protobuf.DoubleValue double_value = 31;
     optional .google.protobuf.FloatValue float_value = 32;

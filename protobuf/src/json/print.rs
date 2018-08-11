@@ -24,6 +24,8 @@ use well_known_types::UInt32Value;
 use well_known_types::BoolValue;
 use well_known_types::StringValue;
 use well_known_types::BytesValue;
+use well_known_types::ListValue;
+use well_known_types::Struct;
 
 use json::well_known_wrapper::WellKnownWrapper;
 
@@ -34,7 +36,7 @@ struct Printer {
 }
 
 trait PrintableToJson {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result;
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result;
 }
 
 trait JsonFloat : fmt::Display + fmt::Debug + PrintableToJson {
@@ -70,8 +72,8 @@ impl JsonFloat for f32 {
 }
 
 impl PrintableToJson for f32 {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        self.print_to_json_impl(w)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        self.print_to_json_impl(&mut w.buf)
     }
 }
 
@@ -90,78 +92,163 @@ impl JsonFloat for f64 {
 }
 
 impl PrintableToJson for f64 {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        self.print_to_json_impl(w)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        self.print_to_json_impl(&mut w.buf)
     }
 }
 
 impl PrintableToJson for u64 {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        write!(w, "\"{}\"", self)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        write!(w.buf, "\"{}\"", self)
     }
 }
 
 impl PrintableToJson for i64 {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        write!(w, "\"{}\"", self)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        write!(w.buf, "\"{}\"", self)
     }
 }
 
 impl PrintableToJson for u32 {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        write!(w, "{}", self)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        write!(w.buf, "{}", self)
     }
 }
 
 impl PrintableToJson for i32 {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        write!(w, "{}", self)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        write!(w.buf, "{}", self)
     }
 }
 
 impl PrintableToJson for bool {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        write!(w, "{}", self)
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        write!(w.buf, "{}", self)
     }
 }
 
 impl PrintableToJson for str {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
-        write!(w, "\"")?;
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        write!(w.buf, "\"")?;
         for c in self.chars() {
             match c {
-                '"' => write!(w, "\\\""),
-                '\\' => write!(w, "\\\\"),
-                '\n' => write!(w, "\\n"),
-                '\r' => write!(w, "\\r"),
-                '\t' => write!(w, "\\t"),
-                c if c.is_control() => write!(w, "\\u{:04x}", c as u32),
-                c => write!(w, "{}", c),
+                '"' => write!(w.buf, "\\\""),
+                '\\' => write!(w.buf, "\\\\"),
+                '\n' => write!(w.buf, "\\n"),
+                '\r' => write!(w.buf, "\\r"),
+                '\t' => write!(w.buf, "\\t"),
+                c if c.is_control() => write!(w.buf, "\\u{:04x}", c as u32),
+                c => write!(w.buf, "{}", c),
             }?;
         }
-        write!(w, "\"")?;
+        write!(w.buf, "\"")?;
         Ok(())    }
 }
 
 impl PrintableToJson for String {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
         self.as_str().print_to_json(w)
     }
 }
 
 impl PrintableToJson for [u8] {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
         let encoded = base64::encode(self);
         encoded.print_to_json(w)
     }
 }
 
 impl PrintableToJson for Vec<u8> {
-    fn print_to_json(&self, w: &mut String) -> fmt::Result {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
         self.as_slice().print_to_json(w)
     }
 }
 
+impl<'a> PrintableToJson for ReflectValueRef<'a> {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        match self {
+            ReflectValueRef::U32(v) => w.print_printable(v),
+            ReflectValueRef::U64(v) => w.print_printable(v),
+            ReflectValueRef::I32(v) => w.print_printable(v),
+            ReflectValueRef::I64(v) => w.print_printable(v),
+            ReflectValueRef::F32(v) => w.print_printable(v),
+            ReflectValueRef::F64(v) => w.print_printable(v),
+            ReflectValueRef::Bool(v) => w.print_printable(v),
+            ReflectValueRef::String(v) => w.print_printable::<str>(v),
+            ReflectValueRef::Bytes(v) => w.print_printable::<[u8]>(v),
+            ReflectValueRef::Enum(v) => w.print_enum(v),
+            ReflectValueRef::Message(v) => w.print_message(*v),
+        }
+    }
+}
+
+impl PrintableToJson for Value {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        match self.kind {
+            // None should not be possible here, but it's better to print null than crash
+            None => w.print_json_null(),
+            Some(Value_oneof_kind::null_value(null_value)) => w.print_wk_null_value(&null_value),
+            Some(Value_oneof_kind::bool_value(b)) => w.print_printable(&b),
+            Some(Value_oneof_kind::number_value(n)) => w.print_printable(&n),
+            Some(Value_oneof_kind::string_value(ref s)) => w.print_printable::<String>(&s),
+            Some(Value_oneof_kind::struct_value(ref s)) => w.print_printable(&s),
+            Some(Value_oneof_kind::list_value(ref l)) => w.print_printable(&l),
+        }
+    }
+}
+
+impl PrintableToJson for ListValue {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        w.print_list(&self.values)
+    }
+}
+
+impl PrintableToJson for Struct {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        w.print_object(&self.fields)
+    }
+}
+
+impl<'a, P : PrintableToJson> PrintableToJson for &'a P {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        (*self).print_to_json(w)
+    }
+}
+
+
+trait ObjectKey {
+    fn print(&self, w: &mut Printer) -> fmt::Result;
+}
+
+impl<'a> ObjectKey for ReflectValueRef<'a> {
+    fn print(&self, w: &mut Printer) -> fmt::Result {
+        match self {
+            ReflectValueRef::U32(v) => w.print_printable(v),
+            ReflectValueRef::U64(v) => w.print_printable(v),
+            ReflectValueRef::I32(v) => w.print_printable(v),
+            ReflectValueRef::I64(v) => w.print_printable(v),
+            ReflectValueRef::Bool(v) => w.print_printable(v),
+            ReflectValueRef::String(v) => w.print_printable::<str>(v),
+            ReflectValueRef::Bytes(v) => w.print_printable::<[u8]>(v),
+            ReflectValueRef::Enum(v) => w.print_enum(v),
+            ReflectValueRef::F32(_) |
+            ReflectValueRef::F64(_) |
+            ReflectValueRef::Message(_) => panic!("cannot be object key"),
+        }
+    }
+}
+
+impl ObjectKey for String {
+    fn print(&self, w: &mut Printer) -> fmt::Result {
+        w.print_printable(self)
+    }
+}
+
+impl<'a, O : ObjectKey> ObjectKey for &'a O {
+    fn print(&self, w: &mut Printer) -> fmt::Result {
+        (*self).print(w)
+    }
+}
 
 
 impl Printer {
@@ -179,49 +266,50 @@ impl Printer {
     }
 
     fn print_printable<F : PrintableToJson + ?Sized>(&mut self, f: &F) -> fmt::Result {
-        f.print_to_json(&mut self.buf)
+        f.print_to_json(self)
     }
 
-    fn print_value(&mut self, value: &ReflectValueRef) -> fmt::Result {
-        match value {
-            ReflectValueRef::U32(v) => self.print_printable(v),
-            ReflectValueRef::U64(v) => self.print_printable(v),
-            ReflectValueRef::I32(v) => self.print_printable(v),
-            ReflectValueRef::I64(v) => self.print_printable(v),
-            ReflectValueRef::F32(v) => self.print_printable(v),
-            ReflectValueRef::F64(v) => self.print_printable(v),
-            ReflectValueRef::Bool(v) => self.print_printable(v),
-            ReflectValueRef::String(v) => self.print_printable::<str>(v),
-            ReflectValueRef::Bytes(v) => self.print_printable::<[u8]>(v),
-            ReflectValueRef::Enum(v) => self.print_enum(v),
-            ReflectValueRef::Message(v) => self.print_message(*v),
-        }
-    }
-
-    fn print_repeated(&mut self, repeated: &ReflectRepeatedRef) -> fmt::Result {
+    fn print_list<I>(&mut self, items: I) -> fmt::Result
+        where
+            I: IntoIterator,
+            I::Item: PrintableToJson,
+    {
         write!(self.buf, "[")?;
-        for (i, item) in repeated.into_iter().enumerate() {
+        for (i, item) in items.into_iter().enumerate() {
             if i != 0 {
                 write!(self.buf, ", ")?;
             }
-            self.print_value(&item)?;
+            self.print_printable(&item)?;
         }
         write!(self.buf, "]")?;
         Ok(())
     }
 
-    fn print_map(&mut self, map: &ReflectMapRef) -> fmt::Result {
+    fn print_repeated(&mut self, repeated: &ReflectRepeatedRef) -> fmt::Result {
+        self.print_list(repeated)
+    }
+
+    fn print_object<I, K, V>(&mut self, items: I) -> fmt::Result
+        where
+            I: IntoIterator<Item=(K, V)>,
+            K: ObjectKey,
+            V: PrintableToJson,
+    {
         write!(self.buf, "{{")?;
-        for (i, (k, v)) in map.into_iter().enumerate() {
+        for (i, (k, v)) in items.into_iter().enumerate() {
             if i != 0 {
                 write!(self.buf, ", ")?;
             }
-            self.print_value(&k)?;
+            k.print(self)?;
             write!(self.buf, ": ")?;
-            self.print_value(&v)?;
+            self.print_printable(&v)?;
         }
         write!(self.buf, "}}")?;
         Ok(())
+    }
+
+    fn print_map(&mut self, map: &ReflectMapRef) -> fmt::Result {
+        self.print_object(map.into_iter())
     }
 
     fn print_enum(&mut self, value: &EnumValueDescriptor) -> fmt::Result {
@@ -238,8 +326,8 @@ impl Printer {
 
         if let Some(duration) = message.as_any().downcast_ref() {
             return self.print_wk_duration(duration);
-        } else if let Some(value) = message.as_any().downcast_ref() {
-            return self.print_wk_value(value);
+        } else if let Some(value) = message.as_any().downcast_ref::<Value>() {
+            return self.print_printable(value);
         } else if let Some(value) = message.as_any().downcast_ref::<DoubleValue>() {
             return self.print_wrapper(value);
         } else if let Some(value) = message.as_any().downcast_ref::<FloatValue>() {
@@ -258,6 +346,10 @@ impl Printer {
             return self.print_wrapper(value);
         } else if let Some(value) = message.as_any().downcast_ref::<BytesValue>() {
             return self.print_wrapper(value);
+        } else if let Some(value) = message.as_any().downcast_ref::<ListValue>() {
+            return self.print_printable(value);
+        } else if let Some(value) = message.as_any().downcast_ref::<Struct>() {
+            return self.print_printable(value);
         }
 
         write!(self.buf, "{{")?;
@@ -270,7 +362,7 @@ impl Printer {
                 ReflectFieldRef::Optional(Some(v)) => {
                     self.print_comma_but_first(&mut first)?;
                     write!(self.buf, "{}: ", field.json_name())?;
-                    self.print_value(&v)?;
+                    self.print_printable(&v)?;
                 }
                 ReflectFieldRef::Repeated(v) => {
                     if !v.is_empty() {
@@ -306,19 +398,6 @@ impl Printer {
             W::Underlying : PrintableToJson,
     {
         self.print_printable(value.get_ref())
-    }
-
-    fn print_wk_value(&mut self, value: &Value) -> fmt::Result {
-        match value.kind {
-            // None should not be possible here, but it's better to print null than crash
-            None => self.print_json_null(),
-            Some(Value_oneof_kind::null_value(null_value)) => self.print_wk_null_value(&null_value),
-            Some(Value_oneof_kind::bool_value(b)) => self.print_printable(&b),
-            Some(Value_oneof_kind::number_value(n)) => self.print_printable(&n),
-            Some(Value_oneof_kind::string_value(ref s)) => self.print_printable::<String>(&s),
-            Some(Value_oneof_kind::struct_value(_)) => unimplemented!(),
-            Some(Value_oneof_kind::list_value(_)) => unimplemented!(),
-        }
     }
 }
 
