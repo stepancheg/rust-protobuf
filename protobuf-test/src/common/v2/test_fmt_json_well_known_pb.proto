@@ -13,6 +13,7 @@ import "google/protobuf/wrappers.proto";
 
 message TestFmtJsonWellKnownTypes {
     optional .google.protobuf.Duration duration = 3;
+    optional .google.protobuf.FieldMask field_mask = 4;
     repeated .google.protobuf.NullValue null_values = 10;
     optional .google.protobuf.Value value = 12;
     optional .google.protobuf.ListValue list_value = 13;

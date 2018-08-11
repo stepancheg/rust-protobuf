@@ -11,7 +11,6 @@ use std::f64;
 use reflect::ReflectMapRef;
 use json::base64;
 
-use well_known_types::Duration;
 use well_known_types::NullValue;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
@@ -26,6 +25,8 @@ use well_known_types::StringValue;
 use well_known_types::BytesValue;
 use well_known_types::ListValue;
 use well_known_types::Struct;
+use well_known_types::Duration;
+use well_known_types::FieldMask;
 
 use json::well_known_wrapper::WellKnownWrapper;
 
@@ -182,6 +183,19 @@ impl<'a> PrintableToJson for ReflectValueRef<'a> {
     }
 }
 
+impl PrintableToJson for Duration {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        let sign = if self.seconds >= 0 { "" } else { "-" };
+        write!(w.buf, "\"{}{}.{:09}s\"", sign, self.seconds.abs(), self.nanos.abs())
+    }
+}
+
+impl PrintableToJson for FieldMask {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        w.print_printable(&self.paths.join(","))
+    }
+}
+
 impl PrintableToJson for Value {
     fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
         match self.kind {
@@ -324,8 +338,10 @@ impl Printer {
     fn print_message(&mut self, message: &Message) -> fmt::Result {
         let descriptor = message.descriptor();
 
-        if let Some(duration) = message.as_any().downcast_ref() {
-            return self.print_wk_duration(duration);
+        if let Some(duration) = message.as_any().downcast_ref::<Duration>() {
+            return self.print_printable(duration);
+        } else if let Some(field_mask) = message.as_any().downcast_ref::<FieldMask>() {
+            return self.print_printable(field_mask);
         } else if let Some(value) = message.as_any().downcast_ref::<Value>() {
             return self.print_printable(value);
         } else if let Some(value) = message.as_any().downcast_ref::<DoubleValue>() {
@@ -381,11 +397,6 @@ impl Printer {
 
         write!(self.buf, "}}")?;
         Ok(())
-    }
-
-    fn print_wk_duration(&mut self, duration: &Duration) -> fmt::Result {
-        let sign = if duration.seconds >= 0 { "" } else { "-" };
-        write!(self.buf, "\"{}{}.{:09}s\"", sign, duration.seconds.abs(), duration.nanos.abs())
     }
 
     fn print_wk_null_value(&mut self, _null_value: &NullValue) -> fmt::Result {

@@ -111,5 +111,20 @@ fn test_any() {
 
 #[test]
 fn test_field_mask() {
-    // TODO
+    let mut m = TestFmtJsonWellKnownTypes::new();
+
+    m.set_field_mask(FieldMask::new());
+    test_json_print_parse_message("{fieldMask: \"\"}", &m);
+
+    m.set_field_mask({
+        let mut v = FieldMask::new();
+        v.paths = vec!["a.b".to_owned()].into();
+        v});
+    test_json_print_parse_message("{fieldMask: \"a.b\"}", &m);
+
+    m.set_field_mask({
+        let mut v = FieldMask::new();
+        v.paths = vec!["ab".to_owned(), "c.d.e".to_owned()].into();
+        v});
+    test_json_print_parse_message("{fieldMask: \"ab,c.d.e\"}", &m);
 }

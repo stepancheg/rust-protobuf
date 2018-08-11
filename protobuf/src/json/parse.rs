@@ -29,6 +29,7 @@ use super::float;
 use text_format::lexer::JsonNumberLit;
 
 use well_known_types::Duration;
+use well_known_types::FieldMask;
 use well_known_types::NullValue;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
@@ -492,6 +493,10 @@ impl<'a> Parser<'a> {
             return self.merge_wk_duration(duration);
         }
 
+        if let Some(field_mask) = message.as_any_mut().downcast_mut() {
+            return self.merge_wk_field_mask(field_mask);
+        }
+
         if let Some(value) = message.as_any_mut().downcast_mut() {
             return self.merge_wk_value(value);
         }
@@ -621,6 +626,14 @@ impl<'a> Parser<'a> {
         } else {
             duration.seconds = seconds as i64;
             duration.nanos = nanos as i32;
+        }
+        Ok(())
+    }
+
+    fn merge_wk_field_mask(&mut self, field_mask: &mut FieldMask) -> ParseResult<()> {
+        let s = self.read_string()?;
+        if !s.is_empty() {
+            field_mask.paths = s.split(',').map(|s| s.to_owned()).collect();
         }
         Ok(())
     }
