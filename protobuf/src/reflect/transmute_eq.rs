@@ -4,6 +4,7 @@ mod transmute_eq_impl {
     use std::any::Any;
     use std::mem;
 
+    #[inline(always)]
     pub fn transmute_eq<F : 'static, T : 'static>(mut from: F) -> Result<T, F> {
         // call downcast twice to work around borrow checked
         if (&mut from as &mut Any).downcast_mut::<T>().is_none() {
@@ -33,23 +34,27 @@ mod transmute_eq_impl {
     struct TransmuteEqImpl<F, T>(marker::PhantomData<(F, T)>);
 
     impl<F, T> TransmuteEq<F, T> for TransmuteEqImpl<F, T> {
+        #[inline(always)]
         default fn transmute_eq(from: F) -> Result<T, F> {
             Err(from)
         }
     }
 
     impl<S> TransmuteEq<S, S> for TransmuteEqImpl<S, S> {
+        #[inline(always)]
         fn transmute_eq(from: S) -> Result<S, S> {
             Ok(from)
         }
     }
 
+    #[inline(always)]
     pub fn transmute_eq<F : 'static, T : 'static>(from: F) -> Result<T, F> {
         TransmuteEqImpl::<F, T>::transmute_eq(from)
     }
 }
 
 /// Check if types `F` and `T` are the same.
+#[inline(always)]
 pub fn transmute_eq<F : 'static, T : 'static>(from: F) -> Result<T, F> {
     transmute_eq_impl::transmute_eq(from)
 }

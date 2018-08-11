@@ -13,6 +13,8 @@ use reflect::FieldDescriptor;
 use reflect::reflect_deep_eq::ReflectDeepEq;
 
 use json;
+use descriptorx::MessageWithScope;
+use descriptorx::WithScope;
 
 
 trait MessageFactory : Send + Sync + 'static {
@@ -65,11 +67,24 @@ impl MessageDescriptor {
         M::descriptor_static()
     }
 
-    pub fn new<M : 'static + Message + Default + Clone + PartialEq>(
+    fn compute_full_name(proto: &MessageWithScope) -> String {
+        let mut full_name = proto.get_file_descriptor().get_package().to_string();
+        if full_name.len() > 0 {
+            full_name.push('.');
+        }
+        full_name.push_str(proto.message.get_name());
+        full_name
+    }
+
+    // Non-generic part of `new` is a separate function
+    // to reduce code bloat from multiple instantiations.
+    fn new_non_generic(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
-    ) -> MessageDescriptor {
+        factory: &'static MessageFactory)
+        -> MessageDescriptor
+    {
         let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
@@ -96,16 +111,10 @@ impl MessageDescriptor {
             }
         }
 
-        let mut full_name = file_descriptor_proto.get_package().to_string();
-        if full_name.len() > 0 {
-            full_name.push('.');
-        }
-        full_name.push_str(proto.message.get_name());
-
         MessageDescriptor {
-            full_name,
+            full_name: MessageDescriptor::compute_full_name(&proto),
             proto: proto.message,
-            factory: &MessageFactoryImpl(marker::PhantomData::<M>),
+            factory,
             fields: fields
                 .into_iter()
                 .map(|f| {
@@ -118,6 +127,15 @@ impl MessageDescriptor {
             index_by_number,
             file_descriptor_proto,
         }
+    }
+
+    pub fn new<M : 'static + Message + Default + Clone + PartialEq>(
+        rust_name: &'static str,
+        fields: Vec<FieldAccessor>,
+        file_descriptor_proto: &'static FileDescriptorProto,
+    ) -> MessageDescriptor {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+        MessageDescriptor::new_non_generic(rust_name, fields, file_descriptor_proto, factory)
     }
 
     pub fn file_descriptor_proto(&self) -> &FileDescriptorProto {
