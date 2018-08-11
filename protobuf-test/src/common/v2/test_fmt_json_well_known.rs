@@ -21,6 +21,11 @@ fn test_duration() {
 }
 
 #[test]
+fn test_timestamp() {
+    // TODO
+}
+
+#[test]
 fn test_null_value() {
     let mut m = TestFmtJsonWellKnownTypes::new();
     m.set_null_values(vec![NullValue::NULL_VALUE]);
@@ -43,6 +48,16 @@ fn test_value() {
 }
 
 #[test]
+fn test_list_value() {
+    // TODO
+}
+
+#[test]
+fn test_struct() {
+    // TODO
+}
+
+#[test]
 fn test_wrappers() {
     let mut m = TestFmtJsonWellKnownTypes::new();
     m.mut_double_value().value = 10.0;
@@ -59,4 +74,14 @@ fn test_wrappers() {
     // bool_value
     // string_value
     // bytes_value
+}
+
+#[test]
+fn test_any() {
+    // TODO
+}
+
+#[test]
+fn test_field_mask() {
+    // TODO
 }
