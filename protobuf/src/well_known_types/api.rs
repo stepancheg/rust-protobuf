@@ -293,7 +293,7 @@ impl ::protobuf::Message for Api {
         if !self.version.is_empty() {
             my_size += ::protobuf::rt::string_size(4, &self.version);
         }
-        if let Some(ref v) = self.source_context.as_ref() {
+        if let Some(v) = self.source_context.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -314,27 +314,19 @@ impl ::protobuf::Message for Api {
             os.write_string(1, &self.name)?;
         }
         for v in &self.methods {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
         };
         for v in &self.options {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
         };
         if !self.version.is_empty() {
             os.write_string(4, &self.version)?;
         }
-        if let Some(ref v) = self.source_context.as_ref() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+        if let Some(v) = self.source_context.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
         }
         for v in &self.mixins {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
         };
         if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
             os.write_enum(7, self.syntax.value())?;
@@ -716,9 +708,7 @@ impl ::protobuf::Message for Method {
             os.write_bool(5, self.response_streaming)?;
         }
         for v in &self.options {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
         };
         if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
             os.write_enum(7, self.syntax.value())?;

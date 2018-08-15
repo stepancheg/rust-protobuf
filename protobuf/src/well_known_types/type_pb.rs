@@ -258,7 +258,7 @@ impl ::protobuf::Message for Type {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(ref v) = self.source_context.as_ref() {
+        if let Some(v) = self.source_context.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -275,22 +275,16 @@ impl ::protobuf::Message for Type {
             os.write_string(1, &self.name)?;
         }
         for v in &self.fields {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
         };
         for v in &self.oneofs {
             os.write_string(3, &v)?;
         };
         for v in &self.options {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
         };
-        if let Some(ref v) = self.source_context.as_ref() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+        if let Some(v) = self.source_context.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
         }
         if self.syntax != Syntax::SYNTAX_PROTO2 {
             os.write_enum(6, self.syntax.value())?;
@@ -753,9 +747,7 @@ impl ::protobuf::Message for Field {
             os.write_bool(8, self.packed)?;
         }
         for v in &self.options {
-            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(9, v, os)?;
         };
         if !self.json_name.is_empty() {
             os.write_string(10, &self.json_name)?;
@@ -1250,7 +1242,7 @@ impl ::protobuf::Message for Enum {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if let Some(ref v) = self.source_context.as_ref() {
+        if let Some(v) = self.source_context.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -1267,19 +1259,13 @@ impl ::protobuf::Message for Enum {
             os.write_string(1, &self.name)?;
         }
         for v in &self.enumvalue {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
         };
         for v in &self.options {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
         };
-        if let Some(ref v) = self.source_context.as_ref() {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+        if let Some(v) = self.source_context.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
         }
         if self.syntax != Syntax::SYNTAX_PROTO2 {
             os.write_enum(5, self.syntax.value())?;
@@ -1526,9 +1512,7 @@ impl ::protobuf::Message for EnumValue {
             os.write_int32(2, self.number)?;
         }
         for v in &self.options {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
         };
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -1725,7 +1709,7 @@ impl ::protobuf::Message for Option {
         if !self.name.is_empty() {
             my_size += ::protobuf::rt::string_size(1, &self.name);
         }
-        if let Some(ref v) = self.value.as_ref() {
+        if let Some(v) = self.value.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -1738,10 +1722,8 @@ impl ::protobuf::Message for Option {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
-        if let Some(ref v) = self.value.as_ref() {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            os.write_raw_varint32(v.get_cached_size())?;
-            v.write_to_with_cached_sizes(os)?;
+        if let Some(v) = self.value.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())

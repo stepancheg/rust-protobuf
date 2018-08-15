@@ -119,11 +119,12 @@ impl<'a> MessageGen<'a> {
                 w.match_block("v", |w| {
                     for variant in variants {
                         let ref field = variant.field;
+
                         let (refv, vtype) =
-                            if !field.elem_type_is_copy() {
-                                ("ref v", field.elem().rust_storage_elem_type().ref_type())
+                            if field.elem_type_is_copy() {
+                                ("v", variant.rust_type())
                             } else {
-                                ("v", field.elem().rust_storage_elem_type())
+                                ("ref v", variant.rust_type().ref_type())
                             };
                         w.case_block(format!("&{}({})", variant.path(), refv), |w| {
                             cb(w, &variant, "v", &vtype);
@@ -141,7 +142,8 @@ impl<'a> MessageGen<'a> {
                 f.write_message_write_field(w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
-                variant.field.write_write_element(w, "os", v, v_type);
+                let v = RustValueTyped { value: v.to_owned(), rust_type: v_type.clone() };
+                variant.field.write_write_element(w, "os", &v);
             });
             w.write_line("os.write_unknown_fields(self.get_unknown_fields())?;");
             w.write_line("::std::result::Result::Ok(())");

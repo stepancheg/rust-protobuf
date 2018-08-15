@@ -86,7 +86,7 @@ impl<'a> OneofVariantGen<'a> {
         }
     }
 
-    fn rust_type(&self) -> RustType {
+    pub fn rust_type(&self) -> RustType {
         self.oneof_field.rust_type()
     }
 

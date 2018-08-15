@@ -936,6 +936,20 @@ where
     Ok(())
 }
 
+/// Write message with field number and length to the stream.
+pub fn write_message_field_with_cached_size<M>(
+    field_number: u32,
+    message: &M,
+    os: &mut CodedOutputStream
+) -> ProtobufResult<()>
+where
+    M : Message
+{
+    os.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+    os.write_raw_varint32(message.get_cached_size())?;
+    message.write_to_with_cached_sizes(os)
+}
+
 /// Read `map` field.
 pub fn read_map_into<K, V>(
     wire_type: WireType,

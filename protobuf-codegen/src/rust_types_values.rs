@@ -148,10 +148,17 @@ impl RustType {
         }
     }
 
-    pub fn is_ref(&self) -> bool {
+    pub fn is_ref(&self) -> Option<&RustType> {
         match *self {
-            RustType::Ref(..) => true,
-            _ => false,
+            RustType::Ref(ref v) => Some(&**v),
+            _ => None,
+        }
+    }
+
+    pub fn is_box(&self) -> Option<&RustType> {
+        match *self {
+            RustType::Uniq(ref v) => Some(&**v),
+            _ => None,
         }
     }
 
@@ -219,6 +226,16 @@ impl RustType {
     }
 
     fn try_into_target(&self, target: &RustType, v: &str) -> Result<String, ()> {
+        {
+            if let Some(t1) = self.is_ref().and_then(|t| t.is_box()) {
+                if let Some(t2) = target.is_ref() {
+                    if t1 == t2 {
+                        return Ok(format!("&**{}", v));
+                    }
+                }
+            }
+        }
+
         match (self, target) {
             (x, y) if x == y => return Ok(format!("{}", v)),
             (&RustType::Ref(ref x), y) if **x == *y => return Ok(format!("*{}", v)),
@@ -285,7 +302,7 @@ impl RustType {
             &RustType::RepeatedField(ref p) => RustType::Slice(p.clone()),
             &RustType::Bytes => RustType::Slice(Box::new(RustType::u8())),
             &RustType::Message(ref p) => RustType::Message(p.clone()),
-            &RustType::Uniq(ref p) => p.ref_type(),
+            &RustType::Uniq(ref p) => RustType::Uniq(p.clone()),
             x => panic!("no ref type for {}", x),
         }))
     }
@@ -293,6 +310,8 @@ impl RustType {
     pub fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),
+            &RustType::SingularField(ref ty) => (**ty).clone(),
+            &RustType::SingularPtrField(ref ty) => (**ty).clone(),
             x => panic!("cannot get elem type of {}", x),
         }
     }
@@ -492,5 +511,22 @@ impl ProtobufTypeGen {
                 format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
             }
         }
+    }
+}
+
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn into_target_ref_box_to_ref() {
+        let t1 = RustType::Ref(
+            Box::new(RustType::Uniq(
+                Box::new(RustType::Message("Ab".to_owned())))));
+        let t2 = RustType::Ref(
+            Box::new(RustType::Message("Ab".to_owned())));
+
+        assert_eq!("&**v", t1.into_target(&t2, "v"));
     }
 }

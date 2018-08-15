@@ -137,6 +137,27 @@ impl OptionKind {
         }
     }
 
+    // Type of `as_ref()` operation
+    fn as_ref_type(&self, element_type: RustType) -> RustType {
+        match self {
+            OptionKind::Option => {
+                RustType::Option(Box::new(element_type.ref_type()))
+            },
+            OptionKind::OptionBox => {
+                RustType::Option(
+                    Box::new(RustType::Ref(
+                        Box::new(RustType::Uniq(
+                            Box::new(element_type))))))
+            },
+            OptionKind::SingularField => {
+                RustType::SingularField(Box::new(element_type.ref_type()))
+            },
+            OptionKind::SingularPtrField => {
+                RustType::SingularPtrField(Box::new(element_type.ref_type()))
+            },
+        }
+    }
+
     fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
         match self {
             OptionKind::Option | OptionKind::OptionBox => None,
@@ -147,6 +168,15 @@ impl OptionKind {
             OptionKind::SingularField => {
                 panic!("SingularField is not supported with serde")
             }
+        }
+    }
+
+    fn _as_option_ref(&self, v: &str) -> String {
+        match self {
+            OptionKind::OptionBox => format!("{}.as_ref().map(|v| &**v)", v),
+            OptionKind::Option |
+            OptionKind::SingularField |
+            OptionKind::SingularPtrField => format!("{}.as_ref()", v),
         }
     }
 
@@ -1204,25 +1234,20 @@ impl<'a> FieldGen<'a> {
     }
 
     // output code that writes single element to stream
-    pub fn write_write_element(&self, w: &mut CodeWriter, os: &str, var: &str, ty: &RustType) {
+    pub fn write_write_element(&self, w: &mut CodeWriter, os: &str, v: &RustValueTyped) {
         if let FieldKind::Repeated(RepeatedField { packed: true, .. }) = self.kind {
             unreachable!();
         };
 
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                let param_type = RustType::Ref(Box::new(self.elem().rust_storage_elem_type()));
+
                 w.write_line(&format!(
-                    "{}.write_tag({}, ::protobuf::wire_format::{:?})?;",
-                    os,
+                    "::protobuf::rt::write_message_field_with_cached_size({}, {}, {})?;",
                     self.proto_field.number(),
-                    wire_format::WireTypeLengthDelimited
-                ));
-                w.write_line(&format!(
-                    "{}.write_raw_varint32({}.get_cached_size())?;",
-                    os,
-                    var
-                ));
-                w.write_line(&format!("{}.write_to_with_cached_sizes({})?;", var, os));
+                    v.into_type(param_type).value,
+                    os));
             }
             _ => {
                 let param_type = self.os_write_fn_param_type();
@@ -1233,7 +1258,7 @@ impl<'a> FieldGen<'a> {
                     os,
                     os_write_fn_suffix,
                     number,
-                    ty.into_target(&param_type, var)
+                    v.into_type(param_type).value
                 ));
             }
         }
@@ -1258,29 +1283,25 @@ impl<'a> FieldGen<'a> {
         format!("{}.is_none()", self.self_field())
     }
 
-    // type of expression returned by `as_option()`
-    fn as_option_type(&self) -> RustType {
-        assert!(self.is_singular());
-        match self.full_storage_type() {
-            RustType::Option(ref e) if e.is_copy() => RustType::Option(e.clone()),
-            RustType::Option(e) => RustType::Option(Box::new(e.ref_type())),
-            RustType::SingularField(ty) |
-            RustType::SingularPtrField(ty) => RustType::Option(Box::new(RustType::Ref(ty))),
-            x => panic!("cannot convert {} to option", x),
-        }
-    }
-
     // field data viewed as Option
-    fn self_field_as_option(&self) -> RustValueTyped {
-        assert!(self.is_singular());
-
-        let suffix = match self.full_storage_type() {
-            RustType::Option(ref e) if e.is_copy() => "",
-            _ => ".as_ref()",
+    fn self_field_as_option(&self, elem: &FieldElem, option_kind: OptionKind) -> RustValueTyped {
+        match self.full_storage_type() {
+            RustType::Option(ref e) if e.is_copy() => {
+                return RustType::Option(e.clone()).value(self.self_field());
+            }
+            _ => {},
         };
 
-        self.as_option_type()
-            .value(format!("{}{}", self.self_field(), suffix))
+//        let as_option_type = RustType::Option(Box::new(elem.rust_storage_elem_type().ref_type()));
+//
+//        // TODO: do not use as_option_ref, return Box for OptionBox instead (for simpler code)
+//        let v = option_kind.as_option_ref(&self.self_field());
+//
+//        as_option_type.value(v)
+
+        let as_option_type = option_kind.as_ref_type(elem.rust_storage_elem_type());
+
+        as_option_type.value(format!("{}.as_ref()", self.self_field()))
     }
 
     /// Field visibility in message struct
@@ -1327,41 +1348,46 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_if_let_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
+    fn write_if_let_self_field_is_some<F>(&self, s: &SingularField, w: &mut CodeWriter, cb: F)
     where
-        F : Fn(&str, &RustType, &mut CodeWriter),
+        F : Fn(&RustValueTyped, &mut CodeWriter),
     {
-        match self.kind {
-            FieldKind::Repeated(..) |
-            FieldKind::Map(..) => panic!("field is not singular"),
-            FieldKind::Singular(SingularField {
-                flag: SingularFieldFlag::WithFlag { .. },
+        match s {
+            SingularField {
+                flag: SingularFieldFlag::WithFlag { option_kind, .. },
                 ref elem,
-            }) => {
+            } => {
                 let var = "v";
                 let ref_prefix = match elem.rust_storage_elem_type().is_copy() {
                     true => "",
-                    false => "ref ",
+                    false => "",
                 };
-                let as_option = self.self_field_as_option();
+                let as_option = self.self_field_as_option(elem, *option_kind);
                 w.if_let_stmt(
                     &format!("Some({}{})", ref_prefix, var),
                     &as_option.value,
                     |w| {
-                        let v_type = as_option.rust_type.elem_type();
-                        cb(var, &v_type, w);
+                        let v = RustValueTyped {
+                            value: var.to_owned(),
+                            rust_type: as_option.rust_type.elem_type(),
+                        };
+                        cb(&v, w);
                     },
                 );
             }
-            FieldKind::Singular(SingularField {
+            SingularField {
                 flag: SingularFieldFlag::WithoutFlag,
                 ref elem,
-            }) => {
+            } => {
                 match *elem {
                     FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..) |
                     FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
                         w.if_stmt(format!("!{}.is_empty()", self.self_field()), |w| {
-                            cb(&self.self_field(), &self.full_storage_type(), w);
+                            let v = RustValueTyped {
+                                value: self.self_field(),
+                                rust_type: self.full_storage_type(),
+                            };
+                            cb(&v, w);
                         });
                     }
                     _ => {
@@ -1371,12 +1397,17 @@ impl<'a> FieldGen<'a> {
                                 self.self_field(),
                                 self.full_storage_type().default_value()
                             ),
-                            |w| { cb(&self.self_field(), &self.full_storage_type(), w); },
+                            |w| {
+                                let v = RustValueTyped {
+                                    value: self.self_field(),
+                                    rust_type: self.full_storage_type(),
+                                };
+                                cb(&v, w);
+                            },
                         );
                     }
                 }
             }
-            FieldKind::Oneof(..) => unreachable!(),
         }
     }
 
@@ -1819,14 +1850,15 @@ impl<'a> FieldGen<'a> {
 
     pub fn write_message_write_field(&self, w: &mut CodeWriter) {
         match self.kind {
-            FieldKind::Singular(..) => {
-                self.write_if_let_self_field_is_some(w, |v, v_type, w| {
-                    self.write_write_element(w, "os", v, v_type);
+            FieldKind::Singular(ref s) => {
+                self.write_if_let_self_field_is_some(s, w, |v, w| {
+                    self.write_write_element(w, "os", &v);
                 });
             }
             FieldKind::Repeated(RepeatedField { packed: false, .. }) => {
                 self.write_for_self_field(w, "v", |w, v_type| {
-                    self.write_write_element(w, "os", "v", v_type);
+                    let v = RustValueTyped { value: "v".to_owned(), rust_type: v_type.clone() };
+                    self.write_write_element(w, "os", &v);
                 });
             }
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
@@ -1866,15 +1898,15 @@ impl<'a> FieldGen<'a> {
 
     pub fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
         match self.kind {
-            FieldKind::Singular(..) => {
-                self.write_if_let_self_field_is_some(w, |v, v_type, w| {
+            FieldKind::Singular(ref s) => {
+                self.write_if_let_self_field_is_some(s, w, |v, w| {
                     match field_type_size(self.proto_type) {
                         Some(s) => {
                             let tag_size = self.tag_size();
                             w.write_line(&format!("{} += {};", sum_var, (s + tag_size) as isize));
                         }
                         None => {
-                            self.write_element_size(w, v, v_type, sum_var);
+                            self.write_element_size(w, &v.value, &v.rust_type, sum_var);
                         }
                     };
                 });
@@ -1943,9 +1975,9 @@ impl<'a> FieldGen<'a> {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
             let self_field = self.self_field();
             match self.singular() {
-                &SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. } => {
-                    if get_xxx_return_type.is_ref() {
-                        let as_option = self.self_field_as_option();
+                &SingularField { ref elem, flag: SingularFieldFlag::WithFlag { option_kind, .. }, .. } => {
+                    if get_xxx_return_type.is_ref().is_some() {
+                        let as_option = self.self_field_as_option(elem, option_kind);
                         w.match_expr(&as_option.value, |w| {
                             let v_type = as_option.rust_type.elem_type();
                             let r_type = self.get_xxx_return_type();
