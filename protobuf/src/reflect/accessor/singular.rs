@@ -26,16 +26,6 @@ pub(crate) trait SingularFieldAccessor : Send + Sync + 'static {
     // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a Message) -> Option<&'a Message>;
     fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message;
-    fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor;
-    fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str;
-    fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8];
-    fn get_u32_generic(&self, m: &Message) -> u32;
-    fn get_u64_generic(&self, m: &Message) -> u64;
-    fn get_i32_generic(&self, m: &Message) -> i32;
-    fn get_i64_generic(&self, m: &Message) -> i64;
-    fn get_bool_generic(&self, m: &Message) -> bool;
-    fn get_f32_generic(&self, m: &Message) -> f32;
-    fn get_f64_generic(&self, m: &Message) -> f64;
 
     fn protobuf_type(&self) -> &'static ProtobufTypeDynamic;
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
@@ -335,93 +325,6 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
     fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message {
         let _m: &mut M = message_down_cast_mut(m);
         unimplemented!()
-    }
-
-    fn get_enum_generic(&self, m: &Message) -> &'static EnumValueDescriptor {
-        let m = message_down_cast(m);
-        match self.fns {
-            FieldAccessorFunctions::SingularHasGetSet {
-                get_set: SingularGetSet::Copy(ref get), ..
-            } => {
-                match V::RuntimeType::into_value_box((get.get)(m)) {
-                    ReflectValueBox::Enum(e) => e,
-                    _ => panic!("not an enum"),
-                }
-            },
-            _ => panic!(),
-        }
-    }
-
-    fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::String(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => "", // TODO: check type
-        }
-    }
-
-    fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8] {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::Bytes(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => b"", // TODO: check type
-        }
-    }
-
-    fn get_u32_generic(&self, m: &Message) -> u32 {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::U32(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => 0, // TODO: check type
-        }
-    }
-
-    fn get_u64_generic(&self, m: &Message) -> u64 {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::U64(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => 0, // TODO: check type
-        }
-    }
-
-    fn get_i32_generic(&self, m: &Message) -> i32 {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::I32(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => 0, // TODO: check type
-        }
-    }
-
-    fn get_i64_generic(&self, m: &Message) -> i64 {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::I64(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => 0, // TODO: check type
-        }
-    }
-
-    fn get_bool_generic(&self, m: &Message) -> bool {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::Bool(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => false, // TODO: check type
-        }
-    }
-
-    fn get_f32_generic(&self, m: &Message) -> f32 {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::F32(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => 0.0, // TODO: check type
-        }
-    }
-
-    fn get_f64_generic(&self, m: &Message) -> f64 {
-        match self.get_value_option(message_down_cast(m)) {
-            Some(ReflectValueRef::F64(v)) => v,
-            Some(_) => panic!("wrong type"),
-            None => 0.0, // TODO: check type
-        }
     }
 
     fn protobuf_type(&self) -> &'static ProtobufTypeDynamic {

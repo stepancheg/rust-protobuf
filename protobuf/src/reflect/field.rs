@@ -10,7 +10,6 @@ use reflect::accessor::singular::SingularFieldAccessor;
 use reflect::accessor::repeated::RepeatedFieldAccessor;
 use reflect::accessor::map::MapFieldAccessor;
 use reflect::EnumValueDescriptor;
-use descriptor::FieldDescriptorProto_Type;
 use reflect::ReflectValueRef;
 use reflect::RuntimeTypeDynamic;
 use reflect::ReflectValueBox;
@@ -171,47 +170,73 @@ impl FieldDescriptor {
     }
 
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_ENUM, self.proto.get_field_type());
-        self.singular().get_enum_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::Enum(v) => v,
+            _ => panic!("not enum"),
+        }
     }
 
     pub fn get_str<'a>(&self, m: &'a Message) -> &'a str {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_STRING, self.proto.get_field_type());
-        self.singular().get_str_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::String(v) => v,
+            _ => panic!("not string"),
+        }
     }
 
     pub fn get_bytes<'a>(&self, m: &'a Message) -> &'a [u8] {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_BYTES, self.proto.get_field_type());
-        self.singular().get_bytes_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::Bytes(v) => v,
+            _ => panic!("not bytes"),
+        }
     }
 
     pub fn get_u32(&self, m: &Message) -> u32 {
-        self.singular().get_u32_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::U32(v) => v,
+            _ => panic!("not u32"),
+        }
     }
 
     pub fn get_u64(&self, m: &Message) -> u64 {
-        self.singular().get_u64_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::U64(v) => v,
+            _ => panic!("not u64"),
+        }
     }
 
     pub fn get_i32(&self, m: &Message) -> i32 {
-        self.singular().get_i32_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::I32(v) => v,
+            _ => panic!("not i32"),
+        }
     }
 
     pub fn get_i64(&self, m: &Message) -> i64 {
-        self.singular().get_i64_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::I64(v) => v,
+            _ => panic!("not i64"),
+        }
     }
 
     pub fn get_bool(&self, m: &Message) -> bool {
-        assert_eq!(FieldDescriptorProto_Type::TYPE_BOOL, self.proto.get_field_type());
-        self.singular().get_bool_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::Bool(v) => v,
+            _ => panic!("not bool"),
+        }
     }
 
     pub fn get_f32(&self, m: &Message) -> f32 {
-        self.singular().get_f32_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::F32(v) => v,
+            _ => panic!("not f32"),
+        }
     }
 
     pub fn get_f64(&self, m: &Message) -> f64 {
-        self.singular().get_f64_generic(m)
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::F64(v) => v,
+            _ => panic!("not f64"),
+        }
     }
 
     pub fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
