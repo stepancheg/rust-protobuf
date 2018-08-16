@@ -12,27 +12,11 @@ use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
 
-/// Hack against lack of upcasting in Rust
-pub trait AsProtobufValue {
-    fn as_protobuf_value(&self) -> &ProtobufValue;
-    fn as_protobuf_value_mut(&mut self) -> &mut ProtobufValue;
-}
-
-impl<T: ProtobufValue> AsProtobufValue for T {
-    fn as_protobuf_value(&self) -> &ProtobufValue {
-        self
-    }
-
-    fn as_protobuf_value_mut(&mut self) -> &mut ProtobufValue {
-        self
-    }
-}
-
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).
 ///
 /// Used for dynamic casting in reflection.
-pub trait ProtobufValue: AsAny + AsProtobufValue + 'static + Send + Sync {}
+pub trait ProtobufValue: AsAny + 'static + Send + Sync {}
 
 impl ProtobufValue for u32 {}
 
@@ -272,38 +256,6 @@ impl ReflectValueBox {
             ReflectValueBox::Bytes(ref v) => ReflectValueRef::Bytes(v.as_slice()),
             ReflectValueBox::Enum(v) => ReflectValueRef::Enum(v),
             ReflectValueBox::Message(ref v) => ReflectValueRef::Message(v.deref()),
-        }
-    }
-
-    pub fn as_value(&self) -> &ProtobufValue {
-        match self {
-            ReflectValueBox::U32(v) => v,
-            ReflectValueBox::U64(v) => v,
-            ReflectValueBox::I32(v) => v,
-            ReflectValueBox::I64(v) => v,
-            ReflectValueBox::F32(v) => v,
-            ReflectValueBox::F64(v) => v,
-            ReflectValueBox::Bool(v) => v,
-            ReflectValueBox::String(v) => v,
-            ReflectValueBox::Bytes(v) => v,
-            ReflectValueBox::Enum(v) => v.protobuf_value(),
-            ReflectValueBox::Message(v) => v.as_protobuf_value(),
-        }
-    }
-
-    pub fn as_value_mut(&mut self) -> &mut ProtobufValue {
-        match self {
-            ReflectValueBox::U32(v) => v,
-            ReflectValueBox::U64(v) => v,
-            ReflectValueBox::I32(v) => v,
-            ReflectValueBox::I64(v) => v,
-            ReflectValueBox::F32(v) => v,
-            ReflectValueBox::F64(v) => v,
-            ReflectValueBox::Bool(v) => v,
-            ReflectValueBox::String(v) => v,
-            ReflectValueBox::Bytes(v) => v,
-            ReflectValueBox::Enum(_v) => panic!("enum value cannot be mutable"),
-            ReflectValueBox::Message(v) => v.as_protobuf_value_mut(),
         }
     }
 
