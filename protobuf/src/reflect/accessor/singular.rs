@@ -13,6 +13,7 @@ use reflect::runtime_types::RuntimeTypeWithDeref;
 use reflect::type_dynamic::ProtobufTypeDynamic;
 use core::message_down_cast_mut;
 use std::marker;
+use reflect::runtime_types::RuntimeTypeMessage;
 
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
@@ -93,16 +94,16 @@ impl<M, V, G, D, S> SingularFieldAccessor for SingularFieldAccessorImpl<M, V, G,
 struct GetOptionImplFieldPointer<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
-    get_field: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeType>::Value,
+    get_field: for<'a> fn(&'a M) -> &'a V::Value,
 }
 
 struct GetOptionImplOptionFieldPointer<M, V, O>
     where
         M : Message,
-        V : ProtobufType,
-        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + Sync + Send + 'static,
+        V : RuntimeType,
+        O : OptionLike<V::Value> + Sync + Send + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a O,
     _marker: marker::PhantomData<V>,
@@ -111,38 +112,37 @@ struct GetOptionImplOptionFieldPointer<M, V, O>
 struct GetOptionImplHasGetRef<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     has: for<'a> fn(&'a M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeType>::Value,
+    get: for<'a> fn(&'a M) -> &'a V::Value,
 }
 
 struct GetOptionImplHasGetRefDeref<M, V>
     where
         M : Message,
-        V : ProtobufType,
-        V::RuntimeType : RuntimeTypeWithDeref,
+        V : RuntimeTypeWithDeref,
 {
     has: for<'a> fn(&'a M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+    get: for<'a> fn(&'a M) -> &'a V::DerefTarget,
 }
 
 struct GetOptionImplHasGetCopy<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     has: for<'a> fn(&'a M) -> bool,
-    get: for<'a> fn(&'a M) -> <V::RuntimeType as RuntimeType>::Value,
+    get: for<'a> fn(&'a M) -> V::Value,
 }
 
 impl<M, V> GetOptionImpl<M> for GetOptionImplFieldPointer<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
-        let v = V::RuntimeType::as_ref((self.get_field)(m));
+        let v = V::as_ref((self.get_field)(m));
         if v.is_non_zero() {
             Some(v)
         } else {
@@ -154,25 +154,25 @@ impl<M, V> GetOptionImpl<M> for GetOptionImplFieldPointer<M, V>
 impl<M, V, O> GetOptionImpl<M> for GetOptionImplOptionFieldPointer<M, V, O>
     where
         M : Message,
-        V : ProtobufType,
-        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + Sync + Send + 'static,
+        V : RuntimeType,
+        O : OptionLike<V::Value> + Sync + Send + 'static,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         let m = message_down_cast(m);
         (self.get_field)(m)
             .as_option_ref()
-            .map(V::RuntimeType::as_ref)
+            .map(V::as_ref)
     }
 }
 
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRef<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         if (self.has)(m) {
-            Some(<V::RuntimeType as RuntimeType>::as_ref((self.get)(m)))
+            Some(V::as_ref((self.get)(m)))
         } else {
             None
         }
@@ -182,12 +182,11 @@ impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRef<M, V>
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRefDeref<M, V>
     where
         M : Message,
-        V : ProtobufType,
-        V::RuntimeType : RuntimeTypeWithDeref,
+        V : RuntimeTypeWithDeref,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         if (self.has)(m) {
-            Some(<V::RuntimeType as RuntimeTypeWithDeref>::defef_as_ref((self.get)(m)))
+            Some(V::defef_as_ref((self.get)(m)))
         } else {
             None
         }
@@ -197,11 +196,11 @@ impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRefDeref<M, V>
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetCopy<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         if (self.has)(m) {
-            Some(<V::RuntimeType as RuntimeType>::into_static_value_ref((self.get)(m)))
+            Some(V::into_static_value_ref((self.get)(m)))
         } else {
             None
         }
@@ -211,25 +210,24 @@ impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetCopy<M, V>
 struct GetOrDefaultGetRef<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
-    get_field: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeType>::Value,
+    get_field: for<'a> fn(&'a M) -> &'a V::Value,
 }
 
 struct GetOrDefaultGetRefDeref<M, V>
     where
         M : Message,
-        V : ProtobufType,
-        V::RuntimeType : RuntimeTypeWithDeref,
+        V : RuntimeTypeWithDeref,
 {
-    get_field: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+    get_field: for<'a> fn(&'a M) -> &'a V::DerefTarget,
 }
 
 struct GetOrDefaultOptionRefTypeDefault<M, V, O>
     where
         M : Message,
-        V : ProtobufType,
-        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + Sync + Send + 'static,
+        V : RuntimeType,
+        O : OptionLike<V::Value> + Sync + Send + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a O,
     _marker: marker::PhantomData<V>,
@@ -238,31 +236,31 @@ struct GetOrDefaultOptionRefTypeDefault<M, V, O>
 struct GetOrDefaultGetCopy<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
-    get_field: for<'a> fn(&'a M) -> <V::RuntimeType as RuntimeType>::Value,
+    get_field: for<'a> fn(&'a M) -> V::Value,
 }
 
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetRef<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        V::RuntimeType::as_ref((self.get_field)(m))
+        V::as_ref((self.get_field)(m))
     }
 }
 
 impl<M, V, O> GetOrDefaultImpl<M> for GetOrDefaultOptionRefTypeDefault<M, V, O>
     where
         M : Message,
-        V : ProtobufType,
-        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + Sync + Send + 'static,
+        V : RuntimeType,
+        O : OptionLike<V::Value> + Sync + Send + 'static,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         match (self.get_field)(m).as_option_ref() {
-            Some(v) => V::RuntimeType::as_ref(v),
-            None => V::RuntimeType::default_value_ref(),
+            Some(v) => V::as_ref(v),
+            None => V::default_value_ref(),
         }
     }
 }
@@ -270,21 +268,20 @@ impl<M, V, O> GetOrDefaultImpl<M> for GetOrDefaultOptionRefTypeDefault<M, V, O>
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetRefDeref<M, V>
     where
         M : Message,
-        V : ProtobufType,
-        V::RuntimeType : RuntimeTypeWithDeref,
+        V : RuntimeTypeWithDeref,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        <V::RuntimeType as RuntimeTypeWithDeref>::defef_as_ref((self.get_field)(m))
+        V::defef_as_ref((self.get_field)(m))
     }
 }
 
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetCopy<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        <V::RuntimeType as RuntimeType>::into_static_value_ref((self.get_field)(m))
+        V::into_static_value_ref((self.get_field)(m))
     }
 }
 
@@ -292,16 +289,16 @@ impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetCopy<M, V>
 struct SetImplFieldPointer<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut <V::RuntimeType as RuntimeType>::Value,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut V::Value,
 }
 
 struct SetImplOptionFieldPointer<M, V, O>
     where
         M : Message,
-        V : ProtobufType,
-        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + Sync + Send + 'static,
+        V : RuntimeType,
+        O : OptionLike<V::Value> + Sync + Send + 'static,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
     _marker: marker::PhantomData<V>,
@@ -310,39 +307,39 @@ struct SetImplOptionFieldPointer<M, V, O>
 struct SetImplSetField<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
-    set_field: for<'a> fn(&'a mut M, <V::RuntimeType as RuntimeType>::Value),
+    set_field: for<'a> fn(&'a mut M, V::Value),
 }
 
 impl<M, V> SetImpl<M> for SetImplFieldPointer<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
-        V::RuntimeType::set_from_value_box((self.mut_field)(m), value);
+        V::set_from_value_box((self.mut_field)(m), value);
     }
 }
 
 impl<M, V, O> SetImpl<M> for SetImplOptionFieldPointer<M, V, O>
     where
         M : Message,
-        V : ProtobufType,
-        O : OptionLike<<V::RuntimeType as RuntimeType>::Value> + Sync + Send + 'static,
+        V : RuntimeType,
+        O : OptionLike<V::Value> + Sync + Send + 'static,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
-        (self.mut_field)(m).set_value(V::RuntimeType::from_value_box(value));
+        (self.mut_field)(m).set_value(V::from_value_box(value));
     }
 }
 
 impl<M, V> SetImpl<M> for SetImplSetField<M, V>
     where
         M : Message,
-        V : ProtobufType,
+        V : RuntimeType,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
-        let value = value.downcast::<<V::RuntimeType as RuntimeType>::Value>().expect("message");
+        let value = value.downcast::<V::Value>().expect("message");
         (self.set_field)(m, value)
     }
 }
@@ -367,9 +364,9 @@ pub fn make_singular_copy_has_get_set_accessor<M, V>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplHasGetCopy::<M, V> { has, get },
-            get_or_default_impl: GetOrDefaultGetCopy::<M, V> { get_field: get },
-            set_impl: SetImplSetField::<M, V> { set_field: set },
+            get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
+            get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
+            set_impl: SetImplSetField::<M, V::RuntimeType> { set_field: set },
             _marker: marker::PhantomData,
         }))
     }
@@ -389,9 +386,9 @@ pub fn make_singular_deref_has_get_set_accessor<M, F>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
-            get_option_impl: GetOptionImplHasGetRefDeref::<M, F> { has, get },
-            get_or_default_impl: GetOrDefaultGetRefDeref::<M, F> { get_field: get },
-            set_impl: SetImplSetField::<M, F> { set_field: set },
+            get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
+            get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> { get_field: get },
+            set_impl: SetImplSetField::<M, F::RuntimeType> { set_field: set },
             _marker: marker::PhantomData,
         }))
     }
@@ -409,9 +406,9 @@ pub fn make_singular_message_has_get_mut_set_accessor<M, F>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeMessage<F>, _, _, _> {
-            get_option_impl: GetOptionImplHasGetRef::<M, ProtobufTypeMessage<F>> { get: get_field, has: has_field },
-            get_or_default_impl: GetOrDefaultGetRef::<M, ProtobufTypeMessage<F>> { get_field },
-            set_impl: SetImplSetField::<M, ProtobufTypeMessage<F>> { set_field },
+            get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> { get: get_field, has: has_field },
+            get_or_default_impl: GetOrDefaultGetRef::<M, RuntimeTypeMessage<F>> { get_field },
+            set_impl: SetImplSetField::<M, RuntimeTypeMessage<F>> { set_field },
             _marker: marker::PhantomData,
         }))
     }
@@ -430,9 +427,9 @@ pub fn make_option_accessor<M, V, O>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> { get_field, _marker: marker::PhantomData },
-            get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V, _> { get_field, _marker: marker::PhantomData },
-            set_impl: SetImplOptionFieldPointer::<M, V, _> { mut_field, _marker: marker::PhantomData },
+            get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> { get_field, _marker: marker::PhantomData },
+            get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> { get_field, _marker: marker::PhantomData },
+            set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> { mut_field, _marker: marker::PhantomData },
             _marker: marker::PhantomData,
         }))
     }
@@ -452,9 +449,9 @@ pub fn make_option_get_copy_accessor<M, V, O>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplOptionFieldPointer::<M, V, O> { get_field, _marker: marker::PhantomData },
-            get_or_default_impl: GetOrDefaultGetCopy::<M, V> { get_field: get_value },
-            set_impl: SetImplOptionFieldPointer::<M, V, O> { mut_field, _marker: marker::PhantomData },
+            get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> { get_field, _marker: marker::PhantomData },
+            get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get_value },
+            set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> { mut_field, _marker: marker::PhantomData },
             _marker: marker::PhantomData,
         }))
     }
@@ -475,9 +472,9 @@ pub fn make_option_get_ref_accessor<M, V, O>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplOptionFieldPointer::<M, V, O> { get_field, _marker: marker::PhantomData },
-            get_or_default_impl: GetOrDefaultGetRefDeref::<M, V> { get_field: get_value },
-            set_impl: SetImplOptionFieldPointer::<M, V, O> { mut_field, _marker: marker::PhantomData },
+            get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> { get_field, _marker: marker::PhantomData },
+            get_or_default_impl: GetOrDefaultGetRefDeref::<M, V::RuntimeType> { get_field: get_value },
+            set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> { mut_field, _marker: marker::PhantomData },
             _marker: marker::PhantomData,
         }))
     }
@@ -495,9 +492,9 @@ pub fn make_simple_field_accessor<M, V>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplFieldPointer::<M, V> { get_field },
-            get_or_default_impl: GetOrDefaultGetRef::<M, V> { get_field },
-            set_impl: SetImplFieldPointer::<M, V> { mut_field },
+            get_option_impl: GetOptionImplFieldPointer::<M, V::RuntimeType> { get_field },
+            get_or_default_impl: GetOrDefaultGetRef::<M, V::RuntimeType> { get_field },
+            set_impl: SetImplFieldPointer::<M, V::RuntimeType> { mut_field },
             _marker: marker::PhantomData,
         }))
     }
