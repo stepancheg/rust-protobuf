@@ -1048,9 +1048,7 @@ impl<'a> FieldGen<'a> {
         if elem.rust_storage_elem_type().is_copy() {
             return AccessorFn {
                 name: "make_singular_copy_has_get_set_accessor".to_owned(),
-                type_params: vec![
-                    elem.protobuf_type_gen().rust_type(),
-                ],
+                type_params: vec![elem.protobuf_type_gen().rust_type()],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -1058,24 +1056,15 @@ impl<'a> FieldGen<'a> {
         if let RustType::Message(name) = elem.rust_storage_elem_type() {
             return AccessorFn {
                 name: "make_singular_message_has_get_mut_set_accessor".to_owned(),
-                type_params: vec![
-                    name.clone()
-                ],
+                type_params: vec![name.clone()],
                 callback_params: self.make_accessor_fns_has_get_mut_set(),
             }
         }
 
-        let suffix = match &self.elem().rust_storage_elem_type() {
-            &RustType::String => "string".to_string(),
-            &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
-            t => panic!("unexpected field type: {}", t),
-        };
-
-        let name = format!("make_singular_{}_has_get_set_accessor", suffix);
-
+        // string or bytes
         AccessorFn {
-            name,
-            type_params: Vec::new(),
+            name: "make_singular_deref_has_get_set_accessor".to_owned(),
+            type_params: vec![elem.protobuf_type_gen().rust_type()],
             callback_params: self.make_accessor_fns_has_get_set(),
         }
     }

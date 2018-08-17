@@ -141,13 +141,6 @@ impl RustType {
         }
     }
 
-    pub fn is_u8(&self) -> bool {
-        match *self {
-            RustType::Int(false, 8) => true,
-            _ => false,
-        }
-    }
-
     pub fn is_ref(&self) -> Option<&RustType> {
         match *self {
             RustType::Ref(ref v) => Some(&**v),

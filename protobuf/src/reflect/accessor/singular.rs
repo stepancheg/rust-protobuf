@@ -7,8 +7,6 @@ use reflect::types::ProtobufType;
 use core::message_down_cast;
 use reflect::accessor::FieldAccessor;
 use reflect::accessor::AccessorKind;
-use reflect::types::ProtobufTypeString;
-use reflect::types::ProtobufTypeBytes;
 use reflect::types::ProtobufTypeMessage;
 use singular::OptionLike;
 use reflect::runtime_types::RuntimeTypeWithDeref;
@@ -377,35 +375,23 @@ pub fn make_singular_copy_has_get_set_accessor<M, V>(
     }
 }
 
-pub fn make_singular_string_has_get_set_accessor<M : Message + 'static>(
+pub fn make_singular_deref_has_get_set_accessor<M, F>(
     name: &'static str,
     has: fn(&M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a str,
-    set: fn(&mut M, String),
-) -> FieldAccessor {
+    get: for<'a> fn(&'a M) -> &'a <F::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+    set: fn(&mut M, <F::RuntimeType as RuntimeType>::Value),
+) -> FieldAccessor
+    where
+        M: Message + 'static,
+        F: ProtobufType,
+        F::RuntimeType : RuntimeTypeWithDeref,
+{
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeString, _, _, _> {
-            get_option_impl: GetOptionImplHasGetRefDeref::<M, ProtobufTypeString> { has, get },
-            get_or_default_impl: GetOrDefaultGetRefDeref::<M, ProtobufTypeString> { get_field: get },
-            set_impl: SetImplSetField::<M, ProtobufTypeString> { set_field: set },
-            _marker: marker::PhantomData,
-        }))
-    }
-}
-
-pub fn make_singular_bytes_has_get_set_accessor<M : Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a [u8],
-    set: fn(&mut M, Vec<u8>),
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeBytes, _, _, _> {
-            get_option_impl: GetOptionImplHasGetRefDeref::<M, ProtobufTypeBytes> { has, get },
-            get_or_default_impl: GetOrDefaultGetRefDeref::<M, ProtobufTypeBytes> { get_field: get },
-            set_impl: SetImplSetField::<M, ProtobufTypeBytes> { set_field: set },
+        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
+            get_option_impl: GetOptionImplHasGetRefDeref::<M, F> { has, get },
+            get_or_default_impl: GetOrDefaultGetRefDeref::<M, F> { get_field: get },
+            set_impl: SetImplSetField::<M, F> { set_field: set },
             _marker: marker::PhantomData,
         }))
     }
