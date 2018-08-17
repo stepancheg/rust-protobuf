@@ -1,6 +1,3 @@
-use std::any::Any;
-
-
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 #[cfg(feature = "bytes")]
@@ -37,7 +34,7 @@ impl<T : ProtobufValue> AsProtobufValue for T {
 /// (primitives, string, messages, enums).
 ///
 /// Used for dynamic casting in reflection.
-pub trait ProtobufValue : Any + AsAny + AsProtobufValue + 'static + Send + Sync {
+pub trait ProtobufValue : AsAny + AsProtobufValue + 'static + Send + Sync {
 }
 
 impl ProtobufValue for u32 {
