@@ -67,6 +67,7 @@ pub trait RuntimeType : fmt::Debug + Send + Sync + 'static {
 pub trait RuntimeTypeWithDeref : RuntimeType {
     type DerefTarget : ?Sized;
 
+    // TODO: rename to `deref`
     fn defef_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
 }
 
