@@ -119,16 +119,16 @@ impl FieldDescriptor {
 
     pub fn has_field(&self, m: &Message) -> bool {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.has_field_generic(m),
-            AccessorKind::Repeated(ref a) => a.len_field_generic(m) != 0,
+            AccessorKind::Singular(ref a) => a.get_reflect(m).is_some(),
+            AccessorKind::Repeated(ref a) => a.get_reflect(m).len() != 0,
             AccessorKind::Map(ref a) => a.len_field_generic(m) != 0,
         }
     }
 
     pub fn len_field(&self, m: &Message) -> usize {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => if a.has_field_generic(m) { 1 } else { 0 },
-            AccessorKind::Repeated(ref a) => a.len_field_generic(m),
+            AccessorKind::Singular(ref a) => if a.get_reflect(m).is_some() { 1 } else { 0 },
+            AccessorKind::Repeated(ref a) => a.get_reflect(m).len(),
             AccessorKind::Map(ref a) => a.len_field_generic(m),
         }
     }
@@ -159,14 +159,15 @@ impl FieldDescriptor {
     /// Get message field or default instance if field is unset.
     /// Panic if field type is not message.
     pub fn get_message<'a>(&self, m: &'a Message) -> &'a Message {
-        match self.singular().get_message_generic(m) {
-            Some(m) => m,
-            None => self.message_descriptor().default_instance(),
+        match self.get_singular_field_or_default(m) {
+            ReflectValueRef::Message(m) => m,
+            _ => panic!("not message"),
         }
     }
 
-    pub fn mut_message<'a>(&self, m: &'a mut Message) -> &'a mut Message {
-        self.singular().mut_message_generic(m)
+    /// Not implemented
+    pub fn mut_message<'a>(&self, _m: &'a mut Message) -> &'a mut Message {
+        unimplemented!()
     }
 
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {

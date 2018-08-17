@@ -18,8 +18,6 @@ use reflect::type_dynamic::ProtobufTypeDynamic;
 
 
 pub(crate) trait RepeatedFieldAccessor : Send + Sync + 'static {
-    fn len_field_generic(&self, m: &Message) -> usize;
-
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a>;
 
@@ -86,11 +84,6 @@ impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
         M : Message,
         V : ProtobufType,
 {
-    fn len_field_generic(&self, m: &Message) -> usize {
-        let m = message_down_cast(m);
-        self.fns.get_field(m).len()
-    }
-
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a> {
         let m = message_down_cast(m);
         let repeated = self.fns.get_field(m);

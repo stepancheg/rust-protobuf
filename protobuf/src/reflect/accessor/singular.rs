@@ -14,7 +14,6 @@ use reflect::types::ProtobufTypeString;
 use reflect::types::ProtobufTypeBytes;
 use reflect::types::ProtobufTypeMessage;
 use reflect::ProtobufValue;
-use core::message_down_cast_mut;
 use singular::OptionLike;
 use reflect::runtime_types::RuntimeTypeWithDeref;
 use reflect::type_dynamic::ProtobufTypeDynamic;
@@ -22,11 +21,6 @@ use reflect::type_dynamic::ProtobufTypeDynamic;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor : Send + Sync + 'static {
-    fn has_field_generic(&self, m: &Message) -> bool;
-    // TODO: should it return default value or panic on unset field?
-    fn get_message_generic<'a>(&self, m: &'a Message) -> Option<&'a Message>;
-    fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message;
-
     fn protobuf_type(&self) -> &'static ProtobufTypeDynamic;
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
 
@@ -286,47 +280,6 @@ impl<M, V> SingularFieldAccessor for SingularFieldAccessorImpl<M, V>
         M : Message,
         V : ProtobufType,
 {
-    fn has_field_generic(&self, m: &Message) -> bool {
-        let m = message_down_cast(m);
-        match self.fns {
-            FieldAccessorFunctions::SingularHasGetSet { has, .. } => has(m),
-            FieldAccessorFunctions::Optional(ref a, ..) => {
-                a.get_field(m).as_option_ref().is_some()
-            }
-            FieldAccessorFunctions::FieldPointer(ref a) => {
-                V::RuntimeType::as_ref((a.get_field)(m)).is_non_zero()
-            }
-        }
-    }
-
-    fn get_message_generic<'a>(&self, m: &'a Message) -> Option<&'a Message> {
-        let m = message_down_cast(m);
-        match self.fns {
-            FieldAccessorFunctions::SingularHasGetSet {
-                has,
-                get_set: SingularGetSet::Message(ref get), ..
-            } => {
-                if has(m) {
-                    Some(get.get_message(m))
-                } else {
-                    None
-                }
-            },
-            FieldAccessorFunctions::Optional(ref t, ..) => {
-                t.get_field(m).as_option_ref().map(V::RuntimeType::as_ref).map(|v| match v {
-                    ReflectValueRef::Message(m) => m,
-                    _ => panic!("not a message"),
-                })
-            }
-            ref fns => panic!("unknown accessor type: {:?}", fns),
-        }
-    }
-
-    fn mut_message_generic<'a>(&self, m: &'a mut Message) -> &'a mut Message {
-        let _m: &mut M = message_down_cast_mut(m);
-        unimplemented!()
-    }
-
     fn protobuf_type(&self) -> &'static ProtobufTypeDynamic {
         V::dynamic()
     }
