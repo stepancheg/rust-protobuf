@@ -18,7 +18,7 @@ use clear::Clear;
 
 /// Implemented for both `Vec` and `RepeatedField`.
 /// Used to simplify codegen, should not be used directly.
-pub trait VecLike<T> {
+pub(crate) trait VecLike<T> {
     fn push(&mut self, item: T);
     fn push_default(&mut self) -> &mut T where T : Default + Clear;
 }
