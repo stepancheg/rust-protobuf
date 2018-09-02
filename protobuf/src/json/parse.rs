@@ -26,9 +26,11 @@ use text_format::lexer::LexerError;
 use text_format::lexer::Token;
 
 use super::float;
+use super::rfc_3339;
 use text_format::lexer::JsonNumberLit;
 
 use well_known_types::Duration;
+use well_known_types::Timestamp;
 use well_known_types::FieldMask;
 use well_known_types::NullValue;
 use well_known_types::Value;
@@ -55,6 +57,7 @@ pub enum ParseError {
     FromBase64Error(FromBase64Error),
     IncorrectStrLit(LexerError),
     IncorrectDuration,
+    Rfc3339(rfc_3339::Rfc3339ParseError),
     ParseIntError(ParseIntError),
     ParseFloatError(ParseFloatError),
     ExpectingBool,
@@ -84,6 +87,12 @@ impl From<ParseIntError> for ParseError {
 impl From<ParseFloatError> for ParseError {
     fn from(e: ParseFloatError) -> Self {
         ParseError::ParseFloatError(e)
+    }
+}
+
+impl From<rfc_3339::Rfc3339ParseError> for ParseError {
+    fn from(e: rfc_3339::Rfc3339ParseError) -> Self {
+        ParseError::Rfc3339(e)
     }
 }
 
@@ -493,6 +502,10 @@ impl<'a> Parser<'a> {
             return self.merge_wk_duration(duration);
         }
 
+        if let Some(timestamp) = message.as_any_mut().downcast_mut() {
+            return self.merge_wk_timestamp(timestamp);
+        }
+
         if let Some(field_mask) = message.as_any_mut().downcast_mut() {
             return self.merge_wk_field_mask(field_mask);
         }
@@ -627,6 +640,14 @@ impl<'a> Parser<'a> {
             duration.seconds = seconds as i64;
             duration.nanos = nanos as i32;
         }
+        Ok(())
+    }
+
+    fn merge_wk_timestamp(&mut self, timestamp: &mut Timestamp) -> ParseResult<()> {
+        let s = self.read_string()?;
+        let (seconds, nanos) = rfc_3339::TmUtc::parse_rfc_3339(&s)?;
+        timestamp.seconds = seconds;
+        timestamp.nanos = nanos as i32;
         Ok(())
     }
 

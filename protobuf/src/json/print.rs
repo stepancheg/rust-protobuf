@@ -26,11 +26,13 @@ use well_known_types::BytesValue;
 use well_known_types::ListValue;
 use well_known_types::Struct;
 use well_known_types::Duration;
+use well_known_types::Timestamp;
 use well_known_types::FieldMask;
 
 use json::well_known_wrapper::WellKnownWrapper;
 
 use reflect::EnumValueDescriptor;
+use json::rfc_3339::TmUtc;
 
 struct Printer {
     buf: String,
@@ -190,6 +192,14 @@ impl PrintableToJson for Duration {
     }
 }
 
+impl PrintableToJson for Timestamp {
+    fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
+        assert!(self.nanos >= 0);
+        let tm_utc = TmUtc::from_protobuf_timestamp(self.seconds, self.nanos as u32);
+        w.print_printable(&tm_utc.to_string())
+    }
+}
+
 impl PrintableToJson for FieldMask {
     fn print_to_json(&self, w: &mut Printer) -> fmt::Result {
         w.print_printable(&self.paths.join(","))
@@ -340,6 +350,8 @@ impl Printer {
 
         if let Some(duration) = message.as_any().downcast_ref::<Duration>() {
             return self.print_printable(duration);
+        } else if let Some(timestamp) = message.as_any().downcast_ref::<Timestamp>() {
+            return self.print_printable(timestamp);
         } else if let Some(field_mask) = message.as_any().downcast_ref::<FieldMask>() {
             return self.print_printable(field_mask);
         } else if let Some(value) = message.as_any().downcast_ref::<Value>() {
