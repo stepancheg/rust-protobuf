@@ -5,7 +5,9 @@ use protobuf::*;
 
 pub fn test_serialize_deserialize_length_delimited<M : Message + PartialEq>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
-    let parsed = parse_length_delimited_from_bytes::<M>(&serialized_bytes).unwrap();
+    let mut is = CodedInputStream::from_bytes(&serialized_bytes);
+    let parsed = is.read_message().unwrap();
+    is.check_eof().unwrap();
     assert_eq!(*msg, parsed);
 }
 

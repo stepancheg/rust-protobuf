@@ -23,9 +23,6 @@ pub use core::parse_from_bytes;
 pub use core::parse_from_reader;
 #[cfg(feature = "bytes")]
 pub use core::parse_from_carllerche_bytes;
-pub use core::parse_length_delimited_from;
-pub use core::parse_length_delimited_from_reader;
-pub use core::parse_length_delimited_from_bytes;
 pub use enums::ProtobufEnum;
 pub use oneof::Oneof;
 pub use stream::CodedInputStream;

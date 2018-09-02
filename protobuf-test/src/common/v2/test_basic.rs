@@ -295,6 +295,8 @@ fn test_parse_length_delimited_from_network_smoke() {
     });
 
     let mut tcp_stream = net::TcpStream::connect(addr).expect("connect");
-    let test1: Test1 = parse_length_delimited_from_reader(&mut tcp_stream).expect("parse...");
+    let mut is = CodedInputStream::new(&mut tcp_stream);
+    let test1: Test1 = is.read_message().expect("read_message");
     assert_eq!(10, test1.get_a());
+    is.check_eof().expect("check_eof");
 }

@@ -226,28 +226,3 @@ pub fn parse_from_carllerche_bytes<M : Message>(
     // Call trait explicitly to avoid accidental construction from `&[u8]`
     WithCodedInputStream::with_coded_input_stream(bytes, |is| parse_from::<M>(is))
 }
-
-/// Parse length-delimited message from stream.
-///
-/// Read varint length first, and read messages of that length then.
-pub fn parse_length_delimited_from<M : Message>(
-    is: &mut CodedInputStream,
-) -> ProtobufResult<M> {
-    is.read_message::<M>()
-}
-
-/// Parse length-delimited message from `Read`.
-pub fn parse_length_delimited_from_reader<M : Message>(
-    r: &mut Read,
-) -> ProtobufResult<M> {
-    // TODO: wrong: we may read length first, and then read exact number of bytes needed
-    r.with_coded_input_stream(|is| is.read_message::<M>())
-}
-
-/// Parse length-delimited message from bytes.
-// TODO: currently it's not possible to know how many bytes read from slice.
-pub fn parse_length_delimited_from_bytes<M : Message>(
-    bytes: &[u8],
-) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| is.read_message::<M>())
-}
