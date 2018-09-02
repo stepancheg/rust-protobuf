@@ -18,6 +18,8 @@
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 - [`unknown_fields` field is public
   now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516)
+- [Remove global `parse_length_delimited*`
+  functions](https://github.com/stepancheg/rust-protobuf/commit/91c0875e909cdc0648256f0c45cd4a9ade1e4fa0)
 
 ## [2.0.4] - 2018-07-19
 
