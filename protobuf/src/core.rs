@@ -219,6 +219,9 @@ pub fn parse_from_carllerche_bytes<M : Message>(
 /// Parse length-delimited message from stream.
 ///
 /// Read varint length first, and read messages of that length then.
+///
+/// This function is deprecated and will be removed in the next major release.
+#[deprecated]
 pub fn parse_length_delimited_from<M : Message>(
     is: &mut CodedInputStream,
 ) -> ProtobufResult<M> {
@@ -226,6 +229,9 @@ pub fn parse_length_delimited_from<M : Message>(
 }
 
 /// Parse length-delimited message from `Read`.
+///
+/// This function is deprecated and will be removed in the next major release.
+#[deprecated]
 pub fn parse_length_delimited_from_reader<M : Message>(
     r: &mut Read,
 ) -> ProtobufResult<M> {
@@ -234,7 +240,9 @@ pub fn parse_length_delimited_from_reader<M : Message>(
 }
 
 /// Parse length-delimited message from bytes.
-// TODO: currently it's not possible to know how many bytes read from slice.
+///
+/// This function is deprecated and will be removed in the next major release.
+#[deprecated]
 pub fn parse_length_delimited_from_bytes<M : Message>(
     bytes: &[u8],
 ) -> ProtobufResult<M> {
