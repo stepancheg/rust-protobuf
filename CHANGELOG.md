@@ -21,6 +21,11 @@
 - [Remove global `parse_length_delimited*`
   functions](https://github.com/stepancheg/rust-protobuf/commit/91c0875e909cdc0648256f0c45cd4a9ade1e4fa0)
 
+## [2.0 Unreleased]
+
+- [Global `parse_length_delimited*` functions are
+  deprecated](https://github.com/stepancheg/rust-protobuf/commit/efdfd5cacfa4f87b2a6e3ffc124d77692db142d9)
+
 ## [2.0.4] - 2018-07-19
 
 - Minimum bytes version is 0.4 now (since protobuf doesn't work with 0.3 anyway)
