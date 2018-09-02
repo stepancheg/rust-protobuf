@@ -142,9 +142,9 @@ impl<M, V> GetOptionImpl<M> for GetOptionImplFieldPointer<M, V>
         V : RuntimeType,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
-        let v = V::as_ref((self.get_field)(m));
-        if v.is_non_zero() {
-            Some(v)
+        let v = (self.get_field)(m);
+        if V::is_non_zero(v) {
+            Some(V::as_ref(v))
         } else {
             None
         }

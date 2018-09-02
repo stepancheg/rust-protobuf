@@ -59,6 +59,8 @@ pub trait RuntimeType : fmt::Debug + Send + Sync + 'static {
 
     fn as_ref(value: &Self::Value) -> ReflectValueRef;
 
+    fn is_non_zero(value: &Self::Value) -> bool;
+
     fn set_from_value_box(target: &mut Self::Value, value_box: ReflectValueBox) {
         *target = Self::from_value_box(value_box);
     }
@@ -135,6 +137,10 @@ impl RuntimeType for RuntimeTypeF32 {
     fn as_ref(value: &f32) -> ReflectValueRef {
         ReflectValueRef::F32(*value)
     }
+
+    fn is_non_zero(value: &f32) -> bool {
+        *value != 0.0
+    }
 }
 
 impl RuntimeType for RuntimeTypeF64 {
@@ -165,6 +171,10 @@ impl RuntimeType for RuntimeTypeF64 {
 
     fn as_ref(value: &f64) -> ReflectValueRef {
         ReflectValueRef::F64(*value)
+    }
+
+    fn is_non_zero(value: &f64) -> bool {
+        *value != 0.0
     }
 }
 
@@ -197,6 +207,10 @@ impl RuntimeType for RuntimeTypeI32 {
     fn as_ref(value: &i32) -> ReflectValueRef {
         ReflectValueRef::I32(*value)
     }
+
+    fn is_non_zero(value: &i32) -> bool {
+        *value != 0
+    }
 }
 
 impl RuntimeType for RuntimeTypeI64 {
@@ -227,6 +241,10 @@ impl RuntimeType for RuntimeTypeI64 {
 
     fn as_ref(value: &i64) -> ReflectValueRef {
         ReflectValueRef::I64(*value)
+    }
+
+    fn is_non_zero(value: &i64) -> bool {
+        *value != 0
     }
 }
 
@@ -259,6 +277,10 @@ impl RuntimeType for RuntimeTypeU32 {
     fn as_ref(value: &u32) -> ReflectValueRef {
         ReflectValueRef::U32(*value)
     }
+
+    fn is_non_zero(value: &u32) -> bool {
+        *value != 0
+    }
 }
 
 impl RuntimeType for RuntimeTypeU64 {
@@ -289,6 +311,10 @@ impl RuntimeType for RuntimeTypeU64 {
 
     fn as_ref(value: &u64) -> ReflectValueRef {
         ReflectValueRef::U64(*value)
+    }
+
+    fn is_non_zero(value: &u64) -> bool {
+        *value != 0
     }
 }
 
@@ -321,6 +347,10 @@ impl RuntimeType for RuntimeTypeBool {
     fn as_ref(value: &bool) -> ReflectValueRef {
         ReflectValueRef::Bool(*value)
     }
+
+    fn is_non_zero(value: &bool) -> bool {
+        *value
+    }
 }
 
 impl RuntimeType for RuntimeTypeString {
@@ -347,6 +377,10 @@ impl RuntimeType for RuntimeTypeString {
 
     fn as_ref(value: &String) -> ReflectValueRef {
         ReflectValueRef::String(&*value)
+    }
+
+    fn is_non_zero(value: &String) -> bool {
+        !value.is_empty()
     }
 }
 
@@ -382,6 +416,10 @@ impl RuntimeType for RuntimeTypeVecU8 {
 
     fn as_ref(value: &Vec<u8>) -> ReflectValueRef {
         ReflectValueRef::Bytes(value.as_slice())
+    }
+
+    fn is_non_zero(value: &Vec<u8>) -> bool {
+        !value.is_empty()
     }
 }
 
@@ -420,6 +458,10 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
     fn as_ref(value: &Bytes) -> ReflectValueRef {
         ReflectValueRef::Bytes(value.as_ref())
     }
+
+    fn is_non_zero(value: &Bytes) -> bool {
+        !value.is_empty()
+    }
 }
 
 #[cfg(feature = "bytes")]
@@ -456,6 +498,10 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
 
     fn as_ref(value: &Chars) -> ReflectValueRef {
         ReflectValueRef::String(value.as_ref())
+    }
+
+    fn is_non_zero(value: &Chars) -> bool {
+        !value.is_empty()
     }
 }
 
@@ -503,6 +549,10 @@ impl<E> RuntimeType for RuntimeTypeEnum<E>
     fn as_ref(value: &E) -> ReflectValueRef {
         ReflectValueRef::Enum(value.descriptor())
     }
+
+    fn is_non_zero(value: &E) -> bool {
+        value.value() != 0
+    }
 }
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
@@ -537,6 +587,10 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
     fn as_ref(value: &M) -> ReflectValueRef {
         ReflectValueRef::Message(value)
     }
+
+    fn is_non_zero(_value: &M) -> bool {
+        true
+    }
 }
 
 impl RuntimeType for RuntimeTypeUnreachable {
@@ -559,6 +613,10 @@ impl RuntimeType for RuntimeTypeUnreachable {
     }
 
     fn as_ref(_value: &u32) -> ReflectValueRef {
+        unreachable!()
+    }
+
+    fn is_non_zero(_value: &u32) -> bool {
         unreachable!()
     }
 }
