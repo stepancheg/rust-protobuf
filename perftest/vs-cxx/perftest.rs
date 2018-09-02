@@ -63,10 +63,7 @@ impl TestRunner {
                 let mut r = Vec::new();
                 let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
                 while !coded_input_stream.eof().unwrap() {
-                    r.push(
-                        protobuf::parse_length_delimited_from::<M>(&mut coded_input_stream)
-                            .unwrap(),
-                    );
+                    r.push(coded_input_stream.read_message().unwrap());
                 }
                 r
             });
