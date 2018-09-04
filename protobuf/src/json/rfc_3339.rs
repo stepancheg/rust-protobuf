@@ -420,10 +420,14 @@ impl TmUtc {
 impl fmt::Display for TmUtc {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.year > 9999 {
-            write!(f, "+")?;
+            write!(f, "+{}", self.year)?;
+        } else if self.year < 0 {
+            write!(f, "{:05}", self.year)?;
+        } else {
+            write!(f, "{:04}", self.year)?;
         }
-        write!(f, "{:04}-{:02}-{:02} {:02}:{:02}:{:02}",
-            self.year, self.month, self.day, self.hour, self.minute, self.second)?;
+        write!(f, "-{:02}-{:02} {:02}:{:02}:{:02}",
+            self.month, self.day, self.hour, self.minute, self.second)?;
 
         // if precision is not specified, print nanoseconds
         let subsec_digits = f.precision().unwrap_or(9);
@@ -479,6 +483,11 @@ mod test {
         test_impl("1970-01-01 00:00:00.000000001000Z", 0, 1, 12);
         test_impl("5138-11-16 09:46:40Z", 100000000000, 0, 0);
         test_impl("+33658-09-27 01:46:41Z", 1000000000001, 0, 0);
+        // Leading zero
+        test_impl("0000-12-31 00:00:00Z", -62135683200, 0, 0);
+        // Minus zero
+        test_impl("-0003-10-30 14:13:20Z", -62235683200, 0, 0);
+        // More than 4 digits
         // Largest value GNU date can handle
         test_impl("+2147485547-12-31 23:59:59Z", 67768036191676799, 0, 0);
         // Negative dates
