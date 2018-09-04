@@ -9,14 +9,16 @@ extern crate protoc_rust;
 
 use protoc_rust::Customize;
 
-protoc_rust::run(protoc_rust::Args {
-    out_dir: "src/protos",
-    input: &["protos/a.proto", "protos/b.proto"],
-    includes: &["protos"],
-    customize: Customize {
-      ..Default::default()
-    },
-}).expect("protoc");
+fn main() {
+	protoc_rust::run(protoc_rust::Args {
+	    out_dir: "src/protos",
+	    input: &["protos/a.proto", "protos/b.proto"],
+	    includes: &["protos"],
+	    customize: Customize {
+	      ..Default::default()
+	    },
+	}).expect("protoc");
+}
 ```
 
 And in `Cargo.toml`:
