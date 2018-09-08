@@ -1,6 +1,8 @@
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 
+use protobuf::prelude::*;
+
 use super::enums::*;
 use super::rust_types_values::*;
 use super::field::*;
@@ -30,7 +32,8 @@ impl<'a> MessageGen<'a> {
         -> MessageGen<'a>
     {
         let mut customize = customize.clone();
-        customize.update_with(&customize_from_rustproto_for_message(message.message.get_options()));
+        customize.update_with(&customize_from_rustproto_for_message(
+            message.message.options.get_message()));
 
         let fields: Vec<_> = message
             .fields()
@@ -44,9 +47,8 @@ impl<'a> MessageGen<'a> {
             fields: fields,
             lite_runtime: message
                 .get_file_descriptor()
-                .get_options()
-                .get_optimize_for() ==
-                FileOptions_OptimizeMode::LITE_RUNTIME,
+                .options.get_message()
+                .get_optimize_for() == FileOptions_OptimizeMode::LITE_RUNTIME,
             customize,
         }
     }

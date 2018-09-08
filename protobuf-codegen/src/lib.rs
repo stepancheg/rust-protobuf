@@ -12,6 +12,8 @@ use protobuf::Message;
 use protobuf::compiler_plugin;
 use protobuf::descriptorx::*;
 
+use protobuf::prelude::*;
+
 mod message;
 mod enums;
 mod rust_types_values;
@@ -114,7 +116,8 @@ fn gen_file(
     // TODO: use it
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
-    customize.update_with(&customize_from_rustproto_for_file(file.get_options()));
+    customize.update_with(&customize_from_rustproto_for_file(
+        file.options.get_message()));
 
     let scope = FileScope { file_descriptor: file }.to_scope();
 
@@ -145,7 +148,8 @@ fn gen_file(
 
         write_extensions(file, &root_scope, &mut w);
 
-        if file.get_options().get_optimize_for() != FileOptions_OptimizeMode::LITE_RUNTIME {
+        let optimize_mode = file.options.get_message().get_optimize_for();
+        if optimize_mode != FileOptions_OptimizeMode::LITE_RUNTIME {
             w.write_line("");
             write_file_descriptor_data(file, &mut w);
         }

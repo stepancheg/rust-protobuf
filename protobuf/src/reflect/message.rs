@@ -88,14 +88,14 @@ impl MessageDescriptor {
         let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
-        for field_proto in proto.message.get_field() {
+        for field_proto in &proto.message.field {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.message.get_field().iter().enumerate() {
+        for (i, f) in proto.message.field.iter().enumerate() {
             assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
             assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
             assert!(index_by_name_or_json_name.insert(f.get_name().to_owned(), i).is_none());

@@ -30,8 +30,9 @@ use types::*;
 
 use unknown::UnknownFields;
 use reflect::runtime_types::RuntimeType;
-use singular::OptionLike;
 use repeated::VecLike;
+
+use prelude::*;
 
 
 /// Given `u64` value compute varint encoded length.
@@ -828,7 +829,7 @@ pub fn read_singular_message_into<M, O>(
 ) -> ProtobufResult<()>
     where
         M : Message + Default,
-        O : OptionLike<M>,
+        O : MessageField<M>,
 {
     match wire_type {
         WireTypeLengthDelimited => {

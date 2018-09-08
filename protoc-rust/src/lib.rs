@@ -79,7 +79,7 @@ pub fn run(args: Args) -> Result<()> {
     }
 
     protobuf_codegen::gen_and_write(
-        fds.get_file(),
+        &fds.file,
         &files_to_generate,
         &Path::new(&args.out_dir),
         &args.customize)

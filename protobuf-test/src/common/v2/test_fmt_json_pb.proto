@@ -1,10 +1,9 @@
 syntax = "proto2";
 
-package test_fmt_json;
-
 import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
 
-option (rustproto.expose_fields_all) = true;
+package test_fmt_json;
 
 
 enum TestEnum {

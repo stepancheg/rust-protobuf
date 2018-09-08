@@ -3,6 +3,8 @@ use std::collections::HashSet;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 
+use protobuf::prelude::*;
+
 use super::code_writer::*;
 use super::customize::Customize;
 use rust_types_values::type_name_to_rust_relative;
@@ -74,7 +76,7 @@ impl<'a> EnumGen<'a> {
             lite_runtime: enum_with_scope
                 .get_scope()
                 .get_file_descriptor()
-                .get_options()
+                .options.get_message()
                 .get_optimize_for() ==
                 FileOptions_OptimizeMode::LITE_RUNTIME,
             customize: customize.clone()
@@ -82,7 +84,7 @@ impl<'a> EnumGen<'a> {
     }
 
     fn allow_alias(&self) -> bool {
-        self.enum_with_scope.en.get_options().get_allow_alias()
+        self.enum_with_scope.en.options.get_message().get_allow_alias()
     }
 
     fn values_all(&self) -> Vec<EnumValueGen> {

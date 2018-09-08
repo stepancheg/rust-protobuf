@@ -5,6 +5,7 @@ use std::iter;
 use model;
 
 use protobuf;
+use protobuf::prelude::*;
 use protobuf::Message;
 use protobuf::descriptor::FieldDescriptorProto_Label;
 
@@ -438,10 +439,10 @@ impl<'a> Resolver<'a> {
     {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
-        output.mut_options().set_map_entry(true);
+        output.options.mut_message().set_map_entry(true);
         output.set_name(Resolver::map_entry_name_for_field_name(field_name));
-        output.mut_field().push(self.map_entry_field("key", 1, key, path_in_file));
-        output.mut_field().push(self.map_entry_field("value", 2, value, path_in_file));
+        output.field.push(self.map_entry_field("key", 1, key, path_in_file));
+        output.field.push(self.map_entry_field("value", 2, value, path_in_file));
 
         Ok(output)
     }
@@ -474,10 +475,10 @@ impl<'a> Resolver<'a> {
             }
         }
 
-        output.set_nested_type(nested_messages);
+        output.nested_type = nested_messages;
 
-        output.set_enum_type(
-            input.enums.iter().map(|e| self.enumeration(e)).collect::<Result<_, _>>()?);
+        output.enum_type =
+            input.enums.iter().map(|e| self.enumeration(e)).collect::<Result<_, _>>()?;
 
         {
             let mut fields = protobuf::RepeatedField::new();
@@ -493,15 +494,15 @@ impl<'a> Resolver<'a> {
                 }
             }
 
-            output.set_field(fields);
+            output.field = fields;
         }
 
         let oneofs = input.oneofs.iter()
             .map(|o| self.oneof(o))
             .collect();
-        output.set_oneof_decl(oneofs);
+        output.oneof_decl = oneofs;
 
-        output.set_options(self.message_options(&input.options)?);
+        output.options.set_message(self.message_options(&input.options)?);
 
         Ok(output)
     }
@@ -600,7 +601,7 @@ impl<'a> Resolver<'a> {
             output.set_default_value(default);
         }
 
-        output.set_options(self.field_options(&input.options)?);
+        output.options.set_message(self.field_options(&input.options)?);
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
@@ -740,8 +741,8 @@ impl<'a> Resolver<'a> {
     {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.set_value(input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect());
-        output.set_options(self.enum_options(&input.options)?);
+        output.value = input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect();
+        output.options.set_message(self.enum_options(&input.options)?);
         Ok(output)
     }
 
@@ -861,12 +862,12 @@ pub fn file_descriptor(
     for m in &input.messages {
         messages.push(resolver.message(&m, &RelativePath::empty())?);
     }
-    output.set_message_type(messages);
+    output.message_type = messages;
 
-    output.set_enum_type(
-        input.enums.iter().map(|e| resolver.enumeration(e)).collect::<Result<_, _>>()?);
+    output.enum_type =
+        input.enums.iter().map(|e| resolver.enumeration(e)).collect::<Result<_, _>>()?;
 
-    output.set_options(resolver.file_options(&input.options)?);
+    output.options.set_message(resolver.file_options(&input.options)?);
 
     Ok(output)
 }

@@ -1,3 +1,5 @@
+use protobuf::prelude::*;
+
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 use protobuf::wire_format;
@@ -571,20 +573,26 @@ impl<'a> FieldGen<'a> {
         -> FieldGen<'a>
     {
         let mut customize = customize.clone();
-        customize.update_with(&customize_from_rustproto_for_field(&field.field.get_options()));
+        customize.update_with(&customize_from_rustproto_for_field(field.field.options.get_message()));
 
         let (elem, enum_default_value) = field_elem(&field, root_scope, true, &customize);
 
         let syntax = field.message.scope.file_scope.syntax();
 
-        let default_generate_accessors = true;
-        let generate_accessors = customize.generate_accessors.unwrap_or(default_generate_accessors);
+        let field_may_have_custo_default_value = syntax == Syntax::PROTO2
+            && field.field.get_label() != FieldDescriptorProto_Label::LABEL_REPEATED
+            && field.field.get_field_type() != FieldDescriptorProto_Type::TYPE_MESSAGE;
 
-        let default_generate_getter = generate_accessors || syntax == Syntax::PROTO2;
-        let generate_getter = customize.generate_getter.unwrap_or(default_generate_getter);
-
-        let default_expose_field = syntax == Syntax::PROTO3 || !generate_accessors;
+        let default_expose_field = !field_may_have_custo_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
+
+        let default_generate_accessors = !expose_field;
+        let generate_accessors = customize.generate_accessors.unwrap_or(default_generate_accessors)
+            || field.is_oneof();
+
+        let default_generate_getter = generate_accessors || field_may_have_custo_default_value;
+        let generate_getter = customize.generate_getter.unwrap_or(default_generate_getter)
+            || field.is_oneof();
 
         let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
             match (elem, true) {
@@ -597,7 +605,7 @@ impl<'a> FieldGen<'a> {
                 // regular repeated field
                 (elem, _) => FieldKind::Repeated(RepeatedField {
                     elem,
-                    packed: field.field.get_options().get_packed(),
+                    packed: field.field.options.get_message().get_packed(),
                     repeated_field_vec: customize.repeated_field_vec.unwrap_or(false),
                 }),
             }
@@ -1497,7 +1505,9 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_self_field_assign_default(&self, w: &mut CodeWriter) {
+    fn write_self_field_assign_default(&self,
+        option_kind: OptionKind, _field_elem: &FieldElem, w: &mut CodeWriter)
+    {
         assert!(self.is_singular());
         if self.is_oneof() {
             let self_field_oneof = self.self_field_oneof();
@@ -1512,9 +1522,9 @@ impl<'a> FieldGen<'a> {
             ));
         } else {
             let s = self.singular();
-            match self.full_storage_type() {
-                RustType::SingularField(..) |
-                RustType::SingularPtrField(..) => {
+            match option_kind {
+                OptionKind::SingularField |
+                OptionKind::SingularPtrField => {
                     let self_field = self.self_field();
                     w.write_line(&format!("{}.set_default();", self_field));
                 }
@@ -2106,10 +2116,10 @@ impl<'a> FieldGen<'a> {
 
     fn write_message_field_mut_singular(&self, s: &SingularField, w: &mut CodeWriter) {
         match s {
-            SingularField { flag: SingularFieldFlag::WithFlag { .. }, .. } => {
+            SingularField { flag: SingularFieldFlag::WithFlag { option_kind, .. }, elem } => {
                 self.write_if_self_field_is_none(
                     w,
-                    |w| { self.write_self_field_assign_default(w); },
+                    |w| { self.write_self_field_assign_default(*option_kind, elem, w); },
                 );
                 let self_field = self.self_field();
                 w.write_line(&format!("{}.as_mut().unwrap()", self_field));

@@ -190,18 +190,18 @@ impl<'a> Scope<'a> {
     // get message descriptors in this scope
     fn get_message_descriptors(&self) -> &'a [DescriptorProto] {
         if self.path.is_empty() {
-            self.file_scope.file_descriptor.get_message_type()
+            &self.file_scope.file_descriptor.message_type
         } else {
-            self.path.last().unwrap().get_nested_type()
+            &self.path.last().unwrap().nested_type
         }
     }
 
     // get enum descriptors in this scope
     fn get_enum_descriptors(&self) -> &'a [EnumDescriptorProto] {
         if self.path.is_empty() {
-            self.file_scope.file_descriptor.get_enum_type()
+            &self.file_scope.file_descriptor.enum_type
         } else {
-            self.path.last().unwrap().get_enum_type()
+            &self.path.last().unwrap().enum_type
         }
     }
 
@@ -374,7 +374,7 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn fields(&self) -> Vec<FieldWithContext<'a>> {
         self.message
-            .get_field()
+            .field
             .iter()
             .map(|f| {
                 FieldWithContext {
@@ -387,7 +387,7 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn oneofs(&'a self) -> Vec<OneofWithContext<'a>> {
         self.message
-            .get_oneof_decl()
+            .oneof_decl
             .iter()
             .enumerate()
             .map(|(index, oneof)| {
@@ -416,14 +416,14 @@ pub struct EnumWithScope<'a> {
 impl<'a> EnumWithScope<'a> {
     // enum values
     pub fn values(&'a self) -> &'a [EnumValueDescriptorProto] {
-        self.en.get_value()
+        &self.en.value
     }
 
     // find enum value by name
     pub fn value_by_name(&'a self, name: &str) -> &'a EnumValueDescriptorProto {
         self.en
-            .get_value()
-            .into_iter()
+            .value
+            .iter()
             .find(|v| v.get_name() == name)
             .unwrap()
     }
@@ -495,7 +495,7 @@ pub struct FieldWithContext<'a> {
 }
 
 impl<'a> FieldWithContext<'a> {
-    fn is_oneof(&self) -> bool {
+    pub fn is_oneof(&self) -> bool {
         self.field.has_oneof_index()
     }
 

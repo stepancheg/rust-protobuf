@@ -11,6 +11,10 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/type.proto";
 import "google/protobuf/wrappers.proto";
 
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+
 message TestFmtJsonWellKnownTypes {
     optional .google.protobuf.Duration duration = 3;
     optional .google.protobuf.Timestamp timestamp = 4;

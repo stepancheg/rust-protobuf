@@ -57,6 +57,7 @@ pub mod stream;
 pub mod error;
 pub mod well_known_types;
 pub mod ext;
+pub mod prelude;
 
 // used by test
 #[cfg(test)]

@@ -1,3 +1,5 @@
+use protobuf::prelude::*;
+
 use protobuf::descriptorx::FieldWithContext;
 use protobuf::descriptorx::MessageWithScope;
 use protobuf::descriptor::FieldDescriptorProto_Label;
@@ -5,16 +7,16 @@ use protobuf::descriptor::FieldDescriptorProto_Label;
 
 /// Pair of (key, value) if this message is map entry
 pub fn map_entry<'a>(d: &'a MessageWithScope) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
-    if d.message.get_options().get_map_entry() {
+    if d.message.options.get_message().get_map_entry() {
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
 
         assert!(d.message.get_name().ends_with("Entry"));
 
-        assert_eq!(0, d.message.get_extension().len());
-        assert_eq!(0, d.message.get_extension_range().len());
-        assert_eq!(0, d.message.get_nested_type().len());
-        assert_eq!(0, d.message.get_enum_type().len());
+        assert_eq!(0, d.message.extension.len());
+        assert_eq!(0, d.message.extension_range.len());
+        assert_eq!(0, d.message.nested_type.len());
+        assert_eq!(0, d.message.enum_type.len());
 
         assert_eq!(2, d.fields().len());
         let key = d.fields()[0].clone();

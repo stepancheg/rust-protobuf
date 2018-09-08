@@ -71,7 +71,7 @@ impl<'a> ExtGen<'a> {
 
 
 pub fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter) {
-    if file.get_extension().is_empty() {
+    if file.extension.is_empty() {
         return;
     }
 
@@ -79,7 +79,7 @@ pub fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &
     w.pub_mod("exts", |w| {
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
 
-        for field in file.get_extension() {
+        for field in &file.extension {
             if field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
                 continue;
             }

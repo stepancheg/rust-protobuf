@@ -126,12 +126,12 @@ impl EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, v) in proto.en.get_value().iter().enumerate() {
+        for (i, v) in proto.en.value.iter().enumerate() {
             index_by_number.insert(v.get_number(), i);
             index_by_name.insert(v.get_name().to_string(), i);
         }
 
-        let proto_values = proto.en.get_value();
+        let proto_values = &proto.en.value;
         let code_values = E::values();
         assert_eq!(proto_values.len(), code_values.len());
 

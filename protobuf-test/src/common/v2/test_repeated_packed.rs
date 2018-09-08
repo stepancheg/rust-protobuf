@@ -13,30 +13,30 @@ use protobuf_test_common::*;
 #[test]
 fn test_write_unpacked() {
     let mut test = TestUnpacked::new();
-    test.set_varints([17i32, 1000].to_vec());
+    test.varints = vec![17i32, 1000];
     test_serialize_deserialize("20 11 20 e8 07", &test);
     let mut test = TestUnpacked::new();
-    test.set_sfixed32s([17i32, 1000].to_vec());
+    test.sfixed32s = vec![17i32, 1000];
     test_serialize_deserialize("2d 11 00 00 00 2d e8 03 00 00", &test);
 }
 
 #[test]
 fn test_read_unpacked_to_unpacked() {
     let mut test = TestUnpacked::new();
-    test.set_varints([17i32, 1000].to_vec());
+    test.varints = vec![17i32, 1000];
     test_deserialize("20 11 20 e8 07", &test);
     let mut test = TestUnpacked::new();
-    test.set_sfixed32s([17i32, 1000].to_vec());
+    test.sfixed32s = vec![17i32, 1000];
     test_deserialize("2d 11 00 00 00 2d e8 03 00 00", &test);
 }
 
 #[test]
 fn test_read_packed_to_unpacked() {
     let mut test = TestUnpacked::new();
-    test.set_varints([17i32, 1000].to_vec());
+    test.varints = vec![17i32, 1000];
     test_deserialize("22 03 11 e8 07", &test);
     let mut test = TestUnpacked::new();
-    test.set_sfixed32s([17i32, 1000].to_vec());
+    test.sfixed32s = vec![17i32, 1000];
     test_deserialize("2a 08 11 00 00 00 e8 03 00 00", &test);
 }
 
@@ -44,30 +44,30 @@ fn test_read_packed_to_unpacked() {
 #[test]
 fn test_write_packed() {
     let mut test = TestPacked::new();
-    test.set_varints([17i32, 1000].to_vec());
+    test.varints = vec![17i32, 1000];
     test_serialize_deserialize("22 03 11 e8 07", &test);
     let mut test = TestPacked::new();
-    test.set_sfixed32s([17i32, 1000].to_vec());
+    test.sfixed32s = vec![17i32, 1000];
     test_serialize_deserialize("2a 08 11 00 00 00 e8 03 00 00", &test);
 }
 
 #[test]
 fn test_read_unpacked_to_packed() {
     let mut test = TestPacked::new();
-    test.set_varints([17i32, 1000].to_vec());
+    test.varints = vec![17i32, 1000];
     test_deserialize("20 11 20 e8 07", &test);
     let mut test = TestPacked::new();
-    test.set_sfixed32s([17i32, 1000].to_vec());
+    test.sfixed32s = vec![17i32, 1000];
     test_deserialize("2d 11 00 00 00 2d e8 03 00 00", &test);
 }
 
 #[test]
 fn test_read_packed_to_packed() {
     let mut test = TestPacked::new();
-    test.set_varints([17i32, 1000].to_vec());
+    test.varints = vec![17i32, 1000];
     test_deserialize("22 03 11 e8 07", &test);
     let mut test = TestPacked::new();
-    test.set_sfixed32s([17i32, 1000].to_vec());
+    test.sfixed32s = vec![17i32, 1000];
     test_deserialize("2a 08 11 00 00 00 e8 03 00 00", &test);
 }
 
@@ -78,6 +78,6 @@ fn test_issue_281() {
     // and varint len of 400 is 2,
     // while varint len of 100 is 1.
     let mut test = TestIssue281::new();
-    test.set_values((0..100).collect());
+    test.values = (0..100).collect();
     test_serialize_deserialize_no_hex(&test);
 }

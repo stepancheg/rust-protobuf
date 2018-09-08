@@ -10,6 +10,8 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
+use protobuf::descriptor;
+use protobuf::rustproto;
 
 
 fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor) -> Box<Message> {
@@ -25,7 +27,11 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
         .expect("temp dir");
 
     let mut fds = FileDescriptorSet::new();
-    fds.mut_file().push(message_descriptor.file_descriptor_proto().clone());
+    fds.file = vec![
+        descriptor::file_descriptor_proto().clone(),
+        rustproto::file_descriptor_proto().clone(),
+        message_descriptor.file_descriptor_proto().clone(),
+    ].into();
 
     let mut temp_file = temp_dir.path().to_owned();
     temp_file.push("fds");
@@ -66,12 +72,18 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
 fn print_using_protoc(message: &Message) -> String {
     let message_descriptor = message.descriptor();
 
+    // TODO: copy-paste of parse_using_protoc
+
     let temp_dir = tempfile::Builder::new().prefix(message_descriptor.name()).tempdir()
         .expect("temp dir");
 
     let mut fds = FileDescriptorSet::new();
-    fds.mut_file().push(message_descriptor.file_descriptor_proto().clone());
-
+    fds.file = vec![
+        descriptor::file_descriptor_proto().clone(),
+        rustproto::file_descriptor_proto().clone(),
+        message_descriptor.file_descriptor_proto().clone(),
+    ].into();
+    
     let mut temp_file = temp_dir.path().to_owned();
     temp_file.push("fds");
 
@@ -99,7 +111,7 @@ fn print_using_protoc(message: &Message) -> String {
 
     let exit_status = protoc.wait().expect("wait");
     assert!(exit_status.success(),
-        "exit status: {:?} while printing: {:?}", exit_status, message);
+        "protoc exit status: {:?} while printing: {:?}", exit_status, message);
 
     decoded
 }
