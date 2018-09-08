@@ -46,7 +46,9 @@ use well_known_types::BoolValue;
 use well_known_types::StringValue;
 use well_known_types::BytesValue;
 use well_known_types::Struct;
+use well_known_types::Any;
 use json::well_known_wrapper::WellKnownWrapper;
+
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -64,6 +66,7 @@ pub enum ParseError {
     ExpectingStrOrInt,
     ExpectingNumber,
     UnexpectedToken,
+    AnyParsingIsNotImplemented,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -514,6 +517,10 @@ impl<'a> Parser<'a> {
             return self.merge_wk_value(value);
         }
 
+        if let Some(value) = message.as_any_mut().downcast_mut() {
+            return self.merge_wk_any(value);
+        }
+
         if let Some(value) = message.as_any_mut().downcast_mut::<DoubleValue>() {
             return self.merge_wrapper(value);
         }
@@ -690,6 +697,10 @@ impl<'a> Parser<'a> {
             return Err(ParseError::UnexpectedToken);
         }
         Ok(())
+    }
+
+    fn merge_wk_any(&mut self, _value: &mut Any) -> ParseResult<()> {
+        Err(ParseError::AnyParsingIsNotImplemented)
     }
 
     fn read_wk_value(&mut self) -> ParseResult<Value> {
