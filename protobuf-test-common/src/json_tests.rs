@@ -27,7 +27,8 @@ pub fn test_json_message(m: &Message) {
 
     let s = json::print_to_string(m).expect("print_to_string");
     let mut new = descriptor.new_instance();
-    json::merge_from_str(&mut *new, &s).expect("parse");
+    json::merge_from_str(&mut *new, &s)
+        .expect(&format!("failed to parse serialized: {}; from message: {:?}", s, m));
     assert!(
         descriptor.deep_eq(m, &*new),
         "{:?} should be == {:?}",

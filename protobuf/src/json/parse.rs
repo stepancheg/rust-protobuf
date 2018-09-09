@@ -232,6 +232,16 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn parse_bool(&self, s: &str) -> ParseResult<bool> {
+        if s == "true" {
+            Ok(true)
+        } else if s == "false" {
+            Ok(false)
+        } else {
+            Err(ParseError::ExpectingBool)
+        }
+    }
+
     fn read_json_number_opt(&mut self) -> ParseResult<Option<JsonNumberLit>> {
         Ok(self.tokenizer.next_token_if_map(|t| {
             match t {
@@ -246,10 +256,14 @@ impl<'a> Parser<'a> {
             V::from_string(&v.0)
         } else if self.tokenizer.lookahead_is_str_lit()? {
             let v = self.read_string()?;
-            V::from_string(&v)
+            self.parse_number(&v)
         } else {
             Err(ParseError::ExpectingNumber)
         }
+    }
+
+    fn parse_number<V : FromJsonNumber>(&self, s: &str) -> ParseResult<V> {
+        V::from_string(s)
     }
 
     fn merge_wrapper<W>(&mut self, w: &mut W) -> ParseResult<()>
@@ -313,7 +327,11 @@ impl<'a> Parser<'a> {
 
     fn read_bytes(&mut self) -> ParseResult<Vec<u8>> {
         let s = self.read_string()?;
-        Ok(base64::decode(&s)?)
+        self.parse_bytes(&s)
+    }
+
+    fn parse_bytes(&self, s: &str) -> ParseResult<Vec<u8>> {
+        Ok(base64::decode(s)?)
     }
 
     fn read_enum<'e>(&mut self, descriptor: &'e EnumDescriptor)
@@ -325,10 +343,7 @@ impl<'a> Parser<'a> {
 
         if self.tokenizer.lookahead_is_str_lit()? {
             let name = self.read_string()?;
-            match descriptor.value_by_name(&name) {
-                Some(v) => Ok(v),
-                None => Err(ParseError::UnknownEnumVariantName(name)),
-            }
+            self.parse_enum(name, descriptor)
         } else if self.tokenizer.lookahead_is_json_number()? {
             let number = self.read_i32()?;
             match descriptor.value_by_number(number) {
@@ -338,6 +353,16 @@ impl<'a> Parser<'a> {
             }
         } else {
             Err(ParseError::ExpectingStrOrInt)
+        }
+    }
+
+    fn parse_enum<'e>(&self, name: String, descriptor: &'e EnumDescriptor)
+        -> ParseResult<&'e EnumValueDescriptor>
+    {
+        // TODO: can map key be int
+        match descriptor.value_by_name(&name) {
+            Some(v) => Ok(v),
+            None => Err(ParseError::UnknownEnumVariantName(name)),
         }
     }
 
@@ -434,10 +459,10 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn read_map<K, Fk, Fi>(&mut self, mut read_key: Fk, mut read_value_and_insert: Fi)
+    fn read_map<K, Fk, Fi>(&mut self, mut parse_key: Fk, mut read_value_and_insert: Fi)
         -> ParseResult<()>
         where
-            Fk : for<'b> FnMut(&mut Self) -> ParseResult<K>,
+            Fk : for<'b> FnMut(&mut Self, String) -> ParseResult<K>,
             Fi : for<'b> FnMut(&mut Self, K) -> ParseResult<()>,
     {
         if self.tokenizer.next_ident_if_eq("null")? {
@@ -452,12 +477,35 @@ impl<'a> Parser<'a> {
             }
             first = false;
 
-            let k = read_key(self)?;
+            let key_string = self.read_string()?;
+            let k = parse_key(self, key_string)?;
+
             self.tokenizer.next_symbol_expect_eq(':')?;
             read_value_and_insert(self, k)?;
         }
 
         Ok(())
+    }
+
+    fn parse_key(&self, key: String, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
+        match t.to_box() {
+            RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
+            RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
+            RuntimeTypeBox::U32 => self.parse_number::<u32>(&key).map(ReflectValueBox::U32),
+            RuntimeTypeBox::U64 => self.parse_number::<u64>(&key).map(ReflectValueBox::U64),
+            // technically f32 and f64 cannot be map keys
+            RuntimeTypeBox::F32 => self.parse_number::<f32>(&key).map(ReflectValueBox::F32),
+            RuntimeTypeBox::F64 => self.parse_number::<f64>(&key).map(ReflectValueBox::F64),
+            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::from),
+            RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
+                Ok(ReflectValueBox::String(key))
+            }
+            RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
+                self.parse_bytes(&key).map(ReflectValueBox::Bytes)
+            }
+            RuntimeTypeBox::Enum(e) => self.parse_enum(key, e).map(ReflectValueBox::Enum),
+            RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
+        }
     }
 
     fn merge_map_field(
@@ -471,7 +519,7 @@ impl<'a> Parser<'a> {
         let mut map = field.mut_map(message);
         map.clear();
 
-        self.read_map(|s| s.read_value(kt), |s, k| {
+        self.read_map(|ss, s| ss.parse_key(s, kt), |s, k| {
             let v = s.read_value(vt)?;
             map.insert(k, v);
             Ok(())
@@ -485,7 +533,7 @@ impl<'a> Parser<'a> {
     {
         struct_value.fields.clear();
 
-        self.read_map(|s| s.read_string(), |s, k| {
+        self.read_map(|_, s| Ok(s), |s, k| {
             let v = s.read_wk_value()?;
             struct_value.fields.insert(k, v);
             Ok(())

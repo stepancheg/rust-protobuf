@@ -121,12 +121,14 @@ impl PrintableToJson for f64 {
 
 impl PrintableToJson for u64 {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
+        // 64-bit integers are quoted by default
         Ok(write!(w.buf, "\"{}\"", self)?)
     }
 }
 
 impl PrintableToJson for i64 {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
+        // 64-bit integers are quoted by default
         Ok(write!(w.buf, "\"{}\"", self)?)
     }
 }
@@ -269,36 +271,53 @@ impl<'a, P : PrintableToJson> PrintableToJson for &'a P {
 
 
 trait ObjectKey {
-    fn print(&self, w: &mut Printer) -> PrintResult<()>;
+    fn print_object_key(&self, w: &mut Printer) -> PrintResult<()>;
 }
 
 impl<'a> ObjectKey for ReflectValueRef<'a> {
-    fn print(&self, w: &mut Printer) -> PrintResult<()> {
+    fn print_object_key(&self, w: &mut Printer) -> PrintResult<()> {
+        match self {
+            ReflectValueRef::String(v) => return w.print_printable::<str>(v),
+            ReflectValueRef::Bytes(v) => return w.print_printable::<[u8]>(v),
+            // do not quote, because printable is quoted
+            ReflectValueRef::U64(v) => return w.print_printable(v),
+            ReflectValueRef::I64(v) => return w.print_printable(v),
+            ReflectValueRef::Enum(v) if !w.print_options.enum_values_int => return w.print_enum(v),
+            _ => {},
+        }
+
+        write!(w.buf, "\"")?;
+
         match self {
             ReflectValueRef::U32(v) => w.print_printable(v),
-            ReflectValueRef::U64(v) => w.print_printable(v),
             ReflectValueRef::I32(v) => w.print_printable(v),
-            ReflectValueRef::I64(v) => w.print_printable(v),
             ReflectValueRef::Bool(v) => w.print_printable(v),
-            ReflectValueRef::String(v) => w.print_printable::<str>(v),
-            ReflectValueRef::Bytes(v) => w.print_printable::<[u8]>(v),
-            ReflectValueRef::Enum(v) => w.print_enum(v),
+            ReflectValueRef::Enum(v) if w.print_options.enum_values_int => w.print_enum(v),
+            ReflectValueRef::Enum(_) |
+            ReflectValueRef::U64(_) |
+            ReflectValueRef::I64(_) |
+            ReflectValueRef::String(_) |
+            ReflectValueRef::Bytes(_) => unreachable!(),
             ReflectValueRef::F32(_) |
             ReflectValueRef::F64(_) |
             ReflectValueRef::Message(_) => panic!("cannot be object key"),
-        }
+        }?;
+
+        write!(w.buf, "\"")?;
+
+        Ok(())
     }
 }
 
 impl ObjectKey for String {
-    fn print(&self, w: &mut Printer) -> PrintResult<()> {
+    fn print_object_key(&self, w: &mut Printer) -> PrintResult<()> {
         w.print_printable(self)
     }
 }
 
 impl<'a, O : ObjectKey> ObjectKey for &'a O {
-    fn print(&self, w: &mut Printer) -> PrintResult<()> {
-        (*self).print(w)
+    fn print_object_key(&self, w: &mut Printer) -> PrintResult<()> {
+        (*self).print_object_key(w)
     }
 }
 
@@ -352,7 +371,7 @@ impl Printer {
             if i != 0 {
                 write!(self.buf, ", ")?;
             }
-            k.print(self)?;
+            k.print_object_key(self)?;
             write!(self.buf, ": ")?;
             self.print_printable(&v)?;
         }

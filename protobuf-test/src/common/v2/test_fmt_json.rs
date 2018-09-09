@@ -226,6 +226,25 @@ fn test_enum_int() {
     assert_eq!("{\"testEnumSingular\": 10}", json);
 }
 
+#[test]
+fn test_map_field_int_key() {
+    let mut m = TestTypes::new();
+    m.fixed64_map_field.insert(10, 20);
+    test_json_print_parse_message("{\"fixed64MapField\": {\"10\": \"20\"}}", &m);
+
+    m.fixed64_map_field.insert(30, 40);
+    let json = json::print_to_string(&m).unwrap();
+    assert!(json == "{\"fixed64MapField\": {\"10\": \"20\", \"30\": \"40\"}}"
+        || json == "{\"fixed64MapField\": {\"30\": \"40\", \"10\": \"20\"}}");
+}
+
+#[test]
+fn test_map_field_string_key() {
+    let mut m = TestTypes::new();
+    m.uint64_map_field.insert("foo".to_owned(), 20);
+    test_json_print_parse_message("{\"uint64MapField\": {\"foo\": \"20\"}}", &m);
+}
+
 /// Proto3 JSON parsers are required to accept both the converted `lowerCamelCase` name
 /// and the proto field name.
 #[test]
