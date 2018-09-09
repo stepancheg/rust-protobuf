@@ -2,6 +2,7 @@ use std::f32;
 use std::f64;
 
 use protobuf::Message;
+use protobuf::json;
 
 use protobuf_test_common::*;
 
@@ -214,6 +215,15 @@ fn test_enum() {
     m.set_test_enum_repeated(vec![TestEnum::DARK, TestEnum::LIGHT]);
     test_json_print_parse_message("{testEnumRepeated: [\"DARK\", \"LIGHT\"]}", &m);
     test_json_parse_message("{testEnumRepeated: [\"DARK\", 20]}", &m);
+}
+
+#[test]
+fn test_enum_int() {
+    let mut m = TestTypes::new();
+    m.set_test_enum_singular(TestEnum::DARK);
+    let print_options = json::PrintOptions { enum_values_int: true, ..Default::default() };
+    let json = json::print_to_string_with_options(&m, &print_options).unwrap();
+    assert_eq!("{testEnumSingular: 10}", json);
 }
 
 /// Proto3 JSON parsers are required to accept both the converted `lowerCamelCase` name

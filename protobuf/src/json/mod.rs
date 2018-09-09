@@ -10,5 +10,7 @@ mod well_known_wrapper;
 mod rfc_3339;
 
 pub use self::print::print_to_string;
+pub use self::print::PrintOptions;
+pub use self::print::print_to_string_with_options;
 pub use self::parse::merge_from_str;
 pub(crate) use self::json_name::json_name;

@@ -54,6 +54,7 @@ pub type PrintResult<T> = Result<T, PrintError>;
 
 struct Printer {
     buf: String,
+    print_options: PrintOptions,
 }
 
 trait PrintableToJson {
@@ -367,8 +368,11 @@ impl Printer {
         if let Some(null_value) = value.cast() {
             self.print_wk_null_value(&null_value)
         } else {
-            // TODO: option to output JSON as number
-            Ok(write!(self.buf, "\"{}\"", value.name())?)
+            if self.print_options.enum_values_int {
+                Ok(write!(self.buf, "{}", value.value())?)
+            } else {
+                Ok(write!(self.buf, "\"{}\"", value.name())?)
+            }
         }
     }
 
@@ -454,8 +458,21 @@ impl Printer {
 }
 
 pub fn print_to_string(message: &Message) -> PrintResult<String> {
+    print_to_string_with_options(message, &PrintOptions::default())
+}
+
+/// Options for printing JSON to string
+#[derive(Default, Debug, Clone)]
+pub struct PrintOptions {
+    pub enum_values_int: bool,
+}
+
+pub fn print_to_string_with_options(message: &Message, print_options: &PrintOptions)
+    -> PrintResult<String>
+{
     let mut printer = Printer {
-        buf: String::new()
+        buf: String::new(),
+        print_options: print_options.clone(),
     };
     printer.print_message(message)?;
     Ok(printer.buf)
