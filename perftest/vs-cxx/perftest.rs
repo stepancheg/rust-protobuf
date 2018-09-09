@@ -124,28 +124,28 @@ fn main() {
     let mut is = File::open(&Path::new("perftest_data.pbbin")).unwrap();
     let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is).unwrap();
 
-    runner.test("test1", test_data.get_test1());
-    runner.test("test_repeated_bool", test_data.get_test_repeated_bool());
+    runner.test("test1", &test_data.test1);
+    runner.test("test_repeated_bool", &test_data.test_repeated_bool);
     runner.test(
         "test_repeated_packed_int32",
-        test_data.get_test_repeated_packed_int32(),
+        &test_data.test_repeated_packed_int32,
     );
     runner.test(
         "test_repeated_messages",
-        test_data.get_test_repeated_messages(),
+        &test_data.test_repeated_messages,
     );
     runner.test(
         "test_optional_messages",
-        test_data.get_test_optional_messages(),
+        &test_data.test_optional_messages,
     );
-    runner.test("test_strings", test_data.get_test_strings());
+    runner.test("test_strings", &test_data.test_strings);
     runner.test(
         "test_small_bytearrays",
-        test_data.get_test_small_bytearrays(),
+        &test_data.test_small_bytearrays,
     );
     runner.test(
         "test_large_bytearrays",
-        test_data.get_test_large_bytearrays(),
+        &test_data.test_large_bytearrays,
     );
     runner.check();
 }
