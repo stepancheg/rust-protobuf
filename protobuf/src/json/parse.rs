@@ -575,7 +575,7 @@ impl<'a> Parser<'a> {
             }
             first = false;
 
-            let field_name = self.tokenizer.next_ident()?;
+            let field_name = self.read_string()?;
             // Proto3 JSON parsers are required to accept both
             // the converted `lowerCamelCase` name and the proto field name.
             let field = match descriptor.field_by_name_or_json_name(&field_name) {
