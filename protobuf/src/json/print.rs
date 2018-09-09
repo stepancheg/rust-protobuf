@@ -398,8 +398,6 @@ impl Printer {
     }
 
     fn print_message(&mut self, message: &Message) -> PrintResult<()> {
-        let descriptor = message.descriptor();
-
         if let Some(duration) = message.as_any().downcast_ref::<Duration>() {
             self.print_printable(duration)
         } else if let Some(timestamp) = message.as_any().downcast_ref::<Timestamp>() {

@@ -13,4 +13,6 @@ pub use self::print::print_to_string;
 pub use self::print::PrintOptions;
 pub use self::print::print_to_string_with_options;
 pub use self::parse::merge_from_str;
+pub use self::parse::ParseOptions;
+pub use self::parse::merge_from_str_with_options;
 pub(crate) use self::json_name::json_name;

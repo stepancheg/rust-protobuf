@@ -112,6 +112,7 @@ pub type ParseWithLocResult<A> = Result<A, ParseErrorWithLoc>;
 #[derive(Clone)]
 struct Parser<'a> {
     tokenizer: Tokenizer<'a>,
+    parse_options: ParseOptions,
 }
 
 trait FromJsonNumber : PartialEq + Sized {
@@ -462,7 +463,7 @@ impl<'a> Parser<'a> {
     fn read_map<K, Fk, Fi>(&mut self, mut parse_key: Fk, mut read_value_and_insert: Fi)
         -> ParseResult<()>
         where
-            Fk : for<'b> FnMut(&mut Self, String) -> ParseResult<K>,
+            Fk : for<'b> FnMut(&Self, String) -> ParseResult<K>,
             Fi : for<'b> FnMut(&mut Self, K) -> ParseResult<()>,
     {
         if self.tokenizer.next_ident_if_eq("null")? {
@@ -538,6 +539,22 @@ impl<'a> Parser<'a> {
             struct_value.fields.insert(k, v);
             Ok(())
         })
+    }
+
+    fn skip_json_value(&mut self) -> ParseResult<()> {
+        if self.tokenizer.next_ident_if_in(&["true", "false", "null"])?.is_some() {
+        } else if self.tokenizer.lookahead_is_str_lit()? {
+            self.tokenizer.next_str_lit()?;
+        } else if self.tokenizer.lookahead_is_json_number()? {
+            self.read_json_number_opt()?;
+        } else if self.tokenizer.lookahead_is_symbol('[')? {
+            self.read_list(|s| s.skip_json_value())?;
+        } else if self.tokenizer.lookahead_is_symbol('{')? {
+            self.read_map(|_, _| Ok(()), |s, ()| s.skip_json_value())?;
+        } else {
+            return Err(ParseError::UnexpectedToken);
+        }
+        Ok(())
     }
 
     fn merge_field(&mut self, message: &mut Message, field: &FieldDescriptor) -> ParseResult<()> {
@@ -626,13 +643,17 @@ impl<'a> Parser<'a> {
             let field_name = self.read_string()?;
             // Proto3 JSON parsers are required to accept both
             // the converted `lowerCamelCase` name and the proto field name.
-            let field = match descriptor.field_by_name_or_json_name(&field_name) {
-                Some(field) => field,
-                // TODO: option to skip unknown types
+            match descriptor.field_by_name_or_json_name(&field_name) {
+                Some(field) => {
+                    self.tokenizer.next_symbol_expect_eq(':')?;
+                    self.merge_field(message, field)?;
+                }
+                None if self.parse_options.ignore_unknown_fields => {
+                    self.tokenizer.next_symbol_expect_eq(':')?;
+                    self.skip_json_value()?;
+                }
                 None => return Err(ParseError::UnknownFieldName(field_name)),
             };
-            self.tokenizer.next_symbol_expect_eq(':')?;
-            self.merge_field(message, field)?;
         }
         Ok(())
     }
@@ -768,9 +789,21 @@ impl<'a> Parser<'a> {
     }
 }
 
-pub fn merge_from_str(message: &mut Message, json: &str) -> ParseWithLocResult<()> {
+#[derive(Default, Debug, Clone)]
+pub struct ParseOptions {
+    pub ignore_unknown_fields: bool,
+}
+
+pub fn merge_from_str_with_options(message: &mut Message, json: &str, parse_options: &ParseOptions)
+    -> ParseWithLocResult<()>
+{
     let mut parser = Parser {
         tokenizer: Tokenizer::new(json, ParserLanguage::Json),
+        parse_options: parse_options.clone(),
     };
     parser.merge(message)
+}
+
+pub fn merge_from_str(message: &mut Message, json: &str) -> ParseWithLocResult<()> {
+    merge_from_str_with_options(message, json, &ParseOptions::default())
 }

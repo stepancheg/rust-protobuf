@@ -282,6 +282,22 @@ fn test_always_output_default_values() {
 }
 
 #[test]
+fn test_ignore_unknown_fields() {
+    let mut expected = TestTypes::new();
+    expected.set_bool_singular(true);
+
+    let parse_options = json::ParseOptions {
+        ignore_unknown_fields: true,
+        ..Default::default()
+    };
+    let mut m = TestTypes::new();
+    let json = "{\"fgfgfg\": 12, \"bool_singular\": true, \"x\": [{\"a\": 12.4}]}";
+    json::merge_from_str_with_options(&mut m, json, &parse_options).unwrap();
+
+    assert_eq!(expected, m);
+}
+
+#[test]
 fn test_reflect() {
     for m in special_messages(TestTypes::descriptor_static()) {
         test_json_message(&*m);
