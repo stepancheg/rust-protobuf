@@ -75,3 +75,12 @@ message TestTypes {
 message TestRustIdentifier {
     optional bool const = 1;
 }
+
+message TestIncludeDefaultValues {
+    optional int32 iii = 1;
+    optional TestMessage mmm = 2;
+    oneof ooo {
+        string sss = 3;
+        bool bbb = 4;
+    }
+}

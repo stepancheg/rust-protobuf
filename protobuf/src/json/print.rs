@@ -34,6 +34,8 @@ use json::well_known_wrapper::WellKnownWrapper;
 
 use reflect::EnumValueDescriptor;
 use json::rfc_3339::TmUtc;
+use reflect::RuntimeFieldType;
+use reflect::RuntimeTypeBox;
 
 
 #[derive(Debug)]
@@ -399,51 +401,79 @@ impl Printer {
         let descriptor = message.descriptor();
 
         if let Some(duration) = message.as_any().downcast_ref::<Duration>() {
-            return self.print_printable(duration);
+            self.print_printable(duration)
         } else if let Some(timestamp) = message.as_any().downcast_ref::<Timestamp>() {
-            return self.print_printable(timestamp);
+            self.print_printable(timestamp)
         } else if let Some(field_mask) = message.as_any().downcast_ref::<FieldMask>() {
-            return self.print_printable(field_mask);
+            self.print_printable(field_mask)
         } else if let Some(any) = message.as_any().downcast_ref::<Any>() {
-            return self.print_printable(any);
+            self.print_printable(any)
         } else if let Some(value) = message.as_any().downcast_ref::<Value>() {
-            return self.print_printable(value);
+            self.print_printable(value)
         } else if let Some(value) = message.as_any().downcast_ref::<DoubleValue>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<FloatValue>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<Int64Value>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<UInt64Value>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<Int32Value>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<UInt32Value>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<BoolValue>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<StringValue>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<BytesValue>() {
-            return self.print_wrapper(value);
+            self.print_wrapper(value)
         } else if let Some(value) = message.as_any().downcast_ref::<ListValue>() {
-            return self.print_printable(value);
+            self.print_printable(value)
         } else if let Some(value) = message.as_any().downcast_ref::<Struct>() {
-            return self.print_printable(value);
+            self.print_printable(value)
+        } else {
+            self.print_regular_message(message)
         }
+    }
+
+    fn print_regular_message(&mut self, message: &Message) -> Result<(), PrintError> {
+        let descriptor = message.descriptor();
 
         write!(self.buf, "{{")?;
-
         let mut first = true;
-
         for field in descriptor.fields() {
             let json_field_name = if self.print_options.proto_field_name {
                 field.name()
             } else {
                 field.json_name()
             };
+
+            let field_type = field.runtime_field_type();
+
             match field.get_reflect(message) {
-                ReflectFieldRef::Optional(None) => {}
+                ReflectFieldRef::Optional(None) => {
+                    if self.print_options.always_output_default_values {
+                        let is_message = match field_type {
+                            RuntimeFieldType::Singular(s) => {
+                                match s.to_box() {
+                                    RuntimeTypeBox::Message(_) => true,
+                                    _ => false,
+                                }
+                            }
+                            _ => unreachable!(),
+                        };
+
+                        let is_oneof = field.proto().has_oneof_index();
+
+                        if !is_message && !is_oneof {
+                            let v = field.get_singular_field_or_default(message);
+                            self.print_comma_but_first(&mut first)?;
+                            write!(self.buf, "\"{}\": ", json_field_name)?;
+                            self.print_printable(&v)?;
+                        }
+                    }
+                }
                 ReflectFieldRef::Optional(Some(v)) => {
                     self.print_comma_but_first(&mut first)?;
                     write!(self.buf, "\"{}\": ", json_field_name)?;
@@ -463,7 +493,6 @@ impl Printer {
                 }
             }
         }
-
         write!(self.buf, "}}")?;
         Ok(())
     }
@@ -494,6 +523,8 @@ pub struct PrintOptions {
     /// Use protobuf field names instead of `lowerCamelCase` which is used by default.
     /// Note both names are supported when JSON is parsed.
     pub proto_field_name: bool,
+    /// Output field default values.
+    pub always_output_default_values: bool,
 }
 
 pub fn print_to_string_with_options(message: &Message, print_options: &PrintOptions)

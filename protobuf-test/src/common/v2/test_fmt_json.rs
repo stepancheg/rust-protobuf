@@ -270,6 +270,18 @@ fn test_use_original_field_names() {
 }
 
 #[test]
+fn test_always_output_default_values() {
+    let mut m = TestIncludeDefaultValues::new();
+    m.set_sss("asd".to_owned());
+    let print_options = json::PrintOptions {
+        always_output_default_values: true,
+        ..Default::default()
+    };
+    let json = json::print_to_string_with_options(&m, &print_options).unwrap();
+    assert_eq!("{\"iii\": 0, \"sss\": \"asd\"}", json);
+}
+
+#[test]
 fn test_reflect() {
     for m in special_messages(TestTypes::descriptor_static()) {
         test_json_message(&*m);
