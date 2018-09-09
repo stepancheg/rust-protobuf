@@ -418,22 +418,27 @@ impl Printer {
         let mut first = true;
 
         for field in descriptor.fields() {
+            let json_field_name = if self.print_options.proto_field_name {
+                field.name()
+            } else {
+                field.json_name()
+            };
             match field.get_reflect(message) {
                 ReflectFieldRef::Optional(None) => {}
                 ReflectFieldRef::Optional(Some(v)) => {
                     self.print_comma_but_first(&mut first)?;
-                    write!(self.buf, "{}: ", field.json_name())?;
+                    write!(self.buf, "{}: ", json_field_name)?;
                     self.print_printable(&v)?;
                 }
                 ReflectFieldRef::Repeated(v) => {
                     if !v.is_empty() {
-                        write!(self.buf, "{}: ", field.json_name())?;
+                        write!(self.buf, "{}: ", json_field_name)?;
                         self.print_repeated(&v)?;
                     }
                 }
                 ReflectFieldRef::Map(v) => {
                     if !v.is_empty() {
-                        write!(self.buf, "{}: ", field.json_name())?;
+                        write!(self.buf, "{}: ", json_field_name)?;
                         self.print_map(&v)?;
                     }
                 }
@@ -464,7 +469,12 @@ pub fn print_to_string(message: &Message) -> PrintResult<String> {
 /// Options for printing JSON to string
 #[derive(Default, Debug, Clone)]
 pub struct PrintOptions {
+    /// Use ints instead of strings for enums.
+    /// Note both string or int can be parsed.
     pub enum_values_int: bool,
+    /// Use protobuf field names instead of `lowerCamelCase` which is used by default.
+    /// Note both names are supported when JSON is parsed.
+    pub proto_field_name: bool,
 }
 
 pub fn print_to_string_with_options(message: &Message, print_options: &PrintOptions)

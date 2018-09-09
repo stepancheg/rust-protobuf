@@ -242,6 +242,15 @@ fn test_accepts_both_json_and_original() {
 }
 
 #[test]
+fn test_use_original_field_names() {
+    let mut m = TestTypes::new();
+    m.set_bool_singular(true);
+    let print_options = json::PrintOptions { proto_field_name: true, ..Default::default() };
+    let json = json::print_to_string_with_options(&m, &print_options).unwrap();
+    assert_eq!("{bool_singular: true}", json);
+}
+
+#[test]
 fn test_reflect() {
     for m in special_messages(TestTypes::descriptor_static()) {
         test_json_message(&*m);
