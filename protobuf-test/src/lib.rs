@@ -26,3 +26,4 @@ mod common;
 #[cfg(proto3)]
 mod google;
 
+mod interop;

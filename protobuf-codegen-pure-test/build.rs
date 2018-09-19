@@ -30,6 +30,13 @@ fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
     write.flush().expect("flush");
 }
 
+fn copy_from_protobuf_test(path: &str) {
+    copy_test(
+        &format!("../protobuf-test/{}", path),
+        &format!("{}", path),
+    )
+}
+
 
 enum FileNameClass {
     ModRs,
@@ -68,10 +75,7 @@ fn copy_tests(dir: &str) {
             FileNameClass::GeneratedRs => {}
             FileNameClass::TestRs |
             FileNameClass::Proto => {
-                copy_test(
-                    &format!("../protobuf-test/{}/{}", dir, file_name),
-                    &format!("{}/{}", dir, file_name),
-                )
+                copy_from_protobuf_test(&format!("{}/{}", dir, file_name))
             }
         }
     }
@@ -100,6 +104,19 @@ fn print_rerun_if_changed<P : AsRef<Path>>(path: P) {
 }
 
 
+fn generate_interop() {
+    copy_from_protobuf_test("src/interop/mod.rs");
+    copy_from_protobuf_test("src/interop/json.rs");
+
+    protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
+        out_dir: "src/interop",
+        includes: &["../interop/cxx"],
+        input: &["../interop/cxx/interop_pb.proto"],
+        customize: Default::default(),
+    }).unwrap();
+}
+
+
 fn generate_pb_rs() {
     print_rerun_if_changed("../protobuf-test");
 
@@ -117,6 +134,8 @@ fn generate_pb_rs() {
 
     copy_tests("src/google/protobuf");
     gen_in_dir("src/google/protobuf", "src");
+
+    generate_interop();
 }
 
 

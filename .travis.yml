@@ -18,8 +18,10 @@ matrix:
 before_install:
   - ci/install-protobuf.sh
   - export PATH="/home/travis/bin:$PATH"
+  - export LD_LIBRARY_PATH="/home/travis/lib"
   - which protoc
   - protoc --version
+  - PKG_CONFIG_PATH="/home/travis/lib/pkgconfig" interop/cxx/compile.sh
   - export RUST_BACKTRACE=1
 
 script:
