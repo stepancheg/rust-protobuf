@@ -17,7 +17,6 @@ use text_format::lexer::JsonNumberLit;
 #[derive(Debug)]
 pub enum LexerError {
     IncorrectInput, // TODO: something better than this
-    InternalError,
     UnexpectedEof,
     ExpectChar(char),
     ParseIntError,
@@ -435,7 +434,6 @@ impl<'a> Lexer<'a> {
     // quote = "'" | '"'
     pub fn next_char_value(&mut self) -> LexerResult<char> {
         match self.next_char()? {
-            '"' | '\'' => Err(LexerError::InternalError),
             '\\' => {
                 match self.next_char()? {
                     '\'' => Ok('\''),
@@ -476,7 +474,6 @@ impl<'a> Lexer<'a> {
 
     pub fn next_byte_value(&mut self) -> LexerResult<u8> {
         match self.next_char()? {
-            '"' | '\'' => Err(LexerError::InternalError),
             '\\' => {
                 match self.next_char()? {
                     '\'' => Ok(b'\''),
@@ -526,10 +523,10 @@ impl<'a> Lexer<'a> {
 
     pub fn next_json_char_value(&mut self) -> LexerResult<char> {
         match self.next_char()? {
-            '"' => Err(LexerError::InternalError),
             '\\' => {
                 match self.next_char()? {
                     '"' => Ok('"'),
+                    '\'' => Ok('\''),
                     '\\' => Ok('\\'),
                     '/' => Ok('/'),
                     'b' => Ok('\x08'),
