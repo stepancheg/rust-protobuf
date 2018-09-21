@@ -37,5 +37,9 @@ fn test_default_value_extreme() {
     assert_eq!(
         b"\0\x01\x07\x08\x0c\n\r\t\x0b\\\'\"\xfe",
         d.get_escaped_bytes()
-    )
+    );
+    assert_eq!("'", d.get_quote1());
+    assert_eq!("\"", d.get_quote2());
+    assert_eq!(b"'", d.get_bquote1());
+    assert_eq!(b"\"", d.get_bquote2());
 }

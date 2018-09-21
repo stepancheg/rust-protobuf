@@ -547,7 +547,6 @@ impl<'a> Lexer<'a> {
     // quote = "'" | '"'
     pub fn next_char_value(&mut self) -> ParserResult<char> {
         match self.next_char()? {
-            '"' | '\'' => Err(ParserError::InternalError),
             '\\' => {
                 match self.next_char()? {
                     '\'' => Ok('\''),
