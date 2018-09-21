@@ -32,8 +32,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Text format parsing is implemented (previously it was only possible to print to text format)
 - Reflection can now mutate data (previously reflection could only read data)
 - Fix OOM on malformed input
-- [`unknown_fields` field is public
-  now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516
+- [`unknown_fields` field is public now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516)
 
 ## [2.0 Unreleased]
 
