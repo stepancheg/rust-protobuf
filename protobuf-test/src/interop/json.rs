@@ -35,7 +35,9 @@ fn test_parse_message(m: &InteropMessageList) {
 
     json::merge_from_str(&mut mm, &json).expect("parse json");
 
-    assert!(InteropMessageList::descriptor_static().deep_eq(m, &mm), "{:?} != {:?}", m, mm);
+    assert!(
+        InteropMessageList::descriptor_static().deep_eq(m, &mm),
+        "{:?} != {:?}; json: {}", m, mm, json);
 }
 
 fn test_print_message(m: &InteropMessageList) {
@@ -57,7 +59,7 @@ fn test_print_message(m: &InteropMessageList) {
     interop.stdout.take().unwrap().read_to_end(&mut bytes).expect("read json");
 
     let exit_status = interop.wait().expect("wait_with_output");
-    assert!(exit_status.success(), "{}", exit_status);
+    assert!(exit_status.success(), "{} when parsing: {}", exit_status, m_json);
 
     let mut mm = InteropMessageList::new();
 

@@ -76,10 +76,9 @@ fn generate_in_v2_v3() {
 }
 
 fn generate_interop() {
-    // TODO: copy to pure
     protoc_rust::run(protoc_rust::Args {
         out_dir: "src/interop",
-        includes: &["../interop/cxx"],
+        includes: &["../interop/cxx", "../proto"],
         input: &["../interop/cxx/interop_pb.proto"],
         customize: Default::default(),
     }).unwrap();

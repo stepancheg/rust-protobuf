@@ -7,6 +7,8 @@ use protobuf::reflect::RuntimeTypeBox;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::MessageDescriptor;
+use protobuf::well_known_types::Value;
+use protobuf::well_known_types::Value_oneof_kind;
 use protobuf::Message;
 
 
@@ -25,6 +27,22 @@ pub fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBo
         RuntimeTypeBox::CarllercheBytes => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
         RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(&e.values()[0]),
         RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
+    }
+}
+
+fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<Message>> {
+    if descriptor == Value::descriptor_static() {
+        // special handling because empty `Value` is not valid
+        let mut value = Value::new();
+        value.kind = Some(Value_oneof_kind::number_value(23.0));
+        vec![
+            Box::new(value),
+        ]
+    } else {
+        vec![
+            // TODO: populated messages
+            descriptor.new_instance(),
+        ]
     }
 }
 
@@ -97,10 +115,9 @@ pub fn values_for_runtime_type(field_type: &RuntimeTypeDynamic) -> Vec<ReflectVa
             ReflectValueBox::Enum(&e.values()[0]),
             ReflectValueBox::Enum(&e.values()[e.values().len() - 1]),
         ],
-        RuntimeTypeBox::Message(m) => vec![
-            // TODO: populated messages
-            ReflectValueBox::Message(m.new_instance()),
-        ],
+        RuntimeTypeBox::Message(m) => {
+            values_for_message_type(m).into_iter().map(ReflectValueBox::from).collect()
+        },
     }
 }
 

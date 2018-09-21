@@ -110,7 +110,7 @@ fn generate_interop() {
 
     protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
         out_dir: "src/interop",
-        includes: &["../interop/cxx"],
+        includes: &["../interop/cxx", "../proto"],
         input: &["../interop/cxx/interop_pb.proto"],
         customize: Default::default(),
     }).unwrap();

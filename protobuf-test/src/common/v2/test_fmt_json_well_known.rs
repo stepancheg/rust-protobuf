@@ -29,7 +29,7 @@ fn test_timestamp() {
     t.seconds = 1;
     t.nanos = 1;
     m.set_timestamp(t);
-    test_json_print_parse_message("{\"timestamp\": \"1970-01-01 00:00:01.000000001Z\"}", &m);
+    test_json_print_parse_message("{\"timestamp\": \"1970-01-01T00:00:01.000000001Z\"}", &m);
 }
 
 #[test]
