@@ -27,8 +27,12 @@
 
 ## [2.0 Unreleased]
 
+## [2.0.5] - 2018-09-21
+
 - [Global `parse_length_delimited*` functions are
   deprecated](https://github.com/stepancheg/rust-protobuf/commit/efdfd5cacfa4f87b2a6e3ffc124d77692db142d9)
+- [Fixed a bug with quotes in string literal parsing in pure
+  codegen](https://github.com/stepancheg/rust-protobuf/issues/337)
 
 ## [2.0.4] - 2018-07-19
 
