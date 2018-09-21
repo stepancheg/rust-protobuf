@@ -52,7 +52,7 @@
 
 ## [2.0.0] - 2018-05-17
 
-- Rebublished branch 2.0 because of
+- Rebublished branch 1.6 because of
   [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
 
 ## [1.7.4] - 2018-07-11
@@ -77,6 +77,8 @@
   [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
 
 ## [1.6.0] - 2018-05-11
+
+Republished as 2.0.0
 
 ### New features
 
