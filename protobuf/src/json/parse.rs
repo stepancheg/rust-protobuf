@@ -67,6 +67,7 @@ pub enum ParseError {
     ExpectingNumber,
     UnexpectedToken,
     AnyParsingIsNotImplemented,
+    MessageNotInitialized,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -789,11 +790,13 @@ impl<'a> Parser<'a> {
     }
 }
 
+/// JSON parse options.
 #[derive(Default, Debug, Clone)]
 pub struct ParseOptions {
     pub ignore_unknown_fields: bool,
 }
 
+/// Merge JSON into provided message
 pub fn merge_from_str_with_options(message: &mut Message, json: &str, parse_options: &ParseOptions)
     -> ParseWithLocResult<()>
 {
@@ -804,6 +807,45 @@ pub fn merge_from_str_with_options(message: &mut Message, json: &str, parse_opti
     parser.merge(message)
 }
 
+/// Merge JSON into provided message
 pub fn merge_from_str(message: &mut Message, json: &str) -> ParseWithLocResult<()> {
     merge_from_str_with_options(message, json, &ParseOptions::default())
+}
+
+/// Parse JSON to protobuf message.
+pub fn parse_dynamic_from_str_with_options(
+    d: &MessageDescriptor,
+    json: &str,
+    parse_options: &ParseOptions)
+    -> ParseWithLocResult<Box<Message>>
+{
+    let mut m = d.new_instance();
+    merge_from_str_with_options(&mut *m, json, parse_options)?;
+    if let Err(_) = m.check_initialized() {
+        return Err(ParseErrorWithLoc {
+            error: ParseError::MessageNotInitialized,
+            loc: Loc::start(),
+        });
+    }
+    Ok(m)
+}
+
+/// Parse JSON to protobuf message.
+pub fn parse_dynamic_from_str(d: &MessageDescriptor, json: &str)
+    -> ParseWithLocResult<Box<Message>>
+{
+    parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
+}
+
+/// Parse JSON to protobuf message.
+pub fn parse_from_str_with_options<M : Message>(json: &str, parse_options: &ParseOptions)
+    -> ParseWithLocResult<M>
+{
+    let m = parse_dynamic_from_str_with_options(&M::descriptor_static(), json, parse_options)?;
+    Ok(*m.downcast_box().unwrap())
+}
+
+/// Parse JSON to protobuf message.
+pub fn parse_from_str<M : Message>(json: &str) -> ParseWithLocResult<M> {
+    parse_from_str_with_options(json, &ParseOptions::default())
 }
