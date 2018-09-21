@@ -16,6 +16,7 @@
   [now panics](https://github.com/stepancheg/rust-protobuf/commit/4f1ca564a00e85b6e3821e91aace71ccb6592bf5).
   Previosly it could cause stack overflow in the Rust compiler.
 - Text format parsing is implemented (previously it was only possible to print to text format)
+- [JSON printing/parsing](https://github.com/stepancheg/rust-protobuf/issues/142) implemented
 - Reflection can now mutate data (previously reflection could only read data)
 - Fix OOM on malformed input
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
