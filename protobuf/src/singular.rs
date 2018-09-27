@@ -9,12 +9,14 @@ use clear::Clear;
 
 
 /// Like `Option<T>`, but keeps the actual element on `clear`.
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SingularField<T> {
     value: T,
     set: bool,
 }
 
 /// Like `Option<Box<T>>`, but keeps the actual element on `clear`.
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SingularPtrField<T> {
     value: Option<Box<T>>,
     set: bool,
