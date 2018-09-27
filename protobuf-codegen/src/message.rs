@@ -383,6 +383,7 @@ impl<'a> MessageGen<'a> {
             derive.push("Debug");
         }
         w.derive(&derive);
+        w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
         w.pub_struct(&self.type_name, |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -426,6 +427,7 @@ impl<'a> MessageGen<'a> {
             w.comment("special fields");
             // TODO: make public
             w.field_decl("unknown_fields", "::protobuf::UnknownFields");
+            w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip_deserializing,skip_serializing))]");
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }
