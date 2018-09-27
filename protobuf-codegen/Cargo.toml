@@ -30,4 +30,3 @@ test = false
 name = "protobuf-bin-gen-rust-do-not-use"
 path = "src/bin/protobuf-bin-gen-rust-do-not-use.rs"
 test = false
-
