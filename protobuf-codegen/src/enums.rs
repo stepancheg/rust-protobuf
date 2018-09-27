@@ -146,6 +146,7 @@ impl<'a> EnumGen<'a> {
             );
         }
         w.derive(&derive);
+        w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {

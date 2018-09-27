@@ -47,6 +47,7 @@ impl<'o> UnknownValueRef<'o> {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
@@ -117,6 +118,7 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct UnknownFields {
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive

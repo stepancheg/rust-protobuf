@@ -157,6 +157,7 @@ impl<'a> OneofGen<'a> {
             derive.push("Debug");
         }
         w.derive(&derive);
+        w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
         w.pub_enum(&self.type_name.to_string(), |w| {
             for variant in self.variants_except_group() {
                 w.write_line(&format!(

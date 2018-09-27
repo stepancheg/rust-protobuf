@@ -16,6 +16,7 @@ use std::fmt;
 use clear::Clear;
 
 /// Wrapper around vector to avoid deallocations on clear.
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct RepeatedField<T> {
     vec: Vec<T>,
     len: usize,
