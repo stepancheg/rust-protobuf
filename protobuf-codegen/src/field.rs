@@ -1315,13 +1315,6 @@ impl<'a> FieldGen<'a> {
         } else {
             let vis = self.visibility();
 
-            if self.serde_derive_enabled() {
-                if let Some((serialize, deserialize)) = self.kind.serde_functions() {
-                    w.write_line(&format!("#[serde(serialize_with = \"{}\")]", serialize));
-                    w.write_line(&format!("#[serde(deserialize_with = \"{}\")]", deserialize));
-                }
-            }
-
             w.field_decl_vis(
                 vis,
                 &self.rust_name.0,

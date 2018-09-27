@@ -1,5 +1,9 @@
-use super::test_serde_derive_pb::*;
+#![cfg(feature = "with-serde")]
+
 use serde_json;
+
+use super::test_serde_derive_pb::*;
+
 use std::collections::HashMap;
 
 #[test]

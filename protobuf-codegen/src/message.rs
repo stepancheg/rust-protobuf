@@ -364,10 +364,10 @@ impl<'a> MessageGen<'a> {
         if self.lite_runtime {
             derive.push("Debug");
         }
-        if self.serde_derive_enabled() {
-            derive.extend(&["Serialize", "Deserialize"]);
-        }
         w.derive(&derive);
+        if self.serde_derive_enabled() {
+            w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
+        }
         w.pub_struct(&self.type_name, |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -388,12 +388,14 @@ impl<'a> MessageGen<'a> {
             w.comment("special fields");
 
             if self.serde_derive_enabled() {
-                w.write_line("#[serde(skip)]");
+                //w.write_line("#[serde(skip)]");
             }
+            w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
             w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
             if self.serde_derive_enabled() {
-                w.write_line("#[serde(skip)]");
+                //w.write_line("#[serde(skip)]");
             }
+            w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }
