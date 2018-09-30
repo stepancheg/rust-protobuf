@@ -27,7 +27,7 @@ pub use enums::ProtobufEnum;
 pub use oneof::Oneof;
 pub use stream::CodedInputStream;
 pub use stream::CodedOutputStream;
-pub use stream::wire_format;
+pub mod wire_format;
 pub use error::ProtobufResult;
 pub use error::ProtobufError;
 pub use cached_size::CachedSize;
@@ -97,6 +97,7 @@ mod protobuf {
     pub use reflect::types;
     pub use well_known_types;
     pub use ext;
+    pub use wire_format;
     pub use unknown::UnknownFields;
     pub use unknown::UnknownFieldsIter;
     pub use unknown::UnknownValue;
