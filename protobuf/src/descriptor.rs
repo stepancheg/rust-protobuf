@@ -17,9 +17,6 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 pub struct FileDescriptorSet {
     // message fields
@@ -1694,10 +1691,10 @@ impl ::protobuf::Message for FieldDescriptorProto {
             os.write_int32(3, v)?;
         }
         if let Some(v) = self.label {
-            os.write_enum(4, v.value())?;
+            os.write_enum(4, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.field_type {
-            os.write_enum(5, v.value())?;
+            os.write_enum(5, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.type_name.as_ref() {
             os.write_string(6, v)?;
@@ -3712,7 +3709,7 @@ impl ::protobuf::Message for FileOptions {
             os.write_bool(27, v)?;
         }
         if let Some(v) = self.optimize_for {
-            os.write_enum(9, v.value())?;
+            os.write_enum(9, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.go_package.as_ref() {
             os.write_string(11, v)?;
@@ -4472,13 +4469,13 @@ impl ::protobuf::Message for FieldOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.ctype {
-            os.write_enum(1, v.value())?;
+            os.write_enum(1, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.packed {
             os.write_bool(2, v)?;
         }
         if let Some(v) = self.jstype {
-            os.write_enum(6, v.value())?;
+            os.write_enum(6, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.lazy {
             os.write_bool(5, v)?;

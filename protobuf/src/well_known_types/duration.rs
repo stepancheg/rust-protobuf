@@ -17,9 +17,6 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 pub struct Duration {
     // message fields

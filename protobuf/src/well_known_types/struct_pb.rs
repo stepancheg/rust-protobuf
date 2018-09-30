@@ -17,9 +17,6 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 pub struct Struct {
     // message fields
@@ -292,7 +289,7 @@ impl Value {
     pub fn get_struct_value(&self) -> &Struct {
         match self.kind {
             ::std::option::Option::Some(Value_oneof_kind::struct_value(ref v)) => v,
-            _ => Struct::default_instance(),
+            _ => <Struct as ::protobuf::Message>::default_instance(),
         }
     }
 
@@ -341,7 +338,7 @@ impl Value {
     pub fn get_list_value(&self) -> &ListValue {
         match self.kind {
             ::std::option::Option::Some(Value_oneof_kind::list_value(ref v)) => v,
-            _ => ListValue::default_instance(),
+            _ => <ListValue as ::protobuf::Message>::default_instance(),
         }
     }
 
@@ -486,7 +483,7 @@ impl ::protobuf::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &Value_oneof_kind::null_value(v) => {
-                    os.write_enum(1, v.value())?;
+                    os.write_enum(1, ::protobuf::ProtobufEnum::value(&v))?;
                 },
                 &Value_oneof_kind::number_value(v) => {
                     os.write_double(2, v)?;

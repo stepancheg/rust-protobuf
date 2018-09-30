@@ -234,7 +234,7 @@ impl<'a> EnumGen<'a> {
         assert!(self.allow_alias());
         w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
             w.def_fn("eq(&self, other: &Self) -> bool", |w| {
-                w.write_line("self.value() == other.value()");
+                w.write_line("::protobuf::ProtobufEnum::value(self) == ::protobuf::ProtobufEnum::value(other)");
             });
         });
     }
@@ -243,7 +243,7 @@ impl<'a> EnumGen<'a> {
         assert!(self.allow_alias());
         w.impl_for_block("::std::hash::Hash", &self.type_name, |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
-                w.write_line("state.write_i32(self.value())");
+                w.write_line("state.write_i32(::protobuf::ProtobufEnum::value(self))");
             });
         });
     }

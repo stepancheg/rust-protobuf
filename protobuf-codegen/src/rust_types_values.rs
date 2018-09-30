@@ -175,7 +175,9 @@ impl RustType {
             RustType::Message(ref name) => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message() => {
                 match **m {
-                    RustType::Message(ref name) => format!("{}::default_instance()", name),
+                    RustType::Message(ref name) => {
+                        format!("<{} as ::protobuf::Message>::default_instance()", name)
+                    }
                     _ => unreachable!(),
                 }
             }
@@ -270,9 +272,11 @@ impl RustType {
                        (&RustType::Vec(ref x), &RustType::Slice(ref y)) => x == y,
                        _ => false,
                    } => return Ok(format!("&{}", v)),
-            (&RustType::Enum(..), &RustType::Int(true, 32)) => return Ok(format!("{}.value()", v)),
+            (&RustType::Enum(..), &RustType::Int(true, 32)) => {
+                return Ok(format!("::protobuf::ProtobufEnum::value(&{})", v))
+            },
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
-                return Ok(format!("{}.value()", v))
+                return Ok(format!("::protobuf::ProtobufEnum::value({})", v))
             }
             _ => (),
         };

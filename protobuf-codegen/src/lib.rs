@@ -126,12 +126,6 @@ fn gen_file(
 
         w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"));
 
-        w.write_line("");
-        w.write_line("use protobuf::Message as Message_imported_for_functions;");
-        w.write_line(
-            "use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;",
-        );
-
         for message in &scope.get_messages() {
             // ignore map entries, because they are not used in map fields
             if map_entry(message).is_none() {

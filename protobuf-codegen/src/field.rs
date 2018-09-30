@@ -1959,7 +1959,7 @@ impl<'a> FieldGen<'a> {
                 let ref field_type_name = self.elem().rust_storage_elem_type();
                 w.write_line(option_kind.unwrap_ref_or_else(
                     &format!("{}.as_ref()", self_field),
-                    &format!("{}::default_instance()", field_type_name),
+                    &format!("<{} as ::protobuf::Message>::default_instance()", field_type_name),
                 ));
             }
         }

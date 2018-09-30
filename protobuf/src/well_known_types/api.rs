@@ -17,9 +17,6 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 pub struct Api {
     // message fields
@@ -153,7 +150,7 @@ impl ::protobuf::Message for Api {
             ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
         };
         if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, self.syntax.value())?;
+            os.write_enum(7, ::protobuf::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -383,7 +380,7 @@ impl ::protobuf::Message for Method {
             ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
         };
         if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, self.syntax.value())?;
+            os.write_enum(7, ::protobuf::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
