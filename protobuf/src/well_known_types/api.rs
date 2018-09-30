@@ -18,6 +18,7 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Api {
     // message fields
     pub name: ::std::string::String,
@@ -28,7 +29,9 @@ pub struct Api {
     pub mixins: ::protobuf::RepeatedField<Mixin>,
     pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -258,6 +261,7 @@ impl ::protobuf::reflect::ProtobufValue for Api {
 }
 
 #[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Method {
     // message fields
     pub name: ::std::string::String,
@@ -268,7 +272,9 @@ pub struct Method {
     pub options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
     pub syntax: ::protobuf::well_known_types::Syntax,
     // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -488,12 +494,15 @@ impl ::protobuf::reflect::ProtobufValue for Method {
 }
 
 #[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Mixin {
     // message fields
     pub name: ::std::string::String,
     pub root: ::std::string::String,
     // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 

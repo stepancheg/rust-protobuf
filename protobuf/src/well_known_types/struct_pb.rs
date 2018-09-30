@@ -18,11 +18,14 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Struct {
     // message fields
     pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -134,14 +137,18 @@ impl ::protobuf::reflect::ProtobufValue for Struct {
 }
 
 #[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<Value_oneof_kind>,
     // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,PartialEq)]
 pub enum Value_oneof_kind {
     null_value(NullValue),
@@ -610,11 +617,14 @@ impl ::protobuf::reflect::ProtobufValue for Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct ListValue {
     // message fields
     pub values: ::protobuf::RepeatedField<Value>,
     // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -735,6 +745,7 @@ impl ::std::fmt::Debug for ListValue {
 impl ::protobuf::reflect::ProtobufValue for ListValue {
 }
 
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
 pub enum NullValue {
     NULL_VALUE = 0,
