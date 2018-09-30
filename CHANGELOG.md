@@ -25,6 +25,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   https://github.com/stepancheg/rust-protobuf/issues/300), which also may be turned on by default later.
 - `generate_accessors` and `generate_getter` options to disable generation of accessor functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
+- [Implement `Hash` for
+  `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/113babc8c56deb7e2453f0d11c2bfc21134d540f)
 
 ### Improvements
 
