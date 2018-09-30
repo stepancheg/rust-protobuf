@@ -4,8 +4,6 @@ extern crate protobuf;
 
 extern crate protobuf_test_common;
 
-extern crate protobuf_serde;
-
 #[cfg(feature = "with-bytes")]
 extern crate bytes;
 
