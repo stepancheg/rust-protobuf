@@ -9,6 +9,7 @@ use protobuf::descriptor::FileDescriptorProto;
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
     pub files_to_generate: &'a [String],
+    pub parameter: &'a str,
 }
 
 pub struct GenResult {
@@ -23,6 +24,7 @@ pub fn plugin_main<F>(gen: F)
     let result = gen(&GenRequest {
         file_descriptors: &req.proto_file,
         files_to_generate: &req.file_to_generate,
+        parameter: req.get_parameter(),
     });
     let mut resp = CodeGeneratorResponse::new();
     resp.file =
