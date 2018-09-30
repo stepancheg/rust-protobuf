@@ -4,6 +4,9 @@ use std::default::Default;
 use std::slice;
 use stream::wire_format;
 use clear::Clear;
+use std::hash::Hash;
+use std::hash::Hasher;
+use std::collections::hash_map::DefaultHasher;
 
 #[derive(Debug)]
 pub enum UnknownValue {
@@ -46,7 +49,7 @@ impl<'o> UnknownValueRef<'o> {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Debug, Default)]
+#[derive(Clone, PartialEq, Eq, Debug, Default, Hash)]
 pub struct UnknownValues {
     pub fixed32: Vec<u32>,
     pub fixed64: Vec<u64>,
@@ -121,6 +124,25 @@ pub struct UnknownFields {
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive
     pub fields: Option<Box<HashMap<u32, UnknownValues>>>,
+}
+
+/// Very simple hash implementation of `Hash` for `UnknownFields`.
+/// Since map is unordered, we cannot put entry hashes into hasher,
+/// instead we summing hashes of entries.
+impl Hash for UnknownFields {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        if let Some(ref map) = self.fields {
+            if !map.is_empty() {
+                let mut hash: u64 = 0;
+                for (k, v) in &**map {
+                    let mut entry_hasher = DefaultHasher::new();
+                    Hash::hash(&(k, v), &mut entry_hasher);
+                    hash.wrapping_add(entry_hasher.finish());
+                }
+                Hash::hash(&hash, state);
+            }
+        }
+    }
 }
 
 impl UnknownFields {
@@ -206,5 +228,37 @@ impl<'s> Iterator for UnknownFieldsIter<'s> {
             Some(ref mut entries) => entries.next().map(|(&number, values)| (number, values)),
             None => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::UnknownFields;
+    use std::hash::Hash;
+    use std::hash::Hasher;
+    use std::collections::hash_map::DefaultHasher;
+
+    #[test]
+    fn unknown_fields_hash() {
+        let mut unknown_fields_1 = UnknownFields::new();
+        let mut unknown_fields_2 = UnknownFields::new();
+
+        // Check field order is not important
+
+        unknown_fields_1.add_fixed32(10, 222);
+        unknown_fields_1.add_fixed32(10, 223);
+        unknown_fields_1.add_fixed64(14, 224);
+
+        unknown_fields_2.add_fixed32(10, 222);
+        unknown_fields_2.add_fixed64(14, 224);
+        unknown_fields_2.add_fixed32(10, 223);
+
+        fn hash(unknown_fields: &UnknownFields) -> u64 {
+            let mut hasher = DefaultHasher::new();
+            Hash::hash(unknown_fields, &mut hasher);
+            hasher.finish()
+        }
+
+        assert_eq!(hash(&unknown_fields_1), hash(&unknown_fields_2));
     }
 }
