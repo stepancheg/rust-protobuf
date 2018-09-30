@@ -4,7 +4,7 @@
 use std::io::stdin;
 use std::io::stdout;
 use std::str;
-use plugin::*;
+use protobuf::plugin::*;
 use protobuf::parse_from_reader;
 use protobuf::Message;
 use protobuf::descriptor::FileDescriptorProto;

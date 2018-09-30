@@ -38,6 +38,7 @@ pub use reflect::types;
 
 // generated
 pub mod descriptor;
+// TODO: move plugin to mod codegen
 pub mod plugin;
 pub mod rustproto;
 
@@ -46,7 +47,6 @@ mod enums;
 mod oneof;
 pub mod rt;
 mod lazy;
-pub mod compiler_plugin;
 mod repeated;
 mod singular;
 mod clear;

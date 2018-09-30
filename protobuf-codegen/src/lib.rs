@@ -9,7 +9,6 @@ use std::io::Write as Write;
 
 use protobuf::descriptor::*;
 use protobuf::Message;
-use protobuf::compiler_plugin;
 use protobuf::descriptorx::*;
 
 use protobuf::prelude::*;
@@ -25,6 +24,7 @@ mod oneof;
 mod amend_io_error_util;
 mod map;
 mod ident;
+mod compiler_plugin;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
