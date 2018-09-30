@@ -1,8 +1,8 @@
 //! Lazily initialized data.
 //! Used in generated code.
 
-use std::mem;
 use std::sync;
+use std::cell::UnsafeCell;
 
 /// Lasily initialized data.
 // Fields are public until `const` functions available in stable.
@@ -10,25 +10,21 @@ pub struct Lazy<T> {
     #[doc(hidden)]
     pub lock: sync::Once,
     #[doc(hidden)]
-    pub ptr: *const T,
+    pub ptr: UnsafeCell<*const T>,
 }
+
+unsafe impl<T> Sync for Lazy<T> {}
 
 impl<T> Lazy<T> {
     /// Get lazy field value, initialize it with given function if not yet.
-    pub fn get<F>(&'static mut self, init: F) -> &'static T
+    pub fn get<F>(&'static self, init: F) -> &'static T
     where
         F : FnOnce() -> T,
     {
-        // ~ decouple the lifetimes of 'self' and 'self.lock' such we
-        // can initialize self.ptr in the call_once closure (note: we
-        // do have to initialize self.ptr in the closure to guarantee
-        // the ptr is valid for all calling threads at any point in
-        // time)
-        let lock: &sync::Once = unsafe { mem::transmute(&self.lock) };
-        lock.call_once(|| unsafe {
-            self.ptr = mem::transmute(Box::new(init()));
+        self.lock.call_once(|| unsafe {
+            *self.ptr.get() = Box::into_raw(Box::new(init()));
         });
-        unsafe { &*self.ptr }
+        unsafe { &**self.ptr.get() }
     }
 }
 
@@ -42,6 +38,7 @@ mod test {
     use std::thread;
     use std::sync::{Arc, Barrier};
     use std::sync::atomic::{ATOMIC_ISIZE_INIT, AtomicIsize, Ordering};
+    use std::cell::UnsafeCell;
 
     #[test]
     fn many_threads_calling_get() {
@@ -51,7 +48,7 @@ mod test {
 
         static mut LAZY: Lazy<String> = Lazy {
             lock: ONCE_INIT,
-            ptr: 0 as *const String,
+            ptr: UnsafeCell::new(0 as *const String),
         };
         static CALL_COUNT: AtomicIsize = ATOMIC_ISIZE_INIT;
 
@@ -62,7 +59,7 @@ mod test {
             unsafe {
                 LAZY = Lazy {
                     lock: ONCE_INIT,
-                    ptr: 0 as *const String,
+                    ptr: UnsafeCell::new(0 as *const String),
                 }
             }
             CALL_COUNT.store(0, Ordering::SeqCst);

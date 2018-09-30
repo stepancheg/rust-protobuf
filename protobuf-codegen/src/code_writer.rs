@@ -63,7 +63,6 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(non_snake_case)]");
         self.write_line("#![allow(non_upper_case_globals)]");
         self.write_line("#![allow(trivial_casts)]");
-        self.write_line("#![allow(unsafe_code)]");
         self.write_line("#![allow(unused_imports)]");
         self.write_line("#![allow(unused_results)]");
     }
@@ -104,13 +103,13 @@ impl<'a> CodeWriter<'a> {
     pub fn lazy_static(&mut self, name: &str, ty: &str) {
         self.stmt_block(
             &format!(
-                "static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy",
+                "static {}: ::protobuf::rt::Lazy<{}> = ::protobuf::rt::Lazy",
                 name,
                 ty
             ),
             |w| {
-                w.field_entry("lock", "::protobuf::lazy::ONCE_INIT");
-                w.field_entry("ptr", &format!("0 as *const {}", ty));
+                w.field_entry("lock", "::protobuf::rt::LAZY_ONCE_INIT");
+                w.field_entry("ptr", &format!("::std::cell::UnsafeCell::new(0 as *const {})", ty));
             },
         );
     }
@@ -120,16 +119,14 @@ impl<'a> CodeWriter<'a> {
         F : Fn(&mut CodeWriter),
     {
         self.lazy_static(name, ty);
-        self.unsafe_expr(|w| {
-            w.write_line(&format!("{}.get(|| {{", name));
-            w.indented(|w| init(w));
-            w.write_line(&format!("}})"));
-        });
+        self.write_line(&format!("{}.get(|| {{", name));
+        self.indented(|w| init(w));
+        self.write_line(&format!("}})"));
     }
 
     pub fn lazy_static_decl_get_simple(&mut self, name: &str, ty: &str, init: &str) {
         self.lazy_static(name, ty);
-        self.unsafe_expr(|w| { w.write_line(&format!("{}.get({})", name, init)); });
+        self.write_line(&format!("{}.get({})", name, init));
     }
 
     pub fn block<F>(&mut self, first_line: &str, last_line: &str, cb: F)

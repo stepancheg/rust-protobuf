@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
@@ -159,46 +158,42 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "file_to_generate",
-                    |m: &CodeGeneratorRequest| { &m.file_to_generate },
-                    |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "parameter",
-                    |m: &CodeGeneratorRequest| { &m.parameter },
-                    |m: &mut CodeGeneratorRequest| { &mut m.parameter },
-                    CodeGeneratorRequest::get_parameter,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
-                    "proto_file",
-                    |m: &CodeGeneratorRequest| { &m.proto_file },
-                    |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
-                    "CodeGeneratorRequest",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "file_to_generate",
+                |m: &CodeGeneratorRequest| { &m.file_to_generate },
+                |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "parameter",
+                |m: &CodeGeneratorRequest| { &m.parameter },
+                |m: &mut CodeGeneratorRequest| { &mut m.parameter },
+                CodeGeneratorRequest::get_parameter,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
+                "proto_file",
+                |m: &CodeGeneratorRequest| { &m.proto_file },
+                |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
+                "CodeGeneratorRequest",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorRequest> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorRequest,
+        static instance: ::protobuf::rt::Lazy<CodeGeneratorRequest> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const CodeGeneratorRequest),
         };
-        unsafe {
-            instance.get(CodeGeneratorRequest::new)
-        }
+        instance.get(CodeGeneratorRequest::new)
     }
 }
 
@@ -348,41 +343,37 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "error",
-                    |m: &CodeGeneratorResponse| { &m.error },
-                    |m: &mut CodeGeneratorResponse| { &mut m.error },
-                    CodeGeneratorResponse::get_error,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
-                    "file",
-                    |m: &CodeGeneratorResponse| { &m.file },
-                    |m: &mut CodeGeneratorResponse| { &mut m.file },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
-                    "CodeGeneratorResponse",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "error",
+                |m: &CodeGeneratorResponse| { &m.error },
+                |m: &mut CodeGeneratorResponse| { &mut m.error },
+                CodeGeneratorResponse::get_error,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
+                "file",
+                |m: &CodeGeneratorResponse| { &m.file },
+                |m: &mut CodeGeneratorResponse| { &mut m.file },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
+                "CodeGeneratorResponse",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorResponse,
+        static instance: ::protobuf::rt::Lazy<CodeGeneratorResponse> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const CodeGeneratorResponse),
         };
-        unsafe {
-            instance.get(CodeGeneratorResponse::new)
-        }
+        instance.get(CodeGeneratorResponse::new)
     }
 }
 
@@ -607,48 +598,44 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &CodeGeneratorResponse_File| { &m.name },
-                    |m: &mut CodeGeneratorResponse_File| { &mut m.name },
-                    CodeGeneratorResponse_File::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "insertion_point",
-                    |m: &CodeGeneratorResponse_File| { &m.insertion_point },
-                    |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
-                    CodeGeneratorResponse_File::get_insertion_point,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "content",
-                    |m: &CodeGeneratorResponse_File| { &m.content },
-                    |m: &mut CodeGeneratorResponse_File| { &mut m.content },
-                    CodeGeneratorResponse_File::get_content,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
-                    "CodeGeneratorResponse_File",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &CodeGeneratorResponse_File| { &m.name },
+                |m: &mut CodeGeneratorResponse_File| { &mut m.name },
+                CodeGeneratorResponse_File::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "insertion_point",
+                |m: &CodeGeneratorResponse_File| { &m.insertion_point },
+                |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
+                CodeGeneratorResponse_File::get_insertion_point,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "content",
+                |m: &CodeGeneratorResponse_File| { &m.content },
+                |m: &mut CodeGeneratorResponse_File| { &mut m.content },
+                CodeGeneratorResponse_File::get_content,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
+                "CodeGeneratorResponse_File",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse_File> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorResponse_File,
+        static instance: ::protobuf::rt::Lazy<CodeGeneratorResponse_File> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const CodeGeneratorResponse_File),
         };
-        unsafe {
-            instance.get(CodeGeneratorResponse_File::new)
-        }
+        instance.get(CodeGeneratorResponse_File::new)
     }
 }
 
@@ -860,9 +847,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x10\x14\n\r\n\x05\x04\x01\x02\x01\x03\x12\x04\x94\x01\x17\x19\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
+    lock: ::protobuf::rt::LAZY_ONCE_INIT,
+    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
 };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
@@ -870,9 +857,7 @@ fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

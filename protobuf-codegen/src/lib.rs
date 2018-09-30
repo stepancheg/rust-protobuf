@@ -99,10 +99,8 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     });
     w.write_line("");
     w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-        w.unsafe_expr(|w| {
-            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line("parse_descriptor_proto()");
-            });
+        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+            w.write_line("parse_descriptor_proto()");
         });
     });
 }

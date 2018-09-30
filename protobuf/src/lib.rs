@@ -45,7 +45,7 @@ mod core;
 mod enums;
 mod oneof;
 pub mod rt;
-pub mod lazy;
+mod lazy;
 pub mod compiler_plugin;
 mod repeated;
 mod singular;
@@ -95,7 +95,6 @@ mod protobuf {
     pub use rt;
     pub use text_format;
     pub use reflect::types;
-    pub use lazy;
     pub use well_known_types;
     pub use ext;
     pub use unknown::UnknownFields;

@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
@@ -97,35 +96,31 @@ impl ::protobuf::Message for SourceContext {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "file_name",
-                    |m: &SourceContext| { &m.file_name },
-                    |m: &mut SourceContext| { &mut m.file_name },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceContext>(
-                    "SourceContext",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "file_name",
+                |m: &SourceContext| { &m.file_name },
+                |m: &mut SourceContext| { &mut m.file_name },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<SourceContext>(
+                "SourceContext",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static SourceContext {
-        static mut instance: ::protobuf::lazy::Lazy<SourceContext> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const SourceContext,
+        static instance: ::protobuf::rt::Lazy<SourceContext> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const SourceContext),
         };
-        unsafe {
-            instance.get(SourceContext::new)
-        }
+        instance.get(SourceContext::new)
     }
 }
 
@@ -201,9 +196,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x16b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
+    lock: ::protobuf::rt::LAZY_ONCE_INIT,
+    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
 };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
@@ -211,9 +206,7 @@ fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
@@ -103,35 +102,31 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileDescriptorProto>>(
-                    "file",
-                    |m: &FileDescriptorSet| { &m.file },
-                    |m: &mut FileDescriptorSet| { &mut m.file },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorSet>(
-                    "FileDescriptorSet",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileDescriptorProto>>(
+                "file",
+                |m: &FileDescriptorSet| { &m.file },
+                |m: &mut FileDescriptorSet| { &mut m.file },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorSet>(
+                "FileDescriptorSet",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
-        static mut instance: ::protobuf::lazy::Lazy<FileDescriptorSet> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const FileDescriptorSet,
+        static instance: ::protobuf::rt::Lazy<FileDescriptorSet> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const FileDescriptorSet),
         };
-        unsafe {
-            instance.get(FileDescriptorSet::new)
-        }
+        instance.get(FileDescriptorSet::new)
     }
 }
 
@@ -481,93 +476,89 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &FileDescriptorProto| { &m.name },
-                    |m: &mut FileDescriptorProto| { &mut m.name },
-                    FileDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "package",
-                    |m: &FileDescriptorProto| { &m.package },
-                    |m: &mut FileDescriptorProto| { &mut m.package },
-                    FileDescriptorProto::get_package,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "dependency",
-                    |m: &FileDescriptorProto| { &m.dependency },
-                    |m: &mut FileDescriptorProto| { &mut m.dependency },
-                ));
-                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "public_dependency",
-                    |m: &FileDescriptorProto| { &m.public_dependency },
-                    |m: &mut FileDescriptorProto| { &mut m.public_dependency },
-                ));
-                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "weak_dependency",
-                    |m: &FileDescriptorProto| { &m.weak_dependency },
-                    |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
-                    "message_type",
-                    |m: &FileDescriptorProto| { &m.message_type },
-                    |m: &mut FileDescriptorProto| { &mut m.message_type },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
-                    "enum_type",
-                    |m: &FileDescriptorProto| { &m.enum_type },
-                    |m: &mut FileDescriptorProto| { &mut m.enum_type },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
-                    "service",
-                    |m: &FileDescriptorProto| { &m.service },
-                    |m: &mut FileDescriptorProto| { &mut m.service },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
-                    "extension",
-                    |m: &FileDescriptorProto| { &m.extension },
-                    |m: &mut FileDescriptorProto| { &mut m.extension },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileOptions>, _>(
-                    "options",
-                    |m: &FileDescriptorProto| { &m.options },
-                    |m: &mut FileDescriptorProto| { &mut m.options },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo>, _>(
-                    "source_code_info",
-                    |m: &FileDescriptorProto| { &m.source_code_info },
-                    |m: &mut FileDescriptorProto| { &mut m.source_code_info },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "syntax",
-                    |m: &FileDescriptorProto| { &m.syntax },
-                    |m: &mut FileDescriptorProto| { &mut m.syntax },
-                    FileDescriptorProto::get_syntax,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorProto>(
-                    "FileDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &FileDescriptorProto| { &m.name },
+                |m: &mut FileDescriptorProto| { &mut m.name },
+                FileDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "package",
+                |m: &FileDescriptorProto| { &m.package },
+                |m: &mut FileDescriptorProto| { &mut m.package },
+                FileDescriptorProto::get_package,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "dependency",
+                |m: &FileDescriptorProto| { &m.dependency },
+                |m: &mut FileDescriptorProto| { &mut m.dependency },
+            ));
+            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "public_dependency",
+                |m: &FileDescriptorProto| { &m.public_dependency },
+                |m: &mut FileDescriptorProto| { &mut m.public_dependency },
+            ));
+            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "weak_dependency",
+                |m: &FileDescriptorProto| { &m.weak_dependency },
+                |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
+                "message_type",
+                |m: &FileDescriptorProto| { &m.message_type },
+                |m: &mut FileDescriptorProto| { &mut m.message_type },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+                "enum_type",
+                |m: &FileDescriptorProto| { &m.enum_type },
+                |m: &mut FileDescriptorProto| { &mut m.enum_type },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
+                "service",
+                |m: &FileDescriptorProto| { &m.service },
+                |m: &mut FileDescriptorProto| { &mut m.service },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                "extension",
+                |m: &FileDescriptorProto| { &m.extension },
+                |m: &mut FileDescriptorProto| { &mut m.extension },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileOptions>, _>(
+                "options",
+                |m: &FileDescriptorProto| { &m.options },
+                |m: &mut FileDescriptorProto| { &mut m.options },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo>, _>(
+                "source_code_info",
+                |m: &FileDescriptorProto| { &m.source_code_info },
+                |m: &mut FileDescriptorProto| { &mut m.source_code_info },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "syntax",
+                |m: &FileDescriptorProto| { &m.syntax },
+                |m: &mut FileDescriptorProto| { &mut m.syntax },
+                FileDescriptorProto::get_syntax,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorProto>(
+                "FileDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<FileDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const FileDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<FileDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const FileDescriptorProto),
         };
-        unsafe {
-            instance.get(FileDescriptorProto::new)
-        }
+        instance.get(FileDescriptorProto::new)
     }
 }
 
@@ -848,81 +839,77 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &DescriptorProto| { &m.name },
-                    |m: &mut DescriptorProto| { &mut m.name },
-                    DescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
-                    "field",
-                    |m: &DescriptorProto| { &m.field },
-                    |m: &mut DescriptorProto| { &mut m.field },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
-                    "extension",
-                    |m: &DescriptorProto| { &m.extension },
-                    |m: &mut DescriptorProto| { &mut m.extension },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
-                    "nested_type",
-                    |m: &DescriptorProto| { &m.nested_type },
-                    |m: &mut DescriptorProto| { &mut m.nested_type },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
-                    "enum_type",
-                    |m: &DescriptorProto| { &m.enum_type },
-                    |m: &mut DescriptorProto| { &mut m.enum_type },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
-                    "extension_range",
-                    |m: &DescriptorProto| { &m.extension_range },
-                    |m: &mut DescriptorProto| { &mut m.extension_range },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofDescriptorProto>>(
-                    "oneof_decl",
-                    |m: &DescriptorProto| { &m.oneof_decl },
-                    |m: &mut DescriptorProto| { &mut m.oneof_decl },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MessageOptions>, _>(
-                    "options",
-                    |m: &DescriptorProto| { &m.options },
-                    |m: &mut DescriptorProto| { &mut m.options },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
-                    "reserved_range",
-                    |m: &DescriptorProto| { &m.reserved_range },
-                    |m: &mut DescriptorProto| { &mut m.reserved_range },
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "reserved_name",
-                    |m: &DescriptorProto| { &m.reserved_name },
-                    |m: &mut DescriptorProto| { &mut m.reserved_name },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto>(
-                    "DescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &DescriptorProto| { &m.name },
+                |m: &mut DescriptorProto| { &mut m.name },
+                DescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                "field",
+                |m: &DescriptorProto| { &m.field },
+                |m: &mut DescriptorProto| { &mut m.field },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                "extension",
+                |m: &DescriptorProto| { &m.extension },
+                |m: &mut DescriptorProto| { &mut m.extension },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
+                "nested_type",
+                |m: &DescriptorProto| { &m.nested_type },
+                |m: &mut DescriptorProto| { &mut m.nested_type },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+                "enum_type",
+                |m: &DescriptorProto| { &m.enum_type },
+                |m: &mut DescriptorProto| { &mut m.enum_type },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
+                "extension_range",
+                |m: &DescriptorProto| { &m.extension_range },
+                |m: &mut DescriptorProto| { &mut m.extension_range },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofDescriptorProto>>(
+                "oneof_decl",
+                |m: &DescriptorProto| { &m.oneof_decl },
+                |m: &mut DescriptorProto| { &mut m.oneof_decl },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MessageOptions>, _>(
+                "options",
+                |m: &DescriptorProto| { &m.options },
+                |m: &mut DescriptorProto| { &mut m.options },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
+                "reserved_range",
+                |m: &DescriptorProto| { &m.reserved_range },
+                |m: &mut DescriptorProto| { &mut m.reserved_range },
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "reserved_name",
+                |m: &DescriptorProto| { &m.reserved_name },
+                |m: &mut DescriptorProto| { &mut m.reserved_name },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto>(
+                "DescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static DescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const DescriptorProto,
+        static instance: ::protobuf::rt::Lazy<DescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const DescriptorProto),
         };
-        unsafe {
-            instance.get(DescriptorProto::new)
-        }
+        instance.get(DescriptorProto::new)
     }
 }
 
@@ -1083,42 +1070,38 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "start",
-                    |m: &DescriptorProto_ExtensionRange| { &m.start },
-                    |m: &mut DescriptorProto_ExtensionRange| { &mut m.start },
-                    DescriptorProto_ExtensionRange::get_start,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "end",
-                    |m: &DescriptorProto_ExtensionRange| { &m.end },
-                    |m: &mut DescriptorProto_ExtensionRange| { &mut m.end },
-                    DescriptorProto_ExtensionRange::get_end,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ExtensionRange>(
-                    "DescriptorProto_ExtensionRange",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "start",
+                |m: &DescriptorProto_ExtensionRange| { &m.start },
+                |m: &mut DescriptorProto_ExtensionRange| { &mut m.start },
+                DescriptorProto_ExtensionRange::get_start,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "end",
+                |m: &DescriptorProto_ExtensionRange| { &m.end },
+                |m: &mut DescriptorProto_ExtensionRange| { &mut m.end },
+                DescriptorProto_ExtensionRange::get_end,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ExtensionRange>(
+                "DescriptorProto_ExtensionRange",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const DescriptorProto_ExtensionRange,
+        static instance: ::protobuf::rt::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const DescriptorProto_ExtensionRange),
         };
-        unsafe {
-            instance.get(DescriptorProto_ExtensionRange::new)
-        }
+        instance.get(DescriptorProto_ExtensionRange::new)
     }
 }
 
@@ -1271,42 +1254,38 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "start",
-                    |m: &DescriptorProto_ReservedRange| { &m.start },
-                    |m: &mut DescriptorProto_ReservedRange| { &mut m.start },
-                    DescriptorProto_ReservedRange::get_start,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "end",
-                    |m: &DescriptorProto_ReservedRange| { &m.end },
-                    |m: &mut DescriptorProto_ReservedRange| { &mut m.end },
-                    DescriptorProto_ReservedRange::get_end,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ReservedRange>(
-                    "DescriptorProto_ReservedRange",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "start",
+                |m: &DescriptorProto_ReservedRange| { &m.start },
+                |m: &mut DescriptorProto_ReservedRange| { &mut m.start },
+                DescriptorProto_ReservedRange::get_start,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "end",
+                |m: &DescriptorProto_ReservedRange| { &m.end },
+                |m: &mut DescriptorProto_ReservedRange| { &mut m.end },
+                DescriptorProto_ReservedRange::get_end,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ReservedRange>(
+                "DescriptorProto_ReservedRange",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static DescriptorProto_ReservedRange {
-        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto_ReservedRange> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const DescriptorProto_ReservedRange,
+        static instance: ::protobuf::rt::Lazy<DescriptorProto_ReservedRange> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const DescriptorProto_ReservedRange),
         };
-        unsafe {
-            instance.get(DescriptorProto_ReservedRange::new)
-        }
+        instance.get(DescriptorProto_ReservedRange::new)
     }
 }
 
@@ -1763,89 +1742,85 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &FieldDescriptorProto| { &m.name },
-                    |m: &mut FieldDescriptorProto| { &mut m.name },
-                    FieldDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "number",
-                    |m: &FieldDescriptorProto| { &m.number },
-                    |m: &mut FieldDescriptorProto| { &mut m.number },
-                    FieldDescriptorProto::get_number,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldDescriptorProto_Label>, _>(
-                    "label",
-                    |m: &FieldDescriptorProto| { &m.label },
-                    |m: &mut FieldDescriptorProto| { &mut m.label },
-                    FieldDescriptorProto::get_label,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldDescriptorProto_Type>, _>(
-                    "type",
-                    |m: &FieldDescriptorProto| { &m.field_type },
-                    |m: &mut FieldDescriptorProto| { &mut m.field_type },
-                    FieldDescriptorProto::get_field_type,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "type_name",
-                    |m: &FieldDescriptorProto| { &m.type_name },
-                    |m: &mut FieldDescriptorProto| { &mut m.type_name },
-                    FieldDescriptorProto::get_type_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "extendee",
-                    |m: &FieldDescriptorProto| { &m.extendee },
-                    |m: &mut FieldDescriptorProto| { &mut m.extendee },
-                    FieldDescriptorProto::get_extendee,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "default_value",
-                    |m: &FieldDescriptorProto| { &m.default_value },
-                    |m: &mut FieldDescriptorProto| { &mut m.default_value },
-                    FieldDescriptorProto::get_default_value,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "oneof_index",
-                    |m: &FieldDescriptorProto| { &m.oneof_index },
-                    |m: &mut FieldDescriptorProto| { &mut m.oneof_index },
-                    FieldDescriptorProto::get_oneof_index,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "json_name",
-                    |m: &FieldDescriptorProto| { &m.json_name },
-                    |m: &mut FieldDescriptorProto| { &mut m.json_name },
-                    FieldDescriptorProto::get_json_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldOptions>, _>(
-                    "options",
-                    |m: &FieldDescriptorProto| { &m.options },
-                    |m: &mut FieldDescriptorProto| { &mut m.options },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<FieldDescriptorProto>(
-                    "FieldDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &FieldDescriptorProto| { &m.name },
+                |m: &mut FieldDescriptorProto| { &mut m.name },
+                FieldDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "number",
+                |m: &FieldDescriptorProto| { &m.number },
+                |m: &mut FieldDescriptorProto| { &mut m.number },
+                FieldDescriptorProto::get_number,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldDescriptorProto_Label>, _>(
+                "label",
+                |m: &FieldDescriptorProto| { &m.label },
+                |m: &mut FieldDescriptorProto| { &mut m.label },
+                FieldDescriptorProto::get_label,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldDescriptorProto_Type>, _>(
+                "type",
+                |m: &FieldDescriptorProto| { &m.field_type },
+                |m: &mut FieldDescriptorProto| { &mut m.field_type },
+                FieldDescriptorProto::get_field_type,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "type_name",
+                |m: &FieldDescriptorProto| { &m.type_name },
+                |m: &mut FieldDescriptorProto| { &mut m.type_name },
+                FieldDescriptorProto::get_type_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "extendee",
+                |m: &FieldDescriptorProto| { &m.extendee },
+                |m: &mut FieldDescriptorProto| { &mut m.extendee },
+                FieldDescriptorProto::get_extendee,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "default_value",
+                |m: &FieldDescriptorProto| { &m.default_value },
+                |m: &mut FieldDescriptorProto| { &mut m.default_value },
+                FieldDescriptorProto::get_default_value,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "oneof_index",
+                |m: &FieldDescriptorProto| { &m.oneof_index },
+                |m: &mut FieldDescriptorProto| { &mut m.oneof_index },
+                FieldDescriptorProto::get_oneof_index,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "json_name",
+                |m: &FieldDescriptorProto| { &m.json_name },
+                |m: &mut FieldDescriptorProto| { &mut m.json_name },
+                FieldDescriptorProto::get_json_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldOptions>, _>(
+                "options",
+                |m: &FieldDescriptorProto| { &m.options },
+                |m: &mut FieldDescriptorProto| { &mut m.options },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<FieldDescriptorProto>(
+                "FieldDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<FieldDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const FieldDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<FieldDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const FieldDescriptorProto),
         };
-        unsafe {
-            instance.get(FieldDescriptorProto::new)
-        }
+        instance.get(FieldDescriptorProto::new)
     }
 }
 
@@ -1950,15 +1925,13 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Type>("FieldDescriptorProto_Type", file_descriptor_proto())
-            })
-        }
+        descriptor.get(|| {
+            ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Type>("FieldDescriptorProto_Type", file_descriptor_proto())
+        })
     }
 }
 
@@ -2003,15 +1976,13 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Label>("FieldDescriptorProto_Label", file_descriptor_proto())
-            })
-        }
+        descriptor.get(|| {
+            ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Label>("FieldDescriptorProto_Label", file_descriptor_proto())
+        })
     }
 }
 
@@ -2153,41 +2124,37 @@ impl ::protobuf::Message for OneofDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &OneofDescriptorProto| { &m.name },
-                    |m: &mut OneofDescriptorProto| { &mut m.name },
-                    OneofDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofOptions>, _>(
-                    "options",
-                    |m: &OneofDescriptorProto| { &m.options },
-                    |m: &mut OneofDescriptorProto| { &mut m.options },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<OneofDescriptorProto>(
-                    "OneofDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &OneofDescriptorProto| { &m.name },
+                |m: &mut OneofDescriptorProto| { &mut m.name },
+                OneofDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofOptions>, _>(
+                "options",
+                |m: &OneofDescriptorProto| { &m.options },
+                |m: &mut OneofDescriptorProto| { &mut m.options },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<OneofDescriptorProto>(
+                "OneofDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<OneofDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const OneofDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<OneofDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const OneofDescriptorProto),
         };
-        unsafe {
-            instance.get(OneofDescriptorProto::new)
-        }
+        instance.get(OneofDescriptorProto::new)
     }
 }
 
@@ -2352,46 +2319,42 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &EnumDescriptorProto| { &m.name },
-                    |m: &mut EnumDescriptorProto| { &mut m.name },
-                    EnumDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
-                    "value",
-                    |m: &EnumDescriptorProto| { &m.value },
-                    |m: &mut EnumDescriptorProto| { &mut m.value },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumOptions>, _>(
-                    "options",
-                    |m: &EnumDescriptorProto| { &m.options },
-                    |m: &mut EnumDescriptorProto| { &mut m.options },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumDescriptorProto>(
-                    "EnumDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &EnumDescriptorProto| { &m.name },
+                |m: &mut EnumDescriptorProto| { &mut m.name },
+                EnumDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
+                "value",
+                |m: &EnumDescriptorProto| { &m.value },
+                |m: &mut EnumDescriptorProto| { &mut m.value },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumOptions>, _>(
+                "options",
+                |m: &EnumDescriptorProto| { &m.options },
+                |m: &mut EnumDescriptorProto| { &mut m.options },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<EnumDescriptorProto>(
+                "EnumDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<EnumDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const EnumDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<EnumDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumDescriptorProto),
         };
-        unsafe {
-            instance.get(EnumDescriptorProto::new)
-        }
+        instance.get(EnumDescriptorProto::new)
     }
 }
 
@@ -2574,47 +2537,43 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &EnumValueDescriptorProto| { &m.name },
-                    |m: &mut EnumValueDescriptorProto| { &mut m.name },
-                    EnumValueDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "number",
-                    |m: &EnumValueDescriptorProto| { &m.number },
-                    |m: &mut EnumValueDescriptorProto| { &mut m.number },
-                    EnumValueDescriptorProto::get_number,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueOptions>, _>(
-                    "options",
-                    |m: &EnumValueDescriptorProto| { &m.options },
-                    |m: &mut EnumValueDescriptorProto| { &mut m.options },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumValueDescriptorProto>(
-                    "EnumValueDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &EnumValueDescriptorProto| { &m.name },
+                |m: &mut EnumValueDescriptorProto| { &mut m.name },
+                EnumValueDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "number",
+                |m: &EnumValueDescriptorProto| { &m.number },
+                |m: &mut EnumValueDescriptorProto| { &mut m.number },
+                EnumValueDescriptorProto::get_number,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueOptions>, _>(
+                "options",
+                |m: &EnumValueDescriptorProto| { &m.options },
+                |m: &mut EnumValueDescriptorProto| { &mut m.options },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<EnumValueDescriptorProto>(
+                "EnumValueDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<EnumValueDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const EnumValueDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<EnumValueDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumValueDescriptorProto),
         };
-        unsafe {
-            instance.get(EnumValueDescriptorProto::new)
-        }
+        instance.get(EnumValueDescriptorProto::new)
     }
 }
 
@@ -2780,46 +2739,42 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &ServiceDescriptorProto| { &m.name },
-                    |m: &mut ServiceDescriptorProto| { &mut m.name },
-                    ServiceDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodDescriptorProto>>(
-                    "method",
-                    |m: &ServiceDescriptorProto| { &m.method },
-                    |m: &mut ServiceDescriptorProto| { &mut m.method },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceOptions>, _>(
-                    "options",
-                    |m: &ServiceDescriptorProto| { &m.options },
-                    |m: &mut ServiceDescriptorProto| { &mut m.options },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<ServiceDescriptorProto>(
-                    "ServiceDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &ServiceDescriptorProto| { &m.name },
+                |m: &mut ServiceDescriptorProto| { &mut m.name },
+                ServiceDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodDescriptorProto>>(
+                "method",
+                |m: &ServiceDescriptorProto| { &m.method },
+                |m: &mut ServiceDescriptorProto| { &mut m.method },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceOptions>, _>(
+                "options",
+                |m: &ServiceDescriptorProto| { &m.options },
+                |m: &mut ServiceDescriptorProto| { &mut m.options },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<ServiceDescriptorProto>(
+                "ServiceDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<ServiceDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ServiceDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<ServiceDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ServiceDescriptorProto),
         };
-        unsafe {
-            instance.get(ServiceDescriptorProto::new)
-        }
+        instance.get(ServiceDescriptorProto::new)
     }
 }
 
@@ -3127,65 +3082,61 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name",
-                    |m: &MethodDescriptorProto| { &m.name },
-                    |m: &mut MethodDescriptorProto| { &mut m.name },
-                    MethodDescriptorProto::get_name,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "input_type",
-                    |m: &MethodDescriptorProto| { &m.input_type },
-                    |m: &mut MethodDescriptorProto| { &mut m.input_type },
-                    MethodDescriptorProto::get_input_type,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "output_type",
-                    |m: &MethodDescriptorProto| { &m.output_type },
-                    |m: &mut MethodDescriptorProto| { &mut m.output_type },
-                    MethodDescriptorProto::get_output_type,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodOptions>, _>(
-                    "options",
-                    |m: &MethodDescriptorProto| { &m.options },
-                    |m: &mut MethodDescriptorProto| { &mut m.options },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "client_streaming",
-                    |m: &MethodDescriptorProto| { &m.client_streaming },
-                    |m: &mut MethodDescriptorProto| { &mut m.client_streaming },
-                    MethodDescriptorProto::get_client_streaming,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "server_streaming",
-                    |m: &MethodDescriptorProto| { &m.server_streaming },
-                    |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
-                    MethodDescriptorProto::get_server_streaming,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<MethodDescriptorProto>(
-                    "MethodDescriptorProto",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name",
+                |m: &MethodDescriptorProto| { &m.name },
+                |m: &mut MethodDescriptorProto| { &mut m.name },
+                MethodDescriptorProto::get_name,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "input_type",
+                |m: &MethodDescriptorProto| { &m.input_type },
+                |m: &mut MethodDescriptorProto| { &mut m.input_type },
+                MethodDescriptorProto::get_input_type,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "output_type",
+                |m: &MethodDescriptorProto| { &m.output_type },
+                |m: &mut MethodDescriptorProto| { &mut m.output_type },
+                MethodDescriptorProto::get_output_type,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodOptions>, _>(
+                "options",
+                |m: &MethodDescriptorProto| { &m.options },
+                |m: &mut MethodDescriptorProto| { &mut m.options },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "client_streaming",
+                |m: &MethodDescriptorProto| { &m.client_streaming },
+                |m: &mut MethodDescriptorProto| { &mut m.client_streaming },
+                MethodDescriptorProto::get_client_streaming,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "server_streaming",
+                |m: &MethodDescriptorProto| { &m.server_streaming },
+                |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
+                MethodDescriptorProto::get_server_streaming,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<MethodDescriptorProto>(
+                "MethodDescriptorProto",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<MethodDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const MethodDescriptorProto,
+        static instance: ::protobuf::rt::Lazy<MethodDescriptorProto> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const MethodDescriptorProto),
         };
-        unsafe {
-            instance.get(MethodDescriptorProto::new)
-        }
+        instance.get(MethodDescriptorProto::new)
     }
 }
 
@@ -3815,119 +3766,115 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "java_package",
-                    |m: &FileOptions| { &m.java_package },
-                    |m: &mut FileOptions| { &mut m.java_package },
-                    FileOptions::get_java_package,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "java_outer_classname",
-                    |m: &FileOptions| { &m.java_outer_classname },
-                    |m: &mut FileOptions| { &mut m.java_outer_classname },
-                    FileOptions::get_java_outer_classname,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "java_multiple_files",
-                    |m: &FileOptions| { &m.java_multiple_files },
-                    |m: &mut FileOptions| { &mut m.java_multiple_files },
-                    FileOptions::get_java_multiple_files,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "java_generate_equals_and_hash",
-                    |m: &FileOptions| { &m.java_generate_equals_and_hash },
-                    |m: &mut FileOptions| { &mut m.java_generate_equals_and_hash },
-                    FileOptions::get_java_generate_equals_and_hash,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "java_string_check_utf8",
-                    |m: &FileOptions| { &m.java_string_check_utf8 },
-                    |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
-                    FileOptions::get_java_string_check_utf8,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FileOptions_OptimizeMode>, _>(
-                    "optimize_for",
-                    |m: &FileOptions| { &m.optimize_for },
-                    |m: &mut FileOptions| { &mut m.optimize_for },
-                    FileOptions::get_optimize_for,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "go_package",
-                    |m: &FileOptions| { &m.go_package },
-                    |m: &mut FileOptions| { &mut m.go_package },
-                    FileOptions::get_go_package,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "cc_generic_services",
-                    |m: &FileOptions| { &m.cc_generic_services },
-                    |m: &mut FileOptions| { &mut m.cc_generic_services },
-                    FileOptions::get_cc_generic_services,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "java_generic_services",
-                    |m: &FileOptions| { &m.java_generic_services },
-                    |m: &mut FileOptions| { &mut m.java_generic_services },
-                    FileOptions::get_java_generic_services,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "py_generic_services",
-                    |m: &FileOptions| { &m.py_generic_services },
-                    |m: &mut FileOptions| { &mut m.py_generic_services },
-                    FileOptions::get_py_generic_services,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &FileOptions| { &m.deprecated },
-                    |m: &mut FileOptions| { &mut m.deprecated },
-                    FileOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "cc_enable_arenas",
-                    |m: &FileOptions| { &m.cc_enable_arenas },
-                    |m: &mut FileOptions| { &mut m.cc_enable_arenas },
-                    FileOptions::get_cc_enable_arenas,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "objc_class_prefix",
-                    |m: &FileOptions| { &m.objc_class_prefix },
-                    |m: &mut FileOptions| { &mut m.objc_class_prefix },
-                    FileOptions::get_objc_class_prefix,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "csharp_namespace",
-                    |m: &FileOptions| { &m.csharp_namespace },
-                    |m: &mut FileOptions| { &mut m.csharp_namespace },
-                    FileOptions::get_csharp_namespace,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &FileOptions| { &m.uninterpreted_option },
-                    |m: &mut FileOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<FileOptions>(
-                    "FileOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "java_package",
+                |m: &FileOptions| { &m.java_package },
+                |m: &mut FileOptions| { &mut m.java_package },
+                FileOptions::get_java_package,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "java_outer_classname",
+                |m: &FileOptions| { &m.java_outer_classname },
+                |m: &mut FileOptions| { &mut m.java_outer_classname },
+                FileOptions::get_java_outer_classname,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "java_multiple_files",
+                |m: &FileOptions| { &m.java_multiple_files },
+                |m: &mut FileOptions| { &mut m.java_multiple_files },
+                FileOptions::get_java_multiple_files,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "java_generate_equals_and_hash",
+                |m: &FileOptions| { &m.java_generate_equals_and_hash },
+                |m: &mut FileOptions| { &mut m.java_generate_equals_and_hash },
+                FileOptions::get_java_generate_equals_and_hash,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "java_string_check_utf8",
+                |m: &FileOptions| { &m.java_string_check_utf8 },
+                |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
+                FileOptions::get_java_string_check_utf8,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FileOptions_OptimizeMode>, _>(
+                "optimize_for",
+                |m: &FileOptions| { &m.optimize_for },
+                |m: &mut FileOptions| { &mut m.optimize_for },
+                FileOptions::get_optimize_for,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "go_package",
+                |m: &FileOptions| { &m.go_package },
+                |m: &mut FileOptions| { &mut m.go_package },
+                FileOptions::get_go_package,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "cc_generic_services",
+                |m: &FileOptions| { &m.cc_generic_services },
+                |m: &mut FileOptions| { &mut m.cc_generic_services },
+                FileOptions::get_cc_generic_services,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "java_generic_services",
+                |m: &FileOptions| { &m.java_generic_services },
+                |m: &mut FileOptions| { &mut m.java_generic_services },
+                FileOptions::get_java_generic_services,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "py_generic_services",
+                |m: &FileOptions| { &m.py_generic_services },
+                |m: &mut FileOptions| { &mut m.py_generic_services },
+                FileOptions::get_py_generic_services,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &FileOptions| { &m.deprecated },
+                |m: &mut FileOptions| { &mut m.deprecated },
+                FileOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "cc_enable_arenas",
+                |m: &FileOptions| { &m.cc_enable_arenas },
+                |m: &mut FileOptions| { &mut m.cc_enable_arenas },
+                FileOptions::get_cc_enable_arenas,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "objc_class_prefix",
+                |m: &FileOptions| { &m.objc_class_prefix },
+                |m: &mut FileOptions| { &mut m.objc_class_prefix },
+                FileOptions::get_objc_class_prefix,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "csharp_namespace",
+                |m: &FileOptions| { &m.csharp_namespace },
+                |m: &mut FileOptions| { &mut m.csharp_namespace },
+                FileOptions::get_csharp_namespace,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &FileOptions| { &m.uninterpreted_option },
+                |m: &mut FileOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<FileOptions>(
+                "FileOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static FileOptions {
-        static mut instance: ::protobuf::lazy::Lazy<FileOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const FileOptions,
+        static instance: ::protobuf::rt::Lazy<FileOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const FileOptions),
         };
-        unsafe {
-            instance.get(FileOptions::new)
-        }
+        instance.get(FileOptions::new)
     }
 }
 
@@ -3992,15 +3939,13 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new::<FileOptions_OptimizeMode>("FileOptions_OptimizeMode", file_descriptor_proto())
-            })
-        }
+        descriptor.get(|| {
+            ::protobuf::reflect::EnumDescriptor::new::<FileOptions_OptimizeMode>("FileOptions_OptimizeMode", file_descriptor_proto())
+        })
     }
 }
 
@@ -4228,59 +4173,55 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "message_set_wire_format",
-                    |m: &MessageOptions| { &m.message_set_wire_format },
-                    |m: &mut MessageOptions| { &mut m.message_set_wire_format },
-                    MessageOptions::get_message_set_wire_format,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "no_standard_descriptor_accessor",
-                    |m: &MessageOptions| { &m.no_standard_descriptor_accessor },
-                    |m: &mut MessageOptions| { &mut m.no_standard_descriptor_accessor },
-                    MessageOptions::get_no_standard_descriptor_accessor,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &MessageOptions| { &m.deprecated },
-                    |m: &mut MessageOptions| { &mut m.deprecated },
-                    MessageOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "map_entry",
-                    |m: &MessageOptions| { &m.map_entry },
-                    |m: &mut MessageOptions| { &mut m.map_entry },
-                    MessageOptions::get_map_entry,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &MessageOptions| { &m.uninterpreted_option },
-                    |m: &mut MessageOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<MessageOptions>(
-                    "MessageOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "message_set_wire_format",
+                |m: &MessageOptions| { &m.message_set_wire_format },
+                |m: &mut MessageOptions| { &mut m.message_set_wire_format },
+                MessageOptions::get_message_set_wire_format,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "no_standard_descriptor_accessor",
+                |m: &MessageOptions| { &m.no_standard_descriptor_accessor },
+                |m: &mut MessageOptions| { &mut m.no_standard_descriptor_accessor },
+                MessageOptions::get_no_standard_descriptor_accessor,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &MessageOptions| { &m.deprecated },
+                |m: &mut MessageOptions| { &mut m.deprecated },
+                MessageOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "map_entry",
+                |m: &MessageOptions| { &m.map_entry },
+                |m: &mut MessageOptions| { &mut m.map_entry },
+                MessageOptions::get_map_entry,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &MessageOptions| { &m.uninterpreted_option },
+                |m: &mut MessageOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<MessageOptions>(
+                "MessageOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static MessageOptions {
-        static mut instance: ::protobuf::lazy::Lazy<MessageOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const MessageOptions,
+        static instance: ::protobuf::rt::Lazy<MessageOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const MessageOptions),
         };
-        unsafe {
-            instance.get(MessageOptions::new)
-        }
+        instance.get(MessageOptions::new)
     }
 }
 
@@ -4576,71 +4517,67 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_CType>, _>(
-                    "ctype",
-                    |m: &FieldOptions| { &m.ctype },
-                    |m: &mut FieldOptions| { &mut m.ctype },
-                    FieldOptions::get_ctype,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "packed",
-                    |m: &FieldOptions| { &m.packed },
-                    |m: &mut FieldOptions| { &mut m.packed },
-                    FieldOptions::get_packed,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_JSType>, _>(
-                    "jstype",
-                    |m: &FieldOptions| { &m.jstype },
-                    |m: &mut FieldOptions| { &mut m.jstype },
-                    FieldOptions::get_jstype,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "lazy",
-                    |m: &FieldOptions| { &m.lazy },
-                    |m: &mut FieldOptions| { &mut m.lazy },
-                    FieldOptions::get_lazy,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &FieldOptions| { &m.deprecated },
-                    |m: &mut FieldOptions| { &mut m.deprecated },
-                    FieldOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "weak",
-                    |m: &FieldOptions| { &m.weak },
-                    |m: &mut FieldOptions| { &mut m.weak },
-                    FieldOptions::get_weak,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &FieldOptions| { &m.uninterpreted_option },
-                    |m: &mut FieldOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<FieldOptions>(
-                    "FieldOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_CType>, _>(
+                "ctype",
+                |m: &FieldOptions| { &m.ctype },
+                |m: &mut FieldOptions| { &mut m.ctype },
+                FieldOptions::get_ctype,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "packed",
+                |m: &FieldOptions| { &m.packed },
+                |m: &mut FieldOptions| { &mut m.packed },
+                FieldOptions::get_packed,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_JSType>, _>(
+                "jstype",
+                |m: &FieldOptions| { &m.jstype },
+                |m: &mut FieldOptions| { &mut m.jstype },
+                FieldOptions::get_jstype,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "lazy",
+                |m: &FieldOptions| { &m.lazy },
+                |m: &mut FieldOptions| { &mut m.lazy },
+                FieldOptions::get_lazy,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &FieldOptions| { &m.deprecated },
+                |m: &mut FieldOptions| { &mut m.deprecated },
+                FieldOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "weak",
+                |m: &FieldOptions| { &m.weak },
+                |m: &mut FieldOptions| { &mut m.weak },
+                FieldOptions::get_weak,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &FieldOptions| { &m.uninterpreted_option },
+                |m: &mut FieldOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<FieldOptions>(
+                "FieldOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static FieldOptions {
-        static mut instance: ::protobuf::lazy::Lazy<FieldOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const FieldOptions,
+        static instance: ::protobuf::rt::Lazy<FieldOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const FieldOptions),
         };
-        unsafe {
-            instance.get(FieldOptions::new)
-        }
+        instance.get(FieldOptions::new)
     }
 }
 
@@ -4697,15 +4634,13 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_CType>("FieldOptions_CType", file_descriptor_proto())
-            })
-        }
+        descriptor.get(|| {
+            ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_CType>("FieldOptions_CType", file_descriptor_proto())
+        })
     }
 }
 
@@ -4749,15 +4684,13 @@ impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_JSType>("FieldOptions_JSType", file_descriptor_proto())
-            })
-        }
+        descriptor.get(|| {
+            ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_JSType>("FieldOptions_JSType", file_descriptor_proto())
+        })
     }
 }
 
@@ -4852,35 +4785,31 @@ impl ::protobuf::Message for OneofOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &OneofOptions| { &m.uninterpreted_option },
-                    |m: &mut OneofOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<OneofOptions>(
-                    "OneofOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &OneofOptions| { &m.uninterpreted_option },
+                |m: &mut OneofOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<OneofOptions>(
+                "OneofOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static OneofOptions {
-        static mut instance: ::protobuf::lazy::Lazy<OneofOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const OneofOptions,
+        static instance: ::protobuf::rt::Lazy<OneofOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const OneofOptions),
         };
-        unsafe {
-            instance.get(OneofOptions::new)
-        }
+        instance.get(OneofOptions::new)
     }
 }
 
@@ -5048,47 +4977,43 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "allow_alias",
-                    |m: &EnumOptions| { &m.allow_alias },
-                    |m: &mut EnumOptions| { &mut m.allow_alias },
-                    EnumOptions::get_allow_alias,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &EnumOptions| { &m.deprecated },
-                    |m: &mut EnumOptions| { &mut m.deprecated },
-                    EnumOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &EnumOptions| { &m.uninterpreted_option },
-                    |m: &mut EnumOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumOptions>(
-                    "EnumOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "allow_alias",
+                |m: &EnumOptions| { &m.allow_alias },
+                |m: &mut EnumOptions| { &mut m.allow_alias },
+                EnumOptions::get_allow_alias,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &EnumOptions| { &m.deprecated },
+                |m: &mut EnumOptions| { &mut m.deprecated },
+                EnumOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &EnumOptions| { &m.uninterpreted_option },
+                |m: &mut EnumOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<EnumOptions>(
+                "EnumOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static EnumOptions {
-        static mut instance: ::protobuf::lazy::Lazy<EnumOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const EnumOptions,
+        static instance: ::protobuf::rt::Lazy<EnumOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumOptions),
         };
-        unsafe {
-            instance.get(EnumOptions::new)
-        }
+        instance.get(EnumOptions::new)
     }
 }
 
@@ -5225,41 +5150,37 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &EnumValueOptions| { &m.deprecated },
-                    |m: &mut EnumValueOptions| { &mut m.deprecated },
-                    EnumValueOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &EnumValueOptions| { &m.uninterpreted_option },
-                    |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumValueOptions>(
-                    "EnumValueOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &EnumValueOptions| { &m.deprecated },
+                |m: &mut EnumValueOptions| { &mut m.deprecated },
+                EnumValueOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &EnumValueOptions| { &m.uninterpreted_option },
+                |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<EnumValueOptions>(
+                "EnumValueOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static EnumValueOptions {
-        static mut instance: ::protobuf::lazy::Lazy<EnumValueOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const EnumValueOptions,
+        static instance: ::protobuf::rt::Lazy<EnumValueOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumValueOptions),
         };
-        unsafe {
-            instance.get(EnumValueOptions::new)
-        }
+        instance.get(EnumValueOptions::new)
     }
 }
 
@@ -5395,41 +5316,37 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &ServiceOptions| { &m.deprecated },
-                    |m: &mut ServiceOptions| { &mut m.deprecated },
-                    ServiceOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &ServiceOptions| { &m.uninterpreted_option },
-                    |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<ServiceOptions>(
-                    "ServiceOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &ServiceOptions| { &m.deprecated },
+                |m: &mut ServiceOptions| { &mut m.deprecated },
+                ServiceOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &ServiceOptions| { &m.uninterpreted_option },
+                |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<ServiceOptions>(
+                "ServiceOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static ServiceOptions {
-        static mut instance: ::protobuf::lazy::Lazy<ServiceOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ServiceOptions,
+        static instance: ::protobuf::rt::Lazy<ServiceOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ServiceOptions),
         };
-        unsafe {
-            instance.get(ServiceOptions::new)
-        }
+        instance.get(ServiceOptions::new)
     }
 }
 
@@ -5565,41 +5482,37 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "deprecated",
-                    |m: &MethodOptions| { &m.deprecated },
-                    |m: &mut MethodOptions| { &mut m.deprecated },
-                    MethodOptions::get_deprecated,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
-                    "uninterpreted_option",
-                    |m: &MethodOptions| { &m.uninterpreted_option },
-                    |m: &mut MethodOptions| { &mut m.uninterpreted_option },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<MethodOptions>(
-                    "MethodOptions",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "deprecated",
+                |m: &MethodOptions| { &m.deprecated },
+                |m: &mut MethodOptions| { &mut m.deprecated },
+                MethodOptions::get_deprecated,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                "uninterpreted_option",
+                |m: &MethodOptions| { &m.uninterpreted_option },
+                |m: &mut MethodOptions| { &mut m.uninterpreted_option },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<MethodOptions>(
+                "MethodOptions",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static MethodOptions {
-        static mut instance: ::protobuf::lazy::Lazy<MethodOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const MethodOptions,
+        static instance: ::protobuf::rt::Lazy<MethodOptions> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const MethodOptions),
         };
-        unsafe {
-            instance.get(MethodOptions::new)
-        }
+        instance.get(MethodOptions::new)
     }
 }
 
@@ -5939,71 +5852,67 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
-                    "name",
-                    |m: &UninterpretedOption| { &m.name },
-                    |m: &mut UninterpretedOption| { &mut m.name },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "identifier_value",
-                    |m: &UninterpretedOption| { &m.identifier_value },
-                    |m: &mut UninterpretedOption| { &mut m.identifier_value },
-                    UninterpretedOption::get_identifier_value,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeUint64, _>(
-                    "positive_int_value",
-                    |m: &UninterpretedOption| { &m.positive_int_value },
-                    |m: &mut UninterpretedOption| { &mut m.positive_int_value },
-                    UninterpretedOption::get_positive_int_value,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt64, _>(
-                    "negative_int_value",
-                    |m: &UninterpretedOption| { &m.negative_int_value },
-                    |m: &mut UninterpretedOption| { &mut m.negative_int_value },
-                    UninterpretedOption::get_negative_int_value,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeDouble, _>(
-                    "double_value",
-                    |m: &UninterpretedOption| { &m.double_value },
-                    |m: &mut UninterpretedOption| { &mut m.double_value },
-                    UninterpretedOption::get_double_value,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeBytes, _>(
-                    "string_value",
-                    |m: &UninterpretedOption| { &m.string_value },
-                    |m: &mut UninterpretedOption| { &mut m.string_value },
-                    UninterpretedOption::get_string_value,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "aggregate_value",
-                    |m: &UninterpretedOption| { &m.aggregate_value },
-                    |m: &mut UninterpretedOption| { &mut m.aggregate_value },
-                    UninterpretedOption::get_aggregate_value,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption>(
-                    "UninterpretedOption",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
+                "name",
+                |m: &UninterpretedOption| { &m.name },
+                |m: &mut UninterpretedOption| { &mut m.name },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "identifier_value",
+                |m: &UninterpretedOption| { &m.identifier_value },
+                |m: &mut UninterpretedOption| { &mut m.identifier_value },
+                UninterpretedOption::get_identifier_value,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeUint64, _>(
+                "positive_int_value",
+                |m: &UninterpretedOption| { &m.positive_int_value },
+                |m: &mut UninterpretedOption| { &mut m.positive_int_value },
+                UninterpretedOption::get_positive_int_value,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt64, _>(
+                "negative_int_value",
+                |m: &UninterpretedOption| { &m.negative_int_value },
+                |m: &mut UninterpretedOption| { &mut m.negative_int_value },
+                UninterpretedOption::get_negative_int_value,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeDouble, _>(
+                "double_value",
+                |m: &UninterpretedOption| { &m.double_value },
+                |m: &mut UninterpretedOption| { &mut m.double_value },
+                UninterpretedOption::get_double_value,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeBytes, _>(
+                "string_value",
+                |m: &UninterpretedOption| { &m.string_value },
+                |m: &mut UninterpretedOption| { &mut m.string_value },
+                UninterpretedOption::get_string_value,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "aggregate_value",
+                |m: &UninterpretedOption| { &m.aggregate_value },
+                |m: &mut UninterpretedOption| { &mut m.aggregate_value },
+                UninterpretedOption::get_aggregate_value,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption>(
+                "UninterpretedOption",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static UninterpretedOption {
-        static mut instance: ::protobuf::lazy::Lazy<UninterpretedOption> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const UninterpretedOption,
+        static instance: ::protobuf::rt::Lazy<UninterpretedOption> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const UninterpretedOption),
         };
-        unsafe {
-            instance.get(UninterpretedOption::new)
-        }
+        instance.get(UninterpretedOption::new)
     }
 }
 
@@ -6180,42 +6089,38 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "name_part",
-                    |m: &UninterpretedOption_NamePart| { &m.name_part },
-                    |m: &mut UninterpretedOption_NamePart| { &mut m.name_part },
-                    UninterpretedOption_NamePart::get_name_part,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                    "is_extension",
-                    |m: &UninterpretedOption_NamePart| { &m.is_extension },
-                    |m: &mut UninterpretedOption_NamePart| { &mut m.is_extension },
-                    UninterpretedOption_NamePart::get_is_extension,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption_NamePart>(
-                    "UninterpretedOption_NamePart",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "name_part",
+                |m: &UninterpretedOption_NamePart| { &m.name_part },
+                |m: &mut UninterpretedOption_NamePart| { &mut m.name_part },
+                UninterpretedOption_NamePart::get_name_part,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                "is_extension",
+                |m: &UninterpretedOption_NamePart| { &m.is_extension },
+                |m: &mut UninterpretedOption_NamePart| { &mut m.is_extension },
+                UninterpretedOption_NamePart::get_is_extension,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption_NamePart>(
+                "UninterpretedOption_NamePart",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static UninterpretedOption_NamePart {
-        static mut instance: ::protobuf::lazy::Lazy<UninterpretedOption_NamePart> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const UninterpretedOption_NamePart,
+        static instance: ::protobuf::rt::Lazy<UninterpretedOption_NamePart> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const UninterpretedOption_NamePart),
         };
-        unsafe {
-            instance.get(UninterpretedOption_NamePart::new)
-        }
+        instance.get(UninterpretedOption_NamePart::new)
     }
 }
 
@@ -6318,35 +6223,31 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
-                    "location",
-                    |m: &SourceCodeInfo| { &m.location },
-                    |m: &mut SourceCodeInfo| { &mut m.location },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo>(
-                    "SourceCodeInfo",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
+                "location",
+                |m: &SourceCodeInfo| { &m.location },
+                |m: &mut SourceCodeInfo| { &mut m.location },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo>(
+                "SourceCodeInfo",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
-        static mut instance: ::protobuf::lazy::Lazy<SourceCodeInfo> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const SourceCodeInfo,
+        static instance: ::protobuf::rt::Lazy<SourceCodeInfo> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const SourceCodeInfo),
         };
-        unsafe {
-            instance.get(SourceCodeInfo::new)
-        }
+        instance.get(SourceCodeInfo::new)
     }
 }
 
@@ -6564,57 +6465,53 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "path",
-                    |m: &SourceCodeInfo_Location| { &m.path },
-                    |m: &mut SourceCodeInfo_Location| { &mut m.path },
-                ));
-                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "span",
-                    |m: &SourceCodeInfo_Location| { &m.span },
-                    |m: &mut SourceCodeInfo_Location| { &mut m.span },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "leading_comments",
-                    |m: &SourceCodeInfo_Location| { &m.leading_comments },
-                    |m: &mut SourceCodeInfo_Location| { &mut m.leading_comments },
-                    SourceCodeInfo_Location::get_leading_comments,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "trailing_comments",
-                    |m: &SourceCodeInfo_Location| { &m.trailing_comments },
-                    |m: &mut SourceCodeInfo_Location| { &mut m.trailing_comments },
-                    SourceCodeInfo_Location::get_trailing_comments,
-                ));
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "leading_detached_comments",
-                    |m: &SourceCodeInfo_Location| { &m.leading_detached_comments },
-                    |m: &mut SourceCodeInfo_Location| { &mut m.leading_detached_comments },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo_Location>(
-                    "SourceCodeInfo_Location",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "path",
+                |m: &SourceCodeInfo_Location| { &m.path },
+                |m: &mut SourceCodeInfo_Location| { &mut m.path },
+            ));
+            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "span",
+                |m: &SourceCodeInfo_Location| { &m.span },
+                |m: &mut SourceCodeInfo_Location| { &mut m.span },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "leading_comments",
+                |m: &SourceCodeInfo_Location| { &m.leading_comments },
+                |m: &mut SourceCodeInfo_Location| { &mut m.leading_comments },
+                SourceCodeInfo_Location::get_leading_comments,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "trailing_comments",
+                |m: &SourceCodeInfo_Location| { &m.trailing_comments },
+                |m: &mut SourceCodeInfo_Location| { &mut m.trailing_comments },
+                SourceCodeInfo_Location::get_trailing_comments,
+            ));
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "leading_detached_comments",
+                |m: &SourceCodeInfo_Location| { &m.leading_detached_comments },
+                |m: &mut SourceCodeInfo_Location| { &mut m.leading_detached_comments },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo_Location>(
+                "SourceCodeInfo_Location",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static SourceCodeInfo_Location {
-        static mut instance: ::protobuf::lazy::Lazy<SourceCodeInfo_Location> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const SourceCodeInfo_Location,
+        static instance: ::protobuf::rt::Lazy<SourceCodeInfo_Location> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const SourceCodeInfo_Location),
         };
-        unsafe {
-            instance.get(SourceCodeInfo_Location::new)
-        }
+        instance.get(SourceCodeInfo_Location::new)
     }
 }
 
@@ -6720,35 +6617,31 @@ impl ::protobuf::Message for GeneratedCodeInfo {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
-                    "annotation",
-                    |m: &GeneratedCodeInfo| { &m.annotation },
-                    |m: &mut GeneratedCodeInfo| { &mut m.annotation },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo>(
-                    "GeneratedCodeInfo",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
+                "annotation",
+                |m: &GeneratedCodeInfo| { &m.annotation },
+                |m: &mut GeneratedCodeInfo| { &mut m.annotation },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo>(
+                "GeneratedCodeInfo",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
-        static mut instance: ::protobuf::lazy::Lazy<GeneratedCodeInfo> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const GeneratedCodeInfo,
+        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const GeneratedCodeInfo),
         };
-        unsafe {
-            instance.get(GeneratedCodeInfo::new)
-        }
+        instance.get(GeneratedCodeInfo::new)
     }
 }
 
@@ -6961,53 +6854,49 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
         };
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "path",
-                    |m: &GeneratedCodeInfo_Annotation| { &m.path },
-                    |m: &mut GeneratedCodeInfo_Annotation| { &mut m.path },
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                    "source_file",
-                    |m: &GeneratedCodeInfo_Annotation| { &m.source_file },
-                    |m: &mut GeneratedCodeInfo_Annotation| { &mut m.source_file },
-                    GeneratedCodeInfo_Annotation::get_source_file,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "begin",
-                    |m: &GeneratedCodeInfo_Annotation| { &m.begin },
-                    |m: &mut GeneratedCodeInfo_Annotation| { &mut m.begin },
-                    GeneratedCodeInfo_Annotation::get_begin,
-                ));
-                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                    "end",
-                    |m: &GeneratedCodeInfo_Annotation| { &m.end },
-                    |m: &mut GeneratedCodeInfo_Annotation| { &mut m.end },
-                    GeneratedCodeInfo_Annotation::get_end,
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo_Annotation>(
-                    "GeneratedCodeInfo_Annotation",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "path",
+                |m: &GeneratedCodeInfo_Annotation| { &m.path },
+                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.path },
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                "source_file",
+                |m: &GeneratedCodeInfo_Annotation| { &m.source_file },
+                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.source_file },
+                GeneratedCodeInfo_Annotation::get_source_file,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "begin",
+                |m: &GeneratedCodeInfo_Annotation| { &m.begin },
+                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.begin },
+                GeneratedCodeInfo_Annotation::get_begin,
+            ));
+            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                "end",
+                |m: &GeneratedCodeInfo_Annotation| { &m.end },
+                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.end },
+                GeneratedCodeInfo_Annotation::get_end,
+            ));
+            ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo_Annotation>(
+                "GeneratedCodeInfo_Annotation",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo_Annotation {
-        static mut instance: ::protobuf::lazy::Lazy<GeneratedCodeInfo_Annotation> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const GeneratedCodeInfo_Annotation,
+        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo_Annotation> = ::protobuf::rt::Lazy {
+            lock: ::protobuf::rt::LAZY_ONCE_INIT,
+            ptr: ::std::cell::UnsafeCell::new(0 as *const GeneratedCodeInfo_Annotation),
         };
-        unsafe {
-            instance.get(GeneratedCodeInfo_Annotation::new)
-        }
+        instance.get(GeneratedCodeInfo_Annotation::new)
     }
 }
 
@@ -8296,9 +8185,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03\x12\x04\xa1\x06\x19\x1a\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
+    lock: ::protobuf::rt::LAZY_ONCE_INIT,
+    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
 };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
@@ -8306,9 +8195,7 @@ fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }
