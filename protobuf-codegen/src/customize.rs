@@ -30,10 +30,22 @@ pub struct Customize {
     pub singular_field_option: Option<bool>,
     /// Implement serde_derive for messages
     pub serde_derive: Option<bool>,
+
+    // When adding more options please keep in sync with `parse_from_parameter` below.
+
     /// Make sure `Customize` is always used with `..Default::default()`
     /// for future compatibility.
     pub _future_options: (),
 }
+
+#[derive(Debug)]
+pub enum CustomizeParseParameterError {
+    EqNotFound,
+    CannotParseBool,
+    UnknownOptionName(String),
+}
+
+pub type CustomizeParseParameterResult<T> = Result<T, CustomizeParseParameterError>;
 
 impl Customize {
     /// Update fields of self with fields defined in other customize
@@ -75,6 +87,49 @@ impl Customize {
         let mut tmp = other.clone();
         tmp.update_with(self);
         *self = tmp;
+    }
+
+    /// Parse customize options from a string passed via protoc flag.
+    pub fn parse_from_parameter(parameter: &str) -> CustomizeParseParameterResult<Customize> {
+        fn parse_bool(v: &str) -> CustomizeParseParameterResult<bool> {
+            v.parse().map_err(|_| CustomizeParseParameterError::CannotParseBool)
+        }
+
+        let mut r = Customize::default();
+        for nv in parameter.split_whitespace() {
+            let eq = match nv.find('=') {
+                Some(eq) => eq,
+                None => return Err(CustomizeParseParameterError::EqNotFound),
+            };
+
+            let n = &nv[..eq];
+            let v = &nv[eq+1..];
+
+            if n == "expose_oneof" {
+                r.expose_oneof = Some(parse_bool(v)?);
+            } else if n == "expose_fields" {
+                r.expose_fields = Some(parse_bool(v)?);
+            } else if n == "generate_accessors" {
+                r.generate_accessors = Some(parse_bool(v)?);
+            } else if n == "generate_getter" {
+                r.generate_getter = Some(parse_bool(v)?);
+            } else if n == "carllerche_bytes_for_bytes" {
+                r.carllerche_bytes_for_bytes = Some(parse_bool(v)?);
+            } else if n == "carllerche_bytes_for_string" {
+                r.carllerche_bytes_for_string = Some(parse_bool(v)?);
+            } else if n == "repeated_field_vec" {
+                r.repeated_field_vec = Some(parse_bool(v)?);
+            } else if n == "singular_field_option_box" {
+                r.singular_field_option_box = Some(parse_bool(v)?);
+            } else if n == "singular_field_option" {
+                r.singular_field_option = Some(parse_bool(v)?);
+            } else if n == "serde_derive" {
+                r.serde_derive = Some(parse_bool(v)?);
+            } else {
+                return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()));
+            }
+        }
+        Ok(r)
     }
 }
 

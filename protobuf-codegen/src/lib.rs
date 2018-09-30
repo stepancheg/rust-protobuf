@@ -205,6 +205,7 @@ pub fn gen_and_write(
 
 pub fn protoc_gen_rust_main() {
     compiler_plugin::plugin_main(|r| {
-        gen(r.file_descriptors, r.files_to_generate, &Default::default())
+        let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
+        gen(r.file_descriptors, r.files_to_generate, &customize)
     });
 }
