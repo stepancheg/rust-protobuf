@@ -16,12 +16,14 @@ case "$protoc_ver" in
 esac
 
 where_am_i=$(cd ..; pwd)
-PATH="$where_am_i/target/debug:$PATH"
 
 rm -rf tmp-generated
 mkdir tmp-generated
 
-protoc --rust_out tmp-generated -I../proto \
+protoc \
+    --plugin=protoc-gen-rust=$where_am_i/target/debug/protoc-gen-rust \
+    --rust_out tmp-generated \
+    -I../proto \
     ../proto/google/protobuf/*.proto \
     ../proto/google/protobuf/compiler/* \
     ../proto/rustproto.proto
