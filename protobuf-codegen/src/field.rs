@@ -18,6 +18,7 @@ use oneof::OneofField;
 use map::map_entry;
 use ident::RustIdent;
 use code_writer::Visibility;
+use protobuf::wire_format::WireType;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
@@ -49,27 +50,26 @@ impl FieldDescriptorProtoTypeExt for FieldDescriptorProto_Type {
     }
 }
 
-fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::WireType {
-    use protobuf::stream::wire_format::*;
+fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> WireType {
     match field_type {
-        FieldDescriptorProto_Type::TYPE_INT32 => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_INT64 => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_UINT32 => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_UINT64 => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_SINT32 => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_SINT64 => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_BOOL => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_ENUM => WireTypeVarint,
-        FieldDescriptorProto_Type::TYPE_FIXED32 => WireTypeFixed32,
-        FieldDescriptorProto_Type::TYPE_FIXED64 => WireTypeFixed64,
-        FieldDescriptorProto_Type::TYPE_SFIXED32 => WireTypeFixed32,
-        FieldDescriptorProto_Type::TYPE_SFIXED64 => WireTypeFixed64,
-        FieldDescriptorProto_Type::TYPE_FLOAT => WireTypeFixed32,
-        FieldDescriptorProto_Type::TYPE_DOUBLE => WireTypeFixed64,
-        FieldDescriptorProto_Type::TYPE_STRING => WireTypeLengthDelimited,
-        FieldDescriptorProto_Type::TYPE_BYTES => WireTypeLengthDelimited,
-        FieldDescriptorProto_Type::TYPE_MESSAGE => WireTypeLengthDelimited,
-        FieldDescriptorProto_Type::TYPE_GROUP => WireTypeLengthDelimited, // not true
+        FieldDescriptorProto_Type::TYPE_INT32 => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_INT64 => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_UINT32 => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_UINT64 => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_SINT32 => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_SINT64 => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_BOOL => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_ENUM => WireType::WireTypeVarint,
+        FieldDescriptorProto_Type::TYPE_FIXED32 => WireType::WireTypeFixed32,
+        FieldDescriptorProto_Type::TYPE_FIXED64 => WireType::WireTypeFixed64,
+        FieldDescriptorProto_Type::TYPE_SFIXED32 => WireType::WireTypeFixed32,
+        FieldDescriptorProto_Type::TYPE_SFIXED64 => WireType::WireTypeFixed64,
+        FieldDescriptorProto_Type::TYPE_FLOAT => WireType::WireTypeFixed32,
+        FieldDescriptorProto_Type::TYPE_DOUBLE => WireType::WireTypeFixed64,
+        FieldDescriptorProto_Type::TYPE_STRING => WireType::WireTypeLengthDelimited,
+        FieldDescriptorProto_Type::TYPE_BYTES => WireType::WireTypeLengthDelimited,
+        FieldDescriptorProto_Type::TYPE_MESSAGE => WireType::WireTypeLengthDelimited,
+        FieldDescriptorProto_Type::TYPE_GROUP => WireType::WireTypeLengthDelimited, // not true
     }
 }
 
