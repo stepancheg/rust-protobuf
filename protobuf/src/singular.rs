@@ -1,3 +1,6 @@
+#[cfg(feature = "with-serde")]
+use serde;
+
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::option;
@@ -581,6 +584,43 @@ impl<T> OptionLike<T> for SingularPtrField<T> {
     }
 }
 
+#[cfg(feature = "with-serde")]
+impl<T: serde::Serialize> serde::Serialize for SingularPtrField<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> where
+        S: serde::Serializer
+    {
+        self.as_ref().serialize(serializer)
+    }
+}
+
+#[cfg(feature = "with-serde")]
+impl<T: serde::Serialize> serde::Serialize for SingularField<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> where
+        S: serde::Serializer
+    {
+        self.as_ref().serialize(serializer)
+    }
+}
+
+#[cfg(feature = "with-serde")]
+impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for SingularPtrField<T> {
+    fn deserialize<D>(deserializer: D)
+        -> Result<Self, <D as serde::Deserializer<'de>>::Error>
+        where D: serde::Deserializer<'de>
+    {
+        Option::deserialize(deserializer).map(SingularPtrField::from)
+    }
+}
+
+#[cfg(feature = "with-serde")]
+impl<'de, T: serde::Deserialize<'de> + Default> serde::Deserialize<'de> for SingularField<T> {
+    fn deserialize<D>(deserializer: D)
+        -> Result<Self, <D as serde::Deserializer<'de>>::Error>
+        where D: serde::Deserializer<'de>
+    {
+        Option::deserialize(deserializer).map(SingularField::from)
+    }
+}
 
 
 #[cfg(test)]

@@ -1,3 +1,6 @@
+#[cfg(feature = "with-serde")]
+use serde;
+
 use std::vec;
 use std::slice;
 use std::borrow::Borrow;
@@ -459,6 +462,26 @@ impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
         self.as_ref().fmt(f)
     }
 }
+
+#[cfg(feature = "with-serde")]
+impl<T: serde::Serialize> serde::Serialize for RepeatedField<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> where
+        S: serde::Serializer
+    {
+        self.as_ref().serialize(serializer)
+    }
+}
+
+#[cfg(feature = "with-serde")]
+impl<'de, T: serde::Deserialize<'de> + Default> serde::Deserialize<'de> for RepeatedField<T> {
+    fn deserialize<D>(deserializer: D)
+        -> Result<Self, <D as serde::Deserializer<'de>>::Error>
+        where D: serde::Deserializer<'de>
+    {
+        Vec::deserialize(deserializer).map(RepeatedField::from)
+    }
+}
+
 
 #[cfg(test)]
 mod test {

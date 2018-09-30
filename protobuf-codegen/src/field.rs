@@ -160,19 +160,6 @@ impl OptionKind {
         }
     }
 
-    fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
-        match self {
-            OptionKind::Option | OptionKind::OptionBox => None,
-            OptionKind::SingularPtrField => Some((
-                "::protobuf_serde::serialize_singular_ptr_field",
-                "::protobuf_serde::deserialize_singular_ptr_field",
-            )),
-            OptionKind::SingularField => {
-                panic!("SingularField is not supported with serde")
-            }
-        }
-    }
-
     fn _as_option_ref(&self, v: &str) -> String {
         match self {
             OptionKind::OptionBox => format!("{}.as_ref().map(|v| &**v)", v),
@@ -239,13 +226,6 @@ impl SingularFieldFlag {
             SingularFieldFlag::WithoutFlag => false,
         }
     }
-
-    fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
-        match self {
-            SingularFieldFlag::WithFlag { option_kind, .. } => option_kind.serde_functions(),
-            SingularFieldFlag::WithoutFlag => None,
-        }
-    }
 }
 
 #[derive(Clone)]
@@ -279,16 +259,6 @@ impl RepeatedFieldKind {
         match self {
             RepeatedFieldKind::Vec => RustType::Vec(element_type),
             RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
-        }
-    }
-
-    fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
-        match self {
-            RepeatedFieldKind::Vec => None,
-            RepeatedFieldKind::RepeatedField => Some((
-                "::protobuf_serde::serialize_repeated_field",
-                "::protobuf_serde::deserialize_repeated_field",
-            )),
         }
     }
 }
@@ -351,14 +321,6 @@ impl FieldKind {
 
     fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
         self.elem().primitive_type_variant()
-    }
-
-    pub fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
-        match self {
-            FieldKind::Singular(s) => s.flag.serde_functions(),
-            FieldKind::Repeated(r) => r.kind().serde_functions(),
-            FieldKind::Map(..) | FieldKind::Oneof(..) => None,
-        }
     }
 }
 
@@ -1329,14 +1291,6 @@ impl<'a> FieldGen<'a> {
             w.comment(&format!("{}: <group>", &self.rust_name));
         } else {
             let vis = self.visibility();
-
-            if self.serde_derive_enabled() {
-                if let Some((serialize, deserialize)) = self.kind.serde_functions() {
-                    w.write_line(&format!("#[serde(serialize_with = \"{}\")]", serialize));
-                    w.write_line(&format!("#[serde(deserialize_with = \"{}\")]", deserialize));
-                }
-            }
-
             w.field_decl_vis(
                 vis,
                 &self.rust_name.0,
