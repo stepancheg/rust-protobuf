@@ -204,5 +204,7 @@ pub fn gen_and_write(
 }
 
 pub fn protoc_gen_rust_main() {
-    compiler_plugin::plugin_main(|fds, files| gen(fds, files, &Default::default()));
+    compiler_plugin::plugin_main(|r| {
+        gen(r.file_descriptors, r.files_to_generate, &Default::default())
+    });
 }

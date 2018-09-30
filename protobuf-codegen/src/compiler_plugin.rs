@@ -1,6 +1,3 @@
-// TODO: move into separate crate
-#![doc(hidden)]
-
 use std::io::stdin;
 use std::io::stdout;
 use std::str;
@@ -9,6 +6,10 @@ use protobuf::parse_from_reader;
 use protobuf::Message;
 use protobuf::descriptor::FileDescriptorProto;
 
+pub struct GenRequest<'a> {
+    pub file_descriptors: &'a [FileDescriptorProto],
+    pub files_to_generate: &'a [String],
+}
 
 pub struct GenResult {
     pub name: String,
@@ -16,10 +17,13 @@ pub struct GenResult {
 }
 
 pub fn plugin_main<F>(gen: F)
-    where F : Fn(&[FileDescriptorProto], &[String]) -> Vec<GenResult>
+    where F : Fn(&GenRequest) -> Vec<GenResult>
 {
     let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin()).unwrap();
-    let result = gen(&req.proto_file, &req.file_to_generate);
+    let result = gen(&GenRequest {
+        file_descriptors: &req.proto_file,
+        files_to_generate: &req.file_to_generate,
+    });
     let mut resp = CodeGeneratorResponse::new();
     resp.file =
         result
