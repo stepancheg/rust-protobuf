@@ -12,8 +12,10 @@ matrix:
     env: PROTOBUF_VERSION=3.5.1
   - rust: stable
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes
+  - rust: stable
+    env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-serde
   - rust: nightly
-    env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes
+    env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-serde,with-bytes
 
 before_install:
   - ci/install-protobuf.sh
