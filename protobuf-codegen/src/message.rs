@@ -389,13 +389,13 @@ impl<'a> MessageGen<'a> {
 
             if self.serde_derive_enabled() {
                 //w.write_line("#[serde(skip)]");
+                w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
             }
-            w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
             w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
             if self.serde_derive_enabled() {
                 //w.write_line("#[serde(skip)]");
+                w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
             }
-            w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }
