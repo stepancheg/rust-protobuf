@@ -25,6 +25,7 @@ mkdir tmp-generated
 protoc \
     --plugin=protoc-gen-rust=$where_am_i/target/debug/protoc-gen-rust \
     --rust_out tmp-generated \
+    --rust_opt serde_derive=true \
     -I../proto \
     ../proto/google/protobuf/*.proto \
     ../proto/google/protobuf/compiler/* \
