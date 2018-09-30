@@ -161,16 +161,7 @@ impl OptionKind {
     }
 
     fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
-        match self {
-            OptionKind::Option | OptionKind::OptionBox => None,
-            OptionKind::SingularPtrField => Some((
-                "::protobuf_serde::serialize_singular_ptr_field",
-                "::protobuf_serde::deserialize_singular_ptr_field",
-            )),
-            OptionKind::SingularField => {
-                panic!("SingularField is not supported with serde")
-            }
-        }
+        None
     }
 
     fn _as_option_ref(&self, v: &str) -> String {
@@ -283,13 +274,7 @@ impl RepeatedFieldKind {
     }
 
     fn serde_functions(&self) -> Option<(&'static str, &'static str)> {
-        match self {
-            RepeatedFieldKind::Vec => None,
-            RepeatedFieldKind::RepeatedField => Some((
-                "::protobuf_serde::serialize_repeated_field",
-                "::protobuf_serde::deserialize_repeated_field",
-            )),
-        }
+        None
     }
 }
 
