@@ -1864,8 +1864,8 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
 impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum FieldDescriptorProto_Type {
     TYPE_DOUBLE = 1,
     TYPE_FLOAT = 2,
@@ -1961,8 +1961,8 @@ impl ::std::default::Default for FieldDescriptorProto_Type {
 impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Type {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum FieldDescriptorProto_Label {
     LABEL_OPTIONAL = 1,
     LABEL_REQUIRED = 2,
@@ -3943,8 +3943,8 @@ impl ::std::fmt::Debug for FileOptions {
 impl ::protobuf::reflect::ProtobufValue for FileOptions {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum FileOptions_OptimizeMode {
     SPEED = 1,
     CODE_SIZE = 2,
@@ -4645,8 +4645,8 @@ impl ::std::fmt::Debug for FieldOptions {
 impl ::protobuf::reflect::ProtobufValue for FieldOptions {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum FieldOptions_CType {
     STRING = 0,
     CORD = 1,
@@ -4696,8 +4696,8 @@ impl ::std::default::Default for FieldOptions_CType {
 impl ::protobuf::reflect::ProtobufValue for FieldOptions_CType {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum FieldOptions_JSType {
     JS_NORMAL = 0,
     JS_STRING = 1,

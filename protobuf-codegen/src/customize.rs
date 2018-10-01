@@ -30,6 +30,8 @@ pub struct Customize {
     pub singular_field_option: Option<bool>,
     /// Implement serde_derive for messages
     pub serde_derive: Option<bool>,
+    /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
+    pub serde_derive_cfg: Option<String>,
 
     // When adding more options please keep in sync with `parse_from_parameter` below.
 
@@ -79,6 +81,9 @@ impl Customize {
         }
         if let Some(v) = that.serde_derive {
             self.serde_derive = Some(v);
+        }
+        if let Some(ref v) = that.serde_derive_cfg {
+            self.serde_derive_cfg = Some(v.clone());
         }
     }
 
@@ -145,6 +150,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let singular_field_option_box = rustproto::exts::singular_field_option_box.get(source);
     let singular_field_option = rustproto::exts::singular_field_option.get(source);
     let serde_derive = rustproto::exts::serde_derive.get(source);
+    let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
     Customize {
         expose_oneof,
         expose_fields,
@@ -156,6 +162,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         singular_field_option_box,
         singular_field_option,
         serde_derive,
+        serde_derive_cfg,
         _future_options: (),
     }
 }
@@ -171,6 +178,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let singular_field_option_box = rustproto::exts::singular_field_option_box_field.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_field.get(source);
     let serde_derive = None;
+    let serde_derive_cfg = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -182,6 +190,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         singular_field_option_box,
         singular_field_option,
         serde_derive,
+        serde_derive_cfg,
         _future_options: (),
     }
 }
@@ -197,6 +206,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let singular_field_option_box = rustproto::exts::singular_field_option_box_all.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_all.get(source);
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
+    let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
     Customize {
         expose_oneof,
         expose_fields,
@@ -208,6 +218,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         singular_field_option_box,
         singular_field_option,
         serde_derive,
+        serde_derive_cfg,
         _future_options: (),
     }
 }

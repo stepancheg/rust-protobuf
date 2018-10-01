@@ -148,8 +148,8 @@ pub struct Value {
     cached_size: ::protobuf::CachedSize,
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,PartialEq)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum Value_oneof_kind {
     null_value(NullValue),
     number_value(f64),
@@ -745,8 +745,8 @@ impl ::std::fmt::Debug for ListValue {
 impl ::protobuf::reflect::ProtobufValue for ListValue {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum NullValue {
     NULL_VALUE = 0,
 }

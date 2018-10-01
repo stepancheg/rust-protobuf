@@ -523,8 +523,8 @@ impl ::std::fmt::Debug for Field {
 impl ::protobuf::reflect::ProtobufValue for Field {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum Field_Kind {
     TYPE_UNKNOWN = 0,
     TYPE_DOUBLE = 1,
@@ -622,8 +622,8 @@ impl ::std::default::Default for Field_Kind {
 impl ::protobuf::reflect::ProtobufValue for Field_Kind {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum Field_Cardinality {
     CARDINALITY_UNKNOWN = 0,
     CARDINALITY_OPTIONAL = 1,
@@ -1191,8 +1191,8 @@ impl ::std::fmt::Debug for Option {
 impl ::protobuf::reflect::ProtobufValue for Option {
 }
 
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum Syntax {
     SYNTAX_PROTO2 = 0,
     SYNTAX_PROTO3 = 1,
