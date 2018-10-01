@@ -142,6 +142,8 @@ fn generate_pb_rs() {
 fn main() {
     env_logger::init();
 
+    cfg_serde();
+
     clean_old_files();
     generate_pb_rs();
 }

@@ -11,6 +11,8 @@ use std::fmt;
 use std::path::Path;
 
 use glob;
+use std::env;
+use std::env::VarError;
 
 
 pub fn glob_simple(pattern: &str) -> Vec<String> {
@@ -87,6 +89,16 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
 
 pub fn clean_old_files() {
     clean_recursively(&Path::new("src"), &["*_pb.rs", "*_pb_proto3.rs"]);
+}
+
+pub fn cfg_serde() {
+    match env::var("CARGO_FEATURE_WITH_SERDE") {
+        Ok(_) => {
+            println!("cargo:rustc-cfg=serde");
+        }
+        Err(VarError::NotUnicode(..)) => panic!(),
+        Err(VarError::NotPresent) => {}
+    }
 }
 
 #[derive(Default)]
