@@ -211,11 +211,16 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
     eprintln!("invoking protobubf compiler: out_dir: {:?}, input: {:?}, includes: {:?}",
         dir, protos, includes);
 
+    let customize = Customize {
+        serde_derive_cfg: Some("serde".to_owned()),
+        ..Default::default()
+    };
+
     gen(GenInDirArgs {
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
         includes: &includes,
-        .. Default::default()
+        customize,
     }).expect("codegen failed");
 
     gen_mod_rs_in_dir(dir);
