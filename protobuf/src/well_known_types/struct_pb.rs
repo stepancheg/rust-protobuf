@@ -18,14 +18,14 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Struct {
     // message fields
     pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -137,19 +137,19 @@ impl ::protobuf::reflect::ProtobufValue for Struct {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<Value_oneof_kind>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
 #[derive(Clone,PartialEq)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub enum Value_oneof_kind {
     null_value(NullValue),
     number_value(f64),
@@ -617,14 +617,14 @@ impl ::protobuf::reflect::ProtobufValue for Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct ListValue {
     // message fields
     pub values: ::protobuf::RepeatedField<Value>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -746,7 +746,7 @@ impl ::protobuf::reflect::ProtobufValue for ListValue {
 }
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub enum NullValue {
     NULL_VALUE = 0,
 }

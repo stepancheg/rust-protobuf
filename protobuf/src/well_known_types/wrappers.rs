@@ -18,14 +18,14 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct DoubleValue {
     // message fields
     pub value: f64,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -145,14 +145,14 @@ impl ::protobuf::reflect::ProtobufValue for DoubleValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FloatValue {
     // message fields
     pub value: f32,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -272,14 +272,14 @@ impl ::protobuf::reflect::ProtobufValue for FloatValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Int64Value {
     // message fields
     pub value: i64,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -399,14 +399,14 @@ impl ::protobuf::reflect::ProtobufValue for Int64Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UInt64Value {
     // message fields
     pub value: u64,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -526,14 +526,14 @@ impl ::protobuf::reflect::ProtobufValue for UInt64Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Int32Value {
     // message fields
     pub value: i32,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -653,14 +653,14 @@ impl ::protobuf::reflect::ProtobufValue for Int32Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UInt32Value {
     // message fields
     pub value: u32,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -780,14 +780,14 @@ impl ::protobuf::reflect::ProtobufValue for UInt32Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct BoolValue {
     // message fields
     pub value: bool,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -907,14 +907,14 @@ impl ::protobuf::reflect::ProtobufValue for BoolValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct StringValue {
     // message fields
     pub value: ::std::string::String,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1030,14 +1030,14 @@ impl ::protobuf::reflect::ProtobufValue for StringValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct BytesValue {
     // message fields
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 

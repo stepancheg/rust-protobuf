@@ -18,14 +18,14 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldMask {
     // message fields
     pub paths: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 

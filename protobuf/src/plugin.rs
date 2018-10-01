@@ -18,16 +18,16 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
     pub file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
     pub proto_file: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -216,15 +216,15 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct CodeGeneratorResponse {
     // message fields
     error: ::protobuf::SingularField<::std::string::String>,
     pub file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -398,16 +398,16 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct CodeGeneratorResponse_File {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     insertion_point: ::protobuf::SingularField<::std::string::String>,
     content: ::protobuf::SingularField<::std::string::String>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 

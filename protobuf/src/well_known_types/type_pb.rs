@@ -18,7 +18,7 @@
 #![allow(unused_results)]
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Type {
     // message fields
     pub name: ::std::string::String,
@@ -28,9 +28,9 @@ pub struct Type {
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -239,7 +239,7 @@ impl ::protobuf::reflect::ProtobufValue for Type {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Field {
     // message fields
     pub kind: Field_Kind,
@@ -253,9 +253,9 @@ pub struct Field {
     pub json_name: ::std::string::String,
     pub default_value: ::std::string::String,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -524,7 +524,7 @@ impl ::protobuf::reflect::ProtobufValue for Field {
 }
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub enum Field_Kind {
     TYPE_UNKNOWN = 0,
     TYPE_DOUBLE = 1,
@@ -623,7 +623,7 @@ impl ::protobuf::reflect::ProtobufValue for Field_Kind {
 }
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub enum Field_Cardinality {
     CARDINALITY_UNKNOWN = 0,
     CARDINALITY_OPTIONAL = 1,
@@ -677,7 +677,7 @@ impl ::protobuf::reflect::ProtobufValue for Field_Cardinality {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Enum {
     // message fields
     pub name: ::std::string::String,
@@ -686,9 +686,9 @@ pub struct Enum {
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -882,16 +882,16 @@ impl ::protobuf::reflect::ProtobufValue for Enum {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct EnumValue {
     // message fields
     pub name: ::std::string::String,
     pub number: i32,
     pub options: ::protobuf::RepeatedField<Option>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1047,15 +1047,15 @@ impl ::protobuf::reflect::ProtobufValue for EnumValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Option {
     // message fields
     pub name: ::std::string::String,
     pub value: ::protobuf::SingularPtrField<::protobuf::well_known_types::Any>,
     // special fields
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(feature = "with-serde", serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     cached_size: ::protobuf::CachedSize,
 }
 
@@ -1192,7 +1192,7 @@ impl ::protobuf::reflect::ProtobufValue for Option {
 }
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub enum Syntax {
     SYNTAX_PROTO2 = 0,
     SYNTAX_PROTO3 = 1,
