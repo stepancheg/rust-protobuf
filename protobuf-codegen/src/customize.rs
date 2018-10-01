@@ -130,6 +130,8 @@ impl Customize {
                 r.singular_field_option = Some(parse_bool(v)?);
             } else if n == "serde_derive" {
                 r.serde_derive = Some(parse_bool(v)?);
+            } else if n == "serde_derive_cfg" {
+                r.serde_derive_cfg = Some(v.to_owned());
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()));
             }
