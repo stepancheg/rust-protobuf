@@ -12,6 +12,7 @@ use super::customize::customize_from_rustproto_for_message;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
 use map::map_entry;
+use serde;
 
 
 /// Message info for codegen
@@ -351,10 +352,6 @@ impl<'a> MessageGen<'a> {
         self.fields.len() <= 500
     }
 
-    fn serde_derive_enabled(&self) -> bool {
-        self.customize.serde_derive.unwrap_or(false)
-    }
-
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
         if self.supports_derive_partial_eq() {
@@ -365,9 +362,7 @@ impl<'a> MessageGen<'a> {
             derive.push("Debug");
         }
         w.derive(&derive);
-        if self.serde_derive_enabled() {
-            w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
-        }
+        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
         w.pub_struct(&self.type_name, |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -387,13 +382,9 @@ impl<'a> MessageGen<'a> {
             }
             w.comment("special fields");
 
-            if self.serde_derive_enabled() {
-                w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
-            }
+            serde::write_serde_attr(w, &self.customize, "serde(skip)");
             w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
-            if self.serde_derive_enabled() {
-                w.write_line("#[cfg_attr(feature = \"with-serde\", serde(skip))]");
-            }
+            serde::write_serde_attr(w, &self.customize, "serde(skip)");
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }

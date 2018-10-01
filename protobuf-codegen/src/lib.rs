@@ -25,6 +25,7 @@ mod amend_io_error_util;
 mod map;
 mod ident;
 mod compiler_plugin;
+mod serde;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;

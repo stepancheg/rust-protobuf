@@ -1282,10 +1282,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn serde_derive_enabled(&self) -> bool {
-        self.customize.serde_derive.unwrap_or(false)
-    }
-
     pub fn write_struct_field(&self, w: &mut CodeWriter) {
         if self.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
             w.comment(&format!("{}: <group>", &self.rust_name));

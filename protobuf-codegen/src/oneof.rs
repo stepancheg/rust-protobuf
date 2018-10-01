@@ -11,6 +11,7 @@ use message::MessageGen;
 use Customize;
 use code_writer::CodeWriter;
 use protobuf::descriptor::FieldDescriptorProto_Type;
+use serde;
 
 
 // oneof one { ... }
@@ -156,10 +157,8 @@ impl<'a> OneofGen<'a> {
         if self.lite_runtime {
             derive.push("Debug");
         }
-        if self.customize.serde_derive.unwrap_or(false) {
-            w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
-        }
         w.derive(&derive);
+        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
         w.pub_enum(&self.type_name.to_string(), |w| {
             for variant in self.variants_except_group() {
                 w.write_line(&format!(

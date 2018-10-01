@@ -8,6 +8,7 @@ use protobuf::prelude::*;
 use super::code_writer::*;
 use super::customize::Customize;
 use rust_types_values::type_name_to_rust_relative;
+use serde;
 
 
 #[derive(Clone)]
@@ -146,10 +147,8 @@ impl<'a> EnumGen<'a> {
                 "Note: you cannot use pattern matching for enums with allow_alias option",
             );
         }
-        if self.customize.serde_derive.unwrap_or(false) {
-            w.write_line("#[cfg_attr(feature = \"with-serde\", derive(Serialize, Deserialize))]");
-        }
         w.derive(&derive);
+        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
