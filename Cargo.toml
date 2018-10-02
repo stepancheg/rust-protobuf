@@ -9,5 +9,4 @@ members = [
     "protobuf-codegen-pure-test",
     "protobuf-test",
     "protobuf-test-common",
-    "update-version",
 ]
