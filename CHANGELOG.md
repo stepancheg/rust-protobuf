@@ -27,21 +27,24 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 - [Implement `Hash` for
   `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/113babc8c56deb7e2453f0d11c2bfc21134d540f)
-- [When using `protoc` codegen options can now be passed with `--rust_opt`
-  flag](https://github.com/stepancheg/rust-protobuf/commit/7ebf32b47cb18160752a943dccb9d0d7ecdf91ed)
 
 ### Improvements
 
 - [JSON printing/parsing](https://github.com/stepancheg/rust-protobuf/issues/142) implemented
 - Text format parsing is implemented (previously it was only possible to print to text format)
 - Reflection can now mutate data (previously reflection could only read data)
-- [Serde is now supported](https://github.com/stepancheg/rust-protobuf/issues/266)
 - Fix OOM on malformed input
 - [`unknown_fields` field is public now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516)
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
 
-## [2.0 Unreleased]
+## [2.1 Unreleased]
+
+- Support of `protoc` command from Google protobuf before 3.0 is dropped
+  (it might work, but not tested by CI); this does not affect `syntax = "proto2"` which is supported
+- [When using `protoc` codegen options can now be passed with `--rust_opt`
+  flag](https://github.com/stepancheg/rust-protobuf/commit/7ebf32b47cb18160752a943dccb9d0d7ecdf91ed)
+- [Serde is now supported](https://github.com/stepancheg/rust-protobuf/issues/266)
 
 ## [2.0.5] - 2018-09-21
 
