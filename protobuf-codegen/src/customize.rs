@@ -17,7 +17,26 @@ pub struct Customize {
     pub carllerche_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub carllerche_bytes_for_string: Option<bool>,
+    /// Implement serde_derive for messages
+    pub serde_derive: Option<bool>,
+    /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
+    pub serde_derive_cfg: Option<String>,
+
+    // When adding more options please keep in sync with `parse_from_parameter` below.
+
+    /// Make sure `Customize` is always used with `..Default::default()`
+    /// for future compatibility.
+    _future_options: (),
 }
+
+#[derive(Debug)]
+pub enum CustomizeParseParameterError {
+    EqNotFound,
+    CannotParseBool,
+    UnknownOptionName(String),
+}
+
+pub type CustomizeParseParameterResult<T> = Result<T, CustomizeParseParameterError>;
 
 impl Customize {
     /// Update fields of self with fields defined in other customize
@@ -37,6 +56,12 @@ impl Customize {
         if let Some(v) = that.carllerche_bytes_for_string {
             self.carllerche_bytes_for_string = Some(v);
         }
+        if let Some(v) = that.serde_derive {
+            self.serde_derive = Some(v);
+        }
+        if let Some(ref v) = that.serde_derive_cfg {
+            self.serde_derive_cfg = Some(v.clone());
+        }
     }
 
     /// Update unset fields of self with fields from other customize
@@ -44,6 +69,43 @@ impl Customize {
         let mut tmp = other.clone();
         tmp.update_with(self);
         *self = tmp;
+    }
+
+    /// Parse customize options from a string passed via protoc flag.
+    pub fn parse_from_parameter(parameter: &str) -> CustomizeParseParameterResult<Customize> {
+        fn parse_bool(v: &str) -> CustomizeParseParameterResult<bool> {
+            v.parse().map_err(|_| CustomizeParseParameterError::CannotParseBool)
+        }
+
+        let mut r = Customize::default();
+        for nv in parameter.split_whitespace() {
+            let eq = match nv.find('=') {
+                Some(eq) => eq,
+                None => return Err(CustomizeParseParameterError::EqNotFound),
+            };
+
+            let n = &nv[..eq];
+            let v = &nv[eq+1..];
+
+            if n == "expose_oneof" {
+                r.expose_oneof = Some(parse_bool(v)?);
+            } else if n == "expose_fields" {
+                r.expose_fields = Some(parse_bool(v)?);
+            } else if n == "generate_accessors" {
+                r.generate_accessors = Some(parse_bool(v)?);
+            } else if n == "carllerche_bytes_for_bytes" {
+                r.carllerche_bytes_for_bytes = Some(parse_bool(v)?);
+            } else if n == "carllerche_bytes_for_string" {
+                r.carllerche_bytes_for_string = Some(parse_bool(v)?);
+            } else if n == "serde_derive" {
+                r.serde_derive = Some(parse_bool(v)?);
+            } else if n == "serde_derive_cfg" {
+                r.serde_derive_cfg = Some(v.to_owned());
+            } else {
+                return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()));
+            }
+        }
+        Ok(r)
     }
 }
 
@@ -54,12 +116,17 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let generate_accessors = rustproto::exts::generate_accessors.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string.get(source);
+    let serde_derive = rustproto::exts::serde_derive.get(source);
+    let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
     Customize {
         expose_oneof,
         expose_fields,
         generate_accessors,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
+        serde_derive,
+        serde_derive_cfg,
+        _future_options: (),
     }
 }
 
@@ -69,12 +136,17 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let generate_accessors = rustproto::exts::generate_accessors_field.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_field.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_field.get(source);
+    let serde_derive = None;
+    let serde_derive_cfg = None;
     Customize {
         expose_oneof,
         expose_fields,
         generate_accessors,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
+        serde_derive,
+        serde_derive_cfg,
+        _future_options: (),
     }
 }
 
@@ -84,11 +156,16 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let generate_accessors = rustproto::exts::generate_accessors_all.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_all.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_all.get(source);
+    let serde_derive = rustproto::exts::serde_derive_all.get(source);
+    let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
     Customize {
         expose_oneof,
         expose_fields,
         generate_accessors,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
+        serde_derive,
+        serde_derive_cfg,
+        _future_options: (),
     }
 }

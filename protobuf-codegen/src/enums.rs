@@ -5,6 +5,8 @@ use protobuf::descriptorx::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
+use rust_types_values::type_name_to_rust_relative;
+use serde;
 
 
 #[derive(Clone)]
@@ -45,13 +47,14 @@ pub struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
     type_name: String,
     lite_runtime: bool,
+    customize: Customize,
 }
 
 impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
         current_file: &FileDescriptorProto,
-        _customize: &Customize
+        customize: &Customize
     ) -> EnumGen<'a> {
         let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
             current_file.get_name()
@@ -76,6 +79,7 @@ impl<'a> EnumGen<'a> {
                 .get_options()
                 .get_optimize_for() ==
                 FileOptions_OptimizeMode::LITE_RUNTIME,
+            customize: customize.clone(),
         }
     }
 
@@ -146,6 +150,7 @@ impl<'a> EnumGen<'a> {
             );
         }
         w.derive(&derive);
+        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {

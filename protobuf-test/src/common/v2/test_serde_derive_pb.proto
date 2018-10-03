@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+option (rustproto.serde_derive_all) = true;
+
+
+
+enum AnEnum {
+    TEST = 0;
+}
+
+message OneOf {
+    oneof food {
+        uint32 rice = 1;
+        uint32 pasta = 2;
+    }
+}
+
+message SomeMessage {
+}
+
+message TestSingularPtrField {
+    optional SomeMessage test = 1;
+}
+
+message TestSingularInt {
+    optional uint32 iii = 3;
+}
+
+message RepeatedInt {
+    repeated uint32 test_repeated = 1;
+}
+
+message MessageInRepeatedMessage {
+    optional uint32 x = 1;
+}
+
+message RepeatedMessage {
+    repeated MessageInRepeatedMessage test_repeated = 1;
+}
+
+message TestSerdeMap {
+    map<uint32, uint32> test_map = 1;
+}

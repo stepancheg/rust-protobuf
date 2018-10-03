@@ -9,6 +9,7 @@ use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_message;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
+use serde;
 
 
 /// Message info for codegen
@@ -377,12 +378,19 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn supports_derive_partial_eq(&self) -> bool {
+        // There's stack overflow in the compiler when struct has too many fields
+        // https://github.com/rust-lang/rust/issues/40119
+        self.fields.len() <= 500
+    }
+
     fn write_struct(&self, w: &mut CodeWriter) {
         let mut derive = vec!["PartialEq", "Clone", "Default"];
         if self.lite_runtime {
             derive.push("Debug");
         }
         w.derive(&derive);
+        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
         w.pub_struct(&self.type_name, |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -424,8 +432,9 @@ impl<'a> MessageGen<'a> {
                 }
             }
             w.comment("special fields");
-            // TODO: make public
-            w.field_decl("unknown_fields", "::protobuf::UnknownFields");
+            serde::write_serde_attr(w, &self.customize, "serde(skip)");
+            w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
+            serde::write_serde_attr(w, &self.customize, "serde(skip)");
             w.field_decl("cached_size", "::protobuf::CachedSize");
         });
     }

@@ -22,6 +22,7 @@ mod extensions;
 mod oneof;
 pub mod float;
 mod ident;
+mod serde;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
@@ -201,5 +202,8 @@ pub fn gen_and_write(
 }
 
 pub fn protoc_gen_rust_main() {
-    compiler_plugin::plugin_main(|fds, files| gen(fds, files, &Default::default()));
+    compiler_plugin::plugin_main_2(|r| {
+        let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
+        gen(r.file_descriptors, r.files_to_generate, &customize)
+    });
 }
