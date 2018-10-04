@@ -597,12 +597,25 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn merge_message<M : Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
-        let len = self.read_raw_varint64()?;
+    fn merge_message_length<M : Message>(&mut self, message: &mut M, len: u64) -> ProtobufResult<()> {
         let old_limit = self.push_limit(len)?;
         message.merge_from(self)?;
         self.pop_limit(old_limit);
         Ok(())
+    }
+
+    pub fn merge_message<M : Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
+        let len = self.read_raw_varint64()?;
+        self.merge_message_length(message, len)?;
+        Ok(())
+    }
+
+    pub fn read_message_length<M: Message>(&mut self) -> ProtobufResult<M> {
+        let mut r: M = Message::new();
+        let len = self.read_fixed32()?;
+        self.merge_message_length(&mut r, len as u64)?;
+        r.check_initialized()?;
+        Ok(r)
     }
 
     pub fn read_message<M : Message>(&mut self) -> ProtobufResult<M> {
