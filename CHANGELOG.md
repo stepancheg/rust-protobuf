@@ -40,6 +40,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.1 Unreleased]
 
+## [2.1.0] - 2018-10-06
+
 - Support of `protoc` command from Google protobuf before 3.0 is dropped
   (it might work, but not tested by CI); this does not affect `syntax = "proto2"` which is supported
 - [When using `protoc` codegen options can now be passed with `--rust_opt`
