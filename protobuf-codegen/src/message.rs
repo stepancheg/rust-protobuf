@@ -84,10 +84,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
-        self.fields
-            .iter()
-            .filter(|f| !f.is_oneof())
-            .collect()
+        self.fields.iter().filter(|f| !f.is_oneof()).collect()
     }
 
     fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
@@ -109,7 +106,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_match_each_oneof_variant<F>(&self, w: &mut CodeWriter, cb: F)
     where
-        F : Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType),
+        F: Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType),
     {
         for oneof in self.oneofs() {
             let variants = oneof.variants_except_group();
@@ -129,12 +126,13 @@ impl<'a> MessageGen<'a> {
                             } else {
                                 ("ref v", variant.rust_type().ref_type())
                             };
-                        w.case_block(format!("&{}({})", variant.path(), refv), |w| {
-                            cb(w, &variant, "v", &vtype);
-                        });
-                    }
-                });
-            });
+                            w.case_block(format!("&{}({})", variant.path(), refv), |w| {
+                                cb(w, &variant, "v", &vtype);
+                            });
+                        }
+                    });
+                },
+            );
         }
     }
 
@@ -212,12 +210,17 @@ impl<'a> MessageGen<'a> {
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
         w.def_fn(
             "get_unknown_fields(&self) -> &::protobuf::UnknownFields",
-            |w| { w.write_line("&self.unknown_fields"); },
+            |w| {
+                w.write_line("&self.unknown_fields");
+            },
         );
         w.write_line("");
-        w.def_fn("mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields", |w| {
-            w.write_line("&mut self.unknown_fields");
-        });
+        w.def_fn(
+            "mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields",
+            |w| {
+                w.write_line("&mut self.unknown_fields");
+            },
+        );
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
@@ -269,7 +272,9 @@ impl<'a> MessageGen<'a> {
             // TODO: use single loop
 
             for f in self.required_fields() {
-                f.write_if_self_field_is_none(w, |w| { w.write_line("return false;"); });
+                f.write_if_self_field_is_none(w, |w| {
+                    w.write_line("return false;");
+                });
             }
 
             for f in self.message_fields() {
@@ -282,10 +287,9 @@ impl<'a> MessageGen<'a> {
                 // if message is declared in this file and has no message fields,
                 // we could skip the check here
                 f.write_for_self_field(w, "v", |w, _t| {
-                    w.if_stmt(
-                        "!v.is_initialized()",
-                        |w| { w.write_line("return false;"); },
-                    );
+                    w.if_stmt("!v.is_initialized()", |w| {
+                        w.write_line("return false;");
+                    });
                 });
             }
             w.write_line("true");
@@ -329,9 +333,12 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
         w.impl_for_block("::std::fmt::Debug", &self.type_name, |w| {
-            w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
-                w.write_line("::protobuf::text_format::fmt(self, f)");
-            });
+            w.def_fn(
+                "fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result",
+                |w| {
+                    w.write_line("::protobuf::text_format::fmt(self, f)");
+                },
+            );
         });
     }
 

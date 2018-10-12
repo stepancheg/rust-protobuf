@@ -46,6 +46,15 @@ pub fn proto_path_to_rust_mod(path: &str) -> String {
     name
 }
 
+pub fn proto_path_to_output_path(path: &str) -> String {
+    let without_dir = strx::remove_to(path, '/');
+    let just_dir = strx::remove_suffix(path, without_dir);
+    just_dir.chars()
+        .enumerate()
+        .chain(proto_path_to_rust_mod(path).chars().enumerate())
+        .map(|(_, c)| c) // Drop index -- keep character
+        .collect()
+}
 
 pub struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
