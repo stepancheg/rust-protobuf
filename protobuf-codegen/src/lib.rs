@@ -51,7 +51,7 @@ fn escape_byte(s: &mut String, b: u8) {
         write!(s, "\\{}", b as char).unwrap();
     } else if b == b'\0' {
         write!(s, "\\0").unwrap();
-        // ASCII printable except space
+    // ASCII printable except space
     } else if b > 0x20 && b < 0x7f {
         write!(s, "{}", b as char).unwrap();
     } else {
@@ -95,9 +95,12 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
         "::protobuf::descriptor::FileDescriptorProto",
     );
     w.write_line("");
-    w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
-        w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
-    });
+    w.def_fn(
+        "parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto",
+        |w| {
+            w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
+        },
+    );
     w.write_line("");
     w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
         w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
@@ -149,7 +152,7 @@ fn gen_file(
     }
 
     Some(compiler_plugin::GenResult {
-        name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
+        name: format!("{}.rs", proto_path_to_output_path(file.get_name())),
         content: v,
     })
 }
@@ -162,7 +165,9 @@ pub fn gen(
     files_to_generate: &[String],
     customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
-    let root_scope = RootScope { file_descriptors: file_descriptors };
+    let root_scope = RootScope {
+        file_descriptors: file_descriptors,
+    };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
     let files_map: HashMap<&str, &FileDescriptorProto> =
