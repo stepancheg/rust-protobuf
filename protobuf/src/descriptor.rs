@@ -102,10 +102,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileDescriptorProto>>(
@@ -122,10 +119,7 @@ impl ::protobuf::Message for FileDescriptorSet {
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
-        static instance: ::protobuf::rt::Lazy<FileDescriptorSet> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const FileDescriptorSet),
-        };
+        static instance: ::protobuf::rt::Lazy<FileDescriptorSet> = ::protobuf::rt::Lazy::INIT;
         instance.get(FileDescriptorSet::new)
     }
 }
@@ -479,10 +473,7 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -557,10 +548,7 @@ impl ::protobuf::Message for FileDescriptorProto {
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<FileDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const FileDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(FileDescriptorProto::new)
     }
 }
@@ -845,10 +833,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -911,10 +896,7 @@ impl ::protobuf::Message for DescriptorProto {
     }
 
     fn default_instance() -> &'static DescriptorProto {
-        static instance: ::protobuf::rt::Lazy<DescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const DescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<DescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(DescriptorProto::new)
     }
 }
@@ -1079,10 +1061,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
@@ -1106,10 +1085,7 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
     }
 
     fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-        static instance: ::protobuf::rt::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const DescriptorProto_ExtensionRange),
-        };
+        static instance: ::protobuf::rt::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::rt::Lazy::INIT;
         instance.get(DescriptorProto_ExtensionRange::new)
     }
 }
@@ -1266,10 +1242,7 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
@@ -1293,10 +1266,7 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
     }
 
     fn default_instance() -> &'static DescriptorProto_ReservedRange {
-        static instance: ::protobuf::rt::Lazy<DescriptorProto_ReservedRange> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const DescriptorProto_ReservedRange),
-        };
+        static instance: ::protobuf::rt::Lazy<DescriptorProto_ReservedRange> = ::protobuf::rt::Lazy::INIT;
         instance.get(DescriptorProto_ReservedRange::new)
     }
 }
@@ -1757,10 +1727,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -1831,10 +1798,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<FieldDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const FieldDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<FieldDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(FieldDescriptorProto::new)
     }
 }
@@ -1941,10 +1905,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Type>("FieldDescriptorProto_Type", file_descriptor_proto())
         })
@@ -1993,10 +1954,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Label>("FieldDescriptorProto_Label", file_descriptor_proto())
         })
@@ -2144,10 +2102,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -2170,10 +2125,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<OneofDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const OneofDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<OneofDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(OneofDescriptorProto::new)
     }
 }
@@ -2342,10 +2294,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -2373,10 +2322,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<EnumDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<EnumDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(EnumDescriptorProto::new)
     }
 }
@@ -2563,10 +2509,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -2595,10 +2538,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<EnumValueDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumValueDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<EnumValueDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(EnumValueDescriptorProto::new)
     }
 }
@@ -2768,10 +2708,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -2799,10 +2736,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<ServiceDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ServiceDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<ServiceDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(ServiceDescriptorProto::new)
     }
 }
@@ -3114,10 +3048,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -3164,10 +3095,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
-        static instance: ::protobuf::rt::Lazy<MethodDescriptorProto> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const MethodDescriptorProto),
-        };
+        static instance: ::protobuf::rt::Lazy<MethodDescriptorProto> = ::protobuf::rt::Lazy::INIT;
         instance.get(MethodDescriptorProto::new)
     }
 }
@@ -3801,10 +3729,7 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -3905,10 +3830,7 @@ impl ::protobuf::Message for FileOptions {
     }
 
     fn default_instance() -> &'static FileOptions {
-        static instance: ::protobuf::rt::Lazy<FileOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const FileOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<FileOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(FileOptions::new)
     }
 }
@@ -3975,10 +3897,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             ::protobuf::reflect::EnumDescriptor::new::<FileOptions_OptimizeMode>("FileOptions_OptimizeMode", file_descriptor_proto())
         })
@@ -4212,10 +4131,7 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
@@ -4256,10 +4172,7 @@ impl ::protobuf::Message for MessageOptions {
     }
 
     fn default_instance() -> &'static MessageOptions {
-        static instance: ::protobuf::rt::Lazy<MessageOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const MessageOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<MessageOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(MessageOptions::new)
     }
 }
@@ -4559,10 +4472,7 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_CType>, _>(
@@ -4615,10 +4525,7 @@ impl ::protobuf::Message for FieldOptions {
     }
 
     fn default_instance() -> &'static FieldOptions {
-        static instance: ::protobuf::rt::Lazy<FieldOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const FieldOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<FieldOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(FieldOptions::new)
     }
 }
@@ -4677,10 +4584,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_CType>("FieldOptions_CType", file_descriptor_proto())
         })
@@ -4728,10 +4632,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
     }
 
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::EnumDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_JSType>("FieldOptions_JSType", file_descriptor_proto())
         })
@@ -4832,10 +4733,7 @@ impl ::protobuf::Message for OneofOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
@@ -4852,10 +4750,7 @@ impl ::protobuf::Message for OneofOptions {
     }
 
     fn default_instance() -> &'static OneofOptions {
-        static instance: ::protobuf::rt::Lazy<OneofOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const OneofOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<OneofOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(OneofOptions::new)
     }
 }
@@ -5027,10 +4922,7 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
@@ -5059,10 +4951,7 @@ impl ::protobuf::Message for EnumOptions {
     }
 
     fn default_instance() -> &'static EnumOptions {
-        static instance: ::protobuf::rt::Lazy<EnumOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<EnumOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(EnumOptions::new)
     }
 }
@@ -5203,10 +5092,7 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
@@ -5229,10 +5115,7 @@ impl ::protobuf::Message for EnumValueOptions {
     }
 
     fn default_instance() -> &'static EnumValueOptions {
-        static instance: ::protobuf::rt::Lazy<EnumValueOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const EnumValueOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<EnumValueOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(EnumValueOptions::new)
     }
 }
@@ -5372,10 +5255,7 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
@@ -5398,10 +5278,7 @@ impl ::protobuf::Message for ServiceOptions {
     }
 
     fn default_instance() -> &'static ServiceOptions {
-        static instance: ::protobuf::rt::Lazy<ServiceOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ServiceOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<ServiceOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(ServiceOptions::new)
     }
 }
@@ -5541,10 +5418,7 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
@@ -5567,10 +5441,7 @@ impl ::protobuf::Message for MethodOptions {
     }
 
     fn default_instance() -> &'static MethodOptions {
-        static instance: ::protobuf::rt::Lazy<MethodOptions> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const MethodOptions),
-        };
+        static instance: ::protobuf::rt::Lazy<MethodOptions> = ::protobuf::rt::Lazy::INIT;
         instance.get(MethodOptions::new)
     }
 }
@@ -5914,10 +5785,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
@@ -5970,10 +5838,7 @@ impl ::protobuf::Message for UninterpretedOption {
     }
 
     fn default_instance() -> &'static UninterpretedOption {
-        static instance: ::protobuf::rt::Lazy<UninterpretedOption> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const UninterpretedOption),
-        };
+        static instance: ::protobuf::rt::Lazy<UninterpretedOption> = ::protobuf::rt::Lazy::INIT;
         instance.get(UninterpretedOption::new)
     }
 }
@@ -6154,10 +6019,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -6181,10 +6043,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
     }
 
     fn default_instance() -> &'static UninterpretedOption_NamePart {
-        static instance: ::protobuf::rt::Lazy<UninterpretedOption_NamePart> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const UninterpretedOption_NamePart),
-        };
+        static instance: ::protobuf::rt::Lazy<UninterpretedOption_NamePart> = ::protobuf::rt::Lazy::INIT;
         instance.get(UninterpretedOption_NamePart::new)
     }
 }
@@ -6291,10 +6150,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
@@ -6311,10 +6167,7 @@ impl ::protobuf::Message for SourceCodeInfo {
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
-        static instance: ::protobuf::rt::Lazy<SourceCodeInfo> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const SourceCodeInfo),
-        };
+        static instance: ::protobuf::rt::Lazy<SourceCodeInfo> = ::protobuf::rt::Lazy::INIT;
         instance.get(SourceCodeInfo::new)
     }
 }
@@ -6536,10 +6389,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
@@ -6578,10 +6428,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     }
 
     fn default_instance() -> &'static SourceCodeInfo_Location {
-        static instance: ::protobuf::rt::Lazy<SourceCodeInfo_Location> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const SourceCodeInfo_Location),
-        };
+        static instance: ::protobuf::rt::Lazy<SourceCodeInfo_Location> = ::protobuf::rt::Lazy::INIT;
         instance.get(SourceCodeInfo_Location::new)
     }
 }
@@ -6691,10 +6538,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
@@ -6711,10 +6555,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
-        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const GeneratedCodeInfo),
-        };
+        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo> = ::protobuf::rt::Lazy::INIT;
         instance.get(GeneratedCodeInfo::new)
     }
 }
@@ -6931,10 +6772,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
@@ -6969,10 +6807,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo_Annotation {
-        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo_Annotation> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const GeneratedCodeInfo_Annotation),
-        };
+        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo_Annotation> = ::protobuf::rt::Lazy::INIT;
         instance.get(GeneratedCodeInfo_Annotation::new)
     }
 }
@@ -8262,10 +8097,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03\x12\x04\xa1\x06\x19\x1a\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
-    lock: ::protobuf::rt::LAZY_ONCE_INIT,
-    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
-};
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()

@@ -158,10 +158,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
@@ -189,10 +186,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
-        static instance: ::protobuf::rt::Lazy<CodeGeneratorRequest> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const CodeGeneratorRequest),
-        };
+        static instance: ::protobuf::rt::Lazy<CodeGeneratorRequest> = ::protobuf::rt::Lazy::INIT;
         instance.get(CodeGeneratorRequest::new)
     }
 }
@@ -346,10 +340,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -372,10 +363,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
-        static instance: ::protobuf::rt::Lazy<CodeGeneratorResponse> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const CodeGeneratorResponse),
-        };
+        static instance: ::protobuf::rt::Lazy<CodeGeneratorResponse> = ::protobuf::rt::Lazy::INIT;
         instance.get(CodeGeneratorResponse::new)
     }
 }
@@ -604,10 +592,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
@@ -637,10 +622,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static instance: ::protobuf::rt::Lazy<CodeGeneratorResponse_File> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const CodeGeneratorResponse_File),
-        };
+        static instance: ::protobuf::rt::Lazy<CodeGeneratorResponse_File> = ::protobuf::rt::Lazy::INIT;
         instance.get(CodeGeneratorResponse_File::new)
     }
 }
@@ -853,10 +835,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x10\x14\n\r\n\x05\x04\x01\x02\x01\x03\x12\x04\x94\x01\x17\x19\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
-    lock: ::protobuf::rt::LAZY_ONCE_INIT,
-    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
-};
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()

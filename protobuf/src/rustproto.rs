@@ -276,10 +276,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x01\x12\x03R\x12-\n\n\n\x03\x07\x1d\x03\x12\x03R05\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
-    lock: ::protobuf::rt::LAZY_ONCE_INIT,
-    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
-};
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()

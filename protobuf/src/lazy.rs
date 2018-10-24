@@ -7,15 +7,18 @@ use std::cell::UnsafeCell;
 /// Lasily initialized data.
 // Fields are public until `const` functions available in stable.
 pub struct Lazy<T> {
-    #[doc(hidden)]
-    pub lock: sync::Once,
-    #[doc(hidden)]
-    pub ptr: UnsafeCell<*const T>,
+    lock: sync::Once,
+    ptr: UnsafeCell<*const T>,
 }
 
 unsafe impl<T> Sync for Lazy<T> {}
 
 impl<T> Lazy<T> {
+    pub const INIT: Lazy<T> = Lazy {
+        lock: sync::Once::new(),
+        ptr: UnsafeCell::new(0 as *const T),
+    };
+
     /// Get lazy field value, initialize it with given function if not yet.
     pub fn get<F>(&'static self, init: F) -> &'static T
     where
@@ -28,17 +31,12 @@ impl<T> Lazy<T> {
     }
 }
 
-/// Used to initialize `lock` field in `Lazy` struct.
-pub const ONCE_INIT: sync::Once = sync::ONCE_INIT;
-
-
 #[cfg(test)]
 mod test {
-    use super::{Lazy, ONCE_INIT};
+    use super::Lazy;
     use std::thread;
     use std::sync::{Arc, Barrier};
     use std::sync::atomic::{ATOMIC_ISIZE_INIT, AtomicIsize, Ordering};
-    use std::cell::UnsafeCell;
 
     #[test]
     fn many_threads_calling_get() {
@@ -46,10 +44,7 @@ mod test {
         const N_ITERS_IN_THREAD: usize = 32;
         const N_ITERS: usize = 16;
 
-        static mut LAZY: Lazy<String> = Lazy {
-            lock: ONCE_INIT,
-            ptr: UnsafeCell::new(0 as *const String),
-        };
+        static mut LAZY: Lazy<String> = Lazy::INIT;
         static CALL_COUNT: AtomicIsize = ATOMIC_ISIZE_INIT;
 
         let value = "Hello, world!".to_owned();
@@ -57,10 +52,7 @@ mod test {
         for _ in 0..N_ITERS {
             // Reset mutable state.
             unsafe {
-                LAZY = Lazy {
-                    lock: ONCE_INIT,
-                    ptr: UnsafeCell::new(0 as *const String),
-                }
+                LAZY = Lazy::INIT;
             }
             CALL_COUNT.store(0, Ordering::SeqCst);
 

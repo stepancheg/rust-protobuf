@@ -85,10 +85,7 @@ impl ::protobuf::Message for Empty {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::reflect::MessageDescriptor),
-        };
+        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let fields = ::std::vec::Vec::new();
             ::protobuf::reflect::MessageDescriptor::new::<Empty>(
@@ -100,10 +97,7 @@ impl ::protobuf::Message for Empty {
     }
 
     fn default_instance() -> &'static Empty {
-        static instance: ::protobuf::rt::Lazy<Empty> = ::protobuf::rt::Lazy {
-            lock: ::protobuf::rt::LAZY_ONCE_INIT,
-            ptr: ::std::cell::UnsafeCell::new(0 as *const Empty),
-        };
+        static instance: ::protobuf::rt::Lazy<Empty> = ::protobuf::rt::Lazy::INIT;
         instance.get(Empty::new)
     }
 }
@@ -180,10 +174,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x12\x033\x08\rb\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy {
-    lock: ::protobuf::rt::LAZY_ONCE_INIT,
-    ptr: ::std::cell::UnsafeCell::new(0 as *const ::protobuf::descriptor::FileDescriptorProto),
-};
+static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()

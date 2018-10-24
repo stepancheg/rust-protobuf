@@ -101,17 +101,8 @@ impl<'a> CodeWriter<'a> {
     }
 
     pub fn lazy_static(&mut self, name: &str, ty: &str) {
-        self.stmt_block(
-            &format!(
-                "static {}: ::protobuf::rt::Lazy<{}> = ::protobuf::rt::Lazy",
-                name,
-                ty
-            ),
-            |w| {
-                w.field_entry("lock", "::protobuf::rt::LAZY_ONCE_INIT");
-                w.field_entry("ptr", &format!("::std::cell::UnsafeCell::new(0 as *const {})", ty));
-            },
-        );
+        self.write_line(&format!(
+            "static {}: ::protobuf::rt::Lazy<{}> = ::protobuf::rt::Lazy::INIT;", name, ty));
     }
 
     pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, init: F)
