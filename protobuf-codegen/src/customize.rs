@@ -1,8 +1,7 @@
-use protobuf::rustproto;
 use protobuf::descriptor::FieldOptions;
-use protobuf::descriptor::MessageOptions;
 use protobuf::descriptor::FileOptions;
-
+use protobuf::descriptor::MessageOptions;
+use protobuf::rustproto;
 
 /// Specifies style of generated code.
 /// Generated files can be customized using this proto
@@ -34,7 +33,6 @@ pub struct Customize {
     pub serde_derive_cfg: Option<String>,
 
     // When adding more options please keep in sync with `parse_from_parameter` below.
-
     /// Make sure `Customize` is always used with `..Default::default()`
     /// for future compatibility.
     pub _future_options: (),
@@ -97,7 +95,8 @@ impl Customize {
     /// Parse customize options from a string passed via protoc flag.
     pub fn parse_from_parameter(parameter: &str) -> CustomizeParseParameterResult<Customize> {
         fn parse_bool(v: &str) -> CustomizeParseParameterResult<bool> {
-            v.parse().map_err(|_| CustomizeParseParameterError::CannotParseBool)
+            v.parse()
+                .map_err(|_| CustomizeParseParameterError::CannotParseBool)
         }
 
         let mut r = Customize::default();
@@ -108,7 +107,7 @@ impl Customize {
             };
 
             let n = &nv[..eq];
-            let v = &nv[eq+1..];
+            let v = &nv[eq + 1..];
 
             if n == "expose_oneof" {
                 r.expose_oneof = Some(parse_bool(v)?);
@@ -133,13 +132,14 @@ impl Customize {
             } else if n == "serde_derive_cfg" {
                 r.serde_derive_cfg = Some(v.to_owned());
             } else {
-                return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()));
+                return Err(CustomizeParseParameterError::UnknownOptionName(
+                    n.to_owned(),
+                ));
             }
         }
         Ok(r)
     }
 }
-
 
 pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customize {
     let expose_oneof = rustproto::exts::expose_oneof.get(source);
@@ -175,7 +175,8 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let generate_accessors = rustproto::exts::generate_accessors_field.get(source);
     let generate_getter = rustproto::exts::generate_getter_field.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_field.get(source);
-    let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_field.get(source);
+    let carllerche_bytes_for_string =
+        rustproto::exts::carllerche_bytes_for_string_field.get(source);
     let repeated_field_vec = rustproto::exts::repeated_field_vec_field.get(source);
     let singular_field_option_box = rustproto::exts::singular_field_option_box_field.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_field.get(source);

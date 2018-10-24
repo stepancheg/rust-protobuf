@@ -3,17 +3,16 @@ use protobuf::descriptorx::*;
 
 use protobuf::prelude::*;
 
-use super::enums::*;
-use super::rust_types_values::*;
-use super::field::*;
 use super::code_writer::*;
-use super::customize::Customize;
 use super::customize::customize_from_rustproto_for_message;
+use super::customize::Customize;
+use super::enums::*;
+use super::field::*;
+use super::rust_types_values::*;
+use map::map_entry;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
-use map::map_entry;
 use serde;
-
 
 /// Message info for codegen
 pub struct MessageGen<'a> {
@@ -29,12 +28,12 @@ impl<'a> MessageGen<'a> {
     pub fn new(
         message: &'a MessageWithScope<'a>,
         root_scope: &'a RootScope<'a>,
-        customize: &Customize)
-        -> MessageGen<'a>
-    {
+        customize: &Customize,
+    ) -> MessageGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
-            message.message.options.get_message()));
+            message.message.options.get_message(),
+        ));
 
         let fields: Vec<_> = message
             .fields()
@@ -48,8 +47,10 @@ impl<'a> MessageGen<'a> {
             fields: fields,
             lite_runtime: message
                 .get_file_descriptor()
-                .options.get_message()
-                .get_optimize_for() == FileOptions_OptimizeMode::LITE_RUNTIME,
+                .options
+                .get_message()
+                .get_optimize_for()
+                == FileOptions_OptimizeMode::LITE_RUNTIME,
             customize,
         }
     }
@@ -72,8 +73,7 @@ impl<'a> MessageGen<'a> {
             .filter(|f| match f.kind {
                 FieldKind::Singular(ref singular) => singular.flag.is_required(),
                 _ => false,
-            })
-            .collect()
+            }).collect()
     }
 
     fn message_fields(&'a self) -> Vec<&'a FieldGen> {
@@ -84,10 +84,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
-        self.fields
-            .iter()
-            .filter(|f| !f.is_oneof())
-            .collect()
+        self.fields.iter().filter(|f| !f.is_oneof()).collect()
     }
 
     fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
@@ -100,16 +97,13 @@ impl<'a> MessageGen<'a> {
     fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields
             .iter()
-            .filter(|f| {
-                !f.is_oneof() && f.proto_type != FieldDescriptorProto_Type::TYPE_GROUP
-            })
+            .filter(|f| !f.is_oneof() && f.proto_type != FieldDescriptorProto_Type::TYPE_GROUP)
             .collect()
     }
 
-
     fn write_match_each_oneof_variant<F>(&self, w: &mut CodeWriter, cb: F)
     where
-        F : Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType),
+        F: Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType),
     {
         for oneof in self.oneofs() {
             let variants = oneof.variants_except_group();
@@ -118,23 +112,26 @@ impl<'a> MessageGen<'a> {
                 // https://github.com/rust-lang/rust/issues/50642
                 continue;
             }
-            w.if_let_stmt("::std::option::Option::Some(ref v)", &format!("self.{}", oneof.name())[..], |w| {
-                w.match_block("v", |w| {
-                    for variant in variants {
-                        let ref field = variant.field;
+            w.if_let_stmt(
+                "::std::option::Option::Some(ref v)",
+                &format!("self.{}", oneof.name())[..],
+                |w| {
+                    w.match_block("v", |w| {
+                        for variant in variants {
+                            let ref field = variant.field;
 
-                        let (refv, vtype) =
-                            if field.elem_type_is_copy() {
+                            let (refv, vtype) = if field.elem_type_is_copy() {
                                 ("v", variant.rust_type())
                             } else {
                                 ("ref v", variant.rust_type().ref_type())
                             };
-                        w.case_block(format!("&{}({})", variant.path(), refv), |w| {
-                            cb(w, &variant, "v", &vtype);
-                        });
-                    }
-                });
-            });
+                            w.case_block(format!("&{}({})", variant.path(), refv), |w| {
+                                cb(w, &variant, "v", &vtype);
+                            });
+                        }
+                    });
+                },
+            );
         }
     }
 
@@ -160,12 +157,16 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_default_instance(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("default_instance() -> &'static {}", self.type_name), |w| {
-            w.lazy_static_decl_get_simple(
-                "instance",
-                &self.type_name,
-                &format!("{}::new", self.type_name));
-        });
+        w.def_fn(
+            &format!("default_instance() -> &'static {}", self.type_name),
+            |w| {
+                w.lazy_static_decl_get_simple(
+                    "instance",
+                    &self.type_name,
+                    &format!("{}::new", self.type_name),
+                );
+            },
+        );
     }
 
     fn write_compute_size(&self, w: &mut CodeWriter) {
@@ -212,12 +213,17 @@ impl<'a> MessageGen<'a> {
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
         w.def_fn(
             "get_unknown_fields(&self) -> &::protobuf::UnknownFields",
-            |w| { w.write_line("&self.unknown_fields"); },
+            |w| {
+                w.write_line("&self.unknown_fields");
+            },
         );
         w.write_line("");
-        w.def_fn("mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields", |w| {
-            w.write_line("&mut self.unknown_fields");
-        });
+        w.def_fn(
+            "mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields",
+            |w| {
+                w.write_line("&mut self.unknown_fields");
+            },
+        );
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
@@ -241,27 +247,36 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor"), |w| {
-            w.lazy_static_decl_get("descriptor", "::protobuf::reflect::MessageDescriptor", |w| {
-                let fields = self.fields_except_group();
-                if fields.is_empty() {
-                    w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
-                } else {
-                    w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
-                }
-                for field in fields {
-                    field.write_descriptor_field("fields", w);;
-                }
-                w.write_line(&format!(
-                    "::protobuf::reflect::MessageDescriptor::new::<{}>(", self.type_name));
-                w.indented(|w| {
-                    w.write_line(&format!("\"{}\",", self.type_name));
-                    w.write_line("fields,");
-                    w.write_line("file_descriptor_proto()");
-                });
-                w.write_line(")");
-            });
-        });
+        w.def_fn(
+            &format!("descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor"),
+            |w| {
+                w.lazy_static_decl_get(
+                    "descriptor",
+                    "::protobuf::reflect::MessageDescriptor",
+                    |w| {
+                        let fields = self.fields_except_group();
+                        if fields.is_empty() {
+                            w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
+                        } else {
+                            w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
+                        }
+                        for field in fields {
+                            field.write_descriptor_field("fields", w);;
+                        }
+                        w.write_line(&format!(
+                            "::protobuf::reflect::MessageDescriptor::new::<{}>(",
+                            self.type_name
+                        ));
+                        w.indented(|w| {
+                            w.write_line(&format!("\"{}\",", self.type_name));
+                            w.write_line("fields,");
+                            w.write_line("file_descriptor_proto()");
+                        });
+                        w.write_line(")");
+                    },
+                );
+            },
+        );
     }
 
     fn write_is_initialized(&self, w: &mut CodeWriter) {
@@ -269,7 +284,9 @@ impl<'a> MessageGen<'a> {
             // TODO: use single loop
 
             for f in self.required_fields() {
-                f.write_if_self_field_is_none(w, |w| { w.write_line("return false;"); });
+                f.write_if_self_field_is_none(w, |w| {
+                    w.write_line("return false;");
+                });
             }
 
             for f in self.message_fields() {
@@ -282,10 +299,9 @@ impl<'a> MessageGen<'a> {
                 // if message is declared in this file and has no message fields,
                 // we could skip the check here
                 f.write_for_self_field(w, "v", |w, _t| {
-                    w.if_stmt(
-                        "!v.is_initialized()",
-                        |w| { w.write_line("return false;"); },
-                    );
+                    w.if_stmt("!v.is_initialized()", |w| {
+                        w.write_line("return false;");
+                    });
                 });
             }
             w.write_line("true");
@@ -306,9 +322,12 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_unknown_fields(w);
             w.write_line("");
-            w.def_fn("descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor", |w| {
-                w.write_line("Self::descriptor_static()");
-            });
+            w.def_fn(
+                "descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor",
+                |w| {
+                    w.write_line("Self::descriptor_static()");
+                },
+            );
             w.write_line("");
             w.def_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line(&format!("{}::new()", self.type_name));
@@ -323,15 +342,21 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |_w| {
-        });
+        w.impl_for_block(
+            "::protobuf::reflect::ProtobufValue",
+            &self.type_name,
+            |_w| {},
+        );
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
         w.impl_for_block("::std::fmt::Debug", &self.type_name, |w| {
-            w.def_fn("fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result", |w| {
-                w.write_line("::protobuf::text_format::fmt(self, f)");
-            });
+            w.def_fn(
+                "fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result",
+                |w| {
+                    w.write_line("::protobuf::text_format::fmt(self, f)");
+                },
+            );
         });
     }
 

@@ -1,18 +1,17 @@
 //! Oneof-related codegen functions.
 
-use protobuf::descriptorx::OneofVariantWithContext;
-use protobuf::descriptorx::WithScope;
-use field::FieldGen;
-use field::FieldElem;
-use rust_types_values::RustType;
-use protobuf::descriptorx::OneofWithContext;
-use protobuf::descriptor::FieldDescriptorProto;
-use message::MessageGen;
-use Customize;
 use code_writer::CodeWriter;
+use field::FieldElem;
+use field::FieldGen;
+use message::MessageGen;
+use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto_Type;
+use protobuf::descriptorx::OneofVariantWithContext;
+use protobuf::descriptorx::OneofWithContext;
+use protobuf::descriptorx::WithScope;
+use rust_types_values::RustType;
 use serde;
-
+use Customize;
 
 // oneof one { ... }
 #[derive(Clone)]
@@ -107,9 +106,11 @@ pub struct OneofGen<'a> {
 }
 
 impl<'a> OneofGen<'a> {
-    pub fn parse(message: &'a MessageGen, oneof: OneofWithContext<'a>, customize: &Customize)
-        -> OneofGen<'a>
-    {
+    pub fn parse(
+        message: &'a MessageGen,
+        oneof: OneofWithContext<'a>,
+        customize: &Customize,
+    ) -> OneofGen<'a> {
         let rust_name = oneof.rust_name();
         OneofGen {
             message: message,
@@ -133,7 +134,8 @@ impl<'a> OneofGen<'a> {
             .variants()
             .into_iter()
             .filter_map(|v| {
-                let field = self.message
+                let field = self
+                    .message
                     .fields
                     .iter()
                     .filter(|f| f.proto_field.name() == v.field.get_name())
@@ -143,9 +145,7 @@ impl<'a> OneofGen<'a> {
                     FieldDescriptorProto_Type::TYPE_GROUP => None,
                     _ => Some(OneofVariantGen::parse(self, v, field)),
                 }
-
-            })
-            .collect()
+            }).collect()
     }
 
     pub fn full_storage_type(&self) -> RustType {

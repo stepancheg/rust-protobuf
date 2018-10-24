@@ -1,6 +1,6 @@
-use std::io;
-use std::fmt;
 use std::error::Error;
+use std::fmt;
+use std::io;
 
 #[derive(Debug)]
 struct IoErrorWithMessage {
@@ -24,10 +24,12 @@ impl Error for IoErrorWithMessage {
     }
 }
 
-
-pub fn amend_io_error<M : Into<String>>(error: io::Error, message: M) -> io::Error {
-    io::Error::new(error.kind(), Box::new(IoErrorWithMessage {
-        message: message.into(),
-        underlying: error,
-    }))
+pub fn amend_io_error<M: Into<String>>(error: io::Error, message: M) -> io::Error {
+    io::Error::new(
+        error.kind(),
+        Box::new(IoErrorWithMessage {
+            message: message.into(),
+            underlying: error,
+        }),
+    )
 }
