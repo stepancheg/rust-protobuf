@@ -1,54 +1,53 @@
-use std::num::ParseIntError;
 use std::num::ParseFloatError;
+use std::num::ParseIntError;
 
 use std::f32;
 use std::f64;
 
 use super::base64;
 
-use Message;
 use enums::ProtobufEnum;
-use text_format::lexer::TokenizerError;
-use text_format::lexer::Loc;
-use text_format::lexer::Tokenizer;
-use text_format::lexer::ParserLanguage;
-use reflect::FieldDescriptor;
-use reflect::RuntimeFieldType;
-use reflect::RuntimeTypeDynamic;
-use reflect::ReflectValueBox;
-use reflect::RuntimeTypeBox;
+use json::base64::FromBase64Error;
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
+use reflect::FieldDescriptor;
 use reflect::MessageDescriptor;
-use json::base64::FromBase64Error;
+use reflect::ReflectValueBox;
+use reflect::RuntimeFieldType;
+use reflect::RuntimeTypeBox;
+use reflect::RuntimeTypeDynamic;
 use text_format::lexer::Lexer;
 use text_format::lexer::LexerError;
+use text_format::lexer::Loc;
+use text_format::lexer::ParserLanguage;
 use text_format::lexer::Token;
+use text_format::lexer::Tokenizer;
+use text_format::lexer::TokenizerError;
+use Message;
 
 use super::float;
 use super::rfc_3339;
 use text_format::lexer::JsonNumberLit;
 
+use json::well_known_wrapper::WellKnownWrapper;
+use well_known_types::Any;
+use well_known_types::BoolValue;
+use well_known_types::BytesValue;
+use well_known_types::DoubleValue;
 use well_known_types::Duration;
-use well_known_types::Timestamp;
 use well_known_types::FieldMask;
+use well_known_types::FloatValue;
+use well_known_types::Int32Value;
+use well_known_types::Int64Value;
+use well_known_types::ListValue;
 use well_known_types::NullValue;
+use well_known_types::StringValue;
+use well_known_types::Struct;
+use well_known_types::Timestamp;
+use well_known_types::UInt32Value;
+use well_known_types::UInt64Value;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
-use well_known_types::ListValue;
-use well_known_types::DoubleValue;
-use well_known_types::FloatValue;
-use well_known_types::Int64Value;
-use well_known_types::UInt64Value;
-use well_known_types::Int32Value;
-use well_known_types::UInt32Value;
-use well_known_types::BoolValue;
-use well_known_types::StringValue;
-use well_known_types::BytesValue;
-use well_known_types::Struct;
-use well_known_types::Any;
-use json::well_known_wrapper::WellKnownWrapper;
-
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -100,7 +99,6 @@ impl From<rfc_3339::Rfc3339ParseError> for ParseError {
     }
 }
 
-
 #[derive(Debug)]
 pub struct ParseErrorWithLoc {
     error: ParseError,
@@ -116,7 +114,7 @@ struct Parser<'a> {
     parse_options: ParseOptions,
 }
 
-trait FromJsonNumber : PartialEq + Sized {
+trait FromJsonNumber: PartialEq + Sized {
     fn from_f64(v: f64) -> Self;
     fn to_f64(&self) -> f64;
     fn from_string(v: &str) -> ParseResult<Self>;
@@ -222,7 +220,6 @@ impl FromJsonNumber for f64 {
     }
 }
 
-
 impl<'a> Parser<'a> {
     fn read_bool(&mut self) -> ParseResult<bool> {
         if self.tokenizer.next_ident_if_eq("true")? {
@@ -245,15 +242,13 @@ impl<'a> Parser<'a> {
     }
 
     fn read_json_number_opt(&mut self) -> ParseResult<Option<JsonNumberLit>> {
-        Ok(self.tokenizer.next_token_if_map(|t| {
-            match t {
-                Token::JsonNumber(v) => Some(v.clone()),
-                _ => None,
-            }
+        Ok(self.tokenizer.next_token_if_map(|t| match t {
+            Token::JsonNumber(v) => Some(v.clone()),
+            _ => None,
         })?)
     }
 
-    fn read_number<V : FromJsonNumber>(&mut self) -> ParseResult<V> {
+    fn read_number<V: FromJsonNumber>(&mut self) -> ParseResult<V> {
         if let Some(v) = self.read_json_number_opt()? {
             V::from_string(&v.0)
         } else if self.tokenizer.lookahead_is_str_lit()? {
@@ -264,14 +259,14 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_number<V : FromJsonNumber>(&self, s: &str) -> ParseResult<V> {
+    fn parse_number<V: FromJsonNumber>(&self, s: &str) -> ParseResult<V> {
         V::from_string(s)
     }
 
     fn merge_wrapper<W>(&mut self, w: &mut W) -> ParseResult<()>
-        where
-            W : WellKnownWrapper,
-            W::Underlying : FromJsonNumber,
+    where
+        W: WellKnownWrapper,
+        W::Underlying: FromJsonNumber,
     {
         *w.get_mut() = self.read_number()?;
         Ok(())
@@ -322,7 +317,11 @@ impl<'a> Parser<'a> {
         let mut lexer = Lexer::new(&str_lit.escaped, ParserLanguage::Json);
         let mut r = String::new();
         while !lexer.eof() {
-            r.push(lexer.next_json_char_value().map_err(ParseError::IncorrectStrLit)?);
+            r.push(
+                lexer
+                    .next_json_char_value()
+                    .map_err(ParseError::IncorrectStrLit)?,
+            );
         }
         Ok(r)
     }
@@ -336,9 +335,10 @@ impl<'a> Parser<'a> {
         Ok(base64::decode(s)?)
     }
 
-    fn read_enum<'e>(&mut self, descriptor: &'e EnumDescriptor)
-        -> ParseResult<&'e EnumValueDescriptor>
-    {
+    fn read_enum<'e>(
+        &mut self,
+        descriptor: &'e EnumDescriptor,
+    ) -> ParseResult<&'e EnumValueDescriptor> {
         if descriptor.is::<NullValue>() {
             return Ok(self.read_wk_null_value()?.descriptor());
         }
@@ -358,9 +358,11 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_enum<'e>(&self, name: String, descriptor: &'e EnumDescriptor)
-        -> ParseResult<&'e EnumValueDescriptor>
-    {
+    fn parse_enum<'e>(
+        &self,
+        name: String,
+        descriptor: &'e EnumDescriptor,
+    ) -> ParseResult<&'e EnumValueDescriptor> {
         // TODO: can map key be int
         match descriptor.value_by_name(&name) {
             Some(v) => Ok(v),
@@ -403,15 +405,15 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut Message,
         field: &FieldDescriptor,
-        t: &RuntimeTypeDynamic)
-        -> ParseResult<()>
-    {
+        t: &RuntimeTypeDynamic,
+    ) -> ParseResult<()> {
         field.set_singular_field(message, self.read_value(t)?);
         Ok(())
     }
 
     fn read_list<C>(&mut self, mut read_item: C) -> ParseResult<()>
-        where C : for<'b> FnMut(&'b mut Self) -> ParseResult<()>
+    where
+        C: for<'b> FnMut(&'b mut Self) -> ParseResult<()>,
     {
         if self.tokenizer.next_ident_if_eq("null")? {
             return Ok(());
@@ -436,9 +438,8 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut Message,
         field: &FieldDescriptor,
-        t: &RuntimeTypeDynamic)
-        -> ParseResult<()>
-    {
+        t: &RuntimeTypeDynamic,
+    ) -> ParseResult<()> {
         let mut repeated = field.mut_repeated(message);
         repeated.clear();
 
@@ -448,11 +449,7 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn merge_wk_list_value(
-        &mut self,
-        list: &mut ListValue)
-        -> ParseResult<()>
-    {
+    fn merge_wk_list_value(&mut self, list: &mut ListValue) -> ParseResult<()> {
         list.values.clear();
 
         self.read_list(|s| {
@@ -461,14 +458,17 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn read_map<K, Fk, Fi>(&mut self, mut parse_key: Fk, mut read_value_and_insert: Fi)
-        -> ParseResult<()>
-        where
-            Fk : for<'b> FnMut(&Self, String) -> ParseResult<K>,
-            Fi : for<'b> FnMut(&mut Self, K) -> ParseResult<()>,
+    fn read_map<K, Fk, Fi>(
+        &mut self,
+        mut parse_key: Fk,
+        mut read_value_and_insert: Fi,
+    ) -> ParseResult<()>
+    where
+        Fk: for<'b> FnMut(&Self, String) -> ParseResult<K>,
+        Fi: for<'b> FnMut(&mut Self, K) -> ParseResult<()>,
     {
         if self.tokenizer.next_ident_if_eq("null")? {
-            return Ok(())
+            return Ok(());
         }
 
         self.tokenizer.next_symbol_expect_eq('{')?;
@@ -499,9 +499,7 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::F32 => self.parse_number::<f32>(&key).map(ReflectValueBox::F32),
             RuntimeTypeBox::F64 => self.parse_number::<f64>(&key).map(ReflectValueBox::F64),
             RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::from),
-            RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
-                Ok(ReflectValueBox::String(key))
-            }
+            RuntimeTypeBox::String | RuntimeTypeBox::Chars => Ok(ReflectValueBox::String(key)),
             RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
                 self.parse_bytes(&key).map(ReflectValueBox::Bytes)
             }
@@ -515,35 +513,40 @@ impl<'a> Parser<'a> {
         message: &mut Message,
         field: &FieldDescriptor,
         kt: &RuntimeTypeDynamic,
-        vt: &RuntimeTypeDynamic)
-        -> ParseResult<()>
-    {
+        vt: &RuntimeTypeDynamic,
+    ) -> ParseResult<()> {
         let mut map = field.mut_map(message);
         map.clear();
 
-        self.read_map(|ss, s| ss.parse_key(s, kt), |s, k| {
-            let v = s.read_value(vt)?;
-            map.insert(k, v);
-            Ok(())
-        })
+        self.read_map(
+            |ss, s| ss.parse_key(s, kt),
+            |s, k| {
+                let v = s.read_value(vt)?;
+                map.insert(k, v);
+                Ok(())
+            },
+        )
     }
 
-    fn merge_wk_struct(
-        &mut self,
-        struct_value: &mut Struct)
-        -> ParseResult<()>
-    {
+    fn merge_wk_struct(&mut self, struct_value: &mut Struct) -> ParseResult<()> {
         struct_value.fields.clear();
 
-        self.read_map(|_, s| Ok(s), |s, k| {
-            let v = s.read_wk_value()?;
-            struct_value.fields.insert(k, v);
-            Ok(())
-        })
+        self.read_map(
+            |_, s| Ok(s),
+            |s, k| {
+                let v = s.read_wk_value()?;
+                struct_value.fields.insert(k, v);
+                Ok(())
+            },
+        )
     }
 
     fn skip_json_value(&mut self) -> ParseResult<()> {
-        if self.tokenizer.next_ident_if_in(&["true", "false", "null"])?.is_some() {
+        if self
+            .tokenizer
+            .next_ident_if_in(&["true", "false", "null"])?
+            .is_some()
+        {
         } else if self.tokenizer.lookahead_is_str_lit()? {
             self.tokenizer.next_str_lit()?;
         } else if self.tokenizer.lookahead_is_json_number()? {
@@ -681,25 +684,24 @@ impl<'a> Parser<'a> {
             (_, 0) => return Err(ParseError::IncorrectDuration),
             (s, _) => s,
         };
-        let nanos =
-            if lexer.next_char_if_eq('.') {
-                let (mut a, mut b) = next_dec(&mut lexer)?;
-                if b > 9 {
-                    return Err(ParseError::IncorrectDuration);
-                }
-                while b != 9 {
-                    b += 1;
-                    a *= 10;
-                }
+        let nanos = if lexer.next_char_if_eq('.') {
+            let (mut a, mut b) = next_dec(&mut lexer)?;
+            if b > 9 {
+                return Err(ParseError::IncorrectDuration);
+            }
+            while b != 9 {
+                b += 1;
+                a *= 10;
+            }
 
-                if a > 999_999_999 {
-                    return Err(ParseError::IncorrectDuration);
-                }
+            if a > 999_999_999 {
+                return Err(ParseError::IncorrectDuration);
+            }
 
-                a
-            } else {
-                0
-            };
+            a
+        } else {
+            0
+        };
 
         // The suffix "s" is required
         if !lexer.next_char_if_eq('s') {
@@ -785,7 +787,7 @@ impl<'a> Parser<'a> {
             Err(error) => Err(ParseErrorWithLoc {
                 error,
                 loc: self.tokenizer.loc(),
-            })
+            }),
         }
     }
 }
@@ -797,9 +799,11 @@ pub struct ParseOptions {
 }
 
 /// Merge JSON into provided message
-pub fn merge_from_str_with_options(message: &mut Message, json: &str, parse_options: &ParseOptions)
-    -> ParseWithLocResult<()>
-{
+pub fn merge_from_str_with_options(
+    message: &mut Message,
+    json: &str,
+    parse_options: &ParseOptions,
+) -> ParseWithLocResult<()> {
     let mut parser = Parser {
         tokenizer: Tokenizer::new(json, ParserLanguage::Json),
         parse_options: parse_options.clone(),
@@ -816,9 +820,8 @@ pub fn merge_from_str(message: &mut Message, json: &str) -> ParseWithLocResult<(
 pub fn parse_dynamic_from_str_with_options(
     d: &MessageDescriptor,
     json: &str,
-    parse_options: &ParseOptions)
-    -> ParseWithLocResult<Box<Message>>
-{
+    parse_options: &ParseOptions,
+) -> ParseWithLocResult<Box<Message>> {
     let mut m = d.new_instance();
     merge_from_str_with_options(&mut *m, json, parse_options)?;
     if let Err(_) = m.check_initialized() {
@@ -831,21 +834,23 @@ pub fn parse_dynamic_from_str_with_options(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_dynamic_from_str(d: &MessageDescriptor, json: &str)
-    -> ParseWithLocResult<Box<Message>>
-{
+pub fn parse_dynamic_from_str(
+    d: &MessageDescriptor,
+    json: &str,
+) -> ParseWithLocResult<Box<Message>> {
     parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_from_str_with_options<M : Message>(json: &str, parse_options: &ParseOptions)
-    -> ParseWithLocResult<M>
-{
+pub fn parse_from_str_with_options<M: Message>(
+    json: &str,
+    parse_options: &ParseOptions,
+) -> ParseWithLocResult<M> {
     let m = parse_dynamic_from_str_with_options(&M::descriptor_static(), json, parse_options)?;
     Ok(*m.downcast_box().unwrap())
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_from_str<M : Message>(json: &str) -> ParseWithLocResult<M> {
+pub fn parse_from_str<M: Message>(json: &str) -> ParseWithLocResult<M> {
     parse_from_str_with_options(json, &ParseOptions::default())
 }

@@ -1,8 +1,8 @@
 //! Lazily initialized data.
 //! Used in generated code.
 
-use std::sync;
 use std::cell::UnsafeCell;
+use std::sync;
 
 /// Lasily initialized data.
 // Fields are public until `const` functions available in stable.
@@ -22,7 +22,7 @@ impl<T> Lazy<T> {
     /// Get lazy field value, initialize it with given function if not yet.
     pub fn get<F>(&'static self, init: F) -> &'static T
     where
-        F : FnOnce() -> T,
+        F: FnOnce() -> T,
     {
         self.lock.call_once(|| unsafe {
             *self.ptr.get() = Box::into_raw(Box::new(init()));
@@ -34,9 +34,9 @@ impl<T> Lazy<T> {
 #[cfg(test)]
 mod test {
     use super::Lazy;
-    use std::thread;
+    use std::sync::atomic::{AtomicIsize, Ordering, ATOMIC_ISIZE_INIT};
     use std::sync::{Arc, Barrier};
-    use std::sync::atomic::{ATOMIC_ISIZE_INIT, AtomicIsize, Ordering};
+    use std::thread;
 
     #[test]
     fn many_threads_calling_get() {

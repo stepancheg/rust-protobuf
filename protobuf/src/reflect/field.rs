@@ -1,24 +1,23 @@
 use descriptor::FieldDescriptorProto;
-use reflect::accessor::FieldAccessor;
 use descriptor::FieldDescriptorProto_Label;
-use reflect::EnumDescriptor;
-use reflect::accessor::AccessorKind;
-use reflect::MessageDescriptor;
-use reflect::reflect_deep_eq::ReflectDeepEq;
-use Message;
-use reflect::accessor::singular::SingularFieldAccessor;
-use reflect::accessor::repeated::RepeatedFieldAccessor;
+use json::json_name;
 use reflect::accessor::map::MapFieldAccessor;
+use reflect::accessor::repeated::RepeatedFieldAccessor;
+use reflect::accessor::singular::SingularFieldAccessor;
+use reflect::accessor::AccessorKind;
+use reflect::accessor::FieldAccessor;
+use reflect::map::ReflectMapMut;
+use reflect::map::ReflectMapRef;
+use reflect::reflect_deep_eq::ReflectDeepEq;
+use reflect::repeated::ReflectRepeatedMut;
+use reflect::repeated::ReflectRepeatedRef;
+use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
+use reflect::MessageDescriptor;
+use reflect::ReflectValueBox;
 use reflect::ReflectValueRef;
 use reflect::RuntimeTypeDynamic;
-use reflect::ReflectValueBox;
-use reflect::repeated::ReflectRepeatedRef;
-use reflect::repeated::ReflectRepeatedMut;
-use reflect::map::ReflectMapRef;
-use reflect::map::ReflectMapMut;
-use json::json_name;
-
+use Message;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 pub enum ReflectFieldRef<'a> {
@@ -33,19 +32,13 @@ pub enum ReflectFieldRef<'a> {
 impl<'a> ReflectDeepEq for ReflectFieldRef<'a> {
     fn reflect_deep_eq(&self, that: &Self) -> bool {
         match (self, that) {
-            (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => {
-                match (a, b) {
-                    (Some(av), Some(bv)) => av.reflect_deep_eq(&bv),
-                    (None, None) => true,
-                    _ => false,
-                }
-            }
-            (ReflectFieldRef::Repeated(a), ReflectFieldRef::Repeated(b)) => {
-                a.reflect_deep_eq(b)
-            }
-            (ReflectFieldRef::Map(a), ReflectFieldRef::Map(b)) => {
-                a.reflect_deep_eq(b)
-            }
+            (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => match (a, b) {
+                (Some(av), Some(bv)) => av.reflect_deep_eq(&bv),
+                (None, None) => true,
+                _ => false,
+            },
+            (ReflectFieldRef::Repeated(a), ReflectFieldRef::Repeated(b)) => a.reflect_deep_eq(b),
+            (ReflectFieldRef::Map(a), ReflectFieldRef::Map(b)) => a.reflect_deep_eq(b),
             _ => unreachable!(),
         }
     }
@@ -58,10 +51,9 @@ pub enum RuntimeFieldType {
 }
 
 fn _assert_sync<'a>() {
-    fn _assert_send_sync<T : Sync>() {}
+    fn _assert_send_sync<T: Sync>() {}
     _assert_send_sync::<ReflectFieldRef<'a>>();
 }
-
 
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
@@ -103,7 +95,9 @@ impl FieldDescriptor {
     pub fn enum_descriptor(&self) -> &'static EnumDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.protobuf_type().runtime_type().enum_descriptor(),
-            AccessorKind::Repeated(ref a) => a.element_protobuf_type().runtime_type().enum_descriptor(),
+            AccessorKind::Repeated(ref a) => {
+                a.element_protobuf_type().runtime_type().enum_descriptor()
+            }
             _ => panic!("not a singular or repeated field"),
         }
     }
@@ -112,7 +106,10 @@ impl FieldDescriptor {
     pub fn message_descriptor(&self) -> &'static MessageDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.protobuf_type().runtime_type().message_descriptor(),
-            AccessorKind::Repeated(ref a) => a.element_protobuf_type().runtime_type().message_descriptor(),
+            AccessorKind::Repeated(ref a) => a
+                .element_protobuf_type()
+                .runtime_type()
+                .message_descriptor(),
             _ => panic!("not a singular or repeated field"),
         }
     }
@@ -127,7 +124,11 @@ impl FieldDescriptor {
 
     pub fn len_field(&self, m: &Message) -> usize {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => if a.get_reflect(m).is_some() { 1 } else { 0 },
+            AccessorKind::Singular(ref a) => if a.get_reflect(m).is_some() {
+                1
+            } else {
+                0
+            },
             AccessorKind::Repeated(ref a) => a.get_reflect(m).len(),
             AccessorKind::Map(ref a) => a.len_field_generic(m),
         }
@@ -255,18 +256,14 @@ impl FieldDescriptor {
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorKind::*;
         match self.accessor.accessor {
-            Singular(ref a) => {
-                RuntimeFieldType::Singular(a.protobuf_type().runtime_type())
-            },
+            Singular(ref a) => RuntimeFieldType::Singular(a.protobuf_type().runtime_type()),
             Repeated(ref a) => {
                 let element_protobuf_type = a.element_protobuf_type();
                 RuntimeFieldType::Repeated(element_protobuf_type.runtime_type())
-            },
+            }
             Map(ref a) => {
                 let (k, v) = a.entry_type();
-                RuntimeFieldType::Map(
-                    k.runtime_type(),
-                    v.runtime_type())
+                RuntimeFieldType::Map(k.runtime_type(), v.runtime_type())
             }
         }
     }
@@ -299,5 +296,4 @@ impl FieldDescriptor {
     pub fn mut_map<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
         self.map().mut_reflect(m)
     }
-
 }

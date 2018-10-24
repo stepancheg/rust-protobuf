@@ -2,10 +2,9 @@ use reflect::accessor::map::MapFieldAccessor;
 use reflect::accessor::repeated::RepeatedFieldAccessor;
 use reflect::accessor::singular::SingularFieldAccessor;
 
+pub(crate) mod map;
 pub(crate) mod repeated;
 pub(crate) mod singular;
-pub(crate) mod map;
-
 
 pub(crate) enum AccessorKind {
     Singular(Box<SingularFieldAccessor>),

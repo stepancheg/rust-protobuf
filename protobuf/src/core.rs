@@ -7,21 +7,20 @@ use std::io::Write;
 use bytes::Bytes;
 
 use clear::Clear;
-use reflect::ProtobufValue;
-use unknown::UnknownFields;
-use stream::WithCodedInputStream;
-use stream::WithCodedOutputStream;
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use stream::with_coded_output_stream_to_bytes;
 use error::ProtobufError;
 use error::ProtobufResult;
 use reflect::MessageDescriptor;
-
+use reflect::ProtobufValue;
+use stream::with_coded_output_stream_to_bytes;
+use stream::CodedInputStream;
+use stream::CodedOutputStream;
+use stream::WithCodedInputStream;
+use stream::WithCodedOutputStream;
+use unknown::UnknownFields;
 
 /// Trait implemented for all generated structs for protobuf messages.
 /// Also, generated messages implement `Clone + Default + PartialEq`
-pub trait Message : fmt::Debug + Clear + Send + Sync + ProtobufValue {
+pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
     fn descriptor(&self) -> &'static MessageDescriptor;
 
@@ -90,7 +89,9 @@ pub trait Message : fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Check if all required fields of this object are initialized.
     fn check_initialized(&self) -> ProtobufResult<()> {
         if !self.is_initialized() {
-            Err(ProtobufError::message_not_initialized(self.descriptor().name()))
+            Err(ProtobufError::message_not_initialized(
+                self.descriptor().name(),
+            ))
         } else {
             Ok(())
         }
@@ -142,11 +143,14 @@ pub trait Message : fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
 
     /// Create an empty message object.
-    fn new() -> Self where Self : Sized;
+    fn new() -> Self
+    where
+        Self: Sized;
 
     /// Get message descriptor for message type.
     fn descriptor_static() -> &'static MessageDescriptor
-        where Self : Sized
+    where
+        Self: Sized,
     {
         panic!(
             "descriptor_static is not implemented for message, \
@@ -156,11 +160,12 @@ pub trait Message : fmt::Debug + Clear + Send + Sync + ProtobufValue {
 
     /// Return a pointer to default immutable message.
     fn default_instance() -> &'static Self
-        where Self : Sized;
+    where
+        Self: Sized;
 }
 
 impl Message {
-    pub fn downcast_box<T : Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
+    pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
         if self.as_any().is::<T>() {
             unsafe {
                 let raw: *mut Message = Box::into_raw(self);
@@ -183,23 +188,20 @@ impl Clone for Box<Message> {
 impl PartialEq for Box<Message> {
     fn eq(&self, other: &Box<Message>) -> bool {
         use std::ops::Deref;
-        self.descriptor() == other.descriptor()
-            && self.descriptor().eq(self.deref(), other.deref())
+        self.descriptor() == other.descriptor() && self.descriptor().eq(self.deref(), other.deref())
     }
 }
 
-
-pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
+pub fn message_down_cast<'a, M: Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
-pub fn message_down_cast_mut<'a, M : Message + 'a>(m: &'a mut Message) -> &'a mut M {
+pub fn message_down_cast_mut<'a, M: Message + 'a>(m: &'a mut Message) -> &'a mut M {
     m.as_any_mut().downcast_mut::<M>().unwrap()
 }
 
-
 /// Parse message from stream.
-pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     let mut r: M = Message::new();
     r.merge_from(is)?;
     r.check_initialized()?;
@@ -208,21 +210,19 @@ pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M : Message>(reader: &mut Read) -> ProtobufResult<M> {
+pub fn parse_from_reader<M: Message>(reader: &mut Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
 /// Parse message from byte array.
-pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
+pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
 /// Parse message from `Bytes` object.
 /// Resulting message may share references to the passed bytes object.
 #[cfg(feature = "bytes")]
-pub fn parse_from_carllerche_bytes<M : Message>(
-    bytes: &Bytes,
-) -> ProtobufResult<M> {
+pub fn parse_from_carllerche_bytes<M: Message>(bytes: &Bytes) -> ProtobufResult<M> {
     // Call trait explicitly to avoid accidental construction from `&[u8]`
     WithCodedInputStream::with_coded_input_stream(bytes, |is| parse_from::<M>(is))
 }

@@ -13,31 +13,31 @@ extern crate serde;
 #[cfg(feature = "with-serde")]
 
 extern crate serde_derive;
+pub use clear::Clear;
+pub use core::parse_from_bytes;
+#[cfg(feature = "bytes")]
+pub use core::parse_from_carllerche_bytes;
+pub use core::parse_from_reader;
+pub use core::Message;
+pub use enums::ProtobufEnum;
+pub use oneof::Oneof;
+pub use repeated::RepeatedField;
+pub use singular::SingularField;
+pub use singular::SingularPtrField;
+pub use stream::CodedInputStream;
+pub use stream::CodedOutputStream;
 pub use unknown::UnknownFields;
 pub use unknown::UnknownFieldsIter;
 pub use unknown::UnknownValue;
 pub use unknown::UnknownValueRef;
 pub use unknown::UnknownValues;
 pub use unknown::UnknownValuesIter;
-pub use repeated::RepeatedField;
-pub use singular::SingularField;
-pub use singular::SingularPtrField;
-pub use clear::Clear;
-pub use core::Message;
-pub use core::parse_from_bytes;
-pub use core::parse_from_reader;
-#[cfg(feature = "bytes")]
-pub use core::parse_from_carllerche_bytes;
-pub use enums::ProtobufEnum;
-pub use oneof::Oneof;
-pub use stream::CodedInputStream;
-pub use stream::CodedOutputStream;
 pub mod wire_format;
-pub use error::ProtobufResult;
-pub use error::ProtobufError;
 pub use cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 pub use chars::Chars;
+pub use error::ProtobufError;
+pub use error::ProtobufResult;
 
 pub use reflect::types;
 
@@ -47,22 +47,22 @@ pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
 
+mod clear;
 mod core;
 mod enums;
-mod oneof;
-pub mod rt;
-mod lazy;
-mod repeated;
-mod singular;
-mod clear;
-pub mod reflect;
-pub mod text_format;
-pub mod json;
-pub mod stream;
 pub mod error;
-pub mod well_known_types;
 pub mod ext;
+pub mod json;
+mod lazy;
+mod oneof;
 pub mod prelude;
+pub mod reflect;
+mod repeated;
+pub mod rt;
+mod singular;
+pub mod stream;
+pub mod text_format;
+pub mod well_known_types;
 
 // used by test
 #[cfg(test)]
@@ -72,46 +72,45 @@ mod hex;
 // used by rust-grpc
 pub mod descriptorx;
 
-mod zigzag;
+mod cached_size;
+mod chars;
 mod paginate;
-mod unknown;
-mod strx;
 #[doc(hidden)] // used by codegen
 pub mod rust;
-mod cached_size;
+mod strx;
+mod unknown;
 mod varint;
-mod chars;
+mod zigzag;
 
 mod misc;
 
 mod buf_read_iter;
 
-
 // so `use protobuf::*` could work in mod descriptor and well_known_types
 mod protobuf {
+    pub use cached_size::CachedSize;
+    pub use clear::Clear;
+    pub use core::*;
     pub use descriptor;
     pub use descriptorx;
-    pub use reflect;
-    pub use core::*;
     pub use enums::ProtobufEnum;
-    pub use oneof::Oneof;
     pub use error::*;
-    pub use stream::*;
-    pub use rt;
-    pub use text_format;
-    pub use reflect::types;
-    pub use well_known_types;
     pub use ext;
-    pub use wire_format;
+    pub use oneof::Oneof;
+    pub use reflect;
+    pub use reflect::types;
+    pub use repeated::RepeatedField;
+    pub use rt;
+    pub use singular::SingularField;
+    pub use singular::SingularPtrField;
+    pub use stream::*;
+    pub use text_format;
     pub use unknown::UnknownFields;
     pub use unknown::UnknownFieldsIter;
     pub use unknown::UnknownValue;
     pub use unknown::UnknownValueRef;
     pub use unknown::UnknownValues;
     pub use unknown::UnknownValuesIter;
-    pub use repeated::RepeatedField;
-    pub use singular::SingularField;
-    pub use singular::SingularPtrField;
-    pub use clear::Clear;
-    pub use cached_size::CachedSize;
+    pub use well_known_types;
+    pub use wire_format;
 }

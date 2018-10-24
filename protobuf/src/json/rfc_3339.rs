@@ -1,12 +1,10 @@
 use std::fmt;
-use std::time::Duration;
 use std::i64;
-
+use std::time::Duration;
 
 // Number of seconds in a day is a constant.
 // We do not support leap seconds here.
 const SECONDS_IN_DAY: u64 = 86400;
-
 
 // Gregorian calendar has 400 years cycles, this is a procedure
 // for computing if a year is a leap year.
@@ -30,14 +28,12 @@ fn days_in_year(year: i64) -> u32 {
     }
 }
 
-
 // Number of leap years among 400 consecutive years.
 const CYCLE_LEAP_YEARS: u32 = 400 / 4 - 400 / 100 + 400 / 400;
 // Number of days in 400 years cycle.
 const CYCLE_DAYS: u32 = 400 * 365 + CYCLE_LEAP_YEARS;
 // Number of seconds in 400 years cycle.
 const CYCLE_SECONDS: u64 = CYCLE_DAYS as u64 * SECONDS_IN_DAY;
-
 
 // Number of seconds between 1 Jan 1970 and 1 Jan 2000.
 // Check with:
@@ -46,8 +42,8 @@ const YEARS_1970_2000_SECONDS: u64 = 946684800;
 // Number of seconds between 1 Jan 1600 and 1 Jan 1970.
 const YEARS_1600_1970_SECONDS: u64 = CYCLE_SECONDS - YEARS_1970_2000_SECONDS;
 
-
 // For each year in the cycle, number of leap years before in the cycle.
+#[cfg_attr(rustfmt, rustfmt_skip)]
 static YEAR_DELTAS: [u8; 401] = [
     0,  1,  1,  1,  1,  2,  2,  2,  2,  3,  3,  3,  3,  4,  4,  4,  4,  5,  5,  5,
     5,  6,  6,  6,  6,  7,  7,  7,  7,  8,  8,  8,  8,  9,  9,  9,  9, 10, 10, 10,
@@ -70,7 +66,6 @@ static YEAR_DELTAS: [u8; 401] = [
     87, 88, 88, 88, 88, 89, 89, 89, 89, 90, 90, 90, 90, 91, 91, 91, 91, 92, 92, 92,
     92, 93, 93, 93, 93, 94, 94, 94, 94, 95, 95, 95, 95, 96, 96, 96, 96, 97, 97, 97, 97,
 ];
-
 
 /// UTC time
 pub struct TmUtc {
@@ -104,9 +99,7 @@ pub enum Rfc3339ParseError {
 
 pub type Rfc3339ParseResult<A> = Result<A, Rfc3339ParseError>;
 
-
 impl TmUtc {
-
     fn day_of_cycle_to_year_day_of_year(day_of_cycle: u32) -> (i64, u32) {
         debug_assert!(day_of_cycle < CYCLE_DAYS);
 
@@ -208,11 +201,13 @@ impl TmUtc {
         cycle_start += cycles as i64 * 400;
         let day_of_cycle = days % CYCLE_DAYS as u64;
 
-        let (year_mod_400, day_of_year) = TmUtc::day_of_cycle_to_year_day_of_year(day_of_cycle as u32);
+        let (year_mod_400, day_of_year) =
+            TmUtc::day_of_cycle_to_year_day_of_year(day_of_cycle as u32);
 
         let (year,) = (cycle_start + year_mod_400,);
         let (month, day) = TmUtc::day_of_year_to_month_day(year, day_of_year);
-        let (hour, minute, second) = TmUtc::second_of_day_to_h_m_s(duration_of_day.as_secs() as u32);
+        let (hour, minute, second) =
+            TmUtc::second_of_day_to_h_m_s(duration_of_day.as_secs() as u32);
 
         TmUtc {
             year,
@@ -240,7 +235,10 @@ impl TmUtc {
 
             let cycles = (minus_seconds + CYCLE_SECONDS) / CYCLE_SECONDS;
 
-            (1970 - 400 * cycles as i64, cycles * CYCLE_SECONDS - minus_seconds)
+            (
+                1970 - 400 * cycles as i64,
+                cycles * CYCLE_SECONDS - minus_seconds,
+            )
         };
 
         year -= 370;
@@ -263,13 +261,13 @@ impl TmUtc {
         let second_of_cycle = day_of_cycle as u64 * SECONDS_IN_DAY + second_of_day as u64;
 
         let epoch_seconds = (cycle_start - 1600) / 400 * CYCLE_SECONDS as i64
-            - YEARS_1600_1970_SECONDS as i64 + second_of_cycle as i64;
+            - YEARS_1600_1970_SECONDS as i64
+            + second_of_cycle as i64;
 
         (epoch_seconds, self.nanos)
     }
 
     pub fn parse_rfc_3339(s: &str) -> Rfc3339ParseResult<(i64, u32)> {
-
         struct Parser<'a> {
             s: &'a [u8],
             pos: usize,
@@ -375,8 +373,7 @@ impl TmUtc {
             0
         };
 
-        let offset_seconds = if parser.lookahead_char()? == b'Z'
-            || parser.lookahead_char()? == b'z'
+        let offset_seconds = if parser.lookahead_char()? == b'Z' || parser.lookahead_char()? == b'z'
         {
             parser.pos += 1;
             0
@@ -416,7 +413,6 @@ impl TmUtc {
     }
 }
 
-
 impl fmt::Display for TmUtc {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.year > 9999 {
@@ -426,8 +422,11 @@ impl fmt::Display for TmUtc {
         } else {
             write!(f, "{:04}", self.year)?;
         }
-        write!(f, "-{:02}-{:02}T{:02}:{:02}:{:02}",
-            self.month, self.day, self.hour, self.minute, self.second)?;
+        write!(
+            f,
+            "-{:02}-{:02}T{:02}:{:02}:{:02}",
+            self.month, self.day, self.hour, self.minute, self.second
+        )?;
 
         // if precision is not specified, print nanoseconds
         let subsec_digits = f.precision().unwrap_or(9);
@@ -445,7 +444,7 @@ impl fmt::Display for TmUtc {
                 subsec /= 10;
             }
 
-            write!(f, ".{:0width$}", subsec, width=width as usize)?;
+            write!(f, ".{:0width$}", subsec, width = width as usize)?;
 
             // Adding more than 9 digits is meaningless,
             // but if user requests it, we should print zeros.
@@ -459,7 +458,6 @@ impl fmt::Display for TmUtc {
     }
 }
 
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -470,7 +468,10 @@ mod test {
         fn test_impl(expected: &str, secs: i64, nanos: u32, subsec_digits: u32) {
             let tm_utc = TmUtc::from_protobuf_timestamp(secs, nanos);
 
-            assert_eq!(expected, format!("{:.prec$}", tm_utc, prec=subsec_digits as usize));
+            assert_eq!(
+                expected,
+                format!("{:.prec$}", tm_utc, prec = subsec_digits as usize)
+            );
         }
 
         // Tests can be validated with with GNU date:
@@ -504,8 +505,11 @@ mod test {
     fn test_parse_fmt() {
         fn test_impl(s: &str, width: usize) {
             let (seconds, nanos) = TmUtc::parse_rfc_3339(s).unwrap();
-            let formatted = format!("{:.width$}",
-                TmUtc::from_protobuf_timestamp(seconds, nanos), width=width);
+            let formatted = format!(
+                "{:.width$}",
+                TmUtc::from_protobuf_timestamp(seconds, nanos),
+                width = width
+            );
             assert_eq!(formatted, s);
         }
 
@@ -562,9 +566,16 @@ mod test {
     fn test_fmt_max_duration() {
         // Simply check that there are no integer overflows.
         // I didn't check that resulting strings are correct.
-        assert_eq!("-292277022657-01-27T08:29:52.000000000Z",
-            format!("{}", TmUtc::from_protobuf_timestamp(i64::min_value(), 0)));
-        assert_eq!("+292277026596-12-04T15:30:07.999999999Z",
-            format!("{}", TmUtc::from_protobuf_timestamp(i64::max_value(), 999_999_999)));
+        assert_eq!(
+            "-292277022657-01-27T08:29:52.000000000Z",
+            format!("{}", TmUtc::from_protobuf_timestamp(i64::min_value(), 0))
+        );
+        assert_eq!(
+            "+292277026596-12-04T15:30:07.999999999Z",
+            format!(
+                "{}",
+                TmUtc::from_protobuf_timestamp(i64::max_value(), 999_999_999)
+            )
+        );
     }
 }

@@ -3,15 +3,14 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use core::*;
-use super::*;
 use super::as_any::AsAny;
+use super::*;
+use core::*;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 use reflect::transmute_eq::transmute_eq;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
-use reflect::reflect_deep_eq::ReflectDeepEq;
-
 
 /// Hack against lack of upcasting in Rust
 pub trait AsProtobufValue {
@@ -19,7 +18,7 @@ pub trait AsProtobufValue {
     fn as_protobuf_value_mut(&mut self) -> &mut ProtobufValue;
 }
 
-impl<T : ProtobufValue> AsProtobufValue for T {
+impl<T: ProtobufValue> AsProtobufValue for T {
     fn as_protobuf_value(&self) -> &ProtobufValue {
         self
     }
@@ -29,48 +28,35 @@ impl<T : ProtobufValue> AsProtobufValue for T {
     }
 }
 
-
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).
 ///
 /// Used for dynamic casting in reflection.
-pub trait ProtobufValue : AsAny + AsProtobufValue + 'static + Send + Sync {
-}
+pub trait ProtobufValue: AsAny + AsProtobufValue + 'static + Send + Sync {}
 
-impl ProtobufValue for u32 {
-}
+impl ProtobufValue for u32 {}
 
-impl ProtobufValue for u64 {
-}
+impl ProtobufValue for u64 {}
 
-impl ProtobufValue for i32 {
-}
+impl ProtobufValue for i32 {}
 
-impl ProtobufValue for i64 {
-}
+impl ProtobufValue for i64 {}
 
-impl ProtobufValue for f32 {
-}
+impl ProtobufValue for f32 {}
 
-impl ProtobufValue for f64 {
-}
+impl ProtobufValue for f64 {}
 
-impl ProtobufValue for bool {
-}
+impl ProtobufValue for bool {}
 
-impl ProtobufValue for String {
-}
+impl ProtobufValue for String {}
 
-impl ProtobufValue for Vec<u8> {
-}
+impl ProtobufValue for Vec<u8> {}
 
 #[cfg(feature = "bytes")]
-impl ProtobufValue for Bytes {
-}
+impl ProtobufValue for Bytes {}
 
 #[cfg(feature = "bytes")]
-impl ProtobufValue for Chars {
-}
+impl ProtobufValue for Chars {}
 
 // conflicting implementations, so generated code is used instead
 /*
@@ -80,7 +66,6 @@ impl<E : ProtobufEnum> ProtobufValue for E {
 impl<M : Message> ProtobufValue for M {
 }
 */
-
 
 #[derive(Debug)]
 pub enum ReflectValueRef<'a> {
@@ -166,7 +151,10 @@ impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
             (Message(a), Message(b)) => {
                 let ad = a.descriptor();
                 let bd = a.descriptor();
-                assert_eq!(ad as *const MessageDescriptor, bd as *const MessageDescriptor);
+                assert_eq!(
+                    ad as *const MessageDescriptor,
+                    bd as *const MessageDescriptor
+                );
                 ad.deep_eq(*a, *b)
             }
             _ => unreachable!(),
@@ -256,7 +244,7 @@ impl From<Box<Message>> for ReflectValueBox {
 }
 
 fn _assert_value_box_send_sync() {
-    fn _assert_send_sync<T : Send + Sync>() {}
+    fn _assert_send_sync<T: Send + Sync>() {}
     _assert_send_sync::<ReflectValueBox>();
 }
 
@@ -268,7 +256,6 @@ type VecU8OrBytes = Vec<u8>;
 type StringOrChars = String;
 #[cfg(feature = "bytes")]
 type StringOrChars = Chars;
-
 
 impl ReflectValueBox {
     pub fn as_value_ref(&self) -> ReflectValueRef {
@@ -320,7 +307,7 @@ impl ReflectValueBox {
         }
     }
 
-    pub fn downcast<V : 'static>(self) -> Result<V, Self> {
+    pub fn downcast<V: 'static>(self) -> Result<V, Self> {
         match self {
             ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),
             ReflectValueBox::U64(v) => transmute_eq(v).map_err(ReflectValueBox::U64),
@@ -329,22 +316,14 @@ impl ReflectValueBox {
             ReflectValueBox::F32(v) => transmute_eq(v).map_err(ReflectValueBox::F32),
             ReflectValueBox::F64(v) => transmute_eq(v).map_err(ReflectValueBox::F64),
             ReflectValueBox::Bool(v) => transmute_eq(v).map_err(ReflectValueBox::Bool),
-            ReflectValueBox::String(v) => {
-                transmute_eq::<String, _>(v)
-                    .or_else(|v: String| transmute_eq::<StringOrChars, _>(v.into()))
-                    .map_err(|v: StringOrChars| ReflectValueBox::String(v.into()))
-            },
-            ReflectValueBox::Bytes(v) => {
-                transmute_eq::<Vec<u8>, _>(v)
-                    .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
-                    .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into()))
-            },
-            ReflectValueBox::Enum(e) => {
-                e.cast().ok_or(ReflectValueBox::Enum(e))
-            }
-            ReflectValueBox::Message(m) => {
-                m.descriptor().cast(m).map_err(ReflectValueBox::Message)
-            }
+            ReflectValueBox::String(v) => transmute_eq::<String, _>(v)
+                .or_else(|v: String| transmute_eq::<StringOrChars, _>(v.into()))
+                .map_err(|v: StringOrChars| ReflectValueBox::String(v.into())),
+            ReflectValueBox::Bytes(v) => transmute_eq::<Vec<u8>, _>(v)
+                .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
+                .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into())),
+            ReflectValueBox::Enum(e) => e.cast().ok_or(ReflectValueBox::Enum(e)),
+            ReflectValueBox::Message(m) => m.descriptor().cast(m).map_err(ReflectValueBox::Message),
         }
     }
 }
@@ -367,7 +346,7 @@ impl<'a> PartialEq for ReflectValueRef<'a> {
             (Message(a), Message(b)) => {
                 use std::ops::Deref;
                 a.descriptor() == b.descriptor() && a.descriptor().eq(a.deref(), b.deref())
-            },
+            }
             _ => false,
         }
     }
@@ -393,7 +372,7 @@ impl<'a> PartialEq<ReflectValueBox> for ReflectValueRef<'a> {
 
 // Panics if contained type is not hashable
 impl<'a> Hash for ReflectValueRef<'a> {
-    fn hash<H : Hasher>(&self, state: &mut H) {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         use self::ReflectValueRef::*;
         Hash::hash(&mem::discriminant(self), state);
         match self {
@@ -405,16 +384,14 @@ impl<'a> Hash for ReflectValueRef<'a> {
             String(v) => Hash::hash(&v, state),
             Bytes(v) => Hash::hash(&v, state),
             Enum(v) => Hash::hash(v, state),
-            F32(_) | F64(_) | Message(_) => {
-                panic!("not hashable: {:?}", self)
-            }
+            F32(_) | F64(_) | Message(_) => panic!("not hashable: {:?}", self),
         }
     }
 }
 
 // Panics if contained type is not hashable
 impl Hash for ReflectValueBox {
-    fn hash<H : Hasher>(&self, state: &mut H) {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         Hash::hash(&self.as_value_ref(), state)
     }
 }
@@ -426,33 +403,42 @@ mod test {
     #[test]
     fn reflect_value_box_downcast_primitive() {
         assert_eq!(Ok(10), ReflectValueBox::U32(10).downcast::<u32>());
-        assert_eq!(Err(ReflectValueBox::I32(10)), ReflectValueBox::I32(10).downcast::<u32>());
+        assert_eq!(
+            Err(ReflectValueBox::I32(10)),
+            ReflectValueBox::I32(10).downcast::<u32>()
+        );
     }
 
     #[test]
     fn reflect_value_box_downcast_string() {
         assert_eq!(
             Ok("aa".to_owned()),
-            ReflectValueBox::String("aa".to_owned()).downcast::<String>());
+            ReflectValueBox::String("aa".to_owned()).downcast::<String>()
+        );
         assert_eq!(
             Err(ReflectValueBox::String("aa".to_owned())),
-            ReflectValueBox::String("aa".to_owned()).downcast::<u32>());
+            ReflectValueBox::String("aa".to_owned()).downcast::<u32>()
+        );
         assert_eq!(
             Err(ReflectValueBox::Bool(false)),
-            ReflectValueBox::Bool(false).downcast::<String>());
+            ReflectValueBox::Bool(false).downcast::<String>()
+        );
     }
 
     #[test]
     fn reflect_value_box_downcast_chars() {
         assert_eq!(
             Ok(StringOrChars::from("aa".to_owned())),
-            ReflectValueBox::String("aa".to_owned()).downcast::<StringOrChars>());
+            ReflectValueBox::String("aa".to_owned()).downcast::<StringOrChars>()
+        );
         assert_eq!(
             Err(ReflectValueBox::String("aa".to_owned())),
-            ReflectValueBox::String("aa".to_owned()).downcast::<u32>());
+            ReflectValueBox::String("aa".to_owned()).downcast::<u32>()
+        );
         assert_eq!(
             Err(ReflectValueBox::Bool(false)),
-            ReflectValueBox::Bool(false).downcast::<StringOrChars>());
+            ReflectValueBox::Bool(false).downcast::<StringOrChars>()
+        );
     }
 
 }

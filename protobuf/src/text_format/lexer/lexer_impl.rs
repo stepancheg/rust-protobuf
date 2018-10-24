@@ -1,18 +1,17 @@
-use std::num::ParseIntError;
-use std::f64;
 use std::char;
+use std::f64;
+use std::num::ParseIntError;
 
-use super::str_lit::StrLit;
-use super::str_lit::StrLitDecodeError;
+use super::float;
 use super::loc::Loc;
 use super::loc::FIRST_COL;
+use super::str_lit::StrLit;
+use super::str_lit::StrLitDecodeError;
 use super::token::Token;
 use super::token::TokenWithLocation;
-use super::float;
 use super::ParserLanguage;
 use std::num::ParseFloatError;
 use text_format::lexer::JsonNumberLit;
-
 
 #[derive(Debug)]
 pub enum LexerError {
@@ -33,7 +32,6 @@ pub enum LexerError {
 }
 
 pub type LexerResult<T> = Result<T, LexerError>;
-
 
 impl From<StrLitDecodeError> for LexerError {
     fn from(e: StrLitDecodeError) -> Self {
@@ -58,7 +56,6 @@ impl From<float::ProtobufFloatParseError> for LexerError {
         LexerError::IncorrectFloatLit
     }
 }
-
 
 #[derive(Copy, Clone)]
 pub struct Lexer<'a> {
@@ -132,9 +129,7 @@ impl<'a> Lexer<'a> {
         if self.skip_if_lookahead_is_str("/*") {
             let end = "*/";
             match self.rem_chars().find(end) {
-                None => {
-                    Err(LexerError::UnexpectedEof)
-                }
+                None => Err(LexerError::UnexpectedEof),
                 Some(len) => {
                     let new_pos = self.pos + len + end.len();
                     self.skip_to_pos(new_pos);
@@ -177,8 +172,7 @@ impl<'a> Lexer<'a> {
             ParserLanguage::TextFormat => {
                 self.skip_sh_comment();
             }
-            ParserLanguage::Json => {
-            }
+            ParserLanguage::Json => {}
         }
         Ok(())
     }
@@ -190,13 +184,14 @@ impl<'a> Lexer<'a> {
             self.skip_comment()?;
             if pos == self.pos {
                 // Did not advance
-                return Ok(())
+                return Ok(());
             }
         }
     }
 
     pub fn take_while<F>(&mut self, f: F) -> &'a str
-        where F : Fn(char) -> bool
+    where
+        F: Fn(char) -> bool,
     {
         let start = self.pos;
         while self.lookahead_char().map(&f) == Some(true) {
@@ -225,14 +220,15 @@ impl<'a> Lexer<'a> {
     }
 
     fn next_char_if<P>(&mut self, p: P) -> Option<char>
-        where P : FnOnce(char) -> bool
+    where
+        P: FnOnce(char) -> bool,
     {
         let mut clone = self.clone();
         match clone.next_char_opt() {
             Some(c) if p(c) => {
                 *self = clone;
                 Some(c)
-            },
+            }
             _ => None,
         }
     }
@@ -259,7 +255,8 @@ impl<'a> Lexer<'a> {
     }
 
     fn next_char_expect<P>(&mut self, expect: P, err: LexerError) -> LexerResult<char>
-        where P : FnOnce(char) -> bool
+    where
+        P: FnOnce(char) -> bool,
     {
         self.next_char_if(expect).ok_or(err)
     }
@@ -316,12 +313,14 @@ impl<'a> Lexer<'a> {
 
     // hexLit     = "0" ( "x" | "X" ) hexDigit { hexDigit }
     fn next_hex_lit_opt(&mut self) -> LexerResult<Option<u64>> {
-        Ok(if self.skip_if_lookahead_is_str("0x") || self.skip_if_lookahead_is_str("0X") {
-            let s = self.take_while(|c| c.is_ascii_hexdigit());
-            Some(u64::from_str_radix(s, 16)? as u64)
-        } else {
-            None
-        })
+        Ok(
+            if self.skip_if_lookahead_is_str("0x") || self.skip_if_lookahead_is_str("0X") {
+                let s = self.take_while(|c| c.is_ascii_hexdigit());
+                Some(u64::from_str_radix(s, 16)? as u64)
+            } else {
+                None
+            },
+        )
     }
 
     // decimalLit = ( "1" … "9" ) { decimalDigit }
@@ -359,7 +358,6 @@ impl<'a> Lexer<'a> {
     fn next_octal_digit(&mut self) -> LexerResult<u32> {
         self.next_char_expect(|c| c >= '0' && c <= '9', LexerError::ExpectOctDigit)
             .map(|c| c as u32 - '0' as u32)
-
     }
 
     // decimalDigit = "0" … "9"
@@ -417,7 +415,7 @@ impl<'a> Lexer<'a> {
                 self.next_exponent_opt()?;
             } else {
                 if self.next_exponent_opt()? == None {
-                    return Err(LexerError::IncorrectFloatLit)
+                    return Err(LexerError::IncorrectFloatLit);
                 }
             }
         }
@@ -514,37 +512,35 @@ impl<'a> Lexer<'a> {
 
     // copy-paste of unstable `char::try_from`
     fn char_try_from(i: u32) -> LexerResult<char> {
-            if (i > char::MAX as u32) || (i >= 0xD800 && i <= 0xDFFF) {
-                Err(LexerError::IncorrectUnicodeChar)
-            } else {
-                Ok(unsafe { char::from_u32_unchecked(i) })
-            }
+        if (i > char::MAX as u32) || (i >= 0xD800 && i <= 0xDFFF) {
+            Err(LexerError::IncorrectUnicodeChar)
+        } else {
+            Ok(unsafe { char::from_u32_unchecked(i) })
+        }
     }
 
     pub fn next_json_char_value(&mut self) -> LexerResult<char> {
         match self.next_char()? {
-            '\\' => {
-                match self.next_char()? {
-                    '"' => Ok('"'),
-                    '\'' => Ok('\''),
-                    '\\' => Ok('\\'),
-                    '/' => Ok('/'),
-                    'b' => Ok('\x08'),
-                    'f' => Ok('\x0c'),
-                    'n' => Ok('\n'),
-                    'r' => Ok('\r'),
-                    't' => Ok('\t'),
-                    'u' => {
-                        let mut v = 0;
-                        for _ in 0..4 {
-                            let digit = self.next_hex_digit()?;
-                            v = v * 16 + digit;
-                        }
-                        Self::char_try_from(v)
+            '\\' => match self.next_char()? {
+                '"' => Ok('"'),
+                '\'' => Ok('\''),
+                '\\' => Ok('\\'),
+                '/' => Ok('/'),
+                'b' => Ok('\x08'),
+                'f' => Ok('\x0c'),
+                'n' => Ok('\n'),
+                'r' => Ok('\r'),
+                't' => Ok('\t'),
+                'u' => {
+                    let mut v = 0;
+                    for _ in 0..4 {
+                        let digit = self.next_hex_digit()?;
+                        v = v * 16 + digit;
                     }
-                    _ => Err(LexerError::IncorrectJsonEscape),
+                    Self::char_try_from(v)
                 }
-            }
+                _ => Err(LexerError::IncorrectJsonEscape),
+            },
             c => Ok(c),
         }
     }
@@ -573,7 +569,7 @@ impl<'a> Lexer<'a> {
             }
             self.next_char_expect_eq(q)?;
 
-            raw.push_str(&self.input[start + 1 .. self.pos - 1]);
+            raw.push_str(&self.input[start + 1..self.pos - 1]);
         }
         Ok(raw)
     }
@@ -707,21 +703,21 @@ mod test {
     use super::*;
 
     fn lex<P, R>(input: &str, parse_what: P) -> R
-        where P : FnOnce(&mut Lexer) -> LexerResult<R>
+    where
+        P: FnOnce(&mut Lexer) -> LexerResult<R>,
     {
         let mut lexer = Lexer::new(input, ParserLanguage::Proto);
-        let r = parse_what(&mut lexer)
-            .expect(&format!("lexer failed at {}", lexer.loc));
+        let r = parse_what(&mut lexer).expect(&format!("lexer failed at {}", lexer.loc));
         assert!(lexer.eof(), "check eof failed at {}", lexer.loc);
         r
     }
 
     fn lex_opt<P, R>(input: &str, parse_what: P) -> R
-        where P : FnOnce(&mut Lexer) -> LexerResult<Option<R>>
+    where
+        P: FnOnce(&mut Lexer) -> LexerResult<Option<R>>,
     {
         let mut lexer = Lexer::new(input, ParserLanguage::Proto);
-        let o = parse_what(&mut lexer)
-            .expect(&format!("lexer failed at {}", lexer.loc));
+        let o = parse_what(&mut lexer).expect(&format!("lexer failed at {}", lexer.loc));
         let r = o.expect(&format!("lexer returned none at {}", lexer.loc));
         assert!(lexer.eof(), "check eof failed at {}", lexer.loc);
         r
@@ -732,7 +728,6 @@ mod test {
         let msg = r#"10"#;
         let mess = lex_opt(msg, |p| p.next_int_lit_opt());
         assert_eq!(10, mess);
-
     }
 
     #[test]
@@ -740,7 +735,6 @@ mod test {
         let msg = r#"12.3"#;
         let mess = lex(msg, |p| p.next_token_inner());
         assert_eq!(Token::FloatLit(12.3), mess);
-
     }
 
 }

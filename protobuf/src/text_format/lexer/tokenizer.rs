@@ -1,12 +1,11 @@
 use text_format::lexer::Lexer;
-use text_format::lexer::TokenWithLocation;
-use text_format::lexer::ParserLanguage;
-use text_format::lexer::Loc;
-use text_format::lexer::Token;
 use text_format::lexer::LexerError;
+use text_format::lexer::Loc;
+use text_format::lexer::ParserLanguage;
 use text_format::lexer::StrLit;
 use text_format::lexer::StrLitDecodeError;
-
+use text_format::lexer::Token;
+use text_format::lexer::TokenWithLocation;
 
 #[derive(Debug)]
 pub enum TokenizerError {
@@ -36,7 +35,6 @@ impl From<StrLitDecodeError> for TokenizerError {
         TokenizerError::StrLitDecodeError(e)
     }
 }
-
 
 #[derive(Clone)]
 pub struct Tokenizer<'a> {
@@ -86,7 +84,10 @@ impl<'a> Tokenizer<'a> {
 
     fn next(&mut self) -> TokenizerResult<Option<Token>> {
         self.lookahead()?;
-        Ok(self.next_token.take().map(|TokenWithLocation { token, .. }| token))
+        Ok(self
+            .next_token
+            .take()
+            .map(|TokenWithLocation { token, .. }| token))
     }
 
     pub fn next_some(&mut self) -> TokenizerResult<Token> {
@@ -98,7 +99,8 @@ impl<'a> Tokenizer<'a> {
 
     /// Can be called only after lookahead, otherwise it's error
     pub fn advance(&mut self) -> TokenizerResult<Token> {
-        self.next_token.take()
+        self.next_token
+            .take()
             .map(|TokenWithLocation { token, .. }| token)
             .ok_or(TokenizerError::InternalError)
     }
@@ -109,16 +111,15 @@ impl<'a> Tokenizer<'a> {
     }
 
     pub fn next_token_if_map<P, R>(&mut self, p: P) -> TokenizerResult<Option<R>>
-        where P : FnOnce(&Token) -> Option<R>
+    where
+        P: FnOnce(&Token) -> Option<R>,
     {
         self.lookahead()?;
         let v = match self.next_token {
-            Some(ref token) => {
-                match p(&token.token) {
-                    Some(v) => v,
-                    None => return Ok(None),
-                }
-            }
+            Some(ref token) => match p(&token.token) {
+                Some(v) => v,
+                None => return Ok(None),
+            },
             _ => return Ok(None),
         };
         self.next_token = None;
@@ -126,9 +127,9 @@ impl<'a> Tokenizer<'a> {
     }
 
     pub fn next_token_check_map<P, R, E>(&mut self, p: P) -> Result<R, E>
-        where
-            P : FnOnce(&Token) -> Result<R, E>,
-            E : From<TokenizerError>,
+    where
+        P: FnOnce(&Token) -> Result<R, E>,
+        E: From<TokenizerError>,
     {
         self.lookahead()?;
         let r = match self.next_token {
@@ -140,7 +141,8 @@ impl<'a> Tokenizer<'a> {
     }
 
     fn next_token_if<P>(&mut self, p: P) -> TokenizerResult<Option<Token>>
-        where P : FnOnce(&Token) -> bool
+    where
+        P: FnOnce(&Token) -> bool,
     {
         self.next_token_if_map(|token| if p(token) { Some(token.clone()) } else { None })
     }
@@ -235,55 +237,48 @@ impl<'a> Tokenizer<'a> {
     }
 
     pub fn next_ident(&mut self) -> TokenizerResult<String> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::Ident(ref ident) => Ok(ident.clone()),
-                _ => Err(TokenizerError::ExpectIdent),
-            }
+        self.next_token_check_map(|token| match token {
+            &Token::Ident(ref ident) => Ok(ident.clone()),
+            _ => Err(TokenizerError::ExpectIdent),
         })
     }
 
     pub fn next_str_lit(&mut self) -> TokenizerResult<StrLit> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::StrLit(ref str_lit) => Ok(str_lit.clone()),
-                _ => Err(TokenizerError::ExpectStrLit),
-            }
+        self.next_token_check_map(|token| match token {
+            &Token::StrLit(ref str_lit) => Ok(str_lit.clone()),
+            _ => Err(TokenizerError::ExpectStrLit),
         })
     }
 
     pub fn next_int_lit(&mut self) -> TokenizerResult<u64> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::IntLit(v) => Ok(v),
-                _ => Err(TokenizerError::ExpectIntLit),
-            }
+        self.next_token_check_map(|token| match token {
+            &Token::IntLit(v) => Ok(v),
+            _ => Err(TokenizerError::ExpectIntLit),
         })
     }
 
     pub fn next_float_lit(&mut self) -> TokenizerResult<f64> {
-        self.next_token_check_map(|token| {
-            match token {
-                &Token::FloatLit(v) => Ok(v),
-                _ => Err(TokenizerError::ExpectFloatLit),
-            }
+        self.next_token_check_map(|token| match token {
+            &Token::FloatLit(v) => Ok(v),
+            _ => Err(TokenizerError::ExpectFloatLit),
         })
     }
-    
 }
 
 #[cfg(test)]
 mod test {
 
     use super::*;
-    
+
     fn tokenize<P, R>(input: &str, what: P) -> R
-        where P : FnOnce(&mut Tokenizer) -> TokenizerResult<R>
+    where
+        P: FnOnce(&mut Tokenizer) -> TokenizerResult<R>,
     {
         let mut tokenizer = Tokenizer::new(input, ParserLanguage::Proto);
-        let r = what(&mut tokenizer)
-            .expect(&format!("parse failed at {}", tokenizer.loc()));
-        let eof = tokenizer.syntax_eof().expect(&format!("check eof failed at {}", tokenizer.loc()));
+        let r = what(&mut tokenizer).expect(&format!("parse failed at {}", tokenizer.loc()));
+        let eof = tokenizer
+            .syntax_eof()
+            .expect(&format!("check eof failed at {}", tokenizer.loc()));
         assert!(eof, "{}", tokenizer.loc());
         r
     }
@@ -299,7 +294,12 @@ mod test {
     fn test_str_lit() {
         let msg = r#"  "a\nb"  "#;
         let mess = tokenize(msg, |p| p.next_str_lit());
-        assert_eq!(StrLit { escaped: r#"a\nb"#.to_owned() }, mess);
+        assert_eq!(
+            StrLit {
+                escaped: r#"a\nb"#.to_owned()
+            },
+            mess
+        );
     }
 
 }

@@ -9,15 +9,14 @@ use descriptor::FileDescriptorProto;
 use descriptorx::find_message_by_rust_name;
 
 use reflect::accessor::FieldAccessor;
-use reflect::FieldDescriptor;
 use reflect::reflect_deep_eq::ReflectDeepEq;
+use reflect::FieldDescriptor;
 
-use json;
 use descriptorx::MessageWithScope;
 use descriptorx::WithScope;
+use json;
 
-
-trait MessageFactory : Send + Sync + 'static {
+trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<Message>;
     fn default_instance(&self) -> &Message;
     fn clone(&self, message: &Message) -> Box<Message>;
@@ -27,7 +26,8 @@ trait MessageFactory : Send + Sync + 'static {
 struct MessageFactoryImpl<M>(marker::PhantomData<M>);
 
 impl<M> MessageFactory for MessageFactoryImpl<M>
-    where M : 'static + Message + Default + Clone + PartialEq
+where
+    M: 'static + Message + Default + Clone + PartialEq,
 {
     fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
@@ -63,7 +63,7 @@ pub struct MessageDescriptor {
 }
 
 impl MessageDescriptor {
-    pub fn for_type<M : Message>() -> &'static MessageDescriptor {
+    pub fn for_type<M: Message>() -> &'static MessageDescriptor {
         M::descriptor_static()
     }
 
@@ -82,9 +82,8 @@ impl MessageDescriptor {
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
-        factory: &'static MessageFactory)
-        -> MessageDescriptor
-    {
+        factory: &'static MessageFactory,
+    ) -> MessageDescriptor {
         let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
@@ -98,7 +97,11 @@ impl MessageDescriptor {
         for (i, f) in proto.message.field.iter().enumerate() {
             assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
             assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
-            assert!(index_by_name_or_json_name.insert(f.get_name().to_owned(), i).is_none());
+            assert!(
+                index_by_name_or_json_name
+                    .insert(f.get_name().to_owned(), i)
+                    .is_none()
+            );
 
             let json_name = json::json_name(f.get_name());
 
@@ -120,8 +123,7 @@ impl MessageDescriptor {
                 .map(|f| {
                     let proto = *field_proto_by_name.get(f.name).unwrap();
                     FieldDescriptor::new(f, proto)
-                })
-                .collect(),
+                }).collect(),
             index_by_name,
             index_by_name_or_json_name,
             index_by_number,
@@ -129,7 +131,7 @@ impl MessageDescriptor {
         }
     }
 
-    pub fn new<M : 'static + Message + Default + Clone + PartialEq>(
+    pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
@@ -169,8 +171,14 @@ impl MessageDescriptor {
     /// Panics is any message has different type than this descriptor.
     pub fn deep_eq(&self, a: &Message, b: &Message) -> bool {
         // Explicitly force panic even if field list is empty
-        assert_eq!(self as *const MessageDescriptor, a.descriptor() as *const MessageDescriptor);
-        assert_eq!(self as *const MessageDescriptor, b.descriptor() as *const MessageDescriptor);
+        assert_eq!(
+            self as *const MessageDescriptor,
+            a.descriptor() as *const MessageDescriptor
+        );
+        assert_eq!(
+            self as *const MessageDescriptor,
+            b.descriptor() as *const MessageDescriptor
+        );
 
         for field in self.fields() {
             let af = field.get_reflect(a);
@@ -212,11 +220,10 @@ impl MessageDescriptor {
         Some(&self.fields[index])
     }
 
-    pub fn cast<M : 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {
+    pub fn cast<M: 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {
         message.downcast_box::<M>().map(|m| *m)
     }
 }
-
 
 /// Identity comparison: message descriptor are equal if their addresses are equal
 impl PartialEq for MessageDescriptor {

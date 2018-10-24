@@ -2,9 +2,8 @@ use std::fmt;
 use std::fmt::Write;
 
 use core::Message;
-use reflect::ReflectValueRef;
 use reflect::ReflectFieldRef;
-
+use reflect::ReflectValueRef;
 
 fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     for &c in bytes {
@@ -146,14 +145,7 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
                     let mut entry_first = true;
 
                     print_field(buf, pretty, indent + 1, &mut entry_first, "key", k);
-                    print_field(
-                        buf,
-                        pretty,
-                        indent + 1,
-                        &mut entry_first,
-                        "value",
-                        v,
-                    );
+                    print_field(buf, pretty, indent + 1, &mut entry_first, "value", v);
                     do_indent(buf, pretty, indent);
                     buf.push_str("}");
                     print_end_field(buf, pretty);
@@ -207,7 +199,10 @@ mod test {
     }
 
     fn unescape_string(escaped: &str) -> Vec<u8> {
-        StrLit { escaped: escaped.to_owned() }.decode_bytes().expect("decode_bytes")
+        StrLit {
+            escaped: escaped.to_owned(),
+        }.decode_bytes()
+        .expect("decode_bytes")
     }
 
     fn test_escape_unescape(text: &str, escaped: &str) {

@@ -3,14 +3,13 @@ use std::slice;
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 
-use repeated::RepeatedField;
+use reflect::reflect_deep_eq::ReflectDeepEq;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use reflect::ReflectValueBox;
+use repeated::RepeatedField;
 use std::fmt;
-use reflect::reflect_deep_eq::ReflectDeepEq;
 
-
-pub(crate) trait ReflectRepeated : Sync + 'static + fmt::Debug {
+pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &ProtobufValue;
@@ -19,7 +18,7 @@ pub(crate) trait ReflectRepeated : Sync + 'static + fmt::Debug {
     fn clear(&mut self);
 }
 
-impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
+impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -50,7 +49,7 @@ impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
 }
 
 // useless
-impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
+impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -79,7 +78,7 @@ impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
     }
 }
 
-impl<V : ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<V> {
+impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -113,12 +112,13 @@ trait ReflectRepeatedIterTrait<'a> {
     fn next(&mut self) -> Option<&'a ProtobufValue>;
 }
 
-struct ReflectRepeatedIterImplSlice<'a, V : ProtobufValue + 'static> {
+struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
     iter: slice::Iter<'a, V>,
 }
 
-impl<'a, V : ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
-    for ReflectRepeatedIterImplSlice<'a, V> {
+impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
+    for ReflectRepeatedIterImplSlice<'a, V>
+{
     fn next(&mut self) -> Option<&'a ProtobufValue> {
         self.iter.next().map(|v| v as &ProtobufValue)
     }
@@ -287,7 +287,6 @@ impl<'a> ReflectDeepEq for ReflectRepeatedRef<'a> {
 
         true
     }
-
 }
 
 impl<'a> PartialEq for ReflectRepeatedRef<'a> {
@@ -340,7 +339,6 @@ impl<'a> PartialEq<ReflectRepeatedRef<'a>> for Vec<ReflectValueBox> {
     }
 }
 
-
 impl<'a> ReflectRepeatedMut<'a> {
     fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
         ReflectRepeatedRef {
@@ -360,7 +358,7 @@ impl<'a> ReflectRepeatedMut<'a> {
     pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
     }
-    
+
     pub fn element_type(&self) -> &RuntimeTypeDynamic {
         self.dynamic
     }
@@ -430,7 +428,6 @@ impl<'a> IntoIterator for &'a ReflectRepeatedMut<'a> {
         self.as_ref().into_iter()
     }
 }
-
 
 impl<'a> fmt::Debug for ReflectRepeatedRef<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

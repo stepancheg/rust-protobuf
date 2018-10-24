@@ -1,29 +1,30 @@
 #[cfg(feature = "with-serde")]
 use serde;
 
-use std::vec;
-use std::slice;
 use std::borrow::Borrow;
+use std::cmp::Ordering;
 use std::default::Default;
+use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::iter::FromIterator;
 use std::iter::IntoIterator;
-use std::ops::Index;
-use std::ops::IndexMut;
 use std::ops::Deref;
 use std::ops::DerefMut;
-use std::cmp::Ordering;
-use std::fmt;
+use std::ops::Index;
+use std::ops::IndexMut;
+use std::slice;
+use std::vec;
 
 use clear::Clear;
-
 
 /// Implemented for both `Vec` and `RepeatedField`.
 /// Used to simplify codegen, should not be used directly.
 pub trait VecLike<T> {
     fn push(&mut self, item: T);
-    fn push_default(&mut self) -> &mut T where T : Default + Clear;
+    fn push_default(&mut self) -> &mut T
+    where
+        T: Default + Clear;
 }
 
 impl<T> VecLike<T> for Vec<T> {
@@ -31,12 +32,14 @@ impl<T> VecLike<T> for Vec<T> {
         Vec::push(self, item)
     }
 
-    fn push_default(&mut self) -> &mut T where T : Default + Clear {
+    fn push_default(&mut self) -> &mut T
+    where
+        T: Default + Clear,
+    {
         self.push(Default::default());
         self.last_mut().unwrap()
     }
 }
-
 
 /// Wrapper around vector to avoid deallocations on clear.
 ///
@@ -70,7 +73,10 @@ impl<T> VecLike<T> for RepeatedField<T> {
         RepeatedField::push(self, item)
     }
 
-    fn push_default(&mut self) -> &mut T where T : Default + Clear {
+    fn push_default(&mut self) -> &mut T
+    where
+        T: Default + Clear,
+    {
         if self.len == self.vec.len() {
             self.vec.push(Default::default());
         } else {
@@ -286,7 +292,7 @@ impl<T> RepeatedField<T> {
     #[inline]
     pub fn sort_by<F>(&mut self, compare: F)
     where
-        F : Fn(&T, &T) -> Ordering,
+        F: Fn(&T, &T) -> Ordering,
     {
         self.as_mut_slice().sort_by(compare)
     }
@@ -304,7 +310,7 @@ impl<T> RepeatedField<T> {
     }
 }
 
-impl<T : Default + Clear> RepeatedField<T> {
+impl<T: Default + Clear> RepeatedField<T> {
     /// Push default value.
     /// This operation could be faster than `rf.push(Default::default())`,
     /// because it may reuse previously allocated and cleared element.
@@ -326,7 +332,7 @@ impl<T> From<Vec<T>> for RepeatedField<T> {
     }
 }
 
-impl<'a, T : Clone> From<&'a [T]> for RepeatedField<T> {
+impl<'a, T: Clone> From<&'a [T]> for RepeatedField<T> {
     #[inline]
     fn from(values: &'a [T]) -> RepeatedField<T> {
         RepeatedField::from_slice(values)
@@ -340,9 +346,7 @@ impl<T> Into<Vec<T>> for RepeatedField<T> {
     }
 }
 
-
-impl<T : Clone> RepeatedField<T> {
-
+impl<T: Clone> RepeatedField<T> {
     /// Copy slice data to `RepeatedField`
     #[inline]
     pub fn from_slice(values: &[T]) -> RepeatedField<T> {
@@ -362,7 +366,7 @@ impl<T : Clone> RepeatedField<T> {
     }
 }
 
-impl<T : Clone> Clone for RepeatedField<T> {
+impl<T: Clone> Clone for RepeatedField<T> {
     #[inline]
     fn clone(&self) -> RepeatedField<T> {
         RepeatedField {
@@ -374,7 +378,7 @@ impl<T : Clone> Clone for RepeatedField<T> {
 
 impl<T> FromIterator<T> for RepeatedField<T> {
     #[inline]
-    fn from_iter<I : IntoIterator<Item = T>>(iter: I) -> RepeatedField<T> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> RepeatedField<T> {
         RepeatedField::from_vec(FromIterator::from_iter(iter))
     }
 }
@@ -388,16 +392,16 @@ impl<'a, T> IntoIterator for &'a RepeatedField<T> {
     }
 }
 
-impl<T : PartialEq> PartialEq for RepeatedField<T> {
+impl<T: PartialEq> PartialEq for RepeatedField<T> {
     #[inline]
     fn eq(&self, other: &RepeatedField<T>) -> bool {
         self.as_ref() == other.as_ref()
     }
 }
 
-impl<T : Eq> Eq for RepeatedField<T> {}
+impl<T: Eq> Eq for RepeatedField<T> {}
 
-impl<T : PartialEq> RepeatedField<T> {
+impl<T: PartialEq> RepeatedField<T> {
     /// True iff this container contains given element.
     #[inline]
     pub fn contains(&self, value: &T) -> bool {
@@ -405,8 +409,8 @@ impl<T : PartialEq> RepeatedField<T> {
     }
 }
 
-impl<T : Hash> Hash for RepeatedField<T> {
-    fn hash<H : Hasher>(&self, state: &mut H) {
+impl<T: Hash> Hash for RepeatedField<T> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.as_ref().hash(state);
     }
 }
@@ -456,7 +460,7 @@ impl<T> IndexMut<usize> for RepeatedField<T> {
     }
 }
 
-impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
+impl<T: fmt::Debug> fmt::Debug for RepeatedField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.as_ref().fmt(f)
@@ -465,8 +469,12 @@ impl<T : fmt::Debug> fmt::Debug for RepeatedField<T> {
 
 #[cfg(feature = "with-serde")]
 impl<T: serde::Serialize> serde::Serialize for RepeatedField<T> {
-    fn serialize<S>(&self, serializer: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> where
-        S: serde::Serializer
+    fn serialize<S>(
+        &self,
+        serializer: S,
+    ) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error>
+    where
+        S: serde::Serializer,
     {
         self.as_ref().serialize(serializer)
     }
@@ -474,14 +482,13 @@ impl<T: serde::Serialize> serde::Serialize for RepeatedField<T> {
 
 #[cfg(feature = "with-serde")]
 impl<'de, T: serde::Deserialize<'de> + Default> serde::Deserialize<'de> for RepeatedField<T> {
-    fn deserialize<D>(deserializer: D)
-        -> Result<Self, <D as serde::Deserializer<'de>>::Error>
-        where D: serde::Deserializer<'de>
+    fn deserialize<D>(deserializer: D) -> Result<Self, <D as serde::Deserializer<'de>>::Error>
+    where
+        D: serde::Deserializer<'de>,
     {
         Vec::deserialize(deserializer).map(RepeatedField::from)
     }
 }
-
 
 #[cfg(test)]
 mod test {

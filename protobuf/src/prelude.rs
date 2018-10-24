@@ -1,11 +1,11 @@
 //! Prelude, should be imported by default when protobuf is used.
 
+use singular::OptionLike;
 use Message;
 use SingularPtrField;
-use singular::OptionLike;
 
 /// Trait is implemented by types which hold fields of generated messages.
-pub trait MessageField<M : Message + Default> {
+pub trait MessageField<M: Message + Default> {
     /// Get a message reference or default instance.
     fn get_message(&self) -> &M;
     /// Get a message reference, and initialize field with empty message
@@ -17,7 +17,7 @@ pub trait MessageField<M : Message + Default> {
     fn set_default(&mut self) -> &mut M;
 }
 
-impl <M : Message + Default> MessageField<M> for SingularPtrField<M> {
+impl<M: Message + Default> MessageField<M> for SingularPtrField<M> {
     fn get_message(&self) -> &M {
         match self.as_ref() {
             Some(m) => m,
@@ -48,7 +48,7 @@ impl <M : Message + Default> MessageField<M> for SingularPtrField<M> {
     }
 }
 
-impl <M : Message + Default> MessageField<M> for Option<Box<M>> {
+impl<M: Message + Default> MessageField<M> for Option<Box<M>> {
     fn get_message(&self) -> &M {
         match self {
             Some(m) => m,
@@ -84,7 +84,7 @@ impl <M : Message + Default> MessageField<M> for Option<Box<M>> {
     }
 }
 
-impl<M : Message + Default> MessageField<M> for Option<M> {
+impl<M: Message + Default> MessageField<M> for Option<M> {
     fn get_message(&self) -> &M {
         match self {
             Some(m) => m,

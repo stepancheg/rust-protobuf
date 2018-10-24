@@ -1,20 +1,19 @@
-use ProtobufEnum;
-use std::marker;
-use Message;
-use reflect::ReflectValueBox;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
-#[cfg(feature = "bytes")]
-use Chars;
-use reflect::ProtobufValue;
-use reflect::EnumDescriptor;
-use reflect::MessageDescriptor;
-use reflect::ReflectValueRef;
+use reflect::runtime_type_box::RuntimeTypeBox;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
+use reflect::EnumDescriptor;
+use reflect::MessageDescriptor;
+use reflect::ProtobufValue;
+use reflect::ReflectValueBox;
+use reflect::ReflectValueRef;
 use std::fmt;
-use reflect::runtime_type_box::RuntimeTypeBox;
-
+use std::marker;
+#[cfg(feature = "bytes")]
+use Chars;
+use Message;
+use ProtobufEnum;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -24,17 +23,19 @@ use reflect::runtime_type_box::RuntimeTypeBox;
 ///
 /// The downside is that we have to explicitly specify type parameters
 /// in a lot of places.
-pub trait RuntimeType : fmt::Debug + Send + Sync + 'static {
-    type Value : ProtobufValue + Clone + Sized + fmt::Debug + Default;
+pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
+    type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
     fn dynamic() -> &'static RuntimeTypeDynamic
-        where Self : Sized
+    where
+        Self: Sized,
     {
         &RuntimeTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
     fn runtime_type_box() -> RuntimeTypeBox
-        where Self : Sized;
+    where
+        Self: Sized;
 
     fn default_value_ref() -> ReflectValueRef<'static>;
 
@@ -66,13 +67,12 @@ pub trait RuntimeType : fmt::Debug + Send + Sync + 'static {
     }
 }
 
-pub trait RuntimeTypeWithDeref : RuntimeType {
-    type DerefTarget : ?Sized;
+pub trait RuntimeTypeWithDeref: RuntimeType {
+    type DerefTarget: ?Sized;
 
     // TODO: rename to `deref`
     fn defef_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
 }
-
 
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeF32;
@@ -103,9 +103,9 @@ pub struct RuntimeTypeCarllercheBytes;
 pub struct RuntimeTypeCarllercheChars;
 
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E : ProtobufEnum>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeMessage<M : Message>(marker::PhantomData<M>);
+pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
 
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeUnreachable;
@@ -113,7 +113,10 @@ pub struct RuntimeTypeUnreachable;
 impl RuntimeType for RuntimeTypeF32 {
     type Value = f32;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::F32
     }
 
@@ -150,7 +153,10 @@ impl RuntimeType for RuntimeTypeF64 {
         ReflectValueRef::F64(0.0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::F64
     }
 
@@ -185,7 +191,10 @@ impl RuntimeType for RuntimeTypeI32 {
         ReflectValueRef::I32(0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::I32
     }
 
@@ -220,7 +229,10 @@ impl RuntimeType for RuntimeTypeI64 {
         ReflectValueRef::I64(0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::I64
     }
 
@@ -251,7 +263,10 @@ impl RuntimeType for RuntimeTypeI64 {
 impl RuntimeType for RuntimeTypeU32 {
     type Value = u32;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::U32
     }
 
@@ -290,7 +305,10 @@ impl RuntimeType for RuntimeTypeU64 {
         ReflectValueRef::U64(0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::U64
     }
 
@@ -325,7 +343,10 @@ impl RuntimeType for RuntimeTypeBool {
         ReflectValueRef::Bool(false)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::Bool
     }
 
@@ -356,7 +377,10 @@ impl RuntimeType for RuntimeTypeBool {
 impl RuntimeType for RuntimeTypeString {
     type Value = String;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::String
     }
 
@@ -395,7 +419,10 @@ impl RuntimeTypeWithDeref for RuntimeTypeString {
 impl RuntimeType for RuntimeTypeVecU8 {
     type Value = Vec<u8>;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::VecU8
     }
 
@@ -439,7 +466,10 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
         ReflectValueRef::Bytes(b"")
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::CarllercheBytes
     }
 
@@ -481,7 +511,10 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
         ReflectValueRef::String("")
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::Chars
     }
 
@@ -515,11 +548,15 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
 }
 
 impl<E> RuntimeType for RuntimeTypeEnum<E>
-    where E : ProtobufEnum + ProtobufValue + fmt::Debug
+where
+    E: ProtobufEnum + ProtobufValue + fmt::Debug,
 {
     type Value = E;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::Enum(Self::enum_descriptor())
     }
 
@@ -556,11 +593,15 @@ impl<E> RuntimeType for RuntimeTypeEnum<E>
 }
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
-    where M : Message + Clone + ProtobufValue + Default
+where
+    M: Message + Clone + ProtobufValue + Default,
 {
     type Value = M;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         RuntimeTypeBox::Message(Self::message_descriptor())
     }
 
@@ -576,7 +617,7 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
         match value_box {
             ReflectValueBox::Message(v) => {
                 *v.into_any_box().downcast().expect("wrong message type")
-            },
+            }
             _ => panic!("wrong type"),
         }
     }
@@ -596,7 +637,10 @@ impl<M> RuntimeType for RuntimeTypeMessage<M>
 impl RuntimeType for RuntimeTypeUnreachable {
     type Value = u32;
 
-    fn runtime_type_box() -> RuntimeTypeBox where Self: Sized {
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
         unreachable!()
     }
 

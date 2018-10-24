@@ -1,42 +1,41 @@
-use std::fmt::Write as fmt_Write;
 use std::fmt;
+use std::fmt::Write as fmt_Write;
 
-use Message;
-use reflect::ReflectFieldRef;
-use reflect::ReflectValueRef;
-use reflect::ReflectRepeatedRef;
+use json::base64;
 use json::float;
+use reflect::ReflectFieldRef;
+use reflect::ReflectMapRef;
+use reflect::ReflectRepeatedRef;
+use reflect::ReflectValueRef;
 use std::f32;
 use std::f64;
-use reflect::ReflectMapRef;
-use json::base64;
+use Message;
 
+use well_known_types::Any;
+use well_known_types::BoolValue;
+use well_known_types::BytesValue;
+use well_known_types::DoubleValue;
+use well_known_types::Duration;
+use well_known_types::FieldMask;
+use well_known_types::FloatValue;
+use well_known_types::Int32Value;
+use well_known_types::Int64Value;
+use well_known_types::ListValue;
 use well_known_types::NullValue;
+use well_known_types::StringValue;
+use well_known_types::Struct;
+use well_known_types::Timestamp;
+use well_known_types::UInt32Value;
+use well_known_types::UInt64Value;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
-use well_known_types::DoubleValue;
-use well_known_types::FloatValue;
-use well_known_types::Int64Value;
-use well_known_types::UInt64Value;
-use well_known_types::Int32Value;
-use well_known_types::UInt32Value;
-use well_known_types::BoolValue;
-use well_known_types::StringValue;
-use well_known_types::BytesValue;
-use well_known_types::ListValue;
-use well_known_types::Struct;
-use well_known_types::Duration;
-use well_known_types::Timestamp;
-use well_known_types::FieldMask;
-use well_known_types::Any;
 
 use json::well_known_wrapper::WellKnownWrapper;
 
-use reflect::EnumValueDescriptor;
 use json::rfc_3339::TmUtc;
+use reflect::EnumValueDescriptor;
 use reflect::RuntimeFieldType;
 use reflect::RuntimeTypeBox;
-
 
 #[derive(Debug)]
 pub enum PrintError {
@@ -53,7 +52,6 @@ impl From<fmt::Error> for PrintError {
 
 pub type PrintResult<T> = Result<T, PrintError>;
 
-
 struct Printer {
     buf: String,
     print_options: PrintOptions,
@@ -63,7 +61,7 @@ trait PrintableToJson {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()>;
 }
 
-trait JsonFloat : fmt::Display + fmt::Debug + PrintableToJson {
+trait JsonFloat: fmt::Display + fmt::Debug + PrintableToJson {
     fn is_nan(&self) -> bool;
     fn is_pos_infinity(&self) -> bool;
     fn is_neg_infinity(&self) -> bool;
@@ -212,7 +210,13 @@ impl<'a> PrintableToJson for ReflectValueRef<'a> {
 impl PrintableToJson for Duration {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
         let sign = if self.seconds >= 0 { "" } else { "-" };
-        Ok(write!(w.buf, "\"{}{}.{:09}s\"", sign, self.seconds.abs(), self.nanos.abs())?)
+        Ok(write!(
+            w.buf,
+            "\"{}{}.{:09}s\"",
+            sign,
+            self.seconds.abs(),
+            self.nanos.abs()
+        )?)
     }
 }
 
@@ -265,12 +269,11 @@ impl PrintableToJson for Struct {
     }
 }
 
-impl<'a, P : PrintableToJson> PrintableToJson for &'a P {
+impl<'a, P: PrintableToJson> PrintableToJson for &'a P {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
         (*self).print_to_json(w)
     }
 }
-
 
 trait ObjectKey {
     fn print_object_key(&self, w: &mut Printer) -> PrintResult<()>;
@@ -285,7 +288,7 @@ impl<'a> ObjectKey for ReflectValueRef<'a> {
             ReflectValueRef::U64(v) => return w.print_printable(v),
             ReflectValueRef::I64(v) => return w.print_printable(v),
             ReflectValueRef::Enum(v) if !w.print_options.enum_values_int => return w.print_enum(v),
-            _ => {},
+            _ => {}
         }
 
         write!(w.buf, "\"")?;
@@ -295,14 +298,14 @@ impl<'a> ObjectKey for ReflectValueRef<'a> {
             ReflectValueRef::I32(v) => w.print_printable(v),
             ReflectValueRef::Bool(v) => w.print_printable(v),
             ReflectValueRef::Enum(v) if w.print_options.enum_values_int => w.print_enum(v),
-            ReflectValueRef::Enum(_) |
-            ReflectValueRef::U64(_) |
-            ReflectValueRef::I64(_) |
-            ReflectValueRef::String(_) |
-            ReflectValueRef::Bytes(_) => unreachable!(),
-            ReflectValueRef::F32(_) |
-            ReflectValueRef::F64(_) |
-            ReflectValueRef::Message(_) => panic!("cannot be object key"),
+            ReflectValueRef::Enum(_)
+            | ReflectValueRef::U64(_)
+            | ReflectValueRef::I64(_)
+            | ReflectValueRef::String(_)
+            | ReflectValueRef::Bytes(_) => unreachable!(),
+            ReflectValueRef::F32(_) | ReflectValueRef::F64(_) | ReflectValueRef::Message(_) => {
+                panic!("cannot be object key")
+            }
         }?;
 
         write!(w.buf, "\"")?;
@@ -317,12 +320,11 @@ impl ObjectKey for String {
     }
 }
 
-impl<'a, O : ObjectKey> ObjectKey for &'a O {
+impl<'a, O: ObjectKey> ObjectKey for &'a O {
     fn print_object_key(&self, w: &mut Printer) -> PrintResult<()> {
         (*self).print_object_key(w)
     }
 }
-
 
 impl Printer {
     fn print_comma_but_first(&mut self, first: &mut bool) -> fmt::Result {
@@ -338,14 +340,14 @@ impl Printer {
         Ok(write!(self.buf, "null")?)
     }
 
-    fn print_printable<F : PrintableToJson + ?Sized>(&mut self, f: &F) -> PrintResult<()> {
+    fn print_printable<F: PrintableToJson + ?Sized>(&mut self, f: &F) -> PrintResult<()> {
         f.print_to_json(self)
     }
 
     fn print_list<I>(&mut self, items: I) -> PrintResult<()>
-        where
-            I: IntoIterator,
-            I::Item: PrintableToJson,
+    where
+        I: IntoIterator,
+        I::Item: PrintableToJson,
     {
         write!(self.buf, "[")?;
         for (i, item) in items.into_iter().enumerate() {
@@ -363,10 +365,10 @@ impl Printer {
     }
 
     fn print_object<I, K, V>(&mut self, items: I) -> PrintResult<()>
-        where
-            I: IntoIterator<Item=(K, V)>,
-            K: ObjectKey,
-            V: PrintableToJson,
+    where
+        I: IntoIterator<Item = (K, V)>,
+        K: ObjectKey,
+        V: PrintableToJson,
     {
         write!(self.buf, "{{")?;
         for (i, (k, v)) in items.into_iter().enumerate() {
@@ -453,12 +455,10 @@ impl Printer {
                 ReflectFieldRef::Optional(None) => {
                     if self.print_options.always_output_default_values {
                         let is_message = match field_type {
-                            RuntimeFieldType::Singular(s) => {
-                                match s.to_box() {
-                                    RuntimeTypeBox::Message(_) => true,
-                                    _ => false,
-                                }
-                            }
+                            RuntimeFieldType::Singular(s) => match s.to_box() {
+                                RuntimeTypeBox::Message(_) => true,
+                                _ => false,
+                            },
                             _ => unreachable!(),
                         };
 
@@ -500,9 +500,9 @@ impl Printer {
     }
 
     fn print_wrapper<W>(&mut self, value: &W) -> PrintResult<()>
-        where
-            W : WellKnownWrapper,
-            W::Underlying : PrintableToJson,
+    where
+        W: WellKnownWrapper,
+        W::Underlying: PrintableToJson,
     {
         self.print_printable(value.get_ref())
     }
@@ -525,9 +525,10 @@ pub struct PrintOptions {
     pub always_output_default_values: bool,
 }
 
-pub fn print_to_string_with_options(message: &Message, print_options: &PrintOptions)
-    -> PrintResult<String>
-{
+pub fn print_to_string_with_options(
+    message: &Message,
+    print_options: &PrintOptions,
+) -> PrintResult<String> {
     let mut printer = Printer {
         buf: String::new(),
         print_options: print_options.clone(),

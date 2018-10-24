@@ -1,58 +1,62 @@
-use std::marker;
 use std::fmt;
+use std::marker;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use error::ProtobufResult;
 use core::Message;
 use enums::ProtobufEnum;
-use wire_format::WireType;
-use rt;
-use reflect::ProtobufValue;
-use unknown::UnknownValues;
+use error::ProtobufResult;
 use reflect::runtime_types::RuntimeType;
-use reflect::runtime_types::RuntimeTypeF32;
-use reflect::runtime_types::RuntimeTypeF64;
-use reflect::runtime_types::RuntimeTypeI32;
-use reflect::runtime_types::RuntimeTypeI64;
-use reflect::runtime_types::RuntimeTypeU32;
-use reflect::runtime_types::RuntimeTypeU64;
 use reflect::runtime_types::RuntimeTypeBool;
-use reflect::runtime_types::RuntimeTypeString;
-use reflect::runtime_types::RuntimeTypeVecU8;
 #[cfg(feature = "bytes")]
 use reflect::runtime_types::RuntimeTypeCarllercheBytes;
 #[cfg(feature = "bytes")]
 use reflect::runtime_types::RuntimeTypeCarllercheChars;
 use reflect::runtime_types::RuntimeTypeEnum;
+use reflect::runtime_types::RuntimeTypeF32;
+use reflect::runtime_types::RuntimeTypeF64;
+use reflect::runtime_types::RuntimeTypeI32;
+use reflect::runtime_types::RuntimeTypeI64;
 use reflect::runtime_types::RuntimeTypeMessage;
+use reflect::runtime_types::RuntimeTypeString;
+use reflect::runtime_types::RuntimeTypeU32;
+use reflect::runtime_types::RuntimeTypeU64;
 use reflect::runtime_types::RuntimeTypeUnreachable;
+use reflect::runtime_types::RuntimeTypeVecU8;
 use reflect::type_dynamic::ProtobufTypeDynamic;
 use reflect::type_dynamic::ProtobufTypeDynamicImpl;
+use reflect::ProtobufValue;
+use rt;
+use stream::CodedInputStream;
+use stream::CodedOutputStream;
+use unknown::UnknownValues;
+use wire_format::WireType;
 
-pub trait ProtobufType : Send + Sync + Clone + 'static {
-    type RuntimeType : RuntimeType;
+pub trait ProtobufType: Send + Sync + Clone + 'static {
+    type RuntimeType: RuntimeType;
 
     fn dynamic() -> &'static ProtobufTypeDynamic
-        where Self : Sized
+    where
+        Self: Sized,
     {
         &ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
     fn wire_type() -> WireType;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<<Self::RuntimeType as RuntimeType>::Value>;
+    fn read(is: &mut CodedInputStream)
+        -> ProtobufResult<<Self::RuntimeType as RuntimeType>::Value>;
 
     fn compute_size(value: &<Self::RuntimeType as RuntimeType>::Value) -> u32;
 
     /// Compute size adding length prefix if wire type is length delimited
     /// (i. e. string, bytes, message)
-    fn compute_size_with_length_delimiter(value: &<Self::RuntimeType as RuntimeType>::Value) -> u32 {
+    fn compute_size_with_length_delimiter(
+        value: &<Self::RuntimeType as RuntimeType>::Value,
+    ) -> u32 {
         let size = Self::compute_size(value);
         if Self::wire_type() == WireType::WireTypeLengthDelimited {
             rt::compute_raw_varint32_size(size) + size
@@ -61,7 +65,9 @@ pub trait ProtobufType : Send + Sync + Clone + 'static {
         }
     }
 
-    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<<Self::RuntimeType as RuntimeType>::Value> {
+    fn get_from_unknown(
+        _unknown_values: &UnknownValues,
+    ) -> Option<<Self::RuntimeType as RuntimeType>::Value> {
         unimplemented!()
     }
 
@@ -73,7 +79,9 @@ pub trait ProtobufType : Send + Sync + Clone + 'static {
 
     /// Get previously cached size with length prefix
     #[inline]
-    fn get_cached_size_with_length_delimiter(value: &<Self::RuntimeType as RuntimeType>::Value) -> u32 {
+    fn get_cached_size_with_length_delimiter(
+        value: &<Self::RuntimeType as RuntimeType>::Value,
+    ) -> u32 {
         let size = Self::get_cached_size(value);
         if Self::wire_type() == WireType::WireTypeLengthDelimited {
             rt::compute_raw_varint32_size(size) + size
@@ -90,7 +98,7 @@ pub trait ProtobufType : Send + Sync + Clone + 'static {
 }
 
 /// All fixed size types
-pub trait ProtobufTypeFixed : ProtobufType {
+pub trait ProtobufTypeFixed: ProtobufType {
     fn encoded_size() -> u32;
 }
 
@@ -135,9 +143,9 @@ pub struct ProtobufTypeCarllercheBytes;
 pub struct ProtobufTypeCarllercheChars;
 
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeEnum<E : ProtobufEnum>(marker::PhantomData<E>);
+pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeMessage<M : Message>(marker::PhantomData<M>);
+pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeUnreachable;
@@ -164,7 +172,6 @@ impl ProtobufType for ProtobufTypeFloat {
     ) -> ProtobufResult<()> {
         os.write_float(field_number, *value)
     }
-
 }
 
 impl ProtobufTypeFixed for ProtobufTypeFloat {
@@ -495,7 +502,6 @@ impl ProtobufType for ProtobufTypeBool {
     }
 }
 
-
 impl ProtobufType for ProtobufTypeString {
     type RuntimeType = RuntimeTypeString;
 
@@ -594,7 +600,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 }
 
-impl<E : ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
+impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
     type RuntimeType = RuntimeTypeEnum<E>;
 
     fn wire_type() -> WireType {
@@ -618,7 +624,7 @@ impl<E : ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTyp
     }
 }
 
-impl<M : Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
+impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
     type RuntimeType = RuntimeTypeMessage<M>;
 
     fn wire_type() -> WireType {
@@ -664,7 +670,11 @@ impl ProtobufType for ProtobufTypeUnreachable {
         unreachable!()
     }
 
-    fn write_with_cached_size(_field_number: u32, _value: &u32, _os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_with_cached_size(
+        _field_number: u32,
+        _value: &u32,
+        _os: &mut CodedOutputStream,
+    ) -> ProtobufResult<()> {
         unreachable!()
     }
 }

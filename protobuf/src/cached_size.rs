@@ -1,7 +1,7 @@
-use std::sync::atomic::AtomicUsize;
-use std::sync::atomic::Ordering;
 use std::hash::Hash;
 use std::hash::Hasher;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 
 /// Cached size field used in generated code.
 /// It is always equal to itself to simplify generated code.
@@ -24,7 +24,7 @@ impl CachedSize {
 impl Clone for CachedSize {
     fn clone(&self) -> CachedSize {
         CachedSize {
-            size: AtomicUsize::new(self.size.load(Ordering::Relaxed))
+            size: AtomicUsize::new(self.size.load(Ordering::Relaxed)),
         }
     }
 }
@@ -38,7 +38,7 @@ impl PartialEq<CachedSize> for CachedSize {
 impl Eq for CachedSize {}
 
 impl Hash for CachedSize {
-    fn hash<H : Hasher>(&self, _state: &mut H) {
+    fn hash<H: Hasher>(&self, _state: &mut H) {
         // ignore cached size in cache computation
     }
 }

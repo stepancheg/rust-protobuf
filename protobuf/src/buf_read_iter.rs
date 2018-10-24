@@ -1,21 +1,20 @@
 use std::cmp;
-use std::io::Read;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::io::Read;
 use std::mem;
 use std::u64;
 
 #[cfg(feature = "bytes")]
+use bytes::BufMut;
+#[cfg(feature = "bytes")]
 use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
-#[cfg(feature = "bytes")]
-use bytes::BufMut;
 
-use ProtobufResult;
-use ProtobufError;
 use error::WireError;
-
+use ProtobufError;
+use ProtobufResult;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -24,7 +23,6 @@ const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 const USE_UNSAFE_FOR_SPEED: bool = true;
 
 const NO_LIMIT: u64 = u64::MAX;
-
 
 /// Hold all possible combinations of input source
 enum InputSource<'a> {
@@ -73,9 +71,10 @@ impl<'a> Drop for BufReadIter<'a> {
 impl<'ignore> BufReadIter<'ignore> {
     pub fn from_read<'a>(read: &'a mut Read) -> BufReadIter<'a> {
         BufReadIter {
-            input_source: InputSource::Read(
-                BufReader::with_capacity(INPUT_STREAM_BUFFER_SIZE, read),
-            ),
+            input_source: InputSource::Read(BufReader::with_capacity(
+                INPUT_STREAM_BUFFER_SIZE,
+                read,
+            )),
             buf: &[],
             pos_within_buf: 0,
             limit_within_buf: 0,
@@ -173,7 +172,8 @@ impl<'ignore> BufReadIter<'ignore> {
     pub fn remaining_in_buf(&self) -> &[u8] {
         if USE_UNSAFE_FOR_SPEED {
             unsafe {
-                &self.buf
+                &self
+                    .buf
                     .get_unchecked(self.pos_within_buf..self.limit_within_buf)
             }
         } else {
@@ -258,9 +258,7 @@ impl<'ignore> BufReadIter<'ignore> {
     pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
-            buf.copy_from_slice(
-                &self.buf[self.pos_within_buf..self.pos_within_buf + buf_len],
-            );
+            buf.copy_from_slice(&self.buf[self.pos_within_buf..self.pos_within_buf + buf_len]);
             self.pos_within_buf += buf_len;
             return Ok(());
         }
@@ -391,9 +389,9 @@ mod test_bytes {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::io;
     use std::io::BufRead;
     use std::io::Read;
-    use std::io;
 
     #[test]
     fn eof_at_limit() {
@@ -426,12 +424,14 @@ mod test {
             }
         }
 
-        let mut read = Read5ThenPanic { pos : 0 };
+        let mut read = Read5ThenPanic { pos: 0 };
         let mut buf_read_iter = BufReadIter::from_buf_read(&mut read);
         assert_eq!(0, buf_read_iter.pos());
         let _prev_limit = buf_read_iter.push_limit(5);
         buf_read_iter.read_byte().expect("read_byte");
-        buf_read_iter.read_exact(&mut [1, 2, 3, 4]).expect("read_exact");
+        buf_read_iter
+            .read_exact(&mut [1, 2, 3, 4])
+            .expect("read_exact");
         assert!(buf_read_iter.eof().expect("eof"));
     }
 }

@@ -3,7 +3,6 @@ use std::fmt;
 pub const FIRST_LINE: u32 = 1;
 pub const FIRST_COL: u32 = 1;
 
-
 /// Location in file
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Loc {
@@ -27,5 +26,3 @@ impl Loc {
         }
     }
 }
-
-

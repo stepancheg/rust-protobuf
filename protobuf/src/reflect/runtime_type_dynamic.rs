@@ -1,14 +1,14 @@
 use std::marker;
 
+use reflect::runtime_type_box::RuntimeTypeBox;
+use reflect::runtime_types::RuntimeType;
+use reflect::EnumDescriptor;
+use reflect::MessageDescriptor;
 use reflect::ProtobufValue;
 use reflect::ReflectValueRef;
-use reflect::runtime_types::RuntimeType;
-use reflect::runtime_type_box::RuntimeTypeBox;
-use reflect::MessageDescriptor;
-use reflect::EnumDescriptor;
 
 /// Dynamic version of `RuntimeType`
-pub trait RuntimeTypeDynamic : Send + Sync + 'static {
+pub trait RuntimeTypeDynamic: Send + Sync + 'static {
     fn to_box(&self) -> RuntimeTypeBox;
 
     fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a>;
@@ -20,9 +20,9 @@ pub trait RuntimeTypeDynamic : Send + Sync + 'static {
     fn message_descriptor(&self) -> &'static MessageDescriptor;
 }
 
-pub(crate) struct RuntimeTypeDynamicImpl<T : RuntimeType>(pub marker::PhantomData<T>);
+pub(crate) struct RuntimeTypeDynamicImpl<T: RuntimeType>(pub marker::PhantomData<T>);
 
-impl<T : RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
+impl<T: RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
     fn to_box(&self) -> RuntimeTypeBox {
         T::runtime_type_box()
     }

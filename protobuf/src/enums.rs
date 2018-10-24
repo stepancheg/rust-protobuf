@@ -4,7 +4,6 @@ use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
 use reflect::ProtobufValue;
 
-
 /// Trait implemented by all protobuf enum types.
 pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
     /// Get enum `i32` value.
@@ -21,7 +20,9 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug
 
     /// Get enum value descriptor.
     fn descriptor(&self) -> &'static EnumValueDescriptor {
-        self.enum_descriptor().value_by_number(self.value()).unwrap()
+        self.enum_descriptor()
+            .value_by_number(self.value())
+            .unwrap()
     }
 
     /// Get enum descriptor.

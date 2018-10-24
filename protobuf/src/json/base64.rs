@@ -6,14 +6,14 @@ enum _CharacterSet {
     /// The standard character set (uses `+` and `/`)
     _Standard,
     /// The URL safe character set (uses `-` and `_`)
-    _UrlSafe
+    _UrlSafe,
 }
 
-static STANDARD_CHARS: &'static[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+static STANDARD_CHARS: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                                         abcdefghijklmnopqrstuvwxyz\
                                         0123456789+/";
 
-static _URLSAFE_CHARS: &'static[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+static _URLSAFE_CHARS: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                                        abcdefghijklmnopqrstuvwxyz\
                                        0123456789-_";
 
@@ -39,16 +39,15 @@ pub fn encode(input: &[u8]) -> String {
         let mut write = |val| *s_out.next().unwrap() = val;
 
         // Iterate though blocks of 4
-        while let (Some(first), Some(second), Some(third)) =
-        (s_in.next(), s_in.next(), s_in.next()) {
-
+        while let (Some(first), Some(second), Some(third)) = (s_in.next(), s_in.next(), s_in.next())
+        {
             let n = first << 16 | second << 8 | third;
 
             // This 24-bit number gets separated into four 6-bit numbers.
             write(enc((n >> 18) & 63));
             write(enc((n >> 12) & 63));
-            write(enc((n >> 6 ) & 63));
-            write(enc((n >> 0 ) & 63));
+            write(enc((n >> 6) & 63));
+            write(enc((n >> 0) & 63));
         }
 
         // Heh, would be cool if we knew this was exhaustive
@@ -56,18 +55,17 @@ pub fn encode(input: &[u8]) -> String {
         match mod_len {
             0 => (),
             1 => {
-                let n = (input[len-1] as u32) << 16;
+                let n = (input[len - 1] as u32) << 16;
                 write(enc((n >> 18) & 63));
                 write(enc((n >> 12) & 63));
             }
             2 => {
-                let n = (input[len-2] as u32) << 16 |
-                    (input[len-1] as u32) << 8;
+                let n = (input[len - 2] as u32) << 16 | (input[len - 1] as u32) << 8;
                 write(enc((n >> 18) & 63));
                 write(enc((n >> 12) & 63));
-                write(enc((n >> 6 ) & 63));
+                write(enc((n >> 6) & 63));
             }
-            _ => panic!("Algebra is broken, please alert the math police")
+            _ => panic!("Algebra is broken, please alert the math police"),
         }
     }
 
@@ -95,8 +93,12 @@ pub fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
             match code {
                 NEWLINE_CODE => continue,
                 EQUALS_CODE => break,
-                INVALID_CODE => return Err(FromBase64Error::InvalidBase64Byte(
-                    *byte, (byte as *const _ as usize) - input.as_ptr() as usize)),
+                INVALID_CODE => {
+                    return Err(FromBase64Error::InvalidBase64Byte(
+                        *byte,
+                        (byte as *const _ as usize) - input.as_ptr() as usize,
+                    ))
+                }
                 _ => unreachable!(),
             }
         }
@@ -106,15 +108,19 @@ pub fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
             modulus = 0;
             r.push((buf >> 22) as u8);
             r.push((buf >> 14) as u8);
-            r.push((buf >> 6 ) as u8);
+            r.push((buf >> 6) as u8);
         }
     }
 
     for byte in it {
         match *byte {
             b'=' | b'\r' | b'\n' => continue,
-            _ => return Err(FromBase64Error::InvalidBase64Byte(
-                *byte, (byte as *const _ as usize) - input.as_ptr() as usize)),
+            _ => {
+                return Err(FromBase64Error::InvalidBase64Byte(
+                    *byte,
+                    (byte as *const _ as usize) - input.as_ptr() as usize,
+                ))
+            }
         }
     }
 
@@ -124,7 +130,7 @@ pub fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
         }
         3 => {
             r.push((buf >> 16) as u8);
-            r.push((buf >> 8 ) as u8);
+            r.push((buf >> 8) as u8);
         }
         0 => (),
         _ => return Err(FromBase64Error::InvalidBase64Length),
@@ -194,14 +200,10 @@ mod tests {
 
     #[test]
     fn test_decode_newlines() {
-        assert_eq!(decode("Zm9v\r\nYmFy").unwrap(),
-            b"foobar");
-        assert_eq!(decode("Zm9vYg==\r\n").unwrap(),
-            b"foob");
-        assert_eq!(decode("Zm9v\nYmFy").unwrap(),
-            b"foobar");
-        assert_eq!(decode("Zm9vYg==\n").unwrap(),
-            b"foob");
+        assert_eq!(decode("Zm9v\r\nYmFy").unwrap(), b"foobar");
+        assert_eq!(decode("Zm9vYg==\r\n").unwrap(), b"foob");
+        assert_eq!(decode("Zm9v\nYmFy").unwrap(), b"foobar");
+        assert_eq!(decode("Zm9vYg==\n").unwrap(), b"foob");
     }
 
     #[test]
@@ -220,4 +222,3 @@ mod tests {
         assert!(decode("Z===").is_err());
     }
 }
-

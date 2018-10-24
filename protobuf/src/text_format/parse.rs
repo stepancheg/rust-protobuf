@@ -2,20 +2,19 @@ use std::str;
 
 use Message;
 
-use text_format::lexer::Loc;
-use text_format::lexer::ParserLanguage;
-use reflect::MessageDescriptor;
-use reflect::RuntimeFieldType;
-use reflect::ReflectValueBox;
-use reflect::RuntimeTypeDynamic;
-use reflect::RuntimeTypeBox;
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
+use reflect::MessageDescriptor;
+use reflect::ReflectValueBox;
+use reflect::RuntimeFieldType;
+use reflect::RuntimeTypeBox;
+use reflect::RuntimeTypeDynamic;
+use text_format::lexer::int;
+use text_format::lexer::Loc;
+use text_format::lexer::ParserLanguage;
 use text_format::lexer::StrLitDecodeError;
 use text_format::lexer::Tokenizer;
 use text_format::lexer::TokenizerError;
-use text_format::lexer::int;
-
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -45,7 +44,6 @@ impl From<int::Overflow> for ParseError {
         ParseError::IntegerOverflow
     }
 }
-
 
 #[derive(Debug)]
 pub struct ParseErrorWithLoc {
@@ -156,16 +154,25 @@ impl<'a> Parser<'a> {
     fn read_string(&mut self) -> ParseResult<String> {
         self.read_colon()?;
 
-        Ok(self.tokenizer.next_str_lit().and_then(|s| s.decode_utf8().map_err(From::from))?)
+        Ok(self
+            .tokenizer
+            .next_str_lit()
+            .and_then(|s| s.decode_utf8().map_err(From::from))?)
     }
 
     fn read_bytes(&mut self) -> ParseResult<Vec<u8>> {
         self.read_colon()?;
 
-        Ok(self.tokenizer.next_str_lit().and_then(|s| s.decode_bytes().map_err(From::from))?)
+        Ok(self
+            .tokenizer
+            .next_str_lit()
+            .and_then(|s| s.decode_bytes().map_err(From::from))?)
     }
 
-    fn read_message(&mut self, descriptor: &'static MessageDescriptor) -> ParseResult<Box<Message>> {
+    fn read_message(
+        &mut self,
+        descriptor: &'static MessageDescriptor,
+    ) -> ParseResult<Box<Message>> {
         let mut message = descriptor.new_instance();
 
         self.tokenizer.next_symbol_expect_eq('{')?;
@@ -176,9 +183,11 @@ impl<'a> Parser<'a> {
         Ok(message)
     }
 
-    fn read_map_entry(&mut self, k: &RuntimeTypeDynamic, v: &RuntimeTypeDynamic)
-        -> ParseResult<(ReflectValueBox, ReflectValueBox)>
-    {
+    fn read_map_entry(
+        &mut self,
+        k: &RuntimeTypeDynamic,
+        v: &RuntimeTypeDynamic,
+    ) -> ParseResult<(ReflectValueBox, ReflectValueBox)> {
         let key_field_name: &str = "key";
         let value_field_name: &str = "value";
 
@@ -225,24 +234,28 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::F32 => ReflectValueBox::F32(self.read_f32()?),
             RuntimeTypeBox::F64 => ReflectValueBox::F64(self.read_f64()?),
             RuntimeTypeBox::Bool => ReflectValueBox::Bool(self.read_bool()?),
-            RuntimeTypeBox::String |
-            RuntimeTypeBox::Chars => ReflectValueBox::String(self.read_string()?),
-            RuntimeTypeBox::VecU8 |
-            RuntimeTypeBox::CarllercheBytes => ReflectValueBox::Bytes(self.read_bytes()?),
+            RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
+                ReflectValueBox::String(self.read_string()?)
+            }
+            RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
+                ReflectValueBox::Bytes(self.read_bytes()?)
+            }
             RuntimeTypeBox::Message(m) => ReflectValueBox::Message(self.read_message(m)?),
         })
     }
 
-    fn merge_field(&mut self, message: &mut Message, descriptor: &MessageDescriptor)
-        -> ParseResult<()>
-    {
+    fn merge_field(
+        &mut self,
+        message: &mut Message,
+        descriptor: &MessageDescriptor,
+    ) -> ParseResult<()> {
         let field_name = self.next_field_name()?;
 
         let field = match descriptor.field_by_name(&field_name) {
             Some(field) => field,
             None => {
                 // TODO: shouldn't unknown fields be quietly skipped?
-                return Err(ParseError::UnknownField(field_name))
+                return Err(ParseError::UnknownField(field_name));
             }
         };
 
@@ -281,14 +294,14 @@ impl<'a> Parser<'a> {
             Err(error) => Err(ParseErrorWithLoc {
                 error,
                 loc: self.tokenizer.loc(),
-            })
+            }),
         }
     }
 }
 
 pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
-        tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat)
+        tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat),
     };
     parser.merge(message)
 }

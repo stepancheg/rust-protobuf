@@ -1,12 +1,12 @@
-use std::collections::HashMap;
-use std::collections::hash_map;
-use std::default::Default;
-use std::slice;
-use wire_format;
 use clear::Clear;
+use std::collections::hash_map;
+use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
+use std::default::Default;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::collections::hash_map::DefaultHasher;
+use std::slice;
+use wire_format;
 
 #[derive(Debug)]
 pub enum UnknownValue {
@@ -188,7 +188,9 @@ impl UnknownFields {
     }
 
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
-        UnknownFieldsIter { entries: self.fields.as_ref().map(|m| m.iter()) }
+        UnknownFieldsIter {
+            entries: self.fields.as_ref().map(|m| m.iter()),
+        }
     }
 
     pub fn get(&self, field_number: u32) -> Option<&UnknownValues> {
@@ -234,9 +236,9 @@ impl<'s> Iterator for UnknownFieldsIter<'s> {
 #[cfg(test)]
 mod test {
     use super::UnknownFields;
+    use std::collections::hash_map::DefaultHasher;
     use std::hash::Hash;
     use std::hash::Hasher;
-    use std::collections::hash_map::DefaultHasher;
 
     #[test]
     fn unknown_fields_hash() {

@@ -1,5 +1,5 @@
-mod print;
 mod parse;
+mod print;
 
 // Used by text format parser and by pure-rust codegen parsed
 // this it is public but hidden module.

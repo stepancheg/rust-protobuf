@@ -1,24 +1,24 @@
 #[cfg(feature = "with-serde")]
 use serde;
 
-use std::hash::Hash;
-use std::hash::Hasher;
-use std::option;
 use std::default::Default;
 use std::fmt;
+use std::hash::Hash;
+use std::hash::Hasher;
 use std::mem;
+use std::option;
 
 use clear::Clear;
-
 
 /// Option-like objects
 pub trait OptionLike<T> {
     fn into_option(self) -> Option<T>;
     fn as_option_ref(&self) -> Option<&T>;
     fn set_value(&mut self, value: T);
-    fn set_default(&mut self) -> &mut T where T : Default + Clear;
+    fn set_default(&mut self) -> &mut T
+    where
+        T: Default + Clear;
 }
-
 
 impl<T> OptionLike<T> for Option<T> {
     fn into_option(self) -> Option<T> {
@@ -33,7 +33,10 @@ impl<T> OptionLike<T> for Option<T> {
         *self = Some(value);
     }
 
-    fn set_default(&mut self) -> &mut T where T : Default + Clear {
+    fn set_default(&mut self) -> &mut T
+    where
+        T: Default + Clear,
+    {
         if self.is_some() {
             let v = self.as_mut().unwrap();
             v.clear();
@@ -59,7 +62,10 @@ impl<T> OptionLike<T> for Option<Box<T>> {
         *self = Some(Box::new(value))
     }
 
-    fn set_default(&mut self) -> &mut T where T : Default + Clear {
+    fn set_default(&mut self) -> &mut T
+    where
+        T: Default + Clear,
+    {
         if self.is_some() {
             let v = self.as_mut().unwrap();
             v.clear();
@@ -70,7 +76,6 @@ impl<T> OptionLike<T> for Option<Box<T>> {
         }
     }
 }
-
 
 /// Like `Option<T>`, but keeps the actual element on `clear`.
 pub struct SingularField<T> {
@@ -109,13 +114,21 @@ impl<T> SingularField<T> {
     /// Convert this object into `Option`.
     #[inline]
     pub fn into_option(self) -> Option<T> {
-        if self.set { Some(self.value) } else { None }
+        if self.set {
+            Some(self.value)
+        } else {
+            None
+        }
     }
 
     /// View data as `Option`.
     #[inline]
     pub fn as_ref<'a>(&'a self) -> Option<&'a T> {
-        if self.set { Some(&self.value) } else { None }
+        if self.set {
+            Some(&self.value)
+        } else {
+            None
+        }
     }
 
     /// View data as mutable `Option`.
@@ -153,23 +166,31 @@ impl<T> SingularField<T> {
     /// Unwrap data or return given default value.
     #[inline]
     pub fn unwrap_or(self, def: T) -> T {
-        if self.set { self.value } else { def }
+        if self.set {
+            self.value
+        } else {
+            def
+        }
     }
 
     /// Unwrap data or return given default value.
     #[inline]
     pub fn unwrap_or_else<F>(self, f: F) -> T
     where
-        F : FnOnce() -> T,
+        F: FnOnce() -> T,
     {
-        if self.set { self.value } else { f() }
+        if self.set {
+            self.value
+        } else {
+            f()
+        }
     }
 
     /// Apply a function to contained element and store result in new `SingularPtrField`.
     #[inline]
     pub fn map<U, F>(self, f: F) -> SingularPtrField<U>
     where
-        F : FnOnce(T) -> U,
+        F: FnOnce(T) -> U,
     {
         SingularPtrField::from_option(self.into_option().map(f))
     }
@@ -194,7 +215,7 @@ impl<T> SingularField<T> {
     }
 }
 
-impl<T : Default> SingularField<T> {
+impl<T: Default> SingularField<T> {
     /// Construct a `SingularField` with no data.
     #[inline]
     pub fn none() -> SingularField<T> {
@@ -323,16 +344,24 @@ impl<T> SingularPtrField<T> {
     /// Take the data or return supplied default element if empty.
     #[inline]
     pub fn unwrap_or(self, def: T) -> T {
-        if self.set { *self.value.unwrap() } else { def }
+        if self.set {
+            *self.value.unwrap()
+        } else {
+            def
+        }
     }
 
     /// Take the data or return supplied default element if empty.
     #[inline]
     pub fn unwrap_or_else<F>(self, f: F) -> T
     where
-        F : FnOnce() -> T,
+        F: FnOnce() -> T,
     {
-        if self.set { *self.value.unwrap() } else { f() }
+        if self.set {
+            *self.value.unwrap()
+        } else {
+            f()
+        }
     }
 
     /// Apply given function to contained data to construct another `SingularPtrField`.
@@ -340,7 +369,7 @@ impl<T> SingularPtrField<T> {
     #[inline]
     pub fn map<U, F>(self, f: F) -> SingularPtrField<U>
     where
-        F : FnOnce(T) -> U,
+        F: FnOnce(T) -> U,
     {
         SingularPtrField::from_option(self.into_option().map(f))
     }
@@ -375,7 +404,7 @@ impl<T> SingularPtrField<T> {
     }
 }
 
-impl<T : Default + Clear> SingularField<T> {
+impl<T: Default + Clear> SingularField<T> {
     /// Get contained data, consume self. Return default value for type if this is empty.
     #[inline]
     pub fn unwrap_or_default(mut self) -> T {
@@ -390,7 +419,7 @@ impl<T : Default + Clear> SingularField<T> {
     }
 }
 
-impl<T : Default + Clear> SingularPtrField<T> {
+impl<T: Default + Clear> SingularPtrField<T> {
     /// Get contained data, consume self. Return default value for type if this is empty.
     #[inline]
     pub fn unwrap_or_default(mut self) -> T {
@@ -411,7 +440,7 @@ impl<T : Default + Clear> SingularPtrField<T> {
     }
 }
 
-impl<T : Default> Default for SingularField<T> {
+impl<T: Default> Default for SingularField<T> {
     #[inline]
     fn default() -> SingularField<T> {
         SingularField::none()
@@ -425,7 +454,7 @@ impl<T> Default for SingularPtrField<T> {
     }
 }
 
-impl<T : Default> From<Option<T>> for SingularField<T> {
+impl<T: Default> From<Option<T>> for SingularField<T> {
     fn from(o: Option<T>) -> Self {
         SingularField::from_option(o)
     }
@@ -437,7 +466,7 @@ impl<T> From<Option<T>> for SingularPtrField<T> {
     }
 }
 
-impl<T : Clone + Default> Clone for SingularField<T> {
+impl<T: Clone + Default> Clone for SingularField<T> {
     #[inline]
     fn clone(&self) -> SingularField<T> {
         if self.set {
@@ -448,7 +477,7 @@ impl<T : Clone + Default> Clone for SingularField<T> {
     }
 }
 
-impl<T : Clone> Clone for SingularPtrField<T> {
+impl<T: Clone> Clone for SingularPtrField<T> {
     #[inline]
     fn clone(&self) -> SingularPtrField<T> {
         if self.set {
@@ -459,7 +488,7 @@ impl<T : Clone> Clone for SingularPtrField<T> {
     }
 }
 
-impl<T : fmt::Debug> fmt::Debug for SingularField<T> {
+impl<T: fmt::Debug> fmt::Debug for SingularField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
@@ -470,7 +499,7 @@ impl<T : fmt::Debug> fmt::Debug for SingularField<T> {
     }
 }
 
-impl<T : fmt::Debug> fmt::Debug for SingularPtrField<T> {
+impl<T: fmt::Debug> fmt::Debug for SingularPtrField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_some() {
@@ -481,33 +510,32 @@ impl<T : fmt::Debug> fmt::Debug for SingularPtrField<T> {
     }
 }
 
-impl<T : PartialEq> PartialEq for SingularField<T> {
+impl<T: PartialEq> PartialEq for SingularField<T> {
     #[inline]
     fn eq(&self, other: &SingularField<T>) -> bool {
         self.as_ref() == other.as_ref()
     }
 }
 
-impl<T : Eq> Eq for SingularField<T> {}
+impl<T: Eq> Eq for SingularField<T> {}
 
-impl<T : PartialEq> PartialEq for SingularPtrField<T> {
+impl<T: PartialEq> PartialEq for SingularPtrField<T> {
     #[inline]
     fn eq(&self, other: &SingularPtrField<T>) -> bool {
         self.as_ref() == other.as_ref()
     }
 }
 
-impl<T : Eq> Eq for SingularPtrField<T> {}
+impl<T: Eq> Eq for SingularPtrField<T> {}
 
-
-impl<T : Hash> Hash for SingularField<T> {
-    fn hash<H : Hasher>(&self, state: &mut H) {
+impl<T: Hash> Hash for SingularField<T> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.as_ref().hash(state);
     }
 }
 
-impl<T : Hash> Hash for SingularPtrField<T> {
-    fn hash<H : Hasher>(&self, state: &mut H) {
+impl<T: Hash> Hash for SingularPtrField<T> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.as_ref().hash(state);
     }
 }
@@ -530,7 +558,6 @@ impl<'a, T> IntoIterator for &'a SingularPtrField<T> {
     }
 }
 
-
 impl<T> OptionLike<T> for SingularField<T> {
     fn into_option(self) -> Option<T> {
         self.into_option()
@@ -548,7 +575,10 @@ impl<T> OptionLike<T> for SingularField<T> {
     /// This operation can be more efficient then construction of clear element,
     /// because it may reuse previously contained object.
     #[inline]
-    fn set_default<'a>(&'a mut self) -> &'a mut T where T : Default + Clear {
+    fn set_default<'a>(&'a mut self) -> &'a mut T
+    where
+        T: Default + Clear,
+    {
         self.set = true;
         self.value.clear();
         &mut self.value
@@ -573,7 +603,10 @@ impl<T> OptionLike<T> for SingularPtrField<T> {
     /// This operation can be more efficient then construction of clear element,
     /// because it may reuse previously contained object.
     #[inline]
-    fn set_default<'a>(&'a mut self) -> &'a mut T where T : Default + Clear {
+    fn set_default<'a>(&'a mut self) -> &'a mut T
+    where
+        T: Default + Clear,
+    {
         self.set = true;
         if self.value.is_some() {
             self.value.as_mut().unwrap().clear();
@@ -586,8 +619,12 @@ impl<T> OptionLike<T> for SingularPtrField<T> {
 
 #[cfg(feature = "with-serde")]
 impl<T: serde::Serialize> serde::Serialize for SingularPtrField<T> {
-    fn serialize<S>(&self, serializer: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> where
-        S: serde::Serializer
+    fn serialize<S>(
+        &self,
+        serializer: S,
+    ) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error>
+    where
+        S: serde::Serializer,
     {
         self.as_ref().serialize(serializer)
     }
@@ -595,8 +632,12 @@ impl<T: serde::Serialize> serde::Serialize for SingularPtrField<T> {
 
 #[cfg(feature = "with-serde")]
 impl<T: serde::Serialize> serde::Serialize for SingularField<T> {
-    fn serialize<S>(&self, serializer: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> where
-        S: serde::Serializer
+    fn serialize<S>(
+        &self,
+        serializer: S,
+    ) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error>
+    where
+        S: serde::Serializer,
     {
         self.as_ref().serialize(serializer)
     }
@@ -604,9 +645,9 @@ impl<T: serde::Serialize> serde::Serialize for SingularField<T> {
 
 #[cfg(feature = "with-serde")]
 impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for SingularPtrField<T> {
-    fn deserialize<D>(deserializer: D)
-        -> Result<Self, <D as serde::Deserializer<'de>>::Error>
-        where D: serde::Deserializer<'de>
+    fn deserialize<D>(deserializer: D) -> Result<Self, <D as serde::Deserializer<'de>>::Error>
+    where
+        D: serde::Deserializer<'de>,
     {
         Option::deserialize(deserializer).map(SingularPtrField::from)
     }
@@ -614,19 +655,18 @@ impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for SingularPtrFie
 
 #[cfg(feature = "with-serde")]
 impl<'de, T: serde::Deserialize<'de> + Default> serde::Deserialize<'de> for SingularField<T> {
-    fn deserialize<D>(deserializer: D)
-        -> Result<Self, <D as serde::Deserializer<'de>>::Error>
-        where D: serde::Deserializer<'de>
+    fn deserialize<D>(deserializer: D) -> Result<Self, <D as serde::Deserializer<'de>>::Error>
+    where
+        D: serde::Deserializer<'de>,
     {
         Option::deserialize(deserializer).map(SingularField::from)
     }
 }
 
-
 #[cfg(test)]
 mod test {
-    use clear::Clear;
     use super::SingularField;
+    use clear::Clear;
 
     #[test]
     fn test_set_default_clears() {

@@ -1,7 +1,7 @@
 use std::env;
-use std::process;
-use std::io::Read;
 use std::env::VarError;
+use std::io::Read;
+use std::process;
 
 // % rustc +stable --version
 // rustc 1.26.0 (a77568041 2018-05-07)
@@ -25,8 +25,12 @@ fn cfg_rust_version() {
 
     let mut rustc_version = String::new();
 
-    child.stdout.as_mut().expect("stdout")
-        .read_to_string(&mut rustc_version).expect("read_to_string");
+    child
+        .stdout
+        .as_mut()
+        .expect("stdout")
+        .read_to_string(&mut rustc_version)
+        .expect("read_to_string");
     assert!(child.wait().expect("wait").success());
 
     if version_is_nightly(&rustc_version) {

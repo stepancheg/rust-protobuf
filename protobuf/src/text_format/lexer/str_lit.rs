@@ -2,7 +2,6 @@ use super::lexer_impl::Lexer;
 use super::lexer_impl::LexerError;
 use text_format::lexer::ParserLanguage;
 
-
 #[derive(Debug)]
 pub enum StrLitDecodeError {
     Error,
@@ -15,7 +14,6 @@ impl From<LexerError> for StrLitDecodeError {
 }
 
 pub type StrLitDecodeResult<T> = Result<T, StrLitDecodeError>;
-
 
 /// String literal, both `string` and `bytes`.
 #[derive(Clone, Eq, PartialEq, Debug)]

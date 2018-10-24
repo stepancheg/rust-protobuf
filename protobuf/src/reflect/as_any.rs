@@ -13,7 +13,7 @@ pub trait AsAny {
     fn swap_with_any(&mut self, any: &mut Any);
 }
 
-impl<T : 'static> AsAny for T {
+impl<T: 'static> AsAny for T {
     fn as_any(&self) -> &Any {
         self
     }
@@ -35,4 +35,3 @@ impl<T : 'static> AsAny for T {
         mem::swap(self, that);
     }
 }
-
