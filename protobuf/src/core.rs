@@ -137,9 +137,9 @@ pub trait Message : fmt::Debug + Clear + Send + Sync + ProtobufValue {
     }
 
     /// Get a reference to unknown fields.
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
+    fn get_unknown_fields(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
+    fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
 
     /// Create an empty message object.
     fn new() -> Self where Self : Sized;
