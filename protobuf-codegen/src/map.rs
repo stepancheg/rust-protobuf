@@ -1,13 +1,12 @@
 use protobuf::prelude::*;
 
-use protobuf::descriptor::FieldDescriptorProto_Label;
 use protobuf::descriptorx::FieldWithContext;
 use protobuf::descriptorx::MessageWithScope;
+use protobuf::descriptor::FieldDescriptorProto_Label;
+
 
 /// Pair of (key, value) if this message is map entry
-pub fn map_entry<'a>(
-    d: &'a MessageWithScope,
-) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
+pub fn map_entry<'a>(d: &'a MessageWithScope) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
     if d.message.options.get_message().get_map_entry() {
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
@@ -29,14 +28,8 @@ pub fn map_entry<'a>(
         assert_eq!(1, key.number());
         assert_eq!(2, value.number());
 
-        assert_eq!(
-            FieldDescriptorProto_Label::LABEL_OPTIONAL,
-            key.field.get_label()
-        );
-        assert_eq!(
-            FieldDescriptorProto_Label::LABEL_OPTIONAL,
-            value.field.get_label()
-        );
+        assert_eq!(FieldDescriptorProto_Label::LABEL_OPTIONAL, key.field.get_label());
+        assert_eq!(FieldDescriptorProto_Label::LABEL_OPTIONAL, value.field.get_label());
 
         Some((key, value))
     } else {

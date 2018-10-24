@@ -2,40 +2,40 @@ extern crate protobuf;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
+use std::path::Path;
 use std::fs::File;
 use std::io;
-use std::io::Write;
-use std::path::Path;
+use std::io::Write as Write;
 
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 use protobuf::Message;
+use protobuf::descriptorx::*;
 
 use protobuf::prelude::*;
 
-mod amend_io_error_util;
-mod compiler_plugin;
-mod customize;
-mod enums;
-mod extensions;
-mod field;
-mod ident;
-mod map;
 mod message;
-mod oneof;
+mod enums;
 mod rust_types_values;
-mod serde;
 mod well_known_types;
+mod field;
+mod customize;
+mod extensions;
+mod oneof;
+mod amend_io_error_util;
+mod map;
+mod ident;
+mod compiler_plugin;
+mod serde;
 
-use customize::customize_from_rustproto_for_file;
 pub use customize::Customize;
+use customize::customize_from_rustproto_for_file;
 
 pub mod code_writer;
 
-use self::code_writer::CodeWriter;
+use self::message::*;
 use self::enums::*;
 use self::extensions::*;
-use self::message::*;
+use self::code_writer::CodeWriter;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
 use map::map_entry;
@@ -51,7 +51,7 @@ fn escape_byte(s: &mut String, b: u8) {
         write!(s, "\\{}", b as char).unwrap();
     } else if b == b'\0' {
         write!(s, "\\0").unwrap();
-    // ASCII printable except space
+        // ASCII printable except space
     } else if b > 0x20 && b < 0x7f {
         write!(s, "{}", b as char).unwrap();
     } else {
@@ -95,21 +95,15 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
         "::protobuf::descriptor::FileDescriptorProto",
     );
     w.write_line("");
-    w.def_fn(
-        "parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto",
-        |w| {
-            w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
-        },
-    );
+    w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
+        w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
+    });
     w.write_line("");
-    w.pub_fn(
-        "file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto",
-        |w| {
-            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line("parse_descriptor_proto()");
-            });
-        },
-    );
+    w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
+        w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+            w.write_line("parse_descriptor_proto()");
+        });
+    });
 }
 
 fn gen_file(
@@ -122,12 +116,9 @@ fn gen_file(
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
     customize.update_with(&customize_from_rustproto_for_file(
-        file.options.get_message(),
-    ));
+        file.options.get_message()));
 
-    let scope = FileScope {
-        file_descriptor: file,
-    }.to_scope();
+    let scope = FileScope { file_descriptor: file }.to_scope();
 
     let mut v = Vec::new();
 
@@ -171,9 +162,7 @@ pub fn gen(
     files_to_generate: &[String],
     customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
-    let root_scope = RootScope {
-        file_descriptors: file_descriptors,
-    };
+    let root_scope = RootScope { file_descriptors: file_descriptors };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
     let files_map: HashMap<&str, &FileDescriptorProto> =
@@ -184,7 +173,8 @@ pub fn gen(
     for file_name in files_to_generate {
         let file = files_map.get(&file_name[..]).expect(&format!(
             "file not found in file descriptors: {:?}, files: {:?}",
-            file_name, all_file_names
+            file_name,
+            all_file_names
         ));
         results.extend(gen_file(file, &files_map, &root_scope, customize));
     }
@@ -195,8 +185,9 @@ pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     files_to_generate: &[String],
     out_dir: &Path,
-    customize: &Customize,
-) -> io::Result<()> {
+    customize: &Customize)
+    -> io::Result<()>
+{
     let results = gen(file_descriptors, files_to_generate, customize);
 
     for r in &results {
@@ -204,11 +195,9 @@ pub fn gen_and_write(
         file_path.push(&r.name);
         let mut file_writer = File::create(&file_path)
             .map_err(|e| amend_io_error(e, format!("failed to create {:?}", file_path)))?;
-        file_writer
-            .write_all(&r.content)
+        file_writer.write_all(&r.content)
             .map_err(|e| amend_io_error(e, format!("failed to write to {:?}", file_path)))?;
-        file_writer
-            .flush()
+        file_writer.flush()
             .map_err(|e| amend_io_error(e, format!("failed to flush {:?}", file_path)))?;
     }
 
