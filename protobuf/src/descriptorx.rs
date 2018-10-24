@@ -1,4 +1,4 @@
-/// utilities to work with descriptor
+//! Utilities to work with descriptor
 
 use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
