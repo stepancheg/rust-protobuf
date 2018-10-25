@@ -1,8 +1,7 @@
-use protobuf::*;
 use protobuf::prelude::*;
+use protobuf::*;
 
 use super::test_required_pb::*;
-
 
 #[test]
 #[should_panic]

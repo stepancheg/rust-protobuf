@@ -1,16 +1,15 @@
 use std::str;
 
-use protobuf::text_format::lexer::NumLit;
-use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::LexerError;
-use protobuf::text_format::lexer::Token;
+use protobuf::text_format::lexer::NumLit;
 use protobuf::text_format::lexer::ParserLanguage;
+use protobuf::text_format::lexer::StrLitDecodeError;
+use protobuf::text_format::lexer::Token;
 
 use model::*;
+use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
-use protobuf::text_format::lexer::int;
-
 
 /// Basic information about parsing error.
 #[derive(Debug)]
@@ -53,7 +52,6 @@ impl From<int::Overflow> for ParserError {
     }
 }
 
-
 #[derive(Debug)]
 pub struct ParserErrorWithLocation {
     pub error: ParserError,
@@ -64,7 +62,6 @@ pub struct ParserErrorWithLocation {
 }
 
 pub type ParserResult<T> = Result<T, ParserError>;
-
 
 trait ToU8 {
     fn to_u8(&self) -> ParserResult<u8>;
@@ -132,7 +129,6 @@ impl ToU8 for u32 {
     }
 }
 
-
 #[derive(Clone)]
 pub(crate) struct Parser<'a> {
     pub tokenizer: Tokenizer<'a>,
@@ -151,65 +147,56 @@ enum MessageBodyParseMode {
 impl MessageBodyParseMode {
     fn label_allowed(&self, label: Rule) -> bool {
         match label {
-            Rule::Repeated => {
-                match *self {
-                    MessageBodyParseMode::MessageProto2 |
-                    MessageBodyParseMode::MessageProto3 |
-                    MessageBodyParseMode::ExtendProto2 |
-                    MessageBodyParseMode::ExtendProto3 => true,
-                    MessageBodyParseMode::Oneof => false,
-                }
-            }
-            Rule::Optional | Rule::Required => {
-                match *self {
-                    MessageBodyParseMode::MessageProto2 |
-                    MessageBodyParseMode::ExtendProto2 => true,
-                    MessageBodyParseMode::MessageProto3 |
-                    MessageBodyParseMode::ExtendProto3 |
-                    MessageBodyParseMode::Oneof => false,
-                }
-
-            }
+            Rule::Repeated => match *self {
+                MessageBodyParseMode::MessageProto2
+                | MessageBodyParseMode::MessageProto3
+                | MessageBodyParseMode::ExtendProto2
+                | MessageBodyParseMode::ExtendProto3 => true,
+                MessageBodyParseMode::Oneof => false,
+            },
+            Rule::Optional | Rule::Required => match *self {
+                MessageBodyParseMode::MessageProto2 | MessageBodyParseMode::ExtendProto2 => true,
+                MessageBodyParseMode::MessageProto3
+                | MessageBodyParseMode::ExtendProto3
+                | MessageBodyParseMode::Oneof => false,
+            },
         }
     }
 
     fn some_label_required(&self) -> bool {
         match *self {
-            MessageBodyParseMode::MessageProto2 |
-            MessageBodyParseMode::ExtendProto2 => true,
-            MessageBodyParseMode::MessageProto3 |
-            MessageBodyParseMode::ExtendProto3 |
-            MessageBodyParseMode::Oneof => false,
+            MessageBodyParseMode::MessageProto2 | MessageBodyParseMode::ExtendProto2 => true,
+            MessageBodyParseMode::MessageProto3
+            | MessageBodyParseMode::ExtendProto3
+            | MessageBodyParseMode::Oneof => false,
         }
     }
 
     fn map_allowed(&self) -> bool {
         match *self {
-            MessageBodyParseMode::MessageProto2 |
-            MessageBodyParseMode::MessageProto3 |
-            MessageBodyParseMode::ExtendProto2 |
-            MessageBodyParseMode::ExtendProto3 => true,
+            MessageBodyParseMode::MessageProto2
+            | MessageBodyParseMode::MessageProto3
+            | MessageBodyParseMode::ExtendProto2
+            | MessageBodyParseMode::ExtendProto3 => true,
             MessageBodyParseMode::Oneof => false,
         }
     }
 
     fn is_most_non_fields_allowed(&self) -> bool {
         match *self {
-            MessageBodyParseMode::MessageProto2 |
-            MessageBodyParseMode::MessageProto3 => true,
-            MessageBodyParseMode::ExtendProto2 |
-            MessageBodyParseMode::ExtendProto3 |
-            MessageBodyParseMode::Oneof => false,
+            MessageBodyParseMode::MessageProto2 | MessageBodyParseMode::MessageProto3 => true,
+            MessageBodyParseMode::ExtendProto2
+            | MessageBodyParseMode::ExtendProto3
+            | MessageBodyParseMode::Oneof => false,
         }
     }
 
     fn is_option_allowed(&self) -> bool {
         match *self {
-            MessageBodyParseMode::MessageProto2 |
-            MessageBodyParseMode::MessageProto3 |
-            MessageBodyParseMode::Oneof => true,
-            MessageBodyParseMode::ExtendProto2 |
-            MessageBodyParseMode::ExtendProto3 => false,
+            MessageBodyParseMode::MessageProto2
+            | MessageBodyParseMode::MessageProto3
+            | MessageBodyParseMode::Oneof => true,
+            MessageBodyParseMode::ExtendProto2 | MessageBodyParseMode::ExtendProto3 => false,
         }
     }
 }
@@ -225,7 +212,6 @@ pub struct MessageBody {
     pub options: Vec<ProtobufOption>,
 }
 
-
 trait NumLitEx {
     fn to_option_value(&self, sign_is_plus: bool) -> ParserResult<ProtobufConstant>;
 }
@@ -240,7 +226,6 @@ impl NumLitEx for NumLit {
         })
     }
 }
-
 
 impl<'a> Parser<'a> {
     pub fn new(input: &'a str) -> Parser<'a> {
@@ -312,7 +297,8 @@ impl<'a> Parser<'a> {
     // Constant
 
     fn next_num_lit(&mut self) -> ParserResult<NumLit> {
-        self.tokenizer.next_token_check_map(|token| Ok(token.to_num_lit()?))
+        self.tokenizer
+            .next_token_check_map(|token| Ok(token.to_num_lit()?))
     }
 
     // constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
@@ -335,35 +321,30 @@ impl<'a> Parser<'a> {
             }
         }
 
-        if let Some(r) = self.tokenizer.next_token_if_map(|token| {
-                match token {
-                    &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.clone())),
-                    _ => None,
-                }
-            })?
-        {
+        if let Some(r) = self.tokenizer.next_token_if_map(|token| match token {
+            &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.clone())),
+            _ => None,
+        })? {
             return Ok(r);
         }
 
         match self.tokenizer.lookahead_some()? {
             &Token::IntLit(..) | &Token::FloatLit(..) => {
                 return self.next_num_lit()?.to_option_value(true);
-            },
+            }
             &Token::Ident(..) => {
                 return Ok(ProtobufConstant::Ident(self.next_full_ident()?));
-            },
-            _ => {},
+            }
+            _ => {}
         }
 
         Err(ParserError::ExpectConstant)
     }
 
     fn next_int_lit(&mut self) -> ParserResult<u64> {
-        self.tokenizer.next_token_check_map(|token| {
-            match token {
-                &Token::IntLit(i) => Ok(i),
-                _ => Err(ParserError::IncorrectInput),
-            }
+        self.tokenizer.next_token_check_map(|token| match token {
+            &Token::IntLit(i) => Ok(i),
+            _ => Err(ParserError::IncorrectInput),
         })
     }
 
@@ -517,11 +498,9 @@ impl<'a> Parser<'a> {
     }
 
     fn next_field_number(&mut self) -> ParserResult<i32> {
-        self.tokenizer.next_token_check_map(|token| {
-            match token {
-                &Token::IntLit(i) => i.to_i32(),
-                _ => Err(ParserError::IncorrectInput),
-            }
+        self.tokenizer.next_token_check_map(|token| match token {
+            &Token::IntLit(i) => i.to_i32(),
+            _ => Err(ParserError::IncorrectInput),
         })
     }
 
@@ -567,10 +546,7 @@ impl<'a> Parser<'a> {
                 Syntax::Proto3 => MessageBodyParseMode::MessageProto3,
             };
 
-            let MessageBody {
-                fields,
-                ..
-            } = self.next_message_body(mode)?;
+            let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
             Ok(Field {
                 name,
@@ -610,10 +586,7 @@ impl<'a> Parser<'a> {
         if self.tokenizer.next_ident_if_eq("oneof")? {
             let name = self.tokenizer.next_ident()?.to_owned();
             let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
-            Ok(Some(OneOf {
-                name,
-                fields,
-            }))
+            Ok(Some(OneOf { name, fields }))
         } else {
             Ok(None)
         }
@@ -681,17 +654,16 @@ impl<'a> Parser<'a> {
     // fieldNames = fieldName { "," fieldName }
     fn next_reserved_opt(&mut self) -> ParserResult<Option<(Vec<FieldNumberRange>, Vec<String>)>> {
         if self.tokenizer.next_ident_if_eq("reserved")? {
-            let (ranges, names) =
-                if let &Token::StrLit(..) = self.tokenizer.lookahead_some()? {
-                    let mut names = Vec::new();
+            let (ranges, names) = if let &Token::StrLit(..) = self.tokenizer.lookahead_some()? {
+                let mut names = Vec::new();
+                names.push(self.tokenizer.next_str_lit()?.decode_utf8()?);
+                while self.tokenizer.next_symbol_if_eq(',')? {
                     names.push(self.tokenizer.next_str_lit()?.decode_utf8()?);
-                    while self.tokenizer.next_symbol_if_eq(',')? {
-                        names.push(self.tokenizer.next_str_lit()?.decode_utf8()?);
-                    }
-                    (Vec::new(), names)
-                } else {
-                    (self.next_ranges()?, Vec::new())
-                };
+                }
+                (Vec::new(), names)
+            } else {
+                (self.next_ranges()?, Vec::new())
+            };
 
             self.tokenizer.next_symbol_expect_eq(';')?;
 
@@ -768,7 +740,11 @@ impl<'a> Parser<'a> {
                 values.push(self.next_enum_field()?);
             }
             self.tokenizer.next_symbol_expect_eq('}')?;
-            Ok(Some(Enumeration { name, values, options }))
+            Ok(Some(Enumeration {
+                name,
+                values,
+                options,
+            }))
         } else {
             Ok(None)
         }
@@ -818,7 +794,6 @@ impl<'a> Parser<'a> {
                     r.enums.push(nested_enum);
                     continue;
                 }
-
             } else {
                 self.tokenizer.next_ident_if_eq_error("reserved")?;
                 self.tokenizer.next_ident_if_eq_error("oneof")?;
@@ -900,10 +875,12 @@ impl<'a> Parser<'a> {
 
             let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
-            let extensions = fields.into_iter().map(|field| {
-                let extendee = extendee.clone();
-                Extension { extendee, field }
-            }).collect();
+            let extensions = fields
+                .into_iter()
+                .map(|field| {
+                    let extendee = extendee.clone();
+                    Extension { extendee, field }
+                }).collect();
 
             Ok(Some(extensions))
         } else {
@@ -1018,25 +995,33 @@ impl<'a> Parser<'a> {
 #[cfg(test)]
 mod test {
     use super::*;
-    
+
     fn parse<P, R>(input: &str, parse_what: P) -> R
-        where P : FnOnce(&mut Parser) -> ParserResult<R>
+    where
+        P: FnOnce(&mut Parser) -> ParserResult<R>,
     {
         let mut parser = Parser::new(input);
-        let r = parse_what(&mut parser)
-            .expect(&format!("parse failed at {}", parser.tokenizer.loc()));
-        let eof = parser.tokenizer.syntax_eof().expect(&format!("check eof failed at {}", parser.tokenizer.loc()));
+        let r =
+            parse_what(&mut parser).expect(&format!("parse failed at {}", parser.tokenizer.loc()));
+        let eof = parser
+            .tokenizer
+            .syntax_eof()
+            .expect(&format!("check eof failed at {}", parser.tokenizer.loc()));
         assert!(eof, "{}", parser.tokenizer.loc());
         r
     }
 
     fn parse_opt<P, R>(input: &str, parse_what: P) -> R
-        where P : FnOnce(&mut Parser) -> ParserResult<Option<R>>
+    where
+        P: FnOnce(&mut Parser) -> ParserResult<Option<R>>,
     {
         let mut parser = Parser::new(input);
-        let o = parse_what(&mut parser)
-            .expect(&format!("parse failed at {}", parser.tokenizer.loc()));
-        let r = o.expect(&format!("parser returned none at {}", parser.tokenizer.loc()));
+        let o =
+            parse_what(&mut parser).expect(&format!("parse failed at {}", parser.tokenizer.loc()));
+        let r = o.expect(&format!(
+            "parser returned none at {}",
+            parser.tokenizer.loc()
+        ));
         assert!(parser.tokenizer.syntax_eof().unwrap());
         r
     }
@@ -1200,12 +1185,15 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(vec![
-            FieldNumberRange { from: 4, to: 4 },
-            FieldNumberRange { from: 15, to: 15 },
-            FieldNumberRange { from: 17, to: 20 },
-            FieldNumberRange { from: 30, to: 30 }],
-            mess.reserved_nums);
+        assert_eq!(
+            vec![
+                FieldNumberRange { from: 4, to: 4 },
+                FieldNumberRange { from: 15, to: 15 },
+                FieldNumberRange { from: 17, to: 20 },
+                FieldNumberRange { from: 30, to: 30 }
+            ],
+            mess.reserved_nums
+        );
         assert_eq!(
             vec!["foo".to_string(), "bar".to_string()],
             mess.reserved_names
@@ -1233,7 +1221,8 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format());
+            mess.fields[0].options[0].value.format()
+        );
     }
 
     #[test]
@@ -1245,7 +1234,8 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\xfeE\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format());
+            mess.fields[0].options[0].value.format()
+        );
     }
 
     #[test]

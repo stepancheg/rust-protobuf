@@ -1,6 +1,6 @@
+extern crate env_logger;
 extern crate glob;
 extern crate log;
-extern crate env_logger;
 
 extern crate protobuf_codegen_pure;
 
@@ -14,12 +14,13 @@ use std::path::Path;
 
 use protobuf_test_common::build::*;
 
-
-fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
+fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     eprintln!("copy {:?} to {:?}", src.as_ref(), dst.as_ref());
     let mut content = Vec::new();
-    fs::File::open(src.as_ref()).expect(&format!("open {}", src.as_ref().display()))
-        .read_to_end(&mut content).expect("read_to_end");
+    fs::File::open(src.as_ref())
+        .expect(&format!("open {}", src.as_ref().display()))
+        .read_to_end(&mut content)
+        .expect("read_to_end");
 
     let mut write = fs::File::create(dst).expect("create");
     writeln!(write, "// generated").expect("write");
@@ -31,12 +32,8 @@ fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
 }
 
 fn copy_from_protobuf_test(path: &str) {
-    copy_test(
-        &format!("../protobuf-test/{}", path),
-        &format!("{}", path),
-    )
+    copy_test(&format!("../protobuf-test/{}", path), &format!("{}", path))
 }
-
 
 enum FileNameClass {
     ModRs,
@@ -62,7 +59,6 @@ fn classify_file_name(name: &str) -> FileNameClass {
     }
 }
 
-
 // Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
     let src_dir = format!("../protobuf-test/{}", dir);
@@ -70,28 +66,35 @@ fn copy_tests(dir: &str) {
         let file_name = entry.expect("entry").file_name().into_string().unwrap();
 
         match classify_file_name(&file_name) {
-            FileNameClass::ModRs |
-            FileNameClass::Ignore |
-            FileNameClass::GeneratedRs => {}
-            FileNameClass::TestRs |
-            FileNameClass::Proto => {
+            FileNameClass::ModRs | FileNameClass::Ignore | FileNameClass::GeneratedRs => {}
+            FileNameClass::TestRs | FileNameClass::Proto => {
                 copy_from_protobuf_test(&format!("{}/{}", dir, file_name))
             }
         }
     }
 }
 
-
 fn gen_in_dir(dir: &str, include_dir: &str) {
-    gen_in_dir_impl(dir, include_dir, |GenInDirArgs { out_dir, input, includes, customize }| {
-        protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-            out_dir, input, includes, customize
-        })
-    });
+    gen_in_dir_impl(
+        dir,
+        include_dir,
+        |GenInDirArgs {
+             out_dir,
+             input,
+             includes,
+             customize,
+         }| {
+            protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
+                out_dir,
+                input,
+                includes,
+                customize,
+            })
+        },
+    );
 }
 
-
-fn print_rerun_if_changed<P : AsRef<Path>>(path: P) {
+fn print_rerun_if_changed<P: AsRef<Path>>(path: P) {
     let path = path.as_ref();
     // Doesn't seem to do anything
     println!("rerun-if-changed={}", path.to_str().expect("to_str"));
@@ -102,7 +105,6 @@ fn print_rerun_if_changed<P : AsRef<Path>>(path: P) {
         }
     }
 }
-
 
 fn generate_interop() {
     copy_from_protobuf_test("src/interop/mod.rs");
@@ -115,7 +117,6 @@ fn generate_interop() {
         customize: Default::default(),
     }).unwrap();
 }
-
 
 fn generate_pb_rs() {
     print_rerun_if_changed("../protobuf-test");
@@ -137,7 +138,6 @@ fn generate_pb_rs() {
 
     generate_interop();
 }
-
 
 fn main() {
     env_logger::init();

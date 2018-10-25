@@ -1,12 +1,11 @@
-use protobuf::Message;
-use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::ReflectValueBox;
+use protobuf::Message;
 
 use super::test_reflect_pb::*;
 use protobuf::reflect::RuntimeFieldType;
 
 use protobuf_test_common::value_for_runtime_type;
-
 
 #[test]
 fn test_get_sub_message_via_reflection() {
@@ -19,7 +18,14 @@ fn test_get_sub_message_via_reflection() {
 
     let sub_m = descriptor.get_message(&m);
     assert_eq!("test_reflect.SubM", sub_m.descriptor().full_name());
-    assert_eq!(42, sub_m.descriptor().field_by_name("n").unwrap().get_i32(sub_m));
+    assert_eq!(
+        42,
+        sub_m
+            .descriptor()
+            .field_by_name("n")
+            .unwrap()
+            .get_i32(sub_m)
+    );
 }
 
 #[test]
@@ -59,7 +65,11 @@ fn test_singular() {
 fn test_repeated_debug() {
     let mut message = TestTypesRepeated::new();
     message.set_int32_field(vec![10, 20, 30]);
-    let field = message.descriptor().field_by_name("int32_field").unwrap().get_repeated(&message);
+    let field = message
+        .descriptor()
+        .field_by_name("int32_field")
+        .unwrap()
+        .get_repeated(&message);
     assert_eq!("[10, 20, 30]", format!("{:?}", field));
 }
 
@@ -104,7 +114,6 @@ fn test_repeated() {
         test_repeated_field(&mut message, field);
     }
 }
-
 
 fn test_map_field(message: &mut Message, field: &FieldDescriptor) {
     assert!(field.get_map(message).is_empty());

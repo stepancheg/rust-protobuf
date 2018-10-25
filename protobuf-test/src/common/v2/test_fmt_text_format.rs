@@ -4,7 +4,6 @@ use protobuf_test_common::*;
 
 use super::test_fmt_text_format_pb::*;
 
-
 #[test]
 fn test_show() {
     let mut m = TestTypes::new();
@@ -34,7 +33,6 @@ fn test_rust_identifier() {
     assert_eq!("const: true", &*format!("{:?}", m));
 }
 
-
 #[test]
 fn test_empty() {
     test_text_format_str_descriptor("", TestTypes::descriptor_static());
@@ -42,13 +40,12 @@ fn test_empty() {
 
 #[test]
 fn test_enum() {
-    test_text_format_str_descriptor(
-        "test_enum_singular: DARK",
-        TestTypes::descriptor_static());
+    test_text_format_str_descriptor("test_enum_singular: DARK", TestTypes::descriptor_static());
 
     test_text_format_str_descriptor(
         "test_enum_repeated: DARK test_enum_repeated: LIGHT test_enum_repeated: LIGHT",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 }
 
 #[test]
@@ -70,7 +67,8 @@ fn test_int() {
 
     test_text_format_str_descriptor(
         "int32_repeated: 98 int32_repeated: -99",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 }
 
 #[test]
@@ -89,7 +87,8 @@ fn test_bool() {
     test_text_format_str_descriptor("bool_singular: false", TestTypes::descriptor_static());
     test_text_format_str_descriptor(
         "bool_repeated: false bool_repeated: false bool_repeated: true",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 }
 
 #[test]
@@ -101,16 +100,20 @@ fn test_string_bytes() {
     test_text_format_str_descriptor("bytes_singular: \"\"", TestTypes::descriptor_static());
     test_text_format_str_descriptor("bytes_singular: \"a b\"", TestTypes::descriptor_static());
     test_text_format_str_descriptor("bytes_singular: \"a\\nb\"", TestTypes::descriptor_static());
-    test_text_format_str_descriptor("bytes_singular: \"a\\xfeb\"", TestTypes::descriptor_static());
-
+    test_text_format_str_descriptor(
+        "bytes_singular: \"a\\xfeb\"",
+        TestTypes::descriptor_static(),
+    );
 
     test_text_format_str_descriptor(
         "string_repeated: \"ab\" bytes_repeated: \"cd\" string_repeated: \"ef\"",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 
     test_text_format_str_descriptor(
         "string_singular: \"quote\\\"newline\\nbackslash\\\\del\\177\"",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 }
 
 #[test]
@@ -119,11 +122,13 @@ fn test_message() {
 
     test_text_format_str_descriptor(
         "test_message_singular { value: 10 }",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 
     test_text_format_str_descriptor(
         "test_message_repeated { value: 10 } test_message_repeated { value: 20 }",
-        TestTypes::descriptor_static());
+        TestTypes::descriptor_static(),
+    );
 }
 
 #[test]
@@ -147,5 +152,4 @@ fn test_reflect() {
     // TODO: make `ts` field public in codegen
     l.set_ts(special_messages_typed().into());
     test_text_format_message(&l);
-
 }

@@ -1,8 +1,8 @@
 use std::f32;
 use std::f64;
 
-use protobuf::Message;
 use protobuf::json;
+use protobuf::Message;
 
 use protobuf_test_common::*;
 
@@ -35,7 +35,10 @@ fn test_float() {
     m.float_repeated.push(-12.5);
     m.float_repeated.push(f32::NAN);
     m.float_repeated.push(f32::NEG_INFINITY);
-    test_json_print_parse_message("{\"floatRepeated\": [11.0, -12.5, \"NaN\", \"-Infinity\"]}", &m);
+    test_json_print_parse_message(
+        "{\"floatRepeated\": [11.0, -12.5, \"NaN\", \"-Infinity\"]}",
+        &m,
+    );
 }
 
 #[test]
@@ -73,7 +76,9 @@ fn test_int64() {
     m.int64_repeated.push(2345678901234567890);
     m.int64_repeated.push(-2345678901234567890);
     test_json_print_parse_message(
-        "{\"int64Repeated\": [\"2345678901234567890\", \"-2345678901234567890\"]}", &m);
+        "{\"int64Repeated\": [\"2345678901234567890\", \"-2345678901234567890\"]}",
+        &m,
+    );
 }
 
 #[test]
@@ -98,7 +103,9 @@ fn test_sint64() {
     m.sint64_repeated.push(2345678901234567890);
     m.sint64_repeated.push(-2345678901234567890);
     test_json_print_parse_message(
-        "{\"sint64Repeated\": [\"2345678901234567890\", \"-2345678901234567890\"]}", &m);
+        "{\"sint64Repeated\": [\"2345678901234567890\", \"-2345678901234567890\"]}",
+        &m,
+    );
 }
 
 #[test]
@@ -123,7 +130,9 @@ fn test_sfixed64() {
     m.sfixed64_repeated.push(2345678901234567890);
     m.sfixed64_repeated.push(-2345678901234567890);
     test_json_print_parse_message(
-        "{\"sfixed64Repeated\": [\"2345678901234567890\", \"-2345678901234567890\"]}", &m);
+        "{\"sfixed64Repeated\": [\"2345678901234567890\", \"-2345678901234567890\"]}",
+        &m,
+    );
 }
 
 #[test]
@@ -142,14 +151,15 @@ fn test_uint32() {
 fn test_uint64() {
     let mut m = TestTypes::new();
     m.set_uint64_singular(1234567890123456789);
-    test_json_print_parse_message(
-        "{\"uint64Singular\": \"1234567890123456789\"}", &m);
+    test_json_print_parse_message("{\"uint64Singular\": \"1234567890123456789\"}", &m);
 
     let mut m = TestTypes::new();
     m.uint64_repeated.push(2345678901234567890);
     m.uint64_repeated.push(1345678901234567890);
     test_json_print_parse_message(
-        "{\"uint64Repeated\": [\"2345678901234567890\", \"1345678901234567890\"]}", &m);
+        "{\"uint64Repeated\": [\"2345678901234567890\", \"1345678901234567890\"]}",
+        &m,
+    );
 }
 
 #[test]
@@ -168,18 +178,20 @@ fn test_fixed32() {
 fn test_fixed64() {
     let mut m = TestTypes::new();
     m.set_fixed64_singular(1234567890123456789);
-    test_json_print_parse_message(
-        "{\"fixed64Singular\": \"1234567890123456789\"}", &m);
-    test_json_parse_message(
-        "{\"fixed64Singular\": 1234567890123456789}", &m);
+    test_json_print_parse_message("{\"fixed64Singular\": \"1234567890123456789\"}", &m);
+    test_json_parse_message("{\"fixed64Singular\": 1234567890123456789}", &m);
 
     let mut m = TestTypes::new();
     m.fixed64_repeated.push(2345678901234567890);
     m.fixed64_repeated.push(1345678901234567890);
     test_json_print_parse_message(
-        "{\"fixed64Repeated\": [\"2345678901234567890\", \"1345678901234567890\"]}", &m);
+        "{\"fixed64Repeated\": [\"2345678901234567890\", \"1345678901234567890\"]}",
+        &m,
+    );
     test_json_parse_message(
-        "{\"fixed64Repeated\": [\"2345678901234567890\", 1345678901234567890]}", &m);
+        "{\"fixed64Repeated\": [\"2345678901234567890\", 1345678901234567890]}",
+        &m,
+    );
 }
 
 #[test]
@@ -221,7 +233,10 @@ fn test_enum() {
 fn test_enum_int() {
     let mut m = TestTypes::new();
     m.set_test_enum_singular(TestEnum::DARK);
-    let print_options = json::PrintOptions { enum_values_int: true, ..Default::default() };
+    let print_options = json::PrintOptions {
+        enum_values_int: true,
+        ..Default::default()
+    };
     let json = json::print_to_string_with_options(&m, &print_options).unwrap();
     assert_eq!("{\"testEnumSingular\": 10}", json);
 }
@@ -234,8 +249,10 @@ fn test_map_field_int_key() {
 
     m.fixed64_map_field.insert(30, 40);
     let json = json::print_to_string(&m).unwrap();
-    assert!(json == "{\"fixed64MapField\": {\"10\": \"20\", \"30\": \"40\"}}"
-        || json == "{\"fixed64MapField\": {\"30\": \"40\", \"10\": \"20\"}}");
+    assert!(
+        json == "{\"fixed64MapField\": {\"10\": \"20\", \"30\": \"40\"}}"
+            || json == "{\"fixed64MapField\": {\"30\": \"40\", \"10\": \"20\"}}"
+    );
 }
 
 #[test]
@@ -264,7 +281,10 @@ fn test_accepts_both_json_and_original() {
 fn test_use_original_field_names() {
     let mut m = TestTypes::new();
     m.set_bool_singular(true);
-    let print_options = json::PrintOptions { proto_field_name: true, ..Default::default() };
+    let print_options = json::PrintOptions {
+        proto_field_name: true,
+        ..Default::default()
+    };
     let json = json::print_to_string_with_options(&m, &print_options).unwrap();
     assert_eq!("{\"bool_singular\": true}", json);
 }

@@ -12,7 +12,6 @@ use parser::Parser;
 pub use parser::ParserError;
 pub use parser::ParserErrorWithLocation;
 
-
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Syntax {

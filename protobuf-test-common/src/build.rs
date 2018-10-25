@@ -2,18 +2,17 @@
 
 pub use protobuf_codegen::Customize;
 
-use std::io::Write;
-use std::io::Read;
+use std::fmt;
+use std::fs;
 use std::io::BufRead;
 use std::io::BufReader;
-use std::fs;
-use std::fmt;
+use std::io::Read;
+use std::io::Write;
 use std::path::Path;
 
 use glob;
 use std::env;
 use std::env::VarError;
-
 
 pub fn glob_simple(pattern: &str) -> Vec<String> {
     let mut r: Vec<_> = glob::glob(pattern)
@@ -24,13 +23,11 @@ pub fn glob_simple(pattern: &str) -> Vec<String> {
                 .to_str()
                 .expect("utf-8")
                 .to_owned()
-        })
-        .collect();
+        }).collect();
     // Make test stable
     r.sort();
     r
 }
-
 
 fn read_gitignore(dir: &Path) -> Vec<String> {
     let mut patterns = Vec::new();
@@ -38,8 +35,8 @@ fn read_gitignore(dir: &Path) -> Vec<String> {
     let gitignore = format!("{}/.gitignore", dir.display());
     let gitignore = &Path::new(&gitignore);
     if gitignore.exists() {
-        let gitignore = fs::File::open(gitignore)
-            .expect(&format!("open gitignore {:?}", gitignore));
+        let gitignore =
+            fs::File::open(gitignore).expect(&format!("open gitignore {:?}", gitignore));
         for line in BufReader::new(gitignore).lines() {
             let line = line.expect("read_line");
             if line.is_empty() || line.starts_with("#") {
@@ -52,7 +49,6 @@ fn read_gitignore(dir: &Path) -> Vec<String> {
     patterns
 }
 
-
 fn clean_recursively(dir: &Path, patterns: &[&str]) {
     assert!(dir.is_dir());
 
@@ -63,7 +59,8 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
     let mut patterns = patterns.to_vec();
     patterns.extend(gitignore_patterns.iter().map(String::as_str));
 
-    let patterns_compiled: Vec<_> = patterns.iter()
+    let patterns_compiled: Vec<_> = patterns
+        .iter()
         .map(|&p| glob::Pattern::new(p).expect("failed to compile pattern"))
         .collect();
 
@@ -71,7 +68,11 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
         let entry = entry.expect("entry");
         let entry_path = entry.path();
         let file_name = entry_path.as_path().file_name().unwrap().to_str().unwrap();
-        if entry.metadata().expect(&format!("metadata of {:?}", entry_path)).is_dir() {
+        if entry
+            .metadata()
+            .expect(&format!("metadata of {:?}", entry_path))
+            .is_dir()
+        {
             clean_recursively(&entry_path, &patterns);
         } else if file_name == ".gitignore" {
             // keep it
@@ -85,7 +86,6 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
         }
     }
 }
-
 
 pub fn clean_old_files() {
     clean_recursively(&Path::new("src"), &["*_pb.rs", "*_pb_proto3.rs"]);
@@ -121,7 +121,11 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
     let rs_files = glob_simple(&format!("{}/*.rs", dir));
 
     for rs in rs_files {
-        let file_name = Path::new(&rs).file_name().expect("file_name").to_str().expect("file_name");
+        let file_name = Path::new(&rs)
+            .file_name()
+            .expect("file_name")
+            .to_str()
+            .expect("file_name");
         if file_name == "mod.rs" {
             continue;
         }
@@ -151,7 +155,11 @@ enum ProtobufSyntax {
 
 fn test_version_from_file_path(mut file_path: &Path) -> TestProtobufVersions {
     loop {
-        let name = file_path.file_name().expect("file_name").to_str().expect("to_str");
+        let name = file_path
+            .file_name()
+            .expect("file_name")
+            .to_str()
+            .expect("to_str");
         if name == "v2" {
             return TestProtobufVersions::V2;
         } else if name == "v3" {
@@ -165,14 +173,16 @@ fn test_version_from_file_path(mut file_path: &Path) -> TestProtobufVersions {
 }
 
 fn test_version_from_file_content(file_path: &Path) -> ProtobufSyntax {
-    let content = fs::read_to_string(file_path)
-        .expect(&format!("read_to_string {:?}", file_path));
+    let content = fs::read_to_string(file_path).expect(&format!("read_to_string {:?}", file_path));
     if content.contains("syntax = \"proto2\"") {
         return ProtobufSyntax::V2;
     } else if content.contains("syntax = \"proto3\"") {
         return ProtobufSyntax::V3;
     } else {
-        panic!("cannot detect protobuf version from file content: {:?}", file_path);
+        panic!(
+            "cannot detect protobuf version from file content: {:?}",
+            file_path
+        );
     }
 }
 
@@ -184,14 +194,17 @@ fn check_test_version(file_path: &Path) {
     };
 
     let version = test_version_from_file_content(file_path);
-    assert_eq!(expected_version_from_file_name, version, "for file: {:?}", file_path);
+    assert_eq!(
+        expected_version_from_file_name, version,
+        "for file: {:?}",
+        file_path
+    );
 }
 
-
 pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
-    where
-        F : for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
-        E : fmt::Debug,
+where
+    F: for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
+    E: fmt::Debug,
 {
     info!("generating protos in {}", dir);
 
@@ -208,8 +221,10 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
 
     let includes = ["../proto", include_dir];
 
-    eprintln!("invoking protobubf compiler: out_dir: {:?}, input: {:?}, includes: {:?}",
-        dir, protos, includes);
+    eprintln!(
+        "invoking protobubf compiler: out_dir: {:?}, input: {:?}, includes: {:?}",
+        dir, protos, includes
+    );
 
     let customize = Customize {
         serde_derive_cfg: Some("serde".to_owned()),
@@ -225,7 +240,6 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
 
     gen_mod_rs_in_dir(dir);
 }
-
 
 pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
     let mut r = Vec::new();
@@ -256,27 +270,25 @@ pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
     r
 }
 
-
 pub fn copy_tests_v2_v3(v2_dir: &str, v3_dir: &str) {
     for test_name in list_tests_in_dir(v2_dir) {
         debug!("Copying tests v2 -> v3 from test: {}", test_name);
 
-        let mut p2f = fs::File::open(&format!("{}/{}_pb.proto", v2_dir, test_name))
-            .expect("open v2 .proto");
+        let mut p2f =
+            fs::File::open(&format!("{}/{}_pb.proto", v2_dir, test_name)).expect("open v2 .proto");
         let mut proto = String::new();
         p2f.read_to_string(&mut proto).expect("read .proto");
         drop(p2f);
 
-        let mut r2f = fs::File::open(&format!("{}/{}.rs", v2_dir, test_name))
-            .expect("open v2 .rs");
+        let mut r2f = fs::File::open(&format!("{}/{}.rs", v2_dir, test_name)).expect("open v2 .rs");
         let mut rs = String::new();
         r2f.read_to_string(&mut rs).expect("read .rs");
         drop(r2f);
 
         let mut p3f = fs::File::create(&format!("{}/{}_pb.proto", v3_dir, test_name))
             .expect("create v3 .proto");
-        let mut r3f = fs::File::create(&format!("{}/{}.rs", v3_dir, test_name))
-            .expect("create v3 .rs");
+        let mut r3f =
+            fs::File::create(&format!("{}/{}.rs", v3_dir, test_name)).expect("create v3 .rs");
 
         // convert proto2 to proto3
         let proto = proto.replace("optional ", "");

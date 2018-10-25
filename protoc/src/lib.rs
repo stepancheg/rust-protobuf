@@ -4,15 +4,12 @@ use std::process;
 #[macro_use]
 extern crate log;
 
-
 pub type Error = io::Error;
 pub type Result<T> = io::Result<T>;
-
 
 fn err_other<T>(s: &str) -> Result<T> {
     Err(Error::new(io::ErrorKind::Other, s.to_owned()))
 }
-
 
 /// `Protoc --lang_out...` args
 #[derive(Default)]
@@ -42,7 +39,6 @@ pub struct DescriptorSetOutArgs<'a> {
     pub include_imports: bool,
 }
 
-
 /// Protoc command.
 pub struct Protoc {
     exec: String,
@@ -51,12 +47,16 @@ pub struct Protoc {
 impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
-        Protoc { exec: "protoc".to_owned() }
+        Protoc {
+            exec: "protoc".to_owned(),
+        }
     }
 
     /// New `protoc` command from specified path
     pub fn from_path(path: &str) -> Protoc {
-        Protoc { exec: path.to_owned() }
+        Protoc {
+            exec: path.to_owned(),
+        }
     }
 
     /// Check `protoc` command found and valid
@@ -68,25 +68,25 @@ impl Protoc {
         info!("spawning command {:?}", cmd);
 
         cmd.spawn()
-            .map_err(|e| {
-                Error::new(e.kind(), format!("failed to spawn `{:?}`: {}", cmd, e))
-            })
+            .map_err(|e| Error::new(e.kind(), format!("failed to spawn `{:?}`: {}", cmd, e)))
     }
 
     /// Obtain `protoc` version
     pub fn version(&self) -> Result<Version> {
-        let child = self.spawn(process::Command::new(&self.exec)
-            .stdin(process::Stdio::null())
-            .stdout(process::Stdio::piped())
-            .stderr(process::Stdio::piped())
-            .args(&["--version"]))?;
+        let child = self.spawn(
+            process::Command::new(&self.exec)
+                .stdin(process::Stdio::null())
+                .stdout(process::Stdio::piped())
+                .stderr(process::Stdio::piped())
+                .args(&["--version"]),
+        )?;
 
         let output = child.wait_with_output()?;
         if !output.status.success() {
             return err_other("protoc failed with error");
         }
-        let output = String::from_utf8(output.stdout)
-            .map_err(|e| Error::new(io::ErrorKind::Other, e))?;
+        let output =
+            String::from_utf8(output.stdout).map_err(|e| Error::new(io::ErrorKind::Other, e))?;
         let output = match output.lines().next() {
             None => return err_other("output is empty"),
             Some(line) => line,
@@ -103,7 +103,9 @@ impl Protoc {
         if !first.is_digit(10) {
             return err_other("version does not start with digit");
         }
-        Ok(Version { version: output.to_owned() })
+        Ok(Version {
+            version: output.to_owned(),
+        })
     }
 
     /// Execute `protoc` command with given args, check it completed correctly.

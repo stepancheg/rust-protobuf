@@ -5,12 +5,11 @@ use std::iter;
 use model;
 
 use protobuf;
+use protobuf::descriptor::FieldDescriptorProto_Label;
 use protobuf::prelude::*;
 use protobuf::Message;
-use protobuf::descriptor::FieldDescriptorProto_Label;
 
 use protobuf::text_format::lexer::StrLitDecodeError;
-
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -30,8 +29,6 @@ impl From<StrLitDecodeError> for ConvertError {
 }
 
 pub type ConvertResult<T> = Result<T, ConvertError>;
-
-
 
 trait ProtobufOptions {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant>;
@@ -57,7 +54,6 @@ impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
     }
 }
 
-
 enum MessageOrEnum {
     Message,
     Enum,
@@ -72,7 +68,6 @@ impl MessageOrEnum {
     }
 }
 
-
 #[derive(Debug, Eq, PartialEq, Clone)]
 struct RelativePath {
     path: String,
@@ -86,9 +81,7 @@ impl RelativePath {
     fn new(path: String) -> RelativePath {
         assert!(!path.starts_with("."));
 
-        RelativePath {
-            path
-        }
+        RelativePath { path }
     }
 
     fn is_empty(&self) -> bool {
@@ -123,7 +116,7 @@ impl RelativePath {
 
     fn self_and_parents(&self) -> Vec<RelativePath> {
         let mut tmp = self.clone();
-        
+
         let mut r = Vec::new();
 
         r.push(self.clone());
@@ -132,7 +125,7 @@ impl RelativePath {
             r.push(parent.clone());
             tmp = parent;
         }
-        
+
         r
     }
 
@@ -149,18 +142,11 @@ impl RelativePath {
             None
         } else {
             Some(match self.path.find('.') {
-                Some(dot) => {
-                    (
-                        &self.path[..dot],
-                        RelativePath::new(self.path[dot+1..].to_owned())
-                    )
-                }
-                None => {
-                    (
-                        &self.path,
-                        RelativePath::empty()
-                    )
-                }
+                Some(dot) => (
+                    &self.path[..dot],
+                    RelativePath::new(self.path[dot + 1..].to_owned()),
+                ),
+                None => (&self.path, RelativePath::empty()),
             })
         }
     }
@@ -173,34 +159,50 @@ mod relative_path_test {
     #[test]
     fn parent() {
         assert_eq!(None, RelativePath::empty().parent());
-        assert_eq!(Some(RelativePath::empty()), RelativePath::new("aaa".to_owned()).parent());
+        assert_eq!(
+            Some(RelativePath::empty()),
+            RelativePath::new("aaa".to_owned()).parent()
+        );
         assert_eq!(
             Some(RelativePath::new("abc".to_owned())),
-            RelativePath::new("abc.def".to_owned()).parent());
+            RelativePath::new("abc.def".to_owned()).parent()
+        );
         assert_eq!(
             Some(RelativePath::new("abc.def".to_owned())),
-            RelativePath::new("abc.def.gh".to_owned()).parent());
+            RelativePath::new("abc.def.gh".to_owned()).parent()
+        );
     }
 
     #[test]
     fn last_part() {
         assert_eq!(None, RelativePath::empty()._last_part());
-        assert_eq!(Some("aaa"), RelativePath::new("aaa".to_owned())._last_part());
-        assert_eq!(Some("def"), RelativePath::new("abc.def".to_owned())._last_part());
-        assert_eq!(Some("gh"), RelativePath::new("abc.def.gh".to_owned())._last_part());
+        assert_eq!(
+            Some("aaa"),
+            RelativePath::new("aaa".to_owned())._last_part()
+        );
+        assert_eq!(
+            Some("def"),
+            RelativePath::new("abc.def".to_owned())._last_part()
+        );
+        assert_eq!(
+            Some("gh"),
+            RelativePath::new("abc.def.gh".to_owned())._last_part()
+        );
     }
 
     #[test]
     fn self_and_parents() {
-        assert_eq!(vec![
-            RelativePath::new("ab.cde.fghi".to_owned()),
-            RelativePath::new("ab.cde".to_owned()),
-            RelativePath::new("ab".to_owned()),
-            RelativePath::empty(),
-        ], RelativePath::new("ab.cde.fghi".to_owned()).self_and_parents());
+        assert_eq!(
+            vec![
+                RelativePath::new("ab.cde.fghi".to_owned()),
+                RelativePath::new("ab.cde".to_owned()),
+                RelativePath::new("ab".to_owned()),
+                RelativePath::empty(),
+            ],
+            RelativePath::new("ab.cde.fghi".to_owned()).self_and_parents()
+        );
     }
 }
-
 
 #[derive(Clone, Eq, PartialEq, Debug)]
 struct AbsolutePath {
@@ -284,22 +286,25 @@ mod test {
         assert_eq!(
             Some(RelativePath::empty()),
             AbsolutePath::new(".foo".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo".to_owned())));
+                .remove_prefix(&AbsolutePath::new(".foo".to_owned()))
+        );
         assert_eq!(
             Some(RelativePath::new("bar".to_owned())),
             AbsolutePath::new(".foo.bar".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo".to_owned())));
+                .remove_prefix(&AbsolutePath::new(".foo".to_owned()))
+        );
         assert_eq!(
             Some(RelativePath::new("baz.qux".to_owned())),
             AbsolutePath::new(".foo.bar.baz.qux".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned())));
+                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned()))
+        );
         assert_eq!(
             None,
             AbsolutePath::new(".foo.barbaz".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned())));
+                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned()))
+        );
     }
 }
-
 
 enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
@@ -327,22 +332,36 @@ impl<'a> LookupScope<'a> {
 
     fn members(&self) -> Vec<(&str, MessageOrEnum)> {
         let mut r = Vec::new();
-        r.extend(self.enums().into_iter().map(|e| (&e.name[..], MessageOrEnum::Enum)));
-        r.extend(self.messages().into_iter().map(|e| (&e.name[..], MessageOrEnum::Message)));
+        r.extend(
+            self.enums()
+                .into_iter()
+                .map(|e| (&e.name[..], MessageOrEnum::Enum)),
+        );
+        r.extend(
+            self.messages()
+                .into_iter()
+                .map(|e| (&e.name[..], MessageOrEnum::Message)),
+        );
         r
     }
 
     fn find_member(&self, simple_name: &str) -> Option<MessageOrEnum> {
-        self.members().into_iter()
+        self.members()
+            .into_iter()
             .filter_map(|(member_name, message_or_enum)| {
-                if member_name == simple_name { Some(message_or_enum) } else { None }
-            })
-            .next()
+                if member_name == simple_name {
+                    Some(message_or_enum)
+                } else {
+                    None
+                }
+            }).next()
     }
 
-    fn resolve_message_or_enum(&self, current_path: &AbsolutePath, path: &RelativePath)
-        -> Option<(AbsolutePath, MessageOrEnum)>
-    {
+    fn resolve_message_or_enum(
+        &self,
+        current_path: &AbsolutePath,
+        path: &RelativePath,
+    ) -> Option<(AbsolutePath, MessageOrEnum)> {
         let (first, rem) = match path.split_first_rem() {
             Some(x) => x,
             None => return None,
@@ -369,9 +388,7 @@ impl<'a> LookupScope<'a> {
             }
         }
     }
-
 }
-
 
 struct Resolver<'a> {
     current_file: &'a model::FileDescriptor,
@@ -408,9 +425,8 @@ impl<'a> Resolver<'a> {
         name: &str,
         number: i32,
         field_type: &model::FieldType,
-        path_in_file: &RelativePath)
-        -> protobuf::descriptor::FieldDescriptorProto
-    {
+        path_in_file: &RelativePath,
+    ) -> protobuf::descriptor::FieldDescriptorProto {
         // should be consisent with DescriptorBuilder::ValidateMapEntry
 
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
@@ -425,7 +441,7 @@ impl<'a> Resolver<'a> {
         }
 
         output.set_label(FieldDescriptorProto_Label::LABEL_OPTIONAL);
-        
+
         output
     }
 
@@ -434,30 +450,40 @@ impl<'a> Resolver<'a> {
         field_name: &str,
         key: &model::FieldType,
         value: &model::FieldType,
-        path_in_file: &RelativePath)
-        -> ConvertResult<protobuf::descriptor::DescriptorProto>
-    {
+        path_in_file: &RelativePath,
+    ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
         output.options.mut_message().set_map_entry(true);
         output.set_name(Resolver::map_entry_name_for_field_name(field_name));
-        output.field.push(self.map_entry_field("key", 1, key, path_in_file));
-        output.field.push(self.map_entry_field("value", 2, value, path_in_file));
+        output
+            .field
+            .push(self.map_entry_field("key", 1, key, path_in_file));
+        output
+            .field
+            .push(self.map_entry_field("value", 2, value, path_in_file));
 
         Ok(output)
     }
 
-    fn message_options(&self, input: &[model::ProtobufOption])
-        -> ConvertResult<protobuf::descriptor::MessageOptions>
-    {
+    fn message_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> ConvertResult<protobuf::descriptor::MessageOptions> {
         let mut r = protobuf::descriptor::MessageOptions::new();
-        self.custom_options(input, "google.protobuf.MessageOptions", r.mut_unknown_fields())?;
+        self.custom_options(
+            input,
+            "google.protobuf.MessageOptions",
+            r.mut_unknown_fields(),
+        )?;
         Ok(r)
     }
 
-    fn message(&self, input: &model::Message, path_in_file: &RelativePath)
-        -> ConvertResult<protobuf::descriptor::DescriptorProto>
-    {
+    fn message(
+        &self,
+        input: &model::Message,
+        path_in_file: &RelativePath,
+    ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let nested_path_in_file = path_in_file.append(&input.name);
 
         let mut output = protobuf::descriptor::DescriptorProto::new();
@@ -477,8 +503,11 @@ impl<'a> Resolver<'a> {
 
         output.nested_type = nested_messages;
 
-        output.enum_type =
-            input.enums.iter().map(|e| self.enumeration(e)).collect::<Result<_, _>>()?;
+        output.enum_type = input
+            .enums
+            .iter()
+            .map(|e| self.enumeration(e))
+            .collect::<Result<_, _>>()?;
 
         {
             let mut fields = protobuf::RepeatedField::new();
@@ -497,12 +526,12 @@ impl<'a> Resolver<'a> {
             output.field = fields;
         }
 
-        let oneofs = input.oneofs.iter()
-            .map(|o| self.oneof(o))
-            .collect();
+        let oneofs = input.oneofs.iter().map(|o| self.oneof(o)).collect();
         output.oneof_decl = oneofs;
 
-        output.options.set_message(self.message_options(&input.options)?);
+        output
+            .options
+            .set_message(self.message_options(&input.options)?);
 
         Ok(output)
     }
@@ -511,11 +540,9 @@ impl<'a> Resolver<'a> {
         &self,
         input: &[model::ProtobufOption],
         extendee: &'static str,
-        unknown_fields: &mut protobuf::UnknownFields)
-        -> ConvertResult<()>
-    {
+        unknown_fields: &mut protobuf::UnknownFields,
+    ) -> ConvertResult<()> {
         for option in input {
-
             // TODO: builtin options too
             if !option.name.starts_with('(') {
                 continue;
@@ -527,27 +554,33 @@ impl<'a> Resolver<'a> {
                 Err(_) => continue,
             };
             if extension.extendee != extendee {
-                return Err(ConvertError::WrongExtensionType(option.name.clone(), extendee));
+                return Err(ConvertError::WrongExtensionType(
+                    option.name.clone(),
+                    extendee,
+                ));
             }
 
             let value = match Resolver::option_value_to_unknown_value(
-                &option.value, &extension.field.typ, &option.name)
-                {
-                    Ok(value) => value,
-                    Err(_) => {
-                        // TODO: return error
-                        continue
-                    },
-                };
+                &option.value,
+                &extension.field.typ,
+                &option.name,
+            ) {
+                Ok(value) => value,
+                Err(_) => {
+                    // TODO: return error
+                    continue;
+                }
+            };
 
             unknown_fields.add_value(extension.field.number as u32, value);
         }
         Ok(())
     }
 
-    fn field_options(&self, input: &[model::ProtobufOption])
-        -> ConvertResult<protobuf::descriptor::FieldOptions>
-    {
+    fn field_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> ConvertResult<protobuf::descriptor::FieldOptions> {
         let mut r = protobuf::descriptor::FieldOptions::new();
         if let Some(deprecated) = input.by_name_bool("deprecated")? {
             r.set_deprecated(deprecated);
@@ -555,13 +588,20 @@ impl<'a> Resolver<'a> {
         if let Some(packed) = input.by_name_bool("packed")? {
             r.set_packed(packed);
         }
-        self.custom_options(input, "google.protobuf.FieldOptions", r.mut_unknown_fields())?;
+        self.custom_options(
+            input,
+            "google.protobuf.FieldOptions",
+            r.mut_unknown_fields(),
+        )?;
         Ok(r)
     }
 
-    fn field(&self, input: &model::Field, oneof_index: Option<i32>, path_in_file: &RelativePath)
-        -> ConvertResult<protobuf::descriptor::FieldDescriptorProto>
-    {
+    fn field(
+        &self,
+        input: &model::Field,
+        oneof_index: Option<i32>,
+        path_in_file: &RelativePath,
+    ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.name.clone());
 
@@ -594,14 +634,14 @@ impl<'a> Resolver<'a> {
                         return Err(ConvertError::DefaultValueIsNotStringLiteral);
                     }
                 }
-                _ => {
-                    default.format()
-                }
+                _ => default.format(),
             };
             output.set_default_value(default);
         }
 
-        output.options.set_message(self.field_options(&input.options)?);
+        output
+            .options
+            .set_message(self.field_options(&input.options)?);
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
@@ -615,7 +655,8 @@ impl<'a> Resolver<'a> {
     }
 
     fn package_files(&self, package: &str) -> Vec<&model::FileDescriptor> {
-        self.all_files().into_iter()
+        self.all_files()
+            .into_iter()
             .filter(|f| f.package == package)
             .collect()
     }
@@ -624,9 +665,11 @@ impl<'a> Resolver<'a> {
         self.package_files(&self.current_file.package)
     }
 
-    fn resolve_message_or_enum(&self, name: &str, path_in_file: &RelativePath)
-        -> (AbsolutePath, MessageOrEnum)
-    {
+    fn resolve_message_or_enum(
+        &self,
+        name: &str,
+        path_in_file: &RelativePath,
+    ) -> (AbsolutePath, MessageOrEnum) {
         // find message or enum in current package
         if !name.starts_with(".") {
             for p in path_in_file.self_and_parents() {
@@ -635,9 +678,9 @@ impl<'a> Resolver<'a> {
                 for file in self.current_file_package_files() {
                     if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
                         &AbsolutePath::from_path_without_dot(&file.package),
-                        &relative_path_with_name)
-                    {
-                        return (n, t)
+                        &relative_path_with_name,
+                    ) {
+                        return (n, t);
                     }
                 }
             }
@@ -649,53 +692,91 @@ impl<'a> Resolver<'a> {
             for file in self.all_files() {
                 let file_package = AbsolutePath::from_path_without_dot(&file.package);
                 if let Some(relative) = absolute_path.remove_prefix(&file_package) {
-                    if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
-                        &file_package,
-                        &relative)
+                    if let Some((n, t)) =
+                        LookupScope::File(file).resolve_message_or_enum(&file_package, &relative)
                     {
-                        return (n, t)
+                        return (n, t);
                     }
                 }
             }
         }
 
-        panic!("couldn't find message or enum {} when parsing {}", name, self.current_file.package);
+        panic!(
+            "couldn't find message or enum {} when parsing {}",
+            name, self.current_file.package
+        );
     }
 
-    fn field_type(&self, name: &str, input: &model::FieldType, path_in_file: &RelativePath)
-        -> (protobuf::descriptor::FieldDescriptorProto_Type, Option<AbsolutePath>)
-    {
+    fn field_type(
+        &self,
+        name: &str,
+        input: &model::FieldType,
+        path_in_file: &RelativePath,
+    ) -> (
+        protobuf::descriptor::FieldDescriptorProto_Type,
+        Option<AbsolutePath>,
+    ) {
         match *input {
-            model::FieldType::Bool =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BOOL, None),
-            model::FieldType::Int32 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT32, None),
-            model::FieldType::Int64 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT64, None),
-            model::FieldType::Uint32 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT32, None),
-            model::FieldType::Uint64 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT64, None),
-            model::FieldType::Sint32 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT32, None),
-            model::FieldType::Sint64 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT64, None),
-            model::FieldType::Fixed32 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED32, None),
-            model::FieldType::Fixed64 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED64, None),
-            model::FieldType::Sfixed32 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED32, None),
-            model::FieldType::Sfixed64 =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED64, None),
-            model::FieldType::Float =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FLOAT, None),
-            model::FieldType::Double =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_DOUBLE, None),
-            model::FieldType::String =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING, None),
-            model::FieldType::Bytes =>
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES, None),
+            model::FieldType::Bool => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BOOL,
+                None,
+            ),
+            model::FieldType::Int32 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT32,
+                None,
+            ),
+            model::FieldType::Int64 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT64,
+                None,
+            ),
+            model::FieldType::Uint32 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT32,
+                None,
+            ),
+            model::FieldType::Uint64 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT64,
+                None,
+            ),
+            model::FieldType::Sint32 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT32,
+                None,
+            ),
+            model::FieldType::Sint64 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT64,
+                None,
+            ),
+            model::FieldType::Fixed32 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED32,
+                None,
+            ),
+            model::FieldType::Fixed64 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED64,
+                None,
+            ),
+            model::FieldType::Sfixed32 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED32,
+                None,
+            ),
+            model::FieldType::Sfixed64 => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED64,
+                None,
+            ),
+            model::FieldType::Float => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FLOAT,
+                None,
+            ),
+            model::FieldType::Double => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_DOUBLE,
+                None,
+            ),
+            model::FieldType::String => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING,
+                None,
+            ),
+            model::FieldType::Bytes => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES,
+                None,
+            ),
             model::FieldType::MessageOrEnum(ref name) => {
                 let (name, me) = self.resolve_message_or_enum(&name, path_in_file);
                 (me.descriptor_type(), Some(name))
@@ -706,25 +787,31 @@ impl<'a> Resolver<'a> {
                 type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
                 (
                     protobuf::descriptor::FieldDescriptorProto_Type::TYPE_MESSAGE,
-                    Some(type_name)
+                    Some(type_name),
                 )
             }
-            model::FieldType::Group(..) => {
-                (protobuf::descriptor::FieldDescriptorProto_Type::TYPE_GROUP, None)
-            }
+            model::FieldType::Group(..) => (
+                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_GROUP,
+                None,
+            ),
         }
     }
 
-    fn enum_value(&self, name: &str, number: i32) -> protobuf::descriptor::EnumValueDescriptorProto {
+    fn enum_value(
+        &self,
+        name: &str,
+        number: i32,
+    ) -> protobuf::descriptor::EnumValueDescriptorProto {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
         output.set_name(name.to_owned());
         output.set_number(number);
         output
     }
 
-    fn enum_options(&self, input: &[model::ProtobufOption])
-        -> ConvertResult<protobuf::descriptor::EnumOptions>
-    {
+    fn enum_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> ConvertResult<protobuf::descriptor::EnumOptions> {
         let mut r = protobuf::descriptor::EnumOptions::new();
         if let Some(allow_alias) = input.by_name_bool("allow_alias")? {
             r.set_allow_alias(allow_alias);
@@ -736,13 +823,20 @@ impl<'a> Resolver<'a> {
         Ok(r)
     }
 
-    fn enumeration(&self, input: &model::Enumeration)
-        -> ConvertResult<protobuf::descriptor::EnumDescriptorProto>
-    {
+    fn enumeration(
+        &self,
+        input: &model::Enumeration,
+    ) -> ConvertResult<protobuf::descriptor::EnumDescriptorProto> {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.value = input.values.iter().map(|v| self.enum_value(&v.name, v.number)).collect();
-        output.options.set_message(self.enum_options(&input.options)?);
+        output.value = input
+            .values
+            .iter()
+            .map(|v| self.enum_value(&v.name, v.number))
+            .collect();
+        output
+            .options
+            .set_message(self.enum_options(&input.options)?);
         Ok(output)
     }
 
@@ -754,7 +848,7 @@ impl<'a> Resolver<'a> {
 
     fn find_extension_by_path(&self, path: &str) -> ConvertResult<&model::Extension> {
         let (package, name) = match path.rfind('.') {
-            Some(dot) => (&path[..dot], &path[dot+1..]),
+            Some(dot) => (&path[..dot], &path[dot + 1..]),
             None => (self.current_file.package.as_str(), path),
         };
 
@@ -769,9 +863,7 @@ impl<'a> Resolver<'a> {
         Err(ConvertError::ExtensionNotFound(path.to_owned()))
     }
 
-    fn find_extension(&self, option_name: &str)
-        -> ConvertResult<&model::Extension>
-    {
+    fn find_extension(&self, option_name: &str) -> ConvertResult<&model::Extension> {
         if !option_name.starts_with('(') || !option_name.ends_with(')') {
             return Err(ConvertError::UnsupportedOption(option_name.to_owned()));
         }
@@ -780,9 +872,10 @@ impl<'a> Resolver<'a> {
     }
 
     fn option_value_to_unknown_value(
-        value: &model::ProtobufConstant, field_type: &model::FieldType, option_name: &str)
-        -> ConvertResult<protobuf::UnknownValue>
-    {
+        value: &model::ProtobufConstant,
+        field_type: &model::FieldType,
+        option_name: &str,
+    ) -> ConvertResult<protobuf::UnknownValue> {
         let v = match value {
             &model::ProtobufConstant::Bool(b) => {
                 if field_type != &model::FieldType::Bool {
@@ -790,15 +883,15 @@ impl<'a> Resolver<'a> {
                 } else {
                     Ok(protobuf::UnknownValue::Varint(if b { 1 } else { 0 }))
                 }
-            },
+            }
             &model::ProtobufConstant::U64(v) => {
                 match field_type {
                     &model::FieldType::Fixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
                     // TODO: check overflow
-                    &model::FieldType::Int64 |
-                    &model::FieldType::Int32 |
-                    &model::FieldType::Uint64 |
-                    &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
+                    &model::FieldType::Int64
+                    | &model::FieldType::Int32
+                    | &model::FieldType::Uint64
+                    | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
                     _ => Err(()),
                 }
             }
@@ -808,18 +901,17 @@ impl<'a> Resolver<'a> {
         v.map_err(|()| {
             ConvertError::UnsupportedExtensionType(
                 option_name.to_owned(),
-                format!("{:?}", field_type))
+                format!("{:?}", field_type),
+            )
         })
     }
 
-    fn file_options(&self, input: &[model::ProtobufOption])
-        -> ConvertResult<protobuf::descriptor::FileOptions>
-    {
+    fn file_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> ConvertResult<protobuf::descriptor::FileOptions> {
         let mut r = protobuf::descriptor::FileOptions::new();
-        self.custom_options(
-            input,
-            "google.protobuf.FileOptions",
-            r.mut_unknown_fields())?;
+        self.custom_options(input, "google.protobuf.FileOptions", r.mut_unknown_fields())?;
         Ok(r)
     }
 }
@@ -833,21 +925,17 @@ fn syntax(input: model::Syntax) -> String {
 
 fn label(input: model::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label {
     match input {
-        model::Rule::Optional =>
-            protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
-        model::Rule::Required =>
-            protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED,
-        model::Rule::Repeated =>
-            protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED,
+        model::Rule::Optional => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
+        model::Rule::Required => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED,
+        model::Rule::Repeated => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED,
     }
 }
 
 pub fn file_descriptor(
     name: String,
     input: &model::FileDescriptor,
-    deps: &[model::FileDescriptor])
-    -> ConvertResult<protobuf::descriptor::FileDescriptorProto>
-{
+    deps: &[model::FileDescriptor],
+) -> ConvertResult<protobuf::descriptor::FileDescriptorProto> {
     let resolver = Resolver {
         current_file: &input,
         deps,
@@ -864,10 +952,15 @@ pub fn file_descriptor(
     }
     output.message_type = messages;
 
-    output.enum_type =
-        input.enums.iter().map(|e| resolver.enumeration(e)).collect::<Result<_, _>>()?;
+    output.enum_type = input
+        .enums
+        .iter()
+        .map(|e| resolver.enumeration(e))
+        .collect::<Result<_, _>>()?;
 
-    output.options.set_message(resolver.file_options(&input.options)?);
+    output
+        .options
+        .set_message(resolver.file_options(&input.options)?);
 
     Ok(output)
 }

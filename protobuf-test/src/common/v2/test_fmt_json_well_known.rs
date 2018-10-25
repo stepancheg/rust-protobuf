@@ -53,8 +53,16 @@ fn test_value() {
 
     m.mut_value().set_list_value({
         let mut l = ListValue::new();
-        l.values.push({let mut v = Value::new(); v.set_bool_value(true); v});
-        l.values.push({let mut v = Value::new(); v.set_number_value(12.0); v});
+        l.values.push({
+            let mut v = Value::new();
+            v.set_bool_value(true);
+            v
+        });
+        l.values.push({
+            let mut v = Value::new();
+            v.set_number_value(12.0);
+            v
+        });
         l
     });
     test_json_print_parse_message("{\"value\": [true, 12.0]}", &m);
@@ -66,17 +74,27 @@ fn test_value() {
 #[test]
 fn test_list_value() {
     let mut m = TestFmtJsonWellKnownTypes::new();
-    m.mut_list_value().values.push({ let mut v = Value::new(); v.set_number_value(2.0); v });
-    m.mut_list_value().values.push({ let mut v = Value::new(); v.set_bool_value(false); v });
+    m.mut_list_value().values.push({
+        let mut v = Value::new();
+        v.set_number_value(2.0);
+        v
+    });
+    m.mut_list_value().values.push({
+        let mut v = Value::new();
+        v.set_bool_value(false);
+        v
+    });
     test_json_print_parse_message("{\"listValue\": [2.0, false]}", &m);
 }
 
 #[test]
 fn test_struct() {
     let mut m = TestFmtJsonWellKnownTypes::new();
-    m.mut_struct_value().fields.insert(
-        "ab".to_owned(),
-        { let mut v = Value::new(); v.set_number_value(3.0); v });
+    m.mut_struct_value().fields.insert("ab".to_owned(), {
+        let mut v = Value::new();
+        v.set_number_value(3.0);
+        v
+    });
     test_json_print_parse_message("{\"structValue\": {\"ab\": 3.0}}", &m);
 }
 
@@ -128,12 +146,14 @@ fn test_field_mask() {
     m.set_field_mask({
         let mut v = FieldMask::new();
         v.paths = vec!["a.b".to_owned()].into();
-        v});
+        v
+    });
     test_json_print_parse_message("{\"fieldMask\": \"a.b\"}", &m);
 
     m.set_field_mask({
         let mut v = FieldMask::new();
         v.paths = vec!["ab".to_owned(), "c.d.e".to_owned()].into();
-        v});
+        v
+    });
     test_json_print_parse_message("{\"fieldMask\": \"ab,c.d.e\"}", &m);
 }

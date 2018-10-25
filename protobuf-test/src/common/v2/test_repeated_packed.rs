@@ -2,7 +2,6 @@ use super::test_repeated_packed_pb::*;
 
 use protobuf_test_common::*;
 
-
 // varint field number = 4
 // unpacked tag = 20
 // packed tag   = 22
@@ -39,7 +38,6 @@ fn test_read_packed_to_unpacked() {
     test.sfixed32s = vec![17i32, 1000];
     test_deserialize("2a 08 11 00 00 00 e8 03 00 00", &test);
 }
-
 
 #[test]
 fn test_write_packed() {

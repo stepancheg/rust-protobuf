@@ -1,5 +1,5 @@
-extern crate protoc_rust;
 extern crate protobuf_test_common;
+extern crate protoc_rust;
 
 fn main() {
     protobuf_test_common::build::clean_old_files();

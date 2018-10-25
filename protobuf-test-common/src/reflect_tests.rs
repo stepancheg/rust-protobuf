@@ -1,16 +1,15 @@
 use std::f32;
 use std::f64;
 
-use protobuf::reflect::RuntimeTypeDynamic;
-use protobuf::reflect::ReflectValueBox;
-use protobuf::reflect::RuntimeTypeBox;
-use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::MessageDescriptor;
+use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::RuntimeFieldType;
+use protobuf::reflect::RuntimeTypeBox;
+use protobuf::reflect::RuntimeTypeDynamic;
 use protobuf::well_known_types::Value;
 use protobuf::well_known_types::Value_oneof_kind;
 use protobuf::Message;
-
 
 pub fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBox {
     match field_type.to_box() {
@@ -21,10 +20,12 @@ pub fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBo
         RuntimeTypeBox::F32 => ReflectValueBox::F32(15.5),
         RuntimeTypeBox::F64 => ReflectValueBox::F64(16.5),
         RuntimeTypeBox::Bool => ReflectValueBox::Bool(true),
-        RuntimeTypeBox::String |
-        RuntimeTypeBox::Chars => ReflectValueBox::String("here".to_owned()),
-        RuntimeTypeBox::VecU8 |
-        RuntimeTypeBox::CarllercheBytes => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
+        RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
+            ReflectValueBox::String("here".to_owned())
+        }
+        RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
+            ReflectValueBox::Bytes(b"there".as_ref().to_owned())
+        }
         RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(&e.values()[0]),
         RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
@@ -35,9 +36,7 @@ fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<Message>> 
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
         value.kind = Some(Value_oneof_kind::number_value(23.0));
-        vec![
-            Box::new(value),
-        ]
+        vec![Box::new(value)]
     } else {
         vec![
             // TODO: populated messages
@@ -95,19 +94,14 @@ pub fn values_for_runtime_type(field_type: &RuntimeTypeDynamic) -> Vec<ReflectVa
             ReflectValueBox::F64(f64::INFINITY),
             ReflectValueBox::F64(-f64::INFINITY),
         ],
-        RuntimeTypeBox::Bool => vec![
-            ReflectValueBox::Bool(true),
-            ReflectValueBox::Bool(false),
-        ],
-        RuntimeTypeBox::String |
-        RuntimeTypeBox::Chars => vec![
+        RuntimeTypeBox::Bool => vec![ReflectValueBox::Bool(true), ReflectValueBox::Bool(false)],
+        RuntimeTypeBox::String | RuntimeTypeBox::Chars => vec![
             ReflectValueBox::String("here".to_owned()),
             ReflectValueBox::String("".to_owned()),
             ReflectValueBox::String(" \t\n".to_owned()),
             ReflectValueBox::String("\0".to_owned()),
         ],
-        RuntimeTypeBox::VecU8 |
-        RuntimeTypeBox::CarllercheBytes => vec![
+        RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => vec![
             ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
             ReflectValueBox::Bytes(b"".as_ref().to_owned()),
         ],
@@ -115,9 +109,10 @@ pub fn values_for_runtime_type(field_type: &RuntimeTypeDynamic) -> Vec<ReflectVa
             ReflectValueBox::Enum(&e.values()[0]),
             ReflectValueBox::Enum(&e.values()[e.values().len() - 1]),
         ],
-        RuntimeTypeBox::Message(m) => {
-            values_for_message_type(m).into_iter().map(ReflectValueBox::from).collect()
-        },
+        RuntimeTypeBox::Message(m) => values_for_message_type(m)
+            .into_iter()
+            .map(ReflectValueBox::from)
+            .collect(),
     }
 }
 
@@ -159,7 +154,7 @@ pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<Message>> {
     r
 }
 
-pub fn special_messages_typed<M : Message>() -> Vec<M> {
+pub fn special_messages_typed<M: Message>() -> Vec<M> {
     let mut r = Vec::new();
     for m in special_messages(M::descriptor_static()) {
         r.push(*m.downcast_box().unwrap());

@@ -54,7 +54,9 @@ impl<'a> Tokenizer<'a> {
 
     pub fn loc(&self) -> Loc {
         // After lookahead return the location of the next token
-        self.next_token.as_ref().map(|t| t.loc.clone())
+        self.next_token
+            .as_ref()
+            .map(|t| t.loc.clone())
             // After token consumed return the location of that token
             .or(self.last_token_loc.clone())
             // Otherwise return the position of lexer

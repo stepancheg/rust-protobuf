@@ -6,21 +6,21 @@ use std::fs::File;
 use std::path::Path;
 
 use rand::Rng;
-use rand::StdRng;
 use rand::SeedableRng;
+use rand::StdRng;
 
-use protobuf::Message;
 use perftest_data::PerftestData;
+use protobuf::Message;
 
 mod perftest_data;
 
-fn measure_ns<R, F : FnMut() -> R>(mut f: F) -> (u64, R) {
+fn measure_ns<R, F: FnMut() -> R>(mut f: F) -> (u64, R) {
     let start = time::precise_time_ns();
     let r = f();
     (time::precise_time_ns() - start, r)
 }
 
-fn measure_and_print<R, F : FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
+fn measure_and_print<R, F: FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
     let (ns, r) = measure_ns(f);
     let ns_per_iter = ns / iter;
     println!("{}: {} ns per iter", title, ns_per_iter);
@@ -34,12 +34,12 @@ struct TestRunner {
 }
 
 impl TestRunner {
-    fn run_test<M : Message + Clone + PartialEq>(&self, name: &str, data: &[M]) {
+    fn run_test<M: Message + Clone + PartialEq>(&self, name: &str, data: &[M]) {
         assert!(data.len() > 0, "empty string for test: {}", name);
 
         let mut rng: StdRng = SeedableRng::from_seed([
-            10, 20, 30, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            10, 20, 30, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0,
         ]);
 
         let mut random_data: Vec<M> = Vec::new();
@@ -52,11 +52,15 @@ impl TestRunner {
         }
 
         let mut buf = Vec::new();
-        measure_and_print(&format!("{}: write", name), random_data.len() as u64, || {
-            for m in &random_data {
-                m.write_length_delimited_to_vec(&mut buf).unwrap();
-            }
-        });
+        measure_and_print(
+            &format!("{}: write", name),
+            random_data.len() as u64,
+            || {
+                for m in &random_data {
+                    m.write_length_delimited_to_vec(&mut buf).unwrap();
+                }
+            },
+        );
 
         let read_data =
             measure_and_print(&format!("{}: read", name), random_data.len() as u64, || {
@@ -89,7 +93,7 @@ impl TestRunner {
         assert_eq!(random_data.len(), merged);
     }
 
-    fn test<M : Message + Clone + PartialEq>(&mut self, name: &str, data: &[M]) {
+    fn test<M: Message + Clone + PartialEq>(&mut self, name: &str, data: &[M]) {
         if self.selected.as_ref().map(|s| *s == name).unwrap_or(true) {
             self.run_test(name, data);
             self.any_matched = true;
@@ -109,7 +113,8 @@ fn main() {
     if args.len() > 3 {
         panic!("usage: {} [data_size] [test]", args[0])
     }
-    let data_size = args.iter()
+    let data_size = args
+        .iter()
         .nth(1)
         .map(|x| x.parse().unwrap())
         .unwrap_or(1000000);
@@ -130,22 +135,10 @@ fn main() {
         "test_repeated_packed_int32",
         &test_data.test_repeated_packed_int32,
     );
-    runner.test(
-        "test_repeated_messages",
-        &test_data.test_repeated_messages,
-    );
-    runner.test(
-        "test_optional_messages",
-        &test_data.test_optional_messages,
-    );
+    runner.test("test_repeated_messages", &test_data.test_repeated_messages);
+    runner.test("test_optional_messages", &test_data.test_optional_messages);
     runner.test("test_strings", &test_data.test_strings);
-    runner.test(
-        "test_small_bytearrays",
-        &test_data.test_small_bytearrays,
-    );
-    runner.test(
-        "test_large_bytearrays",
-        &test_data.test_large_bytearrays,
-    );
+    runner.test("test_small_bytearrays", &test_data.test_small_bytearrays);
+    runner.test("test_large_bytearrays", &test_data.test_large_bytearrays);
     runner.check();
 }

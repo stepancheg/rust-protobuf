@@ -1,6 +1,6 @@
-use std::process;
-use std::io::Write;
 use std::io::Read;
+use std::io::Write;
+use std::process;
 
 use super::interop_pb::*;
 
@@ -9,24 +9,31 @@ use protobuf::Message;
 
 use protobuf_test_common::*;
 
-
 fn test_parse_message(m: &InteropMessageList) {
     let m_bytes = m.write_to_bytes().expect("write_to_bytes");
 
     let mut interop = process::Command::new("../interop/cxx/interop")
-        .args(&[
-            "json-encode",
-        ])
+        .args(&["json-encode"])
         .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())
         .stderr(process::Stdio::inherit())
         .spawn()
         .expect("interop");
 
-    interop.stdin.take().unwrap().write_all(&m_bytes).expect("write to process");
+    interop
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(&m_bytes)
+        .expect("write to process");
 
     let mut json = String::new();
-    interop.stdout.take().unwrap().read_to_string(&mut json).expect("read json");
+    interop
+        .stdout
+        .take()
+        .unwrap()
+        .read_to_string(&mut json)
+        .expect("read json");
 
     let exit_status = interop.wait().expect("wait_with_output");
     assert!(exit_status.success(), "{}", exit_status);
@@ -37,37 +44,58 @@ fn test_parse_message(m: &InteropMessageList) {
 
     assert!(
         InteropMessageList::descriptor_static().deep_eq(m, &mm),
-        "{:?} != {:?}; json: {}", m, mm, json);
+        "{:?} != {:?}; json: {}",
+        m,
+        mm,
+        json
+    );
 }
 
 fn test_print_message(m: &InteropMessageList) {
     let m_json = json::print_to_string(m).unwrap();
 
     let mut interop = process::Command::new("../interop/cxx/interop")
-        .args(&[
-            "json-decode",
-        ])
+        .args(&["json-decode"])
         .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())
         .stderr(process::Stdio::inherit())
         .spawn()
         .expect("interop");
 
-    interop.stdin.take().unwrap().write_all(&m_json.as_bytes()).expect("write to process");
+    interop
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(&m_json.as_bytes())
+        .expect("write to process");
 
     let mut bytes = Vec::new();
-    interop.stdout.take().unwrap().read_to_end(&mut bytes).expect("read json");
+    interop
+        .stdout
+        .take()
+        .unwrap()
+        .read_to_end(&mut bytes)
+        .expect("read json");
 
     let exit_status = interop.wait().expect("wait_with_output");
-    assert!(exit_status.success(), "{} when parsing: {}", exit_status, m_json);
+    assert!(
+        exit_status.success(),
+        "{} when parsing: {}",
+        exit_status,
+        m_json
+    );
 
     let mut mm = InteropMessageList::new();
 
     mm.merge_from_bytes(&bytes).expect("parse bytes");
 
-    assert!(InteropMessageList::descriptor_static().deep_eq(m, &mm), "{:?} != {:?}", m, mm);
+    assert!(
+        InteropMessageList::descriptor_static().deep_eq(m, &mm),
+        "{:?} != {:?}",
+        m,
+        mm
+    );
 }
-
 
 #[test]
 fn parse_empty() {

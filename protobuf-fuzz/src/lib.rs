@@ -1,16 +1,15 @@
 extern crate protobuf;
 
-use std::io::BufReader;
 use protobuf::Message;
+use std::io::BufReader;
 
 pub mod all_types_pb;
 
-
-fn test_bytes<M : Message>(bytes: &[u8]) {
+fn test_bytes<M: Message>(bytes: &[u8]) {
     drop(protobuf::parse_from_bytes::<M>(bytes));
 }
 
-fn test_read<M : Message>(bytes: &[u8]) {
+fn test_read<M: Message>(bytes: &[u8]) {
     let mut reader = BufReader::new(bytes);
     drop(protobuf::parse_from_reader::<M>(&mut reader));
 }

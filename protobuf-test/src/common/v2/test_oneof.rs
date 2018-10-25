@@ -36,7 +36,7 @@ fn test_set_clear_field() {
 fn test_types() {
     fn t<F>(f: F)
     where
-        F : Fn(&mut TestOneof),
+        F: Fn(&mut TestOneof),
     {
         let mut o = TestOneof::new();
         f(&mut o);

@@ -1,7 +1,7 @@
 use protobuf::*;
 
-use protobuf_test_common::*;
 use protobuf_test_common::hex::decode_hex;
+use protobuf_test_common::*;
 
 use super::test_basic_pb::*;
 
@@ -43,13 +43,9 @@ fn test_recursion_limit() {
         t.mut_children().push(test);
         test = t;
     }
-    
+
     let bytes = test.write_to_bytes().unwrap();
-    let cases = vec![
-        (None, false),
-        (Some(9), true),
-        (Some(10), false),
-    ];
+    let cases = vec![(None, false), (Some(9), true), (Some(10), false)];
 
     for (limit, has_err) in cases {
         let mut is = CodedInputStream::from_bytes(&bytes);
@@ -140,15 +136,15 @@ fn test_types_repeated() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(
-        &["thirty two".to_string(), "thirty three".to_string()],
-    ));
-    message.set_bytes_field(RepeatedField::from_slice(
-        &[[33u8, 34].to_vec(), [35u8].to_vec()],
-    ));
-    message.set_enum_field(
-        [TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec(),
-    );
+    message.set_string_field(RepeatedField::from_slice(&[
+        "thirty two".to_string(),
+        "thirty three".to_string(),
+    ]));
+    message.set_bytes_field(RepeatedField::from_slice(&[
+        [33u8, 34].to_vec(),
+        [35u8].to_vec(),
+    ]));
+    message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
     test_serialize_deserialize_no_hex(&message);
 }
 
@@ -168,15 +164,15 @@ fn test_types_repeated_packed() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(
-        &["thirty two".to_string(), "thirty three".to_string()],
-    ));
-    message.set_bytes_field(RepeatedField::from_slice(
-        &[[33u8, 34].to_vec(), [35u8].to_vec()],
-    ));
-    message.set_enum_field(
-        [TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec(),
-    );
+    message.set_string_field(RepeatedField::from_slice(&[
+        "thirty two".to_string(),
+        "thirty three".to_string(),
+    ]));
+    message.set_bytes_field(RepeatedField::from_slice(&[
+        [33u8, 34].to_vec(),
+        [35u8].to_vec(),
+    ]));
+    message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
     test_serialize_deserialize_no_hex(&message);
 }
 
@@ -279,9 +275,9 @@ fn test_bug_sint() {
 /// Smoke test which validates that read from the network doesn't block
 #[test]
 fn test_parse_length_delimited_from_network_smoke() {
+    use std::io::Write;
     use std::net;
     use std::thread;
-    use std::io::Write;
 
     let listener = net::TcpListener::bind(("127.0.0.1", 0)).expect("bind");
     let addr = listener.local_addr().expect("local_addr");
