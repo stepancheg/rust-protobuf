@@ -44,6 +44,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - [`cached_size` field is public now](https://github.com/stepancheg/rust-protobuf/issues/348)
 
+## [2.1.1] - 2018-10-09
+
+- [Make `Customize::_future_options` public](https://github.com/stepancheg/rust-protobuf/pull/346)
+
 ## [2.1.0] - 2018-10-06
 
 - Support of `protoc` command from Google protobuf before 3.0 is dropped
