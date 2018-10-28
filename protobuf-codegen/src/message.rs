@@ -435,7 +435,7 @@ impl<'a> MessageGen<'a> {
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
             w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.field_decl("cached_size", "::protobuf::CachedSize");
+            w.pub_field_decl("cached_size", "::protobuf::CachedSize");
         });
     }
 
