@@ -26,7 +26,7 @@ pub struct FileDescriptorSet {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl FileDescriptorSet {
@@ -160,7 +160,7 @@ pub struct FileDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl FileDescriptorProto {
@@ -598,7 +598,7 @@ pub struct DescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl DescriptorProto {
@@ -936,7 +936,7 @@ pub struct DescriptorProto_ExtensionRange {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl DescriptorProto_ExtensionRange {
@@ -1117,7 +1117,7 @@ pub struct DescriptorProto_ReservedRange {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl DescriptorProto_ReservedRange {
@@ -1306,7 +1306,7 @@ pub struct FieldDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl FieldDescriptorProto {
@@ -1981,7 +1981,7 @@ pub struct OneofDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl OneofDescriptorProto {
@@ -2158,7 +2158,7 @@ pub struct EnumDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl EnumDescriptorProto {
@@ -2356,7 +2356,7 @@ pub struct EnumValueDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl EnumValueDescriptorProto {
@@ -2572,7 +2572,7 @@ pub struct ServiceDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl ServiceDescriptorProto {
@@ -2773,7 +2773,7 @@ pub struct MethodDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl MethodDescriptorProto {
@@ -3144,7 +3144,7 @@ pub struct FileOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl FileOptions {
@@ -3927,7 +3927,7 @@ pub struct MessageOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl MessageOptions {
@@ -4212,7 +4212,7 @@ pub struct FieldOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl FieldOptions {
@@ -4657,7 +4657,7 @@ pub struct OneofOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl OneofOptions {
@@ -4782,7 +4782,7 @@ pub struct EnumOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl EnumOptions {
@@ -4984,7 +4984,7 @@ pub struct EnumValueOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl EnumValueOptions {
@@ -5147,7 +5147,7 @@ pub struct ServiceOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl ServiceOptions {
@@ -5310,7 +5310,7 @@ pub struct MethodOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl MethodOptions {
@@ -5478,7 +5478,7 @@ pub struct UninterpretedOption {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl UninterpretedOption {
@@ -5875,7 +5875,7 @@ pub struct UninterpretedOption_NamePart {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl UninterpretedOption_NamePart {
@@ -6074,7 +6074,7 @@ pub struct SourceCodeInfo {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl SourceCodeInfo {
@@ -6201,7 +6201,7 @@ pub struct SourceCodeInfo_Location {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl SourceCodeInfo_Location {
@@ -6462,7 +6462,7 @@ pub struct GeneratedCodeInfo {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl GeneratedCodeInfo {
@@ -6588,7 +6588,7 @@ pub struct GeneratedCodeInfo_Annotation {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl GeneratedCodeInfo_Annotation {

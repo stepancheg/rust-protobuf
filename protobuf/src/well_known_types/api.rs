@@ -32,7 +32,7 @@ pub struct Api {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Api {
@@ -269,7 +269,7 @@ pub struct Method {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Method {
@@ -491,7 +491,7 @@ pub struct Mixin {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Mixin {

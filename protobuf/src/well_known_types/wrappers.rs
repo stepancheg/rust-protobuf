@@ -26,7 +26,7 @@ pub struct DoubleValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl DoubleValue {
@@ -147,7 +147,7 @@ pub struct FloatValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl FloatValue {
@@ -268,7 +268,7 @@ pub struct Int64Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Int64Value {
@@ -389,7 +389,7 @@ pub struct UInt64Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl UInt64Value {
@@ -510,7 +510,7 @@ pub struct Int32Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Int32Value {
@@ -631,7 +631,7 @@ pub struct UInt32Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl UInt32Value {
@@ -752,7 +752,7 @@ pub struct BoolValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl BoolValue {
@@ -873,7 +873,7 @@ pub struct StringValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl StringValue {
@@ -990,7 +990,7 @@ pub struct BytesValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl BytesValue {

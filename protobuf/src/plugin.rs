@@ -28,7 +28,7 @@ pub struct CodeGeneratorRequest {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl CodeGeneratorRequest {
@@ -219,7 +219,7 @@ pub struct CodeGeneratorResponse {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl CodeGeneratorResponse {
@@ -396,7 +396,7 @@ pub struct CodeGeneratorResponse_File {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl CodeGeneratorResponse_File {

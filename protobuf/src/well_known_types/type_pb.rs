@@ -31,7 +31,7 @@ pub struct Type {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Type {
@@ -250,7 +250,7 @@ pub struct Field {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Field {
@@ -671,7 +671,7 @@ pub struct Enum {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Enum {
@@ -868,7 +868,7 @@ pub struct EnumValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl EnumValue {
@@ -1026,7 +1026,7 @@ pub struct Option {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    cached_size: ::protobuf::CachedSize,
+    pub cached_size: ::protobuf::CachedSize,
 }
 
 impl Option {
