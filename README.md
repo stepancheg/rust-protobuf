@@ -15,7 +15,7 @@ rust-protobuf
 
 ## About versions and branches
 
-- `2.0.*` is the latest stable version
+- `2.*.*` is the latest stable version
 - `1.7.*` is previous stable version
 - `1.6.*` was republished as `2.0.*` and no longer maintained. Should be compatible with `2.0.*`.
   If you are using `1.6.*` please update to `2.0.*`.
