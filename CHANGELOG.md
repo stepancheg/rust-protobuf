@@ -40,6 +40,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.1 Unreleased]
 
+## [2.1.4] - 2018-11-01
+
+- Revert clippy annotations
+
 ## [2.1.3] - 2018-10-31
 
 - [Replace old clippy annotations with recommended new
