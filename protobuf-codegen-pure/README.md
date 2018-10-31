@@ -26,5 +26,5 @@ protobuf-codegen-pure = "1.6"
 
 The alternative is to use
 [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust),
-which relies on `protoc` command to parse descriptors (thus it's more reliable),
-but it requires `protoc` command in `$PATH`.
+which relies on `protoc` command to parse descriptors. Both crates should produce the same result,
+otherwise please file a bug report.
