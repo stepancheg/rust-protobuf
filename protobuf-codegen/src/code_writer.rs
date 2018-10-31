@@ -49,13 +49,12 @@ impl<'a> CodeWriter<'a> {
         // https://secure.phabricator.com/T784
         self.write_line("// @generated");
 
-        // https://github.com/stepancheg/rust-protobuf/pull/332
         self.write_line("");
-        self.write_line("#![cfg_attr(feature = \"cargo-clippy\", allow(clippy::all))]");
-
+        self.comment("https://github.com/Manishearth/rust-clippy/issues/702");
+        self.write_line("#![allow(unknown_lints)]");
+        self.write_line("#![allow(clippy)]");
         self.write_line("");
         self.write_line("#![cfg_attr(rustfmt, rustfmt_skip)]");
-
         self.write_line("");
         self.write_line("#![allow(box_pointers)]");
         self.write_line("#![allow(dead_code)]");
