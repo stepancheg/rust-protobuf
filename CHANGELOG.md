@@ -43,7 +43,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 ## [2.1.3] - 2018-10-31
 
 - [Replace old clippy annotations with recommended new
-  annotations)[https://github.com/stepancheg/rust-protobuf/pull/332]
+  annotations](https://github.com/stepancheg/rust-protobuf/pull/332)
 
 ## [2.1.2] - 2018-10-28
 
