@@ -12,6 +12,7 @@ rust-protobuf
 * Generate rust code
 * Has runtime library for generated code
   (Coded{Input|Output}Stream impl)
+* Supports both Protobuf versions 2 and 3
 
 ## About versions and branches
 
