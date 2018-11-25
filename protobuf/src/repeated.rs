@@ -105,6 +105,12 @@ impl<T> Default for RepeatedField<T> {
 }
 
 impl<T> RepeatedField<T> {
+    /// True iff this object contains no data.
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.vec.is_empty()
+    }
+
     /// Create new empty container.
     #[inline]
     pub fn new() -> RepeatedField<T> {

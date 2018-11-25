@@ -392,9 +392,29 @@ impl<'a> MessageGen<'a> {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
-                    field.write_struct_field(w);
+                    if self.customize.serde_derive_skip_if_null.unwrap_or(false) {
+                        match field.proto_type {
+                            FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                                match field.kind {
+                                    FieldKind::Singular(ref _s) => {
+                                        serde::write_serde_attr(w, &self.customize, "serde(skip_serializing_if = \"::protobuf::SingularPtrField::is_none\")");
+                                    }
+                                    FieldKind::Repeated(ref _r) => {
+                                        serde::write_serde_attr(w, &self.customize, "serde(skip_serializing_if = \"::protobuf::RepeatedField::is_empty\")");
+                                    }
+                                    _ => {}
+                                }
+                            }
+                            FieldDescriptorProto_Type::TYPE_STRING => {
+                                serde::write_serde_attr(w, &self.customize, "serde(skip_serializing_if = \"::std::string::String::is_empty\")");
+                            }
+                            _ => {}
+                        }
+                        field.write_struct_field(w);
+                    }
                 }
             }
+            
             if !self.oneofs().is_empty() {
                 w.comment("message oneof groups");
                 for oneof in self.oneofs() {

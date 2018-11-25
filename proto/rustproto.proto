@@ -81,4 +81,6 @@ extend google.protobuf.FieldOptions {
     // Use `std::Option<T>` to store singular messages fields.
     // Note, it's not possible to have recursive messages with this option enabled.
     optional bool singular_field_option_field = 17025;
+    // Skip null fields when using `Serialize`
+    optional bool serde_derive_skip_if_null = 17032;
 }
