@@ -30,6 +30,7 @@ matrix:
   - os: windows
 
 before_install:
+  - ci/env-debug.sh
   - ci/install-protobuf.sh
   - export PATH="/home/travis/bin:$PATH"
   - export LD_LIBRARY_PATH="/home/travis/lib"
@@ -39,7 +40,6 @@ before_install:
   - export RUST_BACKTRACE=1
 
 script:
-  - rustc --version
   - protobuf/regenerate.sh
   - cargo test --all
   # `cargo test --all --features=FFF` doesn't work if there are crates without feature `FFF`
