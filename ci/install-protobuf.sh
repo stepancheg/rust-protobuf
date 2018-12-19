@@ -7,6 +7,13 @@ die() {
     exit 1
 }
 
+if [ `uname` = Linux ]; then
+    # Check we have ccache
+    ccache --version
+    export CC="ccache gcc"
+    export CXX="ccache g++"
+fi
+
 test -n "$PROTOBUF_VERSION" || die "PROTOBUF_VERSION env var is undefined"
 
 case "$PROTOBUF_VERSION" in
