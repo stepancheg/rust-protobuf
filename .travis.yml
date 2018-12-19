@@ -36,8 +36,8 @@ matrix:
 before_install:
   - ci/env-debug.sh
   - ci/install-protobuf.sh
-  - export PATH="/home/travis/bin:$PATH"
-  - export LD_LIBRARY_PATH="/home/travis/lib"
+  - export PATH="$HOME/bin:$PATH"
+  - export LD_LIBRARY_PATH="$HOME/lib"
   - which protoc
   - protoc --version
   - if [ -z "$ON_WINDOWS" ]; then PKG_CONFIG_PATH="/home/travis/lib/pkgconfig" interop/cxx/compile.sh; fi
