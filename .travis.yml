@@ -2,6 +2,10 @@ sudo: false
 
 language: rust
 
+cache:
+    directories:
+    - $HOME/.ccache
+
 matrix:
   include:
   - name: Stable
