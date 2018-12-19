@@ -4,18 +4,30 @@ language: rust
 
 matrix:
   include:
-  - rust: stable
+  - name: Stable
+    rust: stable
     env: PROTOBUF_VERSION=3.5.1
-  - rust: beta
+  - name: Beta
+    rust: beta
     env: PROTOBUF_VERSION=3.5.1
-  - rust: nightly
+  - name: Nightly
+    rust: nightly
     env: PROTOBUF_VERSION=3.5.1
-  - rust: stable
+  - name: Stable bytes
+    rust: stable
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes
-  - rust: stable
+  - name: Stable serde
+    rust: stable
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-serde
-  - rust: nightly
+  - name: Nightly all features
+    rust: nightly
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-serde,with-bytes
+  - name: Windows
+    os: windows
+    rust: stable
+    env: PROTOBUF_VERSION=3.5.1 ON_WINDOWS=1
+  allow_failures:
+  - os: windows
 
 before_install:
   - ci/install-protobuf.sh
@@ -23,7 +35,7 @@ before_install:
   - export LD_LIBRARY_PATH="/home/travis/lib"
   - which protoc
   - protoc --version
-  - PKG_CONFIG_PATH="/home/travis/lib/pkgconfig" interop/cxx/compile.sh
+  - if [ -z "$ON_WINDOWS" ]; then PKG_CONFIG_PATH="/home/travis/lib/pkgconfig" interop/cxx/compile.sh; fi
   - export RUST_BACKTRACE=1
 
 script:
