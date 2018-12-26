@@ -27,13 +27,23 @@ fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
 }
 
 trait FieldDescriptorProtoTypeExt {
-    fn read(&self, is: &str) -> String;
+    fn read(&self, is: &str, primitive_type_variant: PrimitiveTypeVariant) -> String;
     fn is_s_varint(&self) -> bool;
 }
 
 impl FieldDescriptorProtoTypeExt for FieldDescriptorProto_Type {
-    fn read(&self, is: &str) -> String {
-        format!("{}.read_{}()", is, protobuf_name(*self))
+    fn read(&self, is: &str, primitive_type_variant: PrimitiveTypeVariant) -> String {
+        match primitive_type_variant {
+            PrimitiveTypeVariant::Default => format!("{}.read_{}()", is, protobuf_name(*self)),
+            PrimitiveTypeVariant::Carllerche => {
+                let protobuf_name = match self {
+                    &FieldDescriptorProto_Type::TYPE_STRING => "chars",
+                    _ => protobuf_name(*self),
+                };
+                format!("{}.read_carllerche_{}()", is, protobuf_name)
+            }
+        }
+
     }
 
     /// True if self is signed integer with zigzag encoding
@@ -851,8 +861,9 @@ impl<'a> FieldGen<'a> {
 
                 let suffix = match &self.elem().rust_storage_type() {
                     t if t.is_primitive() => format!("{}", t),
-                    &RustType::String => "string".to_string(),
+                    &RustType::String | &RustType::Chars => "string".to_string(),
                     &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
+                    &RustType::Bytes  => "bytes".to_string(),
                     &RustType::Enum(..) => "enum".to_string(),
                     &RustType::Message(..) => "message".to_string(),
                     t => panic!("unexpected field type: {}", t),
@@ -1305,7 +1316,7 @@ impl<'a> FieldGen<'a> {
         self.write_assert_wire_type(wire_type_var, w);
 
         let typed = RustValueTyped {
-            value: format!("{}?", self.proto_type.read("is")),
+            value: format!("{}?", self.proto_type.read("is", f.elem.primitive_type_variant())),
             rust_type: self.full_storage_iter_elem_type(),
         };
 
@@ -1357,7 +1368,7 @@ impl<'a> FieldGen<'a> {
                 ));
             }
             _ => {
-                let read_proc = format!("{}?", self.proto_type.read("is"));
+                let read_proc = format!("{}?", self.proto_type.read("is", PrimitiveTypeVariant::Default));
 
                 self.write_assert_wire_type(wire_type_var, w);
                 w.write_line(&format!("let tmp = {};", read_proc));
