@@ -4,9 +4,12 @@ extern crate protoc;
 extern crate protobuf;
 extern crate protobuf_codegen;
 
+mod slashes;
+use slashes::Slashes;
+
+use std::fs;
 use std::io;
 use std::io::Read;
-use std::fs;
 use std::path::Path;
 
 pub use protoc::Error;
@@ -85,29 +88,24 @@ pub fn run(args: Args) -> Result<()> {
         &args.customize)
 }
 
-fn remove_dot_slash(path: &str) -> &str {
-    if path == "." {
-        ""
-    } else if path.starts_with("./") || path.starts_with(".\\") {
-        &path[2..]
-    } else {
-        path
-    }
-}
-
-fn remove_path_prefix<'a>(mut path: &'a str, mut prefix: &str) -> Option<&'a str> {
-    path = remove_dot_slash(path);
-    prefix = remove_dot_slash(prefix);
+fn remove_path_prefix(mut path: &str, mut prefix: &str) -> Option<String> {
+    let slashes = Slashes::here();
+    path = slashes.remove_dot_slashes(path);
+    prefix = slashes.remove_dot_slashes(prefix);
 
     if prefix == "" {
-        return Some(path);
+        return Some(path.to_owned());
     }
 
-    if prefix.ends_with("/") || prefix.ends_with("\\") {
-        prefix = &prefix[..prefix.len() - 1];
+    let path = slashes.norm_path(path);
+    let mut prefix = slashes.norm_path(prefix);
+
+    if prefix.ends_with("/") {
+        let l = prefix.len();
+        prefix.truncate(l - 1);
     }
 
-    if !path.starts_with(prefix) {
+    if !path.starts_with(&prefix) {
         return None;
     }
 
@@ -115,8 +113,8 @@ fn remove_path_prefix<'a>(mut path: &'a str, mut prefix: &str) -> Option<&'a str
         return None;
     }
 
-    if path.as_bytes()[prefix.len()] == b'/' || path.as_bytes()[prefix.len()] == b'\\' {
-        return Some(&path[prefix.len() + 1..]);
+    if path.as_bytes()[prefix.len()] == b'/' {
+        return Some(path[prefix.len() + 1..].to_owned());
     } else {
         return None;
     }
@@ -127,23 +125,23 @@ mod test {
     #[test]
     fn remove_path_prefix() {
         assert_eq!(
-            Some("abc.proto"),
+            Some("abc.proto".to_owned()),
             super::remove_path_prefix("xxx/abc.proto", "xxx")
         );
         assert_eq!(
-            Some("abc.proto"),
+            Some("abc.proto".to_owned()),
             super::remove_path_prefix("xxx/abc.proto", "xxx/")
         );
         assert_eq!(
-            Some("abc.proto"),
+            Some("abc.proto".to_owned()),
             super::remove_path_prefix("../xxx/abc.proto", "../xxx/")
         );
         assert_eq!(
-            Some("abc.proto"),
+            Some("abc.proto".to_owned()),
             super::remove_path_prefix("abc.proto", ".")
         );
         assert_eq!(
-            Some("abc.proto"),
+            Some("abc.proto".to_owned()),
             super::remove_path_prefix("abc.proto", "./")
         );
         assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy"));
