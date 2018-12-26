@@ -11,4 +11,8 @@ message TestCarllercheBytes {
     optional string s1 = 2;
     repeated bytes br = 3;
     repeated string sr = 4;
+    oneof one {
+        bytes ob = 11;
+        string os = 12;
+    }
 }
