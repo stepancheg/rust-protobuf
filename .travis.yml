@@ -35,7 +35,9 @@ matrix:
 
 before_install:
   - ci/env-debug.sh
+  - if [ -z "$ON_WINDOWS" ]; then ccache --zero-stats; fi
   - ci/install-protobuf.sh
+  - if [ -z "$ON_WINDOWS" ]; then ccache --show-stats; fi
   - export PATH="$HOME/bin:$PATH"
   - export LD_LIBRARY_PATH="$HOME/lib"
   - which protoc
