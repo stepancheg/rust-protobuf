@@ -117,7 +117,7 @@ impl Protoc {
         let mut child = self.spawn(&mut cmd)?;
 
         if !child.wait()?.success() {
-            return err_other("protoc exited with non-zero exit code");
+            return err_other(&format!("protoc ({:?}) exited with non-zero exit code", cmd));
         }
 
         Ok(())
