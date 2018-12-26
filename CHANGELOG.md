@@ -40,6 +40,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.2 Unreleased]
 
+## [2.2.1] - 2018-12-25
+
+- [Fix panic with oneof and bytes codegen](https://github.com/stepancheg/rust-protobuf/issues/362)
+
 ## [2.2.0] - 2018-11-17
 
 - [Implement](https://github.com/stepancheg/rust-protobuf/commit/c0856a0b7b9a74224d535ecb691c46669c86a878)
