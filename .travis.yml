@@ -14,8 +14,6 @@ matrix:
     env: PROTOBUF_VERSION=3.5.1
   - rust: beta
     env: PROTOBUF_VERSION=3.5.1
-  - rust: nightly
-    env: PROTOBUF_VERSION=3.5.1
   - rust: 1.23.0
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes,with-serde
   - rust: stable
