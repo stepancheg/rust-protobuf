@@ -24,6 +24,11 @@ matrix:
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-serde
   - rust: nightly
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes,with-serde
+  - rust: stable
+    env: PROTOBUF_VERSION=3.5.1 ON_WINDOWS=1
+    os: windows
+  allow_failures:
+  - os: windows
 
 before_install:
   - if [ -z "$ON_WINDOWS" ]; then ccache --zero-stats; fi
