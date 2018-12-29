@@ -14,9 +14,6 @@ matrix:
   - name: Beta
     rust: beta
     env: PROTOBUF_VERSION=3.6.1
-  - name: Nightly
-    rust: nightly
-    env: PROTOBUF_VERSION=3.6.1
   - name: Stable bytes
     rust: stable
     env: PROTOBUF_VERSION=3.6.1 RUST_PROTOBUF_FEATURES=with-bytes
