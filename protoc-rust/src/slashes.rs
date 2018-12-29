@@ -16,8 +16,8 @@ impl Slashes {
 
     fn slashes(&self) -> &'static [char] {
         match self {
-            Slashes::Unix => &['/'],
-            Slashes::Windows => &['/', '\\'],
+            &Slashes::Unix => &['/'],
+            &Slashes::Windows => &['/', '\\'],
         }
     }
 
@@ -27,8 +27,8 @@ impl Slashes {
 
     pub fn norm_path(&self, path: &str) -> String {
         match self {
-            Slashes::Unix => path.to_owned(),
-            Slashes::Windows => path.replace('\\', "/"),
+            &Slashes::Unix => path.to_owned(),
+            &Slashes::Windows => path.replace('\\', "/"),
         }
     }
 
