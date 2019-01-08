@@ -3,7 +3,7 @@ use std::io::Read;
 use std::io::Write;
 use std::process;
 
-use tempdir::Tempdir;
+use tempdir::TempDir;
 
 use protobuf::descriptor;
 use protobuf::descriptor::FileDescriptorSet;
@@ -22,7 +22,7 @@ fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor)
 }
 
 fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<Message> {
-    let temp_dir = Tempdir::new(message_descriptor.name()).expect("temp dir");
+    let temp_dir = TempDir::new(message_descriptor.name()).expect("temp dir");
 
     let mut fds = FileDescriptorSet::new();
     fds.file = vec![
@@ -84,7 +84,7 @@ fn print_using_protoc(message: &Message) -> String {
 
     // TODO: copy-paste of parse_using_protoc
 
-    let temp_dir = Tempdir::new(message_descriptor.name()).expect("temp dir");
+    let temp_dir = TempDir::new(message_descriptor.name()).expect("temp dir");
 
     let mut fds = FileDescriptorSet::new();
     fds.file = vec![
