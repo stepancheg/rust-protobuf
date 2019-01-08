@@ -5,7 +5,7 @@ extern crate protobuf;
 extern crate protobuf_codegen;
 #[macro_use]
 extern crate log;
-extern crate tempfile;
+extern crate tempdir;
 
 pub mod build;
 pub mod hex;
