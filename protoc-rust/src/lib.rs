@@ -1,4 +1,4 @@
-extern crate tempfile;
+extern crate tempdir;
 
 extern crate protobuf;
 extern crate protobuf_codegen;
@@ -11,6 +11,8 @@ use std::fs;
 use std::io;
 use std::io::Read;
 use std::path::Path;
+
+use tempdir::TempDir;
 
 pub use protoc::Error;
 pub use protoc::Result;
@@ -34,7 +36,7 @@ pub fn run(args: Args) -> Result<()> {
     let protoc = protoc::Protoc::from_env_path();
     protoc.check()?;
 
-    let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
+    let temp_dir = TempDir::new("protoc-rust")?;
     let temp_file = temp_dir.path().join("descriptor.pbbin");
     let temp_file = temp_file.to_str().expect("utf-8 file name");
 
