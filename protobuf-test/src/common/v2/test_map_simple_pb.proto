@@ -1,7 +1,7 @@
 syntax = "proto2";
 
 message TestMap {
-    map<string, uint32> m = 1;
+    map<string, int32> m = 1;
     map<string, TestMapEntry> mm = 2;
 }
 

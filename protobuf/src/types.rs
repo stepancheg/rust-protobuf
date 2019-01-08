@@ -148,6 +148,10 @@ impl ProtobufType for ProtobufTypeInt32 {
     }
 
     fn compute_size(value: &i32) -> u32 {
+        // See also: https://github.com/protocolbuffers/protobuf/blob/bd00671b924310c0353a730bf8fa77c44e0a9c72/src/google/protobuf/io/coded_stream.h#L1300-L1306
+        if *value < 0 {
+            return 10
+        }
         rt::compute_raw_varint32_size(*value as u32)
     }
 
