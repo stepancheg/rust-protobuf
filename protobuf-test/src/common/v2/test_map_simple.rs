@@ -23,6 +23,13 @@ fn test_map() {
 }
 
 #[test]
+fn test_map_negative_i32_value() {
+    let mut map = TestMap::new();
+    map.mut_m().insert("two".to_owned(), -2);
+    test_serialize_deserialize("0a 10 0a 03 74 77 6f 10 fe ff ff ff ff ff ff ff ff 01", &map);
+}
+
+#[test]
 fn test_map_with_object() {
     let mut map = TestMap::new();
 
