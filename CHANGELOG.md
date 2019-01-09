@@ -40,6 +40,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.2 Unreleased]
 
+- [Replace tempdir dependency with tempfile](https://github.com/stepancheg/rust-protobuf/pull/374)
+
 ## [2.2.2] - 2018-12-29
 
 - [Fix codegen on Windows](https://github.com/stepancheg/rust-protobuf/issues/356)
