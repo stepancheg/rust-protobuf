@@ -790,14 +790,14 @@ impl<'a> CodedOutputStream<'a> {
                 self.position = 0;
             },
             OutputTarget::Bytes => {
-                panic!("refresh_buffer must not be called on CodedOutputStream create from slice");
+                panic!("refresh_buffer must not be called on CodedOutputStream created from slice");
             }
         }
         Ok(())
     }
 
     /// Flush to buffer to the underlying buffer.
-    /// Note that `CodedOutputStream` does `flush` in the descructor,
+    /// Note that `CodedOutputStream` does `flush` in the destructor,
     /// however, if `flush` in desctructor fails, then destructor panics
     /// and program terminates. So it's advisable to explicitly call flush
     /// before destructor.
