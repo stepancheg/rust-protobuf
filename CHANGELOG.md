@@ -40,7 +40,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.2 Unreleased]
 
+## [2.2.4] - 2019-01-13
+
 - [Replace tempdir dependency with tempfile](https://github.com/stepancheg/rust-protobuf/pull/374)
+- [Fix serialization of signed int map keys or values](https://github.com/stepancheg/rust-protobuf/pull/372)
 
 ## [2.2.2] - 2018-12-29
 
