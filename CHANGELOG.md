@@ -57,6 +57,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - [Implement](https://github.com/stepancheg/rust-protobuf/commit/c0856a0b7b9a74224d535ecb691c46669c86a878)
   `From<Option<T>> for SingularPtrField<T>`
+  
+## [2.1.5] - 2019-01-13
+
+- [Fix serialization of signed int map keys or values](https://github.com/stepancheg/rust-protobuf/pull/372)
 
 ## [2.1.4] - 2018-11-01
 
