@@ -87,6 +87,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   flag](https://github.com/stepancheg/rust-protobuf/commit/7ebf32b47cb18160752a943dccb9d0d7ecdf91ed)
 - [Serde is now supported](https://github.com/stepancheg/rust-protobuf/issues/266)
 
+## [2.0.6] - 2019-01-13
+
+- [Fix serialization of signed int map keys or values](https://github.com/stepancheg/rust-protobuf/pull/372)
+
 ## [2.0.5] - 2018-09-21
 
 - [Global `parse_length_delimited*` functions are
