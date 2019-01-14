@@ -26,6 +26,8 @@ serde        = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
 serde_json   = { version = "1.0", optional = true }
 bytes = { version = "0.4", optional = true }
+# Force dependency of some crate compatible with Rust 1.23.0
+lazy_static  = "1.1.*"
 
 [dependencies.protobuf]
 path = "../protobuf"
