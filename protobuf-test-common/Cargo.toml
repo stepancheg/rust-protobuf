@@ -21,6 +21,8 @@ glob        = "0.2"
 log         = "0.*"
 env_logger  = "0.5.*"
 bytes = { version = "0.4", optional = true }
+# Force dependency of some crate compatible with Rust 1.23.0
+lazy_static  = "1.1.*"
 
 [dependencies.protobuf]
 path = "../protobuf"
