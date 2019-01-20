@@ -474,7 +474,7 @@ impl<'a> FieldGen<'a> {
         FieldGen {
             root_scope: root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: field.rust_name(),
+            rust_name: field.field.rust_name(),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             enum_default_value: enum_default_value,

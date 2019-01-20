@@ -491,6 +491,19 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
     }
 }
 
+pub trait FieldDescriptorProtoExt {
+    fn rust_name(&self) -> String;
+}
+
+impl FieldDescriptorProtoExt for FieldDescriptorProto {
+    fn rust_name(&self) -> String {
+        if rust::is_rust_keyword(self.get_name()) {
+            format!("field_{}", self.get_name())
+        } else {
+            self.get_name().to_string()
+        }
+    }
+}
 
 #[derive(Clone)]
 pub struct FieldWithContext<'a> {
@@ -524,12 +537,9 @@ impl<'a> FieldWithContext<'a> {
     }
 
     // field name in generated code
+    #[deprecated]
     pub fn rust_name(&self) -> String {
-        if rust::is_rust_keyword(self.field.get_name()) {
-            format!("field_{}", self.field.get_name())
-        } else {
-            self.field.get_name().to_string()
-        }
+        self.field.rust_name()
     }
 
     // From field to file root
