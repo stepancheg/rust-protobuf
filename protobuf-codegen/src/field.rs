@@ -606,7 +606,7 @@ impl<'a> FieldGen<'a> {
         FieldGen {
             root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: RustIdent(field.rust_name()),
+            rust_name: RustIdent(field.field.rust_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             enum_default_value,
