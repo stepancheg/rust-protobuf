@@ -40,6 +40,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.2 Unreleased]
 
+## [2.2.5] - 2019-01-20
+
+- [Escape extension field names](https://github.com/stepancheg/rust-protobuf/issues/371)
+
 ## [2.2.4] - 2019-01-13
 
 - [Replace tempdir dependency with tempfile](https://github.com/stepancheg/rust-protobuf/pull/374)
