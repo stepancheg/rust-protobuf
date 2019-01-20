@@ -510,12 +510,6 @@ impl<'a> FieldWithContext<'a> {
         self.field.get_name()
     }
 
-    // field name in generated code
-    #[deprecated]
-    pub fn rust_name(&self) -> String {
-        self.field.rust_name()
-    }
-
     // From field to file root
     pub fn containing_messages(&self) -> Vec<&'a DescriptorProto> {
         let mut r = Vec::new();
