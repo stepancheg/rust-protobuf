@@ -154,7 +154,7 @@ impl<'a> ProtobufValueRef<'a> {
             ProtobufValueRef::Bool(v) => v,
             ProtobufValueRef::String(v) => !v.is_empty(),
             ProtobufValueRef::Bytes(v) => !v.is_empty(),
-            ProtobufValueRef::Enum(v) => v.value() != 0,
+            ProtobufValueRef::Enum(_) => true,
             ProtobufValueRef::Message(_) => true,
         }
     }
