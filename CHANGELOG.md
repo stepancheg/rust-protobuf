@@ -32,7 +32,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Text format parsing is implemented (previously it was only possible to print to text format)
 - Reflection can now mutate data (previously reflection could only read data)
 - Fix OOM on malformed input
-- [`unknown_fields` field is public now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516)
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
 
@@ -92,6 +91,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [When using `protoc` codegen options can now be passed with `--rust_opt`
   flag](https://github.com/stepancheg/rust-protobuf/commit/7ebf32b47cb18160752a943dccb9d0d7ecdf91ed)
 - [Serde is now supported](https://github.com/stepancheg/rust-protobuf/issues/266)
+- [`unknown_fields` field is public now](https://github.com/stepancheg/rust-protobuf/commit/24e6479e869d61455bfcf50dde102e6278648516)
 
 ## [2.0.6] - 2019-01-13
 
