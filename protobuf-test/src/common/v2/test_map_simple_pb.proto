@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+package test_map_simple;
+
 import "rustproto.proto";
 option (rustproto.generate_accessors_all) = true;
 
@@ -7,8 +9,15 @@ option (rustproto.generate_accessors_all) = true;
 message TestMap {
     map<string, int32> m = 1;
     map<string, TestMapEntry> mm = 2;
+    // just check it compiles
+    map<fixed64, TestMapEnum> me = 3;
 }
 
 message TestMapEntry {
     optional int64 v = 1;
+}
+
+enum TestMapEnum {
+    UNKNOWN = 0;
+    ONE = 1;
 }
