@@ -1,5 +1,13 @@
 # Frequently asked questions
 
+## Questions about Protocol Buffers
+
+Protocol Buffers is designed and maintained by Google.
+
+Google has very thorough documentation including [FAQ](https://developers.google.com/protocol-buffers/docs/faq).
+
+If your question is not rust-protobuf-specific, it's likely you can find your answer there.
+
 ## How to serialize a message to bytes?
 
 The easiest way to do it is to invoke `write_to_bytes` function:
