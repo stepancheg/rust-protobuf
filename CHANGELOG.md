@@ -37,6 +37,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.3 Unreleased]
 
+## [2.3.0] - 2019-01-30
+
 - [`Default` is implemented for enums even in proto2](
   https://github.com/stepancheg/rust-protobuf/commit/166966627ebc1e5ce650acd1593489e52757178e)
 - [Fix codegen where map value is an enum](https://github.com/stepancheg/rust-protobuf/issues/376)
