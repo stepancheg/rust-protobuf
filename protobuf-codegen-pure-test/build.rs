@@ -46,7 +46,7 @@ enum FileNameClass {
 fn classify_file_name(name: &str) -> FileNameClass {
     if name.starts_with(".") || name.ends_with(".md") || name.ends_with(".sh") {
         FileNameClass::Ignore
-    } else if name.ends_with(".pb_rs") || name.ends_with("_pb_proto3.rs") {
+    } else if name.ends_with("_pb.rs") || name.ends_with("_pb_proto3.rs") {
         FileNameClass::GeneratedRs
     } else if name == "mod.rs" {
         FileNameClass::ModRs
