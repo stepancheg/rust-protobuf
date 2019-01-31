@@ -252,6 +252,15 @@ impl<'a> Parser<'a> {
         Ok(full_ident)
     }
 
+    // emptyStatement = ";"
+    fn next_empty_statement_opt(&mut self) -> ParserResult<Option<()>> {
+        if self.tokenizer.next_symbol_if_eq(';')? {
+            Ok(Some(()))
+        } else {
+            Ok(None)
+        }
+    }
+
     // messageName = ident
     // enumName = ident
     // messageType = [ "." ] { ident "." } messageName
@@ -908,16 +917,125 @@ impl<'a> Parser<'a> {
         Ok(r)
     }
 
+    fn next_options_or_colon(&mut self) -> ParserResult<Vec<ProtobufOption>> {
+        let mut options = Vec::new();
+        if self.tokenizer.next_symbol_if_eq('{')? {
+            while self.tokenizer.lookahead_if_symbol()? != Some('}') {
+                if let Some(option) = self.next_option_opt()? {
+                    options.push(option);
+                    continue;
+                }
+
+                if let Some(()) = self.next_empty_statement_opt()? {
+                    continue;
+                }
+
+                return Err(ParserError::IncorrectInput);
+            }
+            self.tokenizer.next_symbol_expect_eq('}')?;
+        } else {
+            self.tokenizer.next_symbol_expect_eq(';')?;
+        }
+
+        Ok(options)
+
+    }
+
+    // stream = "stream" streamName "(" messageType "," messageType ")"
+    //        (( "{" { option | emptyStatement } "}") | ";" )
+    fn next_stream_opt(&mut self) -> ParserResult<Option<Method>> {
+        assert_eq!(Syntax::Proto2, self.syntax);
+        if self.tokenizer.next_ident_if_eq("stream")? {
+            let name = self.tokenizer.next_ident()?;
+            self.tokenizer.next_symbol_expect_eq('(')?;
+            let input_type = self.tokenizer.next_ident()?;
+            self.tokenizer.next_symbol_expect_eq(',')?;
+            let output_type = self.tokenizer.next_ident()?;
+            self.tokenizer.next_symbol_expect_eq(')')?;
+            let options = self.next_options_or_colon()?;
+            Ok(Some(Method {
+                name,
+                input_type,
+                output_type,
+                client_streaming: true,
+                server_streaming: true,
+                options,
+            }))
+        } else {
+            Ok(None)
+        }
+    }
+
+    // rpc = "rpc" rpcName "(" [ "stream" ] messageType ")"
+    //     "returns" "(" [ "stream" ] messageType ")"
+    //     (( "{" { option | emptyStatement } "}" ) | ";" )
+    fn next_rpc_opt(&mut self) -> ParserResult<Option<Method>> {
+        if self.tokenizer.next_ident_if_eq("rpc")? {
+            let name = self.tokenizer.next_ident()?;
+            self.tokenizer.next_symbol_expect_eq('(')?;
+            let client_streaming = self.tokenizer.next_ident_if_eq("stream")?;
+            let input_type = self.tokenizer.next_ident()?;
+            self.tokenizer.next_symbol_expect_eq(')')?;
+            self.tokenizer.next_ident_expect_eq("returns")?;
+            self.tokenizer.next_symbol_expect_eq('(')?;
+            let server_streaming = self.tokenizer.next_ident_if_eq("stream")?;
+            let output_type = self.tokenizer.next_ident()?;
+            self.tokenizer.next_symbol_expect_eq(')')?;
+            let options = self.next_options_or_colon()?;
+            Ok(Some(Method {
+                name,
+                input_type,
+                output_type,
+                client_streaming,
+                server_streaming,
+                options,
+            }))
+        } else {
+            Ok(None)
+        }
+    }
+
+    // proto2:
     // service = "service" serviceName "{" { option | rpc | stream | emptyStatement } "}"
-    // rpc = "rpc" rpcName "(" [ "stream" ] messageType ")" "returns" "(" [ "stream" ]
-    //       messageType ")" (( "{" { option | emptyStatement } "}" ) | ";" )
-    // stream = "stream" streamName "(" messageType "," messageType ")" (( "{"
-    //        { option | emptyStatement } "}") | ";" )
-    fn next_service_opt(&mut self) -> ParserResult<Option<()>> {
+    //
+    // proto3:
+    // service = "service" serviceName "{" { option | rpc | emptyStatement } "}"
+    fn next_service_opt(&mut self) -> ParserResult<Option<Service>> {
         if self.tokenizer.next_ident_if_eq("service")? {
-            let _name = self.tokenizer.next_ident()?;
-            self.next_braces()?;
-            Ok(Some(()))
+            let name = self.tokenizer.next_ident()?;
+            let mut methods = Vec::new();
+            let mut options = Vec::new();
+            self.tokenizer.next_symbol_expect_eq('{')?;
+            while self.tokenizer.lookahead_if_symbol()? != Some('}') {
+                if let Some(method) = self.next_rpc_opt()? {
+                    methods.push(method);
+                    continue;
+                }
+
+                if self.syntax == Syntax::Proto2 {
+                    if let Some(method) = self.next_stream_opt()? {
+                        methods.push(method);
+                        continue;
+                    }
+                }
+
+                if let Some(o) = self.next_option_opt()? {
+                    options.push(o);
+                    continue;
+                }
+
+                if let Some(()) = self.next_empty_statement_opt()? {
+                    continue;
+                }
+
+                return Err(ParserError::IncorrectInput);
+            }
+            self.tokenizer.next_symbol_expect_eq('}')?;
+            Ok(Some(Service {
+                name,
+                methods,
+                options,
+            }))
         } else {
             Ok(None)
         }
@@ -937,6 +1055,7 @@ impl<'a> Parser<'a> {
         let mut enums = Vec::new();
         let mut extensions = Vec::new();
         let mut options = Vec::new();
+        let mut services = Vec::new();
 
         while !self.tokenizer.syntax_eof()? {
             if let Some(import_path) = self.next_import_opt()? {
@@ -969,7 +1088,8 @@ impl<'a> Parser<'a> {
                 continue;
             }
 
-            if let Some(_service) = self.next_service_opt()? {
+            if let Some(service) = self.next_service_opt()? {
+                services.push(service);
                 continue;
             }
 
@@ -987,6 +1107,7 @@ impl<'a> Parser<'a> {
             messages,
             enums,
             extensions,
+            services,
             options,
         })
     }
@@ -1260,6 +1381,23 @@ mod test {
         }
 
         assert_eq!("bbb", mess.fields[2].name);
+    }
+
+    #[test]
+    fn test_service() {
+        let msg = r#"service SearchService {
+            rpc Search (SearchRequest) returns (SearchResponse);
+        }"#;
+        let service = parse_opt(msg, |p| p.next_service_opt());
+
+        assert_eq!("SearchService", service.name);
+        assert_eq!(1, service.methods.len());
+        let method = &service.methods[0];
+        assert_eq!("Search", method.name);
+        assert_eq!("SearchRequest", method.input_type);
+        assert_eq!("SearchResponse", method.output_type);
+        assert!(!method.client_streaming);
+        assert!(!method.server_streaming);
     }
 
     #[test]

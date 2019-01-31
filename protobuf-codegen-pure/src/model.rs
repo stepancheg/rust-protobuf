@@ -216,6 +216,32 @@ pub struct Extension {
     pub field: Field,
 }
 
+/// Service method
+#[derive(Debug, Clone)]
+pub struct Method {
+    /// Method name
+    pub name: String,
+    /// Input type
+    pub input_type: String,
+    /// Output type
+    pub output_type: String,
+    /// If this method is client streaming
+    pub client_streaming: bool,
+    /// If this method is server streaming
+    pub server_streaming: bool,
+    /// Method options
+    pub options: Vec<ProtobufOption>,
+}
+
+/// Service definition
+#[derive(Debug, Clone)]
+pub struct Service {
+    /// Service name
+    pub name: String,
+    pub methods: Vec<Method>,
+    pub options: Vec<ProtobufOption>,
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum ProtobufConstant {
     U64(u64),
@@ -262,6 +288,8 @@ pub struct FileDescriptor {
     pub enums: Vec<Enumeration>,
     /// Extensions
     pub extensions: Vec<Extension>,
+    /// Services
+    pub services: Vec<Service>,
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
 }
