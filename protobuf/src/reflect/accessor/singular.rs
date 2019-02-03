@@ -1,4 +1,4 @@
-use core::message_down_cast;
+use core::message_down_cast_ref;
 use core::message_down_cast_mut;
 use reflect::accessor::AccessorKind;
 use reflect::accessor::FieldAccessor;
@@ -73,18 +73,18 @@ where
     }
 
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>> {
-        let m = message_down_cast(m);
+        let m = message_down_cast_ref(m).unwrap();
         self.get_option_impl.get_reflect_impl(m)
     }
 
     fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
-        let m = message_down_cast(m);
+        let m = message_down_cast_ref(m).unwrap();
         self.get_or_default_impl
             .get_singular_field_or_default_impl(m)
     }
 
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
-        let m = message_down_cast_mut(m);
+        let m = message_down_cast_mut(m).unwrap();
         self.set_impl.set_singular_field(m, value)
     }
 }
@@ -156,7 +156,7 @@ where
     O: OptionLike<V::Value> + Sync + Send + 'static,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
-        let m = message_down_cast(m);
+        let m = message_down_cast_ref(m).unwrap();
         (self.get_field)(m).as_option_ref().map(V::as_ref)
     }
 }

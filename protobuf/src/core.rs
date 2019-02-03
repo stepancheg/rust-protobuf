@@ -194,12 +194,12 @@ impl PartialEq for Box<Message> {
     }
 }
 
-pub fn message_down_cast<'a, M: Message + 'a>(m: &'a Message) -> &'a M {
-    m.as_any().downcast_ref::<M>().unwrap()
+pub fn message_down_cast_ref<'a, M: Message + 'a>(m: &'a Message) -> Option<&'a M> {
+    m.as_any().downcast_ref::<M>()
 }
 
-pub fn message_down_cast_mut<'a, M: Message + 'a>(m: &'a mut Message) -> &'a mut M {
-    m.as_any_mut().downcast_mut::<M>().unwrap()
+pub fn message_down_cast_mut<'a, M: Message + 'a>(m: &'a mut Message) -> Option<&'a mut M> {
+    m.as_any_mut().downcast_mut::<M>()
 }
 
 /// Parse message from stream.
