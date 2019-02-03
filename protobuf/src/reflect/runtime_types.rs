@@ -616,7 +616,7 @@ where
     fn from_value_box(value_box: ReflectValueBox) -> M {
         match value_box {
             ReflectValueBox::Message(v) => {
-                *v.into_any_box().downcast().expect("wrong message type")
+                *v.downcast_box().expect("wrong message type")
             }
             _ => panic!("wrong type"),
         }
