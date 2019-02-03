@@ -48,6 +48,7 @@ use well_known_types::UInt32Value;
 use well_known_types::UInt64Value;
 use well_known_types::Value;
 use well_known_types::Value_oneof_kind;
+use core::message_down_cast_mut;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -570,67 +571,67 @@ impl<'a> Parser<'a> {
     }
 
     fn merge_inner(&mut self, message: &mut Message) -> ParseResult<()> {
-        if let Some(duration) = message.as_any_mut().downcast_mut() {
+        if let Some(duration) = message_down_cast_mut(message) {
             return self.merge_wk_duration(duration);
         }
 
-        if let Some(timestamp) = message.as_any_mut().downcast_mut() {
+        if let Some(timestamp) = message_down_cast_mut(message) {
             return self.merge_wk_timestamp(timestamp);
         }
 
-        if let Some(field_mask) = message.as_any_mut().downcast_mut() {
+        if let Some(field_mask) = message_down_cast_mut(message) {
             return self.merge_wk_field_mask(field_mask);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut() {
+        if let Some(value) = message_down_cast_mut(message) {
             return self.merge_wk_value(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut() {
+        if let Some(value) = message_down_cast_mut(message) {
             return self.merge_wk_any(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<DoubleValue>() {
+        if let Some(value) = message_down_cast_mut::<DoubleValue>(message) {
             return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<FloatValue>() {
+        if let Some(value) = message_down_cast_mut::<FloatValue>(message) {
             return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<Int64Value>() {
+        if let Some(value) = message_down_cast_mut::<Int64Value>(message) {
             return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<UInt64Value>() {
+        if let Some(value) = message_down_cast_mut::<UInt64Value>(message) {
             return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<Int32Value>() {
+        if let Some(value) = message_down_cast_mut::<Int32Value>(message) {
             return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<UInt32Value>() {
+        if let Some(value) = message_down_cast_mut::<UInt32Value>(message) {
             return self.merge_wrapper(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<BoolValue>() {
+        if let Some(value) = message_down_cast_mut::<BoolValue>(message) {
             return self.merge_bool_value(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<StringValue>() {
+        if let Some(value) = message_down_cast_mut::<StringValue>(message) {
             return self.merge_string_value(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<BytesValue>() {
+        if let Some(value) = message_down_cast_mut::<BytesValue>(message) {
             return self.merge_bytes_value(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<ListValue>() {
+        if let Some(value) = message_down_cast_mut::<ListValue>(message) {
             return self.merge_wk_list_value(value);
         }
 
-        if let Some(value) = message.as_any_mut().downcast_mut::<Struct>() {
+        if let Some(value) = message_down_cast_mut::<Struct>(message) {
             return self.merge_wk_struct(value);
         }
 
