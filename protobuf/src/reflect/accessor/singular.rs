@@ -6,7 +6,6 @@ use reflect::runtime_types::RuntimeTypeWithDeref;
 use reflect::type_dynamic::ProtobufTypeDynamic;
 use reflect::types::ProtobufType;
 use reflect::types::ProtobufTypeMessage;
-use reflect::EnumValueDescriptor;
 use reflect::ReflectValueBox;
 use reflect::ReflectValueRef;
 use singular::OptionLike;
@@ -24,16 +23,6 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
 pub(crate) struct SingularFieldAccessorHolder {
     pub accessor: Box<SingularFieldAccessor>,
     pub element_type: &'static ProtobufTypeDynamic,
-}
-
-trait GetMutSetSingularMessage<M>: Send + Sync + 'static {
-    fn get_message<'a>(&self, m: &'a M) -> &'a Message;
-    fn mut_message<'a>(&self, m: &'a mut M) -> &'a mut Message;
-    fn set_message(&self, m: &mut M, field: Box<Message>);
-}
-
-trait GetSingularEnum<M> {
-    fn get_enum(&self, m: &M) -> &'static EnumValueDescriptor;
 }
 
 trait GetOptionImpl<M>: Send + Sync + 'static {
