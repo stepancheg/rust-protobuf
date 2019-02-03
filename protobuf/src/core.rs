@@ -13,7 +13,6 @@ use error::ProtobufResult;
 use reflect::MessageDescriptor;
 use reflect::ProtobufValue;
 use reflect::as_any::AsAny;
-use stream::with_coded_output_stream_to_bytes;
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
 use stream::WithCodedInputStream;
@@ -138,7 +137,9 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Write the message to the bytes vec, prepend the message with message length
     /// encoded as varint.
     fn write_length_delimited_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
-        with_coded_output_stream_to_bytes(|os| self.write_length_delimited_to(os))
+        let mut v = Vec::new();
+        v.with_coded_output_stream(|os| self.write_length_delimited_to(os))?;
+        Ok(v)
     }
 
     /// Get a reference to unknown fields.

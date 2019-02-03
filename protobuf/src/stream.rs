@@ -648,15 +648,6 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     }
 }
 
-pub fn with_coded_output_stream_to_bytes<F>(cb: F) -> ProtobufResult<Vec<u8>>
-where
-    F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<()>,
-{
-    let mut v = Vec::new();
-    v.with_coded_output_stream(cb)?;
-    Ok(v)
-}
-
 pub trait WithCodedInputStream {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
