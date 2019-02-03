@@ -14,7 +14,6 @@ use reflect::type_dynamic::ProtobufTypeDynamic;
 use reflect::types::ProtobufType;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
-    fn len_field_generic(&self, m: &Message) -> usize;
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a>;
     fn entry_type(&self) -> (&'static ProtobufTypeDynamic, &'static ProtobufTypeDynamic);
@@ -47,12 +46,6 @@ where
     V: ProtobufType,
     <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
 {
-    fn len_field_generic(&self, m: &Message) -> usize {
-        let m = message_down_cast(m);
-        let map = (self.get_field)(m);
-        map.len()
-    }
-
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a> {
         let m = message_down_cast(m);
         let map = (self.get_field)(m);

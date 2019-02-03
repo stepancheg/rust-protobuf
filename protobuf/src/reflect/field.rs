@@ -118,7 +118,7 @@ impl FieldDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.get_reflect(m).is_some(),
             AccessorKind::Repeated(ref a) => a.get_reflect(m).len() != 0,
-            AccessorKind::Map(ref a) => a.len_field_generic(m) != 0,
+            AccessorKind::Map(ref a) => a.get_reflect(m).len() != 0,
         }
     }
 
@@ -130,7 +130,7 @@ impl FieldDescriptor {
                 0
             },
             AccessorKind::Repeated(ref a) => a.get_reflect(m).len(),
-            AccessorKind::Map(ref a) => a.len_field_generic(m),
+            AccessorKind::Map(ref a) => a.get_reflect(m).len(),
         }
     }
 
