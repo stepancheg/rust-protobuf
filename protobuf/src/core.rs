@@ -2,6 +2,7 @@ use std::any::Any;
 use std::fmt;
 use std::io::Read;
 use std::io::Write;
+use std::any::TypeId;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -11,6 +12,7 @@ use error::ProtobufError;
 use error::ProtobufResult;
 use reflect::MessageDescriptor;
 use reflect::ProtobufValue;
+use reflect::as_any::AsAny;
 use stream::with_coded_output_stream_to_bytes;
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
@@ -168,7 +170,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
 
 impl dyn Message {
     pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
-        if self.as_any().is::<T>() {
+        if AsAny::get_type_id(&*self) == TypeId::of::<T>() {
             unsafe {
                 let raw: *mut Message = Box::into_raw(self);
                 Ok(Box::from_raw(raw as *mut T))
@@ -179,18 +181,23 @@ impl dyn Message {
     }
 
     pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
-        self.as_any().downcast_ref::<M>()
+        if AsAny::get_type_id(&*self) == TypeId::of::<M>() {
+            unsafe {
+                Some(&*(self as *const dyn Message as *const M))
+            }
+        } else {
+            None
+        }
     }
 
     pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
-        if self.as_any().is::<M>() {
+        if AsAny::get_type_id(&*self) == TypeId::of::<M>() {
             unsafe {
                 Some(&mut *(self as *mut dyn Message as *mut M))
             }
         } else {
             None
         }
-
     }
 }
 

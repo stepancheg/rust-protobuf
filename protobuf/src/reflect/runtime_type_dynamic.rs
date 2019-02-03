@@ -1,4 +1,5 @@
 use std::marker;
+use std::any::TypeId;
 
 use reflect::runtime_type_box::RuntimeTypeBox;
 use reflect::runtime_types::RuntimeType;
@@ -6,6 +7,7 @@ use reflect::EnumDescriptor;
 use reflect::MessageDescriptor;
 use reflect::ProtobufValue;
 use reflect::ReflectValueRef;
+use reflect::as_any::AsAny;
 
 /// Dynamic version of `RuntimeType`
 pub trait RuntimeTypeDynamic: Send + Sync + 'static {
@@ -28,8 +30,13 @@ impl<T: RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
     }
 
     fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a> {
-        let value: &T::Value = value.as_any().downcast_ref().expect("wrong type");
-        T::as_ref(value)
+        if AsAny::get_type_id(value) == TypeId::of::<T::Value>() {
+            unsafe {
+                T::as_ref(&*(value as *const dyn ProtobufValue as *const T::Value))
+            }
+        } else {
+            panic!("wrong type")
+        }
     }
 
     fn default_value_ref(&self) -> ReflectValueRef {

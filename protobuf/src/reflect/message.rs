@@ -39,13 +39,13 @@ where
     }
 
     fn clone(&self, message: &Message) -> Box<Message> {
-        let m: &M = message.as_any().downcast_ref().expect("wrong message type");
+        let m: &M = message.downcast_ref().expect("wrong message type");
         Box::new(m.clone())
     }
 
     fn eq(&self, a: &Message, b: &Message) -> bool {
-        let a: &M = a.as_any().downcast_ref().expect("wrong message type");
-        let b: &M = b.as_any().downcast_ref().expect("wrong message type");
+        let a: &M = a.downcast_ref().expect("wrong message type");
+        let b: &M = b.downcast_ref().expect("wrong message type");
         a == b
     }
 }
