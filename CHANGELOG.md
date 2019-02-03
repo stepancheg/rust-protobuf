@@ -14,6 +14,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `PartialEq` with large number of fields
   [now panics](https://github.com/stepancheg/rust-protobuf/commit/4f1ca564a00e85b6e3821e91aace71ccb6592bf5).
   Previosly it could cause stack overflow in the Rust compiler.
+- [Change `message_down_cast*` functions
+  signatures](https://github.com/stepancheg/rust-protobuf/commit/b77dc3d02f68ea09d948b1a8d05aa57bbfc44164)
   
 ### New features
 
