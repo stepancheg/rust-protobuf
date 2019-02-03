@@ -199,7 +199,14 @@ pub fn message_down_cast_ref<'a, M: Message + 'a>(m: &'a Message) -> Option<&'a 
 }
 
 pub fn message_down_cast_mut<'a, M: Message + 'a>(m: &'a mut Message) -> Option<&'a mut M> {
-    m.as_any_mut().downcast_mut::<M>()
+    if m.as_any().is::<M>() {
+        unsafe {
+            Some(&mut *(m as *mut dyn Message as *mut M))
+        }
+    } else {
+        None
+    }
+
 }
 
 /// Parse message from stream.
