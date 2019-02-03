@@ -1,15 +1,15 @@
-use reflect::accessor::map::MapFieldAccessor;
-use reflect::accessor::repeated::RepeatedFieldAccessor;
-use reflect::accessor::singular::SingularFieldAccessor;
+use reflect::accessor::singular::SingularFieldAccessorHolder;
+use reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use reflect::accessor::map::MapFieldAccessorHolder;
 
 pub(crate) mod map;
 pub(crate) mod repeated;
 pub(crate) mod singular;
 
 pub(crate) enum AccessorKind {
-    Singular(Box<SingularFieldAccessor>),
-    Repeated(Box<RepeatedFieldAccessor>),
-    Map(Box<MapFieldAccessor>),
+    Singular(SingularFieldAccessorHolder),
+    Repeated(RepeatedFieldAccessorHolder),
+    Map(MapFieldAccessorHolder),
 }
 
 /// Accessor object is constructed in generated code.

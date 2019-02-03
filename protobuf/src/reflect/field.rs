@@ -1,9 +1,6 @@
 use descriptor::FieldDescriptorProto;
 use descriptor::FieldDescriptorProto_Label;
 use json::json_name;
-use reflect::accessor::map::MapFieldAccessor;
-use reflect::accessor::repeated::RepeatedFieldAccessor;
-use reflect::accessor::singular::SingularFieldAccessor;
 use reflect::accessor::AccessorKind;
 use reflect::accessor::FieldAccessor;
 use reflect::map::ReflectMapMut;
@@ -18,6 +15,9 @@ use reflect::ReflectValueBox;
 use reflect::ReflectValueRef;
 use reflect::RuntimeTypeDynamic;
 use Message;
+use reflect::accessor::singular::SingularFieldAccessorHolder;
+use reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use reflect::accessor::map::MapFieldAccessorHolder;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 pub enum ReflectFieldRef<'a> {
@@ -94,9 +94,9 @@ impl FieldDescriptor {
     /// Return enum descriptor for enum field, panics if field type is not enum.
     pub fn enum_descriptor(&self) -> &'static EnumDescriptor {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.protobuf_type().runtime_type().enum_descriptor(),
+            AccessorKind::Singular(ref a) => a.element_type.runtime_type().enum_descriptor(),
             AccessorKind::Repeated(ref a) => {
-                a.element_protobuf_type().runtime_type().enum_descriptor()
+                a.element_type.runtime_type().enum_descriptor()
             }
             _ => panic!("not a singular or repeated field"),
         }
@@ -105,9 +105,9 @@ impl FieldDescriptor {
     /// Return enum descriptor for message field, panics if field type is not message.
     pub fn message_descriptor(&self) -> &'static MessageDescriptor {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.protobuf_type().runtime_type().message_descriptor(),
+            AccessorKind::Singular(ref a) => a.element_type.runtime_type().message_descriptor(),
             AccessorKind::Repeated(ref a) => a
-                .element_protobuf_type()
+                .element_type
                 .runtime_type()
                 .message_descriptor(),
             _ => panic!("not a singular or repeated field"),
@@ -116,43 +116,43 @@ impl FieldDescriptor {
 
     pub fn has_field(&self, m: &Message) -> bool {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.get_reflect(m).is_some(),
-            AccessorKind::Repeated(ref a) => a.get_reflect(m).len() != 0,
-            AccessorKind::Map(ref a) => a.get_reflect(m).len() != 0,
+            AccessorKind::Singular(ref a) => a.accessor.get_reflect(m).is_some(),
+            AccessorKind::Repeated(ref a) => a.accessor.get_reflect(m).len() != 0,
+            AccessorKind::Map(ref a) => a.accessor.get_reflect(m).len() != 0,
         }
     }
 
     pub fn len_field(&self, m: &Message) -> usize {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => if a.get_reflect(m).is_some() {
+            AccessorKind::Singular(ref a) => if a.accessor.get_reflect(m).is_some() {
                 1
             } else {
                 0
             },
-            AccessorKind::Repeated(ref a) => a.get_reflect(m).len(),
-            AccessorKind::Map(ref a) => a.get_reflect(m).len(),
+            AccessorKind::Repeated(ref a) => a.accessor.get_reflect(m).len(),
+            AccessorKind::Map(ref a) => a.accessor.get_reflect(m).len(),
         }
     }
 
     // accessors
 
-    fn singular(&self) -> &SingularFieldAccessor {
+    fn singular(&self) -> &SingularFieldAccessorHolder {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => &**a,
+            AccessorKind::Singular(ref a) => a,
             _ => panic!("not a singular field: {}", self.name()),
         }
     }
 
-    fn repeated(&self) -> &RepeatedFieldAccessor {
+    fn repeated(&self) -> &RepeatedFieldAccessorHolder {
         match self.accessor.accessor {
-            AccessorKind::Repeated(ref a) => &**a,
+            AccessorKind::Repeated(ref a) => a,
             _ => panic!("not a repeated field: {}", self.name()),
         }
     }
 
-    fn map(&self) -> &MapFieldAccessor {
+    fn map(&self) -> &MapFieldAccessorHolder {
         match self.accessor.accessor {
-            AccessorKind::Map(ref a) => &**a,
+            AccessorKind::Map(ref a) => a,
             _ => panic!("not a map field: {}", self.name()),
         }
     }
@@ -242,28 +242,26 @@ impl FieldDescriptor {
     }
 
     pub fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
-        self.singular().get_singular_field_or_default(m)
+        self.singular().accessor.get_singular_field_or_default(m)
     }
 
     pub fn singular_runtime_type(&self) -> &RuntimeTypeDynamic {
-        self.singular().protobuf_type().runtime_type()
+        self.singular().element_type.runtime_type()
     }
 
     pub fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
-        self.singular().set_singular_field(m, value)
+        self.singular().accessor.set_singular_field(m, value)
     }
 
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorKind::*;
         match self.accessor.accessor {
-            Singular(ref a) => RuntimeFieldType::Singular(a.protobuf_type().runtime_type()),
+            Singular(ref a) => RuntimeFieldType::Singular(a.element_type.runtime_type()),
             Repeated(ref a) => {
-                let element_protobuf_type = a.element_protobuf_type();
-                RuntimeFieldType::Repeated(element_protobuf_type.runtime_type())
+                RuntimeFieldType::Repeated(a.element_type.runtime_type())
             }
             Map(ref a) => {
-                let (k, v) = a.entry_type();
-                RuntimeFieldType::Map(k.runtime_type(), v.runtime_type())
+                RuntimeFieldType::Map(a.key_type.runtime_type(), a.value_type.runtime_type())
             }
         }
     }
@@ -271,29 +269,29 @@ impl FieldDescriptor {
     pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
         use self::AccessorKind::*;
         match self.accessor.accessor {
-            Singular(ref a) => ReflectFieldRef::Optional(a.get_reflect(m)),
-            Repeated(ref a) => ReflectFieldRef::Repeated(a.get_reflect(m)),
-            Map(ref a) => ReflectFieldRef::Map(a.get_reflect(m)),
+            Singular(ref a) => ReflectFieldRef::Optional(a.accessor.get_reflect(m)),
+            Repeated(ref a) => ReflectFieldRef::Repeated(a.accessor.get_reflect(m)),
+            Map(ref a) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
         }
     }
 
     // repeated
 
     pub fn get_repeated<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a> {
-        self.repeated().get_reflect(m)
+        self.repeated().accessor.get_reflect(m)
     }
 
     pub fn mut_repeated<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
-        self.repeated().mut_reflect(m)
+        self.repeated().accessor.mut_reflect(m)
     }
 
     // map
 
     pub fn get_map<'a>(&self, m: &'a Message) -> ReflectMapRef<'a> {
-        self.map().get_reflect(m)
+        self.map().accessor.get_reflect(m)
     }
 
     pub fn mut_map<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
-        self.map().mut_reflect(m)
+        self.map().accessor.mut_reflect(m)
     }
 }

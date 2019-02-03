@@ -17,8 +17,11 @@ use std::fmt;
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a>;
+}
 
-    fn element_protobuf_type(&self) -> &'static ProtobufTypeDynamic;
+pub(crate) struct RepeatedFieldAccessorHolder {
+    pub accessor: Box<RepeatedFieldAccessor>,
+    pub element_type: &'static ProtobufTypeDynamic,
 }
 
 trait RepeatedFieldGetMut<M, R: ?Sized>: Send + Sync + 'static
@@ -96,10 +99,6 @@ where
             dynamic: V::RuntimeType::dynamic(),
         }
     }
-
-    fn element_protobuf_type(&self) -> &'static ProtobufTypeDynamic {
-        V::dynamic()
-    }
 }
 
 pub fn make_vec_accessor<M, V>(
@@ -113,16 +112,19 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Repeated(Box::new(RepeatedFieldAccessorImpl::<M, V> {
-            fns: Box::new(RepeatedFieldGetMutImpl::<
-                M,
-                Vec<<V::RuntimeType as RuntimeType>::Value>,
-            > {
-                get_field: get_vec,
-                mut_field: mut_vec,
+        accessor: AccessorKind::Repeated(RepeatedFieldAccessorHolder {
+            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
+                fns: Box::new(RepeatedFieldGetMutImpl::<
+                    M,
+                    Vec<<V::RuntimeType as RuntimeType>::Value>,
+                > {
+                    get_field: get_vec,
+                    mut_field: mut_vec,
+                }),
+                _marker: marker::PhantomData::<V>,
             }),
-            _marker: marker::PhantomData::<V>,
-        })),
+            element_type: V::dynamic(),
+        }),
     }
 }
 
@@ -137,15 +139,18 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Repeated(Box::new(RepeatedFieldAccessorImpl::<M, V> {
-            fns: Box::new(RepeatedFieldGetMutImpl::<
-                M,
-                RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
-            > {
-                get_field: get_vec,
-                mut_field: mut_vec,
+        accessor: AccessorKind::Repeated(RepeatedFieldAccessorHolder {
+            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
+                fns: Box::new(RepeatedFieldGetMutImpl::<
+                    M,
+                    RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
+                > {
+                    get_field: get_vec,
+                    mut_field: mut_vec,
+                }),
+                _marker: marker::PhantomData::<V>,
             }),
-            _marker: marker::PhantomData::<V>,
-        })),
+            element_type: V::dynamic(),
+        }),
     }
 }

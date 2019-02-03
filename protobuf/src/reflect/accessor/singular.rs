@@ -15,11 +15,15 @@ use Message;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
-    fn protobuf_type(&self) -> &'static ProtobufTypeDynamic;
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
 
     fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a>;
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox);
+}
+
+pub(crate) struct SingularFieldAccessorHolder {
+    pub accessor: Box<SingularFieldAccessor>,
+    pub element_type: &'static ProtobufTypeDynamic,
 }
 
 trait GetMutSetSingularMessage<M>: Send + Sync + 'static {
@@ -66,10 +70,6 @@ where
     D: GetOrDefaultImpl<M>,
     S: SetImpl<M>,
 {
-    fn protobuf_type(&self) -> &'static ProtobufTypeDynamic {
-        V::dynamic()
-    }
-
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>> {
         let m = m.downcast_ref().unwrap();
         self.get_option_impl.get_reflect_impl(m)
@@ -352,12 +352,15 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
-            get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
-            set_impl: SetImplSetField::<M, V::RuntimeType> { set_field: set },
-            _marker: marker::PhantomData,
-        })),
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
+                get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
+                set_impl: SetImplSetField::<M, V::RuntimeType> { set_field: set },
+                _marker: marker::PhantomData,
+            }),
+            element_type: V::dynamic(),
+        }),
     }
 }
 
@@ -374,12 +377,15 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
-            get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
-            get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> { get_field: get },
-            set_impl: SetImplSetField::<M, F::RuntimeType> { set_field: set },
-            _marker: marker::PhantomData,
-        })),
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
+                get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
+                get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> { get_field: get },
+                set_impl: SetImplSetField::<M, F::RuntimeType> { set_field: set },
+                _marker: marker::PhantomData,
+            }),
+            element_type: F::dynamic(),
+        }),
     }
 }
 
@@ -396,21 +402,24 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<
-            M,
-            ProtobufTypeMessage<F>,
-            _,
-            _,
-            _,
-        > {
-            get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {
-                get: get_field,
-                has: has_field,
-            },
-            get_or_default_impl: GetOrDefaultGetRef::<M, RuntimeTypeMessage<F>> { get_field },
-            set_impl: SetImplSetField::<M, RuntimeTypeMessage<F>> { set_field },
-            _marker: marker::PhantomData,
-        })),
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<
+                M,
+                ProtobufTypeMessage<F>,
+                _,
+                _,
+                _,
+            > {
+                get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {
+                    get: get_field,
+                    has: has_field,
+                },
+                get_or_default_impl: GetOrDefaultGetRef::<M, RuntimeTypeMessage<F>> { get_field },
+                set_impl: SetImplSetField::<M, RuntimeTypeMessage<F>> { set_field },
+                _marker: marker::PhantomData,
+            }),
+            element_type: ProtobufTypeMessage::<F>::dynamic(),
+        }),
     }
 }
 
@@ -426,21 +435,24 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                get_field,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
                 _marker: marker::PhantomData,
-            },
-            get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
-                get_field,
-                _marker: marker::PhantomData,
-            },
-            set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                mut_field,
-                _marker: marker::PhantomData,
-            },
-            _marker: marker::PhantomData,
-        })),
+            }),
+            element_type: V::dynamic(),
+        }),
     }
 }
 
@@ -457,20 +469,23 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
-                get_field,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> {
+                    get_field: get_value,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
                 _marker: marker::PhantomData,
-            },
-            get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> {
-                get_field: get_value,
-            },
-            set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
-                mut_field,
-                _marker: marker::PhantomData,
-            },
-            _marker: marker::PhantomData,
-        })),
+            }),
+            element_type: V::dynamic(),
+        }),
     }
 }
 
@@ -488,20 +503,23 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
-                get_field,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultGetRefDeref::<M, V::RuntimeType> {
+                    get_field: get_value,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
                 _marker: marker::PhantomData,
-            },
-            get_or_default_impl: GetOrDefaultGetRefDeref::<M, V::RuntimeType> {
-                get_field: get_value,
-            },
-            set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
-                mut_field,
-                _marker: marker::PhantomData,
-            },
-            _marker: marker::PhantomData,
-        })),
+            }),
+            element_type: V::dynamic(),
+        }),
     }
 }
 
@@ -516,11 +534,14 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-            get_option_impl: GetOptionImplFieldPointer::<M, V::RuntimeType> { get_field },
-            get_or_default_impl: GetOrDefaultGetRef::<M, V::RuntimeType> { get_field },
-            set_impl: SetImplFieldPointer::<M, V::RuntimeType> { mut_field },
-            _marker: marker::PhantomData,
-        })),
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplFieldPointer::<M, V::RuntimeType> { get_field },
+                get_or_default_impl: GetOrDefaultGetRef::<M, V::RuntimeType> { get_field },
+                set_impl: SetImplFieldPointer::<M, V::RuntimeType> { mut_field },
+                _marker: marker::PhantomData,
+            }),
+            element_type: V::dynamic(),
+        }),
     }
 }

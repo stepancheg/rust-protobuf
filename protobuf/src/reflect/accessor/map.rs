@@ -14,7 +14,12 @@ use reflect::types::ProtobufType;
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a>;
-    fn entry_type(&self) -> (&'static ProtobufTypeDynamic, &'static ProtobufTypeDynamic);
+}
+
+pub(crate) struct MapFieldAccessorHolder {
+    pub accessor: Box<MapFieldAccessor>,
+    pub key_type: &'static ProtobufTypeDynamic,
+    pub value_type: &'static ProtobufTypeDynamic,
 }
 
 struct MapFieldAccessorImpl<M, K, V>
@@ -63,10 +68,6 @@ where
             value_dynamic: V::RuntimeType::dynamic(),
         }
     }
-
-    fn entry_type(&self) -> (&'static ProtobufTypeDynamic, &'static ProtobufTypeDynamic) {
-        (K::dynamic(), V::dynamic())
-    }
 }
 
 pub fn make_map_accessor<M, K, V>(
@@ -92,9 +93,13 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Map(Box::new(MapFieldAccessorImpl::<M, K, V> {
-            get_field,
-            mut_field,
-        })),
+        accessor: AccessorKind::Map(MapFieldAccessorHolder {
+            accessor: Box::new(MapFieldAccessorImpl::<M, K, V> {
+                get_field,
+                mut_field,
+            }),
+            key_type: K::dynamic(),
+            value_type: V::dynamic(),
+        }),
     }
 }
