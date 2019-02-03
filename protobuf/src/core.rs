@@ -166,7 +166,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
         Self: Sized;
 }
 
-impl Message {
+impl dyn Message {
     pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
         if self.as_any().is::<T>() {
             unsafe {
@@ -176,6 +176,21 @@ impl Message {
         } else {
             Err(self)
         }
+    }
+
+    pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
+        self.as_any().downcast_ref::<M>()
+    }
+
+    pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
+        if self.as_any().is::<M>() {
+            unsafe {
+                Some(&mut *(self as *mut dyn Message as *mut M))
+            }
+        } else {
+            None
+        }
+
     }
 }
 
@@ -192,21 +207,6 @@ impl PartialEq for Box<Message> {
         use std::ops::Deref;
         self.descriptor() == other.descriptor() && self.descriptor().eq(self.deref(), other.deref())
     }
-}
-
-pub fn message_down_cast_ref<'a, M: Message + 'a>(m: &'a Message) -> Option<&'a M> {
-    m.as_any().downcast_ref::<M>()
-}
-
-pub fn message_down_cast_mut<'a, M: Message + 'a>(m: &'a mut Message) -> Option<&'a mut M> {
-    if m.as_any().is::<M>() {
-        unsafe {
-            Some(&mut *(m as *mut dyn Message as *mut M))
-        }
-    } else {
-        None
-    }
-
 }
 
 /// Parse message from stream.

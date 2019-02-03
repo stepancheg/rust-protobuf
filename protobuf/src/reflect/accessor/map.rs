@@ -1,10 +1,8 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use core::message_down_cast_ref;
 use Message;
 
-use core::message_down_cast_mut;
 use reflect::accessor::AccessorKind;
 use reflect::accessor::FieldAccessor;
 use reflect::map::ReflectMapMut;
@@ -47,7 +45,7 @@ where
     <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
 {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a> {
-        let m = message_down_cast_ref(m).unwrap();
+        let m = m.downcast_ref().unwrap();
         let map = (self.get_field)(m);
         ReflectMapRef {
             map,
@@ -57,7 +55,7 @@ where
     }
 
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
-        let m = message_down_cast_mut(m).unwrap();
+        let m = m.downcast_mut().unwrap();
         let map = (self.mut_field)(m);
         ReflectMapMut {
             map,

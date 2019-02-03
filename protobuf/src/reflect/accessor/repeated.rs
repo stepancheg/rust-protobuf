@@ -3,8 +3,6 @@ use std::marker;
 use Message;
 use RepeatedField;
 
-use core::message_down_cast_ref;
-use core::message_down_cast_mut;
 use reflect::accessor::AccessorKind;
 use reflect::accessor::FieldAccessor;
 use reflect::repeated::ReflectRepeated;
@@ -82,7 +80,7 @@ where
     V: ProtobufType,
 {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a> {
-        let m = message_down_cast_ref(m).unwrap();
+        let m = m.downcast_ref().unwrap();
         let repeated = self.fns.get_field(m);
         ReflectRepeatedRef {
             repeated,
@@ -91,7 +89,7 @@ where
     }
 
     fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
-        let m = message_down_cast_mut(m).unwrap();
+        let m = m.downcast_mut().unwrap();
         let repeated = self.fns.mut_field(m);
         ReflectRepeatedMut {
             repeated,

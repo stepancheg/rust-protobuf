@@ -10,7 +10,7 @@ use reflect::ReflectValueRef;
 use std::f32;
 use std::f64;
 use Message;
-use core::message_down_cast_ref;
+
 
 use well_known_types::Any;
 use well_known_types::BoolValue;
@@ -401,37 +401,37 @@ impl Printer {
     }
 
     fn print_message(&mut self, message: &Message) -> PrintResult<()> {
-        if let Some(duration) = message_down_cast_ref::<Duration>(message) {
+        if let Some(duration) = message.downcast_ref::<Duration>() {
             self.print_printable(duration)
-        } else if let Some(timestamp) = message_down_cast_ref::<Timestamp>(message) {
+        } else if let Some(timestamp) = message.downcast_ref::<Timestamp>() {
             self.print_printable(timestamp)
-        } else if let Some(field_mask) = message_down_cast_ref::<FieldMask>(message) {
+        } else if let Some(field_mask) = message.downcast_ref::<FieldMask>() {
             self.print_printable(field_mask)
-        } else if let Some(any) = message_down_cast_ref::<Any>(message) {
+        } else if let Some(any) = message.downcast_ref::<Any>() {
             self.print_printable(any)
-        } else if let Some(value) = message_down_cast_ref::<Value>(message) {
+        } else if let Some(value) = message.downcast_ref::<Value>() {
             self.print_printable(value)
-        } else if let Some(value) = message_down_cast_ref::<DoubleValue>(message) {
+        } else if let Some(value) = message.downcast_ref::<DoubleValue>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<FloatValue>(message) {
+        } else if let Some(value) = message.downcast_ref::<FloatValue>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<Int64Value>(message) {
+        } else if let Some(value) = message.downcast_ref::<Int64Value>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<UInt64Value>(message) {
+        } else if let Some(value) = message.downcast_ref::<UInt64Value>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<Int32Value>(message) {
+        } else if let Some(value) = message.downcast_ref::<Int32Value>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<UInt32Value>(message) {
+        } else if let Some(value) = message.downcast_ref::<UInt32Value>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<BoolValue>(message) {
+        } else if let Some(value) = message.downcast_ref::<BoolValue>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<StringValue>(message) {
+        } else if let Some(value) = message.downcast_ref::<StringValue>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<BytesValue>(message) {
+        } else if let Some(value) = message.downcast_ref::<BytesValue>() {
             self.print_wrapper(value)
-        } else if let Some(value) = message_down_cast_ref::<ListValue>(message) {
+        } else if let Some(value) = message.downcast_ref::<ListValue>() {
             self.print_printable(value)
-        } else if let Some(value) = message_down_cast_ref::<Struct>(message) {
+        } else if let Some(value) = message.downcast_ref::<Struct>() {
             self.print_printable(value)
         } else {
             self.print_regular_message(message)
