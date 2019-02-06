@@ -705,8 +705,6 @@ impl<'a> WithCodedInputStream for &'a Bytes {
 
 enum OutputTarget<'a> {
     Write(&'a mut Write, Vec<u8>),
-    Vec(&'a mut Vec<u8>),
-    Bytes,
 }
 
 pub struct CodedOutputStream<'a> {
@@ -741,17 +739,6 @@ impl<'a> CodedOutputStream<'a> {
                 write.write_all(&self.buffer[0..self.position as usize])?;
                 self.position = 0;
             }
-            OutputTarget::Vec(ref mut vec) => unsafe {
-                let vec_len = vec.len();
-                assert!(vec_len + self.position <= vec.capacity());
-                vec.set_len(vec_len + self.position);
-                vec.reserve(1);
-                self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
-                self.position = 0;
-            },
-            OutputTarget::Bytes => {
-                panic!("refresh_buffer must not be called on CodedOutputStream created from slice");
-            }
         }
         Ok(())
     }
@@ -763,8 +750,7 @@ impl<'a> CodedOutputStream<'a> {
     /// before destructor.
     pub fn flush(&mut self) -> ProtobufResult<()> {
         match self.target {
-            OutputTarget::Bytes => Ok(()),
-            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
+            OutputTarget::Write(..) => {
                 // TODO: must not reserve additional in Vec
                 self.refresh_buffer()
             }
@@ -800,17 +786,8 @@ impl<'a> CodedOutputStream<'a> {
         }
 
         match self.target {
-            OutputTarget::Bytes => {
-                unreachable!();
-            }
             OutputTarget::Write(ref mut write, _) => {
                 write.write_all(bytes)?;
-            }
-            OutputTarget::Vec(ref mut vec) => {
-                vec.extend(bytes);
-                unsafe {
-                    self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
-                }
             }
         }
         Ok(())
