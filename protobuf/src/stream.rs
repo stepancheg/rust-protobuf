@@ -641,7 +641,7 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     where
         F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
     {
-        let mut os = CodedOutputStream::vec(&mut self);
+        let mut os = CodedOutputStream::new(&mut self);
         let r = cb(&mut os)?;
         os.flush()?;
         Ok(r)
@@ -1368,11 +1368,9 @@ mod test {
         // write to &[u8]
         {
             let mut r = Vec::with_capacity(expected_bytes.len());
-            r.resize(expected_bytes.len(), 0);
             {
-                let mut os = CodedOutputStream::bytes(&mut r);
+                let mut os = CodedOutputStream::new(&mut r);
                 gen(&mut os).unwrap();
-                os.check_eof();
             }
             assert_eq!(encode_hex(&expected_bytes), encode_hex(&r));
         }
@@ -1382,7 +1380,7 @@ mod test {
             let mut r = Vec::new();
             r.extend(&[11, 22, 33, 44, 55, 66, 77]);
             {
-                let mut os = CodedOutputStream::vec(&mut r);
+                let mut os = CodedOutputStream::new(&mut r);
                 gen(&mut os).unwrap();
                 os.flush().unwrap();
             }
@@ -1489,12 +1487,10 @@ mod test {
         // write to &[u8]
         {
             let mut v = Vec::with_capacity(expected.len());
-            v.resize(expected.len(), 0);
             {
-                let mut os = CodedOutputStream::bytes(&mut v);
+                let mut os = CodedOutputStream::new(&mut v);
                 Write::write(&mut os, &expected).expect("io::Write::write");
                 Write::flush(&mut os).expect("io::Write::flush");
-                os.check_eof();
             }
             assert_eq!(expected, *v);
         }
@@ -1503,7 +1499,7 @@ mod test {
         {
             let mut v = Vec::new();
             {
-                let mut os = CodedOutputStream::vec(&mut v);
+                let mut os = CodedOutputStream::new(&mut v);
                 Write::write(&mut os, &expected).expect("io::Write::write");
                 Write::flush(&mut os).expect("io::Write::flush");
             }

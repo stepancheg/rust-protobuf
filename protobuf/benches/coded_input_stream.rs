@@ -63,7 +63,7 @@ fn read_byte_from_vec(b: &mut Bencher) {
 fn read_varint_12(b: &mut Bencher) {
     let mut v = Vec::new();
     {
-        let mut v = protobuf::CodedOutputStream::vec(&mut v);
+        let mut v = protobuf::CodedOutputStream::new(&mut v);
         for i in 0..1000 {
             // one or two byte varints
             v.write_raw_varint32((i * 7919) % (1 << 14)).expect("write");
@@ -85,7 +85,7 @@ fn read_varint_12(b: &mut Bencher) {
 fn read_varint_1(b: &mut Bencher) {
     let mut v = Vec::new();
     {
-        let mut v = protobuf::CodedOutputStream::vec(&mut v);
+        let mut v = protobuf::CodedOutputStream::new(&mut v);
         for i in 0..1000 {
             // one or two byte varints
             v.write_raw_varint32((i * 7919) % (1 << 7)).expect("write");
