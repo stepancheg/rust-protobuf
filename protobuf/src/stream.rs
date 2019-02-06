@@ -702,12 +702,9 @@ impl<'a> WithCodedInputStream for &'a Bytes {
     }
 }
 
-enum OutputTarget<'a> {
-    Write(&'a mut Write, Vec<u8>),
-}
-
 pub struct CodedOutputStream<'a> {
-    target: OutputTarget<'a>,
+    target: &'a mut Write,
+    buffer_storage: Vec<u8>,
     // alias to buf from target
     buffer: &'a mut [u8],
     // within buffer
@@ -726,19 +723,16 @@ impl<'a> CodedOutputStream<'a> {
         let buffer = unsafe { remove_lifetime_mut(&mut buffer_storage as &mut [u8]) };
 
         CodedOutputStream {
-            target: OutputTarget::Write(writer, buffer_storage),
+            target: writer,
+            buffer_storage,
             buffer: buffer,
             position: 0,
         }
     }
 
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
-        match self.target {
-            OutputTarget::Write(ref mut write, _) => {
-                write.write_all(&self.buffer[0..self.position as usize])?;
-                self.position = 0;
-            }
-        }
+        self.target.write_all(&self.buffer[0..self.position as usize])?;
+        self.position = 0;
         Ok(())
     }
 
@@ -748,12 +742,8 @@ impl<'a> CodedOutputStream<'a> {
     /// and program terminates. So it's advisable to explicitly call flush
     /// before destructor.
     pub fn flush(&mut self) -> ProtobufResult<()> {
-        match self.target {
-            OutputTarget::Write(..) => {
-                // TODO: must not reserve additional in Vec
-                self.refresh_buffer()
-            }
-        }
+        // TODO: must not reserve additional in Vec
+        self.refresh_buffer()
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
@@ -784,11 +774,7 @@ impl<'a> CodedOutputStream<'a> {
             return Ok(());
         }
 
-        match self.target {
-            OutputTarget::Write(ref mut write, _) => {
-                write.write_all(bytes)?;
-            }
-        }
+        self.target.write_all(bytes)?;
         Ok(())
     }
 
