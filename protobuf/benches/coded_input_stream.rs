@@ -6,7 +6,7 @@ extern crate protobuf;
 extern crate test;
 
 use std::io;
-use std::io::Read;
+use std::io::{Read, Write};
 
 use protobuf::stream::CodedInputStream;
 

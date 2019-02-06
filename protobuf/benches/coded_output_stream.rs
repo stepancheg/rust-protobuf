@@ -6,6 +6,7 @@ extern crate protobuf;
 extern crate test;
 
 use protobuf::stream;
+use std::io::Write;
 
 use self::test::Bencher;
 

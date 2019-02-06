@@ -44,10 +44,6 @@ use reflect::types::ProtobufTypeSint64;
 use reflect::types::ProtobufTypeUint32;
 use reflect::types::ProtobufTypeUint64;
 
-// Equal to the default buffer size of `BufWriter`, so when
-// `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
-const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
-
 // Default recursion level limit. 100 is the default value of C++'s implementation.
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
 
@@ -704,77 +700,20 @@ impl<'a> WithCodedInputStream for &'a Bytes {
 
 pub struct CodedOutputStream<'a> {
     target: BufWriter<&'a mut Write>,
-    buffer_storage: Vec<u8>,
-    // alias to buf from target
-    buffer: &'a mut [u8],
-    // within buffer
-    position: usize,
 }
 
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
-        let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
-
-        let mut buffer_storage = Vec::with_capacity(buffer_len);
-        unsafe {
-            buffer_storage.set_len(buffer_len);
-        }
-
-        let buffer = unsafe { remove_lifetime_mut(&mut buffer_storage as &mut [u8]) };
-
-        CodedOutputStream {
-            target: BufWriter::new(writer),
-            buffer_storage,
-            buffer: buffer,
-            position: 0,
-        }
-    }
-
-    fn refresh_buffer(&mut self) -> ProtobufResult<()> {
-        self.target.write_all(&self.buffer[0..self.position as usize])?;
-        self.position = 0;
-        Ok(())
-    }
-
-    /// Flush to buffer to the underlying buffer.
-    /// Note that `CodedOutputStream` does `flush` in the destructor,
-    /// however, if `flush` in desctructor fails, then destructor panics
-    /// and program terminates. So it's advisable to explicitly call flush
-    /// before destructor.
-    pub fn flush(&mut self) -> ProtobufResult<()> {
-        // TODO: must not reserve additional in Vec
-        self.refresh_buffer()
+        CodedOutputStream { target: BufWriter::new(writer) }
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
-        if self.position as usize == self.buffer.len() {
-            self.refresh_buffer()?;
-        }
-        self.buffer[self.position as usize] = byte;
-        self.position += 1;
+        self.target.write(&[byte])?;
         Ok(())
     }
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        if bytes.len() <= self.buffer.len() - self.position {
-            let bottom = self.position as usize;
-            let top = bottom + (bytes.len() as usize);
-            self.buffer[bottom..top].copy_from_slice(bytes);
-            self.position += bytes.len();
-            return Ok(());
-        }
-
-        self.refresh_buffer()?;
-
-        assert!(self.position == 0);
-
-        if self.position + bytes.len() < self.buffer.len() {
-            &mut self.buffer[self.position..self.position + bytes.len()].copy_from_slice(bytes);
-            self.position += bytes.len();
-            return Ok(());
-        }
-
-        self.target.write_all(bytes)?;
+        self.target.write(bytes)?;
         Ok(())
     }
 
@@ -787,31 +726,15 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_varint32(&mut self, value: u32) -> ProtobufResult<()> {
-        if self.buffer.len() - self.position >= 5 {
-            // fast path
-            let len = varint::encode_varint32(value, &mut self.buffer[self.position..]);
-            self.position += len;
-            Ok(())
-        } else {
-            // slow path
-            let buf = &mut [0u8; 5];
-            let len = varint::encode_varint32(value, buf);
-            self.write_raw_bytes(&buf[..len])
-        }
+        let buf = &mut [0u8; 5];
+        let len = varint::encode_varint32(value, buf);
+        self.write_raw_bytes(&buf[..len])
     }
 
     pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
-        if self.buffer.len() - self.position >= 10 {
-            // fast path
-            let len = varint::encode_varint64(value, &mut self.buffer[self.position..]);
-            self.position += len;
-            Ok(())
-        } else {
-            // slow path
-            let buf = &mut [0u8; 10];
-            let len = varint::encode_varint64(value, buf);
-            self.write_raw_bytes(&buf[..len])
-        }
+        let buf = &mut [0u8; 10];
+        let len = varint::encode_varint64(value, buf);
+        self.write_raw_bytes(&buf[..len])
     }
 
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
@@ -1048,7 +971,7 @@ impl<'a> Write for CodedOutputStream<'a> {
     }
 
     fn flush(&mut self) -> io::Result<()> {
-        CodedOutputStream::flush(self).map_err(Into::into)
+        self.target.flush()
     }
 }
 
