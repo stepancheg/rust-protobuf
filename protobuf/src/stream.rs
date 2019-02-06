@@ -884,23 +884,19 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
-        let bytes = unsafe { mem::transmute::<_, [u8; 4]>(value.to_le()) };
-        self.write_raw_bytes(&bytes)
+        self.write_raw_bytes(&value.to_le_bytes())
     }
 
     pub fn write_raw_little_endian64(&mut self, value: u64) -> ProtobufResult<()> {
-        let bytes = unsafe { mem::transmute::<_, [u8; 8]>(value.to_le()) };
-        self.write_raw_bytes(&bytes)
+        self.write_raw_bytes(&value.to_le_bytes())
     }
 
     pub fn write_float_no_tag(&mut self, value: f32) -> ProtobufResult<()> {
-        let bits = unsafe { mem::transmute::<f32, u32>(value) };
-        self.write_raw_little_endian32(bits)
+        self.write_raw_little_endian32(value.to_bits())
     }
 
     pub fn write_double_no_tag(&mut self, value: f64) -> ProtobufResult<()> {
-        let bits = unsafe { mem::transmute::<f64, u64>(value) };
-        self.write_raw_little_endian64(bits)
+        self.write_raw_little_endian64(value.to_bits())
     }
 
     pub fn write_float(&mut self, field_number: u32, value: f32) -> ProtobufResult<()> {
