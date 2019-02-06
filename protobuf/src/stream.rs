@@ -15,7 +15,6 @@ use enums::ProtobufEnum;
 use error::ProtobufError;
 use error::ProtobufResult;
 use error::WireError;
-use misc::remove_lifetime_mut;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
