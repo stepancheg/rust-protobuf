@@ -1,5 +1,5 @@
 use std::io;
-use std::io::Write;
+use std::io::{BufWriter, Write};
 use std::io::{BufRead, Read};
 use std::mem;
 use std::slice;
@@ -703,7 +703,7 @@ impl<'a> WithCodedInputStream for &'a Bytes {
 }
 
 pub struct CodedOutputStream<'a> {
-    target: &'a mut Write,
+    target: BufWriter<&'a mut Write>,
     buffer_storage: Vec<u8>,
     // alias to buf from target
     buffer: &'a mut [u8],
@@ -723,7 +723,7 @@ impl<'a> CodedOutputStream<'a> {
         let buffer = unsafe { remove_lifetime_mut(&mut buffer_storage as &mut [u8]) };
 
         CodedOutputStream {
-            target: writer,
+            target: BufWriter::new(writer),
             buffer_storage,
             buffer: buffer,
             position: 0,
