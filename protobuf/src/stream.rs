@@ -735,37 +735,6 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
-    /// `CodedOutputStream` which writes directly to bytes.
-    ///
-    /// Attempt to write more than bytes capacity results in error.
-    pub fn bytes(bytes: &'a mut [u8]) -> CodedOutputStream<'a> {
-        CodedOutputStream {
-            target: OutputTarget::Bytes,
-            buffer: bytes,
-            position: 0,
-        }
-    }
-
-    /// `CodedOutputStream` which writes directly to `Vec<u8>`.
-    pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
-        CodedOutputStream {
-            target: OutputTarget::Vec(vec),
-            buffer: &mut [],
-            position: 0,
-        }
-    }
-
-    pub fn check_eof(&self) {
-        match self.target {
-            OutputTarget::Bytes => {
-                assert_eq!(self.buffer.len() as u64, self.position as u64);
-            }
-            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
-                panic!("must not be called with Writer or Vec");
-            }
-        }
-    }
-
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.target {
             OutputTarget::Write(ref mut write, _) => {
