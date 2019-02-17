@@ -21,7 +21,7 @@ And in `Cargo.toml`:
 
 ```
 [build-dependencies]
-protobuf-codegen-pure = "1.6"
+protobuf-codegen-pure = "2.3"
 ```
 
 The alternative is to use
