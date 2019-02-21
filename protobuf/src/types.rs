@@ -1,4 +1,5 @@
 use std::marker;
+use std::mem;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -14,6 +15,9 @@ use wire_format::WireType;
 use rt;
 use reflect::ProtobufValue;
 use unknown::UnknownValues;
+use zigzag::decode_zig_zag_32;
+use zigzag::decode_zig_zag_64;
+use parse_from_bytes;
 
 pub trait ProtobufType {
     type Value: ProtobufValue + Clone + 'static;
@@ -24,6 +28,10 @@ pub trait ProtobufType {
 
     fn compute_size(value: &Self::Value) -> u32;
 
+    fn get_from_unknown(
+        _unknown_values: &UnknownValues,
+    ) -> Option<Self::Value>;
+
     /// Compute size adding length prefix if wire type is length delimited
     /// (i. e. string, bytes, message)
     fn compute_size_with_length_delimiter(value: &Self::Value) -> u32 {
@@ -33,10 +41,6 @@ pub trait ProtobufType {
         } else {
             size
         }
-    }
-
-    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::Value> {
-        unimplemented!()
     }
 
     /// Get previously computed size
@@ -103,6 +107,11 @@ impl ProtobufType for ProtobufTypeFloat {
         4
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f32> {
+        unknown_values.fixed32.iter().rev().next()
+            .map(|&bits| unsafe { mem::transmute::<u32, f32>(bits) })
+    }
+
     fn write_with_cached_size(
         field_number: u32,
         value: &f32,
@@ -121,6 +130,11 @@ impl ProtobufType for ProtobufTypeDouble {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<f64> {
         is.read_double()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f64> {
+        unknown_values.fixed64.iter().rev().next()
+            .map(|&bits| unsafe { mem::transmute::<u64, f64>(bits) })
     }
 
     fn compute_size(_value: &f64) -> u32 {
@@ -162,6 +176,11 @@ impl ProtobufType for ProtobufTypeInt32 {
     ) -> ProtobufResult<()> {
         os.write_int32(field_number, *value)
     }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i32> {
+        unknown_values.varint.iter().rev().next()
+            .map(|&v| v as i32)
+    }
 }
 
 impl ProtobufType for ProtobufTypeInt64 {
@@ -173,6 +192,11 @@ impl ProtobufType for ProtobufTypeInt64 {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
         is.read_int64()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i64> {
+        unknown_values.varint.iter().rev().next()
+            .map(|&v| v as i64)
     }
 
     fn compute_size(value: &i64) -> u32 {
@@ -199,6 +223,11 @@ impl ProtobufType for ProtobufTypeUint32 {
         is.read_uint32()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<u32> {
+        unknown_values.varint.iter().rev().next()
+            .map(|&v| v as u32)
+    }
+
     fn compute_size(value: &u32) -> u32 {
         rt::compute_raw_varint32_size(*value)
     }
@@ -221,6 +250,10 @@ impl ProtobufType for ProtobufTypeUint64 {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
         is.read_uint64()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<u64> {
+        unknown_values.varint.iter().cloned().rev().next()
     }
 
     fn compute_size(value: &u64) -> u32 {
@@ -247,6 +280,11 @@ impl ProtobufType for ProtobufTypeSint32 {
         is.read_sint32()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i32> {
+        ProtobufTypeUint32::get_from_unknown(unknown_values)
+            .map(decode_zig_zag_32)
+    }
+
     fn compute_size(value: &i32) -> u32 {
         rt::value_varint_zigzag_size_no_tag(*value)
     }
@@ -269,6 +307,11 @@ impl ProtobufType for ProtobufTypeSint64 {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
         is.read_sint64()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i64> {
+        ProtobufTypeUint64::get_from_unknown(unknown_values)
+            .map(decode_zig_zag_64)
     }
 
     fn compute_size(value: &i64) -> u32 {
@@ -295,6 +338,10 @@ impl ProtobufType for ProtobufTypeFixed32 {
         is.read_fixed32()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<u32> {
+        unknown_values.fixed32.iter().cloned().rev().next()
+    }
+
     fn compute_size(_value: &u32) -> u32 {
         4
     }
@@ -317,6 +364,10 @@ impl ProtobufType for ProtobufTypeFixed64 {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
         is.read_fixed64()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<u64> {
+        unknown_values.fixed64.iter().cloned().rev().next()
     }
 
     fn compute_size(_value: &u64) -> u32 {
@@ -343,6 +394,10 @@ impl ProtobufType for ProtobufTypeSfixed32 {
         is.read_sfixed32()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i32> {
+        ProtobufTypeFixed32::get_from_unknown(unknown_values).map(|u| u as i32)
+    }
+
     fn compute_size(_value: &i32) -> u32 {
         4
     }
@@ -365,6 +420,10 @@ impl ProtobufType for ProtobufTypeSfixed64 {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
         is.read_sfixed64()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i64> {
+        ProtobufTypeFixed64::get_from_unknown(unknown_values).map(|u| u as i64)
     }
 
     fn compute_size(_value: &i64) -> u32 {
@@ -419,6 +478,12 @@ impl ProtobufType for ProtobufTypeString {
         is.read_string()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<String> {
+        // TODO: should not panic
+        ProtobufTypeBytes::get_from_unknown(unknown_values)
+            .map(|b| String::from_utf8(b).expect("not a valid string"))
+    }
+
     fn compute_size(value: &String) -> u32 {
         value.len() as u32
     }
@@ -441,6 +506,10 @@ impl ProtobufType for ProtobufTypeBytes {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Vec<u8>> {
         is.read_bytes()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Vec<u8>> {
+        unknown_values.length_delimited.iter().cloned().rev().next()
     }
 
     fn compute_size(value: &Vec<u8>) -> u32 {
@@ -468,6 +537,11 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
         is.read_carllerche_bytes()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Bytes> {
+        ProtobufTypeBytes::get_from_unknown(unknown_values)
+            .map(Bytes::from)
+    }
+
     fn compute_size(value: &Bytes) -> u32 {
         value.len() as u32
     }
@@ -491,6 +565,11 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Self::Value> {
         is.read_carllerche_chars()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Chars> {
+        ProtobufTypeString::get_from_unknown(unknown_values)
+            .map(Chars::from)
     }
 
     fn compute_size(value: &Chars) -> u32 {
@@ -517,6 +596,12 @@ impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
         is.read_enum()
     }
 
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<E> {
+        // TODO: do not panic
+        ProtobufTypeInt32::get_from_unknown(unknown_values)
+            .map(|i| E::from_i32(i).expect("not a valid enum value"))
+    }
+
     fn compute_size(value: &E) -> u32 {
         rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
     }
@@ -539,6 +624,12 @@ impl<M : Message + Clone + ProtobufValue> ProtobufType for ProtobufTypeMessage<M
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<M> {
         is.read_message()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<M> {
+        // TODO: do not panic
+        unknown_values.length_delimited.iter().rev().next()
+            .map(|bytes| parse_from_bytes(bytes).expect("cannot parse message"))
     }
 
     fn compute_size(value: &M) -> u32 {
