@@ -36,6 +36,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Fix OOM on malformed input
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
+- [More extension types are supported now](https://github.com/stepancheg/rust-protobuf/issues/392)
 
 ## [2.3 Unreleased]
 
