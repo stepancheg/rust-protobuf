@@ -7,6 +7,8 @@ use std::hash::Hash;
 use std::hash::Hasher;
 use std::slice;
 use wire_format;
+use zigzag::encode_zig_zag_32;
+use zigzag::encode_zig_zag_64;
 
 #[derive(Debug)]
 pub enum UnknownValue {
@@ -28,6 +30,16 @@ impl UnknownValue {
             UnknownValue::Varint(varint) => UnknownValueRef::Varint(varint),
             UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(&bytes),
         }
+    }
+
+    /// Construct unknown value from `sint32` value.
+    pub fn sint32(i: i32) -> UnknownValue {
+        UnknownValue::Varint(encode_zig_zag_32(i) as u64)
+    }
+
+    /// Construct unknown value from `sint64` value.
+    pub fn sint64(i: i64) -> UnknownValue {
+        UnknownValue::Varint(encode_zig_zag_64(i))
     }
 }
 
