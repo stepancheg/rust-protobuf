@@ -48,3 +48,18 @@ fn bench_buffer_bytes(b: &mut Bencher) {
         v
     });
 }
+
+#[bench]
+fn bench_write_raw_varint_32(b: &mut Bencher) {
+    let mut v = Vec::with_capacity(10_000);
+    b.iter(|| {
+        v.clear();
+        {
+            let mut os = stream::CodedOutputStream::new(&mut v);
+            for i in 0..1000 {
+                os.write_raw_varint32(i * 139 % 1000).unwrap();
+            }
+        }
+        v.len()
+    })
+}
