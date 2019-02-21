@@ -82,8 +82,6 @@ mod unknown;
 mod varint;
 mod zigzag;
 
-mod misc;
-
 mod buf_read_iter;
 
 // so `use protobuf::*` could work in mod descriptor and well_known_types

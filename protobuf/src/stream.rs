@@ -1,5 +1,5 @@
 use std::io;
-use std::io::Write;
+use std::io::{BufWriter, Write};
 use std::io::{BufRead, Read};
 use std::mem;
 use std::slice;
@@ -15,8 +15,6 @@ use enums::ProtobufEnum;
 use error::ProtobufError;
 use error::ProtobufResult;
 use error::WireError;
-use misc::remaining_capacity_as_slice_mut;
-use misc::remove_lifetime_mut;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
@@ -44,10 +42,6 @@ use reflect::types::ProtobufTypeSint32;
 use reflect::types::ProtobufTypeSint64;
 use reflect::types::ProtobufTypeUint32;
 use reflect::types::ProtobufTypeUint64;
-
-// Equal to the default buffer size of `BufWriter`, so when
-// `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
-const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
 // Default recursion level limit. 100 is the default value of C++'s implementation.
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
@@ -641,7 +635,7 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     where
         F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
     {
-        let mut os = CodedOutputStream::vec(&mut self);
+        let mut os = CodedOutputStream::new(&mut self);
         let r = cb(&mut os)?;
         os.flush()?;
         Ok(r)
@@ -703,147 +697,22 @@ impl<'a> WithCodedInputStream for &'a Bytes {
     }
 }
 
-enum OutputTarget<'a> {
-    Write(&'a mut Write, Vec<u8>),
-    Vec(&'a mut Vec<u8>),
-    Bytes,
-}
-
 pub struct CodedOutputStream<'a> {
-    target: OutputTarget<'a>,
-    // alias to buf from target
-    buffer: &'a mut [u8],
-    // within buffer
-    position: usize,
+    target: BufWriter<&'a mut Write>,
 }
 
 impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
-        let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
-
-        let mut buffer_storage = Vec::with_capacity(buffer_len);
-        unsafe {
-            buffer_storage.set_len(buffer_len);
-        }
-
-        let buffer = unsafe { remove_lifetime_mut(&mut buffer_storage as &mut [u8]) };
-
-        CodedOutputStream {
-            target: OutputTarget::Write(writer, buffer_storage),
-            buffer: buffer,
-            position: 0,
-        }
-    }
-
-    /// `CodedOutputStream` which writes directly to bytes.
-    ///
-    /// Attempt to write more than bytes capacity results in error.
-    pub fn bytes(bytes: &'a mut [u8]) -> CodedOutputStream<'a> {
-        CodedOutputStream {
-            target: OutputTarget::Bytes,
-            buffer: bytes,
-            position: 0,
-        }
-    }
-
-    /// `CodedOutputStream` which writes directly to `Vec<u8>`.
-    pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
-        CodedOutputStream {
-            target: OutputTarget::Vec(vec),
-            buffer: &mut [],
-            position: 0,
-        }
-    }
-
-    pub fn check_eof(&self) {
-        match self.target {
-            OutputTarget::Bytes => {
-                assert_eq!(self.buffer.len() as u64, self.position as u64);
-            }
-            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
-                panic!("must not be called with Writer or Vec");
-            }
-        }
-    }
-
-    fn refresh_buffer(&mut self) -> ProtobufResult<()> {
-        match self.target {
-            OutputTarget::Write(ref mut write, _) => {
-                write.write_all(&self.buffer[0..self.position as usize])?;
-                self.position = 0;
-            }
-            OutputTarget::Vec(ref mut vec) => unsafe {
-                let vec_len = vec.len();
-                assert!(vec_len + self.position <= vec.capacity());
-                vec.set_len(vec_len + self.position);
-                vec.reserve(1);
-                self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
-                self.position = 0;
-            },
-            OutputTarget::Bytes => {
-                panic!("refresh_buffer must not be called on CodedOutputStream created from slice");
-            }
-        }
-        Ok(())
-    }
-
-    /// Flush to buffer to the underlying buffer.
-    /// Note that `CodedOutputStream` does `flush` in the destructor,
-    /// however, if `flush` in desctructor fails, then destructor panics
-    /// and program terminates. So it's advisable to explicitly call flush
-    /// before destructor.
-    pub fn flush(&mut self) -> ProtobufResult<()> {
-        match self.target {
-            OutputTarget::Bytes => Ok(()),
-            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
-                // TODO: must not reserve additional in Vec
-                self.refresh_buffer()
-            }
-        }
+        CodedOutputStream { target: BufWriter::new(writer) }
     }
 
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
-        if self.position as usize == self.buffer.len() {
-            self.refresh_buffer()?;
-        }
-        self.buffer[self.position as usize] = byte;
-        self.position += 1;
+        self.target.write(&[byte])?;
         Ok(())
     }
 
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        if bytes.len() <= self.buffer.len() - self.position {
-            let bottom = self.position as usize;
-            let top = bottom + (bytes.len() as usize);
-            self.buffer[bottom..top].copy_from_slice(bytes);
-            self.position += bytes.len();
-            return Ok(());
-        }
-
-        self.refresh_buffer()?;
-
-        assert!(self.position == 0);
-
-        if self.position + bytes.len() < self.buffer.len() {
-            &mut self.buffer[self.position..self.position + bytes.len()].copy_from_slice(bytes);
-            self.position += bytes.len();
-            return Ok(());
-        }
-
-        match self.target {
-            OutputTarget::Bytes => {
-                unreachable!();
-            }
-            OutputTarget::Write(ref mut write, _) => {
-                write.write_all(bytes)?;
-            }
-            OutputTarget::Vec(ref mut vec) => {
-                vec.extend(bytes);
-                unsafe {
-                    self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
-                }
-            }
-        }
+        self.target.write(bytes)?;
         Ok(())
     }
 
@@ -856,51 +725,49 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_raw_varint32(&mut self, value: u32) -> ProtobufResult<()> {
-        if self.buffer.len() - self.position >= 5 {
-            // fast path
-            let len = varint::encode_varint32(value, &mut self.buffer[self.position..]);
-            self.position += len;
-            Ok(())
-        } else {
-            // slow path
-            let buf = &mut [0u8; 5];
-            let len = varint::encode_varint32(value, buf);
-            self.write_raw_bytes(&buf[..len])
-        }
+        let buf = &mut [0u8; 5];
+        let len = varint::encode_varint32(value, buf);
+        self.write_raw_bytes(&buf[..len])
     }
 
     pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
-        if self.buffer.len() - self.position >= 10 {
-            // fast path
-            let len = varint::encode_varint64(value, &mut self.buffer[self.position..]);
-            self.position += len;
-            Ok(())
-        } else {
-            // slow path
-            let buf = &mut [0u8; 10];
-            let len = varint::encode_varint64(value, buf);
-            self.write_raw_bytes(&buf[..len])
-        }
+        let buf = &mut [0u8; 10];
+        let len = varint::encode_varint64(value, buf);
+        self.write_raw_bytes(&buf[..len])
     }
 
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
-        let bytes = unsafe { mem::transmute::<_, [u8; 4]>(value.to_le()) };
+        let bytes: [u8; 4] = [
+            ((value >>  0) & 0xff) as u8,
+            ((value >>  8) & 0xff) as u8,
+            ((value >> 16) & 0xff) as u8,
+            ((value >> 24) & 0xff) as u8,
+        ];
+
         self.write_raw_bytes(&bytes)
     }
 
     pub fn write_raw_little_endian64(&mut self, value: u64) -> ProtobufResult<()> {
-        let bytes = unsafe { mem::transmute::<_, [u8; 8]>(value.to_le()) };
+        let bytes: [u8; 8] = [
+            ((value >>  0) & 0xff) as u8,
+            ((value >>  8) & 0xff) as u8,
+            ((value >> 16) & 0xff) as u8,
+            ((value >> 24) & 0xff) as u8,
+            ((value >> 32) & 0xff) as u8,
+            ((value >> 40) & 0xff) as u8,
+            ((value >> 48) & 0xff) as u8,
+            ((value >> 56) & 0xff) as u8,
+        ];
+
         self.write_raw_bytes(&bytes)
     }
 
     pub fn write_float_no_tag(&mut self, value: f32) -> ProtobufResult<()> {
-        let bits = unsafe { mem::transmute::<f32, u32>(value) };
-        self.write_raw_little_endian32(bits)
+        self.write_raw_little_endian32(value.to_bits())
     }
 
     pub fn write_double_no_tag(&mut self, value: f64) -> ProtobufResult<()> {
-        let bits = unsafe { mem::transmute::<f64, u64>(value) };
-        self.write_raw_little_endian64(bits)
+        self.write_raw_little_endian64(value.to_bits())
     }
 
     pub fn write_float(&mut self, field_number: u32, value: f32) -> ProtobufResult<()> {
@@ -1117,7 +984,7 @@ impl<'a> Write for CodedOutputStream<'a> {
     }
 
     fn flush(&mut self) -> io::Result<()> {
-        CodedOutputStream::flush(self).map_err(Into::into)
+        self.target.flush()
     }
 }
 
@@ -1368,11 +1235,9 @@ mod test {
         // write to &[u8]
         {
             let mut r = Vec::with_capacity(expected_bytes.len());
-            r.resize(expected_bytes.len(), 0);
             {
-                let mut os = CodedOutputStream::bytes(&mut r);
+                let mut os = CodedOutputStream::new(&mut r);
                 gen(&mut os).unwrap();
-                os.check_eof();
             }
             assert_eq!(encode_hex(&expected_bytes), encode_hex(&r));
         }
@@ -1382,7 +1247,7 @@ mod test {
             let mut r = Vec::new();
             r.extend(&[11, 22, 33, 44, 55, 66, 77]);
             {
-                let mut os = CodedOutputStream::vec(&mut r);
+                let mut os = CodedOutputStream::new(&mut r);
                 gen(&mut os).unwrap();
                 os.flush().unwrap();
             }
@@ -1489,12 +1354,10 @@ mod test {
         // write to &[u8]
         {
             let mut v = Vec::with_capacity(expected.len());
-            v.resize(expected.len(), 0);
             {
-                let mut os = CodedOutputStream::bytes(&mut v);
+                let mut os = CodedOutputStream::new(&mut v);
                 Write::write(&mut os, &expected).expect("io::Write::write");
                 Write::flush(&mut os).expect("io::Write::flush");
-                os.check_eof();
             }
             assert_eq!(expected, *v);
         }
@@ -1503,7 +1366,7 @@ mod test {
         {
             let mut v = Vec::new();
             {
-                let mut os = CodedOutputStream::vec(&mut v);
+                let mut os = CodedOutputStream::new(&mut v);
                 Write::write(&mut os, &expected).expect("io::Write::write");
                 Write::flush(&mut os).expect("io::Write::flush");
             }
