@@ -9,6 +9,7 @@ use protobuf::Message;
 
 use str_lit::StrLitDecodeError;
 
+use std::mem;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -665,15 +666,49 @@ impl<'a> Resolver<'a> {
                 } else {
                     Ok(protobuf::UnknownValue::Varint(if b { 1 } else { 0 }))
                 }
-            },
+            }
+            // TODO: check overflow
             &model::ProtobufConstant::U64(v) => {
                 match field_type {
-                    &model::FieldType::Fixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
-                    // TODO: check overflow
-                    &model::FieldType::Int64 |
-                    &model::FieldType::Int32 |
-                    &model::FieldType::Uint64 |
-                    &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
+                    &model::FieldType::Fixed64
+                    | model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
+                    &model::FieldType::Fixed32
+                    | model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
+                    &model::FieldType::Int64
+                    | &model::FieldType::Int32
+                    | &model::FieldType::Uint64
+                    | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
+                    &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
+                    &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
+                    _ => Err(()),
+                }
+            }
+            &model::ProtobufConstant::I64(v) => {
+                match field_type {
+                    &model::FieldType::Fixed64
+                    | model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v as u64)),
+                    &model::FieldType::Fixed32
+                    | model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
+                    &model::FieldType::Int64
+                    | &model::FieldType::Int32
+                    | &model::FieldType::Uint64
+                    | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v as u64)),
+                    &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
+                    &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
+                    _ => Err(()),
+                }
+            }
+            &model::ProtobufConstant::F64(f) => {
+                match field_type {
+                    &model::FieldType::Float => Ok(protobuf::UnknownValue::Fixed32(unsafe { mem::transmute::<f32, u32>(f as f32) })),
+                    &model::FieldType::Double => Ok(protobuf::UnknownValue::Fixed64(unsafe { mem::transmute::<f64, u64>(f) })),
+                    _ => Err(()),
+                }
+            }
+            &model::ProtobufConstant::String(ref s) => {
+                match field_type {
+                    &model::FieldType::String => Ok(protobuf::UnknownValue::LengthDelimited(s.decode_utf8()?.into_bytes())),
+                    // TODO: bytes
                     _ => Err(()),
                 }
             }
@@ -716,6 +751,16 @@ impl<'a> Resolver<'a> {
             r.mut_unknown_fields().add_value(extension.field.number as u32, value);
         }
         Ok(r)
+    }
+
+    fn extension(
+        &self,
+        input: &model::Extension,
+    ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
+        let relative_path = RelativePath::new("".to_owned());
+        let mut field = self.field(&input.field, None, &relative_path)?;
+        field.set_extendee(self.resolve_message_or_enum(&input.extendee, &relative_path).0.path);
+        Ok(field)
     }
 }
 
@@ -762,6 +807,12 @@ pub fn file_descriptor(
     output.set_enum_type(input.enums.iter().map(|e| resolver.enumeration(e)).collect());
 
     output.set_options(resolver.file_options(&input.options)?);
+
+    let mut extensions = protobuf::RepeatedField::new();
+    for e in &input.extensions {
+        extensions.push(resolver.extension(e)?);
+    }
+    output.set_extension(extensions);
 
     Ok(output)
 }

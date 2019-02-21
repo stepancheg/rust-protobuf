@@ -1,0 +1,60 @@
+syntax = "proto2";
+
+package test_ext;
+
+import "google/protobuf/descriptor.proto";
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+
+message SubM {
+    optional int32 n = 1;
+}
+
+enum TestEnum {
+    UNDEFINED = 0;
+    RED = 1;
+    BLUE = 2;
+    GREEN = 3;
+}
+
+
+extend google.protobuf.MessageOptions {
+    optional double double_field = 50001;
+    optional float float_field = 50002;
+    optional int32 int32_field = 50003;
+    optional int64 int64_field = 50004;
+    optional uint32 uint32_field = 50005;
+    optional uint64 uint64_field = 50006;
+    optional sint32 sint32_field = 50007;
+    optional sint64 sint64_field = 50008;
+    optional fixed32 fixed32_field = 50009;
+    optional fixed64 fixed64_field = 50010;
+    optional sfixed32 sfixed32_field = 50011;
+    optional sfixed64 sfixed64_field = 50012;
+    optional bool bool_field = 50013;
+    optional string string_field = 50014;
+    optional bytes bytes_field = 50015;
+    optional TestEnum enum_field = 50016;
+    optional SubM message_field = 50017;
+}
+
+message MyMessage {
+    option (double_field) = 10.5;
+    option (float_field) = -8.5;
+    option (int32_field) = -3;
+    option (int64_field) = -13;
+    option (sint32_field) = -4;
+    option (sint64_field) = -14;
+    option (uint32_field) = 5;
+    option (uint64_field) = 15;
+    option (fixed32_field) = 6;
+    option (fixed64_field) = 16;
+    option (sfixed32_field) = 7;
+    option (sfixed64_field) = -17;
+    option (bool_field) = true;
+    option (string_field) = "Hello world!";
+    option (bytes_field) = "bytes";
+    option (enum_field) = RED;
+    option (message_field) = { n: 22 };
+}
