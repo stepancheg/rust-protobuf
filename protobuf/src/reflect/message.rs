@@ -63,6 +63,11 @@ pub struct MessageDescriptor {
 }
 
 impl MessageDescriptor {
+    /// Get underlying `DescriptorProto` object.
+    pub fn get_proto(&self) -> &DescriptorProto {
+        self.proto
+    }
+
     pub fn for_type<M: Message>() -> &'static MessageDescriptor {
         M::descriptor_static()
     }
