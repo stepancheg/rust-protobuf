@@ -163,7 +163,19 @@ impl<'a> CodeWriter<'a> {
     where
         F: Fn(&mut CodeWriter),
     {
-        self.expr_block(&format!("impl {} for {}", tr.as_ref(), ty.as_ref()), cb);
+        self.impl_args_for_block(&[], tr.as_ref(), ty.as_ref(), cb);
+    }
+
+    pub fn impl_args_for_block<F>(&mut self, args: &[&str], tr: &str, ty: &str, cb: F)
+    where
+        F: Fn(&mut CodeWriter),
+    {
+        let args_str = if args.is_empty() {
+            "".to_owned()
+        } else {
+            format!("<{}>", args.join(", "))
+        };
+        self.expr_block(&format!("impl{} {} for {}", args_str, tr, ty), cb);
     }
 
     pub fn unsafe_impl(&mut self, what: &str, for_what: &str) {
