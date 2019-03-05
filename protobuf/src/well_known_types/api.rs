@@ -35,6 +35,12 @@ pub struct Api {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Api {
+    fn default() -> &'a Api {
+        <Api as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Api {
     pub fn new() -> Api {
         ::std::default::Default::default()
@@ -272,6 +278,12 @@ pub struct Method {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Method {
+    fn default() -> &'a Method {
+        <Method as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Method {
     pub fn new() -> Method {
         ::std::default::Default::default()
@@ -492,6 +504,12 @@ pub struct Mixin {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Mixin {
+    fn default() -> &'a Mixin {
+        <Mixin as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl Mixin {

@@ -27,6 +27,12 @@ pub struct Empty {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Empty {
+    fn default() -> &'a Empty {
+        <Empty as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Empty {
     pub fn new() -> Empty {
         ::std::default::Default::default()

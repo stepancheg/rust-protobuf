@@ -29,6 +29,12 @@ pub struct SourceContext {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a SourceContext {
+    fn default() -> &'a SourceContext {
+        <SourceContext as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl SourceContext {
     pub fn new() -> SourceContext {
         ::std::default::Default::default()

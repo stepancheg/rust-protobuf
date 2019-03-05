@@ -30,6 +30,12 @@ pub struct Timestamp {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Timestamp {
+    fn default() -> &'a Timestamp {
+        <Timestamp as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Timestamp {
     pub fn new() -> Timestamp {
         ::std::default::Default::default()

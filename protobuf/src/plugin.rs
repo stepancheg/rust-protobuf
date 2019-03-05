@@ -31,6 +31,12 @@ pub struct CodeGeneratorRequest {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a CodeGeneratorRequest {
+    fn default() -> &'a CodeGeneratorRequest {
+        <CodeGeneratorRequest as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl CodeGeneratorRequest {
     pub fn new() -> CodeGeneratorRequest {
         ::std::default::Default::default()
@@ -222,6 +228,12 @@ pub struct CodeGeneratorResponse {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a CodeGeneratorResponse {
+    fn default() -> &'a CodeGeneratorResponse {
+        <CodeGeneratorResponse as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl CodeGeneratorResponse {
     pub fn new() -> CodeGeneratorResponse {
         ::std::default::Default::default()
@@ -397,6 +409,12 @@ pub struct CodeGeneratorResponse_File {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a CodeGeneratorResponse_File {
+    fn default() -> &'a CodeGeneratorResponse_File {
+        <CodeGeneratorResponse_File as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl CodeGeneratorResponse_File {

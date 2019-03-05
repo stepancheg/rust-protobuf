@@ -29,6 +29,12 @@ pub struct DoubleValue {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a DoubleValue {
+    fn default() -> &'a DoubleValue {
+        <DoubleValue as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl DoubleValue {
     pub fn new() -> DoubleValue {
         ::std::default::Default::default()
@@ -148,6 +154,12 @@ pub struct FloatValue {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a FloatValue {
+    fn default() -> &'a FloatValue {
+        <FloatValue as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl FloatValue {
@@ -271,6 +283,12 @@ pub struct Int64Value {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Int64Value {
+    fn default() -> &'a Int64Value {
+        <Int64Value as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Int64Value {
     pub fn new() -> Int64Value {
         ::std::default::Default::default()
@@ -390,6 +408,12 @@ pub struct UInt64Value {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a UInt64Value {
+    fn default() -> &'a UInt64Value {
+        <UInt64Value as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl UInt64Value {
@@ -513,6 +537,12 @@ pub struct Int32Value {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Int32Value {
+    fn default() -> &'a Int32Value {
+        <Int32Value as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Int32Value {
     pub fn new() -> Int32Value {
         ::std::default::Default::default()
@@ -632,6 +662,12 @@ pub struct UInt32Value {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a UInt32Value {
+    fn default() -> &'a UInt32Value {
+        <UInt32Value as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl UInt32Value {
@@ -755,6 +791,12 @@ pub struct BoolValue {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a BoolValue {
+    fn default() -> &'a BoolValue {
+        <BoolValue as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl BoolValue {
     pub fn new() -> BoolValue {
         ::std::default::Default::default()
@@ -876,6 +918,12 @@ pub struct StringValue {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a StringValue {
+    fn default() -> &'a StringValue {
+        <StringValue as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl StringValue {
     pub fn new() -> StringValue {
         ::std::default::Default::default()
@@ -991,6 +1039,12 @@ pub struct BytesValue {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a BytesValue {
+    fn default() -> &'a BytesValue {
+        <BytesValue as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl BytesValue {

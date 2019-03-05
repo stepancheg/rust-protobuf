@@ -29,6 +29,12 @@ pub struct Struct {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Struct {
+    fn default() -> &'a Struct {
+        <Struct as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Struct {
     pub fn new() -> Struct {
         ::std::default::Default::default()
@@ -140,6 +146,12 @@ pub struct Value {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Value {
+    fn default() -> &'a Value {
+        <Value as ::protobuf::Message>::default_instance()
+    }
 }
 
 #[derive(Clone,PartialEq)]
@@ -614,6 +626,12 @@ pub struct ListValue {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a ListValue {
+    fn default() -> &'a ListValue {
+        <ListValue as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl ListValue {

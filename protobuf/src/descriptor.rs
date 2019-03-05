@@ -29,6 +29,12 @@ pub struct FileDescriptorSet {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a FileDescriptorSet {
+    fn default() -> &'a FileDescriptorSet {
+        <FileDescriptorSet as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl FileDescriptorSet {
     pub fn new() -> FileDescriptorSet {
         ::std::default::Default::default()
@@ -161,6 +167,12 @@ pub struct FileDescriptorProto {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a FileDescriptorProto {
+    fn default() -> &'a FileDescriptorProto {
+        <FileDescriptorProto as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl FileDescriptorProto {
@@ -601,6 +613,12 @@ pub struct DescriptorProto {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a DescriptorProto {
+    fn default() -> &'a DescriptorProto {
+        <DescriptorProto as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl DescriptorProto {
     pub fn new() -> DescriptorProto {
         ::std::default::Default::default()
@@ -939,6 +957,12 @@ pub struct DescriptorProto_ExtensionRange {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a DescriptorProto_ExtensionRange {
+    fn default() -> &'a DescriptorProto_ExtensionRange {
+        <DescriptorProto_ExtensionRange as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl DescriptorProto_ExtensionRange {
     pub fn new() -> DescriptorProto_ExtensionRange {
         ::std::default::Default::default()
@@ -1118,6 +1142,12 @@ pub struct DescriptorProto_ReservedRange {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a DescriptorProto_ReservedRange {
+    fn default() -> &'a DescriptorProto_ReservedRange {
+        <DescriptorProto_ReservedRange as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl DescriptorProto_ReservedRange {
@@ -1307,6 +1337,12 @@ pub struct FieldDescriptorProto {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a FieldDescriptorProto {
+    fn default() -> &'a FieldDescriptorProto {
+        <FieldDescriptorProto as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl FieldDescriptorProto {
@@ -1984,6 +2020,12 @@ pub struct OneofDescriptorProto {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a OneofDescriptorProto {
+    fn default() -> &'a OneofDescriptorProto {
+        <OneofDescriptorProto as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl OneofDescriptorProto {
     pub fn new() -> OneofDescriptorProto {
         ::std::default::Default::default()
@@ -2159,6 +2201,12 @@ pub struct EnumDescriptorProto {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a EnumDescriptorProto {
+    fn default() -> &'a EnumDescriptorProto {
+        <EnumDescriptorProto as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl EnumDescriptorProto {
@@ -2357,6 +2405,12 @@ pub struct EnumValueDescriptorProto {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a EnumValueDescriptorProto {
+    fn default() -> &'a EnumValueDescriptorProto {
+        <EnumValueDescriptorProto as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl EnumValueDescriptorProto {
@@ -2575,6 +2629,12 @@ pub struct ServiceDescriptorProto {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a ServiceDescriptorProto {
+    fn default() -> &'a ServiceDescriptorProto {
+        <ServiceDescriptorProto as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl ServiceDescriptorProto {
     pub fn new() -> ServiceDescriptorProto {
         ::std::default::Default::default()
@@ -2774,6 +2834,12 @@ pub struct MethodDescriptorProto {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a MethodDescriptorProto {
+    fn default() -> &'a MethodDescriptorProto {
+        <MethodDescriptorProto as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl MethodDescriptorProto {
@@ -3145,6 +3211,12 @@ pub struct FileOptions {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a FileOptions {
+    fn default() -> &'a FileOptions {
+        <FileOptions as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl FileOptions {
@@ -3930,6 +4002,12 @@ pub struct MessageOptions {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a MessageOptions {
+    fn default() -> &'a MessageOptions {
+        <MessageOptions as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl MessageOptions {
     pub fn new() -> MessageOptions {
         ::std::default::Default::default()
@@ -4213,6 +4291,12 @@ pub struct FieldOptions {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a FieldOptions {
+    fn default() -> &'a FieldOptions {
+        <FieldOptions as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl FieldOptions {
@@ -4660,6 +4744,12 @@ pub struct OneofOptions {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a OneofOptions {
+    fn default() -> &'a OneofOptions {
+        <OneofOptions as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl OneofOptions {
     pub fn new() -> OneofOptions {
         ::std::default::Default::default()
@@ -4783,6 +4873,12 @@ pub struct EnumOptions {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a EnumOptions {
+    fn default() -> &'a EnumOptions {
+        <EnumOptions as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl EnumOptions {
@@ -4987,6 +5083,12 @@ pub struct EnumValueOptions {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a EnumValueOptions {
+    fn default() -> &'a EnumValueOptions {
+        <EnumValueOptions as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl EnumValueOptions {
     pub fn new() -> EnumValueOptions {
         ::std::default::Default::default()
@@ -5150,6 +5252,12 @@ pub struct ServiceOptions {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a ServiceOptions {
+    fn default() -> &'a ServiceOptions {
+        <ServiceOptions as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl ServiceOptions {
     pub fn new() -> ServiceOptions {
         ::std::default::Default::default()
@@ -5311,6 +5419,12 @@ pub struct MethodOptions {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a MethodOptions {
+    fn default() -> &'a MethodOptions {
+        <MethodOptions as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl MethodOptions {
@@ -5479,6 +5593,12 @@ pub struct UninterpretedOption {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a UninterpretedOption {
+    fn default() -> &'a UninterpretedOption {
+        <UninterpretedOption as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl UninterpretedOption {
@@ -5878,6 +5998,12 @@ pub struct UninterpretedOption_NamePart {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a UninterpretedOption_NamePart {
+    fn default() -> &'a UninterpretedOption_NamePart {
+        <UninterpretedOption_NamePart as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl UninterpretedOption_NamePart {
     pub fn new() -> UninterpretedOption_NamePart {
         ::std::default::Default::default()
@@ -6077,6 +6203,12 @@ pub struct SourceCodeInfo {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a SourceCodeInfo {
+    fn default() -> &'a SourceCodeInfo {
+        <SourceCodeInfo as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl SourceCodeInfo {
     pub fn new() -> SourceCodeInfo {
         ::std::default::Default::default()
@@ -6202,6 +6334,12 @@ pub struct SourceCodeInfo_Location {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a SourceCodeInfo_Location {
+    fn default() -> &'a SourceCodeInfo_Location {
+        <SourceCodeInfo_Location as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl SourceCodeInfo_Location {
@@ -6465,6 +6603,12 @@ pub struct GeneratedCodeInfo {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a GeneratedCodeInfo {
+    fn default() -> &'a GeneratedCodeInfo {
+        <GeneratedCodeInfo as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl GeneratedCodeInfo {
     pub fn new() -> GeneratedCodeInfo {
         ::std::default::Default::default()
@@ -6589,6 +6733,12 @@ pub struct GeneratedCodeInfo_Annotation {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a GeneratedCodeInfo_Annotation {
+    fn default() -> &'a GeneratedCodeInfo_Annotation {
+        <GeneratedCodeInfo_Annotation as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl GeneratedCodeInfo_Annotation {

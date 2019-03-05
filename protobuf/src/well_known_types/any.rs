@@ -30,6 +30,12 @@ pub struct Any {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Any {
+    fn default() -> &'a Any {
+        <Any as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Any {
     pub fn new() -> Any {
         ::std::default::Default::default()

@@ -34,6 +34,12 @@ pub struct Type {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Type {
+    fn default() -> &'a Type {
+        <Type as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Type {
     pub fn new() -> Type {
         ::std::default::Default::default()
@@ -251,6 +257,12 @@ pub struct Field {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Field {
+    fn default() -> &'a Field {
+        <Field as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl Field {
@@ -674,6 +686,12 @@ pub struct Enum {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Enum {
+    fn default() -> &'a Enum {
+        <Enum as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Enum {
     pub fn new() -> Enum {
         ::std::default::Default::default()
@@ -871,6 +889,12 @@ pub struct EnumValue {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a EnumValue {
+    fn default() -> &'a EnumValue {
+        <EnumValue as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl EnumValue {
     pub fn new() -> EnumValue {
         ::std::default::Default::default()
@@ -1027,6 +1051,12 @@ pub struct Option {
     pub unknown_fields: ::protobuf::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
     pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Option {
+    fn default() -> &'a Option {
+        <Option as ::protobuf::Message>::default_instance()
+    }
 }
 
 impl Option {

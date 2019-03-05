@@ -30,6 +30,12 @@ pub struct Duration {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a Duration {
+    fn default() -> &'a Duration {
+        <Duration as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl Duration {
     pub fn new() -> Duration {
         ::std::default::Default::default()

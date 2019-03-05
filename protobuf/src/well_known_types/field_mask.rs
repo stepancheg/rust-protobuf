@@ -29,6 +29,12 @@ pub struct FieldMask {
     pub cached_size: ::protobuf::CachedSize,
 }
 
+impl<'a> ::std::default::Default for &'a FieldMask {
+    fn default() -> &'a FieldMask {
+        <FieldMask as ::protobuf::Message>::default_instance()
+    }
+}
+
 impl FieldMask {
     pub fn new() -> FieldMask {
         ::std::default::Default::default()
