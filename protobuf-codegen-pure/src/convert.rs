@@ -37,7 +37,7 @@ trait ProtobufOptions {
 
     fn by_name_bool(&self, name: &str) -> ConvertResult<Option<bool>> {
         match self.by_name(name) {
-            Some(model::ProtobufConstant::Bool(b)) => Ok(Some(*b)),
+            Some(&model::ProtobufConstant::Bool(b)) => Ok(Some(b)),
             Some(_) => Err(ConvertError::WrongOptionType),
             None => Ok(None),
         }
@@ -47,9 +47,9 @@ trait ProtobufOptions {
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
         let option_name = name;
-        for model::ProtobufOption { name, value } in *self {
+        for &model::ProtobufOption { ref name, ref value } in *self {
             if name == option_name {
-                return Some(&value);
+                return Some(value);
             }
         }
         None
@@ -552,7 +552,7 @@ impl<'a> Resolver<'a> {
         }
 
         output.set_number(input.number);
-        if let Some(ref default) = input.options.as_slice().by_name("default") {
+        if let Some(default) = input.options.as_slice().by_name("default") {
             let default = match output.get_field_type() {
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
@@ -769,9 +769,9 @@ impl<'a> Resolver<'a> {
             &model::ProtobufConstant::U64(v) => {
                 match field_type {
                     &model::FieldType::Fixed64
-                    | model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
+                    | &model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
                     &model::FieldType::Fixed32
-                    | model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
+                    | &model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
                     &model::FieldType::Int64
                     | &model::FieldType::Int32
                     | &model::FieldType::Uint64
@@ -784,9 +784,9 @@ impl<'a> Resolver<'a> {
             &model::ProtobufConstant::I64(v) => {
                 match field_type {
                     &model::FieldType::Fixed64
-                    | model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v as u64)),
+                    | &model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v as u64)),
                     &model::FieldType::Fixed32
-                    | model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
+                    | &model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
                     &model::FieldType::Int64
                     | &model::FieldType::Int32
                     | &model::FieldType::Uint64
