@@ -1452,6 +1452,8 @@ impl<'a> FieldGen<'a> {
             ));
         } else {
             let s = self.singular();
+            // Note it is different from C++ protobuf, where field is initialized
+            // with default value
             match option_kind {
                 OptionKind::SingularField | OptionKind::SingularPtrField => {
                     let self_field = self.self_field();
@@ -1461,7 +1463,8 @@ impl<'a> FieldGen<'a> {
                     self.write_self_field_assign_some(
                         w,
                         s,
-                        &self.element_default_value_rust().value,
+                        &self.elem().rust_storage_elem_type().default_value_typed()
+                            .into_type(s.elem.rust_storage_elem_type()).value,
                     );
                 }
             }

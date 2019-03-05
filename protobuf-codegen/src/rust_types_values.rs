@@ -93,6 +93,13 @@ impl RustType {
         }
     }
 
+    pub fn is_u8(&self) -> bool {
+        match *self {
+            RustType::Int(false, 8) => true,
+            _ => false,
+        }
+    }
+
     pub fn is_copy(&self) -> bool {
         if self.is_primitive() {
             true
@@ -117,10 +124,17 @@ impl RustType {
         }
     }
 
-    fn is_slice(&self) -> bool {
+    fn is_slice(&self) -> Option<&RustType> {
         match *self {
-            RustType::Slice(..) => true,
-            _ => false,
+            RustType::Slice(ref v) => Some(&**v),
+            _ => None,
+        }
+    }
+
+    fn is_slice_u8(&self) -> bool {
+        match self.is_slice() {
+            Some(t) => t.is_u8(),
+            None => false,
         }
     }
 
@@ -156,7 +170,7 @@ impl RustType {
     pub fn default_value(&self) -> String {
         match *self {
             RustType::Ref(ref t) if t.is_str() => "\"\"".to_string(),
-            RustType::Ref(ref t) if t.is_slice() => "&[]".to_string(),
+            RustType::Ref(ref t) if t.is_slice().is_some() => "&[]".to_string(),
             RustType::Int(..) => "0".to_string(),
             RustType::Float(..) => "0.".to_string(),
             RustType::Bool => "false".to_string(),
@@ -248,11 +262,20 @@ impl RustType {
                        RustType::Str => true,
                        _ => false,
                    } => return Ok(format!("{}.to_owned()", v)),
+            (&RustType::Ref(ref t1), &RustType::Chars)
+                if match **t1 {
+                       RustType::Str => true,
+                       _ => false,
+                    // TODO: from_static
+                   } => return Ok(format!("<::protobuf::Chars as ::std::convert::From<_>>::from({}.to_owned())", v)),
             (&RustType::Ref(ref t1), &RustType::Vec(ref t2))
                 if match (&**t1, &**t2) {
                        (&RustType::Slice(ref x), ref y) => **x == **y,
                        _ => false,
                    } => return Ok(format!("{}.to_vec()", v)),
+            (&RustType::Ref(ref t1), &RustType::Bytes)
+                if t1.is_slice_u8() =>
+                    return Ok(format!("<::bytes::Bytes as ::std::convert::From<_>>::from({}.to_vec())", v)),
             (&RustType::Vec(ref x), &RustType::Ref(ref t))
                 if match **t {
                        RustType::Slice(ref y) => x == y,
