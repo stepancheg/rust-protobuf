@@ -42,6 +42,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.3 Unreleased]
 
+## [2.3.1] - 2019-03-05
+
 - [Fix codegen when `syntax = "proto2"` and `with-bytes` option and string field with default
   value](https://github.com/stepancheg/rust-protobuf/issues/395)
 
