@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package test_carllerche_bytes_default_value;
+
+import "rustproto.proto";
+
+option (rustproto.carllerche_bytes_for_bytes_all) = true;
+option (rustproto.carllerche_bytes_for_string_all) = true;
+option (rustproto.generate_accessors_all) = true;
+
+message TestCarllercheBytesDefaultValues {
+    optional string s = 1 [default = "sss"];
+    optional bytes b = 2 [default = "bbb"];
+}

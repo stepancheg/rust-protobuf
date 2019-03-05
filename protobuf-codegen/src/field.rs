@@ -1192,6 +1192,8 @@ impl<'a> FieldGen<'a> {
                     .value
             ));
         } else {
+            // Note it is different from C++ protobuf, where field is initialized
+            // with default value
             match self.full_storage_type() {
                 RustType::SingularField(..) |
                 RustType::SingularPtrField(..) => {
@@ -1199,7 +1201,11 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!("{}.set_default();", self_field));
                 }
                 _ => {
-                    self.write_self_field_assign_some(w, &self.element_default_value_rust().value);
+                    self.write_self_field_assign_some(
+                        w,
+                        &self.elem().rust_storage_type().default_value_typed()
+                            .into_type(self.elem().rust_storage_type()).value,
+                    );
                 }
             }
         }
