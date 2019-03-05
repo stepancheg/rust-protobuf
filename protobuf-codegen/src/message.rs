@@ -437,8 +437,19 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn write_impl_default_for_amp(&self, w: &mut CodeWriter) {
+        w.impl_args_for_block(&["'a"], "::std::default::Default", &format!("&'a {}", self.type_name), |w| {
+            w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
+                w.write_line(&format!("<{} as ::protobuf::Message>::default_instance()", self.type_name));
+            });
+        });
+    }
+
     pub fn write(&self, w: &mut CodeWriter) {
         self.write_struct(w);
+
+        w.write_line("");
+        self.write_impl_default_for_amp(w);
 
         for oneof in self.oneofs() {
             w.write_line("");

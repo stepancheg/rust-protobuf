@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+package test_default;
+
+message TestDefault {
+    optional int32 i = 1;
+}
