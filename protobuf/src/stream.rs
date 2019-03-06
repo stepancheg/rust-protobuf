@@ -44,6 +44,7 @@ use reflect::types::ProtobufTypeSint32;
 use reflect::types::ProtobufTypeSint64;
 use reflect::types::ProtobufTypeUint32;
 use reflect::types::ProtobufTypeUint64;
+use ProtobufEnumOrUnknown;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -335,6 +336,12 @@ impl<'a> CodedInputStream<'a> {
             Some(e) => Ok(e),
             None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i))),
         }
+    }
+
+    pub fn read_enum_or_unknown<E: ProtobufEnum>(&mut self)
+        -> ProtobufResult<ProtobufEnumOrUnknown<E>>
+    {
+        Ok(ProtobufEnumOrUnknown::from_i32(self.read_int32()?))
     }
 
     fn read_repeated_packed_fixed_into<T: ProtobufTypeFixed>(
@@ -966,6 +973,14 @@ impl<'a> CodedOutputStream<'a> {
         self.write_enum_no_tag(value.value())
     }
 
+    pub fn write_enum_or_unknown_no_tag<E>(&mut self, value: ProtobufEnumOrUnknown<E>)
+        -> ProtobufResult<()>
+        where
+            E: ProtobufEnum,
+    {
+        self.write_enum_no_tag(value.value())
+    }
+
     pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> ProtobufResult<()> {
         match unknown {
             UnknownValueRef::Fixed64(fixed64) => self.write_raw_little_endian64(fixed64),
@@ -1048,6 +1063,14 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> ProtobufResult<()>
+    where
+        E: ProtobufEnum,
+    {
+        self.write_enum(field_number, value.value())
+    }
+
+    pub fn write_enum_or_unknown<E>(&mut self, field_number: u32, value: ProtobufEnumOrUnknown<E>)
+        -> ProtobufResult<()>
     where
         E: ProtobufEnum,
     {
