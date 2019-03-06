@@ -41,6 +41,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.4 Unreleased]
 
+## [2.4.1] - 2019-03-06
+
 - [More extension types are supported now](https://github.com/stepancheg/rust-protobuf/issues/392)
 
 ## [2.3.1] - 2019-03-05
