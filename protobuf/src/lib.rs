@@ -20,6 +20,7 @@ pub use core::parse_from_carllerche_bytes;
 pub use core::parse_from_reader;
 pub use core::Message;
 pub use enums::ProtobufEnum;
+pub use enums::ProtobufEnumOrUnknown;
 pub use oneof::Oneof;
 pub use repeated::RepeatedField;
 pub use singular::SingularField;
