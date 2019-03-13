@@ -50,16 +50,18 @@ impl<'a> MessageGen<'a> {
             .map(|field| FieldGen::parse(field, root_scope, &customize))
             .collect();
         MessageGen {
-            message,
-            root_scope,
+            message: message,
+            root_scope: root_scope,
             type_name: message.rust_name().to_path(),
-            fields,
-            lite_runtime: message
-                .get_file_descriptor()
-                .options
-                .get_message()
-                .get_optimize_for()
-                == file_options::OptimizeMode::LITE_RUNTIME,
+            fields: fields,
+            lite_runtime: customize.lite_runtime.unwrap_or_else(|| {
+                message
+                    .get_file_descriptor()
+                    .options
+                    .get_message()
+                    .get_optimize_for()
+                    == FileOptions_OptimizeMode::LITE_RUNTIME
+            }),
             customize,
         }
     }
@@ -86,7 +88,8 @@ impl<'a> MessageGen<'a> {
             .filter(|f| match f.kind {
                 FieldKind::Singular(ref singular) => singular.flag.is_required(),
                 _ => false,
-            }).collect()
+            })
+            .collect()
     }
 
     fn message_fields(&'a self) -> Vec<&'a FieldGen> {
@@ -439,11 +442,19 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_default_for_amp(&self, w: &mut CodeWriter) {
-        w.impl_args_for_block(&["'a"], "::std::default::Default", &format!("&'a {}", self.type_name), |w| {
-            w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
-                w.write_line(&format!("<{} as ::protobuf::Message>::default_instance()", self.type_name));
-            });
-        });
+        w.impl_args_for_block(
+            &["'a"],
+            "::std::default::Default",
+            &format!("&'a {}", self.type_name),
+            |w| {
+                w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
+                    w.write_line(&format!(
+                        "<{} as ::protobuf::Message>::default_instance()",
+                        self.type_name
+                    ));
+                });
+            },
+        );
     }
 
     fn write_dummy_impl_partial_eq(&self, w: &mut CodeWriter) {
