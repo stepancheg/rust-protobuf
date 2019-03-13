@@ -42,11 +42,13 @@ impl<'a> MessageGen<'a> {
             root_scope: root_scope,
             type_name: message.rust_name(),
             fields: fields,
-            lite_runtime: message
-                .get_file_descriptor()
-                .get_options()
-                .get_optimize_for() ==
-                FileOptions_OptimizeMode::LITE_RUNTIME,
+            lite_runtime: customize.lite_runtime.unwrap_or_else(|| {
+                message
+                    .get_file_descriptor()
+                    .get_options()
+                    .get_optimize_for()
+                    == FileOptions_OptimizeMode::LITE_RUNTIME
+            }),
             customize,
         }
     }
@@ -438,11 +440,19 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_default_for_amp(&self, w: &mut CodeWriter) {
-        w.impl_args_for_block(&["'a"], "::std::default::Default", &format!("&'a {}", self.type_name), |w| {
-            w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
-                w.write_line(&format!("<{} as ::protobuf::Message>::default_instance()", self.type_name));
-            });
-        });
+        w.impl_args_for_block(
+            &["'a"],
+            "::std::default::Default",
+            &format!("&'a {}", self.type_name),
+            |w| {
+                w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
+                    w.write_line(&format!(
+                        "<{} as ::protobuf::Message>::default_instance()",
+                        self.type_name
+                    ));
+                });
+            },
+        );
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
