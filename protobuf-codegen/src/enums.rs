@@ -58,16 +58,21 @@ impl<'a> EnumGen<'a> {
         customize: &Customize,
         _root_scope: &RootScope,
     ) -> EnumGen<'a> {
-        EnumGen {
-            enum_with_scope,
-            type_name: enum_with_scope.rust_name().to_path(),
-            lite_runtime: enum_with_scope
+
+        let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
+            enum_with_scope
                 .get_scope()
                 .get_file_descriptor()
                 .options
                 .get_message()
                 .get_optimize_for()
-                == file_options::OptimizeMode::LITE_RUNTIME,
+                == file_options::OptimizeMode::LITE_RUNTIME
+        });
+
+        EnumGen {
+            enum_with_scope,
+            type_name: enum_with_scope.rust_name().to_path(),
+            lite_runtime,
             customize: customize.clone(),
         }
     }
