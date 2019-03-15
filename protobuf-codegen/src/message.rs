@@ -40,19 +40,20 @@ impl<'a> MessageGen<'a> {
             .into_iter()
             .map(|field| FieldGen::parse(field, root_scope, &customize))
             .collect();
+        let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
+            message
+                .get_file_descriptor()
+                .options
+                .get_message()
+                .get_optimize_for()
+                == FileOptions_OptimizeMode::LITE_RUNTIME
+        });
         MessageGen {
             message: message,
             root_scope: root_scope,
             type_name: message.rust_name(),
             fields: fields,
-            lite_runtime: customize.lite_runtime.unwrap_or_else(|| {
-                message
-                    .get_file_descriptor()
-                    .options
-                    .get_message()
-                    .get_optimize_for()
-                    == FileOptions_OptimizeMode::LITE_RUNTIME
-            }),
+            lite_runtime,
             customize,
         }
     }

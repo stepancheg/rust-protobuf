@@ -128,6 +128,13 @@ fn gen_file(
     let scope = FileScope {
         file_descriptor: file,
     }.to_scope();
+    let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
+        file
+            .options
+            .get_message()
+            .get_optimize_for()
+            == FileOptions_OptimizeMode::LITE_RUNTIME
+    });
 
     let mut v = Vec::new();
 
@@ -150,8 +157,7 @@ fn gen_file(
 
         write_extensions(file, &root_scope, &mut w);
 
-        let optimize_mode = file.options.get_message().get_optimize_for();
-        if optimize_mode != FileOptions_OptimizeMode::LITE_RUNTIME {
+        if !lite_runtime {
             w.write_line("");
             write_file_descriptor_data(file, &mut w);
         }
