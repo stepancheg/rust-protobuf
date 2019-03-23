@@ -63,7 +63,7 @@ To enable `Bytes` you need to:
 
 1. Enable `with-bytes` feature in rust-protobuf:
 
-```
+```toml
 [dependencies]
 protobuf = { version = "~2.0", features = ["with-bytes"] }
 ```
@@ -72,7 +72,7 @@ protobuf = { version = "~2.0", features = ["with-bytes"] }
 
 with `Customize` when codegen is invoked programmatically:
 
-```
+```rust
 protoc_rust::run(protoc_rust::Args {
     ...
     customize: Customize {
@@ -85,7 +85,7 @@ protoc_rust::run(protoc_rust::Args {
 
 or in `.proto` file:
 
-```
+```proto
 import "rustproto.proto";
 
 option (rustproto.carllerche_bytes_for_bytes_all) = true;
@@ -109,7 +109,7 @@ To enable `serde` you need to:
 
 with `Customize` when codegen is invoked programmatically:
 
-```
+```rust
 protoc_rust::run(protoc_rust::Args {
     ...
     customize: Customize {
@@ -117,11 +117,11 @@ protoc_rust::run(protoc_rust::Args {
         ..Default::default()
     },
  });
- ```
+```
 
 or in `.proto` file:
 
-```
+```proto
 import "rustproto.proto";
 
 option (rustproto.serde_derive_all) = true;
@@ -129,7 +129,7 @@ option (rustproto.serde_derive_all) = true;
 
 You may now `Serialize` and `Deserialize` messages:
 
-```rs
+```rust
 let my_message = MyMessage::new();
 serde_json::to_string(&my_message).unwrap();
 ```
