@@ -219,11 +219,10 @@ impl<'a> EnumGen<'a> {
                 w.write_line("");
                 w.def_fn(&format!("enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"), |w| {
                     w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                        let ref type_name = self.type_name;
                         w.write_line(&format!(
                             "::protobuf::reflect::EnumDescriptor::new::<{}>(\"{}\", file_descriptor_proto())",
-                            type_name,
-                            type_name));
+                            self.type_name,
+                            self.enum_with_scope.name_to_package()));
                     });
                 });
             }

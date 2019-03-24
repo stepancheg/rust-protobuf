@@ -14,6 +14,7 @@ pub(crate) mod transmute_eq;
 pub mod type_dynamic;
 pub mod types;
 mod value;
+pub(crate) mod find_message_or_enum;
 
 mod reflect_deep_eq;
 

@@ -6,12 +6,11 @@ use Message;
 use descriptor::DescriptorProto;
 use descriptor::FileDescriptorProto;
 
-use descriptorx::FileScope;
-use descriptorx::WithScope;
-
 use reflect::accessor::FieldAccessor;
 use reflect::reflect_deep_eq::ReflectDeepEq;
 use reflect::FieldDescriptor;
+use reflect::find_message_or_enum::find_message_or_enum;
+use reflect::find_message_or_enum::MessageOrEnum;
 
 use json;
 
@@ -62,20 +61,6 @@ pub struct MessageDescriptor {
     index_by_number: HashMap<u32, usize>,
 }
 
-// find message by rust type name
-fn find_message_by_rust_name<'a>(
-    fd: &'a FileDescriptorProto,
-    rust_name: &str,
-) -> (String, &'a DescriptorProto) {
-    let message = FileScope {
-        file_descriptor: fd,
-    }.find_messages()
-        .into_iter()
-        .find(|m| m.rust_name() == rust_name)
-        .unwrap();
-    (message.get_scope().path_str(), message.message)
-}
-
 impl MessageDescriptor {
     /// Get underlying `DescriptorProto` object.
     pub fn get_proto(&self) -> &DescriptorProto {
@@ -104,12 +89,15 @@ impl MessageDescriptor {
     // Non-generic part of `new` is a separate function
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic(
-        rust_name: &'static str,
+        name_in_file: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static MessageFactory,
     ) -> MessageDescriptor {
-        let (path_to_package, proto) = find_message_by_rust_name(file_descriptor_proto, rust_name);
+        let (path_to_package, proto) = match find_message_or_enum(file_descriptor_proto, name_in_file) {
+            (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
+            (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
+        };
 
         let mut field_proto_by_name = HashMap::new();
         for field_proto in &proto.field {

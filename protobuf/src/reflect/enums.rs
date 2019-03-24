@@ -4,8 +4,6 @@ use std::fmt;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
 use descriptor::FileDescriptorProto;
-use descriptorx::WithScope;
-use descriptorx::FileScope;
 use reflect::ProtobufValue;
 use std::any::TypeId;
 use std::hash::Hash;
@@ -13,6 +11,9 @@ use std::hash::Hasher;
 use std::marker;
 use std::mem;
 use ProtobufEnum;
+use reflect::find_message_or_enum::find_message_or_enum;
+use reflect::find_message_or_enum::MessageOrEnum;
+
 
 #[derive(Clone)]
 pub struct EnumValueDescriptor {
@@ -111,20 +112,6 @@ impl PartialEq for EnumDescriptor {
     }
 }
 
-// find enum by rust type name
-fn find_enum_by_rust_name<'a>(
-    fd: &'a FileDescriptorProto,
-    rust_name: &str,
-) -> (String, &'a EnumDescriptorProto) {
-    let en = FileScope {
-        file_descriptor: fd,
-    }.find_enums()
-        .into_iter()
-        .find(|e| e.rust_name() == rust_name)
-        .unwrap();
-    (en.get_scope().path_str(), en.en)
-}
-
 impl EnumDescriptor {
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
@@ -153,11 +140,15 @@ impl EnumDescriptor {
         full_name
     }
 
-    pub fn new<E>(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
+    pub fn new<E>(name_in_file: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
     where
         E: ProtobufEnum,
     {
-        let (path_to_package, proto) = find_enum_by_rust_name(file, rust_name);
+        let (path_to_package, proto) = match find_message_or_enum(file, name_in_file) {
+            (path_to_package, MessageOrEnum::Enum(e)) => (path_to_package, e),
+            (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
+        };
+
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
