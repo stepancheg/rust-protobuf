@@ -632,7 +632,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
                 CodeGeneratorResponse_File::get_content,
             ));
             ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
-                "CodeGeneratorResponse_File",
+                "CodeGeneratorResponse.File",
                 fields,
                 file_descriptor_proto()
             )

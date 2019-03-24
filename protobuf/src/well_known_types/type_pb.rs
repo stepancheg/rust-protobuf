@@ -605,7 +605,7 @@ impl ::protobuf::ProtobufEnum for Field_Kind {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<Field_Kind>("Field_Kind", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new::<Field_Kind>("Field.Kind", file_descriptor_proto())
         })
     }
 }
@@ -656,7 +656,7 @@ impl ::protobuf::ProtobufEnum for Field_Cardinality {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<Field_Cardinality>("Field_Cardinality", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new::<Field_Cardinality>("Field.Cardinality", file_descriptor_proto())
         })
     }
 }
