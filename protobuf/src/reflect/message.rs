@@ -90,7 +90,7 @@ impl MessageDescriptor {
         if full_name.len() > 0 {
             full_name.push('.');
         }
-        full_name.push_str(proto.get_name());
+        full_name.push_str(&proto.name_to_package());
         full_name
     }
 

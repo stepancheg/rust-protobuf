@@ -82,3 +82,8 @@ message TestTypesMap {
     map<uint32, TestReflectEnum> enum_field = 16;
     map<string, SubM> message_field = 17;
 }
+
+message WithNestedMessage {
+    message NestedMessage {
+    }
+}

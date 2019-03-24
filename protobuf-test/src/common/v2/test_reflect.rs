@@ -7,6 +7,7 @@ use protobuf::reflect::RuntimeFieldType;
 
 use protobuf_test_common::value_for_runtime_type;
 
+
 #[test]
 fn test_get_sub_message_via_reflection() {
     let mut m = M::new();
@@ -160,4 +161,10 @@ fn test_map() {
     for field in descriptor.fields() {
         test_map_field(&mut message, field);
     }
+}
+
+#[test]
+fn test_nested_message() {
+    assert_eq!("test_reflect.WithNestedMessage.NestedMessage",
+        WithNestedMessage_NestedMessage::descriptor_static().full_name());
 }
