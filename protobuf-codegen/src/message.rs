@@ -460,9 +460,6 @@ impl<'a> MessageGen<'a> {
         w.write_line("");
         self.write_impl_value(w);
 
-        let mut nested_prefix = self.type_name.to_string();
-        nested_prefix.push_str("_");
-
         for nested in &self.message.to_scope().get_messages() {
             // ignore map entries, because they are not used in map fields
             if map_entry(nested).is_none() {
