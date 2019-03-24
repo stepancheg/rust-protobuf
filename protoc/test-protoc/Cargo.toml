@@ -13,7 +13,6 @@ bench = false
 protobuf = { path = "../../protobuf" }
 
 [features]
-default-features = []
 # Feature to avoid recompilation of protobuf
 with-bytes = ["protobuf/with-bytes"]
 with-serde = ["protobuf/with-serde"]

@@ -9,7 +9,6 @@ doctest = false
 bench = false
 
 [features]
-default-features = []
 proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 

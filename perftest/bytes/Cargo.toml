@@ -9,7 +9,6 @@ test = false
 doctest = false
 
 [features]
-default-features = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
 
 [dependencies]
