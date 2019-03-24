@@ -26,6 +26,7 @@ mod oneof;
 mod rust_types_values;
 mod serde;
 mod well_known_types;
+pub mod case_convert;
 
 use customize::customize_from_rustproto_for_file;
 pub use customize::Customize;

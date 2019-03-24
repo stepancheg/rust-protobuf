@@ -11,6 +11,7 @@ use protobuf::Message;
 
 use protobuf::text_format::lexer::StrLitDecodeError;
 use std::mem;
+use protobuf_codegen::case_convert::camel_case;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -397,28 +398,8 @@ struct Resolver<'a> {
 }
 
 impl<'a> Resolver<'a> {
-    // copy-paste from Google Protobuf
-    fn camel_case(input: &str) -> String {
-        let mut capitalize_next = true;
-        let mut result = String::new();
-        result.reserve(input.len());
-
-        for c in input.chars() {
-            if c == '_' {
-                capitalize_next = true;
-            } else if capitalize_next {
-                result.push(c.to_ascii_uppercase());
-                capitalize_next = false;
-            } else {
-                result.push(c);
-            }
-        }
-
-        return result;
-    }
-
     fn map_entry_name_for_field_name(field_name: &str) -> String {
-        format!("{}Entry", Resolver::camel_case(field_name))
+        format!("{}Entry", camel_case(field_name))
     }
 
     fn map_entry_field(
