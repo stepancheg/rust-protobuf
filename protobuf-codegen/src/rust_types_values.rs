@@ -6,6 +6,7 @@ use ident::RustIdent;
 use protobuf::descriptor::*;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
+use strx::capitalize;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -477,13 +478,6 @@ pub fn type_name_to_rust_relative(
             format!("super::{}", message_or_enum.rust_fq_name())
         }
     }
-}
-
-fn capitalize(s: &str) -> String {
-    if s.is_empty() {
-        return String::new();
-    }
-    s[..1].to_uppercase() + &s[1..]
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]

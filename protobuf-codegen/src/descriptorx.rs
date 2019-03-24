@@ -9,6 +9,8 @@ use protobuf::descriptor::OneofDescriptorProto;
 
 use rust;
 use strx;
+use strx::capitalize;
+use rust::is_rust_keyword;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
@@ -317,13 +319,14 @@ pub trait WithScope<'a> {
 
     // rust type name of this descriptor
     fn rust_name(&self) -> String {
-        let mut r = self.get_scope().rust_prefix();
-        // Only escape if prefix is not empty
-        if r.is_empty() && rust::is_rust_keyword(self.get_name()) {
-            r.push_str(self.escape_prefix());
+        let mut rust_name = format!(
+            "{}{}", self.get_scope().rust_prefix(), capitalize(self.get_name()));
+
+        if is_rust_keyword(&rust_name) {
+            rust_name.insert_str(0, self.escape_prefix());
         }
-        r.push_str(self.get_name());
-        r
+
+        rust_name
     }
 
     // fully-qualified name of this type

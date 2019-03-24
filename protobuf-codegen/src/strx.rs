@@ -13,11 +13,24 @@ pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
     }
 }
 
+pub fn capitalize(s: &str) -> String {
+    if s.is_empty() {
+        return String::new();
+    }
+    let mut char_indices = s.char_indices();
+    char_indices.next().unwrap();
+    match char_indices.next() {
+        None => s.to_uppercase(),
+        Some((i, _)) => s[..i].to_uppercase() + &s[i..],
+    }
+}
+
 #[cfg(test)]
 mod test {
 
     use super::remove_suffix;
     use super::remove_to;
+    use strx::capitalize;
 
     #[test]
     fn test_remove_to() {
@@ -32,4 +45,10 @@ mod test {
         assert_eq!("aaa", remove_suffix("aaa", "bbb"));
     }
 
+    #[test]
+    fn test_capitalize() {
+        assert_eq!("", capitalize(""));
+        assert_eq!("F", capitalize("f"));
+        assert_eq!("Foo", capitalize("foo"));
+    }
 }
