@@ -4,7 +4,8 @@ use std::fmt;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
 use descriptor::FileDescriptorProto;
-use descriptorx::find_enum_by_rust_name;
+use descriptorx::WithScope;
+use descriptorx::FileScope;
 use reflect::ProtobufValue;
 use std::any::TypeId;
 use std::hash::Hash;
@@ -109,6 +110,20 @@ impl PartialEq for EnumDescriptor {
     }
 }
 
+// find enum by rust type name
+fn find_enum_by_rust_name<'a>(
+    fd: &'a FileDescriptorProto,
+    rust_name: &str,
+) -> &'a EnumDescriptorProto {
+    FileScope {
+        file_descriptor: fd,
+    }.find_enums()
+        .into_iter()
+        .find(|e| e.rust_name() == rust_name)
+        .unwrap()
+        .en
+}
+
 impl EnumDescriptor {
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
@@ -125,12 +140,12 @@ impl EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, v) in proto.en.value.iter().enumerate() {
+        for (i, v) in proto.value.iter().enumerate() {
             index_by_number.insert(v.get_number(), i);
             index_by_name.insert(v.get_name().to_string(), i);
         }
 
-        let proto_values = &proto.en.value;
+        let proto_values = &proto.value;
         let code_values = E::values();
         assert_eq!(proto_values.len(), code_values.len());
 
@@ -146,7 +161,7 @@ impl EnumDescriptor {
             }).collect();
 
         EnumDescriptor {
-            proto: proto.en,
+            proto,
             values,
             type_id: TypeId::of::<E>(),
             get_descriptor,

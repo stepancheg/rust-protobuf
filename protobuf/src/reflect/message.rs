@@ -6,13 +6,12 @@ use Message;
 use descriptor::DescriptorProto;
 use descriptor::FileDescriptorProto;
 
-use descriptorx::find_message_by_rust_name;
+use descriptorx::FileScope;
 
 use reflect::accessor::FieldAccessor;
 use reflect::reflect_deep_eq::ReflectDeepEq;
 use reflect::FieldDescriptor;
 
-use descriptorx::MessageWithScope;
 use descriptorx::WithScope;
 use json;
 
@@ -62,6 +61,20 @@ pub struct MessageDescriptor {
     index_by_number: HashMap<u32, usize>,
 }
 
+// find message by rust type name
+fn find_message_by_rust_name<'a>(
+    fd: &'a FileDescriptorProto,
+    rust_name: &str,
+) -> &'a DescriptorProto {
+    FileScope {
+        file_descriptor: fd,
+    }.find_messages()
+        .into_iter()
+        .find(|m| m.rust_name() == rust_name)
+        .unwrap()
+        .message
+}
+
 impl MessageDescriptor {
     /// Get underlying `DescriptorProto` object.
     pub fn get_proto(&self) -> &DescriptorProto {
@@ -72,12 +85,12 @@ impl MessageDescriptor {
         M::descriptor_static()
     }
 
-    fn compute_full_name(proto: &MessageWithScope) -> String {
-        let mut full_name = proto.get_file_descriptor().get_package().to_string();
+    fn compute_full_name(package: &str, proto: &DescriptorProto) -> String {
+        let mut full_name = package.to_owned();
         if full_name.len() > 0 {
             full_name.push('.');
         }
-        full_name.push_str(proto.message.get_name());
+        full_name.push_str(proto.get_name());
         full_name
     }
 
@@ -92,14 +105,14 @@ impl MessageDescriptor {
         let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
-        for field_proto in &proto.message.field {
+        for field_proto in &proto.field {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.message.field.iter().enumerate() {
+        for (i, f) in proto.field.iter().enumerate() {
             assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
             assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
             assert!(
@@ -120,8 +133,8 @@ impl MessageDescriptor {
         }
 
         MessageDescriptor {
-            full_name: MessageDescriptor::compute_full_name(&proto),
-            proto: proto.message,
+            full_name: MessageDescriptor::compute_full_name(file_descriptor_proto.get_package(), &proto),
+            proto,
             factory,
             fields: fields
                 .into_iter()

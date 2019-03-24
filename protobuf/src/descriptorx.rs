@@ -562,32 +562,6 @@ impl<'a> OneofWithContext<'a> {
     }
 }
 
-// find message by rust type name
-pub fn find_message_by_rust_name<'a>(
-    fd: &'a FileDescriptorProto,
-    rust_name: &str,
-) -> MessageWithScope<'a> {
-    FileScope {
-        file_descriptor: fd,
-    }.find_messages()
-    .into_iter()
-    .find(|m| m.rust_name() == rust_name)
-    .unwrap()
-}
-
-// find enum by rust type name
-pub fn find_enum_by_rust_name<'a>(
-    fd: &'a FileDescriptorProto,
-    rust_name: &str,
-) -> EnumWithScope<'a> {
-    FileScope {
-        file_descriptor: fd,
-    }.find_enums()
-    .into_iter()
-    .find(|e| e.rust_name() == rust_name)
-    .unwrap()
-}
-
 #[cfg(test)]
 mod test {
 
