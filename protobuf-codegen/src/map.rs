@@ -5,7 +5,7 @@ use scope::FieldWithContext;
 use scope::MessageWithScope;
 
 /// Pair of (key, value) if this message is map entry
-pub fn map_entry<'a>(
+pub(crate) fn map_entry<'a>(
     d: &'a MessageWithScope,
 ) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
     if d.message.options.get_message().get_map_entry() {

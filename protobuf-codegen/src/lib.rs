@@ -1,4 +1,5 @@
 extern crate protobuf;
+extern crate proc_macro;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
@@ -28,6 +29,7 @@ mod rust_types_values;
 mod serde;
 mod well_known_types;
 pub mod case_convert;
+mod file_descriptor;
 
 pub(crate) mod scope;
 pub(crate) mod syntax;
@@ -49,6 +51,10 @@ use map::map_entry;
 use scope::RootScope;
 use scope::FileScope;
 use file::proto_path_to_rust_mod;
+
+pub use protobuf_name::ProtobufIdent;
+pub use protobuf_name::ProtobufAbsolutePath;
+pub use protobuf_name::ProtobufRelativePath;
 
 
 fn escape_byte(s: &mut String, b: u8) {

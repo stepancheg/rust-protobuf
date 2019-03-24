@@ -3,6 +3,7 @@ use protobuf::prelude::*;
 use protobuf::descriptor::*;
 use protobuf::rt;
 use rust;
+use ProtobufAbsolutePath;
 use protobuf::text_format;
 use protobuf::text_format::lexer::float;
 use protobuf::wire_format;
@@ -14,6 +15,7 @@ use super::customize::customize_from_rustproto_for_field;
 use super::customize::Customize;
 use code_writer::Visibility;
 use rust_name::RustIdent;
+use rust_name::RustPath;
 use rust_name::RustIdentWithPath;
 use map::map_entry;
 use oneof::OneofField;
@@ -235,7 +237,7 @@ impl SingularFieldFlag {
 }
 
 #[derive(Clone)]
-pub struct SingularField {
+pub(crate) struct SingularField {
     pub flag: SingularFieldFlag,
     pub elem: FieldElem,
 }
@@ -269,7 +271,7 @@ impl RepeatedFieldKind {
 }
 
 #[derive(Clone)]
-pub struct RepeatedField {
+pub(crate) struct RepeatedField {
     pub elem: FieldElem,
     pub packed: bool,
     pub repeated_field_vec: bool,
@@ -294,13 +296,13 @@ impl RepeatedField {
 
 #[derive(Clone)]
 pub struct MapField {
-    name: String,
+    name: RustIdentWithPath,
     key: FieldElem,
     value: FieldElem,
 }
 
 #[derive(Clone)]
-pub enum FieldKind {
+pub(crate) enum FieldKind {
     // optional or required
     Singular(SingularField),
     // repeated except map
@@ -350,12 +352,12 @@ impl FieldElemEnum {
     }
 
     fn default_value_rust_expr(&self) -> RustIdentWithPath {
-        self.name.child(&self.default_value)
+        self.name.to_path().with_ident(self.default_value.clone())
     }
 }
 
 #[derive(Clone, Debug)]
-pub enum FieldElem {
+pub(crate) enum FieldElem {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name, entry
     Message(RustIdentWithPath, String, Option<Box<EntryKeyValue>>),
@@ -442,11 +444,12 @@ fn field_elem(
     root_scope: &RootScope,
     parse_map: bool,
     customize: &Customize,
+    current_file_path: &RustPath,
 ) -> FieldElem {
     if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         FieldElem::Group
     } else if field.field.has_type_name() {
-        let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
+        let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsolutePath::from(field.field.get_type_name()));
         let file_name = message_or_enum
             .get_scope()
             .file_scope
@@ -454,9 +457,9 @@ fn field_elem(
             .get_name()
             .to_owned();
         let rust_relative_name = type_name_to_rust_relative(
-            field.field.get_type_name(),
+            &ProtobufAbsolutePath::from(field.field.get_type_name()),
             field.message.get_scope().file_scope.file_descriptor,
-            false,
+            current_file_path,
             root_scope,
         );
         match (field.field.get_field_type(), message_or_enum) {
@@ -468,8 +471,8 @@ fn field_elem(
                     (parse_map, map_entry(&message_with_scope))
                 {
                     Some(Box::new(EntryKeyValue(
-                        field_elem(&key, root_scope, false, customize),
-                        field_elem(&value, root_scope, false, customize),
+                        field_elem(&key, root_scope, false, customize, current_file_path),
+                        field_elem(&value, root_scope, false, customize, current_file_path),
                     )))
                 } else {
                     None
@@ -541,7 +544,7 @@ impl AccessorFn {
 }
 
 #[derive(Clone)]
-pub struct FieldGen<'a> {
+pub(crate) struct FieldGen<'a> {
     root_scope: &'a RootScope<'a>,
     syntax: Syntax,
     pub proto_field: FieldWithContext<'a>,
@@ -567,7 +570,8 @@ impl<'a> FieldGen<'a> {
             field.field.options.get_message(),
         ));
 
-        let elem = field_elem(&field, root_scope, true, &customize);
+        let elem = field_elem(
+            &field, root_scope, true, &customize, &field.message.scope.rust_path_to_file());
 
         let syntax = field.message.scope.file_scope.syntax();
 
@@ -592,7 +596,7 @@ impl<'a> FieldGen<'a> {
             match (elem, true) {
                 // map field
                 (FieldElem::Message(name, _, Some(key_value)), true) => FieldKind::Map(MapField {
-                    name: name.get().to_owned(),
+                    name: name.clone(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),
@@ -869,7 +873,7 @@ impl<'a> FieldGen<'a> {
     fn default_value_from_proto(&self) -> Option<String> {
         assert!(self.is_singular() || self.is_oneof());
         if let &FieldElem::Enum(ref e) = self.elem() {
-            Some(e.default_value_rust_expr().get().to_owned())
+            Some(format!("{}", e.default_value_rust_expr()))
         } else if self.proto_field.field.has_default_value() {
             let proto_default = self.proto_field.field.get_default_value();
             Some(match self.proto_type {
@@ -996,7 +1000,7 @@ impl<'a> FieldGen<'a> {
 
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![name.get().to_owned()],
+                type_params: vec![format!("{}", name)],
                 callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
@@ -1032,7 +1036,7 @@ impl<'a> FieldGen<'a> {
             },
             FieldElem::Enum(ref en) => AccessorFn {
                 name: "make_option_enum_accessor".to_owned(),
-                type_params: vec![en.name.get().to_owned()],
+                type_params: vec![format!("{}", en.name)],
                 callback_params: self.make_accessor_fns_lambda_default_value(),
             },
             FieldElem::Group => {
@@ -1064,7 +1068,7 @@ impl<'a> FieldGen<'a> {
         if let RustType::Message(name) = elem.rust_storage_elem_type() {
             return AccessorFn {
                 name: "make_oneof_message_has_get_mut_set_accessor".to_owned(),
-                type_params: vec![name.get().to_owned()],
+                type_params: vec![format!("{}", name)],
                 callback_params: self.make_accessor_fns_has_get_mut_set(),
             };
         }
@@ -2326,7 +2330,7 @@ impl<'a> FieldGen<'a> {
     }
 }
 
-pub fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
+pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
     if rust::is_rust_keyword(name) {
         return RustIdent::new(&format!("field_{}", name))
     } else {

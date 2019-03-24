@@ -1,3 +1,7 @@
+use protobuf_name::ProtobufAbsolutePath;
+use protobuf_name::ProtobufRelativePath;
+
+
 static NAMES: &'static [&'static str] = &[
     "Any",
     "Api",
@@ -32,14 +36,14 @@ static NAMES: &'static [&'static str] = &[
     "Value",
 ];
 
-fn is_well_known_type(name: &str) -> bool {
-    NAMES.iter().any(|&n| n == name)
+fn is_well_known_type(name: &ProtobufRelativePath) -> bool {
+    NAMES.iter().any(|&n| n == name.path)
 }
 
-pub fn is_well_known_type_full(name: &str) -> Option<&str> {
-    if let Some(dot) = name.rfind('.') {
-        if &name[..dot] == ".google.protobuf" && is_well_known_type(&name[dot + 1..]) {
-            Some(&name[dot + 1..])
+pub fn is_well_known_type_full(name: &ProtobufAbsolutePath) -> Option<ProtobufRelativePath> {
+    if let Some(ref rem) = name.remove_prefix(&ProtobufAbsolutePath::from(".google.protobuf")) {
+        if is_well_known_type(rem) {
+            Some(rem.clone())
         } else {
             None
         }
@@ -55,9 +59,9 @@ mod test {
     #[test]
     fn test_is_well_known_type_full() {
         assert_eq!(
-            Some("BoolValue"),
-            is_well_known_type_full(".google.protobuf.BoolValue")
+            Some(ProtobufRelativePath::from("BoolValue")),
+            is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.BoolValue"))
         );
-        assert_eq!(None, is_well_known_type_full(".google.protobuf.Fgfg"));
+        assert_eq!(None, is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.Fgfg")));
     }
 }

@@ -12,10 +12,11 @@ use scope::RootScope;
 use scope::WithScope;
 use rust_name::RustIdentWithPath;
 use rust_name::RustIdent;
+use file_descriptor::file_descriptor_proto_expr;
 
 
 #[derive(Clone)]
-pub struct EnumValueGen<'a> {
+pub(crate) struct EnumValueGen<'a> {
     value: EnumValueWithContext<'a>,
     enum_rust_name: RustIdentWithPath,
 }
@@ -39,12 +40,12 @@ impl<'a> EnumValueGen<'a> {
     }
 
     pub fn rust_name_outer(&self) -> RustIdentWithPath {
-        self.enum_rust_name.child(&self.rust_name_inner())
+        self.enum_rust_name.to_path().with_ident(self.rust_name_inner())
     }
 }
 
 // Codegen for enum definition
-pub struct EnumGen<'a> {
+pub(crate) struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
     type_name: RustIdentWithPath,
     lite_runtime: bool,
@@ -158,7 +159,7 @@ impl<'a> EnumGen<'a> {
             if self.allow_alias() {
                 w.match_expr("*self", |w| {
                     for value in self.values_all() {
-                        w.case_expr(value.rust_name_outer().get(), &format!("{}", value.number()));
+                        w.case_expr(&format!("{}", value.rust_name_outer()), &format!("{}", value.number()));
                     }
                 });
             } else {
@@ -169,7 +170,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block("::protobuf::ProtobufEnum", type_name.get(), |w| {
+        w.impl_for_block("::protobuf::ProtobufEnum", &format!("{}", type_name), |w| {
             self.write_fn_value(w);
 
             w.write_line("");
@@ -202,9 +203,10 @@ impl<'a> EnumGen<'a> {
                 w.def_fn(&format!("enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"), |w| {
                     w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
                         w.write_line(&format!(
-                            "::protobuf::reflect::EnumDescriptor::new::<{}>(\"{}\", file_descriptor_proto())",
+                            "::protobuf::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
                             self.type_name,
-                            self.enum_with_scope.name_to_package()));
+                            self.enum_with_scope.name_to_package(),
+                            file_descriptor_proto_expr(&self.enum_with_scope.scope)));
                     });
                 });
             }
@@ -214,14 +216,14 @@ impl<'a> EnumGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             "::protobuf::reflect::ProtobufValue",
-            self.type_name.get(),
+            &format!("{}", self.type_name),
             |_w| {},
         )
     }
 
     fn write_impl_eq(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::cmp::PartialEq", self.type_name.get(), |w| {
+        w.impl_for_block("::std::cmp::PartialEq", &format!("{}", self.type_name), |w| {
             w.def_fn("eq(&self, other: &Self) -> bool", |w| {
                 w.write_line("::protobuf::ProtobufEnum::value(self) == ::protobuf::ProtobufEnum::value(other)");
             });
@@ -230,7 +232,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_hash(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::hash::Hash", self.type_name.get(), |w| {
+        w.impl_for_block("::std::hash::Hash", &format!("{}", self.type_name), |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
                 w.write_line("state.write_i32(::protobuf::ProtobufEnum::value(self))");
             });
@@ -249,7 +251,7 @@ impl<'a> EnumGen<'a> {
             // so this implementation is not completely unreasonable.
             w.comment("Note, `Default` is implemented although default value is not 0");
         }
-        w.impl_for_block("::std::default::Default", self.type_name.get(), |w| {
+        w.impl_for_block("::std::default::Default", &format!("{}", self.type_name), |w| {
             w.def_fn("default() -> Self", |w| {
                 w.write_line(&format!(
                     "{}::{}",

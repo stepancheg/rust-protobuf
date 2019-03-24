@@ -3,7 +3,9 @@ use super::rust_types_values::*;
 use protobuf::descriptor::*;
 use scope::RootScope;
 use rust_name::RustIdentWithPath;
+use rust_name::RustPath;
 use field::rust_field_name_for_protobuf_field_name;
+use ProtobufAbsolutePath;
 
 
 struct ExtGen<'a> {
@@ -14,7 +16,11 @@ struct ExtGen<'a> {
 
 impl<'a> ExtGen<'a> {
     fn extendee_rust_name(&self) -> RustIdentWithPath {
-        type_name_to_rust_relative(self.field.get_extendee(), self.file, true, self.root_scope)
+        type_name_to_rust_relative(
+            &ProtobufAbsolutePath::from(self.field.get_extendee()),
+            self.file,
+            &RustPath::from("exts"),
+            self.root_scope)
     }
 
     fn repeated(&self) -> bool {
@@ -30,9 +36,9 @@ impl<'a> ExtGen<'a> {
     fn return_type_gen(&self) -> ProtobufTypeGen {
         if self.field.has_type_name() {
             let rust_name_relative = type_name_to_rust_relative(
-                self.field.get_type_name(),
+                &ProtobufAbsolutePath::from(self.field.get_type_name()),
                 self.file,
-                true,
+                &RustPath::from("exts"),
                 self.root_scope,
             );
             match self.field.get_field_type() {
@@ -71,7 +77,7 @@ impl<'a> ExtGen<'a> {
     }
 }
 
-pub fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter) {
+pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter) {
     if file.extension.is_empty() {
         return;
     }

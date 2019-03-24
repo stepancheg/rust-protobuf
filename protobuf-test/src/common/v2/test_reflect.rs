@@ -167,11 +167,11 @@ fn test_map() {
 #[test]
 fn test_nested_message() {
     assert_eq!("test_reflect.WithNestedMessage.NestedMessage",
-        WithNestedMessage_NestedMessage::descriptor_static().full_name());
+        with_nested_message::NestedMessage::descriptor_static().full_name());
 }
 
 #[test]
 fn test_nested_enum() {
     assert_eq!("test_reflect.WithNestedMessage.NestedEnum",
-        WithNestedMessage_NestedEnum::enum_descriptor_static().full_name());
+        with_nested_message::NestedEnum::enum_descriptor_static().full_name());
 }

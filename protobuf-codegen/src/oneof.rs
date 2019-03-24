@@ -15,7 +15,7 @@ use Customize;
 
 // oneof one { ... }
 #[derive(Clone)]
-pub struct OneofField {
+pub(crate) struct OneofField {
     pub elem: FieldElem,
     pub oneof_name: String,
     pub oneof_type_name: RustType,
@@ -30,7 +30,8 @@ impl OneofField {
     ) -> OneofField {
         // detecting recursion
         let boxed = if let &FieldElem::Message(ref name, ..) = &elem {
-            if name.get() == oneof.message.rust_name().get() {
+            // TODO: compare protobuf names
+            if name == &oneof.message.rust_name_to_file() {
                 true
             } else {
                 false
@@ -59,7 +60,7 @@ impl OneofField {
 }
 
 #[derive(Clone)]
-pub struct OneofVariantGen<'a> {
+pub(crate) struct OneofVariantGen<'a> {
     oneof: &'a OneofGen<'a>,
     variant: OneofVariantWithContext<'a>,
     oneof_field: OneofField,
@@ -96,7 +97,7 @@ impl<'a> OneofVariantGen<'a> {
 }
 
 #[derive(Clone)]
-pub struct OneofGen<'a> {
+pub(crate) struct OneofGen<'a> {
     // Message containing this oneof
     message: &'a MessageGen<'a>,
     oneof: OneofWithContext<'a>,

@@ -2,15 +2,18 @@ use std::cmp;
 use std::fmt;
 
 use super::well_known_types::is_well_known_type_full;
-use rust_name::{RustIdent, RustIdentWithPath};
+use rust_name::RustIdent;
+use rust_name::RustIdentWithPath;
+use rust_name::RustPath;
 use protobuf::descriptor::*;
 use scope::RootScope;
 use scope::WithScope;
 use strx::capitalize;
+use ProtobufAbsolutePath;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum RustType {
+pub(crate) enum RustType {
     // integer: signed?, size in bits
     Int(bool, u32),
     // param is size in bits
@@ -385,7 +388,7 @@ impl RustType {
 }
 
 /// Representation of an expression in code generator: text and type
-pub struct RustValueTyped {
+pub(crate) struct RustValueTyped {
     pub value: String,
     pub rust_type: RustType,
 }
@@ -429,7 +432,7 @@ pub fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
 }
 
 // rust type for protobuf base type
-pub fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
+pub(crate) fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
         FieldDescriptorProto_Type::TYPE_DOUBLE => RustType::Float(64),
         FieldDescriptorProto_Type::TYPE_FLOAT => RustType::Float(32),
@@ -474,42 +477,53 @@ fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
         && file_last_component(file.get_name()) == "descriptor.proto"
 }
 
-pub fn type_name_to_rust_relative(
-    type_name: &str,
+fn make_path_to_path(source: &RustPath, dest: &RustPath) -> RustPath {
+    if dest.is_absolute() {
+        return dest.clone();
+    }
+
+    assert!(!source.is_absolute());
+
+    let mut source = source.clone();
+    let mut dest = dest.clone();
+    while !source.is_empty() && source.first() == dest.first() {
+        source.remove_first().unwrap();
+        dest.remove_first().unwrap();
+    }
+    source.to_reverse().append(dest)
+}
+
+fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIdentWithPath {
+    make_path_to_path(source, &dest.path).with_ident(dest.ident.clone())
+}
+
+pub(crate) fn type_name_to_rust_relative(
+    type_name: &ProtobufAbsolutePath,
     file: &FileDescriptorProto,
-    subm: bool,
+    current_file_path: &RustPath,
     root_scope: &RootScope,
 ) -> RustIdentWithPath {
-    assert!(
-        type_name.starts_with("."),
-        "type name must start with dot: {}",
-        type_name
-    );
+    assert!(!type_name.is_empty());
     let message_or_enum = root_scope.find_message_or_enum(type_name);
-    RustIdentWithPath::new(&if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
+    let same_file = message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name();
+    if same_file {
         // field type is a message or enum declared in the same file
-        if subm {
-            format!("super::{}", message_or_enum.rust_name())
-        } else {
-            format!("{}", message_or_enum.rust_name())
-        }
+        make_path(current_file_path, &message_or_enum.rust_name_to_file())
     } else if let Some(name) = is_well_known_type_full(type_name) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
-        format!("::protobuf::well_known_types::{}", name)
+        RustIdentWithPath::from(format!("::protobuf::well_known_types::{}", name))
     } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
         // Messages defined in descriptor.proto
-        format!(
+        RustIdentWithPath::from(format!(
             "::protobuf::descriptor::{}",
-            message_or_enum.name_to_package()
-        )
+            message_or_enum.rust_name_to_file()
+        ))
     } else {
-        if subm {
-            format!("super::super::{}", message_or_enum.rust_fq_name())
-        } else {
-            format!("super::{}", message_or_enum.rust_fq_name())
-        }
-    })
+        current_file_path.to_reverse()
+            .append_ident(RustIdent::super_ident())
+            .append_with_ident(message_or_enum.rust_name_with_file())
+    }
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -524,7 +538,7 @@ pub enum _CarllercheBytesType {
 }
 
 // ProtobufType trait name
-pub enum ProtobufTypeGen {
+pub(crate) enum ProtobufTypeGen {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     Message(RustIdentWithPath),
     EnumOrUnknown(RustIdentWithPath),

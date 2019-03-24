@@ -5,14 +5,20 @@ use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use rust_name::RustIdent;
+use rust_name::RustIdentWithPath;
+use rust_name::RustPath;
 use strx::capitalize;
 use rust::is_rust_keyword;
 use file::proto_path_to_rust_mod;
 use syntax::Syntax;
 use rust;
+use message::message_name_to_nested_mod_name;
+use protobuf_name::ProtobufAbsolutePath;
+use protobuf_name::ProtobufRelativePath;
+use protobuf_name::ProtobufIdent;
 
 
-pub struct RootScope<'a> {
+pub(crate) struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
 }
 
@@ -26,7 +32,7 @@ impl<'a> RootScope<'a> {
     }
 
     // find enum by fully qualified name
-    pub fn _find_enum(&'a self, fqn: &str) -> EnumWithScope<'a> {
+    pub fn _find_enum(&'a self, fqn: &ProtobufAbsolutePath) -> EnumWithScope<'a> {
         match self.find_message_or_enum(fqn) {
             MessageOrEnumWithScope::Enum(e) => e,
             _ => panic!("not an enum: {}", fqn),
@@ -34,7 +40,7 @@ impl<'a> RootScope<'a> {
     }
 
     // find message by fully qualified name
-    pub fn _find_message(&'a self, fqn: &str) -> MessageWithScope<'a> {
+    pub fn _find_message(&'a self, fqn: &ProtobufAbsolutePath) -> MessageWithScope<'a> {
         match self.find_message_or_enum(fqn) {
             MessageOrEnumWithScope::Message(m) => m,
             _ => panic!("not a message: {}", fqn),
@@ -42,33 +48,25 @@ impl<'a> RootScope<'a> {
     }
 
     // find message or enum by fully qualified name
-    pub fn find_message_or_enum(&'a self, fqn: &str) -> MessageOrEnumWithScope<'a> {
-        assert!(fqn.starts_with("."), "name must start with dot: {}", fqn);
-        let fqn1 = &fqn[1..];
+    pub fn find_message_or_enum(&'a self, fqn: &ProtobufAbsolutePath) -> MessageOrEnumWithScope<'a> {
+        assert!(!fqn.is_empty());
         self.packages()
             .into_iter()
             .flat_map(|p| {
-                (if p.get_package().is_empty() {
-                    p.find_message_or_enum(fqn1)
-                } else if fqn1.starts_with(&(p.get_package().to_string() + ".")) {
-                    let remaining = &fqn1[(p.get_package().len() + 1)..];
-                    p.find_message_or_enum(remaining)
-                } else {
-                    None
-                }).into_iter()
+                p.find_message_or_enum_abs(fqn)
             }).next()
             .expect(&format!("enum not found by name: {}", fqn))
     }
 }
 
 #[derive(Clone)]
-pub struct FileScope<'a> {
+pub(crate) struct FileScope<'a> {
     pub file_descriptor: &'a FileDescriptorProto,
 }
 
 impl<'a> FileScope<'a> {
-    fn get_package(&self) -> &'a str {
-        self.file_descriptor.get_package()
+    fn get_package(&self) -> ProtobufAbsolutePath {
+        ProtobufRelativePath::from(self.file_descriptor.get_package()).into_absolute()
     }
 
     pub fn syntax(&self) -> Syntax {
@@ -82,12 +80,18 @@ impl<'a> FileScope<'a> {
         }
     }
 
-    fn find_message_or_enum(&self, name: &str) -> Option<MessageOrEnumWithScope<'a>> {
-        assert!(!name.starts_with("."));
+    fn find_message_or_enum(&self, name: &ProtobufRelativePath) -> Option<MessageOrEnumWithScope<'a>> {
         self.find_messages_and_enums()
             .into_iter()
-            .filter(|e| e.name_to_package() == name)
+            .filter(|e| e.protobuf_name_to_package() == *name)
             .next()
+    }
+
+    fn find_message_or_enum_abs(&self, name: &ProtobufAbsolutePath) -> Option<MessageOrEnumWithScope<'a>> {
+        match name.remove_prefix(&self.get_package()) {
+            Some(ref rem) => self.find_message_or_enum(rem),
+            None => None,
+        }
     }
 
     // find all enums in given file descriptor
@@ -125,7 +129,7 @@ impl<'a> FileScope<'a> {
 }
 
 #[derive(Clone)]
-pub struct Scope<'a> {
+pub(crate) struct Scope<'a> {
     pub file_scope: FileScope<'a>,
     pub path: Vec<&'a DescriptorProto>,
 }
@@ -212,6 +216,10 @@ impl<'a> Scope<'a> {
         self.walk_scopes_impl(&mut callback);
     }
 
+    pub fn rust_path_to_file(&self) -> RustPath {
+        RustPath::relative_from_components(self.path.iter().map(|m| message_name_to_nested_mod_name(m.get_name())))
+    }
+
     pub fn path_str(&self) -> String {
         let v: Vec<&str> = self.path.iter().map(|m| m.get_name()).collect();
         v.join(".")
@@ -226,13 +234,12 @@ impl<'a> Scope<'a> {
         }
     }
 
-    // rust type name prefix for this scope
-    pub fn rust_prefix(&self) -> String {
-        self.prefix().replace(".", "_")
+    pub fn protobuf_path_to_file(&self) -> ProtobufRelativePath {
+        ProtobufRelativePath::from_components(self.path.iter().map(|m| ProtobufIdent::from(m.get_name())))
     }
 }
 
-pub trait WithScope<'a> {
+pub(crate) trait WithScope<'a> {
     fn get_scope(&self) -> &Scope<'a>;
 
     fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
@@ -240,14 +247,19 @@ pub trait WithScope<'a> {
     }
 
     // message or enum name
-    fn get_name(&self) -> &'a str;
+    fn get_name(&self) -> ProtobufIdent;
 
     fn escape_prefix(&self) -> &'static str;
 
     fn name_to_package(&self) -> String {
         let mut r = self.get_scope().prefix();
-        r.push_str(self.get_name());
+        r.push_str(self.get_name().get());
         r
+    }
+
+    fn protobuf_name_to_package(&self) -> ProtobufRelativePath {
+        let r = self.get_scope().protobuf_path_to_file();
+        r.append_ident(&ProtobufIdent::from(self.get_name()))
     }
 
     /// Return absolute name starting with dot
@@ -265,8 +277,7 @@ pub trait WithScope<'a> {
 
     // rust type name of this descriptor
     fn rust_name(&self) -> RustIdent {
-        let mut rust_name = format!(
-            "{}{}", self.get_scope().rust_prefix(), capitalize(self.get_name()));
+        let mut rust_name = capitalize(self.get_name().get());
 
         if is_rust_keyword(&rust_name) {
             rust_name.insert_str(0, self.escape_prefix());
@@ -275,18 +286,20 @@ pub trait WithScope<'a> {
         RustIdent::new(&rust_name)
     }
 
+    fn rust_name_to_file(&self) -> RustIdentWithPath {
+        self.get_scope().rust_path_to_file().with_ident(self.rust_name())
+    }
+
     // fully-qualified name of this type
-    fn rust_fq_name(&self) -> String {
-        format!(
-            "{}::{}",
-            proto_path_to_rust_mod(self.get_scope().get_file_descriptor().get_name()),
-            self.rust_name()
-        )
+    fn rust_name_with_file(&self) -> RustIdentWithPath {
+        let mut r = self.rust_name_to_file();
+        r.prepend_ident(proto_path_to_rust_mod(self.get_scope().get_file_descriptor().get_name()));
+        r
     }
 }
 
 #[derive(Clone)]
-pub struct MessageWithScope<'a> {
+pub(crate) struct MessageWithScope<'a> {
     pub scope: Scope<'a>,
     pub message: &'a DescriptorProto,
 }
@@ -300,8 +313,8 @@ impl<'a> WithScope<'a> for MessageWithScope<'a> {
         "message_"
     }
 
-    fn get_name(&self) -> &'a str {
-        self.message.get_name()
+    fn get_name(&self) -> ProtobufIdent {
+        ProtobufIdent::from(self.message.get_name())
     }
 }
 
@@ -343,7 +356,7 @@ impl<'a> MessageWithScope<'a> {
 }
 
 #[derive(Clone)]
-pub struct EnumWithScope<'a> {
+pub(crate) struct EnumWithScope<'a> {
     pub scope: Scope<'a>,
     pub en: &'a EnumDescriptorProto,
 }
@@ -367,7 +380,7 @@ impl<'a> EnumWithScope<'a> {
 }
 
 #[derive(Clone)]
-pub struct EnumValueWithContext<'a> {
+pub(crate) struct EnumValueWithContext<'a> {
     pub en: EnumWithScope<'a>,
     pub proto: &'a EnumValueDescriptorProto,
 }
@@ -388,16 +401,16 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
         &self.scope
     }
 
+    fn get_name(&self) -> ProtobufIdent {
+        ProtobufIdent::from(self.en.get_name())
+    }
+
     fn escape_prefix(&self) -> &'static str {
         "enum_"
     }
-
-    fn get_name(&self) -> &'a str {
-        self.en.get_name()
-    }
 }
 
-pub enum MessageOrEnumWithScope<'a> {
+pub(crate) enum MessageOrEnumWithScope<'a> {
     Message(MessageWithScope<'a>),
     Enum(EnumWithScope<'a>),
 }
@@ -417,7 +430,7 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
         }
     }
 
-    fn get_name(&self) -> &'a str {
+    fn get_name(&self) -> ProtobufIdent {
         match self {
             &MessageOrEnumWithScope::Message(ref m) => m.get_name(),
             &MessageOrEnumWithScope::Enum(ref e) => e.get_name(),
@@ -426,7 +439,7 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
 }
 
 #[derive(Clone)]
-pub struct FieldWithContext<'a> {
+pub(crate) struct FieldWithContext<'a> {
     pub field: &'a FieldDescriptorProto,
     pub message: MessageWithScope<'a>,
 }
@@ -466,13 +479,13 @@ impl<'a> FieldWithContext<'a> {
 }
 
 #[derive(Clone)]
-pub struct OneofVariantWithContext<'a> {
+pub(crate) struct OneofVariantWithContext<'a> {
     pub oneof: &'a OneofWithContext<'a>,
     pub field: &'a FieldDescriptorProto,
 }
 
 #[derive(Clone)]
-pub struct OneofWithContext<'a> {
+pub(crate) struct OneofWithContext<'a> {
     pub oneof: &'a OneofDescriptorProto,
     pub index: u32,
     pub message: &'a MessageWithScope<'a>,

@@ -1,5 +1,6 @@
 use strx;
 use rust;
+use rust_name::RustIdent;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
@@ -11,7 +12,7 @@ fn ident_continue(c: char) -> bool {
     (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
 }
 
-pub fn proto_path_to_rust_mod(path: &str) -> String {
+pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
     let without_dir = strx::remove_to(path, '/');
     let without_suffix = strx::remove_suffix(without_dir, ".proto");
 
@@ -36,7 +37,7 @@ pub fn proto_path_to_rust_mod(path: &str) -> String {
     } else {
         name
     };
-    name
+    RustIdent::from(name)
 }
 
 
@@ -44,19 +45,20 @@ pub fn proto_path_to_rust_mod(path: &str) -> String {
 mod test {
 
     use super::proto_path_to_rust_mod;
+    use rust_name::RustIdent;
 
     #[test]
     fn test_mod_path_proto_ext() {
-        assert_eq!("proto", proto_path_to_rust_mod("proto.proto"));
+        assert_eq!(RustIdent::from("proto"), proto_path_to_rust_mod("proto.proto"));
     }
 
     #[test]
     fn test_mod_path_unknown_ext() {
-        assert_eq!("proto_proto3", proto_path_to_rust_mod("proto.proto3"));
+        assert_eq!(RustIdent::from("proto_proto3"), proto_path_to_rust_mod("proto.proto3"));
     }
 
     #[test]
     fn test_mod_path_empty_ext() {
-        assert_eq!("proto", proto_path_to_rust_mod("proto"));
+        assert_eq!(RustIdent::from("proto"), proto_path_to_rust_mod("proto"));
     }
 }

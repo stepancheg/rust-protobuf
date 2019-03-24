@@ -12,6 +12,10 @@ use protobuf::Message;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use std::mem;
 use protobuf_codegen::case_convert::camel_case;
+use protobuf_codegen::ProtobufAbsolutePath;
+use protobuf_codegen::ProtobufIdent;
+use protobuf_codegen::ProtobufRelativePath;
+
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -70,244 +74,6 @@ impl MessageOrEnum {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Clone)]
-struct RelativePath {
-    path: String,
-}
-
-impl RelativePath {
-    fn empty() -> RelativePath {
-        RelativePath::new(String::new())
-    }
-
-    fn new(path: String) -> RelativePath {
-        assert!(!path.starts_with("."));
-
-        RelativePath { path }
-    }
-
-    fn is_empty(&self) -> bool {
-        self.path.is_empty()
-    }
-
-    fn _last_part(&self) -> Option<&str> {
-        match self.path.rfind('.') {
-            Some(pos) => Some(&self.path[pos + 1..]),
-            None => {
-                if self.path.is_empty() {
-                    None
-                } else {
-                    Some(&self.path)
-                }
-            }
-        }
-    }
-
-    fn parent(&self) -> Option<RelativePath> {
-        match self.path.rfind('.') {
-            Some(pos) => Some(RelativePath::new(self.path[..pos].to_owned())),
-            None => {
-                if self.path.is_empty() {
-                    None
-                } else {
-                    Some(RelativePath::empty())
-                }
-            }
-        }
-    }
-
-    fn self_and_parents(&self) -> Vec<RelativePath> {
-        let mut tmp = self.clone();
-
-        let mut r = Vec::new();
-
-        r.push(self.clone());
-
-        while let Some(parent) = tmp.parent() {
-            r.push(parent.clone());
-            tmp = parent;
-        }
-
-        r
-    }
-
-    fn append(&self, simple: &str) -> RelativePath {
-        if self.path.is_empty() {
-            RelativePath::new(simple.to_owned())
-        } else {
-            RelativePath::new(format!("{}.{}", self.path, simple))
-        }
-    }
-
-    fn split_first_rem(&self) -> Option<(&str, RelativePath)> {
-        if self.is_empty() {
-            None
-        } else {
-            Some(match self.path.find('.') {
-                Some(dot) => (
-                    &self.path[..dot],
-                    RelativePath::new(self.path[dot + 1..].to_owned()),
-                ),
-                None => (&self.path, RelativePath::empty()),
-            })
-        }
-    }
-}
-
-#[cfg(test)]
-mod relative_path_test {
-    use super::*;
-
-    #[test]
-    fn parent() {
-        assert_eq!(None, RelativePath::empty().parent());
-        assert_eq!(
-            Some(RelativePath::empty()),
-            RelativePath::new("aaa".to_owned()).parent()
-        );
-        assert_eq!(
-            Some(RelativePath::new("abc".to_owned())),
-            RelativePath::new("abc.def".to_owned()).parent()
-        );
-        assert_eq!(
-            Some(RelativePath::new("abc.def".to_owned())),
-            RelativePath::new("abc.def.gh".to_owned()).parent()
-        );
-    }
-
-    #[test]
-    fn last_part() {
-        assert_eq!(None, RelativePath::empty()._last_part());
-        assert_eq!(
-            Some("aaa"),
-            RelativePath::new("aaa".to_owned())._last_part()
-        );
-        assert_eq!(
-            Some("def"),
-            RelativePath::new("abc.def".to_owned())._last_part()
-        );
-        assert_eq!(
-            Some("gh"),
-            RelativePath::new("abc.def.gh".to_owned())._last_part()
-        );
-    }
-
-    #[test]
-    fn self_and_parents() {
-        assert_eq!(
-            vec![
-                RelativePath::new("ab.cde.fghi".to_owned()),
-                RelativePath::new("ab.cde".to_owned()),
-                RelativePath::new("ab".to_owned()),
-                RelativePath::empty(),
-            ],
-            RelativePath::new("ab.cde.fghi".to_owned()).self_and_parents()
-        );
-    }
-}
-
-#[derive(Clone, Eq, PartialEq, Debug)]
-struct AbsolutePath {
-    path: String,
-}
-
-impl AbsolutePath {
-    fn root() -> AbsolutePath {
-        AbsolutePath::new(String::new())
-    }
-
-    fn new(path: String) -> AbsolutePath {
-        assert!(path.is_empty() || path.starts_with("."));
-        assert!(!path.ends_with("."));
-        AbsolutePath { path }
-    }
-
-    fn from_path_without_dot(path: &str) -> AbsolutePath {
-        if path.is_empty() {
-            AbsolutePath::root()
-        } else {
-            assert!(!path.starts_with("."));
-            assert!(!path.ends_with("."));
-            AbsolutePath::new(format!(".{}", path))
-        }
-    }
-
-    fn from_path_maybe_dot(path: &str) -> AbsolutePath {
-        if path.starts_with(".") {
-            AbsolutePath::new(path.to_owned())
-        } else {
-            AbsolutePath::from_path_without_dot(path)
-        }
-    }
-
-    fn push_simple(&mut self, simple: &str) {
-        assert!(!simple.is_empty());
-        assert!(!simple.contains('.'));
-        self.path.push('.');
-        self.path.push_str(simple);
-    }
-
-    fn push_relative(&mut self, relative: &RelativePath) {
-        if !relative.is_empty() {
-            self.path.push('.');
-            self.path.push_str(&relative.path);
-        }
-    }
-
-    fn remove_prefix(&self, prefix: &AbsolutePath) -> Option<RelativePath> {
-        if self.path.starts_with(&prefix.path) {
-            let rem = &self.path[prefix.path.len()..];
-            if rem.is_empty() {
-                return Some(RelativePath::empty());
-            }
-            if rem.starts_with('.') {
-                return Some(RelativePath::new(rem[1..].to_owned()));
-            }
-        }
-        None
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn absolute_path_push_simple() {
-        let mut foo = AbsolutePath::new(".foo".to_owned());
-        foo.push_simple("bar");
-        assert_eq!(AbsolutePath::new(".foo.bar".to_owned()), foo);
-
-        let mut foo = AbsolutePath::root();
-        foo.push_simple("bar");
-        assert_eq!(AbsolutePath::new(".bar".to_owned()), foo);
-    }
-
-    #[test]
-    fn absolute_path_remove_prefix() {
-        assert_eq!(
-            Some(RelativePath::empty()),
-            AbsolutePath::new(".foo".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo".to_owned()))
-        );
-        assert_eq!(
-            Some(RelativePath::new("bar".to_owned())),
-            AbsolutePath::new(".foo.bar".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo".to_owned()))
-        );
-        assert_eq!(
-            Some(RelativePath::new("baz.qux".to_owned())),
-            AbsolutePath::new(".foo.bar.baz.qux".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned()))
-        );
-        assert_eq!(
-            None,
-            AbsolutePath::new(".foo.barbaz".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned()))
-        );
-    }
-}
-
 enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
     Message(&'a model::Message),
@@ -361,9 +127,9 @@ impl<'a> LookupScope<'a> {
 
     fn resolve_message_or_enum(
         &self,
-        current_path: &AbsolutePath,
-        path: &RelativePath,
-    ) -> Option<(AbsolutePath, MessageOrEnum)> {
+        current_path: &ProtobufAbsolutePath,
+        path: &ProtobufRelativePath,
+    ) -> Option<(ProtobufAbsolutePath, MessageOrEnum)> {
         let (first, rem) = match path.split_first_rem() {
             Some(x) => x,
             None => return None,
@@ -407,7 +173,7 @@ impl<'a> Resolver<'a> {
         name: &str,
         number: i32,
         field_type: &model::FieldType,
-        path_in_file: &RelativePath,
+        path_in_file: &ProtobufRelativePath,
     ) -> protobuf::descriptor::FieldDescriptorProto {
         // should be consisent with DescriptorBuilder::ValidateMapEntry
 
@@ -432,7 +198,7 @@ impl<'a> Resolver<'a> {
         field_name: &str,
         key: &model::FieldType,
         value: &model::FieldType,
-        path_in_file: &RelativePath,
+        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
@@ -464,9 +230,9 @@ impl<'a> Resolver<'a> {
     fn message(
         &self,
         input: &model::Message,
-        path_in_file: &RelativePath,
+        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
-        let nested_path_in_file = path_in_file.append(&input.name);
+        let nested_path_in_file = path_in_file.append_ident(&ProtobufIdent::from(&input.name[..]));
 
         let mut output = protobuf::descriptor::DescriptorProto::new();
         output.set_name(input.name.clone());
@@ -582,7 +348,7 @@ impl<'a> Resolver<'a> {
         &self,
         input: &model::Field,
         oneof_index: Option<i32>,
-        path_in_file: &RelativePath,
+        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.name.clone());
@@ -650,16 +416,16 @@ impl<'a> Resolver<'a> {
     fn resolve_message_or_enum(
         &self,
         name: &str,
-        path_in_file: &RelativePath,
-    ) -> (AbsolutePath, MessageOrEnum) {
+        path_in_file: &ProtobufRelativePath,
+    ) -> (ProtobufAbsolutePath, MessageOrEnum) {
         // find message or enum in current package
         if !name.starts_with(".") {
             for p in path_in_file.self_and_parents() {
                 let relative_path_with_name = p.clone();
-                let relative_path_with_name = relative_path_with_name.append(name);
+                let relative_path_with_name = relative_path_with_name.append(&ProtobufRelativePath::from(name));
                 for file in self.current_file_package_files() {
                     if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
-                        &AbsolutePath::from_path_without_dot(&file.package),
+                        &ProtobufAbsolutePath::from_path_without_dot(&file.package),
                         &relative_path_with_name,
                     ) {
                         return (n, t);
@@ -670,9 +436,9 @@ impl<'a> Resolver<'a> {
 
         // find message or enum in root package
         {
-            let absolute_path = AbsolutePath::from_path_maybe_dot(name);
+            let absolute_path = ProtobufAbsolutePath::from_path_maybe_dot(name);
             for file in self.all_files() {
-                let file_package = AbsolutePath::from_path_without_dot(&file.package);
+                let file_package = ProtobufAbsolutePath::from_path_without_dot(&file.package);
                 if let Some(relative) = absolute_path.remove_prefix(&file_package) {
                     if let Some((n, t)) =
                         LookupScope::File(file).resolve_message_or_enum(&file_package, &relative)
@@ -693,10 +459,10 @@ impl<'a> Resolver<'a> {
         &self,
         name: &str,
         input: &model::FieldType,
-        path_in_file: &RelativePath,
+        path_in_file: &ProtobufRelativePath,
     ) -> (
         protobuf::descriptor::FieldDescriptorProto_Type,
-        Option<AbsolutePath>,
+        Option<ProtobufAbsolutePath>,
     ) {
         match *input {
             model::FieldType::Bool => (
@@ -764,7 +530,7 @@ impl<'a> Resolver<'a> {
                 (me.descriptor_type(), Some(name))
             }
             model::FieldType::Map(..) => {
-                let mut type_name = AbsolutePath::from_path_without_dot(&self.current_file.package);
+                let mut type_name = ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
                 type_name.push_relative(path_in_file);
                 type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
                 (
@@ -936,7 +702,7 @@ impl<'a> Resolver<'a> {
         &self,
         input: &model::Extension,
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
-        let relative_path = RelativePath::new("".to_owned());
+        let relative_path = ProtobufRelativePath::new("".to_owned());
         let mut field = self.field(&input.field, None, &relative_path)?;
         field.set_extendee(self.resolve_message_or_enum(&input.extendee, &relative_path).0.path);
         Ok(field)
@@ -975,7 +741,7 @@ pub fn file_descriptor(
 
     let mut messages = protobuf::RepeatedField::new();
     for m in &input.messages {
-        messages.push(resolver.message(&m, &RelativePath::empty())?);
+        messages.push(resolver.message(&m, &ProtobufRelativePath::empty())?);
     }
     output.message_type = messages;
 
