@@ -264,14 +264,17 @@ impl<'a> Scope<'a> {
         self.walk_scopes_impl(&mut callback);
     }
 
+    pub fn path_str(&self) -> String {
+        let v: Vec<&str> = self.path.iter().map(|m| m.get_name()).collect();
+        v.join(".")
+    }
+
     pub fn prefix(&self) -> String {
-        if self.path.is_empty() {
-            "".to_string()
+        let path_str = self.path_str();
+        if path_str.is_empty() {
+            path_str
         } else {
-            let v: Vec<&'a str> = self.path.iter().map(|m| m.get_name()).collect();
-            let mut r = v.join(".");
-            r.push_str(".");
-            r
+            format!("{}.", path_str)
         }
     }
 

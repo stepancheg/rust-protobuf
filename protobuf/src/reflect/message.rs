@@ -7,13 +7,14 @@ use descriptor::DescriptorProto;
 use descriptor::FileDescriptorProto;
 
 use descriptorx::FileScope;
+use descriptorx::WithScope;
 
 use reflect::accessor::FieldAccessor;
 use reflect::reflect_deep_eq::ReflectDeepEq;
 use reflect::FieldDescriptor;
 
-use descriptorx::WithScope;
 use json;
+
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<Message>;
@@ -65,14 +66,14 @@ pub struct MessageDescriptor {
 fn find_message_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
-) -> &'a DescriptorProto {
-    FileScope {
+) -> (String, &'a DescriptorProto) {
+    let message = FileScope {
         file_descriptor: fd,
     }.find_messages()
         .into_iter()
         .find(|m| m.rust_name() == rust_name)
-        .unwrap()
-        .message
+        .unwrap();
+    (message.get_scope().path_str(), message.message)
 }
 
 impl MessageDescriptor {
@@ -85,12 +86,18 @@ impl MessageDescriptor {
         M::descriptor_static()
     }
 
-    fn compute_full_name(package: &str, proto: &DescriptorProto) -> String {
+    fn compute_full_name(package: &str, path_to_package: &str, proto: &DescriptorProto) -> String {
         let mut full_name = package.to_owned();
-        if full_name.len() > 0 {
+        if path_to_package.len() != 0 {
+            if full_name.len()!= 0 {
+                full_name.push('.');
+            }
+            full_name.push_str(path_to_package);
+        }
+        if full_name.len() != 0 {
             full_name.push('.');
         }
-        full_name.push_str(&proto.name_to_package());
+        full_name.push_str(proto.get_name());
         full_name
     }
 
@@ -102,7 +109,7 @@ impl MessageDescriptor {
         file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static MessageFactory,
     ) -> MessageDescriptor {
-        let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
+        let (path_to_package, proto) = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
         for field_proto in &proto.field {
@@ -133,7 +140,8 @@ impl MessageDescriptor {
         }
 
         MessageDescriptor {
-            full_name: MessageDescriptor::compute_full_name(file_descriptor_proto.get_package(), &proto),
+            full_name: MessageDescriptor::compute_full_name(
+                file_descriptor_proto.get_package(), &path_to_package, &proto),
             proto,
             factory,
             fields: fields
