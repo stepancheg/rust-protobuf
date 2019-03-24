@@ -86,4 +86,8 @@ message TestTypesMap {
 message WithNestedMessage {
     message NestedMessage {
     }
+
+    enum NestedEnum {
+        NO_VALUE = 0;
+    }
 }

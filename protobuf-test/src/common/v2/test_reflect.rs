@@ -1,6 +1,7 @@
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::Message;
+use protobuf::ProtobufEnum;
 
 use super::test_reflect_pb::*;
 use protobuf::reflect::RuntimeFieldType;
@@ -167,4 +168,10 @@ fn test_map() {
 fn test_nested_message() {
     assert_eq!("test_reflect.WithNestedMessage.NestedMessage",
         WithNestedMessage_NestedMessage::descriptor_static().full_name());
+}
+
+#[test]
+fn test_nested_enum() {
+    assert_eq!("test_reflect.WithNestedMessage.NestedEnum",
+        WithNestedMessage_NestedEnum::enum_descriptor_static().full_name());
 }

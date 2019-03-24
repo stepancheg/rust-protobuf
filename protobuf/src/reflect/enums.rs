@@ -93,6 +93,7 @@ impl<E: ProtobufEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
 }
 
 pub struct EnumDescriptor {
+    full_name: String,
     proto: &'static EnumDescriptorProto,
     values: Vec<EnumValueDescriptor>,
     type_id: TypeId,
@@ -114,14 +115,14 @@ impl PartialEq for EnumDescriptor {
 fn find_enum_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
-) -> &'a EnumDescriptorProto {
-    FileScope {
+) -> (String, &'a EnumDescriptorProto) {
+    let en = FileScope {
         file_descriptor: fd,
     }.find_enums()
         .into_iter()
         .find(|e| e.rust_name() == rust_name)
-        .unwrap()
-        .en
+        .unwrap();
+    (en.get_scope().path_str(), en.en)
 }
 
 impl EnumDescriptor {
@@ -129,15 +130,34 @@ impl EnumDescriptor {
         self.proto.get_name()
     }
 
+    pub fn full_name(&self) -> &str {
+        &self.full_name[..]
+    }
+
     pub fn for_type<E: ProtobufEnum>() -> &'static EnumDescriptor {
         E::enum_descriptor_static()
+    }
+
+    fn compute_full_name(package: &str, path_to_package: &str, proto: &EnumDescriptorProto) -> String {
+        let mut full_name = package.to_owned();
+        if path_to_package.len() != 0 {
+            if full_name.len()!= 0 {
+                full_name.push('.');
+            }
+            full_name.push_str(path_to_package);
+        }
+        if full_name.len() != 0 {
+            full_name.push('.');
+        }
+        full_name.push_str(proto.get_name());
+        full_name
     }
 
     pub fn new<E>(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
     where
         E: ProtobufEnum,
     {
-        let proto = find_enum_by_rust_name(file, rust_name);
+        let (path_to_package, proto) = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
@@ -161,6 +181,8 @@ impl EnumDescriptor {
             }).collect();
 
         EnumDescriptor {
+            full_name: EnumDescriptor::compute_full_name(
+                file.get_package(), &path_to_package, &proto),
             proto,
             values,
             type_id: TypeId::of::<E>(),
