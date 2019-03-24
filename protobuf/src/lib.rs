@@ -70,15 +70,9 @@ pub mod well_known_types;
 #[path = "../../protobuf-test-common/src/hex.rs"]
 mod hex;
 
-// used by rust-grpc
-pub mod descriptorx;
-
 mod cached_size;
 mod chars;
 mod paginate;
-#[doc(hidden)] // used by codegen
-pub mod rust;
-mod strx;
 mod unknown;
 mod varint;
 mod zigzag;
@@ -93,7 +87,6 @@ mod protobuf {
     pub use clear::Clear;
     pub use core::*;
     pub use descriptor;
-    pub use descriptorx;
     pub use enums::ProtobufEnum;
     pub use error::*;
     pub use ext;

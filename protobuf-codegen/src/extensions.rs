@@ -1,7 +1,9 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
+use descriptorx::RootScope;
+use descriptorx::FieldDescriptorProtoExt;
+
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,

@@ -4,7 +4,8 @@ use std::fmt;
 use super::well_known_types::is_well_known_type_full;
 use ident::RustIdent;
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
+use descriptorx::RootScope;
+use descriptorx::WithScope;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]

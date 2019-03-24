@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 
 use protobuf::prelude::*;
 
@@ -9,6 +8,10 @@ use super::code_writer::*;
 use super::customize::Customize;
 use rust_types_values::type_name_to_rust_relative;
 use serde;
+use descriptorx::EnumWithScope;
+use descriptorx::EnumValueDescriptorEx;
+use descriptorx::RootScope;
+use descriptorx::WithScope;
 
 #[derive(Clone)]
 pub struct EnumValueGen {

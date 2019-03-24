@@ -1,11 +1,11 @@
 //! Utilities to work with descriptor
 
-use descriptor::DescriptorProto;
-use descriptor::EnumDescriptorProto;
-use descriptor::EnumValueDescriptorProto;
-use descriptor::FieldDescriptorProto;
-use descriptor::FileDescriptorProto;
-use descriptor::OneofDescriptorProto;
+use protobuf::descriptor::DescriptorProto;
+use protobuf::descriptor::EnumDescriptorProto;
+use protobuf::descriptor::EnumValueDescriptorProto;
+use protobuf::descriptor::FieldDescriptorProto;
+use protobuf::descriptor::FileDescriptorProto;
+use protobuf::descriptor::OneofDescriptorProto;
 
 use rust;
 use strx;

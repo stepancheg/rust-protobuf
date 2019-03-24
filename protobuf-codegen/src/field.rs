@@ -1,9 +1,8 @@
 use protobuf::prelude::*;
 
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 use protobuf::rt;
-use protobuf::rust;
+use rust;
 use protobuf::text_format;
 use protobuf::text_format::lexer::float;
 use protobuf::wire_format;
@@ -19,6 +18,14 @@ use ident::RustIdent;
 use map::map_entry;
 use oneof::OneofField;
 use protobuf::wire_format::WireType;
+use descriptorx::MessageOrEnumWithScope;
+use descriptorx::FieldDescriptorProtoExt;
+use descriptorx::EnumValueDescriptorEx;
+use descriptorx::FieldWithContext;
+use descriptorx::RootScope;
+use descriptorx::WithScope;
+use descriptorx::Syntax;
+
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
     match field_type {

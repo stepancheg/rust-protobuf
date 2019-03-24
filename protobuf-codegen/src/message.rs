@@ -1,5 +1,4 @@
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 
 use protobuf::prelude::*;
 
@@ -13,6 +12,10 @@ use map::map_entry;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
 use serde;
+use descriptorx::MessageWithScope;
+use descriptorx::WithScope;
+use descriptorx::RootScope;
+
 
 /// Message info for codegen
 pub struct MessageGen<'a> {
