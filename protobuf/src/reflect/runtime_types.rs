@@ -12,7 +12,7 @@ use std::fmt;
 use std::marker;
 #[cfg(feature = "bytes")]
 use Chars;
-use Message;
+use ::{Message, ProtobufEnumOrUnknown};
 use ProtobufEnum;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
@@ -104,6 +104,8 @@ pub struct RuntimeTypeCarllercheChars;
 
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+#[derive(Debug, Copy, Clone)]
+pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
 
@@ -588,6 +590,54 @@ where
     }
 
     fn is_non_zero(value: &E) -> bool {
+        value.value() != 0
+    }
+}
+
+impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
+where
+    E: ProtobufEnum + ProtobufValue + fmt::Debug,
+{
+    type Value = ProtobufEnumOrUnknown<E>;
+
+    fn runtime_type_box() -> RuntimeTypeBox
+    where
+        Self: Sized,
+    {
+        RuntimeTypeBox::Enum(Self::enum_descriptor())
+    }
+
+    fn default_value_ref() -> ReflectValueRef<'static> {
+        ReflectValueRef::Enum(&Self::enum_descriptor().values()[0])
+    }
+
+    fn enum_descriptor() -> &'static EnumDescriptor {
+        E::enum_descriptor_static()
+    }
+
+    fn from_value_box(value_box: ReflectValueBox) -> ProtobufEnumOrUnknown<E> {
+        match value_box {
+            ReflectValueBox::Enum(v) => ProtobufEnumOrUnknown::from_i32(v.value()),
+            _ => panic!("wrong type"),
+        }
+    }
+
+    fn into_value_box(value: ProtobufEnumOrUnknown<E>) -> ReflectValueBox {
+        // TODO: do not panic
+        ReflectValueBox::Enum(value.enum_value().unwrap().descriptor())
+    }
+
+    fn into_static_value_ref(value: ProtobufEnumOrUnknown<E>) -> ReflectValueRef<'static> {
+        // TODO: do not panic
+        ReflectValueRef::Enum(value.enum_value().unwrap().descriptor())
+    }
+
+    fn as_ref(value: &ProtobufEnumOrUnknown<E>) -> ReflectValueRef {
+        // TODO: do not panic
+        ReflectValueRef::Enum(value.enum_value().unwrap().descriptor())
+    }
+
+    fn is_non_zero(value: &ProtobufEnumOrUnknown<E>) -> bool {
         value.value() != 0
     }
 }

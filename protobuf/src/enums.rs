@@ -5,6 +5,7 @@ use reflect::EnumValueDescriptor;
 use reflect::ProtobufValue;
 use std::marker;
 
+
 /// Trait implemented by all protobuf enum types.
 pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
     /// Get enum `i32` value.
@@ -95,4 +96,7 @@ impl<E: ProtobufEnum> fmt::Debug for ProtobufEnumOrUnknown<E> {
             Err(e) => fmt::Debug::fmt(&e, f),
         }
     }
+}
+
+impl<E: ProtobufEnum> ProtobufValue for ProtobufEnumOrUnknown<E> {
 }
