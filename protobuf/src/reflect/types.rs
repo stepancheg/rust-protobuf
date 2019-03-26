@@ -10,7 +10,7 @@ use chars::Chars;
 use core::Message;
 use enums::ProtobufEnum;
 use error::ProtobufResult;
-use reflect::runtime_types::RuntimeType;
+use reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
 use reflect::runtime_types::RuntimeTypeBool;
 #[cfg(feature = "bytes")]
 use reflect::runtime_types::RuntimeTypeCarllercheBytes;
@@ -30,7 +30,7 @@ use reflect::runtime_types::RuntimeTypeVecU8;
 use reflect::type_dynamic::ProtobufTypeDynamic;
 use reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use reflect::ProtobufValue;
-use rt;
+use ::{rt, ProtobufEnumOrUnknown};
 use stream::CodedInputStream;
 use stream::CodedOutputStream;
 use unknown::UnknownValues;
@@ -146,6 +146,8 @@ pub struct ProtobufTypeCarllercheChars;
 
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+#[derive(Copy, Clone)]
+pub struct ProtobufTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
@@ -708,6 +710,35 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_enum_obj(field_number, *value)
+    }
+}
+
+impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
+    type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
+
+    fn wire_type() -> WireType {
+        WireType::WireTypeVarint
+    }
+
+    fn read(is: &mut CodedInputStream) -> ProtobufResult<ProtobufEnumOrUnknown<E>> {
+        is.read_enum_or_unknown()
+    }
+
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<ProtobufEnumOrUnknown<E>> {
+        ProtobufTypeInt32::get_from_unknown(unknown_values)
+            .map(|i| ProtobufEnumOrUnknown::from_i32(i))
+    }
+
+    fn compute_size(value: &ProtobufEnumOrUnknown<E>) -> u32 {
+        rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
+    }
+
+    fn write_with_cached_size(
+        field_number: u32,
+        value: &ProtobufEnumOrUnknown<E>,
+        os: &mut CodedOutputStream,
+    ) -> ProtobufResult<()> {
+        os.write_enum_or_unknown(field_number, *value)
     }
 }
 
