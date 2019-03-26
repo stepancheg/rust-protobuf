@@ -35,6 +35,8 @@ pub enum RustType {
     Message(String),
     // protobuf enum, not any enum
     Enum(String, RustIdent),
+    // protobuf enum or unknown
+    EnumOrUnknown(String, RustIdent),
     // oneof enum
     Oneof(String),
     // bytes::Bytes
@@ -75,6 +77,9 @@ impl fmt::Display for RustType {
             RustType::Message(ref name)
             | RustType::Enum(ref name, _)
             | RustType::Oneof(ref name) => write!(f, "{}", name),
+            RustType::EnumOrUnknown(ref name, _) => {
+                write!(f, "::protobuf::ProtobufEnumOrUnknown<{}>", name)
+            },
             RustType::Group => write!(f, "<group>"),
             RustType::Bytes => write!(f, "::bytes::Bytes"),
             RustType::Chars => write!(f, "::protobuf::Chars"),
@@ -106,6 +111,8 @@ impl RustType {
         if self.is_primitive() {
             true
         } else if let RustType::Enum(..) = *self {
+            true
+        } else if let RustType::EnumOrUnknown(..) = *self {
             true
         } else {
             false
@@ -154,6 +161,13 @@ impl RustType {
         }
     }
 
+    fn is_enum_or_unknown(&self) -> bool {
+        match *self {
+            RustType::EnumOrUnknown(..) => true,
+            _ => false,
+        }
+    }
+
     pub fn is_ref(&self) -> Option<&RustType> {
         match *self {
             RustType::Ref(ref v) => Some(&**v),
@@ -194,6 +208,7 @@ impl RustType {
             },
             // Note: default value of enum type may not be equal to default value of field
             RustType::Enum(ref name, ref default) => format!("{}::{}", name, default),
+            RustType::EnumOrUnknown(ref name, ref default) => format!("::protobuf::ProtobufEnumOrUnknown::new({}::{})", name, default),
             _ => panic!("cannot create default value for: {}", *self),
         }
     }
@@ -217,7 +232,11 @@ impl RustType {
             | RustType::SingularPtrField(..)
             | RustType::HashMap(..) => format!("{}.clear()", v),
             RustType::Chars => format!("::protobuf::Clear::clear(&mut {})", v),
-            RustType::Bool | RustType::Float(..) | RustType::Int(..) | RustType::Enum(..) => {
+            RustType::Bool
+            | RustType::Float(..)
+            | RustType::Int(..)
+            | RustType::Enum(..)
+            | RustType::EnumOrUnknown(..) => {
                 format!("{} = {}", v, self.default_value())
             }
             ref ty => panic!("cannot clear type: {:?}", ty),
@@ -296,8 +315,21 @@ impl RustType {
             (&RustType::Enum(..), &RustType::Int(true, 32)) => {
                 return Ok(format!("::protobuf::ProtobufEnum::value(&{})", v))
             },
+            (&RustType::EnumOrUnknown(..), &RustType::Int(true, 32)) => {
+                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::value(&{})", v))
+            },
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
                 return Ok(format!("::protobuf::ProtobufEnum::value({})", v))
+            }
+            (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum_or_unknown() => {
+                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::value({})", v))
+            },
+            (&RustType::EnumOrUnknown(ref f, ..), &RustType::Enum(ref t, ..)) if f == t => {
+                // TODO: ignores default value
+                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::enum_value_or_default(&{})", v))
+            }
+            (&RustType::Enum(ref f, ..), &RustType::EnumOrUnknown(ref t, ..)) if f == t => {
+                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::new({})", v))
             }
             _ => (),
         };
@@ -495,6 +527,7 @@ pub enum _CarllercheBytesType {
 pub enum ProtobufTypeGen {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     Message(String),
+    EnumOrUnknown(String),
     Enum(String),
 }
 
@@ -516,6 +549,9 @@ impl ProtobufTypeGen {
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             &ProtobufTypeGen::Message(ref name) => {
                 format!("::protobuf::types::ProtobufTypeMessage<{}>", name)
+            }
+            &ProtobufTypeGen::EnumOrUnknown(ref name) => {
+                format!("::protobuf::types::ProtobufTypeEnumOrUnknown<{}>", name)
             }
             &ProtobufTypeGen::Enum(ref name) => {
                 format!("::protobuf::types::ProtobufTypeEnum<{}>", name)

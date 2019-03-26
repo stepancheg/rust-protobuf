@@ -224,7 +224,7 @@ fn test_enum() {
     test_json_parse_message("{\"testEnumSingular\": 10}", &m);
 
     let mut m = TestTypes::new();
-    m.set_test_enum_repeated(vec![TestEnum::DARK, TestEnum::LIGHT]);
+    m.set_test_enum_repeated(vec![TestEnum::DARK.into(), TestEnum::LIGHT.into()]);
     test_json_print_parse_message("{\"testEnumRepeated\": [\"DARK\", \"LIGHT\"]}", &m);
     test_json_parse_message("{\"testEnumRepeated\": [\"DARK\", 20]}", &m);
 }

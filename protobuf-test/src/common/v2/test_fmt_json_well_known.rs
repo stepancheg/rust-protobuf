@@ -35,7 +35,7 @@ fn test_timestamp() {
 #[test]
 fn test_null_value() {
     let mut m = TestFmtJsonWellKnownTypes::new();
-    m.set_null_values(vec![NullValue::NULL_VALUE]);
+    m.set_null_values(vec![NullValue::NULL_VALUE.into()]);
     test_json_print_parse_message("{\"nullValues\": [null]}", &m);
 }
 

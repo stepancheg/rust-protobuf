@@ -23,7 +23,7 @@ fn test_get() {
     assert_eq!("Hello world!", exts::string_field.get(message).unwrap_or_default());
     if false {
         // TODO: only implemented in `protoc`-based codegen
-        assert_eq!(TestEnum::RED, exts::enum_field.get(message).unwrap_or_default());
+        assert_eq!(TestEnum::RED, exts::enum_field.get(message).unwrap_or_default().unwrap());
         assert_eq!(22, exts::message_field.get(message).unwrap().get_n());
     }
 }

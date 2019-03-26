@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fmt;
+use std::{fmt, ptr};
 
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
@@ -10,7 +10,7 @@ use std::hash::Hash;
 use std::hash::Hasher;
 use std::marker;
 use std::mem;
-use ProtobufEnum;
+use ::{ProtobufEnum, ProtobufEnumOrUnknown};
 use reflect::find_message_or_enum::find_message_or_enum;
 use reflect::find_message_or_enum::MessageOrEnum;
 
@@ -97,7 +97,10 @@ pub struct EnumDescriptor {
     full_name: String,
     proto: &'static EnumDescriptorProto,
     values: Vec<EnumValueDescriptor>,
+    /// Type id of `<E>`
     type_id: TypeId,
+    /// Type id of `<ProtobufEnumOrUnknown<E>>`
+    enum_or_unknown_type_id: TypeId,
 
     get_descriptor: &'static GetEnumDescriptor,
 
@@ -177,6 +180,7 @@ impl EnumDescriptor {
             proto,
             values,
             type_id: TypeId::of::<E>(),
+            enum_or_unknown_type_id: TypeId::of::<ProtobufEnumOrUnknown<E>>(),
             get_descriptor,
             index_by_name,
             index_by_number,
@@ -202,11 +206,19 @@ impl EnumDescriptor {
     }
 
     pub fn cast<E: 'static>(&self, value: i32) -> Option<E> {
-        if self.is::<E>() {
+        if TypeId::of::<E>() == self.type_id {
             unsafe {
                 let mut r = mem::uninitialized();
                 self.get_descriptor
                     .copy_to(value, &mut r as *mut E as *mut ());
+                Some(r)
+            }
+        } else if TypeId::of::<E>() == self.enum_or_unknown_type_id {
+            debug_assert_eq!(mem::size_of::<E>(), mem::size_of::<i32>());
+            unsafe {
+                // This works because `ProtobufEnumOrUnknown<E>` is `#[repr(transparent)]`
+                let mut r = mem::uninitialized();
+                ptr::copy(&value, &mut r as *mut E as *mut i32, 1);
                 Some(r)
             }
         } else {

@@ -38,7 +38,7 @@ impl<'a> ExtGen<'a> {
                 FieldDescriptorProto_Type::TYPE_MESSAGE => {
                     ProtobufTypeGen::Message(rust_name_relative)
                 }
-                FieldDescriptorProto_Type::TYPE_ENUM => ProtobufTypeGen::Enum(rust_name_relative),
+                FieldDescriptorProto_Type::TYPE_ENUM => ProtobufTypeGen::EnumOrUnknown(rust_name_relative),
                 t => panic!("unknown type: {:?}", t),
             }
         } else {

@@ -40,6 +40,7 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug
 
 /// Protobuf enums with possibly unknown values are preserved in this struct.
 #[derive(Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
+#[repr(transparent)]
 pub struct ProtobufEnumOrUnknown<E: ProtobufEnum> {
     value: i32,
     _marker: marker::PhantomData<E>,
@@ -71,10 +72,21 @@ impl<E: ProtobufEnum> ProtobufEnumOrUnknown<E> {
         E::from_i32(self.value).ok_or(self.value)
     }
 
+    /// Get contained enum, panic if value is unknown.
+    pub fn unwrap(&self) -> E {
+        self.enum_value().unwrap()
+    }
+
     /// Get `i32` value as typed enum.
     /// Return default enum value (first value) if value is unknown.
     pub fn enum_value_or_default(&self) -> E {
         self.enum_value().unwrap_or_default()
+    }
+
+    /// Get `i32` value as typed enum.
+    /// Return given enum value if value is unknown.
+    pub fn enum_value_or(&self, map_unknown: E) -> E {
+        self.enum_value().unwrap_or(map_unknown)
     }
 
     /// Get enum descriptor by type.

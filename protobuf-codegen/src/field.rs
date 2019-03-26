@@ -43,17 +43,23 @@ trait FieldDescriptorProtoTypeExt {
 
 impl FieldDescriptorProtoTypeExt for FieldDescriptorProto_Type {
     fn read(&self, is: &str, primitive_type_variant: PrimitiveTypeVariant) -> String {
-        match primitive_type_variant {
-            PrimitiveTypeVariant::Default => format!("{}.read_{}()", is, protobuf_name(*self)),
-            PrimitiveTypeVariant::Carllerche => {
-                let protobuf_name = match self {
-                    FieldDescriptorProto_Type::TYPE_STRING => "chars",
-                    _ => protobuf_name(*self),
-                };
-                format!("{}.read_carllerche_{}()", is, protobuf_name)
+        match *self {
+            FieldDescriptorProto_Type::TYPE_ENUM => {
+                format!("{}.read_enum_or_unknown()", is)
+            }
+            _ => {
+                match primitive_type_variant {
+                    PrimitiveTypeVariant::Default => format!("{}.read_{}()", is, protobuf_name(*self)),
+                    PrimitiveTypeVariant::Carllerche => {
+                        let protobuf_name = match self {
+                            FieldDescriptorProto_Type::TYPE_STRING => "chars",
+                            _ => protobuf_name(*self),
+                        };
+                        format!("{}.read_carllerche_{}()", is, protobuf_name)
+                    }
+                }
             }
         }
-
     }
 
     /// True if self is signed integer with zigzag encoding
@@ -210,7 +216,7 @@ impl OptionKind {
     }
 }
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Copy)]
 pub enum SingularFieldFlag {
     // proto2 or proto3 message
     WithFlag {
@@ -335,6 +341,16 @@ pub struct FieldElemEnum {
     default_value: RustIdent,
 }
 
+impl FieldElemEnum {
+    fn enum_rust_type(&self) -> RustType {
+        RustType::Enum(self.name.clone(), self.default_value.clone())
+    }
+
+    fn enum_or_unknown_rust_type(&self) -> RustType {
+        RustType::EnumOrUnknown(self.name.clone(), self.default_value.clone())
+    }
+}
+
 #[derive(Clone, Debug)]
 pub enum FieldElem {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
@@ -372,18 +388,27 @@ impl FieldElem {
             FieldElem::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             FieldElem::Group => RustType::Group,
             FieldElem::Message(ref name, ..) => RustType::Message(name.clone()),
-            FieldElem::Enum(ref en) => {
-                RustType::Enum(en.name.clone(), en.default_value.clone())
-            }
+            FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(),
         }
     }
 
     // Type of get_xxx function for singular type
     pub fn rust_get_xxx_return_type(&self) -> RustType {
-        if self.is_copy() {
+        if let FieldElem::Enum(ref en) = *self {
+            en.enum_rust_type()
+        } else if self.is_copy() {
             self.rust_storage_elem_type()
         } else {
             self.rust_storage_elem_type().ref_type()
+        }
+    }
+
+    // Type of set_xxx function parameter type for singular fields
+    pub fn rust_set_xxx_param_type(&self) -> RustType {
+        if let FieldElem::Enum(ref en) = *self {
+            en.enum_rust_type()
+        } else {
+            self.rust_storage_elem_type()
         }
     }
 
@@ -391,7 +416,7 @@ impl FieldElem {
         match *self {
             FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
             FieldElem::Message(ref name, ..) => ProtobufTypeGen::Message(name.clone()),
-            FieldElem::Enum(ref en) => ProtobufTypeGen::Enum(en.name.clone()),
+            FieldElem::Enum(ref en) => ProtobufTypeGen::EnumOrUnknown(en.name.clone()),
             FieldElem::Group => unreachable!(),
         }
     }
@@ -769,7 +794,7 @@ impl<'a> FieldGen<'a> {
     fn set_xxx_param_type(&self) -> RustType {
         match self.kind {
             FieldKind::Singular(SingularField { ref elem, .. })
-            | FieldKind::Oneof(OneofField { ref elem, .. }) => elem.rust_storage_elem_type(),
+            | FieldKind::Oneof(OneofField { ref elem, .. }) => elem.rust_set_xxx_param_type(),
             FieldKind::Repeated(..) | FieldKind::Map(..) => self.full_storage_type(),
         }
     }
@@ -1011,10 +1036,15 @@ impl<'a> FieldGen<'a> {
                 type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
-            FieldElem::Primitive(..) | FieldElem::Enum(..) => AccessorFn {
+            FieldElem::Primitive(..) => AccessorFn {
                 name: "make_option_get_copy_accessor".to_owned(),
                 type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
+            },
+            FieldElem::Enum(ref en) => AccessorFn {
+                name: "make_option_enum_accessor".to_owned(),
+                type_params: vec![en.name.clone()],
+                callback_params: self.make_accessor_fns_lambda_default_value(),
             },
             FieldElem::Group => {
                 unreachable!("no accessor for group field");
@@ -1026,7 +1056,14 @@ impl<'a> FieldGen<'a> {
         let OneofField { ref elem, .. } = oneof;
         // TODO: uses old style
 
-        // TODO: storage type is nonsense for oneof
+        if let FieldElem::Enum(ref en) = oneof.elem {
+            return AccessorFn {
+                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
+                type_params: vec![ProtobufTypeGen::Enum(en.name.clone()).rust_type()],
+                callback_params: self.make_accessor_fns_has_get_set(),
+            };
+        }
+
         if elem.rust_storage_elem_type().is_copy() {
             return AccessorFn {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
@@ -1081,6 +1118,15 @@ impl<'a> FieldGen<'a> {
             format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
             format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
             format!("{}::get_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_lambda_default_value(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+            format!("{}", self.get_xxx_default_value_rust()),
         ]
     }
 
@@ -1163,7 +1209,7 @@ impl<'a> FieldGen<'a> {
                         t => t.clone(),
                     };
                     format!(
-                        "::protobuf::rt::enum_size({}, {})",
+                        "::protobuf::rt::enum_or_unknown_size({}, {})",
                         self.proto_field.number(),
                         var_type.into_target(&param_type, var)
                     )
@@ -1502,7 +1548,7 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_varint_data_size(&self) -> String {
         assert!(!self.is_fixed());
         let fn_name = if self.is_enum() {
-            "vec_packed_enum_data_size".to_string()
+            "vec_packed_enum_or_unknown_data_size".to_string()
         } else {
             let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_data_size", zigzag_suffix)
@@ -1533,7 +1579,7 @@ impl<'a> FieldGen<'a> {
         // zero is filtered outside
         assert!(!self.is_fixed());
         let fn_name = if self.is_enum() {
-            "vec_packed_enum_size".to_string()
+            "vec_packed_enum_or_unknown_size".to_string()
         } else {
             let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_size", zigzag_suffix)
@@ -1692,25 +1738,10 @@ impl<'a> FieldGen<'a> {
             | FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => {
                 self.write_merge_from_field_message_string_bytes(w);
             }
-            FieldElem::Enum(..) => {
-                let version = match s.flag {
-                    SingularFieldFlag::WithFlag { .. } => "proto2",
-                    SingularFieldFlag::WithoutFlag => "proto3",
-                };
-                w.write_line(&format!(
-                    "::protobuf::rt::read_{}_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
-                    version,
-                    wire_type_var,
-                    self.rust_name,
-                    self.proto_field.number()
-                ));
-            }
             _ => {
-                let read_proc = format!("{}?", self.proto_type.read("is", s.elem.primitive_type_variant()));
-
                 self.write_assert_wire_type(wire_type_var, w);
-                w.write_line(&format!("let tmp = {};", read_proc));
-                self.write_self_field_assign_some(w, s, "tmp");
+                let read_proc = format!("{}?", self.proto_type.read("is", s.elem.primitive_type_variant()));
+                self.write_self_field_assign_some(w, s, &read_proc);
             }
         }
     }
@@ -1730,10 +1761,9 @@ impl<'a> FieldGen<'a> {
             }
             FieldElem::Enum(..) => {
                 w.write_line(&format!(
-                    "::protobuf::rt::read_repeated_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    "::protobuf::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
                     wire_type_var,
                     self.rust_name,
-                    self.proto_field.number()
                 ));
             }
             _ => {
@@ -1927,44 +1957,65 @@ impl<'a> FieldGen<'a> {
         }
     }
 
+    fn write_message_field_get_singular_enum(&self, flag: SingularFieldFlag, _elem: &FieldElemEnum, w: &mut CodeWriter) {
+        match flag {
+            SingularFieldFlag::WithoutFlag => {
+                w.write_line(&format!("self.{}.enum_value_or_default()", self.rust_name));
+            }
+            SingularFieldFlag::WithFlag { .. } => {
+                w.match_expr(&self.self_field(), |w| {
+                    let default_value = self.get_xxx_default_value_rust();
+                    w.case_expr("Some(e)", &format!("e.enum_value_or({})", default_value));
+                    w.case_expr("None", &format!("{}", default_value));
+                });
+            }
+        }
+    }
+
     fn write_message_field_get_singular(&self, singular: &SingularField, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
 
-        if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-            self.write_message_field_get_singular_message(singular, w);
-        } else {
-            let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
-            let self_field = self.self_field();
-            match singular {
-                &SingularField {
-                    ref elem,
-                    flag: SingularFieldFlag::WithFlag { option_kind, .. },
-                    ..
-                } => {
-                    if get_xxx_return_type.is_ref().is_some() {
-                        let as_option = self.self_field_as_option(elem, option_kind);
-                        w.match_expr(&as_option.value, |w| {
-                            let v_type = as_option.rust_type.elem_type();
-                            let r_type = self.get_xxx_return_type();
-                            w.case_expr("Some(v)", v_type.into_target(&r_type, "v"));
-                            let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
-                            w.case_expr("None", get_xxx_default_value_rust);
-                        });
-                    } else {
-                        w.write_line(&format!(
-                            "{}.unwrap_or({})",
-                            self_field, get_xxx_default_value_rust
-                        ));
+        match singular.elem {
+            FieldElem::Message(..) => {
+                self.write_message_field_get_singular_message(singular, w)
+            }
+            FieldElem::Enum(ref en) => {
+                self.write_message_field_get_singular_enum(singular.flag, en, w)
+            }
+            _ => {
+                let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                let self_field = self.self_field();
+                match singular {
+                    &SingularField {
+                        ref elem,
+                        flag: SingularFieldFlag::WithFlag { option_kind, .. },
+                        ..
+                    } => {
+                        if get_xxx_return_type.is_ref().is_some() {
+                            let as_option = self.self_field_as_option(elem, option_kind);
+                            w.match_expr(&as_option.value, |w| {
+                                let v_type = as_option.rust_type.elem_type();
+                                let r_type = self.get_xxx_return_type();
+                                w.case_expr("Some(v)", v_type.into_target(&r_type, "v"));
+                                let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                                w.case_expr("None", get_xxx_default_value_rust);
+                            });
+                        } else {
+                            w.write_line(&format!(
+                                "{}.unwrap_or({})",
+                                self_field, get_xxx_default_value_rust
+                            ));
+                        }
                     }
-                }
-                &SingularField {
-                    flag: SingularFieldFlag::WithoutFlag,
-                    ..
-                } => {
-                    w.write_line(
-                        self.full_storage_type()
-                            .into_target(&get_xxx_return_type, &self_field),
-                    );
+                    &SingularField {
+                        flag: SingularFieldFlag::WithoutFlag,
+                        ..
+                    } => {
+                        w.write_line(
+                            self.full_storage_type()
+                                .into_target(&get_xxx_return_type, &self_field),
+                        );
+                    }
                 }
             }
         }

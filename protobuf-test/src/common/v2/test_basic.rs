@@ -144,7 +144,7 @@ fn test_types_repeated() {
         [33u8, 34].to_vec(),
         [35u8].to_vec(),
     ]));
-    message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
+    message.set_enum_field([TestEnumDescriptor::BLUE.into(), TestEnumDescriptor::GREEN.into()].to_vec());
     test_serialize_deserialize_no_hex(&message);
 }
 
@@ -172,7 +172,7 @@ fn test_types_repeated_packed() {
         [33u8, 34].to_vec(),
         [35u8].to_vec(),
     ]));
-    message.set_enum_field([TestEnumDescriptor::BLUE, TestEnumDescriptor::GREEN].to_vec());
+    message.set_enum_field([TestEnumDescriptor::BLUE.into(), TestEnumDescriptor::GREEN.into()].to_vec());
     test_serialize_deserialize_no_hex(&message);
 }
 

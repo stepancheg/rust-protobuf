@@ -1,16 +1,18 @@
 use reflect::accessor::AccessorKind;
 use reflect::accessor::FieldAccessor;
-use reflect::runtime_types::RuntimeType;
+use reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
 use reflect::runtime_types::RuntimeTypeMessage;
 use reflect::runtime_types::RuntimeTypeWithDeref;
 use reflect::type_dynamic::ProtobufTypeDynamic;
-use reflect::types::ProtobufType;
+use reflect::types::{ProtobufType, ProtobufTypeEnumOrUnknown};
 use reflect::types::ProtobufTypeMessage;
 use reflect::ReflectValueBox;
 use reflect::ReflectValueRef;
 use singular::OptionLike;
 use std::marker;
 use Message;
+use ProtobufEnum;
+use ProtobufEnumOrUnknown;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
@@ -475,6 +477,53 @@ where
             }),
             element_type: V::dynamic(),
         }),
+    }
+}
+
+struct GetOrDefaultEnum<M, E: ProtobufEnum> {
+    get_field: for<'a> fn(&'a M) -> &'a Option<ProtobufEnumOrUnknown<E>>,
+    default_value: E,
+}
+
+impl<M: Message, E: ProtobufEnum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
+    fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
+        ReflectValueRef::Enum(match (self.get_field)(m) {
+            Some(e) => e.enum_value_or_default().descriptor(),
+            None => self.default_value.descriptor()
+        })
+    }
+}
+
+pub fn make_option_enum_accessor<M, E>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a Option<ProtobufEnumOrUnknown<E>>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<ProtobufEnumOrUnknown<E>>,
+    default_value: E,
+) -> FieldAccessor
+    where
+        M: Message + 'static,
+        E: ProtobufEnum,
+{
+    FieldAccessor {
+        name,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeEnumOrUnknown<E>, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, RuntimeTypeEnumOrUnknown<E>, Option<ProtobufEnumOrUnknown<E>>> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultEnum::<M, E> {
+                    get_field,
+                    default_value,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, RuntimeTypeEnumOrUnknown<E>, Option<ProtobufEnumOrUnknown<E>>> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+            element_type: ProtobufTypeEnumOrUnknown::<E>::dynamic(),
+        })
     }
 }
 

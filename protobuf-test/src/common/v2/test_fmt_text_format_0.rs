@@ -65,7 +65,7 @@ fn test_repeated_one() {
         m.bytes_repeated.push(b"def".to_vec())
     });
     t("test_enum_repeated: DARK", |m| {
-        m.test_enum_repeated.push(TestEnum::DARK)
+        m.test_enum_repeated.push(TestEnum::DARK.into())
     });
     t("test_message_repeated {}", |m| {
         m.test_message_repeated.push(Default::default());
