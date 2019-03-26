@@ -29,8 +29,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 - [Implement `Hash` for
   `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/113babc8c56deb7e2453f0d11c2bfc21134d540f)
-- [`Default` is now implented for all `&MyMessage`
-  types](https://github.com/stepancheg/rust-protobuf/commit/c026777976c895898fb50bc7c52802967bd33af5#diff-405e0ba76bb0afaaa4e11e89bc4bb943R4)
 
 ### Improvements
 
@@ -44,6 +42,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 ## [2.5 Unreleased]
 
 - `generate_accessors` options to disable generation of accessor functions (except getters).
+- [`Default` is now implented for all `&MyMessage`
+  types](https://github.com/stepancheg/rust-protobuf/commit/c026777976c895898fb50bc7c52802967bd33af5#diff-405e0ba76bb0afaaa4e11e89bc4bb943R4)
 
 ## [2.4.1] - 2019-03-06
 
