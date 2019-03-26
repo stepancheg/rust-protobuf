@@ -372,6 +372,15 @@ impl FieldElem {
         }
     }
 
+    // Type of get_xxx function for singular type
+    pub fn rust_get_xxx_return_type(&self) -> RustType {
+        if self.is_copy() {
+            self.rust_storage_elem_type()
+        } else {
+            self.rust_storage_elem_type().ref_type()
+        }
+    }
+
     fn protobuf_type_gen(&self) -> ProtobufTypeGen {
         match *self {
             FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
@@ -776,11 +785,8 @@ impl<'a> FieldGen<'a> {
     // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
         match self.kind {
-            FieldKind::Singular(SingularField { ref elem, .. })
-            | FieldKind::Oneof(OneofField { ref elem, .. }) => match elem.is_copy() {
-                true => elem.rust_storage_elem_type(),
-                false => elem.rust_storage_elem_type().ref_type(),
-            },
+            FieldKind::Singular(SingularField { ref elem, .. }) |
+            FieldKind::Oneof(OneofField { ref elem, .. }) => elem.rust_get_xxx_return_type(),
             FieldKind::Repeated(RepeatedField { ref elem, .. }) => RustType::Ref(Box::new(
                 RustType::Slice(Box::new(elem.rust_storage_elem_type())),
             )),
