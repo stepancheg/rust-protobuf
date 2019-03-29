@@ -11,6 +11,10 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/type.proto";
 import "google/protobuf/wrappers.proto";
 
+// generate accessors to make sure accessors are generated correctly
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
 message UsesWellKnownTypes {
     optional .google.protobuf.NullValue null_value = 3;
     // remaining types are covered by `unittest_well_known_types.proto`
