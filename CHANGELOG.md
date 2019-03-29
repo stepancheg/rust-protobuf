@@ -44,6 +44,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_accessors` options to disable generation of accessor functions (except getters).
 - [`Default` is now implented for all `&MyMessage`
   types](https://github.com/stepancheg/rust-protobuf/commit/c026777976c895898fb50bc7c52802967bd33af5#diff-405e0ba76bb0afaaa4e11e89bc4bb943R4)
+  
+## [2.4.2] - 2019-03-29
+
+- [Fix well-known types codegen](https://github.com/stepancheg/grpc-rust/issues/129)
 
 ## [2.4.1] - 2019-03-06
 
