@@ -1921,15 +1921,15 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn write_message_field_get_singular(&self, s: &SingularField, w: &mut CodeWriter) {
+    fn write_message_field_get_singular(&self, singular: &SingularField, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
 
         if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
-            self.write_message_field_get_singular_message(s, w);
+            self.write_message_field_get_singular_message(singular, w);
         } else {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
             let self_field = self.self_field();
-            match self.singular() {
+            match singular {
                 &SingularField {
                     ref elem,
                     flag: SingularFieldFlag::WithFlag { option_kind, .. },
