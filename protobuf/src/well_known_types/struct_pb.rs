@@ -543,38 +543,38 @@ impl ::protobuf::Message for Value {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeEnum<NullValue>>(
+            fields.push(::protobuf::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, ::protobuf::types::ProtobufTypeEnum<NullValue>>(
                 "null_value",
                 Value::has_null_value,
                 Value::get_null_value,
                 Value::set_null_value,
             ));
-            fields.push(::protobuf::reflect::rt::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+            fields.push(::protobuf::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, ::protobuf::types::ProtobufTypeDouble>(
                 "number_value",
                 Value::has_number_value,
                 Value::get_number_value,
                 Value::set_number_value,
             ));
-            fields.push(::protobuf::reflect::rt::make_singular_deref_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                 "string_value",
                 Value::has_string_value,
                 Value::get_string_value,
                 Value::set_string_value,
             ));
-            fields.push(::protobuf::reflect::rt::make_singular_copy_has_get_set_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, ::protobuf::types::ProtobufTypeBool>(
                 "bool_value",
                 Value::has_bool_value,
                 Value::get_bool_value,
                 Value::set_bool_value,
             ));
-            fields.push(::protobuf::reflect::rt::make_singular_message_has_get_mut_set_accessor::<_, Struct>(
+            fields.push(::protobuf::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
                 "struct_value",
                 Value::has_struct_value,
                 Value::get_struct_value,
                 Value::mut_struct_value,
                 Value::set_struct_value,
             ));
-            fields.push(::protobuf::reflect::rt::make_singular_message_has_get_mut_set_accessor::<_, ListValue>(
+            fields.push(::protobuf::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
                 "list_value",
                 Value::has_list_value,
                 Value::get_list_value,

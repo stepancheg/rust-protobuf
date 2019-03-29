@@ -328,7 +328,7 @@ where
 // TODO: make_singular_xxx_accessor are used only for oneof fields
 // oneof codegen should be changed
 
-pub fn make_singular_copy_has_get_set_accessor<M, V>(
+pub fn make_oneof_copy_has_get_set_accessors<M, V>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> <V::RuntimeType as RuntimeType>::Value,
@@ -353,7 +353,7 @@ where
     }
 }
 
-pub fn make_singular_deref_has_get_set_accessor<M, F>(
+pub fn make_oneof_deref_has_get_set_accessor<M, F>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a <F::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
@@ -378,7 +378,7 @@ where
     }
 }
 
-pub fn make_singular_message_has_get_mut_set_accessor<M, F>(
+pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
     name: &'static str,
     has_field: fn(&M) -> bool,
     get_field: for<'a> fn(&'a M) -> &'a F,

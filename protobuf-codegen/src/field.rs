@@ -1023,7 +1023,7 @@ impl<'a> FieldGen<'a> {
         // TODO: storage type is nonsense for oneof
         if elem.rust_storage_elem_type().is_copy() {
             return AccessorFn {
-                name: "make_singular_copy_has_get_set_accessor".to_owned(),
+                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
                 type_params: vec![elem.protobuf_type_gen().rust_type()],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
@@ -1031,7 +1031,7 @@ impl<'a> FieldGen<'a> {
 
         if let RustType::Message(name) = elem.rust_storage_elem_type() {
             return AccessorFn {
-                name: "make_singular_message_has_get_mut_set_accessor".to_owned(),
+                name: "make_oneof_message_has_get_mut_set_accessor".to_owned(),
                 type_params: vec![name.clone()],
                 callback_params: self.make_accessor_fns_has_get_mut_set(),
             };
@@ -1039,7 +1039,7 @@ impl<'a> FieldGen<'a> {
 
         // string or bytes
         AccessorFn {
-            name: "make_singular_deref_has_get_set_accessor".to_owned(),
+            name: "make_oneof_deref_has_get_set_accessor".to_owned(),
             type_params: vec![elem.protobuf_type_gen().rust_type()],
             callback_params: self.make_accessor_fns_has_get_set(),
         }
