@@ -248,7 +248,10 @@ impl PrintableToJson for Value {
         match self.kind {
             // None should not be possible here, but it's better to print null than crash
             None => w.print_json_null(),
-            Some(Value_oneof_kind::null_value(null_value)) => w.print_wk_null_value(&null_value),
+            Some(Value_oneof_kind::null_value(null_value)) => {
+                // TODO: number if unknown
+                w.print_wk_null_value(&null_value.enum_value_or_default())
+            },
             Some(Value_oneof_kind::bool_value(b)) => w.print_printable(&b),
             Some(Value_oneof_kind::number_value(n)) => w.print_printable(&n),
             Some(Value_oneof_kind::string_value(ref s)) => w.print_printable::<String>(&s),

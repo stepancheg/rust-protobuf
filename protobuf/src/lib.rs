@@ -88,6 +88,7 @@ mod protobuf {
     pub use core::*;
     pub use descriptor;
     pub use enums::ProtobufEnum;
+    pub use enums::ProtobufEnumOrUnknown;
     pub use error::*;
     pub use ext;
     pub use oneof::Oneof;

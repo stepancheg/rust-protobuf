@@ -753,7 +753,7 @@ impl<'a> Parser<'a> {
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResult<()> {
         if self.tokenizer.lookahead_is_ident("null")? {
-            value.kind = Some(Value_oneof_kind::null_value(self.read_wk_null_value()?));
+            value.kind = Some(Value_oneof_kind::null_value(self.read_wk_null_value()?.into()));
         } else if self.tokenizer.lookahead_is_ident("true")?
             || self.tokenizer.lookahead_is_ident("false")?
         {
