@@ -83,6 +83,12 @@ impl<E: ProtobufEnum> ProtobufEnumOrUnknown<E> {
     }
 }
 
+impl<E: ProtobufEnum> From<E> for ProtobufEnumOrUnknown<E> {
+    fn from(e: E) -> Self {
+        ProtobufEnumOrUnknown::new(e)
+    }
+}
+
 impl<E: ProtobufEnum> Default for ProtobufEnumOrUnknown<E> {
     fn default() -> ProtobufEnumOrUnknown<E> {
         ProtobufEnumOrUnknown::new(E::default())
