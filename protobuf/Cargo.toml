@@ -18,6 +18,7 @@ bench = false
 [features]
 with-bytes = ["bytes"]
 with-serde = ["serde", "serde_derive"]
+default = []
 
 [dependencies]
 bytes = { version = "0.4", optional = true }

@@ -5,6 +5,7 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
 
 [features]
+default = []
 proto3 = []
 with-bytes = ["protobuf/with-bytes"]
 
