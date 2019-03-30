@@ -329,12 +329,18 @@ impl FieldKind {
 pub struct EntryKeyValue(FieldElem, FieldElem);
 
 #[derive(Clone, Debug)]
+pub struct FieldElemEnum {
+    name: String,
+    file_name: String,
+    default_value: RustIdent,
+}
+
+#[derive(Clone, Debug)]
 pub enum FieldElem {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name, entry
     Message(String, String, Option<Box<EntryKeyValue>>),
-    // name, file name, default value
-    Enum(String, String, RustIdent),
+    Enum(FieldElemEnum),
     Group,
 }
 
@@ -366,8 +372,8 @@ impl FieldElem {
             FieldElem::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             FieldElem::Group => RustType::Group,
             FieldElem::Message(ref name, ..) => RustType::Message(name.clone()),
-            FieldElem::Enum(ref name, _, ref default_value) => {
-                RustType::Enum(name.clone(), default_value.clone())
+            FieldElem::Enum(ref en) => {
+                RustType::Enum(en.name.clone(), en.default_value.clone())
             }
         }
     }
@@ -385,7 +391,7 @@ impl FieldElem {
         match *self {
             FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
             FieldElem::Message(ref name, ..) => ProtobufTypeGen::Message(name.clone()),
-            FieldElem::Enum(ref name, ..) => ProtobufTypeGen::Enum(name.clone()),
+            FieldElem::Enum(ref en) => ProtobufTypeGen::Enum(en.name.clone()),
             FieldElem::Group => unreachable!(),
         }
     }
@@ -461,11 +467,11 @@ fn field_elem(
                     e.values_unique().into_iter().next().unwrap()
                 };
                 (
-                    FieldElem::Enum(
-                        rust_relative_name,
+                    FieldElem::Enum(FieldElemEnum {
+                        name: rust_relative_name,
                         file_name,
-                        RustIdent(enum_with_scope.values()[0].rust_name().to_owned()),
-                    ),
+                        default_value: RustIdent(enum_with_scope.values()[0].rust_name().to_owned()),
+                    }),
                     Some(ev),
                 )
             }
