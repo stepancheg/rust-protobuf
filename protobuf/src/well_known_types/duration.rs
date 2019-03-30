@@ -55,15 +55,13 @@ impl ::protobuf::Message for Duration {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int64()?;
-                    self.seconds = tmp;
+                    self.seconds = is.read_int64()?;
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.nanos = tmp;
+                    self.nanos = is.read_int32()?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;

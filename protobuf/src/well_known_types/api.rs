@@ -27,7 +27,7 @@ pub struct Api {
     pub version: ::std::string::String,
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
     pub mixins: ::protobuf::RepeatedField<Mixin>,
-    pub syntax: ::protobuf::well_known_types::Syntax,
+    pub syntax: ::protobuf::ProtobufEnumOrUnknown<::protobuf::well_known_types::Syntax>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -95,7 +95,10 @@ impl ::protobuf::Message for Api {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.mixins)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 7, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.syntax = is.read_enum_or_unknown()?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -131,8 +134,8 @@ impl ::protobuf::Message for Api {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            my_size += ::protobuf::rt::enum_size(7, self.syntax);
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(::protobuf::well_known_types::Syntax::SYNTAX_PROTO2) {
+            my_size += ::protobuf::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -158,8 +161,8 @@ impl ::protobuf::Message for Api {
         for v in &self.mixins {
             ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, ::protobuf::ProtobufEnum::value(&self.syntax))?;
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(::protobuf::well_known_types::Syntax::SYNTAX_PROTO2) {
+            os.write_enum(7, ::protobuf::ProtobufEnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -219,7 +222,7 @@ impl ::protobuf::Message for Api {
                 |m: &Api| { &m.mixins },
                 |m: &mut Api| { &mut m.mixins },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<::protobuf::well_known_types::Syntax>>(
                 "syntax",
                 |m: &Api| { &m.syntax },
                 |m: &mut Api| { &mut m.syntax },
@@ -246,7 +249,7 @@ impl ::protobuf::Clear for Api {
         self.version.clear();
         self.source_context.clear();
         self.mixins.clear();
-        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
+        self.syntax = ::protobuf::ProtobufEnumOrUnknown::new(::protobuf::well_known_types::Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -270,7 +273,7 @@ pub struct Method {
     pub response_type_url: ::std::string::String,
     pub response_streaming: bool,
     pub options: ::protobuf::RepeatedField<::protobuf::well_known_types::Option>,
-    pub syntax: ::protobuf::well_known_types::Syntax,
+    pub syntax: ::protobuf::ProtobufEnumOrUnknown<::protobuf::well_known_types::Syntax>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -314,8 +317,7 @@ impl ::protobuf::Message for Method {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.request_streaming = tmp;
+                    self.request_streaming = is.read_bool()?;
                 },
                 4 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.response_type_url)?;
@@ -324,14 +326,16 @@ impl ::protobuf::Message for Method {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.response_streaming = tmp;
+                    self.response_streaming = is.read_bool()?;
                 },
                 6 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 7, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.syntax = is.read_enum_or_unknown()?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -364,8 +368,8 @@ impl ::protobuf::Message for Method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            my_size += ::protobuf::rt::enum_size(7, self.syntax);
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(::protobuf::well_known_types::Syntax::SYNTAX_PROTO2) {
+            my_size += ::protobuf::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -391,8 +395,8 @@ impl ::protobuf::Message for Method {
         for v in &self.options {
             ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, ::protobuf::ProtobufEnum::value(&self.syntax))?;
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(::protobuf::well_known_types::Syntax::SYNTAX_PROTO2) {
+            os.write_enum(7, ::protobuf::ProtobufEnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -452,7 +456,7 @@ impl ::protobuf::Message for Method {
                 |m: &Method| { &m.options },
                 |m: &mut Method| { &mut m.options },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<::protobuf::well_known_types::Syntax>>(
                 "syntax",
                 |m: &Method| { &m.syntax },
                 |m: &mut Method| { &mut m.syntax },
@@ -479,7 +483,7 @@ impl ::protobuf::Clear for Method {
         self.response_type_url.clear();
         self.response_streaming = false;
         self.options.clear();
-        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
+        self.syntax = ::protobuf::ProtobufEnumOrUnknown::new(::protobuf::well_known_types::Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }

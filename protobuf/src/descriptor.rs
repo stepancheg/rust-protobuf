@@ -1020,15 +1020,13 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.start = ::std::option::Option::Some(tmp);
+                    self.start = ::std::option::Option::Some(is.read_int32()?);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.end = ::std::option::Option::Some(tmp);
+                    self.end = ::std::option::Option::Some(is.read_int32()?);
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1207,15 +1205,13 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.start = ::std::option::Option::Some(tmp);
+                    self.start = ::std::option::Option::Some(is.read_int32()?);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.end = ::std::option::Option::Some(tmp);
+                    self.end = ::std::option::Option::Some(is.read_int32()?);
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1324,8 +1320,8 @@ pub struct FieldDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
-    label: ::std::option::Option<FieldDescriptorProto_Label>,
-    field_type: ::std::option::Option<FieldDescriptorProto_Type>,
+    label: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldDescriptorProto_Label>>,
+    field_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldDescriptorProto_Type>>,
     type_name: ::protobuf::SingularField<::std::string::String>,
     extendee: ::protobuf::SingularField<::std::string::String>,
     default_value: ::protobuf::SingularField<::std::string::String>,
@@ -1408,7 +1404,10 @@ impl FieldDescriptorProto {
     // optional .google.protobuf.FieldDescriptorProto.Label label = 4;
 
     pub fn get_label(&self) -> FieldDescriptorProto_Label {
-        self.label.unwrap_or(FieldDescriptorProto_Label::LABEL_OPTIONAL)
+        match self.label {
+            Some(e) => e.enum_value_or(FieldDescriptorProto_Label::LABEL_OPTIONAL),
+            None => FieldDescriptorProto_Label::LABEL_OPTIONAL,
+        }
     }
 
     pub fn clear_label(&mut self) {
@@ -1421,13 +1420,16 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_label(&mut self, v: FieldDescriptorProto_Label) {
-        self.label = ::std::option::Option::Some(v);
+        self.label = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
 
     pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
-        self.field_type.unwrap_or(FieldDescriptorProto_Type::TYPE_DOUBLE)
+        match self.field_type {
+            Some(e) => e.enum_value_or(FieldDescriptorProto_Type::TYPE_DOUBLE),
+            None => FieldDescriptorProto_Type::TYPE_DOUBLE,
+        }
     }
 
     pub fn clear_field_type(&mut self) {
@@ -1440,7 +1442,7 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_field_type(&mut self, v: FieldDescriptorProto_Type) {
-        self.field_type = ::std::option::Option::Some(v);
+        self.field_type = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
     // optional string type_name = 6;
@@ -1628,14 +1630,19 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.number = ::std::option::Option::Some(tmp);
+                    self.number = ::std::option::Option::Some(is.read_int32()?);
                 },
                 4 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.label, 4, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.label = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 5 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.field_type, 5, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.field_type = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 6 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.type_name)?;
@@ -1650,8 +1657,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.oneof_index = ::std::option::Option::Some(tmp);
+                    self.oneof_index = ::std::option::Option::Some(is.read_int32()?);
                 },
                 10 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.json_name)?;
@@ -1678,10 +1684,10 @@ impl ::protobuf::Message for FieldDescriptorProto {
             my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.label {
-            my_size += ::protobuf::rt::enum_size(4, v);
+            my_size += ::protobuf::rt::enum_or_unknown_size(4, v);
         }
         if let Some(v) = self.field_type {
-            my_size += ::protobuf::rt::enum_size(5, v);
+            my_size += ::protobuf::rt::enum_or_unknown_size(5, v);
         }
         if let Some(v) = self.type_name.as_ref() {
             my_size += ::protobuf::rt::string_size(6, &v);
@@ -1715,10 +1721,10 @@ impl ::protobuf::Message for FieldDescriptorProto {
             os.write_int32(3, v)?;
         }
         if let Some(v) = self.label {
-            os.write_enum(4, ::protobuf::ProtobufEnum::value(&v))?;
+            os.write_enum(4, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.field_type {
-            os.write_enum(5, ::protobuf::ProtobufEnum::value(&v))?;
+            os.write_enum(5, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.type_name.as_ref() {
             os.write_string(6, v)?;
@@ -1778,17 +1784,17 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 |m: &mut FieldDescriptorProto| { &mut m.number },
                 FieldDescriptorProto::get_number,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldDescriptorProto_Label>, _>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldDescriptorProto_Label>(
                 "label",
                 |m: &FieldDescriptorProto| { &m.label },
                 |m: &mut FieldDescriptorProto| { &mut m.label },
-                FieldDescriptorProto::get_label,
+                FieldDescriptorProto_Label::LABEL_OPTIONAL,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldDescriptorProto_Type>, _>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldDescriptorProto_Type>(
                 "type",
                 |m: &FieldDescriptorProto| { &m.field_type },
                 |m: &mut FieldDescriptorProto| { &mut m.field_type },
-                FieldDescriptorProto::get_field_type,
+                FieldDescriptorProto_Type::TYPE_DOUBLE,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                 "type_name",
@@ -2495,8 +2501,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.number = ::std::option::Option::Some(tmp);
+                    self.number = ::std::option::Option::Some(is.read_int32()?);
                 },
                 3 => {
                     ::protobuf::rt::read_singular_message_into::<EnumValueOptions, _>(wire_type, is, &mut self.options)?;
@@ -3024,15 +3029,13 @@ impl ::protobuf::Message for MethodDescriptorProto {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.client_streaming = ::std::option::Option::Some(tmp);
+                    self.client_streaming = ::std::option::Option::Some(is.read_bool()?);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.server_streaming = ::std::option::Option::Some(tmp);
+                    self.server_streaming = ::std::option::Option::Some(is.read_bool()?);
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3196,7 +3199,7 @@ pub struct FileOptions {
     java_multiple_files: ::std::option::Option<bool>,
     java_generate_equals_and_hash: ::std::option::Option<bool>,
     java_string_check_utf8: ::std::option::Option<bool>,
-    optimize_for: ::std::option::Option<FileOptions_OptimizeMode>,
+    optimize_for: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FileOptions_OptimizeMode>>,
     go_package: ::protobuf::SingularField<::std::string::String>,
     cc_generic_services: ::std::option::Option<bool>,
     java_generic_services: ::std::option::Option<bool>,
@@ -3356,7 +3359,10 @@ impl FileOptions {
     // optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
 
     pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
-        self.optimize_for.unwrap_or(FileOptions_OptimizeMode::SPEED)
+        match self.optimize_for {
+            Some(e) => e.enum_value_or(FileOptions_OptimizeMode::SPEED),
+            None => FileOptions_OptimizeMode::SPEED,
+        }
     }
 
     pub fn clear_optimize_for(&mut self) {
@@ -3369,7 +3375,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_optimize_for(&mut self, v: FileOptions_OptimizeMode) {
-        self.optimize_for = ::std::option::Option::Some(v);
+        self.optimize_for = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
     // optional string go_package = 11;
@@ -3600,25 +3606,25 @@ impl ::protobuf::Message for FileOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.java_multiple_files = ::std::option::Option::Some(tmp);
+                    self.java_multiple_files = ::std::option::Option::Some(is.read_bool()?);
                 },
                 20 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.java_generate_equals_and_hash = ::std::option::Option::Some(tmp);
+                    self.java_generate_equals_and_hash = ::std::option::Option::Some(is.read_bool()?);
                 },
                 27 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.java_string_check_utf8 = ::std::option::Option::Some(tmp);
+                    self.java_string_check_utf8 = ::std::option::Option::Some(is.read_bool()?);
                 },
                 9 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.optimize_for, 9, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.optimize_for = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 11 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.go_package)?;
@@ -3627,36 +3633,31 @@ impl ::protobuf::Message for FileOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.cc_generic_services = ::std::option::Option::Some(tmp);
+                    self.cc_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.java_generic_services = ::std::option::Option::Some(tmp);
+                    self.java_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
                 18 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.py_generic_services = ::std::option::Option::Some(tmp);
+                    self.py_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
                 23 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 31 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.cc_enable_arenas = ::std::option::Option::Some(tmp);
+                    self.cc_enable_arenas = ::std::option::Option::Some(is.read_bool()?);
                 },
                 36 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.objc_class_prefix)?;
@@ -3695,7 +3696,7 @@ impl ::protobuf::Message for FileOptions {
             my_size += 3;
         }
         if let Some(v) = self.optimize_for {
-            my_size += ::protobuf::rt::enum_size(9, v);
+            my_size += ::protobuf::rt::enum_or_unknown_size(9, v);
         }
         if let Some(v) = self.go_package.as_ref() {
             my_size += ::protobuf::rt::string_size(11, &v);
@@ -3747,7 +3748,7 @@ impl ::protobuf::Message for FileOptions {
             os.write_bool(27, v)?;
         }
         if let Some(v) = self.optimize_for {
-            os.write_enum(9, ::protobuf::ProtobufEnum::value(&v))?;
+            os.write_enum(9, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.go_package.as_ref() {
             os.write_string(11, v)?;
@@ -3834,11 +3835,11 @@ impl ::protobuf::Message for FileOptions {
                 |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
                 FileOptions::get_java_string_check_utf8,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FileOptions_OptimizeMode>, _>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FileOptions_OptimizeMode>(
                 "optimize_for",
                 |m: &FileOptions| { &m.optimize_for },
                 |m: &mut FileOptions| { &mut m.optimize_for },
-                FileOptions::get_optimize_for,
+                FileOptions_OptimizeMode::SPEED,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                 "go_package",
@@ -4108,29 +4109,25 @@ impl ::protobuf::Message for MessageOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.message_set_wire_format = ::std::option::Option::Some(tmp);
+                    self.message_set_wire_format = ::std::option::Option::Some(is.read_bool()?);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.no_standard_descriptor_accessor = ::std::option::Option::Some(tmp);
+                    self.no_standard_descriptor_accessor = ::std::option::Option::Some(is.read_bool()?);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.map_entry = ::std::option::Option::Some(tmp);
+                    self.map_entry = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -4279,9 +4276,9 @@ impl ::protobuf::reflect::ProtobufValue for MessageOptions {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldOptions {
     // message fields
-    ctype: ::std::option::Option<FieldOptions_CType>,
+    ctype: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldOptions_CType>>,
     packed: ::std::option::Option<bool>,
-    jstype: ::std::option::Option<FieldOptions_JSType>,
+    jstype: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldOptions_JSType>>,
     lazy: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     weak: ::std::option::Option<bool>,
@@ -4307,7 +4304,10 @@ impl FieldOptions {
     // optional .google.protobuf.FieldOptions.CType ctype = 1;
 
     pub fn get_ctype(&self) -> FieldOptions_CType {
-        self.ctype.unwrap_or(FieldOptions_CType::STRING)
+        match self.ctype {
+            Some(e) => e.enum_value_or(FieldOptions_CType::STRING),
+            None => FieldOptions_CType::STRING,
+        }
     }
 
     pub fn clear_ctype(&mut self) {
@@ -4320,7 +4320,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_ctype(&mut self, v: FieldOptions_CType) {
-        self.ctype = ::std::option::Option::Some(v);
+        self.ctype = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
     // optional bool packed = 2;
@@ -4345,7 +4345,10 @@ impl FieldOptions {
     // optional .google.protobuf.FieldOptions.JSType jstype = 6;
 
     pub fn get_jstype(&self) -> FieldOptions_JSType {
-        self.jstype.unwrap_or(FieldOptions_JSType::JS_NORMAL)
+        match self.jstype {
+            Some(e) => e.enum_value_or(FieldOptions_JSType::JS_NORMAL),
+            None => FieldOptions_JSType::JS_NORMAL,
+        }
     }
 
     pub fn clear_jstype(&mut self) {
@@ -4358,7 +4361,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_jstype(&mut self, v: FieldOptions_JSType) {
-        self.jstype = ::std::option::Option::Some(v);
+        self.jstype = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
     // optional bool lazy = 5;
@@ -4434,38 +4437,40 @@ impl ::protobuf::Message for FieldOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.ctype, 1, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ctype = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.packed = ::std::option::Option::Some(tmp);
+                    self.packed = ::std::option::Option::Some(is.read_bool()?);
                 },
                 6 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.jstype, 6, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.jstype = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.lazy = ::std::option::Option::Some(tmp);
+                    self.lazy = ::std::option::Option::Some(is.read_bool()?);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.weak = ::std::option::Option::Some(tmp);
+                    self.weak = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -4483,13 +4488,13 @@ impl ::protobuf::Message for FieldOptions {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
-            my_size += ::protobuf::rt::enum_size(1, v);
+            my_size += ::protobuf::rt::enum_or_unknown_size(1, v);
         }
         if let Some(v) = self.packed {
             my_size += 2;
         }
         if let Some(v) = self.jstype {
-            my_size += ::protobuf::rt::enum_size(6, v);
+            my_size += ::protobuf::rt::enum_or_unknown_size(6, v);
         }
         if let Some(v) = self.lazy {
             my_size += 2;
@@ -4511,13 +4516,13 @@ impl ::protobuf::Message for FieldOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.ctype {
-            os.write_enum(1, ::protobuf::ProtobufEnum::value(&v))?;
+            os.write_enum(1, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.packed {
             os.write_bool(2, v)?;
         }
         if let Some(v) = self.jstype {
-            os.write_enum(6, ::protobuf::ProtobufEnum::value(&v))?;
+            os.write_enum(6, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.lazy {
             os.write_bool(5, v)?;
@@ -4559,11 +4564,11 @@ impl ::protobuf::Message for FieldOptions {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_CType>, _>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldOptions_CType>(
                 "ctype",
                 |m: &FieldOptions| { &m.ctype },
                 |m: &mut FieldOptions| { &mut m.ctype },
-                FieldOptions::get_ctype,
+                FieldOptions_CType::STRING,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
                 "packed",
@@ -4571,11 +4576,11 @@ impl ::protobuf::Message for FieldOptions {
                 |m: &mut FieldOptions| { &mut m.packed },
                 FieldOptions::get_packed,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeEnum<FieldOptions_JSType>, _>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldOptions_JSType>(
                 "jstype",
                 |m: &FieldOptions| { &m.jstype },
                 |m: &mut FieldOptions| { &mut m.jstype },
-                FieldOptions::get_jstype,
+                FieldOptions_JSType::JS_NORMAL,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
                 "lazy",
@@ -4943,15 +4948,13 @@ impl ::protobuf::Message for EnumOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.allow_alias = ::std::option::Option::Some(tmp);
+                    self.allow_alias = ::std::option::Option::Some(is.read_bool()?);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -5132,8 +5135,7 @@ impl ::protobuf::Message for EnumValueOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -5301,8 +5303,7 @@ impl ::protobuf::Message for ServiceOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -5470,8 +5471,7 @@ impl ::protobuf::Message for MethodOptions {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.deprecated = ::std::option::Option::Some(tmp);
+                    self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -5796,22 +5796,19 @@ impl ::protobuf::Message for UninterpretedOption {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_uint64()?;
-                    self.positive_int_value = ::std::option::Option::Some(tmp);
+                    self.positive_int_value = ::std::option::Option::Some(is.read_uint64()?);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int64()?;
-                    self.negative_int_value = ::std::option::Option::Some(tmp);
+                    self.negative_int_value = ::std::option::Option::Some(is.read_int64()?);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_double()?;
-                    self.double_value = ::std::option::Option::Some(tmp);
+                    self.double_value = ::std::option::Option::Some(is.read_double()?);
                 },
                 7 => {
                     ::protobuf::rt::read_singular_bytes_into(wire_type, is, &mut self.string_value)?;
@@ -6087,8 +6084,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.is_extension = ::std::option::Option::Some(tmp);
+                    self.is_extension = ::std::option::Option::Some(is.read_bool()?);
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6840,15 +6836,13 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.begin = ::std::option::Option::Some(tmp);
+                    self.begin = ::std::option::Option::Some(is.read_int32()?);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.end = ::std::option::Option::Some(tmp);
+                    self.end = ::std::option::Option::Some(is.read_int32()?);
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;

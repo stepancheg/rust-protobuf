@@ -26,7 +26,7 @@ pub struct Type {
     pub oneofs: ::protobuf::RepeatedField<::std::string::String>,
     pub options: ::protobuf::RepeatedField<Option>,
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
-    pub syntax: Syntax,
+    pub syntax: ::protobuf::ProtobufEnumOrUnknown<Syntax>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -86,7 +86,10 @@ impl ::protobuf::Message for Type {
                     ::protobuf::rt::read_singular_message_into::<::protobuf::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 6, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.syntax = is.read_enum_or_unknown()?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -118,8 +121,8 @@ impl ::protobuf::Message for Type {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        if self.syntax != Syntax::SYNTAX_PROTO2 {
-            my_size += ::protobuf::rt::enum_size(6, self.syntax);
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+            my_size += ::protobuf::rt::enum_or_unknown_size(6, self.syntax);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -142,8 +145,8 @@ impl ::protobuf::Message for Type {
         if let Some(v) = self.source_context.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
         }
-        if self.syntax != Syntax::SYNTAX_PROTO2 {
-            os.write_enum(6, ::protobuf::ProtobufEnum::value(&self.syntax))?;
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+            os.write_enum(6, ::protobuf::ProtobufEnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -198,7 +201,7 @@ impl ::protobuf::Message for Type {
                 |m: &Type| { &m.source_context },
                 |m: &mut Type| { &mut m.source_context },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<Syntax>>(
                 "syntax",
                 |m: &Type| { &m.syntax },
                 |m: &mut Type| { &mut m.syntax },
@@ -224,7 +227,7 @@ impl ::protobuf::Clear for Type {
         self.oneofs.clear();
         self.options.clear();
         self.source_context.clear();
-        self.syntax = Syntax::SYNTAX_PROTO2;
+        self.syntax = ::protobuf::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -242,8 +245,8 @@ impl ::protobuf::reflect::ProtobufValue for Type {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Field {
     // message fields
-    pub kind: Field_Kind,
-    pub cardinality: Field_Cardinality,
+    pub kind: ::protobuf::ProtobufEnumOrUnknown<Field_Kind>,
+    pub cardinality: ::protobuf::ProtobufEnumOrUnknown<Field_Cardinality>,
     pub number: i32,
     pub name: ::std::string::String,
     pub type_url: ::std::string::String,
@@ -286,17 +289,22 @@ impl ::protobuf::Message for Field {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.kind, 1, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.kind = is.read_enum_or_unknown()?;
                 },
                 2 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.cardinality, 2, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.cardinality = is.read_enum_or_unknown()?;
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.number = tmp;
+                    self.number = is.read_int32()?;
                 },
                 4 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
@@ -308,15 +316,13 @@ impl ::protobuf::Message for Field {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.oneof_index = tmp;
+                    self.oneof_index = is.read_int32()?;
                 },
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_bool()?;
-                    self.packed = tmp;
+                    self.packed = is.read_bool()?;
                 },
                 9 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
@@ -339,11 +345,11 @@ impl ::protobuf::Message for Field {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.kind != Field_Kind::TYPE_UNKNOWN {
-            my_size += ::protobuf::rt::enum_size(1, self.kind);
+        if self.kind != ::protobuf::ProtobufEnumOrUnknown::new(Field_Kind::TYPE_UNKNOWN) {
+            my_size += ::protobuf::rt::enum_or_unknown_size(1, self.kind);
         }
-        if self.cardinality != Field_Cardinality::CARDINALITY_UNKNOWN {
-            my_size += ::protobuf::rt::enum_size(2, self.cardinality);
+        if self.cardinality != ::protobuf::ProtobufEnumOrUnknown::new(Field_Cardinality::CARDINALITY_UNKNOWN) {
+            my_size += ::protobuf::rt::enum_or_unknown_size(2, self.cardinality);
         }
         if self.number != 0 {
             my_size += ::protobuf::rt::value_size(3, self.number, ::protobuf::wire_format::WireTypeVarint);
@@ -376,11 +382,11 @@ impl ::protobuf::Message for Field {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if self.kind != Field_Kind::TYPE_UNKNOWN {
-            os.write_enum(1, ::protobuf::ProtobufEnum::value(&self.kind))?;
+        if self.kind != ::protobuf::ProtobufEnumOrUnknown::new(Field_Kind::TYPE_UNKNOWN) {
+            os.write_enum(1, ::protobuf::ProtobufEnumOrUnknown::value(&self.kind))?;
         }
-        if self.cardinality != Field_Cardinality::CARDINALITY_UNKNOWN {
-            os.write_enum(2, ::protobuf::ProtobufEnum::value(&self.cardinality))?;
+        if self.cardinality != ::protobuf::ProtobufEnumOrUnknown::new(Field_Cardinality::CARDINALITY_UNKNOWN) {
+            os.write_enum(2, ::protobuf::ProtobufEnumOrUnknown::value(&self.cardinality))?;
         }
         if self.number != 0 {
             os.write_int32(3, self.number)?;
@@ -434,12 +440,12 @@ impl ::protobuf::Message for Field {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Kind>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<Field_Kind>>(
                 "kind",
                 |m: &Field| { &m.kind },
                 |m: &mut Field| { &mut m.kind },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Cardinality>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<Field_Cardinality>>(
                 "cardinality",
                 |m: &Field| { &m.cardinality },
                 |m: &mut Field| { &mut m.cardinality },
@@ -500,8 +506,8 @@ impl ::protobuf::Message for Field {
 
 impl ::protobuf::Clear for Field {
     fn clear(&mut self) {
-        self.kind = Field_Kind::TYPE_UNKNOWN;
-        self.cardinality = Field_Cardinality::CARDINALITY_UNKNOWN;
+        self.kind = ::protobuf::ProtobufEnumOrUnknown::new(Field_Kind::TYPE_UNKNOWN);
+        self.cardinality = ::protobuf::ProtobufEnumOrUnknown::new(Field_Cardinality::CARDINALITY_UNKNOWN);
         self.number = 0;
         self.name.clear();
         self.type_url.clear();
@@ -678,7 +684,7 @@ pub struct Enum {
     pub enumvalue: ::protobuf::RepeatedField<EnumValue>,
     pub options: ::protobuf::RepeatedField<Option>,
     pub source_context: ::protobuf::SingularPtrField<::protobuf::well_known_types::SourceContext>,
-    pub syntax: Syntax,
+    pub syntax: ::protobuf::ProtobufEnumOrUnknown<Syntax>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -735,7 +741,10 @@ impl ::protobuf::Message for Enum {
                     ::protobuf::rt::read_singular_message_into::<::protobuf::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
                 },
                 5 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 5, &mut self.unknown_fields)?
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.syntax = is.read_enum_or_unknown()?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -764,8 +773,8 @@ impl ::protobuf::Message for Enum {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        if self.syntax != Syntax::SYNTAX_PROTO2 {
-            my_size += ::protobuf::rt::enum_size(5, self.syntax);
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+            my_size += ::protobuf::rt::enum_or_unknown_size(5, self.syntax);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -785,8 +794,8 @@ impl ::protobuf::Message for Enum {
         if let Some(v) = self.source_context.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
         }
-        if self.syntax != Syntax::SYNTAX_PROTO2 {
-            os.write_enum(5, ::protobuf::ProtobufEnum::value(&self.syntax))?;
+        if self.syntax != ::protobuf::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+            os.write_enum(5, ::protobuf::ProtobufEnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -836,7 +845,7 @@ impl ::protobuf::Message for Enum {
                 |m: &Enum| { &m.source_context },
                 |m: &mut Enum| { &mut m.source_context },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<Syntax>>(
                 "syntax",
                 |m: &Enum| { &m.syntax },
                 |m: &mut Enum| { &mut m.syntax },
@@ -861,7 +870,7 @@ impl ::protobuf::Clear for Enum {
         self.enumvalue.clear();
         self.options.clear();
         self.source_context.clear();
-        self.syntax = Syntax::SYNTAX_PROTO2;
+        self.syntax = ::protobuf::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -922,8 +931,7 @@ impl ::protobuf::Message for EnumValue {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_int32()?;
-                    self.number = tmp;
+                    self.number = is.read_int32()?;
                 },
                 3 => {
                     ::protobuf::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
