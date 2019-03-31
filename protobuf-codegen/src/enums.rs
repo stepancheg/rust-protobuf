@@ -13,7 +13,7 @@ use descriptorx::EnumValueDescriptorEx;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct EnumValueGen {
     proto: EnumValueDescriptorProto,
     enum_rust_name: String,
@@ -33,7 +33,8 @@ impl EnumValueGen {
     }
 
     // name of enum variant in generated rust code
-    fn rust_name_inner(&self) -> String {
+    pub fn rust_name_inner(&self) -> String {
+        // TODO: escape
         self.proto.rust_name()
     }
 

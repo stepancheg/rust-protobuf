@@ -20,7 +20,6 @@ use oneof::OneofField;
 use protobuf::wire_format::WireType;
 use descriptorx::MessageOrEnumWithScope;
 use descriptorx::FieldDescriptorProtoExt;
-use descriptorx::EnumValueDescriptorEx;
 use descriptorx::FieldWithContext;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
@@ -339,6 +338,7 @@ pub struct FieldElemEnum {
     name: String,
     file_name: String,
     default_value: RustIdent,
+    default_value_enum_value_gen: EnumValueGen,
 }
 
 impl FieldElemEnum {
@@ -348,6 +348,10 @@ impl FieldElemEnum {
 
     fn enum_or_unknown_rust_type(&self) -> RustType {
         RustType::EnumOrUnknown(self.name.clone(), self.default_value.clone())
+    }
+
+    fn default_value_rust_expr(&self) -> String {
+        self.default_value_enum_value_gen.rust_name_outer()
     }
 }
 
@@ -439,9 +443,9 @@ fn field_elem(
     root_scope: &RootScope,
     parse_map: bool,
     customize: &Customize,
-) -> (FieldElem, Option<EnumValueGen>) {
+) -> FieldElem {
     if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
-        (FieldElem::Group, None)
+        FieldElem::Group
     } else if field.field.has_type_name() {
         let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
         let file_name = message_or_enum
@@ -465,16 +469,13 @@ fn field_elem(
                     (parse_map, map_entry(&message_with_scope))
                 {
                     Some(Box::new(EntryKeyValue(
-                        field_elem(&key, root_scope, false, customize).0,
-                        field_elem(&value, root_scope, false, customize).0,
+                        field_elem(&key, root_scope, false, customize),
+                        field_elem(&value, root_scope, false, customize),
                     )))
                 } else {
                     None
                 };
-                (
-                    FieldElem::Message(rust_relative_name, file_name, entry_key_value),
-                    None,
-                )
+                FieldElem::Message(rust_relative_name, file_name, entry_key_value)
             }
             (
                 FieldDescriptorProto_Type::TYPE_ENUM,
@@ -491,14 +492,12 @@ fn field_elem(
                 } else {
                     e.values_unique().into_iter().next().unwrap()
                 };
-                (
-                    FieldElem::Enum(FieldElemEnum {
-                        name: rust_relative_name,
-                        file_name,
-                        default_value: RustIdent::new(&enum_with_scope.values()[0].rust_name()),
-                    }),
-                    Some(ev),
-                )
+                FieldElem::Enum(FieldElemEnum {
+                    name: rust_relative_name,
+                    file_name,
+                    default_value: RustIdent::new(&ev.rust_name_inner()),
+                    default_value_enum_value_gen: ev,
+                })
             }
             _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
         }
@@ -520,7 +519,7 @@ fn field_elem(
             t => FieldElem::Primitive(t, PrimitiveTypeVariant::Default),
         };
 
-        (elem, None)
+        elem
     } else {
         panic!(
             "neither type_name, nor field_type specified for field: {}",
@@ -558,7 +557,6 @@ pub struct FieldGen<'a> {
     pub rust_name: RustIdent,
     pub proto_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
-    enum_default_value: Option<EnumValueGen>,
     pub kind: FieldKind,
     pub expose_field: bool,
     pub generate_accessors: bool,
@@ -577,7 +575,7 @@ impl<'a> FieldGen<'a> {
             field.field.options.get_message(),
         ));
 
-        let (elem, enum_default_value) = field_elem(&field, root_scope, true, &customize);
+        let elem = field_elem(&field, root_scope, true, &customize);
 
         let syntax = field.message.scope.file_scope.syntax();
 
@@ -656,7 +654,6 @@ impl<'a> FieldGen<'a> {
             rust_name: RustIdent::new(&field.field.rust_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
-            enum_default_value,
             proto_field: field,
             kind,
             expose_field,
@@ -879,8 +876,8 @@ impl<'a> FieldGen<'a> {
 
     fn default_value_from_proto(&self) -> Option<String> {
         assert!(self.is_singular() || self.is_oneof());
-        if self.enum_default_value.is_some() {
-            Some(self.enum_default_value.as_ref().unwrap().rust_name_outer())
+        if let &FieldElem::Enum(ref e) = self.elem() {
+            Some(e.default_value_rust_expr())
         } else if self.proto_field.field.has_default_value() {
             let proto_default = self.proto_field.field.get_default_value();
             Some(match self.proto_type {
