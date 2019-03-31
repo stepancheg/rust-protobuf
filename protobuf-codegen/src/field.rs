@@ -495,7 +495,7 @@ fn field_elem(
                     FieldElem::Enum(FieldElemEnum {
                         name: rust_relative_name,
                         file_name,
-                        default_value: RustIdent(enum_with_scope.values()[0].rust_name().to_owned()),
+                        default_value: RustIdent::new(&enum_with_scope.values()[0].rust_name()),
                     }),
                     Some(ev),
                 )
@@ -653,7 +653,7 @@ impl<'a> FieldGen<'a> {
         FieldGen {
             root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: RustIdent(field.field.rust_name()),
+            rust_name: RustIdent::new(&field.field.rust_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             enum_default_value,
@@ -1334,7 +1334,7 @@ impl<'a> FieldGen<'a> {
             let vis = self.visibility();
             w.field_decl_vis(
                 vis,
-                &self.rust_name.0,
+                self.rust_name.get(),
                 &self.full_storage_type().to_string(),
             );
         }
