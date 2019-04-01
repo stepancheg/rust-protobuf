@@ -1,4 +1,5 @@
 // copy-paste from Google Protobuf
+// must be kept in sync with Google for JSON interop
 pub fn camel_case(input: &str) -> String {
     let mut capitalize_next = true;
     let mut result = String::new();
