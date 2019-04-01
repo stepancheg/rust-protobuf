@@ -154,7 +154,7 @@ fn gen_file(
         }
         for enum_type in &scope.get_enums() {
             w.write_line("");
-            EnumGen::new(enum_type, file, &customize, root_scope).write(&mut w);
+            EnumGen::new(enum_type, &customize, root_scope).write(&mut w);
         }
 
         write_extensions(file, &root_scope, &mut w);

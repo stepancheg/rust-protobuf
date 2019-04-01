@@ -319,7 +319,7 @@ pub trait WithScope<'a> {
     }
 
     // rust type name of this descriptor
-    fn rust_name(&self) -> String {
+    fn rust_name(&self) -> RustIdent {
         let mut rust_name = format!(
             "{}{}", self.get_scope().rust_prefix(), capitalize(self.get_name()));
 
@@ -327,7 +327,7 @@ pub trait WithScope<'a> {
             rust_name.insert_str(0, self.escape_prefix());
         }
 
-        rust_name
+        RustIdent::new(&rust_name)
     }
 
     // fully-qualified name of this type
@@ -416,17 +416,17 @@ impl<'a> EnumWithScope<'a> {
 }
 
 pub trait EnumValueDescriptorEx {
-    fn rust_name(&self) -> String;
+    fn rust_name(&self) -> RustIdent;
 }
 
 impl EnumValueDescriptorEx for EnumValueDescriptorProto {
-    fn rust_name(&self) -> String {
+    fn rust_name(&self) -> RustIdent {
         let mut r = String::new();
         if rust::is_rust_keyword(self.get_name()) {
             r.push_str("value_");
         }
         r.push_str(self.get_name());
-        r
+        RustIdent::new(&r)
     }
 }
 

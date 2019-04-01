@@ -6,13 +6,13 @@ use protobuf::prelude::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
-use rust_types_values::type_name_to_rust_relative;
 use serde;
 use descriptorx::EnumWithScope;
 use descriptorx::EnumValueDescriptorEx;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
-use ident::{RustIdentWithPath, RustIdent};
+use ident::RustIdentWithPath;
+use ident::RustIdent;
 
 #[derive(Clone, Debug)]
 pub struct EnumValueGen {
@@ -34,20 +34,18 @@ impl EnumValueGen {
     }
 
     // name of enum variant in generated rust code
-    pub fn rust_name_inner(&self) -> String {
-        // TODO: escape
+    pub fn rust_name_inner(&self) -> RustIdent {
         self.proto.rust_name()
     }
 
     pub fn rust_name_outer(&self) -> RustIdentWithPath {
-        self.enum_rust_name.child(&RustIdent::new(&self.rust_name_inner()))
+        self.enum_rust_name.child(&self.rust_name_inner())
     }
 }
 
 // Codegen for enum definition
 pub struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
-    // TODO: change to RustIdent
     type_name: RustIdentWithPath,
     lite_runtime: bool,
     customize: Customize,
@@ -56,26 +54,12 @@ pub struct EnumGen<'a> {
 impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
-        current_file: &FileDescriptorProto,
         customize: &Customize,
-        root_scope: &RootScope,
+        _root_scope: &RootScope,
     ) -> EnumGen<'a> {
-        let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name()
-            == current_file.get_name()
-        {
-            // field type is a message or enum declared in the same file
-            RustIdentWithPath::new(&enum_with_scope.rust_name())
-        } else {
-            type_name_to_rust_relative(
-                &enum_with_scope.name_absolute(),
-                current_file,
-                false,
-                root_scope,
-            )
-        };
         EnumGen {
             enum_with_scope,
-            type_name: rust_name,
+            type_name: enum_with_scope.rust_name().to_path(),
             lite_runtime: enum_with_scope
                 .get_scope()
                 .get_file_descriptor()
@@ -115,11 +99,6 @@ impl<'a> EnumGen<'a> {
             r.push(EnumValueGen::parse(p, &self.type_name));
         }
         r
-    }
-
-    // find enum value by name
-    pub fn value_by_name(&'a self, name: &str) -> EnumValueGen {
-        EnumValueGen::parse(self.enum_with_scope.value_by_name(name), &self.type_name)
     }
 
     pub fn write(&self, w: &mut CodeWriter) {

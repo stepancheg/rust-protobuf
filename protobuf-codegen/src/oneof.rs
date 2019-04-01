@@ -30,7 +30,7 @@ impl OneofField {
     ) -> OneofField {
         // detecting recursion
         let boxed = if let &FieldElem::Message(ref name, ..) = &elem {
-            if name.get() == oneof.message.rust_name() {
+            if name.get() == oneof.message.rust_name().get() {
                 true
             } else {
                 false

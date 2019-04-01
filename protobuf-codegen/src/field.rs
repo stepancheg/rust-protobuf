@@ -8,17 +8,17 @@ use protobuf::text_format::lexer::float;
 use protobuf::wire_format;
 
 use super::code_writer::CodeWriter;
-use super::enums::*;
 use super::rust_types_values::*;
 
 use super::customize::customize_from_rustproto_for_field;
 use super::customize::Customize;
 use code_writer::Visibility;
-use ident::{RustIdent, RustIdentWithPath};
+use ident::RustIdent;
+use ident::RustIdentWithPath;
 use map::map_entry;
 use oneof::OneofField;
 use protobuf::wire_format::WireType;
-use descriptorx::MessageOrEnumWithScope;
+use descriptorx::{MessageOrEnumWithScope, EnumValueDescriptorEx};
 use descriptorx::FieldDescriptorProtoExt;
 use descriptorx::FieldWithContext;
 use descriptorx::RootScope;
@@ -337,8 +337,8 @@ pub struct EntryKeyValue(FieldElem, FieldElem);
 pub struct FieldElemEnum {
     name: RustIdentWithPath,
     file_name: String,
+    /// Enum default value variant, either from proto or from enum definition
     default_value: RustIdent,
-    default_value_enum_value_gen: EnumValueGen,
 }
 
 impl FieldElemEnum {
@@ -351,7 +351,7 @@ impl FieldElemEnum {
     }
 
     fn default_value_rust_expr(&self) -> RustIdentWithPath {
-        self.default_value_enum_value_gen.rust_name_outer()
+        self.name.child(&self.default_value)
     }
 }
 
@@ -481,23 +481,15 @@ fn field_elem(
                 FieldDescriptorProto_Type::TYPE_ENUM,
                 MessageOrEnumWithScope::Enum(enum_with_scope),
             ) => {
-                // TODO: do not construct EnumGen here
-                let e = EnumGen::new(
-                    &enum_with_scope,
-                    field.message.get_scope().get_file_descriptor(),
-                    customize,
-                    root_scope,
-                );
-                let ev = if field.field.has_default_value() {
-                    e.value_by_name(field.field.get_default_value()).clone()
+                let default_value = if field.field.has_default_value() {
+                    enum_with_scope.value_by_name(field.field.get_default_value())
                 } else {
-                    e.values_unique().into_iter().next().unwrap()
+                    &enum_with_scope.values()[0]
                 };
                 FieldElem::Enum(FieldElemEnum {
                     name: rust_relative_name,
                     file_name,
-                    default_value: RustIdent::new(&ev.rust_name_inner()),
-                    default_value_enum_value_gen: ev,
+                    default_value: default_value.rust_name(),
                 })
             }
             _ => panic!("unknown named type: {:?}", field.field.get_field_type()),

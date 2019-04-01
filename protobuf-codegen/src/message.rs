@@ -15,13 +15,14 @@ use serde;
 use descriptorx::MessageWithScope;
 use descriptorx::WithScope;
 use descriptorx::RootScope;
+use ident::RustIdentWithPath;
 
 
 /// Message info for codegen
 pub struct MessageGen<'a> {
     message: &'a MessageWithScope<'a>,
     root_scope: &'a RootScope<'a>,
-    type_name: String,
+    type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
     customize: Customize,
@@ -44,10 +45,10 @@ impl<'a> MessageGen<'a> {
             .map(|field| FieldGen::parse(field, root_scope, &customize))
             .collect();
         MessageGen {
-            message: message,
-            root_scope: root_scope,
-            type_name: message.rust_name(),
-            fields: fields,
+            message,
+            root_scope,
+            type_name: message.rust_name().to_path(),
+            fields,
             lite_runtime: message
                 .get_file_descriptor()
                 .options
@@ -165,7 +166,7 @@ impl<'a> MessageGen<'a> {
             |w| {
                 w.lazy_static_decl_get_simple(
                     "instance",
-                    &self.type_name,
+                    self.type_name.get(),
                     &format!("{}::new", self.type_name),
                 );
             },
@@ -203,7 +204,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
-        w.impl_self_block(&self.type_name, |w| {
+        w.impl_self_block(self.type_name.get(), |w| {
             // TODO: new should probably be a part of Message trait
             w.pub_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
@@ -312,7 +313,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
+        w.impl_for_block("::protobuf::Message", self.type_name.get(), |w| {
             self.write_is_initialized(w);
             w.write_line("");
             self.write_merge_from(w);
@@ -347,13 +348,13 @@ impl<'a> MessageGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             "::protobuf::reflect::ProtobufValue",
-            &self.type_name,
+            self.type_name.get(),
             |_w| {},
         );
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::fmt::Debug", &self.type_name, |w| {
+        w.impl_for_block("::std::fmt::Debug", self.type_name.get(), |w| {
             w.def_fn(
                 "fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result",
                 |w| {
@@ -364,7 +365,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_clear(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Clear", &self.type_name, |w| {
+        w.impl_for_block("::protobuf::Clear", self.type_name.get(), |w| {
             w.def_fn("clear(&mut self)", |w| {
                 for f in self.fields_except_group() {
                     f.write_clear(w);
@@ -391,7 +392,7 @@ impl<'a> MessageGen<'a> {
         }
         w.derive(&derive);
         serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
-        w.pub_struct(&self.type_name, |w| {
+        w.pub_struct(self.type_name.get(), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
@@ -426,7 +427,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_dummy_impl_partial_eq(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
+        w.impl_for_block("::std::cmp::PartialEq", self.type_name.get(), |w| {
             w.def_fn("eq(&self, _: &Self) -> bool", |w| {
                 w.comment("https://github.com/rust-lang/rust/issues/40119");
                 w.unimplemented();
@@ -473,8 +474,7 @@ impl<'a> MessageGen<'a> {
 
         for enum_type in &self.message.to_scope().get_enums() {
             w.write_line("");
-            let current_file = self.message.get_scope().get_file_descriptor();
-            EnumGen::new(enum_type, current_file, &self.customize, self.root_scope).write(w);
+            EnumGen::new(enum_type, &self.customize, self.root_scope).write(w);
         }
     }
 }
