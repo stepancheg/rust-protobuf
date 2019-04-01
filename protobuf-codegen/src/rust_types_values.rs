@@ -4,8 +4,8 @@ use std::fmt;
 use super::well_known_types::is_well_known_type_full;
 use ident::{RustIdent, RustIdentWithPath};
 use protobuf::descriptor::*;
-use descriptorx::RootScope;
-use descriptorx::WithScope;
+use scope::RootScope;
+use scope::WithScope;
 use strx::capitalize;
 
 // Represent subset of rust types used in generated code

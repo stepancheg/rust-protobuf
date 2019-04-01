@@ -12,9 +12,9 @@ use map::map_entry;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
 use serde;
-use descriptorx::MessageWithScope;
-use descriptorx::WithScope;
-use descriptorx::RootScope;
+use scope::MessageWithScope;
+use scope::WithScope;
+use scope::RootScope;
 use ident::RustIdentWithPath;
 
 

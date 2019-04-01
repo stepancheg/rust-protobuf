@@ -7,12 +7,13 @@ use protobuf::prelude::*;
 use super::code_writer::*;
 use super::customize::Customize;
 use serde;
-use descriptorx::EnumWithScope;
-use descriptorx::EnumValueDescriptorEx;
-use descriptorx::RootScope;
-use descriptorx::WithScope;
+use scope::EnumWithScope;
+use scope::RootScope;
+use scope::WithScope;
 use ident::RustIdentWithPath;
 use ident::RustIdent;
+use descriptorx::EnumValueDescriptorEx;
+
 
 #[derive(Clone, Debug)]
 pub struct EnumValueGen {

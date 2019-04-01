@@ -1,7 +1,7 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use protobuf::descriptor::*;
-use descriptorx::RootScope;
+use scope::RootScope;
 use descriptorx::FieldDescriptorProtoExt;
 use ident::RustIdentWithPath;
 

@@ -1,8 +1,8 @@
 use protobuf::prelude::*;
 
 use protobuf::descriptor::FieldDescriptorProto_Label;
-use descriptorx::FieldWithContext;
-use descriptorx::MessageWithScope;
+use scope::FieldWithContext;
+use scope::MessageWithScope;
 
 /// Pair of (key, value) if this message is map entry
 pub fn map_entry<'a>(

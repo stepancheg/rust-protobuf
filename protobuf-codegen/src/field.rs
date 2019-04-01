@@ -18,12 +18,13 @@ use ident::RustIdentWithPath;
 use map::map_entry;
 use oneof::OneofField;
 use protobuf::wire_format::WireType;
-use descriptorx::{MessageOrEnumWithScope, EnumValueDescriptorEx};
+use scope::MessageOrEnumWithScope;
+use descriptorx::EnumValueDescriptorEx;
 use descriptorx::FieldDescriptorProtoExt;
-use descriptorx::FieldWithContext;
-use descriptorx::RootScope;
-use descriptorx::WithScope;
-use descriptorx::Syntax;
+use scope::FieldWithContext;
+use scope::RootScope;
+use scope::WithScope;
+use syntax::Syntax;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {

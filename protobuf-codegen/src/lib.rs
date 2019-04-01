@@ -16,6 +16,7 @@ mod amend_io_error_util;
 mod compiler_plugin;
 mod customize;
 mod enums;
+mod file;
 mod extensions;
 mod field;
 mod ident;
@@ -29,6 +30,8 @@ pub mod case_convert;
 
 // used by grpc-rust
 pub mod descriptorx;
+pub(crate) mod scope;
+pub(crate) mod syntax;
 pub(crate) mod strx;
 pub(crate) mod rust;
 
@@ -44,9 +47,9 @@ use self::message::*;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
 use map::map_entry;
-use descriptorx::RootScope;
-use descriptorx::FileScope;
-use descriptorx::proto_path_to_rust_mod;
+use scope::RootScope;
+use scope::FileScope;
+use file::proto_path_to_rust_mod;
 
 
 fn escape_byte(s: &mut String, b: u8) {
