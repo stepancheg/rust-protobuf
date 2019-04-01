@@ -7,36 +7,35 @@ use protobuf::prelude::*;
 use super::code_writer::*;
 use super::customize::Customize;
 use serde;
-use scope::EnumWithScope;
+use scope::{EnumWithScope, EnumValueWithContext};
 use scope::RootScope;
 use scope::WithScope;
 use ident::RustIdentWithPath;
 use ident::RustIdent;
-use descriptorx::EnumValueDescriptorEx;
 
 
-#[derive(Clone, Debug)]
-pub struct EnumValueGen {
-    proto: EnumValueDescriptorProto,
+#[derive(Clone)]
+pub struct EnumValueGen<'a> {
+    value: EnumValueWithContext<'a>,
     enum_rust_name: RustIdentWithPath,
 }
 
-impl EnumValueGen {
-    fn parse(proto: &EnumValueDescriptorProto, enum_rust_name: &RustIdentWithPath) -> EnumValueGen {
+impl<'a> EnumValueGen<'a> {
+    fn parse(value: EnumValueWithContext<'a>, enum_rust_name: &RustIdentWithPath) -> EnumValueGen<'a> {
         EnumValueGen {
-            proto: proto.clone(),
+            value: value.clone(),
             enum_rust_name: enum_rust_name.clone(),
         }
     }
 
     // enum value
     fn number(&self) -> i32 {
-        self.proto.get_number()
+        self.value.proto.get_number()
     }
 
     // name of enum variant in generated rust code
     pub fn rust_name_inner(&self) -> RustIdent {
-        self.proto.rust_name()
+        self.value.rust_name()
     }
 
     pub fn rust_name_outer(&self) -> RustIdentWithPath {
@@ -94,7 +93,7 @@ impl<'a> EnumGen<'a> {
         for p in self.enum_with_scope.values() {
             // skipping non-unique enums
             // TODO: should support it
-            if !used.insert(p.get_number()) {
+            if !used.insert(p.proto.get_number()) {
                 continue;
             }
             r.push(EnumValueGen::parse(p, &self.type_name));
@@ -240,7 +239,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_default(&self, w: &mut CodeWriter) {
         let first_value = &self.enum_with_scope.values()[0];
-        if first_value.get_number() != 0 {
+        if first_value.proto.get_number() != 0 {
             // This warning is emitted only for proto2
             // (because in proto3 first enum variant number is always 0).
             // `Default` implemented unconditionally to simplify certain

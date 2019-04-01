@@ -19,7 +19,6 @@ use map::map_entry;
 use oneof::OneofField;
 use protobuf::wire_format::WireType;
 use scope::MessageOrEnumWithScope;
-use descriptorx::EnumValueDescriptorEx;
 use descriptorx::FieldDescriptorProtoExt;
 use scope::FieldWithContext;
 use scope::RootScope;
@@ -485,7 +484,7 @@ fn field_elem(
                 let default_value = if field.field.has_default_value() {
                     enum_with_scope.value_by_name(field.field.get_default_value())
                 } else {
-                    &enum_with_scope.values()[0]
+                    enum_with_scope.values()[0].clone()
                 };
                 FieldElem::Enum(FieldElemEnum {
                     name: rust_relative_name,

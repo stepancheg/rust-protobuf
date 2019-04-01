@@ -36,7 +36,7 @@ impl RustIdentWithPath {
         &self.0
     }
 
-    pub fn assert_no_path(self) -> RustIdent {
+    pub fn _assert_no_path(self) -> RustIdent {
         RustIdent::new(&self.0)
     }
 

@@ -9,6 +9,8 @@ use strx::capitalize;
 use rust::is_rust_keyword;
 use file::proto_path_to_rust_mod;
 use syntax::Syntax;
+use rust;
+
 
 pub struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
@@ -347,14 +349,37 @@ pub struct EnumWithScope<'a> {
 }
 
 impl<'a> EnumWithScope<'a> {
-    // enum values
-    pub fn values(&'a self) -> &'a [EnumValueDescriptorProto] {
-        &self.en.value
+    pub fn values(&'a self) -> Vec<EnumValueWithContext<'a>> {
+        self.en.value.iter()
+            .map(|v| {
+                EnumValueWithContext {
+                    en: self.clone(),
+                    proto: v,
+                }
+            })
+            .collect()
     }
 
-    // find enum value by name
-    pub fn value_by_name(&'a self, name: &str) -> &'a EnumValueDescriptorProto {
-        self.en.value.iter().find(|v| v.get_name() == name).unwrap()
+    // find enum value by protobuf name
+    pub fn value_by_name(&'a self, name: &str) -> EnumValueWithContext<'a> {
+        self.values().into_iter().find(|v| v.proto.get_name() == name).unwrap()
+    }
+}
+
+#[derive(Clone)]
+pub struct EnumValueWithContext<'a> {
+    pub en: EnumWithScope<'a>,
+    pub proto: &'a EnumValueDescriptorProto,
+}
+
+impl<'a> EnumValueWithContext<'a> {
+    pub fn rust_name(&self) -> RustIdent {
+        let mut r = String::new();
+        if rust::is_rust_keyword(self.proto.get_name()) {
+            r.push_str("value_");
+        }
+        r.push_str(self.proto.get_name());
+        RustIdent::new(&r)
     }
 }
 
