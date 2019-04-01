@@ -14,7 +14,7 @@ use super::rust_types_values::*;
 use super::customize::customize_from_rustproto_for_field;
 use super::customize::Customize;
 use code_writer::Visibility;
-use ident::RustIdent;
+use ident::{RustIdent, RustIdentWithPath};
 use map::map_entry;
 use oneof::OneofField;
 use protobuf::wire_format::WireType;
@@ -335,7 +335,7 @@ pub struct EntryKeyValue(FieldElem, FieldElem);
 
 #[derive(Clone, Debug)]
 pub struct FieldElemEnum {
-    name: String,
+    name: RustIdentWithPath,
     file_name: String,
     default_value: RustIdent,
     default_value_enum_value_gen: EnumValueGen,
@@ -350,7 +350,7 @@ impl FieldElemEnum {
         RustType::EnumOrUnknown(self.name.clone(), self.default_value.clone())
     }
 
-    fn default_value_rust_expr(&self) -> String {
+    fn default_value_rust_expr(&self) -> RustIdentWithPath {
         self.default_value_enum_value_gen.rust_name_outer()
     }
 }
@@ -359,7 +359,7 @@ impl FieldElemEnum {
 pub enum FieldElem {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name, entry
-    Message(String, String, Option<Box<EntryKeyValue>>),
+    Message(RustIdentWithPath, String, Option<Box<EntryKeyValue>>),
     Enum(FieldElemEnum),
     Group,
 }
@@ -481,6 +481,7 @@ fn field_elem(
                 FieldDescriptorProto_Type::TYPE_ENUM,
                 MessageOrEnumWithScope::Enum(enum_with_scope),
             ) => {
+                // TODO: do not construct EnumGen here
                 let e = EnumGen::new(
                     &enum_with_scope,
                     field.message.get_scope().get_file_descriptor(),
@@ -600,7 +601,7 @@ impl<'a> FieldGen<'a> {
             match (elem, true) {
                 // map field
                 (FieldElem::Message(name, _, Some(key_value)), true) => FieldKind::Map(MapField {
-                    name: name,
+                    name: name.get().to_owned(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),
@@ -877,7 +878,7 @@ impl<'a> FieldGen<'a> {
     fn default_value_from_proto(&self) -> Option<String> {
         assert!(self.is_singular() || self.is_oneof());
         if let &FieldElem::Enum(ref e) = self.elem() {
-            Some(e.default_value_rust_expr())
+            Some(e.default_value_rust_expr().get().to_owned())
         } else if self.proto_field.field.has_default_value() {
             let proto_default = self.proto_field.field.get_default_value();
             Some(match self.proto_type {
@@ -1004,7 +1005,7 @@ impl<'a> FieldGen<'a> {
 
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![name.clone()],
+                type_params: vec![name.get().to_owned()],
                 callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
@@ -1040,7 +1041,7 @@ impl<'a> FieldGen<'a> {
             },
             FieldElem::Enum(ref en) => AccessorFn {
                 name: "make_option_enum_accessor".to_owned(),
-                type_params: vec![en.name.clone()],
+                type_params: vec![en.name.get().to_owned()],
                 callback_params: self.make_accessor_fns_lambda_default_value(),
             },
             FieldElem::Group => {
@@ -1072,7 +1073,7 @@ impl<'a> FieldGen<'a> {
         if let RustType::Message(name) = elem.rust_storage_elem_type() {
             return AccessorFn {
                 name: "make_oneof_message_has_get_mut_set_accessor".to_owned(),
-                type_params: vec![name.clone()],
+                type_params: vec![name.get().to_owned()],
                 callback_params: self.make_accessor_fns_has_get_mut_set(),
             };
         }

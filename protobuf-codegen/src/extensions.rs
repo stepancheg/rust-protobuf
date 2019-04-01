@@ -3,6 +3,7 @@ use super::rust_types_values::*;
 use protobuf::descriptor::*;
 use descriptorx::RootScope;
 use descriptorx::FieldDescriptorProtoExt;
+use ident::RustIdentWithPath;
 
 
 struct ExtGen<'a> {
@@ -12,7 +13,7 @@ struct ExtGen<'a> {
 }
 
 impl<'a> ExtGen<'a> {
-    fn extendee_rust_name(&self) -> String {
+    fn extendee_rust_name(&self) -> RustIdentWithPath {
         type_name_to_rust_relative(self.field.get_extendee(), self.file, true, self.root_scope)
     }
 

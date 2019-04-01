@@ -11,6 +11,7 @@ use rust;
 use strx;
 use strx::capitalize;
 use rust::is_rust_keyword;
+use ident::RustIdent;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
@@ -548,12 +549,12 @@ impl<'a> OneofWithContext<'a> {
     }
 
     // rust type name of enum
-    pub fn rust_name(&self) -> String {
-        format!(
+    pub fn rust_name(&self) -> RustIdent {
+        RustIdent::new(&format!(
             "{}_oneof_{}",
             self.message.rust_name(),
             self.oneof.get_name()
-        )
+        ))
     }
 
     pub fn variants(&'a self) -> Vec<OneofVariantWithContext<'a>> {

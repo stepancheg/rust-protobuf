@@ -2,7 +2,7 @@ use std::cmp;
 use std::fmt;
 
 use super::well_known_types::is_well_known_type_full;
-use ident::RustIdent;
+use ident::{RustIdent, RustIdentWithPath};
 use protobuf::descriptor::*;
 use descriptorx::RootScope;
 use descriptorx::WithScope;
@@ -32,13 +32,13 @@ pub enum RustType {
     // &T
     Ref(Box<RustType>),
     // protobuf message
-    Message(String),
+    Message(RustIdentWithPath),
     // protobuf enum, not any enum
-    Enum(String, RustIdent),
+    Enum(RustIdentWithPath, RustIdent),
     // protobuf enum or unknown
-    EnumOrUnknown(String, RustIdent),
+    EnumOrUnknown(RustIdentWithPath, RustIdent),
     // oneof enum
-    Oneof(String),
+    Oneof(RustIdentWithPath),
     // bytes::Bytes
     Bytes,
     // chars::Chars
@@ -479,14 +479,14 @@ pub fn type_name_to_rust_relative(
     file: &FileDescriptorProto,
     subm: bool,
     root_scope: &RootScope,
-) -> String {
+) -> RustIdentWithPath {
     assert!(
         type_name.starts_with("."),
         "type name must start with dot: {}",
         type_name
     );
     let message_or_enum = root_scope.find_message_or_enum(type_name);
-    if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
+    RustIdentWithPath::new(&if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
         // field type is a message or enum declared in the same file
         if subm {
             format!("super::{}", message_or_enum.rust_name())
@@ -509,7 +509,7 @@ pub fn type_name_to_rust_relative(
         } else {
             format!("super::{}", message_or_enum.rust_fq_name())
         }
-    }
+    })
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -526,9 +526,9 @@ pub enum _CarllercheBytesType {
 // ProtobufType trait name
 pub enum ProtobufTypeGen {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
-    Message(String),
-    EnumOrUnknown(String),
-    Enum(String),
+    Message(RustIdentWithPath),
+    EnumOrUnknown(RustIdentWithPath),
+    Enum(RustIdentWithPath),
 }
 
 impl ProtobufTypeGen {

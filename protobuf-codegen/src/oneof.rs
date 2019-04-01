@@ -30,7 +30,7 @@ impl OneofField {
     ) -> OneofField {
         // detecting recursion
         let boxed = if let &FieldElem::Message(ref name, ..) = &elem {
-            if *name == oneof.message.rust_name() {
+            if name.get() == oneof.message.rust_name() {
                 true
             } else {
                 false
@@ -40,10 +40,10 @@ impl OneofField {
         };
 
         OneofField {
-            elem: elem,
+            elem,
             oneof_name: oneof.name().to_string(),
-            oneof_type_name: RustType::Oneof(oneof.rust_name()),
-            boxed: boxed,
+            oneof_type_name: RustType::Oneof(oneof.rust_name().to_path()),
+            boxed,
         }
     }
 
@@ -113,9 +113,9 @@ impl<'a> OneofGen<'a> {
     ) -> OneofGen<'a> {
         let rust_name = oneof.rust_name();
         OneofGen {
-            message: message,
-            oneof: oneof,
-            type_name: RustType::Oneof(rust_name),
+            message,
+            oneof,
+            type_name: RustType::Oneof(rust_name.to_path()),
             lite_runtime: message.lite_runtime,
             customize: customize.clone(),
         }
