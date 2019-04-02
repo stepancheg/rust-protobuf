@@ -49,11 +49,11 @@ impl<'a> ExtGen<'a> {
 
     fn write(&self, w: &mut CodeWriter) {
         let suffix = if self.repeated() {
-            "Repeated"
+            "ExtFieldRepeated"
         } else {
-            "Optional"
+            "ExtFieldOptional"
         };
-        let field_type = format!("::protobuf::ext::ExtField{}", suffix);
+        let field_type = format!("::protobuf::ext::{}", suffix);
         w.pub_const(
             &self.field.rust_name(),
             &format!(
