@@ -19,7 +19,6 @@ use map::map_entry;
 use oneof::OneofField;
 use protobuf::wire_format::WireType;
 use scope::MessageOrEnumWithScope;
-use descriptorx::FieldDescriptorProtoExt;
 use scope::FieldWithContext;
 use scope::RootScope;
 use scope::WithScope;
@@ -644,7 +643,7 @@ impl<'a> FieldGen<'a> {
         FieldGen {
             root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: RustIdent::new(&field.field.rust_name()),
+            rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             proto_field: field,
@@ -2324,5 +2323,13 @@ impl<'a> FieldGen<'a> {
             w.write_line("");
             self.write_message_field_take(w);
         }
+    }
+}
+
+pub fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
+    if rust::is_rust_keyword(name) {
+        return RustIdent::new(&format!("field_{}", name))
+    } else {
+        RustIdent::new(name)
     }
 }

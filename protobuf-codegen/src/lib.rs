@@ -28,8 +28,6 @@ mod serde;
 mod well_known_types;
 pub mod case_convert;
 
-// used by grpc-rust
-pub mod descriptorx;
 pub(crate) mod scope;
 pub(crate) mod syntax;
 pub(crate) mod strx;
