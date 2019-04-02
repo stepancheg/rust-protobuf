@@ -2,7 +2,7 @@ use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use protobuf::descriptor::*;
 use scope::RootScope;
-use ident::RustIdentWithPath;
+use rust_name::RustIdentWithPath;
 use field::rust_field_name_for_protobuf_field_name;
 
 

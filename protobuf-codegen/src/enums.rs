@@ -10,8 +10,8 @@ use serde;
 use scope::{EnumWithScope, EnumValueWithContext};
 use scope::RootScope;
 use scope::WithScope;
-use ident::RustIdentWithPath;
-use ident::RustIdent;
+use rust_name::RustIdentWithPath;
+use rust_name::RustIdent;
 
 
 #[derive(Clone)]

@@ -15,7 +15,7 @@ use serde;
 use scope::MessageWithScope;
 use scope::WithScope;
 use scope::RootScope;
-use ident::RustIdentWithPath;
+use rust_name::RustIdentWithPath;
 
 
 /// Message info for codegen

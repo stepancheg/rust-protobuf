@@ -2,7 +2,7 @@ use std::cmp;
 use std::fmt;
 
 use super::well_known_types::is_well_known_type_full;
-use ident::{RustIdent, RustIdentWithPath};
+use rust_name::{RustIdent, RustIdentWithPath};
 use protobuf::descriptor::*;
 use scope::RootScope;
 use scope::WithScope;

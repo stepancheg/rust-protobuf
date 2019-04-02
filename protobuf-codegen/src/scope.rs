@@ -4,7 +4,7 @@ use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
-use ident::RustIdent;
+use rust_name::RustIdent;
 use strx::capitalize;
 use rust::is_rust_keyword;
 use file::proto_path_to_rust_mod;
