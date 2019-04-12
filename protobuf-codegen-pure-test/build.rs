@@ -84,12 +84,12 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              includes,
              customize,
          }| {
-            protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-                out_dir,
-                input,
-                includes,
-                customize,
-            })
+            protobuf_codegen_pure::Args::new()
+                .out_dir(out_dir)
+                .inputs(input)
+                .includes(includes)
+                .customize(customize)
+                .run()
         },
     );
 }
@@ -110,12 +110,12 @@ fn generate_interop() {
     copy_from_protobuf_test("src/interop/mod.rs");
     copy_from_protobuf_test("src/interop/json.rs");
 
-    protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-        out_dir: "src/interop",
-        includes: &["../interop/cxx", "../proto"],
-        input: &["../interop/cxx/interop_pb.proto"],
-        customize: Default::default(),
-    }).unwrap();
+    protobuf_codegen_pure::Args::new()
+        .out_dir("src/interop")
+        .includes(&["../interop/cxx", "../proto"])
+        .input("../interop/cxx/interop_pb.proto")
+        .run()
+        .unwrap();
 }
 
 fn generate_pb_rs() {

@@ -73,15 +73,15 @@ protobuf = { version = "~2.0", features = ["with-bytes"] }
 with `Customize` when codegen is invoked programmatically:
 
 ```rust
-protoc_rust::run(protoc_rust::Args {
+protoc_rust::Args::new()
     ...
-    customize: Customize {
+    .customize(Customize {
         carllerche_bytes_for_bytes: Some(true),
         carllerche_bytes_for_string: Some(true),
         ..Default::default()
-    },
- });
- ```
+    })
+    .run()?;
+```
 
 or in `.proto` file:
 
@@ -110,13 +110,13 @@ To enable `serde` you need to:
 with `Customize` when codegen is invoked programmatically:
 
 ```rust
-protoc_rust::run(protoc_rust::Args {
+protoc_rust::Args::new()
     ...
-    customize: Customize {
+    .customize(Customize {
         serde_derive: Some(true),
         ..Default::default()
-    },
- });
+    })
+    .run()?;
 ```
 
 or in `.proto` file:

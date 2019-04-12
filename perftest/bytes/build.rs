@@ -5,12 +5,12 @@ use std::io::Read;
 use std::process;
 
 fn generate_protos() {
-    protoc_rust::run(protoc_rust::Args {
-        out_dir: "src",
-        input: &["src/messages.proto"],
-        includes: &["src", "../../proto"],
-        ..Default::default()
-    }).expect("protoc");
+    protoc_rust::Args::new()
+        .out_dir("src")
+        .input("src/messages.proto")
+        .includes(&["src", "../../proto"])
+        .run()
+        .expect("protoc");
 }
 
 // % rustc +stable --version

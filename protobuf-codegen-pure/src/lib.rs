@@ -8,7 +8,7 @@ use std::error::Error;
 use std::fmt;
 use std::fs;
 use std::io;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 mod model;
 mod parser;
@@ -21,26 +21,67 @@ mod test_against_protobuf_protos;
 
 // TODO: merge with protoc-rust def
 #[derive(Debug, Default)]
-pub struct Args<'a> {
+pub struct Args {
     /// --lang_out= param
-    pub out_dir: &'a str,
+    out_dir: PathBuf,
     /// -I args
-    pub includes: &'a [&'a str],
+    includes: Vec<PathBuf>,
     /// List of .proto files to compile
-    pub input: &'a [&'a str],
+    inputs: Vec<PathBuf>,
     /// Customize code generation
-    pub customize: Customize,
+    customize: Customize,
 }
 
-/// Convert OS path to protobuf path (with slashes)
-/// Function is `pub(crate)` for test.
-pub(crate) fn relative_path_to_protobuf_path(path: &Path) -> String {
-    assert!(path.is_relative());
-    let path = path.to_str().expect("not a valid UTF-8 name");
-    if cfg!(windows) {
-        path.replace('\\', "/")
-    } else {
-        path.to_owned()
+impl Args {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
+        self.out_dir = out_dir.as_ref().to_owned();
+        self
+    }
+
+    pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
+        self.includes.push(include.as_ref().to_owned());
+        self
+    }
+
+    pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
+        for include in includes {
+            self.include(include);
+        }
+        self
+    }
+
+    pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
+        self.inputs.push(input.as_ref().to_owned());
+        self
+    }
+
+    pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
+        for input in inputs {
+            self.input(input);
+        }
+        self
+    }
+
+    pub fn customize(&mut self, customize: Customize) -> &mut Self {
+        self.customize = customize;
+        self
+    }
+
+    /// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
+    /// commands in `$PATH`.
+    pub fn run(&self) -> io::Result<()> {
+        let p = parse_and_typecheck(&self.includes, &self.inputs)?;
+
+        protobuf_codegen::gen_and_write(
+            &p.file_descriptors,
+            &p.relative_paths,
+            &self.out_dir,
+            &self.customize,
+        )
     }
 }
 
@@ -87,15 +128,15 @@ impl Error for WithFileError {
 }
 
 struct Run<'a> {
-    parsed_files: HashMap<String, FileDescriptorPair>,
-    includes: &'a [&'a str],
+    parsed_files: HashMap<PathBuf, FileDescriptorPair>,
+    includes: &'a [PathBuf],
 }
 
 impl<'a> Run<'a> {
     fn get_file_and_all_deps_already_parsed(
         &self,
-        protobuf_path: &str,
-        result: &mut HashMap<String, FileDescriptorPair>,
+        protobuf_path: &Path,
+        result: &mut HashMap<PathBuf, FileDescriptorPair>,
     ) {
         if let Some(_) = result.get(protobuf_path) {
             return;
@@ -113,14 +154,14 @@ impl<'a> Run<'a> {
     fn get_all_deps_already_parsed(
         &self,
         parsed: &model::FileDescriptor,
-        result: &mut HashMap<String, FileDescriptorPair>,
+        result: &mut HashMap<PathBuf, FileDescriptorPair>,
     ) {
         for import in &parsed.import_paths {
-            self.get_file_and_all_deps_already_parsed(import, result);
+            self.get_file_and_all_deps_already_parsed(Path::new(import), result);
         }
     }
 
-    fn add_file(&mut self, protobuf_path: &str, fs_path: &Path) -> io::Result<()> {
+    fn add_file(&mut self, protobuf_path: &Path, fs_path: &Path) -> io::Result<()> {
         if let Some(_) = self.parsed_files.get(protobuf_path) {
             return Ok(());
         }
@@ -139,7 +180,7 @@ impl<'a> Run<'a> {
         })?;
 
         for import_path in &parsed.import_paths {
-            self.add_imported_file(import_path)?;
+            self.add_imported_file(Path::new(import_path))?;
         }
 
         let mut this_file_deps = HashMap::new();
@@ -148,7 +189,7 @@ impl<'a> Run<'a> {
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v.parsed).collect();
 
         let descriptor =
-            convert::file_descriptor(protobuf_path.to_owned(), &parsed, &this_file_deps).map_err(
+            convert::file_descriptor(protobuf_path, &parsed, &this_file_deps).map_err(
                 |e| {
                     io::Error::new(
                         io::ErrorKind::Other,
@@ -168,9 +209,9 @@ impl<'a> Run<'a> {
         Ok(())
     }
 
-    fn add_imported_file(&mut self, protobuf_path: &str) -> io::Result<()> {
+    fn add_imported_file(&mut self, protobuf_path: &Path) -> io::Result<()> {
         for include_dir in self.includes {
-            let fs_path = Path::new(include_dir).join(protobuf_path);
+            let fs_path = include_dir.join(protobuf_path);
             if fs_path.exists() {
                 return self.add_file(protobuf_path, &fs_path);
             }
@@ -185,7 +226,7 @@ impl<'a> Run<'a> {
         ))
     }
 
-    fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<String> {
+    fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<PathBuf> {
         let relative_path = self
             .includes
             .iter()
@@ -194,9 +235,9 @@ impl<'a> Run<'a> {
 
         match relative_path {
             Some(relative_path) => {
-                let protobuf_path = relative_path_to_protobuf_path(relative_path);
-                self.add_file(&protobuf_path, fs_path)?;
-                Ok(protobuf_path)
+                assert!(relative_path.is_relative());
+                self.add_file(relative_path, fs_path)?;
+                Ok(relative_path.to_owned())
             }
             None => Err(io::Error::new(
                 io::ErrorKind::Other,
@@ -211,12 +252,12 @@ impl<'a> Run<'a> {
 
 #[doc(hidden)]
 pub struct ParsedAndTypechecked {
-    pub relative_paths: Vec<String>,
+    pub relative_paths: Vec<PathBuf>,
     pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
 }
 
 #[doc(hidden)]
-pub fn parse_and_typecheck(includes: &[&str], input: &[&str]) -> io::Result<ParsedAndTypechecked> {
+pub fn parse_and_typecheck(includes: &[PathBuf], input: &[PathBuf]) -> io::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: HashMap::new(),
         includes: includes,
@@ -225,7 +266,7 @@ pub fn parse_and_typecheck(includes: &[&str], input: &[&str]) -> io::Result<Pars
     let mut relative_paths = Vec::new();
 
     for input in input {
-        relative_paths.push(run.add_fs_file(&Path::new(input))?);
+        relative_paths.push(run.add_fs_file(input)?);
     }
 
     let file_descriptors: Vec<_> = run
@@ -238,39 +279,4 @@ pub fn parse_and_typecheck(includes: &[&str], input: &[&str]) -> io::Result<Pars
         relative_paths,
         file_descriptors,
     })
-}
-
-/// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
-/// commands in `$PATH`.
-pub fn run(args: Args) -> io::Result<()> {
-    let p = parse_and_typecheck(args.includes, args.input)?;
-
-    protobuf_codegen::gen_and_write(
-        &p.file_descriptors,
-        &p.relative_paths,
-        &Path::new(&args.out_dir),
-        &args.customize,
-    )
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[cfg(windows)]
-    #[test]
-    fn test_relative_path_to_protobuf_path_windows() {
-        assert_eq!(
-            "foo/bar.proto",
-            relative_path_to_protobuf_path(&Path::new("foo\\bar.proto"))
-        );
-    }
-
-    #[test]
-    fn test_relative_path_to_protobuf_path() {
-        assert_eq!(
-            "foo/bar.proto",
-            relative_path_to_protobuf_path(&Path::new("foo/bar.proto"))
-        );
-    }
 }

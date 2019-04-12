@@ -23,12 +23,12 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              includes,
              customize,
          }| {
-            protoc_rust::run(protoc_rust::Args {
-                out_dir,
-                input,
-                includes,
-                customize,
-            })
+            protoc_rust::Args::new()
+                .out_dir(out_dir)
+                .inputs(input)
+                .includes(includes)
+                .customize(customize)
+                .run()
         },
     );
 }
@@ -86,12 +86,12 @@ fn generate_in_v2_v3() {
 }
 
 fn generate_interop() {
-    protoc_rust::run(protoc_rust::Args {
-        out_dir: "src/interop",
-        includes: &["../interop/cxx", "../proto"],
-        input: &["../interop/cxx/interop_pb.proto"],
-        customize: Default::default(),
-    }).unwrap();
+    protoc_rust::Args::new()
+        .out_dir("src/interop")
+        .includes(&["../interop/cxx", "../proto"])
+        .input("../interop/cxx/interop_pb.proto")
+        .run()
+        .unwrap();
 }
 
 fn generate_pb_rs() {

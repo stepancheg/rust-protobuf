@@ -1,6 +1,7 @@
 //! Convert parser model to rust-protobuf model
 
 use std::iter;
+use std::path::Path;
 
 use model;
 
@@ -959,17 +960,19 @@ fn label(input: model::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label
 }
 
 pub fn file_descriptor(
-    name: String,
+    name: &Path,
     input: &model::FileDescriptor,
     deps: &[model::FileDescriptor],
 ) -> ConvertResult<protobuf::descriptor::FileDescriptorProto> {
+    let name = name.to_str().expect("not a valid UTF-8 name");
+
     let resolver = Resolver {
         current_file: &input,
         deps,
     };
 
     let mut output = protobuf::descriptor::FileDescriptorProto::new();
-    output.set_name(name);
+    output.set_name(name.to_owned());
     output.set_package(input.package.clone());
     output.set_syntax(syntax(input.syntax));
 
