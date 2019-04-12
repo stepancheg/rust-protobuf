@@ -4,11 +4,12 @@ use protobuf::plugin::*;
 use protobuf::Message;
 use std::io::stdin;
 use std::io::stdout;
+use std::path::PathBuf;
 use std::str;
 
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
-    pub files_to_generate: &'a [String],
+    pub files_to_generate: &'a [PathBuf],
     pub parameter: &'a str,
 }
 
@@ -24,7 +25,7 @@ where
     let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin()).unwrap();
     let result = gen(&GenRequest {
         file_descriptors: &req.proto_file,
-        files_to_generate: &req.file_to_generate,
+        files_to_generate: &req.file_to_generate.iter().map(PathBuf::from).collect::<Vec<_>>(),
         parameter: req.get_parameter(),
     });
     let mut resp = CodeGeneratorResponse::new();

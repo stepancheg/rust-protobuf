@@ -10,14 +10,12 @@ extern crate protoc_rust;
 use protoc_rust::Customize;
 
 fn main() {
-	protoc_rust::run(protoc_rust::Args {
-	    out_dir: "src/protos",
-	    input: &["protos/a.proto", "protos/b.proto"],
-	    includes: &["protos"],
-	    customize: Customize {
-	      ..Default::default()
-	    },
-	}).expect("protoc");
+    protoc_rust::Args::new()
+        .out_dir("src/protos")
+        .inputs(&["protos/a.proto", "protos/b.proto"]),
+        .include("protos")
+        .run()
+        .expect("protoc");
 }
 ```
 

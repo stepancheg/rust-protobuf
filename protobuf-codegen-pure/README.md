@@ -7,14 +7,12 @@ Example code:
 ```
 extern crate protobuf_codegen_pure;
 
-protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-    out_dir: "src/protos",
-    input: &["protos/a.proto", "protos/b.proto"],
-    includes: &["protos"],
-    customize: protobuf_codegen_pure::Customize {
-      ..Default::default()
-    },
-}).expect("protoc");
+protobuf_codegen_pure::Args::new()
+    .out_dir("src/protos")
+    .inputs(&["protos/a.proto", "protos/b.proto"])
+    .include("protos")
+    .run()
+    .expect("protoc");
 ```
 
 And in `Cargo.toml`:

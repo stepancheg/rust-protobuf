@@ -6,7 +6,7 @@ use std::fmt::Write as FmtWrite;
 use std::fs::File;
 use std::io;
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use protobuf::descriptor::*;
 use protobuf::Message;
@@ -132,7 +132,7 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
 
 fn gen_file(
     file: &FileDescriptorProto,
-    _files_map: &HashMap<&str, &FileDescriptorProto>,
+    _files_map: &HashMap<&Path, &FileDescriptorProto>,
     root_scope: &RootScope,
     customize: &Customize,
 ) -> Option<compiler_plugin::GenResult> {
@@ -186,7 +186,7 @@ fn gen_file(
 // So be careful changing its signature.
 pub fn gen(
     file_descriptors: &[FileDescriptorProto],
-    files_to_generate: &[String],
+    files_to_generate: &[PathBuf],
     customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
     let root_scope = RootScope {
@@ -194,15 +194,13 @@ pub fn gen(
     };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
-    let files_map: HashMap<&str, &FileDescriptorProto> =
-        file_descriptors.iter().map(|f| (f.get_name(), f)).collect();
-
-    let all_file_names: Vec<&str> = file_descriptors.iter().map(|f| f.get_name()).collect();
+    let files_map: HashMap<&Path, &FileDescriptorProto> =
+        file_descriptors.iter().map(|f| (Path::new(f.get_name()), f)).collect();
 
     for file_name in files_to_generate {
-        let file = files_map.get(&file_name[..]).expect(&format!(
+        let file = files_map.get(file_name.as_path()).expect(&format!(
             "file not found in file descriptors: {:?}, files: {:?}",
-            file_name, all_file_names
+            file_name, files_map.keys()
         ));
         results.extend(gen_file(file, &files_map, &root_scope, customize));
     }
@@ -211,7 +209,7 @@ pub fn gen(
 
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
-    files_to_generate: &[String],
+    files_to_generate: &[PathBuf],
     out_dir: &Path,
     customize: &Customize,
 ) -> io::Result<()> {

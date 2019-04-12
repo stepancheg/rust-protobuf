@@ -1,8 +1,10 @@
 extern crate protoc;
 
+use std::ffi::OsString;
+use std::io::Result;
 use std::path::PathBuf;
 
-fn main() {
+fn main() -> Result<()> {
     let exe_suffix = if cfg!(windows) {
         ".exe"
     } else if cfg!(unix) {
@@ -11,16 +13,20 @@ fn main() {
         panic!("unknown OS")
     };
 
-    let protoc_gen_rust = PathBuf::from(format!("../../target/debug/protoc-gen-rust{}", exe_suffix));
-    let protoc_gen_rust = protoc_gen_rust.canonicalize().expect("canonicalize");
+    let gen_rust_binary = format!("../../target/debug/protoc-gen-rust{}", exe_suffix);
+    let gen_rust_binary = PathBuf::from(gen_rust_binary).canonicalize()?;
 
-    assert!(protoc_gen_rust.is_file(), "{:?}", protoc_gen_rust);
+    assert!(gen_rust_binary.is_file(), "{:?}", gen_rust_binary);
 
-    protoc::run(protoc::Args {
-        lang: "rust",
-        out_dir: "src",
-        plugin: Some(&format!("protoc-gen-rust={}", protoc_gen_rust.as_os_str().to_str().unwrap())),
-        input: &["src/data.proto"],
-        ..Default::default()
-    }).expect("protoc");
+    let mut gen_rust_plugin = OsString::from("protoc-gen-rust=");
+    gen_rust_plugin.push(gen_rust_binary);
+
+    protoc::Args::new()
+        .lang("rust")
+        .out_dir("src")
+        .plugin(gen_rust_plugin)
+        .input("src/data.proto")
+        .run()?;
+
+    Ok(())
 }

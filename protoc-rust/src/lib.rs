@@ -4,13 +4,9 @@ extern crate protobuf;
 extern crate protobuf_codegen;
 extern crate protoc;
 
-mod slashes;
-use slashes::Slashes;
-
 use std::fs;
 use std::io;
-use std::io::Read;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub use protoc::Error;
 pub use protoc::Result;
@@ -18,132 +14,146 @@ pub use protoc::Result;
 pub use protobuf_codegen::Customize;
 
 #[derive(Debug, Default)]
-pub struct Args<'a> {
+pub struct Args {
     /// --lang_out= param
-    pub out_dir: &'a str,
+    out_dir: PathBuf,
     /// -I args
-    pub includes: &'a [&'a str],
+    includes: Vec<PathBuf>,
     /// List of .proto files to compile
-    pub input: &'a [&'a str],
+    inputs: Vec<PathBuf>,
     /// Customize code generation
-    pub customize: Customize,
+    customize: Customize,
 }
 
-/// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
-pub fn run(args: Args) -> Result<()> {
-    let protoc = protoc::Protoc::from_env_path();
-    protoc.check()?;
-
-    let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
-    let temp_file = temp_dir.path().join("descriptor.pbbin");
-    let temp_file = temp_file.to_str().expect("utf-8 file name");
-
-    protoc.write_descriptor_set(protoc::DescriptorSetOutArgs {
-        out: temp_file,
-        includes: args.includes,
-        input: args.input,
-        include_imports: true,
-    })?;
-
-    let mut fds = Vec::new();
-    let mut file = fs::File::open(temp_file)?;
-    file.read_to_end(&mut fds)?;
-
-    drop(file);
-    drop(temp_dir);
-
-    let fds: protobuf::descriptor::FileDescriptorSet =
-        protobuf::parse_from_bytes(&fds).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
-
-    let mut includes = args.includes;
-    if includes.is_empty() {
-        static DOT_SLICE: &'static [&'static str] = &["."];
-        includes = DOT_SLICE;
+impl Args {
+    pub fn new() -> Self {
+        Self::default()
     }
 
-    let mut files_to_generate = Vec::new();
-    'outer: for file in args.input {
+    pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
+        self.out_dir = out_dir.as_ref().to_owned();
+        self
+    }
+
+    pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
+        self.includes.push(include.as_ref().to_owned());
+        self
+    }
+
+    pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for include in includes {
-            if let Some(truncated) = remove_path_prefix(file, include) {
-                files_to_generate.push(truncated.to_owned());
-                continue 'outer;
+            self.include(include);
+        }
+        self
+    }
+
+    pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
+        self.inputs.push(input.as_ref().to_owned());
+        self
+    }
+
+    pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
+        for input in inputs {
+            self.input(input);
+        }
+        self
+    }
+
+    pub fn customize(&mut self, customize: Customize) -> &mut Self {
+        self.customize = customize;
+        self
+    }
+
+    /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
+    pub fn run(&self) -> Result<()> {
+        let protoc = protoc::Protoc::from_env_path();
+        protoc.check()?;
+
+        let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
+        let temp_file = temp_dir.path().join("descriptor.pbbin");
+
+        protoc
+            .descriptor_set_out_args()
+            .out(&temp_file)
+            .includes(&self.includes)
+            .inputs(&self.inputs)
+            .include_imports(true)
+            .write_descriptor_set()?;
+
+        let fds = fs::read(temp_file)?;
+        drop(temp_dir);
+
+        let fds: protobuf::descriptor::FileDescriptorSet =
+            protobuf::parse_from_bytes(&fds).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+
+        let default_includes = vec![PathBuf::from(".")];
+        let includes = if self.includes.is_empty() {
+            &default_includes
+        } else {
+            &self.includes
+        };
+
+        let mut files_to_generate = Vec::new();
+        'outer: for file in &self.inputs {
+            for include in includes {
+                if let Some(truncated) = remove_path_prefix(file, include) {
+                    files_to_generate.push(truncated.to_owned());
+                    continue 'outer;
+                }
             }
+
+            return Err(Error::new(
+                io::ErrorKind::Other,
+                format!(
+                    "file {:?} is not found in includes {:?}",
+                    file, includes
+                ),
+            ));
         }
 
-        return Err(Error::new(
-            io::ErrorKind::Other,
-            format!(
-                "file {:?} is not found in includes {:?}",
-                file, args.includes
-            ),
-        ));
-    }
-
-    protobuf_codegen::gen_and_write(
-        &fds.file,
-        &files_to_generate,
-        &Path::new(&args.out_dir),
-        &args.customize,
-    )
-}
-
-fn remove_path_prefix(mut path: &str, mut prefix: &str) -> Option<String> {
-    let slashes = Slashes::here();
-    path = slashes.remove_dot_slashes(path);
-    prefix = slashes.remove_dot_slashes(prefix);
-
-    if prefix == "" {
-        return Some(path.to_owned());
-    }
-
-    let path = slashes.norm_path(path);
-    let mut prefix = slashes.norm_path(prefix);
-
-    if prefix.ends_with("/") {
-        let l = prefix.len();
-        prefix.truncate(l - 1);
-    }
-
-    if !path.starts_with(&prefix) {
-        return None;
-    }
-
-    if path.len() <= prefix.len() {
-        return None;
-    }
-
-    if path.as_bytes()[prefix.len()] == b'/' {
-        return Some(path[prefix.len() + 1..].to_owned());
-    } else {
-        return None;
+        protobuf_codegen::gen_and_write(
+            &fds.file,
+            &files_to_generate,
+            &self.out_dir,
+            &self.customize,
+        )
     }
 }
 
-#[cfg(test)]
-mod test {
-    #[test]
-    fn remove_path_prefix() {
-        assert_eq!(
-            Some("abc.proto".to_owned()),
-            super::remove_path_prefix("xxx/abc.proto", "xxx")
-        );
-        assert_eq!(
-            Some("abc.proto".to_owned()),
-            super::remove_path_prefix("xxx/abc.proto", "xxx/")
-        );
-        assert_eq!(
-            Some("abc.proto".to_owned()),
-            super::remove_path_prefix("../xxx/abc.proto", "../xxx/")
-        );
-        assert_eq!(
-            Some("abc.proto".to_owned()),
-            super::remove_path_prefix("abc.proto", ".")
-        );
-        assert_eq!(
-            Some("abc.proto".to_owned()),
-            super::remove_path_prefix("abc.proto", "./")
-        );
-        assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy"));
-        assert_eq!(None, super::remove_path_prefix("xxx/abc.proto", "yyy/"));
-    }
+fn remove_path_prefix<'a>(mut path: &'a Path, mut prefix: &Path) -> Option<&'a Path> {
+    path = path.strip_prefix(".").unwrap_or(path);
+    prefix = prefix.strip_prefix(".").unwrap_or(prefix);
+    path.strip_prefix(prefix).ok()
+}
+
+#[test]
+fn test_remove_path_prefix() {
+    assert_eq!(
+        Some(Path::new("abc.proto")),
+        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("xxx"))
+    );
+    assert_eq!(
+        Some(Path::new("abc.proto")),
+        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("xxx/"))
+    );
+    assert_eq!(
+        Some(Path::new("abc.proto")),
+        remove_path_prefix(Path::new("../xxx/abc.proto"), Path::new("../xxx/"))
+    );
+    assert_eq!(
+        Some(Path::new("abc.proto")),
+        remove_path_prefix(Path::new("abc.proto"), Path::new("."))
+    );
+    assert_eq!(
+        Some(Path::new("abc.proto")),
+        remove_path_prefix(Path::new("abc.proto"), Path::new("./"))
+    );
+    assert_eq!(
+        None,
+        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("yyy"))
+    );
+    assert_eq!(
+        None,
+        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("yyy/"))
+    );
 }
