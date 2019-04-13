@@ -1,7 +1,6 @@
 //! Reflection implementation for protobuf types.
 
 mod accessor;
-pub(crate) mod as_any;
 mod enums;
 mod field;
 mod map;

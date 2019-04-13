@@ -3,7 +3,6 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use super::as_any::AsAny;
 use super::*;
 use core::*;
 use reflect::reflect_deep_eq::ReflectDeepEq;
@@ -11,12 +10,13 @@ use reflect::transmute_eq::transmute_eq;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
+use std::any::Any;
 
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).
 ///
 /// Used for dynamic casting in reflection.
-pub trait ProtobufValue: AsAny + 'static + Send + Sync {}
+pub trait ProtobufValue: Any + 'static + Send + Sync {}
 
 impl ProtobufValue for u32 {}
 
