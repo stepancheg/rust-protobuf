@@ -34,7 +34,7 @@ impl<T> Lazy<T> {
 #[cfg(test)]
 mod test {
     use super::Lazy;
-    use std::sync::atomic::{AtomicIsize, Ordering, ATOMIC_ISIZE_INIT};
+    use std::sync::atomic::{AtomicIsize, Ordering};
     use std::sync::{Arc, Barrier};
     use std::thread;
 
@@ -45,7 +45,7 @@ mod test {
         const N_ITERS: usize = 16;
 
         static mut LAZY: Lazy<String> = Lazy::INIT;
-        static CALL_COUNT: AtomicIsize = ATOMIC_ISIZE_INIT;
+        static CALL_COUNT: AtomicIsize = AtomicIsize::new(0);
 
         let value = "Hello, world!".to_owned();
 
