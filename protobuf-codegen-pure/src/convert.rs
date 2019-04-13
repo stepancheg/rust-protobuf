@@ -5,7 +5,7 @@ use std::iter;
 use model;
 
 use protobuf;
-use protobuf::descriptor::FieldDescriptorProto_Label;
+use protobuf::descriptor::field_descriptor_proto;
 use protobuf::prelude::*;
 use protobuf::Message;
 
@@ -66,10 +66,10 @@ enum MessageOrEnum {
 }
 
 impl MessageOrEnum {
-    fn descriptor_type(&self) -> protobuf::descriptor::FieldDescriptorProto_Type {
+    fn descriptor_type(&self) -> protobuf::descriptor::field_descriptor_proto::Type {
         match *self {
-            MessageOrEnum::Message => protobuf::descriptor::FieldDescriptorProto_Type::TYPE_MESSAGE,
-            MessageOrEnum::Enum => protobuf::descriptor::FieldDescriptorProto_Type::TYPE_ENUM,
+            MessageOrEnum::Message => protobuf::descriptor::field_descriptor_proto::Type::TYPE_MESSAGE,
+            MessageOrEnum::Enum => protobuf::descriptor::field_descriptor_proto::Type::TYPE_ENUM,
         }
     }
 }
@@ -188,7 +188,7 @@ impl<'a> Resolver<'a> {
             output.set_type_name(t_name.path);
         }
 
-        output.set_label(FieldDescriptorProto_Label::LABEL_OPTIONAL);
+        output.set_label(field_descriptor_proto::Label::LABEL_OPTIONAL);
 
         output
     }
@@ -354,7 +354,7 @@ impl<'a> Resolver<'a> {
         output.set_name(input.name.clone());
 
         if let model::FieldType::Map(..) = input.typ {
-            output.set_label(protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED);
+            output.set_label(protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED);
         } else {
             output.set_label(label(input.rule));
         }
@@ -368,14 +368,14 @@ impl<'a> Resolver<'a> {
         output.set_number(input.number);
         if let Some(ref default) = input.options.as_slice().by_name("default") {
             let default = match output.get_field_type() {
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING => {
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.decode_utf8()?
                     } else {
                         return Err(ConvertError::DefaultValueIsNotStringLiteral);
                     }
                 }
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES => {
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_BYTES => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.escaped.clone()
                     } else {
@@ -461,68 +461,68 @@ impl<'a> Resolver<'a> {
         input: &model::FieldType,
         path_in_file: &ProtobufRelativePath,
     ) -> (
-        protobuf::descriptor::FieldDescriptorProto_Type,
+        protobuf::descriptor::field_descriptor_proto::Type,
         Option<ProtobufAbsolutePath>,
     ) {
         match *input {
             model::FieldType::Bool => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BOOL,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_BOOL,
                 None,
             ),
             model::FieldType::Int32 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT32,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_INT32,
                 None,
             ),
             model::FieldType::Int64 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_INT64,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_INT64,
                 None,
             ),
             model::FieldType::Uint32 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT32,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_UINT32,
                 None,
             ),
             model::FieldType::Uint64 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_UINT64,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_UINT64,
                 None,
             ),
             model::FieldType::Sint32 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT32,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_SINT32,
                 None,
             ),
             model::FieldType::Sint64 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SINT64,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_SINT64,
                 None,
             ),
             model::FieldType::Fixed32 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED32,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_FIXED32,
                 None,
             ),
             model::FieldType::Fixed64 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FIXED64,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_FIXED64,
                 None,
             ),
             model::FieldType::Sfixed32 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED32,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_SFIXED32,
                 None,
             ),
             model::FieldType::Sfixed64 => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_SFIXED64,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_SFIXED64,
                 None,
             ),
             model::FieldType::Float => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_FLOAT,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_FLOAT,
                 None,
             ),
             model::FieldType::Double => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_DOUBLE,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_DOUBLE,
                 None,
             ),
             model::FieldType::String => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_STRING,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_STRING,
                 None,
             ),
             model::FieldType::Bytes => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_BYTES,
                 None,
             ),
             model::FieldType::MessageOrEnum(ref name) => {
@@ -534,12 +534,12 @@ impl<'a> Resolver<'a> {
                 type_name.push_relative(path_in_file);
                 type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
                 (
-                    protobuf::descriptor::FieldDescriptorProto_Type::TYPE_MESSAGE,
+                    protobuf::descriptor::field_descriptor_proto::Type::TYPE_MESSAGE,
                     Some(type_name),
                 )
             }
             model::FieldType::Group(..) => (
-                protobuf::descriptor::FieldDescriptorProto_Type::TYPE_GROUP,
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_GROUP,
                 None,
             ),
         }
@@ -716,11 +716,11 @@ fn syntax(input: model::Syntax) -> String {
     }
 }
 
-fn label(input: model::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label {
+fn label(input: model::Rule) -> protobuf::descriptor::field_descriptor_proto::Label {
     match input {
-        model::Rule::Optional => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
-        model::Rule::Required => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED,
-        model::Rule::Repeated => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED,
+        model::Rule::Optional => protobuf::descriptor::field_descriptor_proto::Label::LABEL_OPTIONAL,
+        model::Rule::Required => protobuf::descriptor::field_descriptor_proto::Label::LABEL_REQUIRED,
+        model::Rule::Repeated => protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED,
     }
 }
 

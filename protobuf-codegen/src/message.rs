@@ -58,7 +58,7 @@ impl<'a> MessageGen<'a> {
                 .options
                 .get_message()
                 .get_optimize_for()
-                == FileOptions_OptimizeMode::LITE_RUNTIME,
+                == file_options::OptimizeMode::LITE_RUNTIME,
             customize,
         }
     }
@@ -87,7 +87,7 @@ impl<'a> MessageGen<'a> {
     fn message_fields(&'a self) -> Vec<&'a FieldGen> {
         self.fields
             .iter()
-            .filter(|f| f.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE)
+            .filter(|f| f.proto_type == field_descriptor_proto::Type::TYPE_MESSAGE)
             .collect()
     }
 
@@ -98,14 +98,14 @@ impl<'a> MessageGen<'a> {
     fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields
             .iter()
-            .filter(|f| f.proto_type != FieldDescriptorProto_Type::TYPE_GROUP)
+            .filter(|f| f.proto_type != field_descriptor_proto::Type::TYPE_GROUP)
             .collect()
     }
 
     fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields
             .iter()
-            .filter(|f| !f.is_oneof() && f.proto_type != FieldDescriptorProto_Type::TYPE_GROUP)
+            .filter(|f| !f.is_oneof() && f.proto_type != field_descriptor_proto::Type::TYPE_GROUP)
             .collect()
     }
 

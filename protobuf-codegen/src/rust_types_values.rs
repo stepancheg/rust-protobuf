@@ -408,50 +408,52 @@ impl RustValueTyped {
 }
 
 // protobuf type name for protobuf base type
-pub fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
+pub fn protobuf_name(field_type: field_descriptor_proto::Type) -> &'static str {
+    use field_descriptor_proto::Type;
     match field_type {
-        FieldDescriptorProto_Type::TYPE_DOUBLE => "double",
-        FieldDescriptorProto_Type::TYPE_FLOAT => "float",
-        FieldDescriptorProto_Type::TYPE_INT32 => "int32",
-        FieldDescriptorProto_Type::TYPE_INT64 => "int64",
-        FieldDescriptorProto_Type::TYPE_UINT32 => "uint32",
-        FieldDescriptorProto_Type::TYPE_UINT64 => "uint64",
-        FieldDescriptorProto_Type::TYPE_SINT32 => "sint32",
-        FieldDescriptorProto_Type::TYPE_SINT64 => "sint64",
-        FieldDescriptorProto_Type::TYPE_FIXED32 => "fixed32",
-        FieldDescriptorProto_Type::TYPE_FIXED64 => "fixed64",
-        FieldDescriptorProto_Type::TYPE_SFIXED32 => "sfixed32",
-        FieldDescriptorProto_Type::TYPE_SFIXED64 => "sfixed64",
-        FieldDescriptorProto_Type::TYPE_BOOL => "bool",
-        FieldDescriptorProto_Type::TYPE_STRING => "string",
-        FieldDescriptorProto_Type::TYPE_BYTES => "bytes",
-        FieldDescriptorProto_Type::TYPE_ENUM => "enum",
-        FieldDescriptorProto_Type::TYPE_MESSAGE => "message",
-        FieldDescriptorProto_Type::TYPE_GROUP => "group",
+        Type::TYPE_DOUBLE => "double",
+        Type::TYPE_FLOAT => "float",
+        Type::TYPE_INT32 => "int32",
+        Type::TYPE_INT64 => "int64",
+        Type::TYPE_UINT32 => "uint32",
+        Type::TYPE_UINT64 => "uint64",
+        Type::TYPE_SINT32 => "sint32",
+        Type::TYPE_SINT64 => "sint64",
+        Type::TYPE_FIXED32 => "fixed32",
+        Type::TYPE_FIXED64 => "fixed64",
+        Type::TYPE_SFIXED32 => "sfixed32",
+        Type::TYPE_SFIXED64 => "sfixed64",
+        Type::TYPE_BOOL => "bool",
+        Type::TYPE_STRING => "string",
+        Type::TYPE_BYTES => "bytes",
+        Type::TYPE_ENUM => "enum",
+        Type::TYPE_MESSAGE => "message",
+        Type::TYPE_GROUP => "group",
     }
 }
 
 // rust type for protobuf base type
-pub(crate) fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
+pub(crate) fn rust_name(field_type: field_descriptor_proto::Type) -> RustType {
+    use field_descriptor_proto::Type;
     match field_type {
-        FieldDescriptorProto_Type::TYPE_DOUBLE => RustType::Float(64),
-        FieldDescriptorProto_Type::TYPE_FLOAT => RustType::Float(32),
-        FieldDescriptorProto_Type::TYPE_INT32 => RustType::Int(true, 32),
-        FieldDescriptorProto_Type::TYPE_INT64 => RustType::Int(true, 64),
-        FieldDescriptorProto_Type::TYPE_UINT32 => RustType::Int(false, 32),
-        FieldDescriptorProto_Type::TYPE_UINT64 => RustType::Int(false, 64),
-        FieldDescriptorProto_Type::TYPE_SINT32 => RustType::Int(true, 32),
-        FieldDescriptorProto_Type::TYPE_SINT64 => RustType::Int(true, 64),
-        FieldDescriptorProto_Type::TYPE_FIXED32 => RustType::Int(false, 32),
-        FieldDescriptorProto_Type::TYPE_FIXED64 => RustType::Int(false, 64),
-        FieldDescriptorProto_Type::TYPE_SFIXED32 => RustType::Int(true, 32),
-        FieldDescriptorProto_Type::TYPE_SFIXED64 => RustType::Int(true, 64),
-        FieldDescriptorProto_Type::TYPE_BOOL => RustType::Bool,
-        FieldDescriptorProto_Type::TYPE_STRING => RustType::String,
-        FieldDescriptorProto_Type::TYPE_BYTES => RustType::Vec(Box::new(RustType::Int(false, 8))),
-        FieldDescriptorProto_Type::TYPE_ENUM
-        | FieldDescriptorProto_Type::TYPE_GROUP
-        | FieldDescriptorProto_Type::TYPE_MESSAGE => {
+        Type::TYPE_DOUBLE => RustType::Float(64),
+        Type::TYPE_FLOAT => RustType::Float(32),
+        Type::TYPE_INT32 => RustType::Int(true, 32),
+        Type::TYPE_INT64 => RustType::Int(true, 64),
+        Type::TYPE_UINT32 => RustType::Int(false, 32),
+        Type::TYPE_UINT64 => RustType::Int(false, 64),
+        Type::TYPE_SINT32 => RustType::Int(true, 32),
+        Type::TYPE_SINT64 => RustType::Int(true, 64),
+        Type::TYPE_FIXED32 => RustType::Int(false, 32),
+        Type::TYPE_FIXED64 => RustType::Int(false, 64),
+        Type::TYPE_SFIXED32 => RustType::Int(true, 32),
+        Type::TYPE_SFIXED64 => RustType::Int(true, 64),
+        Type::TYPE_BOOL => RustType::Bool,
+        Type::TYPE_STRING => RustType::String,
+        Type::TYPE_BYTES => RustType::Vec(Box::new(RustType::Int(false, 8))),
+        Type::TYPE_ENUM |
+        Type::TYPE_GROUP |
+        Type::TYPE_MESSAGE => {
             panic!("there is no rust name for {:?}", field_type)
         }
     }
@@ -539,7 +541,7 @@ pub enum _CarllercheBytesType {
 
 // ProtobufType trait name
 pub(crate) enum ProtobufTypeGen {
-    Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
+    Primitive(field_descriptor_proto::Type, PrimitiveTypeVariant),
     Message(RustIdentWithPath),
     EnumOrUnknown(RustIdentWithPath),
     Enum(RustIdentWithPath),
@@ -553,11 +555,11 @@ impl ProtobufTypeGen {
                 capitalize(protobuf_name(t))
             ),
             &ProtobufTypeGen::Primitive(
-                FieldDescriptorProto_Type::TYPE_BYTES,
+                field_descriptor_proto::Type::TYPE_BYTES,
                 PrimitiveTypeVariant::Carllerche,
             ) => format!("::protobuf::types::ProtobufTypeCarllercheBytes"),
             &ProtobufTypeGen::Primitive(
-                FieldDescriptorProto_Type::TYPE_STRING,
+                field_descriptor_proto::Type::TYPE_STRING,
                 PrimitiveTypeVariant::Carllerche,
             ) => format!("::protobuf::types::ProtobufTypeCarllercheChars"),
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),

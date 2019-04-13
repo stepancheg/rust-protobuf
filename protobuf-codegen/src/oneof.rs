@@ -5,7 +5,7 @@ use field::FieldElem;
 use field::FieldGen;
 use message::MessageGen;
 use protobuf::descriptor::FieldDescriptorProto;
-use protobuf::descriptor::FieldDescriptorProto_Type;
+use protobuf::descriptor::field_descriptor_proto;
 use scope::OneofVariantWithContext;
 use scope::OneofWithContext;
 use scope::WithScope;
@@ -143,7 +143,7 @@ impl<'a> OneofGen<'a> {
                     .next()
                     .expect(&format!("field not found by name: {}", v.field.get_name()));
                 match field.proto_type {
-                    FieldDescriptorProto_Type::TYPE_GROUP => None,
+                    field_descriptor_proto::Type::TYPE_GROUP => None,
                     _ => Some(OneofVariantGen::parse(self, v, field)),
                 }
             }).collect()

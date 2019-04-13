@@ -601,10 +601,10 @@ pub struct DescriptorProto {
     pub extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
     pub nested_type: ::protobuf::RepeatedField<DescriptorProto>,
     pub enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
-    pub extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
+    pub extension_range: ::protobuf::RepeatedField<descriptor_proto::ExtensionRange>,
     pub oneof_decl: ::protobuf::RepeatedField<OneofDescriptorProto>,
     pub options: ::protobuf::SingularPtrField<MessageOptions>,
-    pub reserved_range: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>,
+    pub reserved_range: ::protobuf::RepeatedField<descriptor_proto::ReservedRange>,
     pub reserved_name: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -880,7 +880,7 @@ impl ::protobuf::Message for DescriptorProto {
                 |m: &DescriptorProto| { &m.enum_type },
                 |m: &mut DescriptorProto| { &mut m.enum_type },
             ));
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<descriptor_proto::ExtensionRange>>(
                 "extension_range",
                 |m: &DescriptorProto| { &m.extension_range },
                 |m: &mut DescriptorProto| { &mut m.extension_range },
@@ -895,7 +895,7 @@ impl ::protobuf::Message for DescriptorProto {
                 |m: &DescriptorProto| { &m.options },
                 |m: &mut DescriptorProto| { &mut m.options },
             ));
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<descriptor_proto::ReservedRange>>(
                 "reserved_range",
                 |m: &DescriptorProto| { &m.reserved_range },
                 |m: &mut DescriptorProto| { &mut m.reserved_range },
@@ -944,374 +944,376 @@ impl ::std::fmt::Debug for DescriptorProto {
 impl ::protobuf::reflect::ProtobufValue for DescriptorProto {
 }
 
-#[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub struct DescriptorProto_ExtensionRange {
-    // message fields
-    start: ::std::option::Option<i32>,
-    end: ::std::option::Option<i32>,
-    // special fields
-    #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
-}
-
-impl<'a> ::std::default::Default for &'a DescriptorProto_ExtensionRange {
-    fn default() -> &'a DescriptorProto_ExtensionRange {
-        <DescriptorProto_ExtensionRange as ::protobuf::Message>::default_instance()
-    }
-}
-
-impl DescriptorProto_ExtensionRange {
-    pub fn new() -> DescriptorProto_ExtensionRange {
-        ::std::default::Default::default()
+pub mod descriptor_proto {
+    #[derive(PartialEq,Clone,Default)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub struct ExtensionRange {
+        // message fields
+        start: ::std::option::Option<i32>,
+        end: ::std::option::Option<i32>,
+        // special fields
+        #[cfg_attr(serde, serde(skip))]
+        pub unknown_fields: ::protobuf::UnknownFields,
+        #[cfg_attr(serde, serde(skip))]
+        pub cached_size: ::protobuf::CachedSize,
     }
 
-    // optional int32 start = 1;
-
-    pub fn get_start(&self) -> i32 {
-        self.start.unwrap_or(0)
-    }
-
-    pub fn clear_start(&mut self) {
-        self.start = ::std::option::Option::None;
-    }
-
-    pub fn has_start(&self) -> bool {
-        self.start.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_start(&mut self, v: i32) {
-        self.start = ::std::option::Option::Some(v);
-    }
-
-    // optional int32 end = 2;
-
-    pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
-    }
-
-    pub fn clear_end(&mut self) {
-        self.end = ::std::option::Option::None;
-    }
-
-    pub fn has_end(&self) -> bool {
-        self.end.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_end(&mut self, v: i32) {
-        self.end = ::std::option::Option::Some(v);
-    }
-}
-
-impl ::protobuf::Message for DescriptorProto_ExtensionRange {
-    fn is_initialized(&self) -> bool {
-        true
-    }
-
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.start = ::std::option::Option::Some(is.read_int32()?);
-                },
-                2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.end = ::std::option::Option::Some(is.read_int32()?);
-                },
-                _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
-            };
+    impl<'a> ::std::default::Default for &'a ExtensionRange {
+        fn default() -> &'a ExtensionRange {
+            <ExtensionRange as ::protobuf::Message>::default_instance()
         }
-        ::std::result::Result::Ok(())
     }
 
-    // Compute sizes of nested messages
-    #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
-        let mut my_size = 0;
-        if let Some(v) = self.start {
-            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+    impl ExtensionRange {
+        pub fn new() -> ExtensionRange {
+            ::std::default::Default::default()
         }
-        if let Some(v) = self.end {
-            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+
+        // optional int32 start = 1;
+
+        pub fn get_start(&self) -> i32 {
+            self.start.unwrap_or(0)
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
-    }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.start {
-            os.write_int32(1, v)?;
+        pub fn clear_start(&mut self) {
+            self.start = ::std::option::Option::None;
         }
-        if let Some(v) = self.end {
-            os.write_int32(2, v)?;
+
+        pub fn has_start(&self) -> bool {
+            self.start.is_some()
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
-        ::std::result::Result::Ok(())
-    }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
-    }
-
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
-    }
-
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
-    fn new() -> DescriptorProto_ExtensionRange {
-        DescriptorProto_ExtensionRange::new()
-    }
-
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                "start",
-                |m: &DescriptorProto_ExtensionRange| { &m.start },
-                |m: &mut DescriptorProto_ExtensionRange| { &mut m.start },
-                DescriptorProto_ExtensionRange::get_start,
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                "end",
-                |m: &DescriptorProto_ExtensionRange| { &m.end },
-                |m: &mut DescriptorProto_ExtensionRange| { &mut m.end },
-                DescriptorProto_ExtensionRange::get_end,
-            ));
-            ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ExtensionRange>(
-                "DescriptorProto.ExtensionRange",
-                fields,
-                file_descriptor_proto()
-            )
-        })
-    }
-
-    fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-        static instance: ::protobuf::rt::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::rt::Lazy::INIT;
-        instance.get(DescriptorProto_ExtensionRange::new)
-    }
-}
-
-impl ::protobuf::Clear for DescriptorProto_ExtensionRange {
-    fn clear(&mut self) {
-        self.start = ::std::option::Option::None;
-        self.end = ::std::option::Option::None;
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::fmt::Debug for DescriptorProto_ExtensionRange {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ExtensionRange {
-}
-
-#[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub struct DescriptorProto_ReservedRange {
-    // message fields
-    start: ::std::option::Option<i32>,
-    end: ::std::option::Option<i32>,
-    // special fields
-    #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
-}
-
-impl<'a> ::std::default::Default for &'a DescriptorProto_ReservedRange {
-    fn default() -> &'a DescriptorProto_ReservedRange {
-        <DescriptorProto_ReservedRange as ::protobuf::Message>::default_instance()
-    }
-}
-
-impl DescriptorProto_ReservedRange {
-    pub fn new() -> DescriptorProto_ReservedRange {
-        ::std::default::Default::default()
-    }
-
-    // optional int32 start = 1;
-
-    pub fn get_start(&self) -> i32 {
-        self.start.unwrap_or(0)
-    }
-
-    pub fn clear_start(&mut self) {
-        self.start = ::std::option::Option::None;
-    }
-
-    pub fn has_start(&self) -> bool {
-        self.start.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_start(&mut self, v: i32) {
-        self.start = ::std::option::Option::Some(v);
-    }
-
-    // optional int32 end = 2;
-
-    pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
-    }
-
-    pub fn clear_end(&mut self) {
-        self.end = ::std::option::Option::None;
-    }
-
-    pub fn has_end(&self) -> bool {
-        self.end.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_end(&mut self, v: i32) {
-        self.end = ::std::option::Option::Some(v);
-    }
-}
-
-impl ::protobuf::Message for DescriptorProto_ReservedRange {
-    fn is_initialized(&self) -> bool {
-        true
-    }
-
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.start = ::std::option::Option::Some(is.read_int32()?);
-                },
-                2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.end = ::std::option::Option::Some(is.read_int32()?);
-                },
-                _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
-            };
+        // Param is passed by value, moved
+        pub fn set_start(&mut self, v: i32) {
+            self.start = ::std::option::Option::Some(v);
         }
-        ::std::result::Result::Ok(())
-    }
 
-    // Compute sizes of nested messages
-    #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
-        let mut my_size = 0;
-        if let Some(v) = self.start {
-            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        // optional int32 end = 2;
+
+        pub fn get_end(&self) -> i32 {
+            self.end.unwrap_or(0)
         }
-        if let Some(v) = self.end {
-            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+
+        pub fn clear_end(&mut self) {
+            self.end = ::std::option::Option::None;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
-    }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.start {
-            os.write_int32(1, v)?;
+        pub fn has_end(&self) -> bool {
+            self.end.is_some()
         }
-        if let Some(v) = self.end {
-            os.write_int32(2, v)?;
+
+        // Param is passed by value, moved
+        pub fn set_end(&mut self, v: i32) {
+            self.end = ::std::option::Option::Some(v);
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
-        ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    impl ::protobuf::Message for ExtensionRange {
+        fn is_initialized(&self) -> bool {
+            true
+        }
+
+        fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+            while !is.eof()? {
+                let (field_number, wire_type) = is.read_tag_unpack()?;
+                match field_number {
+                    1 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.start = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    2 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.end = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    _ => {
+                        ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    },
+                };
+            }
+            ::std::result::Result::Ok(())
+        }
+
+        // Compute sizes of nested messages
+        #[allow(unused_variables)]
+        fn compute_size(&self) -> u32 {
+            let mut my_size = 0;
+            if let Some(v) = self.start {
+                my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+            }
+            if let Some(v) = self.end {
+                my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+            }
+            my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+            self.cached_size.set(my_size);
+            my_size
+        }
+
+        fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+            if let Some(v) = self.start {
+                os.write_int32(1, v)?;
+            }
+            if let Some(v) = self.end {
+                os.write_int32(2, v)?;
+            }
+            os.write_unknown_fields(self.get_unknown_fields())?;
+            ::std::result::Result::Ok(())
+        }
+
+        fn get_cached_size(&self) -> u32 {
+            self.cached_size.get()
+        }
+
+        fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+            &self.unknown_fields
+        }
+
+        fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+            &mut self.unknown_fields
+        }
+
+        fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+            Self::descriptor_static()
+        }
+
+        fn new() -> ExtensionRange {
+            ExtensionRange::new()
+        }
+
+        fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                    "start",
+                    |m: &ExtensionRange| { &m.start },
+                    |m: &mut ExtensionRange| { &mut m.start },
+                    ExtensionRange::get_start,
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                    "end",
+                    |m: &ExtensionRange| { &m.end },
+                    |m: &mut ExtensionRange| { &mut m.end },
+                    ExtensionRange::get_end,
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<ExtensionRange>(
+                    "DescriptorProto.ExtensionRange",
+                    fields,
+                    super::file_descriptor_proto()
+                )
+            })
+        }
+
+        fn default_instance() -> &'static ExtensionRange {
+            static instance: ::protobuf::rt::Lazy<ExtensionRange> = ::protobuf::rt::Lazy::INIT;
+            instance.get(ExtensionRange::new)
+        }
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
+    impl ::protobuf::Clear for ExtensionRange {
+        fn clear(&mut self) {
+            self.start = ::std::option::Option::None;
+            self.end = ::std::option::Option::None;
+            self.unknown_fields.clear();
+        }
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
+    impl ::std::fmt::Debug for ExtensionRange {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            ::protobuf::text_format::fmt(self, f)
+        }
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        Self::descriptor_static()
+    impl ::protobuf::reflect::ProtobufValue for ExtensionRange {
     }
 
-    fn new() -> DescriptorProto_ReservedRange {
-        DescriptorProto_ReservedRange::new()
+    #[derive(PartialEq,Clone,Default)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub struct ReservedRange {
+        // message fields
+        start: ::std::option::Option<i32>,
+        end: ::std::option::Option<i32>,
+        // special fields
+        #[cfg_attr(serde, serde(skip))]
+        pub unknown_fields: ::protobuf::UnknownFields,
+        #[cfg_attr(serde, serde(skip))]
+        pub cached_size: ::protobuf::CachedSize,
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                "start",
-                |m: &DescriptorProto_ReservedRange| { &m.start },
-                |m: &mut DescriptorProto_ReservedRange| { &mut m.start },
-                DescriptorProto_ReservedRange::get_start,
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                "end",
-                |m: &DescriptorProto_ReservedRange| { &m.end },
-                |m: &mut DescriptorProto_ReservedRange| { &mut m.end },
-                DescriptorProto_ReservedRange::get_end,
-            ));
-            ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ReservedRange>(
-                "DescriptorProto.ReservedRange",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    impl<'a> ::std::default::Default for &'a ReservedRange {
+        fn default() -> &'a ReservedRange {
+            <ReservedRange as ::protobuf::Message>::default_instance()
+        }
     }
 
-    fn default_instance() -> &'static DescriptorProto_ReservedRange {
-        static instance: ::protobuf::rt::Lazy<DescriptorProto_ReservedRange> = ::protobuf::rt::Lazy::INIT;
-        instance.get(DescriptorProto_ReservedRange::new)
-    }
-}
+    impl ReservedRange {
+        pub fn new() -> ReservedRange {
+            ::std::default::Default::default()
+        }
 
-impl ::protobuf::Clear for DescriptorProto_ReservedRange {
-    fn clear(&mut self) {
-        self.start = ::std::option::Option::None;
-        self.end = ::std::option::Option::None;
-        self.unknown_fields.clear();
-    }
-}
+        // optional int32 start = 1;
 
-impl ::std::fmt::Debug for DescriptorProto_ReservedRange {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
-    }
-}
+        pub fn get_start(&self) -> i32 {
+            self.start.unwrap_or(0)
+        }
 
-impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ReservedRange {
+        pub fn clear_start(&mut self) {
+            self.start = ::std::option::Option::None;
+        }
+
+        pub fn has_start(&self) -> bool {
+            self.start.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_start(&mut self, v: i32) {
+            self.start = ::std::option::Option::Some(v);
+        }
+
+        // optional int32 end = 2;
+
+        pub fn get_end(&self) -> i32 {
+            self.end.unwrap_or(0)
+        }
+
+        pub fn clear_end(&mut self) {
+            self.end = ::std::option::Option::None;
+        }
+
+        pub fn has_end(&self) -> bool {
+            self.end.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_end(&mut self, v: i32) {
+            self.end = ::std::option::Option::Some(v);
+        }
+    }
+
+    impl ::protobuf::Message for ReservedRange {
+        fn is_initialized(&self) -> bool {
+            true
+        }
+
+        fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+            while !is.eof()? {
+                let (field_number, wire_type) = is.read_tag_unpack()?;
+                match field_number {
+                    1 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.start = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    2 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.end = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    _ => {
+                        ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    },
+                };
+            }
+            ::std::result::Result::Ok(())
+        }
+
+        // Compute sizes of nested messages
+        #[allow(unused_variables)]
+        fn compute_size(&self) -> u32 {
+            let mut my_size = 0;
+            if let Some(v) = self.start {
+                my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+            }
+            if let Some(v) = self.end {
+                my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+            }
+            my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+            self.cached_size.set(my_size);
+            my_size
+        }
+
+        fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+            if let Some(v) = self.start {
+                os.write_int32(1, v)?;
+            }
+            if let Some(v) = self.end {
+                os.write_int32(2, v)?;
+            }
+            os.write_unknown_fields(self.get_unknown_fields())?;
+            ::std::result::Result::Ok(())
+        }
+
+        fn get_cached_size(&self) -> u32 {
+            self.cached_size.get()
+        }
+
+        fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+            &self.unknown_fields
+        }
+
+        fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+            &mut self.unknown_fields
+        }
+
+        fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+            Self::descriptor_static()
+        }
+
+        fn new() -> ReservedRange {
+            ReservedRange::new()
+        }
+
+        fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                    "start",
+                    |m: &ReservedRange| { &m.start },
+                    |m: &mut ReservedRange| { &mut m.start },
+                    ReservedRange::get_start,
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                    "end",
+                    |m: &ReservedRange| { &m.end },
+                    |m: &mut ReservedRange| { &mut m.end },
+                    ReservedRange::get_end,
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<ReservedRange>(
+                    "DescriptorProto.ReservedRange",
+                    fields,
+                    super::file_descriptor_proto()
+                )
+            })
+        }
+
+        fn default_instance() -> &'static ReservedRange {
+            static instance: ::protobuf::rt::Lazy<ReservedRange> = ::protobuf::rt::Lazy::INIT;
+            instance.get(ReservedRange::new)
+        }
+    }
+
+    impl ::protobuf::Clear for ReservedRange {
+        fn clear(&mut self) {
+            self.start = ::std::option::Option::None;
+            self.end = ::std::option::Option::None;
+            self.unknown_fields.clear();
+        }
+    }
+
+    impl ::std::fmt::Debug for ReservedRange {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            ::protobuf::text_format::fmt(self, f)
+        }
+    }
+
+    impl ::protobuf::reflect::ProtobufValue for ReservedRange {
+    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1320,8 +1322,8 @@ pub struct FieldDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
-    label: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldDescriptorProto_Label>>,
-    field_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldDescriptorProto_Type>>,
+    label: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
+    field_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<field_descriptor_proto::Type>>,
     type_name: ::protobuf::SingularField<::std::string::String>,
     extendee: ::protobuf::SingularField<::std::string::String>,
     default_value: ::protobuf::SingularField<::std::string::String>,
@@ -1403,10 +1405,10 @@ impl FieldDescriptorProto {
 
     // optional .google.protobuf.FieldDescriptorProto.Label label = 4;
 
-    pub fn get_label(&self) -> FieldDescriptorProto_Label {
+    pub fn get_label(&self) -> field_descriptor_proto::Label {
         match self.label {
-            Some(e) => e.enum_value_or(FieldDescriptorProto_Label::LABEL_OPTIONAL),
-            None => FieldDescriptorProto_Label::LABEL_OPTIONAL,
+            Some(e) => e.enum_value_or(field_descriptor_proto::Label::LABEL_OPTIONAL),
+            None => field_descriptor_proto::Label::LABEL_OPTIONAL,
         }
     }
 
@@ -1419,16 +1421,16 @@ impl FieldDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_label(&mut self, v: FieldDescriptorProto_Label) {
+    pub fn set_label(&mut self, v: field_descriptor_proto::Label) {
         self.label = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
 
-    pub fn get_field_type(&self) -> FieldDescriptorProto_Type {
+    pub fn get_field_type(&self) -> field_descriptor_proto::Type {
         match self.field_type {
-            Some(e) => e.enum_value_or(FieldDescriptorProto_Type::TYPE_DOUBLE),
-            None => FieldDescriptorProto_Type::TYPE_DOUBLE,
+            Some(e) => e.enum_value_or(field_descriptor_proto::Type::TYPE_DOUBLE),
+            None => field_descriptor_proto::Type::TYPE_DOUBLE,
         }
     }
 
@@ -1441,7 +1443,7 @@ impl FieldDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_field_type(&mut self, v: FieldDescriptorProto_Type) {
+    pub fn set_field_type(&mut self, v: field_descriptor_proto::Type) {
         self.field_type = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
@@ -1784,17 +1786,17 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 |m: &mut FieldDescriptorProto| { &mut m.number },
                 FieldDescriptorProto::get_number,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldDescriptorProto_Label>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, field_descriptor_proto::Label>(
                 "label",
                 |m: &FieldDescriptorProto| { &m.label },
                 |m: &mut FieldDescriptorProto| { &mut m.label },
-                FieldDescriptorProto_Label::LABEL_OPTIONAL,
+                field_descriptor_proto::Label::LABEL_OPTIONAL,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldDescriptorProto_Type>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, field_descriptor_proto::Type>(
                 "type",
                 |m: &FieldDescriptorProto| { &m.field_type },
                 |m: &mut FieldDescriptorProto| { &mut m.field_type },
-                FieldDescriptorProto_Type::TYPE_DOUBLE,
+                field_descriptor_proto::Type::TYPE_DOUBLE,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                 "type_name",
@@ -1870,147 +1872,149 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
 impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto {
 }
 
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum FieldDescriptorProto_Type {
-    TYPE_DOUBLE = 1,
-    TYPE_FLOAT = 2,
-    TYPE_INT64 = 3,
-    TYPE_UINT64 = 4,
-    TYPE_INT32 = 5,
-    TYPE_FIXED64 = 6,
-    TYPE_FIXED32 = 7,
-    TYPE_BOOL = 8,
-    TYPE_STRING = 9,
-    TYPE_GROUP = 10,
-    TYPE_MESSAGE = 11,
-    TYPE_BYTES = 12,
-    TYPE_UINT32 = 13,
-    TYPE_ENUM = 14,
-    TYPE_SFIXED32 = 15,
-    TYPE_SFIXED64 = 16,
-    TYPE_SINT32 = 17,
-    TYPE_SINT64 = 18,
-}
-
-impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
-    fn value(&self) -> i32 {
-        *self as i32
+pub mod field_descriptor_proto {
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum Type {
+        TYPE_DOUBLE = 1,
+        TYPE_FLOAT = 2,
+        TYPE_INT64 = 3,
+        TYPE_UINT64 = 4,
+        TYPE_INT32 = 5,
+        TYPE_FIXED64 = 6,
+        TYPE_FIXED32 = 7,
+        TYPE_BOOL = 8,
+        TYPE_STRING = 9,
+        TYPE_GROUP = 10,
+        TYPE_MESSAGE = 11,
+        TYPE_BYTES = 12,
+        TYPE_UINT32 = 13,
+        TYPE_ENUM = 14,
+        TYPE_SFIXED32 = 15,
+        TYPE_SFIXED64 = 16,
+        TYPE_SINT32 = 17,
+        TYPE_SINT64 = 18,
     }
 
-    fn from_i32(value: i32) -> ::std::option::Option<FieldDescriptorProto_Type> {
-        match value {
-            1 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_DOUBLE),
-            2 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_FLOAT),
-            3 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_INT64),
-            4 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_UINT64),
-            5 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_INT32),
-            6 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_FIXED64),
-            7 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_FIXED32),
-            8 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_BOOL),
-            9 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_STRING),
-            10 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_GROUP),
-            11 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_MESSAGE),
-            12 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_BYTES),
-            13 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_UINT32),
-            14 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_ENUM),
-            15 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SFIXED32),
-            16 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SFIXED64),
-            17 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SINT32),
-            18 => ::std::option::Option::Some(FieldDescriptorProto_Type::TYPE_SINT64),
-            _ => ::std::option::Option::None
+    impl ::protobuf::ProtobufEnum for Type {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<Type> {
+            match value {
+                1 => ::std::option::Option::Some(Type::TYPE_DOUBLE),
+                2 => ::std::option::Option::Some(Type::TYPE_FLOAT),
+                3 => ::std::option::Option::Some(Type::TYPE_INT64),
+                4 => ::std::option::Option::Some(Type::TYPE_UINT64),
+                5 => ::std::option::Option::Some(Type::TYPE_INT32),
+                6 => ::std::option::Option::Some(Type::TYPE_FIXED64),
+                7 => ::std::option::Option::Some(Type::TYPE_FIXED32),
+                8 => ::std::option::Option::Some(Type::TYPE_BOOL),
+                9 => ::std::option::Option::Some(Type::TYPE_STRING),
+                10 => ::std::option::Option::Some(Type::TYPE_GROUP),
+                11 => ::std::option::Option::Some(Type::TYPE_MESSAGE),
+                12 => ::std::option::Option::Some(Type::TYPE_BYTES),
+                13 => ::std::option::Option::Some(Type::TYPE_UINT32),
+                14 => ::std::option::Option::Some(Type::TYPE_ENUM),
+                15 => ::std::option::Option::Some(Type::TYPE_SFIXED32),
+                16 => ::std::option::Option::Some(Type::TYPE_SFIXED64),
+                17 => ::std::option::Option::Some(Type::TYPE_SINT32),
+                18 => ::std::option::Option::Some(Type::TYPE_SINT64),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [Type] = &[
+                Type::TYPE_DOUBLE,
+                Type::TYPE_FLOAT,
+                Type::TYPE_INT64,
+                Type::TYPE_UINT64,
+                Type::TYPE_INT32,
+                Type::TYPE_FIXED64,
+                Type::TYPE_FIXED32,
+                Type::TYPE_BOOL,
+                Type::TYPE_STRING,
+                Type::TYPE_GROUP,
+                Type::TYPE_MESSAGE,
+                Type::TYPE_BYTES,
+                Type::TYPE_UINT32,
+                Type::TYPE_ENUM,
+                Type::TYPE_SFIXED32,
+                Type::TYPE_SFIXED64,
+                Type::TYPE_SINT32,
+                Type::TYPE_SINT64,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<Type>("FieldDescriptorProto.Type", super::file_descriptor_proto())
+            })
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [FieldDescriptorProto_Type] = &[
-            FieldDescriptorProto_Type::TYPE_DOUBLE,
-            FieldDescriptorProto_Type::TYPE_FLOAT,
-            FieldDescriptorProto_Type::TYPE_INT64,
-            FieldDescriptorProto_Type::TYPE_UINT64,
-            FieldDescriptorProto_Type::TYPE_INT32,
-            FieldDescriptorProto_Type::TYPE_FIXED64,
-            FieldDescriptorProto_Type::TYPE_FIXED32,
-            FieldDescriptorProto_Type::TYPE_BOOL,
-            FieldDescriptorProto_Type::TYPE_STRING,
-            FieldDescriptorProto_Type::TYPE_GROUP,
-            FieldDescriptorProto_Type::TYPE_MESSAGE,
-            FieldDescriptorProto_Type::TYPE_BYTES,
-            FieldDescriptorProto_Type::TYPE_UINT32,
-            FieldDescriptorProto_Type::TYPE_ENUM,
-            FieldDescriptorProto_Type::TYPE_SFIXED32,
-            FieldDescriptorProto_Type::TYPE_SFIXED64,
-            FieldDescriptorProto_Type::TYPE_SINT32,
-            FieldDescriptorProto_Type::TYPE_SINT64,
-        ];
-        values
-    }
-
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Type>("FieldDescriptorProto.Type", file_descriptor_proto())
-        })
-    }
-}
-
-// Note, `Default` is implemented although default value is not 0
-impl ::std::default::Default for FieldDescriptorProto_Type {
-    fn default() -> Self {
-        FieldDescriptorProto_Type::TYPE_DOUBLE
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Type {
-}
-
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum FieldDescriptorProto_Label {
-    LABEL_OPTIONAL = 1,
-    LABEL_REQUIRED = 2,
-    LABEL_REPEATED = 3,
-}
-
-impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
-    fn value(&self) -> i32 {
-        *self as i32
-    }
-
-    fn from_i32(value: i32) -> ::std::option::Option<FieldDescriptorProto_Label> {
-        match value {
-            1 => ::std::option::Option::Some(FieldDescriptorProto_Label::LABEL_OPTIONAL),
-            2 => ::std::option::Option::Some(FieldDescriptorProto_Label::LABEL_REQUIRED),
-            3 => ::std::option::Option::Some(FieldDescriptorProto_Label::LABEL_REPEATED),
-            _ => ::std::option::Option::None
+    // Note, `Default` is implemented although default value is not 0
+    impl ::std::default::Default for Type {
+        fn default() -> Self {
+            Type::TYPE_DOUBLE
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [FieldDescriptorProto_Label] = &[
-            FieldDescriptorProto_Label::LABEL_OPTIONAL,
-            FieldDescriptorProto_Label::LABEL_REQUIRED,
-            FieldDescriptorProto_Label::LABEL_REPEATED,
-        ];
-        values
+    impl ::protobuf::reflect::ProtobufValue for Type {
     }
 
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<FieldDescriptorProto_Label>("FieldDescriptorProto.Label", file_descriptor_proto())
-        })
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum Label {
+        LABEL_OPTIONAL = 1,
+        LABEL_REQUIRED = 2,
+        LABEL_REPEATED = 3,
     }
-}
 
-// Note, `Default` is implemented although default value is not 0
-impl ::std::default::Default for FieldDescriptorProto_Label {
-    fn default() -> Self {
-        FieldDescriptorProto_Label::LABEL_OPTIONAL
+    impl ::protobuf::ProtobufEnum for Label {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<Label> {
+            match value {
+                1 => ::std::option::Option::Some(Label::LABEL_OPTIONAL),
+                2 => ::std::option::Option::Some(Label::LABEL_REQUIRED),
+                3 => ::std::option::Option::Some(Label::LABEL_REPEATED),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [Label] = &[
+                Label::LABEL_OPTIONAL,
+                Label::LABEL_REQUIRED,
+                Label::LABEL_REPEATED,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<Label>("FieldDescriptorProto.Label", super::file_descriptor_proto())
+            })
+        }
     }
-}
 
-impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
+    // Note, `Default` is implemented although default value is not 0
+    impl ::std::default::Default for Label {
+        fn default() -> Self {
+            Label::LABEL_OPTIONAL
+        }
+    }
+
+    impl ::protobuf::reflect::ProtobufValue for Label {
+    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -3199,7 +3203,7 @@ pub struct FileOptions {
     java_multiple_files: ::std::option::Option<bool>,
     java_generate_equals_and_hash: ::std::option::Option<bool>,
     java_string_check_utf8: ::std::option::Option<bool>,
-    optimize_for: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FileOptions_OptimizeMode>>,
+    optimize_for: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<file_options::OptimizeMode>>,
     go_package: ::protobuf::SingularField<::std::string::String>,
     cc_generic_services: ::std::option::Option<bool>,
     java_generic_services: ::std::option::Option<bool>,
@@ -3358,10 +3362,10 @@ impl FileOptions {
 
     // optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
 
-    pub fn get_optimize_for(&self) -> FileOptions_OptimizeMode {
+    pub fn get_optimize_for(&self) -> file_options::OptimizeMode {
         match self.optimize_for {
-            Some(e) => e.enum_value_or(FileOptions_OptimizeMode::SPEED),
-            None => FileOptions_OptimizeMode::SPEED,
+            Some(e) => e.enum_value_or(file_options::OptimizeMode::SPEED),
+            None => file_options::OptimizeMode::SPEED,
         }
     }
 
@@ -3374,7 +3378,7 @@ impl FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_optimize_for(&mut self, v: FileOptions_OptimizeMode) {
+    pub fn set_optimize_for(&mut self, v: file_options::OptimizeMode) {
         self.optimize_for = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
@@ -3835,11 +3839,11 @@ impl ::protobuf::Message for FileOptions {
                 |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
                 FileOptions::get_java_string_check_utf8,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FileOptions_OptimizeMode>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, file_options::OptimizeMode>(
                 "optimize_for",
                 |m: &FileOptions| { &m.optimize_for },
                 |m: &mut FileOptions| { &mut m.optimize_for },
-                FileOptions_OptimizeMode::SPEED,
+                file_options::OptimizeMode::SPEED,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
                 "go_package",
@@ -3938,53 +3942,55 @@ impl ::std::fmt::Debug for FileOptions {
 impl ::protobuf::reflect::ProtobufValue for FileOptions {
 }
 
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum FileOptions_OptimizeMode {
-    SPEED = 1,
-    CODE_SIZE = 2,
-    LITE_RUNTIME = 3,
-}
-
-impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
-    fn value(&self) -> i32 {
-        *self as i32
+pub mod file_options {
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum OptimizeMode {
+        SPEED = 1,
+        CODE_SIZE = 2,
+        LITE_RUNTIME = 3,
     }
 
-    fn from_i32(value: i32) -> ::std::option::Option<FileOptions_OptimizeMode> {
-        match value {
-            1 => ::std::option::Option::Some(FileOptions_OptimizeMode::SPEED),
-            2 => ::std::option::Option::Some(FileOptions_OptimizeMode::CODE_SIZE),
-            3 => ::std::option::Option::Some(FileOptions_OptimizeMode::LITE_RUNTIME),
-            _ => ::std::option::Option::None
+    impl ::protobuf::ProtobufEnum for OptimizeMode {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<OptimizeMode> {
+            match value {
+                1 => ::std::option::Option::Some(OptimizeMode::SPEED),
+                2 => ::std::option::Option::Some(OptimizeMode::CODE_SIZE),
+                3 => ::std::option::Option::Some(OptimizeMode::LITE_RUNTIME),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [OptimizeMode] = &[
+                OptimizeMode::SPEED,
+                OptimizeMode::CODE_SIZE,
+                OptimizeMode::LITE_RUNTIME,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<OptimizeMode>("FileOptions.OptimizeMode", super::file_descriptor_proto())
+            })
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [FileOptions_OptimizeMode] = &[
-            FileOptions_OptimizeMode::SPEED,
-            FileOptions_OptimizeMode::CODE_SIZE,
-            FileOptions_OptimizeMode::LITE_RUNTIME,
-        ];
-        values
+    // Note, `Default` is implemented although default value is not 0
+    impl ::std::default::Default for OptimizeMode {
+        fn default() -> Self {
+            OptimizeMode::SPEED
+        }
     }
 
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<FileOptions_OptimizeMode>("FileOptions.OptimizeMode", file_descriptor_proto())
-        })
+    impl ::protobuf::reflect::ProtobufValue for OptimizeMode {
     }
-}
-
-// Note, `Default` is implemented although default value is not 0
-impl ::std::default::Default for FileOptions_OptimizeMode {
-    fn default() -> Self {
-        FileOptions_OptimizeMode::SPEED
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for FileOptions_OptimizeMode {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -4276,9 +4282,9 @@ impl ::protobuf::reflect::ProtobufValue for MessageOptions {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldOptions {
     // message fields
-    ctype: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldOptions_CType>>,
+    ctype: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<field_options::CType>>,
     packed: ::std::option::Option<bool>,
-    jstype: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<FieldOptions_JSType>>,
+    jstype: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<field_options::JSType>>,
     lazy: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     weak: ::std::option::Option<bool>,
@@ -4303,10 +4309,10 @@ impl FieldOptions {
 
     // optional .google.protobuf.FieldOptions.CType ctype = 1;
 
-    pub fn get_ctype(&self) -> FieldOptions_CType {
+    pub fn get_ctype(&self) -> field_options::CType {
         match self.ctype {
-            Some(e) => e.enum_value_or(FieldOptions_CType::STRING),
-            None => FieldOptions_CType::STRING,
+            Some(e) => e.enum_value_or(field_options::CType::STRING),
+            None => field_options::CType::STRING,
         }
     }
 
@@ -4319,7 +4325,7 @@ impl FieldOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_ctype(&mut self, v: FieldOptions_CType) {
+    pub fn set_ctype(&mut self, v: field_options::CType) {
         self.ctype = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
@@ -4344,10 +4350,10 @@ impl FieldOptions {
 
     // optional .google.protobuf.FieldOptions.JSType jstype = 6;
 
-    pub fn get_jstype(&self) -> FieldOptions_JSType {
+    pub fn get_jstype(&self) -> field_options::JSType {
         match self.jstype {
-            Some(e) => e.enum_value_or(FieldOptions_JSType::JS_NORMAL),
-            None => FieldOptions_JSType::JS_NORMAL,
+            Some(e) => e.enum_value_or(field_options::JSType::JS_NORMAL),
+            None => field_options::JSType::JS_NORMAL,
         }
     }
 
@@ -4360,7 +4366,7 @@ impl FieldOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_jstype(&mut self, v: FieldOptions_JSType) {
+    pub fn set_jstype(&mut self, v: field_options::JSType) {
         self.jstype = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
     }
 
@@ -4564,11 +4570,11 @@ impl ::protobuf::Message for FieldOptions {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldOptions_CType>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, field_options::CType>(
                 "ctype",
                 |m: &FieldOptions| { &m.ctype },
                 |m: &mut FieldOptions| { &mut m.ctype },
-                FieldOptions_CType::STRING,
+                field_options::CType::STRING,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
                 "packed",
@@ -4576,11 +4582,11 @@ impl ::protobuf::Message for FieldOptions {
                 |m: &mut FieldOptions| { &mut m.packed },
                 FieldOptions::get_packed,
             ));
-            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, FieldOptions_JSType>(
+            fields.push(::protobuf::reflect::rt::make_option_enum_accessor::<_, field_options::JSType>(
                 "jstype",
                 |m: &FieldOptions| { &m.jstype },
                 |m: &mut FieldOptions| { &mut m.jstype },
-                FieldOptions_JSType::JS_NORMAL,
+                field_options::JSType::JS_NORMAL,
             ));
             fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
                 "lazy",
@@ -4641,100 +4647,102 @@ impl ::std::fmt::Debug for FieldOptions {
 impl ::protobuf::reflect::ProtobufValue for FieldOptions {
 }
 
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum FieldOptions_CType {
-    STRING = 0,
-    CORD = 1,
-    STRING_PIECE = 2,
-}
-
-impl ::protobuf::ProtobufEnum for FieldOptions_CType {
-    fn value(&self) -> i32 {
-        *self as i32
+pub mod field_options {
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum CType {
+        STRING = 0,
+        CORD = 1,
+        STRING_PIECE = 2,
     }
 
-    fn from_i32(value: i32) -> ::std::option::Option<FieldOptions_CType> {
-        match value {
-            0 => ::std::option::Option::Some(FieldOptions_CType::STRING),
-            1 => ::std::option::Option::Some(FieldOptions_CType::CORD),
-            2 => ::std::option::Option::Some(FieldOptions_CType::STRING_PIECE),
-            _ => ::std::option::Option::None
+    impl ::protobuf::ProtobufEnum for CType {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<CType> {
+            match value {
+                0 => ::std::option::Option::Some(CType::STRING),
+                1 => ::std::option::Option::Some(CType::CORD),
+                2 => ::std::option::Option::Some(CType::STRING_PIECE),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [CType] = &[
+                CType::STRING,
+                CType::CORD,
+                CType::STRING_PIECE,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<CType>("FieldOptions.CType", super::file_descriptor_proto())
+            })
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [FieldOptions_CType] = &[
-            FieldOptions_CType::STRING,
-            FieldOptions_CType::CORD,
-            FieldOptions_CType::STRING_PIECE,
-        ];
-        values
-    }
-
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_CType>("FieldOptions.CType", file_descriptor_proto())
-        })
-    }
-}
-
-impl ::std::default::Default for FieldOptions_CType {
-    fn default() -> Self {
-        FieldOptions_CType::STRING
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for FieldOptions_CType {
-}
-
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum FieldOptions_JSType {
-    JS_NORMAL = 0,
-    JS_STRING = 1,
-    JS_NUMBER = 2,
-}
-
-impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
-    fn value(&self) -> i32 {
-        *self as i32
-    }
-
-    fn from_i32(value: i32) -> ::std::option::Option<FieldOptions_JSType> {
-        match value {
-            0 => ::std::option::Option::Some(FieldOptions_JSType::JS_NORMAL),
-            1 => ::std::option::Option::Some(FieldOptions_JSType::JS_STRING),
-            2 => ::std::option::Option::Some(FieldOptions_JSType::JS_NUMBER),
-            _ => ::std::option::Option::None
+    impl ::std::default::Default for CType {
+        fn default() -> Self {
+            CType::STRING
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [FieldOptions_JSType] = &[
-            FieldOptions_JSType::JS_NORMAL,
-            FieldOptions_JSType::JS_STRING,
-            FieldOptions_JSType::JS_NUMBER,
-        ];
-        values
+    impl ::protobuf::reflect::ProtobufValue for CType {
     }
 
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<FieldOptions_JSType>("FieldOptions.JSType", file_descriptor_proto())
-        })
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum JSType {
+        JS_NORMAL = 0,
+        JS_STRING = 1,
+        JS_NUMBER = 2,
     }
-}
 
-impl ::std::default::Default for FieldOptions_JSType {
-    fn default() -> Self {
-        FieldOptions_JSType::JS_NORMAL
+    impl ::protobuf::ProtobufEnum for JSType {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<JSType> {
+            match value {
+                0 => ::std::option::Option::Some(JSType::JS_NORMAL),
+                1 => ::std::option::Option::Some(JSType::JS_STRING),
+                2 => ::std::option::Option::Some(JSType::JS_NUMBER),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [JSType] = &[
+                JSType::JS_NORMAL,
+                JSType::JS_STRING,
+                JSType::JS_NUMBER,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<JSType>("FieldOptions.JSType", super::file_descriptor_proto())
+            })
+        }
     }
-}
 
-impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
+    impl ::std::default::Default for JSType {
+        fn default() -> Self {
+            JSType::JS_NORMAL
+        }
+    }
+
+    impl ::protobuf::reflect::ProtobufValue for JSType {
+    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5581,7 +5589,7 @@ impl ::protobuf::reflect::ProtobufValue for MethodOptions {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UninterpretedOption {
     // message fields
-    pub name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
+    pub name: ::protobuf::RepeatedField<uninterpreted_option::NamePart>,
     identifier_value: ::protobuf::SingularField<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
     negative_int_value: ::std::option::Option<i64>,
@@ -5905,7 +5913,7 @@ impl ::protobuf::Message for UninterpretedOption {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<uninterpreted_option::NamePart>>(
                 "name",
                 |m: &UninterpretedOption| { &m.name },
                 |m: &mut UninterpretedOption| { &mut m.name },
@@ -5982,216 +5990,218 @@ impl ::std::fmt::Debug for UninterpretedOption {
 impl ::protobuf::reflect::ProtobufValue for UninterpretedOption {
 }
 
-#[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub struct UninterpretedOption_NamePart {
-    // message fields
-    name_part: ::protobuf::SingularField<::std::string::String>,
-    is_extension: ::std::option::Option<bool>,
-    // special fields
-    #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
-}
-
-impl<'a> ::std::default::Default for &'a UninterpretedOption_NamePart {
-    fn default() -> &'a UninterpretedOption_NamePart {
-        <UninterpretedOption_NamePart as ::protobuf::Message>::default_instance()
-    }
-}
-
-impl UninterpretedOption_NamePart {
-    pub fn new() -> UninterpretedOption_NamePart {
-        ::std::default::Default::default()
+pub mod uninterpreted_option {
+    #[derive(PartialEq,Clone,Default)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub struct NamePart {
+        // message fields
+        name_part: ::protobuf::SingularField<::std::string::String>,
+        is_extension: ::std::option::Option<bool>,
+        // special fields
+        #[cfg_attr(serde, serde(skip))]
+        pub unknown_fields: ::protobuf::UnknownFields,
+        #[cfg_attr(serde, serde(skip))]
+        pub cached_size: ::protobuf::CachedSize,
     }
 
-    // required string name_part = 1;
-
-    pub fn get_name_part(&self) -> &str {
-        match self.name_part.as_ref() {
-            Some(v) => v,
-            None => "",
+    impl<'a> ::std::default::Default for &'a NamePart {
+        fn default() -> &'a NamePart {
+            <NamePart as ::protobuf::Message>::default_instance()
         }
     }
 
-    pub fn clear_name_part(&mut self) {
-        self.name_part.clear();
-    }
-
-    pub fn has_name_part(&self) -> bool {
-        self.name_part.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_name_part(&mut self, v: ::std::string::String) {
-        self.name_part = ::protobuf::SingularField::some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_name_part(&mut self) -> &mut ::std::string::String {
-        if self.name_part.is_none() {
-            self.name_part.set_default();
+    impl NamePart {
+        pub fn new() -> NamePart {
+            ::std::default::Default::default()
         }
-        self.name_part.as_mut().unwrap()
-    }
 
-    // Take field
-    pub fn take_name_part(&mut self) -> ::std::string::String {
-        self.name_part.take().unwrap_or_else(|| ::std::string::String::new())
-    }
+        // required string name_part = 1;
 
-    // required bool is_extension = 2;
-
-    pub fn get_is_extension(&self) -> bool {
-        self.is_extension.unwrap_or(false)
-    }
-
-    pub fn clear_is_extension(&mut self) {
-        self.is_extension = ::std::option::Option::None;
-    }
-
-    pub fn has_is_extension(&self) -> bool {
-        self.is_extension.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_is_extension(&mut self, v: bool) {
-        self.is_extension = ::std::option::Option::Some(v);
-    }
-}
-
-impl ::protobuf::Message for UninterpretedOption_NamePart {
-    fn is_initialized(&self) -> bool {
-        if self.name_part.is_none() {
-            return false;
+        pub fn get_name_part(&self) -> &str {
+            match self.name_part.as_ref() {
+                Some(v) => v,
+                None => "",
+            }
         }
-        if self.is_extension.is_none() {
-            return false;
+
+        pub fn clear_name_part(&mut self) {
+            self.name_part.clear();
         }
-        true
-    }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name_part)?;
-                },
-                2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.is_extension = ::std::option::Option::Some(is.read_bool()?);
-                },
-                _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
-            };
+        pub fn has_name_part(&self) -> bool {
+            self.name_part.is_some()
         }
-        ::std::result::Result::Ok(())
-    }
 
-    // Compute sizes of nested messages
-    #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
-        let mut my_size = 0;
-        if let Some(v) = self.name_part.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+        // Param is passed by value, moved
+        pub fn set_name_part(&mut self, v: ::std::string::String) {
+            self.name_part = ::protobuf::SingularField::some(v);
         }
-        if let Some(v) = self.is_extension {
-            my_size += 2;
+
+        // Mutable pointer to the field.
+        // If field is not initialized, it is initialized with default value first.
+        pub fn mut_name_part(&mut self) -> &mut ::std::string::String {
+            if self.name_part.is_none() {
+                self.name_part.set_default();
+            }
+            self.name_part.as_mut().unwrap()
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
-    }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if let Some(v) = self.name_part.as_ref() {
-            os.write_string(1, v)?;
+        // Take field
+        pub fn take_name_part(&mut self) -> ::std::string::String {
+            self.name_part.take().unwrap_or_else(|| ::std::string::String::new())
         }
-        if let Some(v) = self.is_extension {
-            os.write_bool(2, v)?;
+
+        // required bool is_extension = 2;
+
+        pub fn get_is_extension(&self) -> bool {
+            self.is_extension.unwrap_or(false)
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
-        ::std::result::Result::Ok(())
+
+        pub fn clear_is_extension(&mut self) {
+            self.is_extension = ::std::option::Option::None;
+        }
+
+        pub fn has_is_extension(&self) -> bool {
+            self.is_extension.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_is_extension(&mut self, v: bool) {
+            self.is_extension = ::std::option::Option::Some(v);
+        }
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    impl ::protobuf::Message for NamePart {
+        fn is_initialized(&self) -> bool {
+            if self.name_part.is_none() {
+                return false;
+            }
+            if self.is_extension.is_none() {
+                return false;
+            }
+            true
+        }
+
+        fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+            while !is.eof()? {
+                let (field_number, wire_type) = is.read_tag_unpack()?;
+                match field_number {
+                    1 => {
+                        ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name_part)?;
+                    },
+                    2 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.is_extension = ::std::option::Option::Some(is.read_bool()?);
+                    },
+                    _ => {
+                        ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    },
+                };
+            }
+            ::std::result::Result::Ok(())
+        }
+
+        // Compute sizes of nested messages
+        #[allow(unused_variables)]
+        fn compute_size(&self) -> u32 {
+            let mut my_size = 0;
+            if let Some(v) = self.name_part.as_ref() {
+                my_size += ::protobuf::rt::string_size(1, &v);
+            }
+            if let Some(v) = self.is_extension {
+                my_size += 2;
+            }
+            my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+            self.cached_size.set(my_size);
+            my_size
+        }
+
+        fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+            if let Some(v) = self.name_part.as_ref() {
+                os.write_string(1, v)?;
+            }
+            if let Some(v) = self.is_extension {
+                os.write_bool(2, v)?;
+            }
+            os.write_unknown_fields(self.get_unknown_fields())?;
+            ::std::result::Result::Ok(())
+        }
+
+        fn get_cached_size(&self) -> u32 {
+            self.cached_size.get()
+        }
+
+        fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+            &self.unknown_fields
+        }
+
+        fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+            &mut self.unknown_fields
+        }
+
+        fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+            Self::descriptor_static()
+        }
+
+        fn new() -> NamePart {
+            NamePart::new()
+        }
+
+        fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                    "name_part",
+                    |m: &NamePart| { &m.name_part },
+                    |m: &mut NamePart| { &mut m.name_part },
+                    NamePart::get_name_part,
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
+                    "is_extension",
+                    |m: &NamePart| { &m.is_extension },
+                    |m: &mut NamePart| { &mut m.is_extension },
+                    NamePart::get_is_extension,
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<NamePart>(
+                    "UninterpretedOption.NamePart",
+                    fields,
+                    super::file_descriptor_proto()
+                )
+            })
+        }
+
+        fn default_instance() -> &'static NamePart {
+            static instance: ::protobuf::rt::Lazy<NamePart> = ::protobuf::rt::Lazy::INIT;
+            instance.get(NamePart::new)
+        }
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
+    impl ::protobuf::Clear for NamePart {
+        fn clear(&mut self) {
+            self.name_part.clear();
+            self.is_extension = ::std::option::Option::None;
+            self.unknown_fields.clear();
+        }
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
+    impl ::std::fmt::Debug for NamePart {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            ::protobuf::text_format::fmt(self, f)
+        }
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        Self::descriptor_static()
+    impl ::protobuf::reflect::ProtobufValue for NamePart {
     }
-
-    fn new() -> UninterpretedOption_NamePart {
-        UninterpretedOption_NamePart::new()
-    }
-
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                "name_part",
-                |m: &UninterpretedOption_NamePart| { &m.name_part },
-                |m: &mut UninterpretedOption_NamePart| { &mut m.name_part },
-                UninterpretedOption_NamePart::get_name_part,
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeBool, _>(
-                "is_extension",
-                |m: &UninterpretedOption_NamePart| { &m.is_extension },
-                |m: &mut UninterpretedOption_NamePart| { &mut m.is_extension },
-                UninterpretedOption_NamePart::get_is_extension,
-            ));
-            ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption_NamePart>(
-                "UninterpretedOption.NamePart",
-                fields,
-                file_descriptor_proto()
-            )
-        })
-    }
-
-    fn default_instance() -> &'static UninterpretedOption_NamePart {
-        static instance: ::protobuf::rt::Lazy<UninterpretedOption_NamePart> = ::protobuf::rt::Lazy::INIT;
-        instance.get(UninterpretedOption_NamePart::new)
-    }
-}
-
-impl ::protobuf::Clear for UninterpretedOption_NamePart {
-    fn clear(&mut self) {
-        self.name_part.clear();
-        self.is_extension = ::std::option::Option::None;
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::fmt::Debug for UninterpretedOption_NamePart {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for UninterpretedOption_NamePart {
 }
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
-    pub location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
+    pub location: ::protobuf::RepeatedField<source_code_info::Location>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6281,7 +6291,7 @@ impl ::protobuf::Message for SourceCodeInfo {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<source_code_info::Location>>(
                 "location",
                 |m: &SourceCodeInfo| { &m.location },
                 |m: &mut SourceCodeInfo| { &mut m.location },
@@ -6316,282 +6326,284 @@ impl ::std::fmt::Debug for SourceCodeInfo {
 impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo {
 }
 
-#[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub struct SourceCodeInfo_Location {
-    // message fields
-    pub path: ::std::vec::Vec<i32>,
-    pub span: ::std::vec::Vec<i32>,
-    leading_comments: ::protobuf::SingularField<::std::string::String>,
-    trailing_comments: ::protobuf::SingularField<::std::string::String>,
-    pub leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
-    // special fields
-    #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
-}
-
-impl<'a> ::std::default::Default for &'a SourceCodeInfo_Location {
-    fn default() -> &'a SourceCodeInfo_Location {
-        <SourceCodeInfo_Location as ::protobuf::Message>::default_instance()
-    }
-}
-
-impl SourceCodeInfo_Location {
-    pub fn new() -> SourceCodeInfo_Location {
-        ::std::default::Default::default()
+pub mod source_code_info {
+    #[derive(PartialEq,Clone,Default)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub struct Location {
+        // message fields
+        pub path: ::std::vec::Vec<i32>,
+        pub span: ::std::vec::Vec<i32>,
+        leading_comments: ::protobuf::SingularField<::std::string::String>,
+        trailing_comments: ::protobuf::SingularField<::std::string::String>,
+        pub leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
+        // special fields
+        #[cfg_attr(serde, serde(skip))]
+        pub unknown_fields: ::protobuf::UnknownFields,
+        #[cfg_attr(serde, serde(skip))]
+        pub cached_size: ::protobuf::CachedSize,
     }
 
-    // optional string leading_comments = 3;
-
-    pub fn get_leading_comments(&self) -> &str {
-        match self.leading_comments.as_ref() {
-            Some(v) => v,
-            None => "",
+    impl<'a> ::std::default::Default for &'a Location {
+        fn default() -> &'a Location {
+            <Location as ::protobuf::Message>::default_instance()
         }
     }
 
-    pub fn clear_leading_comments(&mut self) {
-        self.leading_comments.clear();
-    }
-
-    pub fn has_leading_comments(&self) -> bool {
-        self.leading_comments.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_leading_comments(&mut self, v: ::std::string::String) {
-        self.leading_comments = ::protobuf::SingularField::some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_leading_comments(&mut self) -> &mut ::std::string::String {
-        if self.leading_comments.is_none() {
-            self.leading_comments.set_default();
+    impl Location {
+        pub fn new() -> Location {
+            ::std::default::Default::default()
         }
-        self.leading_comments.as_mut().unwrap()
-    }
 
-    // Take field
-    pub fn take_leading_comments(&mut self) -> ::std::string::String {
-        self.leading_comments.take().unwrap_or_else(|| ::std::string::String::new())
-    }
+        // optional string leading_comments = 3;
 
-    // optional string trailing_comments = 4;
+        pub fn get_leading_comments(&self) -> &str {
+            match self.leading_comments.as_ref() {
+                Some(v) => v,
+                None => "",
+            }
+        }
 
-    pub fn get_trailing_comments(&self) -> &str {
-        match self.trailing_comments.as_ref() {
-            Some(v) => v,
-            None => "",
+        pub fn clear_leading_comments(&mut self) {
+            self.leading_comments.clear();
+        }
+
+        pub fn has_leading_comments(&self) -> bool {
+            self.leading_comments.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_leading_comments(&mut self, v: ::std::string::String) {
+            self.leading_comments = ::protobuf::SingularField::some(v);
+        }
+
+        // Mutable pointer to the field.
+        // If field is not initialized, it is initialized with default value first.
+        pub fn mut_leading_comments(&mut self) -> &mut ::std::string::String {
+            if self.leading_comments.is_none() {
+                self.leading_comments.set_default();
+            }
+            self.leading_comments.as_mut().unwrap()
+        }
+
+        // Take field
+        pub fn take_leading_comments(&mut self) -> ::std::string::String {
+            self.leading_comments.take().unwrap_or_else(|| ::std::string::String::new())
+        }
+
+        // optional string trailing_comments = 4;
+
+        pub fn get_trailing_comments(&self) -> &str {
+            match self.trailing_comments.as_ref() {
+                Some(v) => v,
+                None => "",
+            }
+        }
+
+        pub fn clear_trailing_comments(&mut self) {
+            self.trailing_comments.clear();
+        }
+
+        pub fn has_trailing_comments(&self) -> bool {
+            self.trailing_comments.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_trailing_comments(&mut self, v: ::std::string::String) {
+            self.trailing_comments = ::protobuf::SingularField::some(v);
+        }
+
+        // Mutable pointer to the field.
+        // If field is not initialized, it is initialized with default value first.
+        pub fn mut_trailing_comments(&mut self) -> &mut ::std::string::String {
+            if self.trailing_comments.is_none() {
+                self.trailing_comments.set_default();
+            }
+            self.trailing_comments.as_mut().unwrap()
+        }
+
+        // Take field
+        pub fn take_trailing_comments(&mut self) -> ::std::string::String {
+            self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
         }
     }
 
-    pub fn clear_trailing_comments(&mut self) {
-        self.trailing_comments.clear();
-    }
-
-    pub fn has_trailing_comments(&self) -> bool {
-        self.trailing_comments.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_trailing_comments(&mut self, v: ::std::string::String) {
-        self.trailing_comments = ::protobuf::SingularField::some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_trailing_comments(&mut self) -> &mut ::std::string::String {
-        if self.trailing_comments.is_none() {
-            self.trailing_comments.set_default();
+    impl ::protobuf::Message for Location {
+        fn is_initialized(&self) -> bool {
+            true
         }
-        self.trailing_comments.as_mut().unwrap()
-    }
 
-    // Take field
-    pub fn take_trailing_comments(&mut self) -> ::std::string::String {
-        self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
-    }
-}
+        fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+            while !is.eof()? {
+                let (field_number, wire_type) = is.read_tag_unpack()?;
+                match field_number {
+                    1 => {
+                        ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
+                    },
+                    2 => {
+                        ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
+                    },
+                    3 => {
+                        ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
+                    },
+                    4 => {
+                        ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments)?;
+                    },
+                    6 => {
+                        ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
+                    },
+                    _ => {
+                        ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    },
+                };
+            }
+            ::std::result::Result::Ok(())
+        }
 
-impl ::protobuf::Message for SourceCodeInfo_Location {
-    fn is_initialized(&self) -> bool {
-        true
-    }
-
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
-                },
-                2 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
-                },
-                3 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
-                },
-                4 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments)?;
-                },
-                6 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
-                },
-                _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+        // Compute sizes of nested messages
+        #[allow(unused_variables)]
+        fn compute_size(&self) -> u32 {
+            let mut my_size = 0;
+            if !self.path.is_empty() {
+                my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
+            }
+            if !self.span.is_empty() {
+                my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
+            }
+            if let Some(v) = self.leading_comments.as_ref() {
+                my_size += ::protobuf::rt::string_size(3, &v);
+            }
+            if let Some(v) = self.trailing_comments.as_ref() {
+                my_size += ::protobuf::rt::string_size(4, &v);
+            }
+            for value in &self.leading_detached_comments {
+                my_size += ::protobuf::rt::string_size(6, &value);
             };
+            my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+            self.cached_size.set(my_size);
+            my_size
         }
-        ::std::result::Result::Ok(())
-    }
 
-    // Compute sizes of nested messages
-    #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
-        let mut my_size = 0;
-        if !self.path.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
-        }
-        if !self.span.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
-        }
-        if let Some(v) = self.leading_comments.as_ref() {
-            my_size += ::protobuf::rt::string_size(3, &v);
-        }
-        if let Some(v) = self.trailing_comments.as_ref() {
-            my_size += ::protobuf::rt::string_size(4, &v);
-        }
-        for value in &self.leading_detached_comments {
-            my_size += ::protobuf::rt::string_size(6, &value);
-        };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
-    }
-
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.path.is_empty() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            // TODO: Data size is computed again, it should be cached
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path))?;
-            for v in &self.path {
-                os.write_int32_no_tag(*v)?;
+        fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+            if !self.path.is_empty() {
+                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+                // TODO: Data size is computed again, it should be cached
+                os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path))?;
+                for v in &self.path {
+                    os.write_int32_no_tag(*v)?;
+                };
+            }
+            if !self.span.is_empty() {
+                os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+                // TODO: Data size is computed again, it should be cached
+                os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.span))?;
+                for v in &self.span {
+                    os.write_int32_no_tag(*v)?;
+                };
+            }
+            if let Some(v) = self.leading_comments.as_ref() {
+                os.write_string(3, v)?;
+            }
+            if let Some(v) = self.trailing_comments.as_ref() {
+                os.write_string(4, v)?;
+            }
+            for v in &self.leading_detached_comments {
+                os.write_string(6, &v)?;
             };
+            os.write_unknown_fields(self.get_unknown_fields())?;
+            ::std::result::Result::Ok(())
         }
-        if !self.span.is_empty() {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            // TODO: Data size is computed again, it should be cached
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.span))?;
-            for v in &self.span {
-                os.write_int32_no_tag(*v)?;
-            };
+
+        fn get_cached_size(&self) -> u32 {
+            self.cached_size.get()
         }
-        if let Some(v) = self.leading_comments.as_ref() {
-            os.write_string(3, v)?;
+
+        fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+            &self.unknown_fields
         }
-        if let Some(v) = self.trailing_comments.as_ref() {
-            os.write_string(4, v)?;
+
+        fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+            &mut self.unknown_fields
         }
-        for v in &self.leading_detached_comments {
-            os.write_string(6, &v)?;
-        };
-        os.write_unknown_fields(self.get_unknown_fields())?;
-        ::std::result::Result::Ok(())
+
+        fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+            Self::descriptor_static()
+        }
+
+        fn new() -> Location {
+            Location::new()
+        }
+
+        fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                    "path",
+                    |m: &Location| { &m.path },
+                    |m: &mut Location| { &mut m.path },
+                ));
+                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                    "span",
+                    |m: &Location| { &m.span },
+                    |m: &mut Location| { &mut m.span },
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                    "leading_comments",
+                    |m: &Location| { &m.leading_comments },
+                    |m: &mut Location| { &mut m.leading_comments },
+                    Location::get_leading_comments,
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                    "trailing_comments",
+                    |m: &Location| { &m.trailing_comments },
+                    |m: &mut Location| { &mut m.trailing_comments },
+                    Location::get_trailing_comments,
+                ));
+                fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "leading_detached_comments",
+                    |m: &Location| { &m.leading_detached_comments },
+                    |m: &mut Location| { &mut m.leading_detached_comments },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<Location>(
+                    "SourceCodeInfo.Location",
+                    fields,
+                    super::file_descriptor_proto()
+                )
+            })
+        }
+
+        fn default_instance() -> &'static Location {
+            static instance: ::protobuf::rt::Lazy<Location> = ::protobuf::rt::Lazy::INIT;
+            instance.get(Location::new)
+        }
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    impl ::protobuf::Clear for Location {
+        fn clear(&mut self) {
+            self.path.clear();
+            self.span.clear();
+            self.leading_comments.clear();
+            self.trailing_comments.clear();
+            self.leading_detached_comments.clear();
+            self.unknown_fields.clear();
+        }
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
+    impl ::std::fmt::Debug for Location {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            ::protobuf::text_format::fmt(self, f)
+        }
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
+    impl ::protobuf::reflect::ProtobufValue for Location {
     }
-
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
-    fn new() -> SourceCodeInfo_Location {
-        SourceCodeInfo_Location::new()
-    }
-
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                "path",
-                |m: &SourceCodeInfo_Location| { &m.path },
-                |m: &mut SourceCodeInfo_Location| { &mut m.path },
-            ));
-            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                "span",
-                |m: &SourceCodeInfo_Location| { &m.span },
-                |m: &mut SourceCodeInfo_Location| { &mut m.span },
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                "leading_comments",
-                |m: &SourceCodeInfo_Location| { &m.leading_comments },
-                |m: &mut SourceCodeInfo_Location| { &mut m.leading_comments },
-                SourceCodeInfo_Location::get_leading_comments,
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                "trailing_comments",
-                |m: &SourceCodeInfo_Location| { &m.trailing_comments },
-                |m: &mut SourceCodeInfo_Location| { &mut m.trailing_comments },
-                SourceCodeInfo_Location::get_trailing_comments,
-            ));
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "leading_detached_comments",
-                |m: &SourceCodeInfo_Location| { &m.leading_detached_comments },
-                |m: &mut SourceCodeInfo_Location| { &mut m.leading_detached_comments },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo_Location>(
-                "SourceCodeInfo.Location",
-                fields,
-                file_descriptor_proto()
-            )
-        })
-    }
-
-    fn default_instance() -> &'static SourceCodeInfo_Location {
-        static instance: ::protobuf::rt::Lazy<SourceCodeInfo_Location> = ::protobuf::rt::Lazy::INIT;
-        instance.get(SourceCodeInfo_Location::new)
-    }
-}
-
-impl ::protobuf::Clear for SourceCodeInfo_Location {
-    fn clear(&mut self) {
-        self.path.clear();
-        self.span.clear();
-        self.leading_comments.clear();
-        self.trailing_comments.clear();
-        self.leading_detached_comments.clear();
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::fmt::Debug for SourceCodeInfo_Location {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo_Location {
 }
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct GeneratedCodeInfo {
     // message fields
-    pub annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
+    pub annotation: ::protobuf::RepeatedField<generated_code_info::Annotation>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6681,7 +6693,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
+            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<generated_code_info::Annotation>>(
                 "annotation",
                 |m: &GeneratedCodeInfo| { &m.annotation },
                 |m: &mut GeneratedCodeInfo| { &mut m.annotation },
@@ -6716,263 +6728,265 @@ impl ::std::fmt::Debug for GeneratedCodeInfo {
 impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo {
 }
 
-#[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub struct GeneratedCodeInfo_Annotation {
-    // message fields
-    pub path: ::std::vec::Vec<i32>,
-    source_file: ::protobuf::SingularField<::std::string::String>,
-    begin: ::std::option::Option<i32>,
-    end: ::std::option::Option<i32>,
-    // special fields
-    #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
-}
-
-impl<'a> ::std::default::Default for &'a GeneratedCodeInfo_Annotation {
-    fn default() -> &'a GeneratedCodeInfo_Annotation {
-        <GeneratedCodeInfo_Annotation as ::protobuf::Message>::default_instance()
-    }
-}
-
-impl GeneratedCodeInfo_Annotation {
-    pub fn new() -> GeneratedCodeInfo_Annotation {
-        ::std::default::Default::default()
+pub mod generated_code_info {
+    #[derive(PartialEq,Clone,Default)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub struct Annotation {
+        // message fields
+        pub path: ::std::vec::Vec<i32>,
+        source_file: ::protobuf::SingularField<::std::string::String>,
+        begin: ::std::option::Option<i32>,
+        end: ::std::option::Option<i32>,
+        // special fields
+        #[cfg_attr(serde, serde(skip))]
+        pub unknown_fields: ::protobuf::UnknownFields,
+        #[cfg_attr(serde, serde(skip))]
+        pub cached_size: ::protobuf::CachedSize,
     }
 
-    // optional string source_file = 2;
-
-    pub fn get_source_file(&self) -> &str {
-        match self.source_file.as_ref() {
-            Some(v) => v,
-            None => "",
+    impl<'a> ::std::default::Default for &'a Annotation {
+        fn default() -> &'a Annotation {
+            <Annotation as ::protobuf::Message>::default_instance()
         }
     }
 
-    pub fn clear_source_file(&mut self) {
-        self.source_file.clear();
-    }
-
-    pub fn has_source_file(&self) -> bool {
-        self.source_file.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_source_file(&mut self, v: ::std::string::String) {
-        self.source_file = ::protobuf::SingularField::some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_file(&mut self) -> &mut ::std::string::String {
-        if self.source_file.is_none() {
-            self.source_file.set_default();
+    impl Annotation {
+        pub fn new() -> Annotation {
+            ::std::default::Default::default()
         }
-        self.source_file.as_mut().unwrap()
-    }
 
-    // Take field
-    pub fn take_source_file(&mut self) -> ::std::string::String {
-        self.source_file.take().unwrap_or_else(|| ::std::string::String::new())
-    }
+        // optional string source_file = 2;
 
-    // optional int32 begin = 3;
-
-    pub fn get_begin(&self) -> i32 {
-        self.begin.unwrap_or(0)
-    }
-
-    pub fn clear_begin(&mut self) {
-        self.begin = ::std::option::Option::None;
-    }
-
-    pub fn has_begin(&self) -> bool {
-        self.begin.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_begin(&mut self, v: i32) {
-        self.begin = ::std::option::Option::Some(v);
-    }
-
-    // optional int32 end = 4;
-
-    pub fn get_end(&self) -> i32 {
-        self.end.unwrap_or(0)
-    }
-
-    pub fn clear_end(&mut self) {
-        self.end = ::std::option::Option::None;
-    }
-
-    pub fn has_end(&self) -> bool {
-        self.end.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_end(&mut self, v: i32) {
-        self.end = ::std::option::Option::Some(v);
-    }
-}
-
-impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
-    fn is_initialized(&self) -> bool {
-        true
-    }
-
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
-                },
-                2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
-                },
-                3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.begin = ::std::option::Option::Some(is.read_int32()?);
-                },
-                4 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    self.end = ::std::option::Option::Some(is.read_int32()?);
-                },
-                _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
-            };
+        pub fn get_source_file(&self) -> &str {
+            match self.source_file.as_ref() {
+                Some(v) => v,
+                None => "",
+            }
         }
-        ::std::result::Result::Ok(())
-    }
 
-    // Compute sizes of nested messages
-    #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
-        let mut my_size = 0;
-        if !self.path.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
+        pub fn clear_source_file(&mut self) {
+            self.source_file.clear();
         }
-        if let Some(v) = self.source_file.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+
+        pub fn has_source_file(&self) -> bool {
+            self.source_file.is_some()
         }
-        if let Some(v) = self.begin {
-            my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
+
+        // Param is passed by value, moved
+        pub fn set_source_file(&mut self, v: ::std::string::String) {
+            self.source_file = ::protobuf::SingularField::some(v);
         }
-        if let Some(v) = self.end {
-            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+
+        // Mutable pointer to the field.
+        // If field is not initialized, it is initialized with default value first.
+        pub fn mut_source_file(&mut self) -> &mut ::std::string::String {
+            if self.source_file.is_none() {
+                self.source_file.set_default();
+            }
+            self.source_file.as_mut().unwrap()
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
-        self.cached_size.set(my_size);
-        my_size
-    }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.path.is_empty() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
-            // TODO: Data size is computed again, it should be cached
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path))?;
-            for v in &self.path {
-                os.write_int32_no_tag(*v)?;
-            };
+        // Take field
+        pub fn take_source_file(&mut self) -> ::std::string::String {
+            self.source_file.take().unwrap_or_else(|| ::std::string::String::new())
         }
-        if let Some(v) = self.source_file.as_ref() {
-            os.write_string(2, v)?;
+
+        // optional int32 begin = 3;
+
+        pub fn get_begin(&self) -> i32 {
+            self.begin.unwrap_or(0)
         }
-        if let Some(v) = self.begin {
-            os.write_int32(3, v)?;
+
+        pub fn clear_begin(&mut self) {
+            self.begin = ::std::option::Option::None;
         }
-        if let Some(v) = self.end {
-            os.write_int32(4, v)?;
+
+        pub fn has_begin(&self) -> bool {
+            self.begin.is_some()
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
-        ::std::result::Result::Ok(())
+
+        // Param is passed by value, moved
+        pub fn set_begin(&mut self, v: i32) {
+            self.begin = ::std::option::Option::Some(v);
+        }
+
+        // optional int32 end = 4;
+
+        pub fn get_end(&self) -> i32 {
+            self.end.unwrap_or(0)
+        }
+
+        pub fn clear_end(&mut self) {
+            self.end = ::std::option::Option::None;
+        }
+
+        pub fn has_end(&self) -> bool {
+            self.end.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_end(&mut self, v: i32) {
+            self.end = ::std::option::Option::Some(v);
+        }
     }
 
-    fn get_cached_size(&self) -> u32 {
-        self.cached_size.get()
+    impl ::protobuf::Message for Annotation {
+        fn is_initialized(&self) -> bool {
+            true
+        }
+
+        fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+            while !is.eof()? {
+                let (field_number, wire_type) = is.read_tag_unpack()?;
+                match field_number {
+                    1 => {
+                        ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
+                    },
+                    2 => {
+                        ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
+                    },
+                    3 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.begin = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    4 => {
+                        if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.end = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    _ => {
+                        ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    },
+                };
+            }
+            ::std::result::Result::Ok(())
+        }
+
+        // Compute sizes of nested messages
+        #[allow(unused_variables)]
+        fn compute_size(&self) -> u32 {
+            let mut my_size = 0;
+            if !self.path.is_empty() {
+                my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
+            }
+            if let Some(v) = self.source_file.as_ref() {
+                my_size += ::protobuf::rt::string_size(2, &v);
+            }
+            if let Some(v) = self.begin {
+                my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
+            }
+            if let Some(v) = self.end {
+                my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+            }
+            my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+            self.cached_size.set(my_size);
+            my_size
+        }
+
+        fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+            if !self.path.is_empty() {
+                os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+                // TODO: Data size is computed again, it should be cached
+                os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path))?;
+                for v in &self.path {
+                    os.write_int32_no_tag(*v)?;
+                };
+            }
+            if let Some(v) = self.source_file.as_ref() {
+                os.write_string(2, v)?;
+            }
+            if let Some(v) = self.begin {
+                os.write_int32(3, v)?;
+            }
+            if let Some(v) = self.end {
+                os.write_int32(4, v)?;
+            }
+            os.write_unknown_fields(self.get_unknown_fields())?;
+            ::std::result::Result::Ok(())
+        }
+
+        fn get_cached_size(&self) -> u32 {
+            self.cached_size.get()
+        }
+
+        fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+            &self.unknown_fields
+        }
+
+        fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+            &mut self.unknown_fields
+        }
+
+        fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+            Self::descriptor_static()
+        }
+
+        fn new() -> Annotation {
+            Annotation::new()
+        }
+
+        fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                    "path",
+                    |m: &Annotation| { &m.path },
+                    |m: &mut Annotation| { &mut m.path },
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
+                    "source_file",
+                    |m: &Annotation| { &m.source_file },
+                    |m: &mut Annotation| { &mut m.source_file },
+                    Annotation::get_source_file,
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                    "begin",
+                    |m: &Annotation| { &m.begin },
+                    |m: &mut Annotation| { &mut m.begin },
+                    Annotation::get_begin,
+                ));
+                fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
+                    "end",
+                    |m: &Annotation| { &m.end },
+                    |m: &mut Annotation| { &mut m.end },
+                    Annotation::get_end,
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<Annotation>(
+                    "GeneratedCodeInfo.Annotation",
+                    fields,
+                    super::file_descriptor_proto()
+                )
+            })
+        }
+
+        fn default_instance() -> &'static Annotation {
+            static instance: ::protobuf::rt::Lazy<Annotation> = ::protobuf::rt::Lazy::INIT;
+            instance.get(Annotation::new)
+        }
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
-        &self.unknown_fields
+    impl ::protobuf::Clear for Annotation {
+        fn clear(&mut self) {
+            self.path.clear();
+            self.source_file.clear();
+            self.begin = ::std::option::Option::None;
+            self.end = ::std::option::Option::None;
+            self.unknown_fields.clear();
+        }
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
-        &mut self.unknown_fields
+    impl ::std::fmt::Debug for Annotation {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            ::protobuf::text_format::fmt(self, f)
+        }
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
-        Self::descriptor_static()
+    impl ::protobuf::reflect::ProtobufValue for Annotation {
     }
-
-    fn new() -> GeneratedCodeInfo_Annotation {
-        GeneratedCodeInfo_Annotation::new()
-    }
-
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                "path",
-                |m: &GeneratedCodeInfo_Annotation| { &m.path },
-                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.path },
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_ref_accessor::<_, ::protobuf::types::ProtobufTypeString, _>(
-                "source_file",
-                |m: &GeneratedCodeInfo_Annotation| { &m.source_file },
-                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.source_file },
-                GeneratedCodeInfo_Annotation::get_source_file,
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                "begin",
-                |m: &GeneratedCodeInfo_Annotation| { &m.begin },
-                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.begin },
-                GeneratedCodeInfo_Annotation::get_begin,
-            ));
-            fields.push(::protobuf::reflect::rt::make_option_get_copy_accessor::<_, ::protobuf::types::ProtobufTypeInt32, _>(
-                "end",
-                |m: &GeneratedCodeInfo_Annotation| { &m.end },
-                |m: &mut GeneratedCodeInfo_Annotation| { &mut m.end },
-                GeneratedCodeInfo_Annotation::get_end,
-            ));
-            ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo_Annotation>(
-                "GeneratedCodeInfo.Annotation",
-                fields,
-                file_descriptor_proto()
-            )
-        })
-    }
-
-    fn default_instance() -> &'static GeneratedCodeInfo_Annotation {
-        static instance: ::protobuf::rt::Lazy<GeneratedCodeInfo_Annotation> = ::protobuf::rt::Lazy::INIT;
-        instance.get(GeneratedCodeInfo_Annotation::new)
-    }
-}
-
-impl ::protobuf::Clear for GeneratedCodeInfo_Annotation {
-    fn clear(&mut self) {
-        self.path.clear();
-        self.source_file.clear();
-        self.begin = ::std::option::Option::None;
-        self.end = ::std::option::Option::None;
-        self.unknown_fields.clear();
-    }
-}
-
-impl ::std::fmt::Debug for GeneratedCodeInfo_Annotation {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo_Annotation {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

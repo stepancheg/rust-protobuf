@@ -67,7 +67,7 @@ impl<'a> EnumGen<'a> {
                 .options
                 .get_message()
                 .get_optimize_for()
-                == FileOptions_OptimizeMode::LITE_RUNTIME,
+                == file_options::OptimizeMode::LITE_RUNTIME,
             customize: customize.clone(),
         }
     }

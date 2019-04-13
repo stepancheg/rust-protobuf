@@ -1,5 +1,5 @@
 use descriptor::FieldDescriptorProto;
-use descriptor::FieldDescriptorProto_Label;
+use descriptor::field_descriptor_proto;
 use json::json_name;
 use reflect::accessor::AccessorKind;
 use reflect::accessor::FieldAccessor;
@@ -88,7 +88,7 @@ impl FieldDescriptor {
     }
 
     pub fn is_repeated(&self) -> bool {
-        self.proto.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED
+        self.proto.get_label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
     /// Return enum descriptor for enum field, panics if field type is not enum.

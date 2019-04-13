@@ -1,6 +1,6 @@
 use protobuf::prelude::*;
 
-use protobuf::descriptor::FieldDescriptorProto_Label;
+use protobuf::descriptor::field_descriptor_proto;
 use scope::FieldWithContext;
 use scope::MessageWithScope;
 
@@ -30,11 +30,11 @@ pub(crate) fn map_entry<'a>(
         assert_eq!(2, value.number());
 
         assert_eq!(
-            FieldDescriptorProto_Label::LABEL_OPTIONAL,
+            field_descriptor_proto::Label::LABEL_OPTIONAL,
             key.field.get_label()
         );
         assert_eq!(
-            FieldDescriptorProto_Label::LABEL_OPTIONAL,
+            field_descriptor_proto::Label::LABEL_OPTIONAL,
             value.field.get_label()
         );
 

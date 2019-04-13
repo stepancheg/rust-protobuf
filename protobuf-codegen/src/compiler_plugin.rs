@@ -31,7 +31,7 @@ where
     resp.file = result
         .iter()
         .map(|file| {
-            let mut r = CodeGeneratorResponse_File::new();
+            let mut r = code_generator_response::File::new();
             r.set_name(file.name.to_string());
             r.set_content(str::from_utf8(file.content.as_ref()).unwrap().to_string());
             r

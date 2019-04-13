@@ -245,8 +245,8 @@ impl ::protobuf::reflect::ProtobufValue for Type {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Field {
     // message fields
-    pub kind: ::protobuf::ProtobufEnumOrUnknown<Field_Kind>,
-    pub cardinality: ::protobuf::ProtobufEnumOrUnknown<Field_Cardinality>,
+    pub kind: ::protobuf::ProtobufEnumOrUnknown<field::Kind>,
+    pub cardinality: ::protobuf::ProtobufEnumOrUnknown<field::Cardinality>,
     pub number: i32,
     pub name: ::std::string::String,
     pub type_url: ::std::string::String,
@@ -345,10 +345,10 @@ impl ::protobuf::Message for Field {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.kind != ::protobuf::ProtobufEnumOrUnknown::new(Field_Kind::TYPE_UNKNOWN) {
+        if self.kind != ::protobuf::ProtobufEnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
             my_size += ::protobuf::rt::enum_or_unknown_size(1, self.kind);
         }
-        if self.cardinality != ::protobuf::ProtobufEnumOrUnknown::new(Field_Cardinality::CARDINALITY_UNKNOWN) {
+        if self.cardinality != ::protobuf::ProtobufEnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
             my_size += ::protobuf::rt::enum_or_unknown_size(2, self.cardinality);
         }
         if self.number != 0 {
@@ -382,10 +382,10 @@ impl ::protobuf::Message for Field {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if self.kind != ::protobuf::ProtobufEnumOrUnknown::new(Field_Kind::TYPE_UNKNOWN) {
+        if self.kind != ::protobuf::ProtobufEnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
             os.write_enum(1, ::protobuf::ProtobufEnumOrUnknown::value(&self.kind))?;
         }
-        if self.cardinality != ::protobuf::ProtobufEnumOrUnknown::new(Field_Cardinality::CARDINALITY_UNKNOWN) {
+        if self.cardinality != ::protobuf::ProtobufEnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
             os.write_enum(2, ::protobuf::ProtobufEnumOrUnknown::value(&self.cardinality))?;
         }
         if self.number != 0 {
@@ -440,12 +440,12 @@ impl ::protobuf::Message for Field {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<Field_Kind>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<field::Kind>>(
                 "kind",
                 |m: &Field| { &m.kind },
                 |m: &mut Field| { &mut m.kind },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<Field_Cardinality>>(
+            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnumOrUnknown<field::Cardinality>>(
                 "cardinality",
                 |m: &Field| { &m.cardinality },
                 |m: &mut Field| { &mut m.cardinality },
@@ -506,8 +506,8 @@ impl ::protobuf::Message for Field {
 
 impl ::protobuf::Clear for Field {
     fn clear(&mut self) {
-        self.kind = ::protobuf::ProtobufEnumOrUnknown::new(Field_Kind::TYPE_UNKNOWN);
-        self.cardinality = ::protobuf::ProtobufEnumOrUnknown::new(Field_Cardinality::CARDINALITY_UNKNOWN);
+        self.kind = ::protobuf::ProtobufEnumOrUnknown::new(field::Kind::TYPE_UNKNOWN);
+        self.cardinality = ::protobuf::ProtobufEnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN);
         self.number = 0;
         self.name.clear();
         self.type_url.clear();
@@ -529,151 +529,153 @@ impl ::std::fmt::Debug for Field {
 impl ::protobuf::reflect::ProtobufValue for Field {
 }
 
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum Field_Kind {
-    TYPE_UNKNOWN = 0,
-    TYPE_DOUBLE = 1,
-    TYPE_FLOAT = 2,
-    TYPE_INT64 = 3,
-    TYPE_UINT64 = 4,
-    TYPE_INT32 = 5,
-    TYPE_FIXED64 = 6,
-    TYPE_FIXED32 = 7,
-    TYPE_BOOL = 8,
-    TYPE_STRING = 9,
-    TYPE_GROUP = 10,
-    TYPE_MESSAGE = 11,
-    TYPE_BYTES = 12,
-    TYPE_UINT32 = 13,
-    TYPE_ENUM = 14,
-    TYPE_SFIXED32 = 15,
-    TYPE_SFIXED64 = 16,
-    TYPE_SINT32 = 17,
-    TYPE_SINT64 = 18,
-}
-
-impl ::protobuf::ProtobufEnum for Field_Kind {
-    fn value(&self) -> i32 {
-        *self as i32
+pub mod field {
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum Kind {
+        TYPE_UNKNOWN = 0,
+        TYPE_DOUBLE = 1,
+        TYPE_FLOAT = 2,
+        TYPE_INT64 = 3,
+        TYPE_UINT64 = 4,
+        TYPE_INT32 = 5,
+        TYPE_FIXED64 = 6,
+        TYPE_FIXED32 = 7,
+        TYPE_BOOL = 8,
+        TYPE_STRING = 9,
+        TYPE_GROUP = 10,
+        TYPE_MESSAGE = 11,
+        TYPE_BYTES = 12,
+        TYPE_UINT32 = 13,
+        TYPE_ENUM = 14,
+        TYPE_SFIXED32 = 15,
+        TYPE_SFIXED64 = 16,
+        TYPE_SINT32 = 17,
+        TYPE_SINT64 = 18,
     }
 
-    fn from_i32(value: i32) -> ::std::option::Option<Field_Kind> {
-        match value {
-            0 => ::std::option::Option::Some(Field_Kind::TYPE_UNKNOWN),
-            1 => ::std::option::Option::Some(Field_Kind::TYPE_DOUBLE),
-            2 => ::std::option::Option::Some(Field_Kind::TYPE_FLOAT),
-            3 => ::std::option::Option::Some(Field_Kind::TYPE_INT64),
-            4 => ::std::option::Option::Some(Field_Kind::TYPE_UINT64),
-            5 => ::std::option::Option::Some(Field_Kind::TYPE_INT32),
-            6 => ::std::option::Option::Some(Field_Kind::TYPE_FIXED64),
-            7 => ::std::option::Option::Some(Field_Kind::TYPE_FIXED32),
-            8 => ::std::option::Option::Some(Field_Kind::TYPE_BOOL),
-            9 => ::std::option::Option::Some(Field_Kind::TYPE_STRING),
-            10 => ::std::option::Option::Some(Field_Kind::TYPE_GROUP),
-            11 => ::std::option::Option::Some(Field_Kind::TYPE_MESSAGE),
-            12 => ::std::option::Option::Some(Field_Kind::TYPE_BYTES),
-            13 => ::std::option::Option::Some(Field_Kind::TYPE_UINT32),
-            14 => ::std::option::Option::Some(Field_Kind::TYPE_ENUM),
-            15 => ::std::option::Option::Some(Field_Kind::TYPE_SFIXED32),
-            16 => ::std::option::Option::Some(Field_Kind::TYPE_SFIXED64),
-            17 => ::std::option::Option::Some(Field_Kind::TYPE_SINT32),
-            18 => ::std::option::Option::Some(Field_Kind::TYPE_SINT64),
-            _ => ::std::option::Option::None
+    impl ::protobuf::ProtobufEnum for Kind {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<Kind> {
+            match value {
+                0 => ::std::option::Option::Some(Kind::TYPE_UNKNOWN),
+                1 => ::std::option::Option::Some(Kind::TYPE_DOUBLE),
+                2 => ::std::option::Option::Some(Kind::TYPE_FLOAT),
+                3 => ::std::option::Option::Some(Kind::TYPE_INT64),
+                4 => ::std::option::Option::Some(Kind::TYPE_UINT64),
+                5 => ::std::option::Option::Some(Kind::TYPE_INT32),
+                6 => ::std::option::Option::Some(Kind::TYPE_FIXED64),
+                7 => ::std::option::Option::Some(Kind::TYPE_FIXED32),
+                8 => ::std::option::Option::Some(Kind::TYPE_BOOL),
+                9 => ::std::option::Option::Some(Kind::TYPE_STRING),
+                10 => ::std::option::Option::Some(Kind::TYPE_GROUP),
+                11 => ::std::option::Option::Some(Kind::TYPE_MESSAGE),
+                12 => ::std::option::Option::Some(Kind::TYPE_BYTES),
+                13 => ::std::option::Option::Some(Kind::TYPE_UINT32),
+                14 => ::std::option::Option::Some(Kind::TYPE_ENUM),
+                15 => ::std::option::Option::Some(Kind::TYPE_SFIXED32),
+                16 => ::std::option::Option::Some(Kind::TYPE_SFIXED64),
+                17 => ::std::option::Option::Some(Kind::TYPE_SINT32),
+                18 => ::std::option::Option::Some(Kind::TYPE_SINT64),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [Kind] = &[
+                Kind::TYPE_UNKNOWN,
+                Kind::TYPE_DOUBLE,
+                Kind::TYPE_FLOAT,
+                Kind::TYPE_INT64,
+                Kind::TYPE_UINT64,
+                Kind::TYPE_INT32,
+                Kind::TYPE_FIXED64,
+                Kind::TYPE_FIXED32,
+                Kind::TYPE_BOOL,
+                Kind::TYPE_STRING,
+                Kind::TYPE_GROUP,
+                Kind::TYPE_MESSAGE,
+                Kind::TYPE_BYTES,
+                Kind::TYPE_UINT32,
+                Kind::TYPE_ENUM,
+                Kind::TYPE_SFIXED32,
+                Kind::TYPE_SFIXED64,
+                Kind::TYPE_SINT32,
+                Kind::TYPE_SINT64,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<Kind>("Field.Kind", super::file_descriptor_proto())
+            })
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [Field_Kind] = &[
-            Field_Kind::TYPE_UNKNOWN,
-            Field_Kind::TYPE_DOUBLE,
-            Field_Kind::TYPE_FLOAT,
-            Field_Kind::TYPE_INT64,
-            Field_Kind::TYPE_UINT64,
-            Field_Kind::TYPE_INT32,
-            Field_Kind::TYPE_FIXED64,
-            Field_Kind::TYPE_FIXED32,
-            Field_Kind::TYPE_BOOL,
-            Field_Kind::TYPE_STRING,
-            Field_Kind::TYPE_GROUP,
-            Field_Kind::TYPE_MESSAGE,
-            Field_Kind::TYPE_BYTES,
-            Field_Kind::TYPE_UINT32,
-            Field_Kind::TYPE_ENUM,
-            Field_Kind::TYPE_SFIXED32,
-            Field_Kind::TYPE_SFIXED64,
-            Field_Kind::TYPE_SINT32,
-            Field_Kind::TYPE_SINT64,
-        ];
-        values
-    }
-
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<Field_Kind>("Field.Kind", file_descriptor_proto())
-        })
-    }
-}
-
-impl ::std::default::Default for Field_Kind {
-    fn default() -> Self {
-        Field_Kind::TYPE_UNKNOWN
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for Field_Kind {
-}
-
-#[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum Field_Cardinality {
-    CARDINALITY_UNKNOWN = 0,
-    CARDINALITY_OPTIONAL = 1,
-    CARDINALITY_REQUIRED = 2,
-    CARDINALITY_REPEATED = 3,
-}
-
-impl ::protobuf::ProtobufEnum for Field_Cardinality {
-    fn value(&self) -> i32 {
-        *self as i32
-    }
-
-    fn from_i32(value: i32) -> ::std::option::Option<Field_Cardinality> {
-        match value {
-            0 => ::std::option::Option::Some(Field_Cardinality::CARDINALITY_UNKNOWN),
-            1 => ::std::option::Option::Some(Field_Cardinality::CARDINALITY_OPTIONAL),
-            2 => ::std::option::Option::Some(Field_Cardinality::CARDINALITY_REQUIRED),
-            3 => ::std::option::Option::Some(Field_Cardinality::CARDINALITY_REPEATED),
-            _ => ::std::option::Option::None
+    impl ::std::default::Default for Kind {
+        fn default() -> Self {
+            Kind::TYPE_UNKNOWN
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [Field_Cardinality] = &[
-            Field_Cardinality::CARDINALITY_UNKNOWN,
-            Field_Cardinality::CARDINALITY_OPTIONAL,
-            Field_Cardinality::CARDINALITY_REQUIRED,
-            Field_Cardinality::CARDINALITY_REPEATED,
-        ];
-        values
+    impl ::protobuf::reflect::ProtobufValue for Kind {
     }
 
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
-        descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new::<Field_Cardinality>("Field.Cardinality", file_descriptor_proto())
-        })
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum Cardinality {
+        CARDINALITY_UNKNOWN = 0,
+        CARDINALITY_OPTIONAL = 1,
+        CARDINALITY_REQUIRED = 2,
+        CARDINALITY_REPEATED = 3,
     }
-}
 
-impl ::std::default::Default for Field_Cardinality {
-    fn default() -> Self {
-        Field_Cardinality::CARDINALITY_UNKNOWN
+    impl ::protobuf::ProtobufEnum for Cardinality {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<Cardinality> {
+            match value {
+                0 => ::std::option::Option::Some(Cardinality::CARDINALITY_UNKNOWN),
+                1 => ::std::option::Option::Some(Cardinality::CARDINALITY_OPTIONAL),
+                2 => ::std::option::Option::Some(Cardinality::CARDINALITY_REQUIRED),
+                3 => ::std::option::Option::Some(Cardinality::CARDINALITY_REPEATED),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [Cardinality] = &[
+                Cardinality::CARDINALITY_UNKNOWN,
+                Cardinality::CARDINALITY_OPTIONAL,
+                Cardinality::CARDINALITY_REQUIRED,
+                Cardinality::CARDINALITY_REPEATED,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+            static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::Lazy::INIT;
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new::<Cardinality>("Field.Cardinality", super::file_descriptor_proto())
+            })
+        }
     }
-}
 
-impl ::protobuf::reflect::ProtobufValue for Field_Cardinality {
+    impl ::std::default::Default for Cardinality {
+        fn default() -> Self {
+            Cardinality::CARDINALITY_UNKNOWN
+        }
+    }
+
+    impl ::protobuf::reflect::ProtobufValue for Cardinality {
+    }
 }
 
 #[derive(PartialEq,Clone,Default)]
