@@ -140,7 +140,7 @@ impl ::protobuf::reflect::ProtobufValue for Struct {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Value {
     // message oneof groups
-    pub kind: ::std::option::Option<Value_oneof_kind>,
+    pub kind: ::std::option::Option<value::Kind>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -154,20 +154,6 @@ impl<'a> ::std::default::Default for &'a Value {
     }
 }
 
-#[derive(Clone,PartialEq)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
-pub enum Value_oneof_kind {
-    null_value(::protobuf::ProtobufEnumOrUnknown<NullValue>),
-    number_value(f64),
-    string_value(::std::string::String),
-    bool_value(bool),
-    struct_value(Struct),
-    list_value(ListValue),
-}
-
-impl ::protobuf::Oneof for Value_oneof_kind {
-}
-
 impl Value {
     pub fn new() -> Value {
         ::std::default::Default::default()
@@ -177,7 +163,7 @@ impl Value {
 
     pub fn get_null_value(&self) -> NullValue {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::null_value(v)) => ::protobuf::ProtobufEnumOrUnknown::enum_value_or_default(&v),
+            ::std::option::Option::Some(value::Kind::null_value(v)) => ::protobuf::ProtobufEnumOrUnknown::enum_value_or_default(&v),
             _ => NullValue::NULL_VALUE,
         }
     }
@@ -188,21 +174,21 @@ impl Value {
 
     pub fn has_null_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::null_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::null_value(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_null_value(&mut self, v: NullValue) {
-        self.kind = ::std::option::Option::Some(Value_oneof_kind::null_value(::protobuf::ProtobufEnumOrUnknown::new(v)))
+        self.kind = ::std::option::Option::Some(value::Kind::null_value(::protobuf::ProtobufEnumOrUnknown::new(v)))
     }
 
     // double number_value = 2;
 
     pub fn get_number_value(&self) -> f64 {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::number_value(v)) => v,
+            ::std::option::Option::Some(value::Kind::number_value(v)) => v,
             _ => 0.,
         }
     }
@@ -213,21 +199,21 @@ impl Value {
 
     pub fn has_number_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::number_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::number_value(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_number_value(&mut self, v: f64) {
-        self.kind = ::std::option::Option::Some(Value_oneof_kind::number_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::number_value(v))
     }
 
     // string string_value = 3;
 
     pub fn get_string_value(&self) -> &str {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::string_value(ref v)) => v,
+            ::std::option::Option::Some(value::Kind::string_value(ref v)) => v,
             _ => "",
         }
     }
@@ -238,24 +224,24 @@ impl Value {
 
     pub fn has_string_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::string_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::string_value(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_string_value(&mut self, v: ::std::string::String) {
-        self.kind = ::std::option::Option::Some(Value_oneof_kind::string_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::string_value(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_string_value(&mut self) -> &mut ::std::string::String {
-        if let ::std::option::Option::Some(Value_oneof_kind::string_value(_)) = self.kind {
+        if let ::std::option::Option::Some(value::Kind::string_value(_)) = self.kind {
         } else {
-            self.kind = ::std::option::Option::Some(Value_oneof_kind::string_value(::std::string::String::new()));
+            self.kind = ::std::option::Option::Some(value::Kind::string_value(::std::string::String::new()));
         }
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::string_value(ref mut v)) => v,
+            ::std::option::Option::Some(value::Kind::string_value(ref mut v)) => v,
             _ => panic!(),
         }
     }
@@ -264,7 +250,7 @@ impl Value {
     pub fn take_string_value(&mut self) -> ::std::string::String {
         if self.has_string_value() {
             match self.kind.take() {
-                ::std::option::Option::Some(Value_oneof_kind::string_value(v)) => v,
+                ::std::option::Option::Some(value::Kind::string_value(v)) => v,
                 _ => panic!(),
             }
         } else {
@@ -276,7 +262,7 @@ impl Value {
 
     pub fn get_bool_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::bool_value(v)) => v,
+            ::std::option::Option::Some(value::Kind::bool_value(v)) => v,
             _ => false,
         }
     }
@@ -287,21 +273,21 @@ impl Value {
 
     pub fn has_bool_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::bool_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::bool_value(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_bool_value(&mut self, v: bool) {
-        self.kind = ::std::option::Option::Some(Value_oneof_kind::bool_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::bool_value(v))
     }
 
     // .google.protobuf.Struct struct_value = 5;
 
     pub fn get_struct_value(&self) -> &Struct {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::struct_value(ref v)) => v,
+            ::std::option::Option::Some(value::Kind::struct_value(ref v)) => v,
             _ => <Struct as ::protobuf::Message>::default_instance(),
         }
     }
@@ -312,24 +298,24 @@ impl Value {
 
     pub fn has_struct_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::struct_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::struct_value(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_struct_value(&mut self, v: Struct) {
-        self.kind = ::std::option::Option::Some(Value_oneof_kind::struct_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::struct_value(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_struct_value(&mut self) -> &mut Struct {
-        if let ::std::option::Option::Some(Value_oneof_kind::struct_value(_)) = self.kind {
+        if let ::std::option::Option::Some(value::Kind::struct_value(_)) = self.kind {
         } else {
-            self.kind = ::std::option::Option::Some(Value_oneof_kind::struct_value(Struct::new()));
+            self.kind = ::std::option::Option::Some(value::Kind::struct_value(Struct::new()));
         }
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::struct_value(ref mut v)) => v,
+            ::std::option::Option::Some(value::Kind::struct_value(ref mut v)) => v,
             _ => panic!(),
         }
     }
@@ -338,7 +324,7 @@ impl Value {
     pub fn take_struct_value(&mut self) -> Struct {
         if self.has_struct_value() {
             match self.kind.take() {
-                ::std::option::Option::Some(Value_oneof_kind::struct_value(v)) => v,
+                ::std::option::Option::Some(value::Kind::struct_value(v)) => v,
                 _ => panic!(),
             }
         } else {
@@ -350,7 +336,7 @@ impl Value {
 
     pub fn get_list_value(&self) -> &ListValue {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::list_value(ref v)) => v,
+            ::std::option::Option::Some(value::Kind::list_value(ref v)) => v,
             _ => <ListValue as ::protobuf::Message>::default_instance(),
         }
     }
@@ -361,24 +347,24 @@ impl Value {
 
     pub fn has_list_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::list_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::list_value(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_list_value(&mut self, v: ListValue) {
-        self.kind = ::std::option::Option::Some(Value_oneof_kind::list_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::list_value(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_list_value(&mut self) -> &mut ListValue {
-        if let ::std::option::Option::Some(Value_oneof_kind::list_value(_)) = self.kind {
+        if let ::std::option::Option::Some(value::Kind::list_value(_)) = self.kind {
         } else {
-            self.kind = ::std::option::Option::Some(Value_oneof_kind::list_value(ListValue::new()));
+            self.kind = ::std::option::Option::Some(value::Kind::list_value(ListValue::new()));
         }
         match self.kind {
-            ::std::option::Option::Some(Value_oneof_kind::list_value(ref mut v)) => v,
+            ::std::option::Option::Some(value::Kind::list_value(ref mut v)) => v,
             _ => panic!(),
         }
     }
@@ -387,7 +373,7 @@ impl Value {
     pub fn take_list_value(&mut self) -> ListValue {
         if self.has_list_value() {
             match self.kind.take() {
-                ::std::option::Option::Some(Value_oneof_kind::list_value(v)) => v,
+                ::std::option::Option::Some(value::Kind::list_value(v)) => v,
                 _ => panic!(),
             }
         } else {
@@ -398,12 +384,12 @@ impl Value {
 
 impl ::protobuf::Message for Value {
     fn is_initialized(&self) -> bool {
-        if let Some(Value_oneof_kind::struct_value(ref v)) = self.kind {
+        if let Some(value::Kind::struct_value(ref v)) = self.kind {
             if !v.is_initialized() {
                 return false;
             }
         }
-        if let Some(Value_oneof_kind::list_value(ref v)) = self.kind {
+        if let Some(value::Kind::list_value(ref v)) = self.kind {
             if !v.is_initialized() {
                 return false;
             }
@@ -419,37 +405,37 @@ impl ::protobuf::Message for Value {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(Value_oneof_kind::null_value(is.read_enum_or_unknown()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::null_value(is.read_enum_or_unknown()?));
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(Value_oneof_kind::number_value(is.read_double()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::number_value(is.read_double()?));
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(Value_oneof_kind::string_value(is.read_string()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::string_value(is.read_string()?));
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(Value_oneof_kind::bool_value(is.read_bool()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::bool_value(is.read_bool()?));
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(Value_oneof_kind::struct_value(is.read_message()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::struct_value(is.read_message()?));
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(Value_oneof_kind::list_value(is.read_message()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::list_value(is.read_message()?));
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -465,23 +451,23 @@ impl ::protobuf::Message for Value {
         let mut my_size = 0;
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
-                &Value_oneof_kind::null_value(v) => {
+                &value::Kind::null_value(v) => {
                     my_size += ::protobuf::rt::enum_or_unknown_size(1, v);
                 },
-                &Value_oneof_kind::number_value(v) => {
+                &value::Kind::number_value(v) => {
                     my_size += 9;
                 },
-                &Value_oneof_kind::string_value(ref v) => {
+                &value::Kind::string_value(ref v) => {
                     my_size += ::protobuf::rt::string_size(3, &v);
                 },
-                &Value_oneof_kind::bool_value(v) => {
+                &value::Kind::bool_value(v) => {
                     my_size += 2;
                 },
-                &Value_oneof_kind::struct_value(ref v) => {
+                &value::Kind::struct_value(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
                 },
-                &Value_oneof_kind::list_value(ref v) => {
+                &value::Kind::list_value(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
                 },
@@ -495,22 +481,22 @@ impl ::protobuf::Message for Value {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
-                &Value_oneof_kind::null_value(v) => {
+                &value::Kind::null_value(v) => {
                     os.write_enum(1, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
                 },
-                &Value_oneof_kind::number_value(v) => {
+                &value::Kind::number_value(v) => {
                     os.write_double(2, v)?;
                 },
-                &Value_oneof_kind::string_value(ref v) => {
+                &value::Kind::string_value(ref v) => {
                     os.write_string(3, v)?;
                 },
-                &Value_oneof_kind::bool_value(v) => {
+                &value::Kind::bool_value(v) => {
                     os.write_bool(4, v)?;
                 },
-                &Value_oneof_kind::struct_value(ref v) => {
+                &value::Kind::struct_value(ref v) => {
                     ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
                 },
-                &Value_oneof_kind::list_value(ref v) => {
+                &value::Kind::list_value(ref v) => {
                     ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
                 },
             };
@@ -614,6 +600,23 @@ impl ::std::fmt::Debug for Value {
 }
 
 impl ::protobuf::reflect::ProtobufValue for Value {
+}
+
+pub mod value {
+
+    #[derive(Clone,PartialEq)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum Kind {
+        null_value(::protobuf::ProtobufEnumOrUnknown<super::NullValue>),
+        number_value(f64),
+        string_value(::std::string::String),
+        bool_value(bool),
+        struct_value(super::Struct),
+        list_value(super::ListValue),
+    }
+
+    impl ::protobuf::Oneof for Kind {
+    }
 }
 
 #[derive(PartialEq,Clone,Default)]

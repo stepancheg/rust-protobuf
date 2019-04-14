@@ -47,7 +47,7 @@ use well_known_types::Timestamp;
 use well_known_types::UInt32Value;
 use well_known_types::UInt64Value;
 use well_known_types::Value;
-use well_known_types::Value_oneof_kind;
+use well_known_types::value;
 
 
 #[derive(Debug)]
@@ -753,19 +753,19 @@ impl<'a> Parser<'a> {
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResult<()> {
         if self.tokenizer.lookahead_is_ident("null")? {
-            value.kind = Some(Value_oneof_kind::null_value(self.read_wk_null_value()?.into()));
+            value.kind = Some(value::Kind::null_value(self.read_wk_null_value()?.into()));
         } else if self.tokenizer.lookahead_is_ident("true")?
             || self.tokenizer.lookahead_is_ident("false")?
         {
-            value.kind = Some(Value_oneof_kind::bool_value(self.read_bool()?));
+            value.kind = Some(value::Kind::bool_value(self.read_bool()?));
         } else if self.tokenizer.lookahead_is_json_number()? {
-            value.kind = Some(Value_oneof_kind::number_value(self.read_f64()?));
+            value.kind = Some(value::Kind::number_value(self.read_f64()?));
         } else if self.tokenizer.lookahead_is_str_lit()? {
-            value.kind = Some(Value_oneof_kind::string_value(self.read_string()?));
+            value.kind = Some(value::Kind::string_value(self.read_string()?));
         } else if self.tokenizer.lookahead_is_symbol('[')? {
-            value.kind = Some(Value_oneof_kind::list_value(self.read_wk_list_value()?));
+            value.kind = Some(value::Kind::list_value(self.read_wk_list_value()?));
         } else if self.tokenizer.lookahead_is_symbol('{')? {
-            value.kind = Some(Value_oneof_kind::struct_value(self.read_wk_struct()?));
+            value.kind = Some(value::Kind::struct_value(self.read_wk_struct()?));
         } else {
             return Err(ParseError::UnexpectedToken);
         }

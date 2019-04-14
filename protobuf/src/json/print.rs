@@ -29,7 +29,7 @@ use well_known_types::Timestamp;
 use well_known_types::UInt32Value;
 use well_known_types::UInt64Value;
 use well_known_types::Value;
-use well_known_types::Value_oneof_kind;
+use well_known_types::value;
 
 use json::well_known_wrapper::WellKnownWrapper;
 
@@ -248,15 +248,15 @@ impl PrintableToJson for Value {
         match self.kind {
             // None should not be possible here, but it's better to print null than crash
             None => w.print_json_null(),
-            Some(Value_oneof_kind::null_value(null_value)) => {
+            Some(value::Kind::null_value(null_value)) => {
                 // TODO: number if unknown
                 w.print_wk_null_value(&null_value.enum_value_or_default())
             },
-            Some(Value_oneof_kind::bool_value(b)) => w.print_printable(&b),
-            Some(Value_oneof_kind::number_value(n)) => w.print_printable(&n),
-            Some(Value_oneof_kind::string_value(ref s)) => w.print_printable::<String>(&s),
-            Some(Value_oneof_kind::struct_value(ref s)) => w.print_printable(&s),
-            Some(Value_oneof_kind::list_value(ref l)) => w.print_printable(&l),
+            Some(value::Kind::bool_value(b)) => w.print_printable(&b),
+            Some(value::Kind::number_value(n)) => w.print_printable(&n),
+            Some(value::Kind::string_value(ref s)) => w.print_printable::<String>(&s),
+            Some(value::Kind::struct_value(ref s)) => w.print_printable(&s),
+            Some(value::Kind::list_value(ref l)) => w.print_printable(&l),
         }
     }
 }
