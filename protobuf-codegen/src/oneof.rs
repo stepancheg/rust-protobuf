@@ -12,12 +12,13 @@ use scope::WithScope;
 use rust_types_values::RustType;
 use serde;
 use Customize;
+use rust_name::RustIdent;
 
 // oneof one { ... }
 #[derive(Clone)]
 pub(crate) struct OneofField {
     pub elem: FieldElem,
-    pub oneof_name: String,
+    pub oneof_name: RustIdent,
     pub oneof_type_name: RustType,
     pub boxed: bool,
 }
@@ -42,7 +43,7 @@ impl OneofField {
 
         OneofField {
             elem,
-            oneof_name: oneof.name().to_string(),
+            oneof_name: oneof.name(),
             oneof_type_name: RustType::Oneof(oneof.rust_name().to_path()),
             boxed,
         }

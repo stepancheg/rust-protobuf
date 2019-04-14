@@ -16,6 +16,7 @@ use message::message_name_to_nested_mod_name;
 use protobuf_name::ProtobufAbsolutePath;
 use protobuf_name::ProtobufRelativePath;
 use protobuf_name::ProtobufIdent;
+use field::rust_field_name_for_protobuf_field_name;
 
 
 pub(crate) struct RootScope<'a> {
@@ -492,12 +493,8 @@ pub(crate) struct OneofWithContext<'a> {
 }
 
 impl<'a> OneofWithContext<'a> {
-    pub fn name(&'a self) -> &'a str {
-        match self.oneof.get_name() {
-            "type" => "field_type",
-            "box" => "field_box",
-            x => x,
-        }
+    pub fn name(&'a self) -> RustIdent {
+        return rust_field_name_for_protobuf_field_name(self.oneof.get_name())
     }
 
     // rust type name of enum

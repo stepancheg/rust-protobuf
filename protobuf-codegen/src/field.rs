@@ -316,6 +316,12 @@ pub(crate) enum FieldKind {
     Oneof(OneofField),
 }
 
+#[derive(Clone)]
+pub(crate) enum SingularOrOneofField {
+    Singular(SingularField),
+    _Oneof(OneofField),
+}
+
 // Representation of map entry: key type and value type
 #[derive(Clone, Debug)]
 pub struct EntryKeyValue(FieldElem, FieldElem);
@@ -688,21 +694,6 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => true,
             _ => false,
-        }
-    }
-
-    #[allow(dead_code)]
-    fn repeated(&self) -> &RepeatedField {
-        match self.kind {
-            FieldKind::Repeated(ref repeated) => &repeated,
-            _ => panic!("not a repeated field: {}", self.reconstruct_def()),
-        }
-    }
-
-    fn singular(&self) -> &SingularField {
-        match self.kind {
-            FieldKind::Singular(ref singular) => &singular,
-            _ => panic!("not a singular field: {}", self.reconstruct_def()),
         }
     }
 
@@ -1490,38 +1481,44 @@ impl<'a> FieldGen<'a> {
 
     fn write_self_field_assign_default(
         &self,
-        option_kind: OptionKind,
-        _field_elem: &FieldElem,
+        field_kind: &SingularOrOneofField,
         w: &mut CodeWriter,
     ) {
-        assert!(self.is_singular());
-        if self.is_oneof() {
-            let self_field_oneof = self.self_field_oneof();
-            w.write_line(format!(
-                "{} = ::std::option::Option::Some({}({}))",
-                self_field_oneof,
-                self.variant_path(),
-                // TODO: default from .proto is not needed here (?)
-                self.element_default_value_rust()
-                    .into_type(self.full_storage_iter_elem_type())
-                    .value
-            ));
-        } else {
-            let s = self.singular();
-            // Note it is different from C++ protobuf, where field is initialized
-            // with default value
-            match option_kind {
-                OptionKind::SingularField | OptionKind::SingularPtrField => {
-                    let self_field = self.self_field();
-                    w.write_line(&format!("{}.set_default();", self_field));
-                }
-                _ => {
-                    self.write_self_field_assign_some(
-                        w,
-                        s,
-                        &self.elem().rust_storage_elem_type().default_value_typed()
-                            .into_type(s.elem.rust_storage_elem_type()).value,
-                    );
+        match field_kind {
+            SingularOrOneofField::_Oneof(oneof) => {
+                w.write_line(format!(
+                    "self.{} = ::std::option::Option::Some({}({}))",
+                    oneof.oneof_name,
+                    self.variant_path(),
+                    // TODO: default from .proto is not needed here (?)
+                    self.element_default_value_rust()
+                        .into_type(self.full_storage_iter_elem_type())
+                        .value
+                ));
+            }
+            SingularOrOneofField::Singular(singular) => {
+                // Note it is different from C++ protobuf, where field is initialized
+                // with default value
+                match singular.flag {
+                    SingularFieldFlag::WithFlag { option_kind, .. } => {
+                        match option_kind {
+                            OptionKind::SingularField | OptionKind::SingularPtrField => {
+                                let self_field = self.self_field();
+                                w.write_line(&format!("{}.set_default();", self_field));
+                            }
+                            _ => {
+                                self.write_self_field_assign_some(
+                                    w,
+                                    singular,
+                                    &self.elem().rust_storage_elem_type().default_value_typed()
+                                        .into_type(singular.elem.rust_storage_elem_type()).value,
+                                );
+                            }
+                        }
+                    }
+                    SingularFieldFlag::WithoutFlag => {
+                        unimplemented!()
+                    }
                 }
             }
         }
@@ -2129,11 +2126,12 @@ impl<'a> FieldGen<'a> {
     fn write_message_field_mut_singular(&self, s: &SingularField, w: &mut CodeWriter) {
         match s {
             SingularField {
-                flag: SingularFieldFlag::WithFlag { option_kind, .. },
-                elem,
+                flag: SingularFieldFlag::WithFlag { .. },
+                ..
             } => {
                 self.write_if_self_field_is_none(w, |w| {
-                    self.write_self_field_assign_default(*option_kind, elem, w);
+                    self.write_self_field_assign_default(
+                        &SingularOrOneofField::Singular(s.clone()), w);
                 });
                 let self_field = self.self_field();
                 w.write_line(&format!("{}.as_mut().unwrap()", self_field));
