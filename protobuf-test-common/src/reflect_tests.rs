@@ -8,7 +8,7 @@ use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::reflect::RuntimeTypeDynamic;
 use protobuf::well_known_types::Value;
-use protobuf::well_known_types::Value_oneof_kind;
+use protobuf::well_known_types::value;
 use protobuf::Message;
 
 pub fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBox {
@@ -35,7 +35,7 @@ fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<Message>> 
     if descriptor == Value::descriptor_static() {
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
-        value.kind = Some(Value_oneof_kind::number_value(23.0));
+        value.kind = Some(value::Kind::number_value(23.0));
         vec![Box::new(value)]
     } else {
         vec![
