@@ -4,9 +4,8 @@ use code_writer::CodeWriter;
 use field::FieldElem;
 use field::FieldGen;
 use message::MessageGen;
-use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::field_descriptor_proto;
-use scope::OneofVariantWithContext;
+use scope::{OneofVariantWithContext, FieldWithContext};
 use scope::OneofWithContext;
 use scope::WithScope;
 use rust_types_values::RustType;
@@ -20,13 +19,14 @@ pub(crate) struct OneofField {
     pub elem: FieldElem,
     pub oneof_name: RustIdent,
     pub oneof_type_name: RustType,
+    pub oneof_variant_name: RustIdent,
     pub boxed: bool,
 }
 
 impl OneofField {
     pub fn parse(
         oneof: &OneofWithContext,
-        _field: &FieldDescriptorProto,
+        field: &FieldWithContext,
         elem: FieldElem,
     ) -> OneofField {
         // detecting recursion
@@ -45,6 +45,7 @@ impl OneofField {
             elem,
             oneof_name: oneof.field_name(),
             oneof_type_name: RustType::Oneof(oneof.rust_name().to_path()),
+            oneof_variant_name: field.rust_name(),
             boxed,
         }
     }
@@ -57,6 +58,10 @@ impl OneofField {
         } else {
             t
         }
+    }
+
+    pub fn variant_path(&self) -> String {
+        format!("{}::{}", self.oneof_type_name, self.oneof_variant_name)
     }
 }
 
@@ -76,14 +81,14 @@ impl<'a> OneofVariantGen<'a> {
         field: &'a FieldGen,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {
-            oneof: oneof,
+            oneof,
             variant: variant.clone(),
             field: field.clone(),
             path: format!("{}::{}", oneof.type_name, field.rust_name),
             oneof_field: OneofField::parse(
                 variant.oneof,
-                variant.field,
-                field.oneof().elem.clone(),
+                &field.proto_field,
+                field.elem().clone(),
             ),
         }
     }

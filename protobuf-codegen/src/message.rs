@@ -92,7 +92,10 @@ impl<'a> MessageGen<'a> {
     }
 
     fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
-        self.fields.iter().filter(|f| !f.is_oneof()).collect()
+        self.fields.iter().filter(|f| match f.kind {
+            FieldKind::Oneof(..) => false,
+            _ => true,
+        }).collect()
     }
 
     fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
@@ -105,7 +108,12 @@ impl<'a> MessageGen<'a> {
     fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields
             .iter()
-            .filter(|f| !f.is_oneof() && f.proto_type != field_descriptor_proto::Type::TYPE_GROUP)
+            .filter(|f| {
+                match f.kind {
+                    FieldKind::Oneof(..) => false,
+                    _ => f.proto_type != field_descriptor_proto::Type::TYPE_GROUP,
+                }
+            })
             .collect()
     }
 

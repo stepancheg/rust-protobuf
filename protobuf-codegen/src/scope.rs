@@ -465,6 +465,10 @@ impl<'a> FieldWithContext<'a> {
         self.field.get_number() as u32
     }
 
+    pub fn rust_name(&self) -> RustIdent {
+        rust_field_name_for_protobuf_field_name(self.name())
+    }
+
     /// Shortcut
     pub fn name(&self) -> &str {
         self.field.get_name()
