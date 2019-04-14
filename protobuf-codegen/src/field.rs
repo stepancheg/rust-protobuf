@@ -1159,7 +1159,7 @@ impl<'a> FieldGen<'a> {
             FieldKind::Oneof(ref o) => {
                 w.write_line(&format!(
                     "self.{} = ::std::option::Option::None;",
-                    o.oneof_name,
+                    o.oneof_field_name
                 ));
             }
             _ => {
@@ -1410,15 +1410,15 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Oneof(OneofField {
                 ref elem,
-                ref oneof_type_name,
-                ref oneof_name,
+                ref type_name,
+                ref oneof_field_name,
                 ..
             }) => {
                 let cond = format!(
                     "Some({}::{}(ref {}))",
-                    oneof_type_name, self.rust_name, varn
+                    type_name, self.rust_name, varn
                 );
-                w.if_let_stmt(&cond, &format!("self.{}", oneof_name), |w| {
+                w.if_let_stmt(&cond, &format!("self.{}", oneof_field_name), |w| {
                     cb(w, &elem.rust_storage_elem_type())
                 })
             }
@@ -1491,8 +1491,8 @@ impl<'a> FieldGen<'a> {
             SingularOrOneofField::Oneof(oneof) => {
                 w.write_line(format!(
                     "self.{} = ::std::option::Option::Some({}({}))",
-                    oneof.oneof_name,
-                    oneof.variant_path(),
+                    oneof.oneof_field_name,
+                    oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                     // TODO: default from .proto is not needed here (?)
                     self.element_default_value_rust()
                         .into_type(self.full_storage_iter_elem_type())
@@ -1693,8 +1693,8 @@ impl<'a> FieldGen<'a> {
 
         w.write_line(&format!(
             "self.{} = ::std::option::Option::Some({}({}));",
-            o.oneof_name,
-            o.variant_path(),
+            o.oneof_field_name,
+            o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
             maybe_boxed.value
         )); // TODO: into_type
     }
@@ -2011,7 +2011,7 @@ impl<'a> FieldGen<'a> {
     fn write_message_field_get_oneof(&self, o: &OneofField, w: &mut CodeWriter) {
         let get_xxx_return_type = SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type();
         let OneofField { ref elem, .. } = o;
-        w.match_expr(&format!("self.{}", o.oneof_name), |w| {
+        w.match_expr(&format!("self.{}", o.oneof_field_name), |w| {
             let (refv, vtype) = if !elem.is_copy() {
                 ("ref v", elem.rust_storage_elem_type().ref_type())
             } else {
@@ -2020,7 +2020,7 @@ impl<'a> FieldGen<'a> {
             w.case_expr(
                 format!(
                     "::std::option::Option::Some({}({}))",
-                    o.variant_path(),
+                    o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                     refv
                 ),
                 vtype.into_target(&get_xxx_return_type, "v"),
@@ -2086,9 +2086,10 @@ impl<'a> FieldGen<'a> {
         w.pub_fn(&format!("{}(&self) -> bool", self.has_name()), |w| {
             match self.kind {
                 FieldKind::Oneof(ref oneof) => {
-                    w.match_expr(&format!("self.{}", oneof.oneof_name), |w| {
+                    w.match_expr(&format!("self.{}", oneof.oneof_field_name), |w| {
                         w.case_expr(
-                            format!("::std::option::Option::Some({}(..))", oneof.variant_path()),
+                            format!("::std::option::Option::Some({}(..))",
+                                oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file())),
                             "true",
                         );
                         w.case_expr("_", "false");
@@ -2118,8 +2119,8 @@ impl<'a> FieldGen<'a> {
                         let v = set_xxx_param_type.into_target(&oneof.rust_type(), "v");
                         w.write_line(&format!(
                             "self.{} = ::std::option::Option::Some({}({}))",
-                            oneof.oneof_name,
-                            oneof.variant_path(),
+                            oneof.oneof_field_name,
+                            oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                             v
                         ));
                     }
@@ -2173,18 +2174,18 @@ impl<'a> FieldGen<'a> {
                     self.write_message_field_mut_singular(s, w);
                 }
                 FieldKind::Oneof(ref o) => {
-                    let self_field_oneof = format!("self.{}", o.oneof_name);
+                    let self_field_oneof = format!("self.{}", o.oneof_field_name);
 
                     // if oneof does not contain current field
                     w.if_let_else_stmt(
-                        &format!("::std::option::Option::Some({}(_))", o.variant_path())[..],
+                        &format!("::std::option::Option::Some({}(_))", o.variant_path(&self.proto_field.message.scope.rust_path_to_file()))[..],
                         &self_field_oneof[..],
                         |w| {
                             // initialize it with default value
                             w.write_line(&format!(
                                 "{} = ::std::option::Option::Some({}({}));",
                                 self_field_oneof,
-                                o.variant_path(),
+                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                                 self.element_default_value_rust()
                                     .into_type(o.rust_type())
                                     .value
@@ -2197,7 +2198,7 @@ impl<'a> FieldGen<'a> {
                         w.case_expr(
                             format!(
                                 "::std::option::Option::Some({}(ref mut v))",
-                                o.variant_path()
+                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file())
                             ),
                             "v",
                         );
@@ -2214,12 +2215,13 @@ impl<'a> FieldGen<'a> {
         // TODO: replace with if let
         w.write_line(&format!("if self.{}() {{", self.has_name()));
         w.indented(|w| {
-            let self_field_oneof = format!("self.{}", o.oneof_name);
+            let self_field_oneof = format!("self.{}", o.oneof_field_name);
             w.match_expr(format!("{}.take()", self_field_oneof), |w| {
                 let value_in_some = o.rust_type().value("v".to_owned());
                 let converted = value_in_some.into_type(self.take_xxx_return_type());
                 w.case_expr(
-                    format!("::std::option::Option::Some({}(v))", o.variant_path()),
+                    format!("::std::option::Option::Some({}(v))",
+                        o.variant_path(&self.proto_field.message.scope.rust_path_to_file())),
                     &converted.value,
                 );
                 w.case_expr("_", "panic!()");

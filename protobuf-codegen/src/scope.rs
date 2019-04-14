@@ -502,10 +502,10 @@ impl<'a> OneofWithContext<'a> {
     }
 
     // rust type name of enum
-    pub fn rust_name(&self) -> RustIdent {
-        RustIdent::new(&format!(
+    pub fn rust_name(&self) -> RustIdentWithPath {
+        RustIdentWithPath::from(format!(
             "{}_oneof_{}",
-            self.message.rust_name(),
+            self.message.rust_name_to_file(),
             self.oneof.get_name()
         ))
     }

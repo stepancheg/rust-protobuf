@@ -495,7 +495,7 @@ fn make_path_to_path(source: &RustPath, dest: &RustPath) -> RustPath {
     source.to_reverse().append(dest)
 }
 
-fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIdentWithPath {
+pub(crate) fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIdentWithPath {
     make_path_to_path(source, &dest.path).with_ident(dest.ident.clone())
 }
 

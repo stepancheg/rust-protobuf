@@ -9,17 +9,18 @@ use scope::{OneofVariantWithContext, FieldWithContext};
 use scope::OneofWithContext;
 use scope::WithScope;
 use rust_types_values::RustType;
+use rust_types_values::make_path;
 use serde;
 use Customize;
-use rust_name::RustIdent;
+use rust_name::{RustIdent, RustIdentWithPath, RustPath};
 
 // oneof one { ... }
 #[derive(Clone)]
 pub(crate) struct OneofField {
     pub elem: FieldElem,
-    pub oneof_name: RustIdent,
-    pub oneof_type_name: RustType,
-    pub oneof_variant_name: RustIdent,
+    pub oneof_variant_rust_name: RustIdent,
+    pub oneof_field_name: RustIdent,
+    pub type_name: RustIdentWithPath,
     pub boxed: bool,
 }
 
@@ -43,10 +44,10 @@ impl OneofField {
 
         OneofField {
             elem,
-            oneof_name: oneof.field_name(),
-            oneof_type_name: RustType::Oneof(oneof.rust_name().to_path()),
-            oneof_variant_name: field.rust_name(),
+            type_name: oneof.rust_name(),
             boxed,
+            oneof_variant_rust_name: field.rust_name(),
+            oneof_field_name: oneof.field_name(),
         }
     }
 
@@ -60,8 +61,10 @@ impl OneofField {
         }
     }
 
-    pub fn variant_path(&self) -> String {
-        format!("{}::{}", self.oneof_type_name, self.oneof_variant_name)
+    pub fn variant_path(&self, reference: &RustPath) -> RustIdentWithPath {
+        make_path(
+            reference,
+            &self.type_name.to_path().with_ident(self.oneof_variant_rust_name.clone()))
     }
 }
 
@@ -84,7 +87,7 @@ impl<'a> OneofVariantGen<'a> {
             oneof,
             variant: variant.clone(),
             field: field.clone(),
-            path: format!("{}::{}", oneof.type_name, field.rust_name),
+            path: format!("{}::{}", oneof.type_name_relative(&oneof.oneof.message.scope.rust_path_to_file()), field.rust_name),
             oneof_field: OneofField::parse(
                 variant.oneof,
                 &field.proto_field,
@@ -107,7 +110,6 @@ pub(crate) struct OneofGen<'a> {
     // Message containing this oneof
     message: &'a MessageGen<'a>,
     oneof: OneofWithContext<'a>,
-    type_name: RustType,
     lite_runtime: bool,
     customize: Customize,
 }
@@ -118,14 +120,16 @@ impl<'a> OneofGen<'a> {
         oneof: OneofWithContext<'a>,
         customize: &Customize,
     ) -> OneofGen<'a> {
-        let rust_name = oneof.rust_name();
         OneofGen {
             message,
             oneof,
-            type_name: RustType::Oneof(rust_name.to_path()),
             lite_runtime: message.lite_runtime,
             customize: customize.clone(),
         }
+    }
+
+    pub fn type_name_relative(&self, source: &RustPath) -> RustIdentWithPath {
+        make_path(source, &self.oneof.rust_name())
     }
 
     pub fn name(&self) -> &str {
@@ -156,7 +160,7 @@ impl<'a> OneofGen<'a> {
     }
 
     pub fn full_storage_type(&self) -> RustType {
-        RustType::Option(Box::new(self.type_name.clone()))
+        RustType::Option(Box::new(RustType::Oneof(self.type_name_relative(&self.oneof.rust_name().path).clone())))
     }
 
     fn write_enum(&self, w: &mut CodeWriter) {
@@ -166,7 +170,7 @@ impl<'a> OneofGen<'a> {
         }
         w.derive(&derive);
         serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
-        w.pub_enum(&self.type_name.to_string(), |w| {
+        w.pub_enum(&self.oneof.rust_name().ident.to_string(), |w| {
             for variant in self.variants_except_group() {
                 w.write_line(&format!(
                     "{}({}),",
@@ -178,7 +182,7 @@ impl<'a> OneofGen<'a> {
     }
 
     fn write_impl_oneof(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Oneof", self.type_name.to_string(), |_w| {
+        w.impl_for_block("::protobuf::Oneof", self.oneof.rust_name().ident.to_string(), |_w| {
             // nothing here yet
         });
     }
