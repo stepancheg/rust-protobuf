@@ -316,23 +316,6 @@ pub(crate) enum FieldKind {
     Oneof(OneofField),
 }
 
-impl FieldKind {
-    fn elem(&self) -> &FieldElem {
-        match self {
-            &FieldKind::Singular(ref s) => &s.elem,
-            &FieldKind::Repeated(ref r) => &r.elem,
-            &FieldKind::Oneof(ref o) => &o.elem,
-            &FieldKind::Map(..) => {
-                panic!("no single elem type for map field");
-            }
-        }
-    }
-
-    fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
-        self.elem().primitive_type_variant()
-    }
-}
-
 // Representation of map entry: key type and value type
 #[derive(Clone, Debug)]
 pub struct EntryKeyValue(FieldElem, FieldElem);
@@ -1613,7 +1596,7 @@ impl<'a> FieldGen<'a> {
         r: &RepeatedField,
         w: &mut CodeWriter,
     ) {
-        let carllerche = match self.kind.primitive_type_variant() {
+        let carllerche = match r.elem.primitive_type_variant() {
             PrimitiveTypeVariant::Carllerche => "carllerche_",
             PrimitiveTypeVariant::Default => "",
         };
@@ -1657,7 +1640,7 @@ impl<'a> FieldGen<'a> {
             FieldElem::Message(ref name, ..) => format!("::<{}, _>", name),
             _ => "".to_owned(),
         };
-        let carllerche = match self.kind.primitive_type_variant() {
+        let carllerche = match s.elem.primitive_type_variant() {
             PrimitiveTypeVariant::Carllerche => "carllerche_",
             PrimitiveTypeVariant::Default => "",
         };
