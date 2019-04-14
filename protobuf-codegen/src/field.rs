@@ -874,9 +874,8 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn default_value_from_proto(&self) -> Option<String> {
-        assert!(self.is_singular() || self.is_oneof());
-        if let &FieldElem::Enum(ref e) = self.elem() {
+    fn singular_or_oneof_default_value_from_proto(&self, elem: &FieldElem) -> Option<String> {
+        if let &FieldElem::Enum(ref e) = elem {
             Some(format!("{}", e.default_value_rust_expr()))
         } else if self.proto_field.field.has_default_value() {
             let proto_default = self.proto_field.field.get_default_value();
@@ -906,7 +905,7 @@ impl<'a> FieldGen<'a> {
                     &text_format::lexer::StrLit {
                         escaped: proto_default.to_owned(),
                     }.decode_bytes()
-                    .expect("decoded bytes default value"),
+                        .expect("decoded bytes default value"),
                 ),
                 // TODO: resolve outer message prefix
                 field_descriptor_proto::Type::TYPE_GROUP |
@@ -920,6 +919,16 @@ impl<'a> FieldGen<'a> {
             })
         } else {
             None
+        }
+    }
+
+    fn default_value_from_proto(&self) -> Option<String> {
+        match self.kind {
+            FieldKind::Oneof(OneofField { ref elem, .. }) |
+            FieldKind::Singular(SingularField { ref elem, .. }) => {
+                self.singular_or_oneof_default_value_from_proto(elem)
+            }
+            _ => unreachable!()
         }
     }
 
