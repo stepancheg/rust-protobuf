@@ -43,7 +43,7 @@ impl OneofField {
 
         OneofField {
             elem,
-            oneof_name: oneof.name(),
+            oneof_name: oneof.field_name(),
             oneof_type_name: RustType::Oneof(oneof.rust_name().to_path()),
             boxed,
         }

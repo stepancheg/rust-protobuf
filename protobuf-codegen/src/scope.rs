@@ -493,7 +493,7 @@ pub(crate) struct OneofWithContext<'a> {
 }
 
 impl<'a> OneofWithContext<'a> {
-    pub fn name(&'a self) -> RustIdent {
+    pub fn field_name(&'a self) -> RustIdent {
         return rust_field_name_for_protobuf_field_name(self.oneof.get_name())
     }
 
