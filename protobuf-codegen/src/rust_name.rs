@@ -47,9 +47,85 @@ impl From<String> for RustIdent {
 }
 
 #[derive(Default, Eq, PartialEq, Debug, Clone)]
+pub(crate) struct RustRelativePath {
+    path: Vec<RustIdent>,
+}
+
+impl RustRelativePath {
+    pub fn _into_path(self) -> RustPath {
+        RustPath {
+            absolute: false,
+            path: self,
+        }
+    }
+
+    pub fn from_components<I : IntoIterator<Item = RustIdent>>(i: I) -> RustRelativePath {
+        RustRelativePath {
+            path: i.into_iter().collect()
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.path.is_empty()
+    }
+
+    pub fn first(&self) -> Option<RustIdent> {
+        self.path.iter().cloned().next()
+    }
+
+    pub fn remove_first(&mut self) -> Option<RustIdent> {
+        if self.path.is_empty() {
+            None
+        } else {
+            Some(self.path.remove(0))
+        }
+    }
+
+    pub fn prepend_ident(&mut self, ident: RustIdent) {
+        self.path.insert(0, ident);
+    }
+
+    pub fn append(mut self, path: RustRelativePath) -> RustRelativePath {
+        for c in path.path {
+            self.path.push(c);
+        }
+        self
+    }
+
+    pub fn _append_ident(mut self, ident: RustIdent) -> RustRelativePath {
+        self.path.push(ident);
+        self
+    }
+
+    pub fn to_reverse(&self) -> RustRelativePath {
+        RustRelativePath::from_components(iter::repeat(RustIdent::super_ident()).take(self.path.len()))
+    }
+}
+
+#[derive(Default, Eq, PartialEq, Debug, Clone)]
 pub(crate) struct RustPath {
     absolute: bool,
-    path: Vec<RustIdent>,
+    path: RustRelativePath,
+}
+
+impl fmt::Display for RustRelativePath {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for (i, c) in self.path.iter().enumerate() {
+            if i != 0 {
+                write!(f, "::")?;
+            }
+            write!(f, "{}", c)?;
+        }
+        Ok(())
+    }
+}
+
+impl From<&'_ str> for RustRelativePath {
+    fn from(s: &str) -> Self {
+        RustRelativePath {
+            path: s.split("::").map(RustIdent::from).collect(),
+        }
+    }
 }
 
 impl RustPath {
@@ -65,7 +141,7 @@ impl RustPath {
     pub fn relative_from_components<I : IntoIterator<Item = RustIdent>>(i: I) -> RustPath {
         RustPath {
             absolute: false,
-            path: i.into_iter().collect(),
+            path: RustRelativePath::from_components(i),
         }
     }
 
@@ -78,38 +154,40 @@ impl RustPath {
 
     pub fn first(&self) -> Option<RustIdent> {
         assert!(!self.absolute);
-        self.path.iter().cloned().next()
+        self.path.first()
     }
 
     pub fn remove_first(&mut self) -> Option<RustIdent> {
         assert!(!self.absolute);
-        if self.path.is_empty() {
-            None
-        } else {
-            Some(self.path.remove(0))
-        }
+        self.path.remove_first()
     }
 
     pub fn to_reverse(&self) -> RustPath {
         assert!(!self.absolute);
-        RustPath::relative_from_components(iter::repeat(RustIdent::super_ident()).take(self.path.len()))
+        RustPath {
+            absolute: false,
+            path: self.path.to_reverse(),
+        }
     }
 
     pub fn prepend_ident(&mut self, ident: RustIdent) {
         assert!(!self.absolute);
-        self.path.insert(0, ident);
+        self.path.prepend_ident(ident);
     }
 
-    pub fn append(mut self, path: RustPath) -> RustPath {
-        assert!(!path.absolute);
-        for c in path.path {
-            self.path.push(c);
+    pub fn append(self, path: RustPath) -> RustPath {
+        if path.absolute {
+            path
+        } else {
+            RustPath {
+                absolute: self.absolute,
+                path: self.path.append(path.path),
+            }
         }
-        self
     }
 
     pub fn append_ident(mut self, ident: RustIdent) -> RustPath {
-        self.path.push(ident);
+        self.path.path.push(ident);
         self
     }
 
@@ -127,10 +205,9 @@ impl From<&'_ str> for RustPath {
         } else {
             (s, false)
         };
-        let path = s.split("::").map(RustIdent::from).collect();
         RustPath {
             absolute,
-            path,
+            path: RustRelativePath::from(s),
         }
     }
 }
@@ -140,13 +217,7 @@ impl fmt::Display for RustPath {
         if self.absolute {
             write!(f, "::")?;
         }
-        for (i, c) in self.path.iter().enumerate() {
-            if i != 0 {
-                write!(f, "::")?;
-            }
-            write!(f, "{}", c)?;
-        }
-        Ok(())
+        write!(f, "{}", self.path)
     }
 }
 
@@ -159,7 +230,7 @@ pub(crate) struct RustIdentWithPath {
 impl RustIdentWithPath {
     pub fn new(s: &str) -> RustIdentWithPath {
         let mut path = RustPath::from(s);
-        let ident = path.path.pop().unwrap();
+        let ident = path.path.path.pop().unwrap();
         RustIdentWithPath {
             path,
             ident,
