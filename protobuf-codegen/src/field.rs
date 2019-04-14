@@ -348,7 +348,7 @@ impl SingularOrOneofField {
 pub struct EntryKeyValue(FieldElem, FieldElem);
 
 #[derive(Clone, Debug)]
-pub struct FieldElemEnum {
+pub(crate) struct FieldElemEnum {
     name: RustIdentWithPath,
     file_name: String,
     /// Enum default value variant, either from proto or from enum definition
@@ -370,10 +370,16 @@ impl FieldElemEnum {
 }
 
 #[derive(Clone, Debug)]
+pub(crate) struct FieldElemMessage {
+    pub name: RustIdentWithPath,
+    file_name: String,
+    map_entry: Option<Box<EntryKeyValue>>,
+}
+
+#[derive(Clone, Debug)]
 pub(crate) enum FieldElem {
     Primitive(field_descriptor_proto::Type, PrimitiveTypeVariant),
-    // name, file name, entry
-    Message(RustIdentWithPath, String, Option<Box<EntryKeyValue>>),
+    Message(FieldElemMessage),
     Enum(FieldElemEnum),
     Group,
 }
@@ -405,7 +411,7 @@ impl FieldElem {
             ) => RustType::Bytes,
             FieldElem::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             FieldElem::Group => RustType::Group,
-            FieldElem::Message(ref name, ..) => RustType::Message(name.clone()),
+            FieldElem::Message(ref m) => RustType::Message(m.name.clone()),
             FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(),
         }
     }
@@ -422,7 +428,7 @@ impl FieldElem {
     fn protobuf_type_gen(&self) -> ProtobufTypeGen {
         match *self {
             FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
-            FieldElem::Message(ref name, ..) => ProtobufTypeGen::Message(name.clone()),
+            FieldElem::Message(ref m) => ProtobufTypeGen::Message(m.name.clone()),
             FieldElem::Enum(ref en) => ProtobufTypeGen::EnumOrUnknown(en.name.clone()),
             FieldElem::Group => unreachable!(),
         }
@@ -479,7 +485,11 @@ fn field_elem(
                 } else {
                     None
                 };
-                FieldElem::Message(rust_relative_name, file_name, entry_key_value)
+                FieldElem::Message(FieldElemMessage {
+                    name: rust_relative_name,
+                    file_name,
+                    map_entry: entry_key_value,
+                })
             }
             (
                 field_descriptor_proto::Type::TYPE_ENUM,
@@ -597,7 +607,7 @@ impl<'a> FieldGen<'a> {
         let kind = if field.field.get_label() == field_descriptor_proto::Label::LABEL_REPEATED {
             match (elem, true) {
                 // map field
-                (FieldElem::Message(name, _, Some(key_value)), true) => FieldKind::Map(MapField {
+                (FieldElem::Message(FieldElemMessage { name, map_entry: Some(key_value), .. }), true) => FieldKind::Map(MapField {
                     name: name.clone(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
@@ -983,12 +993,12 @@ impl<'a> FieldGen<'a> {
     }
 
     fn accessor_fn_singular_without_flag(&self, elem: &FieldElem) -> AccessorFn {
-        if let &FieldElem::Message(ref name, ..) = elem {
+        if let &FieldElem::Message(ref m, ..) = elem {
             // TODO: old style, needed because of default instance
 
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![format!("{}", name)],
+                type_params: vec![format!("{}", m.name)],
                 callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
@@ -1633,7 +1643,7 @@ impl<'a> FieldGen<'a> {
             } => "singular_proto3",
         };
         let type_params = match s.elem {
-            FieldElem::Message(ref name, ..) => format!("::<{}, _>", name),
+            FieldElem::Message(ref m, ..) => format!("::<{}, _>", m.name),
             _ => "".to_owned(),
         };
         let carllerche = match s.elem.primitive_type_variant() {

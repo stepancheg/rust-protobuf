@@ -31,9 +31,9 @@ impl OneofField {
         elem: FieldElem,
     ) -> OneofField {
         // detecting recursion
-        let boxed = if let &FieldElem::Message(ref name, ..) = &elem {
+        let boxed = if let &FieldElem::Message(ref m, ..) = &elem {
             // TODO: compare protobuf names
-            if name == &oneof.message.rust_name_to_file() {
+            if &m.name == &oneof.message.rust_name_to_file() {
                 true
             } else {
                 false
