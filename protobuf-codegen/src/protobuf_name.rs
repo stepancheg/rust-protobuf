@@ -17,6 +17,10 @@ impl ProtobufIdent {
     pub fn get(&self) -> &str {
         &self.0
     }
+
+    pub fn into_string(self) -> String {
+        self.0
+    }
 }
 
 impl From<&'_ str> for ProtobufIdent {
@@ -127,16 +131,16 @@ impl ProtobufRelativePath {
         self.append(&ProtobufRelativePath::from(simple.clone()))
     }
 
-    pub fn split_first_rem(&self) -> Option<(&str, ProtobufRelativePath)> {
+    pub fn split_first_rem(&self) -> Option<(ProtobufIdent, ProtobufRelativePath)> {
         if self.is_empty() {
             None
         } else {
             Some(match self.path.find('.') {
                 Some(dot) => (
-                    &self.path[..dot],
+                    ProtobufIdent::from(&self.path[..dot]),
                     ProtobufRelativePath::new(self.path[dot + 1..].to_owned()),
                 ),
-                None => (&self.path, ProtobufRelativePath::empty()),
+                None => (ProtobufIdent::from(self.path.clone()), ProtobufRelativePath::empty()),
             })
         }
     }
@@ -262,11 +266,9 @@ impl ProtobufAbsolutePath {
         }
     }
 
-    pub fn push_simple(&mut self, simple: &str) {
-        assert!(!simple.is_empty());
-        assert!(!simple.contains('.'));
+    pub fn push_simple(&mut self, simple: ProtobufIdent) {
         self.path.push('.');
-        self.path.push_str(simple);
+        self.path.push_str(simple.get());
     }
 
     pub fn push_relative(&mut self, relative: &ProtobufRelativePath) {

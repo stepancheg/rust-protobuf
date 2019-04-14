@@ -87,8 +87,8 @@ impl<'a> LookupScope<'a> {
         }
     }
 
-    fn find_message(&self, simple_name: &str) -> Option<&model::Message> {
-        self.messages().into_iter().find(|m| m.name == simple_name)
+    fn find_message(&self, simple_name: &ProtobufIdent) -> Option<&model::Message> {
+        self.messages().into_iter().find(|m| m.name == simple_name.get())
     }
 
     fn enums(&self) -> &[model::Enumeration] {
@@ -98,26 +98,26 @@ impl<'a> LookupScope<'a> {
         }
     }
 
-    fn members(&self) -> Vec<(&str, MessageOrEnum)> {
+    fn members(&self) -> Vec<(ProtobufIdent, MessageOrEnum)> {
         let mut r = Vec::new();
         r.extend(
             self.enums()
                 .into_iter()
-                .map(|e| (&e.name[..], MessageOrEnum::Enum)),
+                .map(|e| (ProtobufIdent::from(&e.name[..]), MessageOrEnum::Enum)),
         );
         r.extend(
             self.messages()
                 .into_iter()
-                .map(|e| (&e.name[..], MessageOrEnum::Message)),
+                .map(|e| (ProtobufIdent::from(&e.name[..]), MessageOrEnum::Message)),
         );
         r
     }
 
-    fn find_member(&self, simple_name: &str) -> Option<MessageOrEnum> {
+    fn find_member(&self, simple_name: &ProtobufIdent) -> Option<MessageOrEnum> {
         self.members()
             .into_iter()
             .filter_map(|(member_name, message_or_enum)| {
-                if member_name == simple_name {
+                if &member_name == simple_name {
                     Some(message_or_enum)
                 } else {
                     None
@@ -139,7 +139,7 @@ impl<'a> LookupScope<'a> {
             match self.find_member(&first) {
                 Some(message_or_enum) => {
                     let mut result_path = current_path.clone();
-                    result_path.push_simple(&first);
+                    result_path.push_simple(first);
                     Some((result_path, message_or_enum))
                 }
                 None => None,
@@ -148,7 +148,7 @@ impl<'a> LookupScope<'a> {
             match self.find_message(&first) {
                 Some(message) => {
                     let mut message_path = current_path.clone();
-                    message_path.push_simple(&message.name);
+                    message_path.push_simple(ProtobufIdent::from(message.name.clone()));
                     let message_scope = LookupScope::Message(message);
                     message_scope.resolve_message_or_enum(&message_path, &rem)
                 }
@@ -164,8 +164,8 @@ struct Resolver<'a> {
 }
 
 impl<'a> Resolver<'a> {
-    fn map_entry_name_for_field_name(field_name: &str) -> String {
-        format!("{}Entry", camel_case(field_name))
+    fn map_entry_name_for_field_name(field_name: &str) -> ProtobufIdent {
+        ProtobufIdent::from(format!("{}Entry", camel_case(field_name)))
     }
 
     fn map_entry_field(
@@ -203,7 +203,7 @@ impl<'a> Resolver<'a> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
         output.options.mut_message().set_map_entry(true);
-        output.set_name(Resolver::map_entry_name_for_field_name(field_name));
+        output.set_name(Resolver::map_entry_name_for_field_name(field_name).into_string());
         output
             .field
             .push(self.map_entry_field("key", 1, key, path_in_file));
@@ -532,7 +532,7 @@ impl<'a> Resolver<'a> {
             model::FieldType::Map(..) => {
                 let mut type_name = ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
                 type_name.push_relative(path_in_file);
-                type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
+                type_name.push_simple(Resolver::map_entry_name_for_field_name(name));
                 (
                     protobuf::descriptor::field_descriptor_proto::Type::TYPE_MESSAGE,
                     Some(type_name),

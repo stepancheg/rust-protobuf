@@ -20,11 +20,12 @@ use rust_name::RustIdent;
 use case_convert::snake_case;
 use rust::is_rust_keyword;
 use file_descriptor::file_descriptor_proto_expr;
+use file_and_mod::FileAndMod;
 
 
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
-    message: &'a MessageWithScope<'a>,
+    pub message: &'a MessageWithScope<'a>,
     root_scope: &'a RootScope<'a>,
     type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
@@ -61,6 +62,10 @@ impl<'a> MessageGen<'a> {
                 == file_options::OptimizeMode::LITE_RUNTIME,
             customize,
         }
+    }
+
+    pub fn get_file_and_mod(&self) -> FileAndMod {
+        self.message.scope.get_file_and_mod()
     }
 
     fn expose_oneof(&self) -> bool {
@@ -137,11 +142,11 @@ impl<'a> MessageGen<'a> {
                             let ref field = variant.field;
 
                             let (refv, vtype) = if field.elem_type_is_copy() {
-                                ("v", variant.rust_type())
+                                ("v", variant.rust_type(&self.get_file_and_mod()))
                             } else {
-                                ("ref v", variant.rust_type().ref_type())
+                                ("ref v", variant.rust_type(&self.get_file_and_mod()).ref_type())
                             };
-                            w.case_block(format!("&{}({})", variant.path(), refv), |w| {
+                            w.case_block(format!("&{}({})", variant.path(&self.get_file_and_mod()), refv), |w| {
                                 cb(w, &variant, "v", &vtype);
                             });
                         }

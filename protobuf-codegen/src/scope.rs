@@ -17,6 +17,7 @@ use protobuf_name::ProtobufAbsolutePath;
 use protobuf_name::ProtobufRelativePath;
 use protobuf_name::ProtobufIdent;
 use field::rust_field_name_for_protobuf_field_name;
+use file_and_mod::FileAndMod;
 
 
 pub(crate) struct RootScope<'a> {
@@ -60,7 +61,7 @@ impl<'a> RootScope<'a> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct FileScope<'a> {
     pub file_descriptor: &'a FileDescriptorProto,
 }
@@ -129,7 +130,7 @@ impl<'a> FileScope<'a> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct Scope<'a> {
     pub file_scope: FileScope<'a>,
     pub path: Vec<&'a DescriptorProto>,
@@ -239,6 +240,19 @@ impl<'a> Scope<'a> {
     pub fn protobuf_path_to_file(&self) -> ProtobufRelativePath {
         ProtobufRelativePath::from_components(self.path.iter().map(|m| ProtobufIdent::from(m.get_name())))
     }
+
+    pub fn protobuf_absolute_path(&self) -> ProtobufAbsolutePath {
+        let mut r = self.file_scope.get_package();
+        r.push_relative(&self.protobuf_path_to_file());
+        r
+    }
+
+    pub fn get_file_and_mod(&self) -> FileAndMod {
+        FileAndMod {
+            file: self.file_scope.file_descriptor.get_name().to_owned(),
+            relative_mod: self.rust_path_to_file(),
+        }
+    }
 }
 
 pub(crate) trait WithScope<'a> {
@@ -265,16 +279,10 @@ pub(crate) trait WithScope<'a> {
     }
 
     /// Return absolute name starting with dot
-    fn name_absolute(&self) -> String {
-        let mut r = String::new();
-        r.push_str(".");
-        let package = self.get_file_descriptor().get_package();
-        if !package.is_empty() {
-            r.push_str(package);
-            r.push_str(".");
-        }
-        r.push_str(&self.name_to_package());
-        r
+    fn name_absolute(&self) -> ProtobufAbsolutePath {
+        let mut path = self.get_scope().protobuf_absolute_path();
+        path.push_simple(self.get_name());
+        path
     }
 
     // rust type name of this descriptor
@@ -300,7 +308,7 @@ pub(crate) trait WithScope<'a> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct MessageWithScope<'a> {
     pub scope: Scope<'a>,
     pub message: &'a DescriptorProto,
@@ -340,31 +348,31 @@ impl<'a> MessageWithScope<'a> {
             }).collect()
     }
 
-    pub fn oneofs(&'a self) -> Vec<OneofWithContext<'a>> {
+    pub fn oneofs(&self) -> Vec<OneofWithContext<'a>> {
         self.message
             .oneof_decl
             .iter()
             .enumerate()
             .map(|(index, oneof)| OneofWithContext {
-                message: &self,
-                oneof: &oneof,
+                message: self.clone(),
+                oneof: oneof,
                 index: index as u32,
             }).collect()
     }
 
-    pub fn oneof_by_index(&'a self, index: u32) -> OneofWithContext<'a> {
+    pub fn oneof_by_index(&self, index: u32) -> OneofWithContext<'a> {
         self.oneofs().swap_remove(index as usize)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct EnumWithScope<'a> {
     pub scope: Scope<'a>,
     pub en: &'a EnumDescriptorProto,
 }
 
 impl<'a> EnumWithScope<'a> {
-    pub fn values(&'a self) -> Vec<EnumValueWithContext<'a>> {
+    pub fn values(&self) -> Vec<EnumValueWithContext<'a>> {
         self.en.value.iter()
             .map(|v| {
                 EnumValueWithContext {
@@ -376,12 +384,12 @@ impl<'a> EnumWithScope<'a> {
     }
 
     // find enum value by protobuf name
-    pub fn value_by_name(&'a self, name: &str) -> EnumValueWithContext<'a> {
+    pub fn value_by_name(&self, name: &str) -> EnumValueWithContext<'a> {
         self.values().into_iter().find(|v| v.proto.get_name() == name).unwrap()
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct EnumValueWithContext<'a> {
     pub en: EnumWithScope<'a>,
     pub proto: &'a EnumValueDescriptorProto,
@@ -451,7 +459,7 @@ impl<'a> FieldWithContext<'a> {
         self.field.has_oneof_index()
     }
 
-    pub fn oneof(&'a self) -> Option<OneofWithContext<'a>> {
+    pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
         if self.is_oneof() {
             Some(
                 self.message
@@ -494,7 +502,7 @@ pub(crate) struct OneofVariantWithContext<'a> {
 pub(crate) struct OneofWithContext<'a> {
     pub oneof: &'a OneofDescriptorProto,
     pub index: u32,
-    pub message: &'a MessageWithScope<'a>,
+    pub message: MessageWithScope<'a>,
 }
 
 impl<'a> OneofWithContext<'a> {

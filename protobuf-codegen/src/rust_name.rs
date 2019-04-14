@@ -23,6 +23,10 @@ impl RustIdent {
         &self.0
     }
 
+    pub fn _into_string(self) -> String {
+        self.0
+    }
+
     pub fn to_path(&self) -> RustIdentWithPath {
         RustIdentWithPath::new(&self.0)
     }
@@ -208,6 +212,12 @@ impl From<&'_ str> for RustPath {
             absolute,
             path: RustRelativePath::from(s),
         }
+    }
+}
+
+impl From<String> for RustPath {
+    fn from(s: String) -> Self {
+        RustPath::from(&s[..])
     }
 }
 
