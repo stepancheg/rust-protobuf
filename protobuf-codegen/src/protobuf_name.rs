@@ -317,11 +317,11 @@ mod absolute_path_test {
     #[test]
     fn absolute_path_push_simple() {
         let mut foo = ProtobufAbsolutePath::new(".foo".to_owned());
-        foo.push_simple("bar");
+        foo.push_simple(ProtobufIdent::from("bar"));
         assert_eq!(ProtobufAbsolutePath::new(".foo.bar".to_owned()), foo);
 
         let mut foo = ProtobufAbsolutePath::root();
-        foo.push_simple("bar");
+        foo.push_simple(ProtobufIdent::from("bar"));
         assert_eq!(ProtobufAbsolutePath::new(".bar".to_owned()), foo);
     }
 
