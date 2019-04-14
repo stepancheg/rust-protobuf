@@ -153,10 +153,7 @@ impl<'a> OneofGen<'a> {
     }
 
     pub fn write_enum(&self, w: &mut CodeWriter) {
-        let mut derive = vec!["Clone", "PartialEq"];
-        if self.lite_runtime {
-            derive.push("Debug");
-        }
+        let derive = vec!["Clone", "PartialEq", "Debug"];
         w.derive(&derive);
         serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
         w.pub_enum(&self.type_name.to_string(), |w| {
