@@ -52,10 +52,16 @@ pub(crate) struct RustRelativePath {
 }
 
 impl RustRelativePath {
-    pub fn _into_path(self) -> RustPath {
+    pub fn into_path(self) -> RustPath {
         RustPath {
             absolute: false,
             path: self,
+        }
+    }
+
+    pub fn _empty() -> RustRelativePath {
+        RustRelativePath {
+            path: Vec::new(),
         }
     }
 
@@ -136,13 +142,6 @@ impl RustPath {
     pub fn is_empty(&self) -> bool {
         assert!(!self.absolute);
         self.path.is_empty()
-    }
-
-    pub fn relative_from_components<I : IntoIterator<Item = RustIdent>>(i: I) -> RustPath {
-        RustPath {
-            absolute: false,
-            path: RustRelativePath::from_components(i),
-        }
     }
 
     pub fn with_ident(self, ident: RustIdent) -> RustIdentWithPath {

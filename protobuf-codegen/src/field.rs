@@ -15,7 +15,7 @@ use super::customize::customize_from_rustproto_for_field;
 use super::customize::Customize;
 use code_writer::Visibility;
 use rust_name::RustIdent;
-use rust_name::RustPath;
+use rust_name::RustRelativePath;
 use rust_name::RustIdentWithPath;
 use map::map_entry;
 use oneof::OneofField;
@@ -25,6 +25,7 @@ use scope::FieldWithContext;
 use scope::RootScope;
 use scope::WithScope;
 use syntax::Syntax;
+use file_and_mod::FileAndMod;
 
 
 fn type_is_copy(field_type: field_descriptor_proto::Type) -> bool {
@@ -452,7 +453,7 @@ fn field_elem(
     root_scope: &RootScope,
     parse_map: bool,
     customize: &Customize,
-    current_file_path: &RustPath,
+    current_file_path: &RustRelativePath,
 ) -> FieldElem {
     if field.field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
@@ -466,8 +467,10 @@ fn field_elem(
             .to_owned();
         let rust_relative_name = type_name_to_rust_relative(
             &ProtobufAbsolutePath::from(field.field.get_type_name()),
-            field.message.get_scope().file_scope.file_descriptor,
-            current_file_path,
+            &FileAndMod {
+                file: field.message.get_scope().file_scope.file_descriptor.get_name().to_owned(),
+                relative_mod: current_file_path.clone(),
+            },
             root_scope,
         );
         match (field.field.get_field_type(), message_or_enum) {
@@ -1502,7 +1505,7 @@ impl<'a> FieldGen<'a> {
                 w.write_line(format!(
                     "self.{} = ::std::option::Option::Some({}({}))",
                     oneof.oneof_field_name,
-                    oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
+                    oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                     // TODO: default from .proto is not needed here (?)
                     self.element_default_value_rust()
                         .into_type(self.full_storage_iter_elem_type())
@@ -1704,7 +1707,7 @@ impl<'a> FieldGen<'a> {
         w.write_line(&format!(
             "self.{} = ::std::option::Option::Some({}({}));",
             o.oneof_field_name,
-            o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
+            o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
             maybe_boxed.value
         )); // TODO: into_type
     }
@@ -2030,7 +2033,7 @@ impl<'a> FieldGen<'a> {
             w.case_expr(
                 format!(
                     "::std::option::Option::Some({}({}))",
-                    o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
+                    o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                     refv
                 ),
                 vtype.into_target(&get_xxx_return_type, "v"),
@@ -2099,7 +2102,7 @@ impl<'a> FieldGen<'a> {
                     w.match_expr(&format!("self.{}", oneof.oneof_field_name), |w| {
                         w.case_expr(
                             format!("::std::option::Option::Some({}(..))",
-                                oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file())),
+                                oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path())),
                             "true",
                         );
                         w.case_expr("_", "false");
@@ -2130,7 +2133,7 @@ impl<'a> FieldGen<'a> {
                         w.write_line(&format!(
                             "self.{} = ::std::option::Option::Some({}({}))",
                             oneof.oneof_field_name,
-                            oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
+                            oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                             v
                         ));
                     }
@@ -2188,14 +2191,14 @@ impl<'a> FieldGen<'a> {
 
                     // if oneof does not contain current field
                     w.if_let_else_stmt(
-                        &format!("::std::option::Option::Some({}(_))", o.variant_path(&self.proto_field.message.scope.rust_path_to_file()))[..],
+                        &format!("::std::option::Option::Some({}(_))", o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()))[..],
                         &self_field_oneof[..],
                         |w| {
                             // initialize it with default value
                             w.write_line(&format!(
                                 "{} = ::std::option::Option::Some({}({}));",
                                 self_field_oneof,
-                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
+                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                                 self.element_default_value_rust()
                                     .into_type(o.rust_type())
                                     .value
@@ -2208,7 +2211,7 @@ impl<'a> FieldGen<'a> {
                         w.case_expr(
                             format!(
                                 "::std::option::Option::Some({}(ref mut v))",
-                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file())
+                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path())
                             ),
                             "v",
                         );
@@ -2231,7 +2234,7 @@ impl<'a> FieldGen<'a> {
                 let converted = value_in_some.into_type(self.take_xxx_return_type());
                 w.case_expr(
                     format!("::std::option::Option::Some({}(v))",
-                        o.variant_path(&self.proto_field.message.scope.rust_path_to_file())),
+                        o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path())),
                     &converted.value,
                 );
                 w.case_expr("_", "panic!()");

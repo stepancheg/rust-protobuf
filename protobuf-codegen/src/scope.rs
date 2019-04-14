@@ -5,8 +5,8 @@ use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use rust_name::RustIdent;
+use rust_name::RustRelativePath;
 use rust_name::RustIdentWithPath;
-use rust_name::RustPath;
 use strx::capitalize;
 use rust::is_rust_keyword;
 use file::proto_path_to_rust_mod;
@@ -217,8 +217,9 @@ impl<'a> Scope<'a> {
         self.walk_scopes_impl(&mut callback);
     }
 
-    pub fn rust_path_to_file(&self) -> RustPath {
-        RustPath::relative_from_components(self.path.iter().map(|m| message_name_to_nested_mod_name(m.get_name())))
+    pub fn rust_path_to_file(&self) -> RustRelativePath {
+        RustRelativePath::from_components(
+            self.path.iter().map(|m| message_name_to_nested_mod_name(m.get_name())))
     }
 
     pub fn path_str(&self) -> String {
@@ -288,7 +289,7 @@ pub(crate) trait WithScope<'a> {
     }
 
     fn rust_name_to_file(&self) -> RustIdentWithPath {
-        self.get_scope().rust_path_to_file().with_ident(self.rust_name())
+        self.get_scope().rust_path_to_file().into_path().with_ident(self.rust_name())
     }
 
     // fully-qualified name of this type

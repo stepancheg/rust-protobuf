@@ -87,7 +87,7 @@ impl<'a> OneofVariantGen<'a> {
             oneof,
             variant: variant.clone(),
             field: field.clone(),
-            path: format!("{}::{}", oneof.type_name_relative(&oneof.oneof.message.scope.rust_path_to_file()), field.rust_name),
+            path: format!("{}::{}", oneof.type_name_relative(&oneof.oneof.message.scope.rust_path_to_file().clone().into_path()), field.rust_name),
             oneof_field: OneofField::parse(
                 variant.oneof,
                 &field.proto_field,

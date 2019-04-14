@@ -10,6 +10,7 @@ use scope::RootScope;
 use scope::WithScope;
 use strx::capitalize;
 use ProtobufAbsolutePath;
+use file_and_mod::FileAndMod;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -501,16 +502,15 @@ pub(crate) fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIden
 
 pub(crate) fn type_name_to_rust_relative(
     type_name: &ProtobufAbsolutePath,
-    file: &FileDescriptorProto,
-    current_file_path: &RustPath,
+    current: &FileAndMod,
     root_scope: &RootScope,
 ) -> RustIdentWithPath {
     assert!(!type_name.is_empty());
     let message_or_enum = root_scope.find_message_or_enum(type_name);
-    let same_file = message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name();
+    let same_file = message_or_enum.get_scope().get_file_descriptor().get_name() == current.file;
     if same_file {
         // field type is a message or enum declared in the same file
-        make_path(current_file_path, &message_or_enum.rust_name_to_file())
+        make_path(&current.relative_mod.clone().into_path(), &message_or_enum.rust_name_to_file())
     } else if let Some(name) = is_well_known_type_full(type_name) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
@@ -522,7 +522,8 @@ pub(crate) fn type_name_to_rust_relative(
             message_or_enum.rust_name_to_file()
         ))
     } else {
-        current_file_path.to_reverse()
+        current.relative_mod.to_reverse()
+            .into_path()
             .append_ident(RustIdent::super_ident())
             .append_with_ident(message_or_enum.rust_name_with_file())
     }

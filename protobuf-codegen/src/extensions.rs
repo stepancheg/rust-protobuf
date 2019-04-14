@@ -3,9 +3,10 @@ use super::rust_types_values::*;
 use protobuf::descriptor::*;
 use scope::RootScope;
 use rust_name::RustIdentWithPath;
-use rust_name::RustPath;
+use rust_name::RustRelativePath;
 use field::rust_field_name_for_protobuf_field_name;
 use ProtobufAbsolutePath;
+use file_and_mod::FileAndMod;
 
 
 struct ExtGen<'a> {
@@ -18,8 +19,10 @@ impl<'a> ExtGen<'a> {
     fn extendee_rust_name(&self) -> RustIdentWithPath {
         type_name_to_rust_relative(
             &ProtobufAbsolutePath::from(self.field.get_extendee()),
-            self.file,
-            &RustPath::from("exts"),
+            &FileAndMod {
+                file: self.file.get_name().to_owned(),
+                relative_mod: RustRelativePath::from("exts"),
+            },
             self.root_scope)
     }
 
@@ -37,8 +40,10 @@ impl<'a> ExtGen<'a> {
         if self.field.has_type_name() {
             let rust_name_relative = type_name_to_rust_relative(
                 &ProtobufAbsolutePath::from(self.field.get_type_name()),
-                self.file,
-                &RustPath::from("exts"),
+                &FileAndMod {
+                    file: self.file.get_name().to_owned(),
+                    relative_mod: RustRelativePath::from("exts"),
+                },
                 self.root_scope,
             );
             match self.field.get_field_type() {

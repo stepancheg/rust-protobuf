@@ -30,6 +30,7 @@ mod serde;
 mod well_known_types;
 pub mod case_convert;
 mod file_descriptor;
+pub(crate) mod file_and_mod;
 
 pub(crate) mod scope;
 pub(crate) mod syntax;
