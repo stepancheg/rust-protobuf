@@ -109,7 +109,7 @@ impl<'a> OneofVariantGen<'a> {
 pub(crate) struct OneofGen<'a> {
     // Message containing this oneof
     message: &'a MessageGen<'a>,
-    oneof: OneofWithContext<'a>,
+    pub oneof: OneofWithContext<'a>,
     lite_runtime: bool,
     customize: Customize,
 }
@@ -130,14 +130,6 @@ impl<'a> OneofGen<'a> {
 
     pub fn type_name_relative(&self, source: &RustPath) -> RustIdentWithPath {
         make_path(source, &self.oneof.rust_name())
-    }
-
-    pub fn name(&self) -> &str {
-        match self.oneof.oneof.get_name() {
-            "type" => "field_type",
-            "box" => "field_box",
-            x => x,
-        }
     }
 
     pub fn variants_except_group(&'a self) -> Vec<OneofVariantGen<'a>> {

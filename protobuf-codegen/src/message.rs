@@ -130,7 +130,7 @@ impl<'a> MessageGen<'a> {
             }
             w.if_let_stmt(
                 "::std::option::Option::Some(ref v)",
-                &format!("self.{}", oneof.name())[..],
+                &format!("self.{}", oneof.oneof.field_name())[..],
                 |w| {
                     w.match_block("v", |w| {
                         for variant in variants {
@@ -418,7 +418,10 @@ impl<'a> MessageGen<'a> {
                         true => Visibility::Public,
                         false => Visibility::Default,
                     };
-                    w.field_decl_vis(vis, oneof.name(), &oneof.full_storage_type().to_string());
+                    w.field_decl_vis(
+                        vis,
+                        &oneof.oneof.field_name().to_string(),
+                        &oneof.full_storage_type().to_string());
                 }
             }
             w.comment("special fields");
