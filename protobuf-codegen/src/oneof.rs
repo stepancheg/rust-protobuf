@@ -32,13 +32,8 @@ impl<'a> OneofField<'a> {
         elem: FieldElem<'a>,
     ) -> OneofField<'a> {
         // detecting recursion
-        let boxed = if let &FieldElem::Message(ref m, ..) = &elem {
-            // TODO: compare protobuf names
-            if &m.name == &oneof.message.rust_name_to_file() {
-                true
-            } else {
-                false
-            }
+        let boxed = if let &FieldElem::Message(ref m) = &elem {
+            m.message.name_absolute() == oneof.message.name_absolute()
         } else {
             false
         };
@@ -155,11 +150,13 @@ impl<'a> OneofGen<'a> {
     }
 
     pub fn full_storage_type(&self) -> RustType {
-        RustType::Option(Box::new(RustType::Oneof(self.type_name_relative(&self.oneof.rust_name().path).clone())))
+        RustType::Option(Box::new(RustType::Oneof(self.type_name_relative(&self.oneof.message.scope.get_file_and_mod().relative_mod.into_path()).clone())))
     }
 
     fn get_file_and_mod(&self) -> FileAndMod {
-        self.message.message.scope.get_file_and_mod()
+        let mut file_and_mod = self.message.message.scope.get_file_and_mod();
+        file_and_mod.relative_mod.push_ident(self.message.message.mod_name());
+        file_and_mod
     }
 
     fn write_enum(&self, w: &mut CodeWriter) {

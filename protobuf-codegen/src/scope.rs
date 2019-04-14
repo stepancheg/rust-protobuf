@@ -363,6 +363,10 @@ impl<'a> MessageWithScope<'a> {
     pub fn oneof_by_index(&self, index: u32) -> OneofWithContext<'a> {
         self.oneofs().swap_remove(index as usize)
     }
+
+    pub fn mod_name(&self) -> RustIdent {
+        message_name_to_nested_mod_name(self.message.get_name())
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -512,11 +516,11 @@ impl<'a> OneofWithContext<'a> {
 
     // rust type name of enum
     pub fn rust_name(&self) -> RustIdentWithPath {
-        RustIdentWithPath::from(format!(
-            "{}_oneof_{}",
-            self.message.rust_name_to_file(),
-            self.oneof.get_name()
-        ))
+        // TODO: escape name
+        let type_name = RustIdent::from(capitalize(self.oneof.get_name()));
+        self.message.to_scope().rust_path_to_file()
+            .into_path()
+            .with_ident(type_name)
     }
 
     pub fn variants(&'a self) -> Vec<OneofVariantWithContext<'a>> {

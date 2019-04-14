@@ -302,7 +302,7 @@ impl<'a> RepeatedField<'a> {
 
 #[derive(Clone)]
 pub struct MapField<'a> {
-    name: RustIdentWithPath,
+    message: MessageWithScope<'a>,
     key: FieldElem<'a>,
     value: FieldElem<'a>,
 }
@@ -352,7 +352,6 @@ pub struct EntryKeyValue<'a>(FieldElem<'a>, FieldElem<'a>);
 
 #[derive(Clone, Debug)]
 pub(crate) struct FieldElemEnum<'a> {
-    name: RustIdentWithPath,
     /// Enum default value variant, either from proto or from enum definition
     default_value: EnumValueWithContext<'a>,
 }
@@ -370,16 +369,25 @@ impl<'a> FieldElemEnum<'a> {
         RustType::EnumOrUnknown(self.rust_name_relative(reference), self.default_value.rust_name())
     }
 
-    fn default_value_rust_expr(&self) -> RustIdentWithPath {
-        self.name.to_path().with_ident(self.default_value.rust_name())
+    fn default_value_rust_expr(&self, reference: &FileAndMod) -> RustIdentWithPath {
+        self.rust_name_relative(reference).to_path().with_ident(self.default_value.rust_name())
     }
 }
 
 #[derive(Clone, Debug)]
 pub(crate) struct FieldElemMessage<'a> {
-    pub name: RustIdentWithPath,
     map_entry: Option<Box<EntryKeyValue<'a>>>,
-    message: MessageWithScope<'a>,
+    pub message: MessageWithScope<'a>,
+}
+
+impl<'a> FieldElemMessage<'a> {
+    fn rust_name_relative(&self, reference: &FileAndMod) -> RustIdentWithPath {
+        message_or_enum_to_rust_relative(&self.message, reference)
+    }
+
+    fn rust_type(&self, reference: &FileAndMod) -> RustType {
+        RustType::Message(self.rust_name_relative(reference))
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -417,7 +425,7 @@ impl<'a> FieldElem<'a> {
             ) => RustType::Bytes,
             FieldElem::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             FieldElem::Group => RustType::Group,
-            FieldElem::Message(ref m) => RustType::Message(m.name.clone()),
+            FieldElem::Message(ref m) => m.rust_type(reference),
             FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(reference),
         }
     }
@@ -431,18 +439,18 @@ impl<'a> FieldElem<'a> {
         }
     }
 
-    fn protobuf_type_gen(&self) -> ProtobufTypeGen {
+    fn protobuf_type_gen(&self, reference: &FileAndMod) -> ProtobufTypeGen {
         match *self {
             FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
-            FieldElem::Message(ref m) => ProtobufTypeGen::Message(m.name.clone()),
-            FieldElem::Enum(ref en) => ProtobufTypeGen::EnumOrUnknown(en.name.clone()),
+            FieldElem::Message(ref m) => ProtobufTypeGen::Message(m.rust_name_relative(reference)),
+            FieldElem::Enum(ref en) => ProtobufTypeGen::EnumOrUnknown(en.rust_name_relative(reference)),
             FieldElem::Group => unreachable!(),
         }
     }
 
     /// implementation of ProtobufType trait
-    fn lib_protobuf_type(&self) -> String {
-        self.protobuf_type_gen().rust_type()
+    fn lib_protobuf_type(&self, reference: &FileAndMod) -> String {
+        self.protobuf_type_gen(reference).rust_type()
     }
 
     fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
@@ -464,14 +472,6 @@ fn field_elem<'a>(
         FieldElem::Group
     } else if field.field.has_type_name() {
         let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsolutePath::from(field.field.get_type_name()));
-        let rust_relative_name = type_name_to_rust_relative(
-            &ProtobufAbsolutePath::from(field.field.get_type_name()),
-            &FileAndMod {
-                file: field.message.get_scope().file_scope.file_descriptor.get_name().to_owned(),
-                relative_mod: current_file_path.clone(),
-            },
-            root_scope,
-        );
         match (field.field.get_field_type(), message_or_enum) {
             (
                 field_descriptor_proto::Type::TYPE_MESSAGE,
@@ -488,7 +488,6 @@ fn field_elem<'a>(
                     None
                 };
                 FieldElem::Message(FieldElemMessage {
-                    name: rust_relative_name,
                     map_entry: entry_key_value,
                     message: message.clone(),
                 })
@@ -503,7 +502,6 @@ fn field_elem<'a>(
                     enum_with_scope.values()[0].clone()
                 };
                 FieldElem::Enum(FieldElemEnum {
-                    name: rust_relative_name,
                     default_value,
                 })
             }
@@ -608,8 +606,8 @@ impl<'a> FieldGen<'a> {
         let kind = if field.field.get_label() == field_descriptor_proto::Label::LABEL_REPEATED {
             match (elem, true) {
                 // map field
-                (FieldElem::Message(FieldElemMessage { name, map_entry: Some(key_value), .. }), true) => FieldKind::Map(MapField {
-                    name: name.clone(),
+                (FieldElem::Message(FieldElemMessage { message, map_entry: Some(key_value), .. }), true) => FieldKind::Map(MapField {
+                    message: message.clone(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),
@@ -670,6 +668,11 @@ impl<'a> FieldGen<'a> {
             generate_getter,
             customize,
         }
+    }
+
+    // for message level
+    fn get_file_and_mod(&self) -> FileAndMod {
+        self.proto_field.message.scope.get_file_and_mod()
     }
 
     fn tag_size(&self) -> u32 {
@@ -857,7 +860,7 @@ impl<'a> FieldGen<'a> {
 
     fn singular_or_oneof_default_value_from_proto(&self, elem: &FieldElem) -> Option<String> {
         if let &FieldElem::Enum(ref e) = elem {
-            Some(format!("{}", e.default_value_rust_expr()))
+            Some(format!("{}", e.default_value_rust_expr(&self.get_file_and_mod())))
         } else if self.proto_field.field.has_default_value() {
             let proto_default = self.proto_field.field.get_default_value();
             Some(match self.proto_type {
@@ -977,7 +980,7 @@ impl<'a> FieldGen<'a> {
         } = map_field;
         AccessorFn {
             name: "make_map_accessor".to_owned(),
-            type_params: vec![key.lib_protobuf_type(), value.lib_protobuf_type()],
+            type_params: vec![key.lib_protobuf_type(&self.get_file_and_mod()), value.lib_protobuf_type(&self.get_file_and_mod())],
             callback_params: self.make_accessor_fns_lambda(),
         }
     }
@@ -992,7 +995,7 @@ impl<'a> FieldGen<'a> {
         let name = format!("make_{}_accessor", coll);
         AccessorFn {
             name: name,
-            type_params: vec![elem.lib_protobuf_type()],
+            type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod())],
             callback_params: self.make_accessor_fns_lambda(),
         }
     }
@@ -1003,13 +1006,13 @@ impl<'a> FieldGen<'a> {
 
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![format!("{}", m.name)],
+                type_params: vec![format!("{}", m.rust_name_relative(&self.get_file_and_mod()))],
                 callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
             AccessorFn {
                 name: "make_simple_field_accessor".to_owned(),
-                type_params: vec![elem.lib_protobuf_type()],
+                type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod())],
                 callback_params: self.make_accessor_fns_lambda(),
             }
         }
@@ -1023,23 +1026,23 @@ impl<'a> FieldGen<'a> {
         match elem {
             FieldElem::Message(..) => AccessorFn {
                 name: "make_option_accessor".to_owned(),
-                type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
+                type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod()), "_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda(),
             },
             FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => AccessorFn {
                 name: "make_option_get_ref_accessor".to_owned(),
-                type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
+                type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod()), "_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Primitive(..) => AccessorFn {
                 name: "make_option_get_copy_accessor".to_owned(),
-                type_params: vec![elem.lib_protobuf_type(), "_".to_owned()],
+                type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod()), "_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Enum(ref en) => AccessorFn {
                 name: "make_option_enum_accessor".to_owned(),
-                type_params: vec![format!("{}", en.name)],
+                type_params: vec![format!("{}", en.rust_name_relative(&self.get_file_and_mod()))],
                 callback_params: self.make_accessor_fns_lambda_default_value(),
             },
             FieldElem::Group => {
@@ -1057,7 +1060,7 @@ impl<'a> FieldGen<'a> {
         if let FieldElem::Enum(ref en) = oneof.elem {
             return AccessorFn {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![ProtobufTypeGen::Enum(en.name.clone()).rust_type()],
+                type_params: vec![ProtobufTypeGen::Enum(en.rust_name_relative(&self.get_file_and_mod())).rust_type()],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -1065,7 +1068,7 @@ impl<'a> FieldGen<'a> {
         if elem.rust_storage_elem_type(&reference).is_copy() {
             return AccessorFn {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![elem.protobuf_type_gen().rust_type()],
+                type_params: vec![elem.protobuf_type_gen(&self.get_file_and_mod()).rust_type()],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -1081,7 +1084,7 @@ impl<'a> FieldGen<'a> {
         // string or bytes
         AccessorFn {
             name: "make_oneof_deref_has_get_set_accessor".to_owned(),
-            type_params: vec![elem.protobuf_type_gen().rust_type()],
+            type_params: vec![elem.protobuf_type_gen(&self.get_file_and_mod()).rust_type()],
             callback_params: self.make_accessor_fns_has_get_set(),
         }
     }
@@ -1650,7 +1653,7 @@ impl<'a> FieldGen<'a> {
             } => "singular_proto3",
         };
         let type_params = match s.elem {
-            FieldElem::Message(ref m, ..) => format!("::<{}, _>", m.name),
+            FieldElem::Message(ref m, ..) => format!("::<{}, _>", m.rust_name_relative(&self.get_file_and_mod())),
             _ => "".to_owned(),
         };
         let carllerche = match s.elem.primitive_type_variant() {
@@ -1723,8 +1726,8 @@ impl<'a> FieldGen<'a> {
         } = self.map();
         w.write_line(&format!(
             "::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
-            key.lib_protobuf_type(),
-            value.lib_protobuf_type(),
+            key.lib_protobuf_type(&self.get_file_and_mod()),
+            value.lib_protobuf_type(&self.get_file_and_mod()),
             self.self_field()
         ));
     }
@@ -1878,8 +1881,8 @@ impl<'a> FieldGen<'a> {
             }) => {
                 w.write_line(&format!(
                     "::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
-                    key.lib_protobuf_type(),
-                    value.lib_protobuf_type(),
+                    key.lib_protobuf_type(&self.get_file_and_mod()),
+                    value.lib_protobuf_type(&self.get_file_and_mod()),
                     self.proto_field.number(),
                     self.self_field()
                 ));
@@ -1928,8 +1931,8 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!(
                     "{} += ::protobuf::rt::compute_map_size::<{}, {}>({}, &{});",
                     sum_var,
-                    key.lib_protobuf_type(),
-                    value.lib_protobuf_type(),
+                    key.lib_protobuf_type(&self.get_file_and_mod()),
+                    value.lib_protobuf_type(&self.get_file_and_mod()),
                     self.proto_field.number(),
                     self.self_field()
                 ));

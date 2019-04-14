@@ -466,11 +466,6 @@ impl<'a> MessageGen<'a> {
             self.write_dummy_impl_partial_eq(w);
         }
 
-        for oneof in self.oneofs() {
-            w.write_line("");
-            oneof.write(w);
-        }
-
         w.write_line("");
         self.write_impl_self(w);
         w.write_line("");
@@ -486,6 +481,7 @@ impl<'a> MessageGen<'a> {
 
         let mod_name = message_name_to_nested_mod_name(&self.message.message.get_name());
 
+        let oneofs = self.oneofs();
         let nested_messages: Vec<_> = self.message.to_scope().get_messages()
             .into_iter()
             .filter(|nested| {
@@ -495,10 +491,16 @@ impl<'a> MessageGen<'a> {
             .collect();
         let nested_enums = self.message.to_scope().get_enums();
 
-        if !nested_messages.is_empty() || !nested_enums.is_empty() {
+        if !oneofs.is_empty() || !nested_messages.is_empty() || !nested_enums.is_empty() {
             w.write_line("");
             w.pub_mod(mod_name.get(), |w| {
                 let mut first = true;
+
+                for oneof in &oneofs {
+                    w.write_line("");
+                    oneof.write(w);
+                }
+
                 for nested in &nested_messages {
                     if !first {
                         w.write_line("");
