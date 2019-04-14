@@ -2023,29 +2023,34 @@ impl<'a> FieldGen<'a> {
         }
     }
 
+    fn write_message_field_get_oneof(&self, o: &OneofField, w: &mut CodeWriter) {
+        let get_xxx_return_type = SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type();
+        let OneofField { ref elem, .. } = o;
+        w.match_expr(&format!("self.{}", o.oneof_name), |w| {
+            let (refv, vtype) = if !elem.is_copy() {
+                ("ref v", elem.rust_storage_elem_type().ref_type())
+            } else {
+                ("v", elem.rust_storage_elem_type())
+            };
+            w.case_expr(
+                format!(
+                    "::std::option::Option::Some({}({}))",
+                    self.variant_path(),
+                    refv
+                ),
+                vtype.into_target(&get_xxx_return_type, "v"),
+            );
+            w.case_expr("_", self.get_xxx_default_value_rust());
+        });
+    }
+
     fn write_message_field_get(&self, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
         let fn_def = format!("get_{}(&self) -> {}", self.rust_name, get_xxx_return_type);
 
         w.pub_fn(&fn_def, |w| match self.kind {
-            FieldKind::Oneof(OneofField { ref elem, .. }) => {
-                let self_field_oneof = self.self_field_oneof();
-                w.match_expr(self_field_oneof, |w| {
-                    let (refv, vtype) = if !self.elem_type_is_copy() {
-                        ("ref v", elem.rust_storage_elem_type().ref_type())
-                    } else {
-                        ("v", elem.rust_storage_elem_type())
-                    };
-                    w.case_expr(
-                        format!(
-                            "::std::option::Option::Some({}({}))",
-                            self.variant_path(),
-                            refv
-                        ),
-                        vtype.into_target(&get_xxx_return_type, "v"),
-                    );
-                    w.case_expr("_", self.get_xxx_default_value_rust());
-                })
+            FieldKind::Oneof(ref o) => {
+                self.write_message_field_get_oneof(o, w);
             }
             FieldKind::Singular(ref s) => {
                 self.write_message_field_get_singular(s, w);
