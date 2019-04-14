@@ -319,7 +319,28 @@ pub(crate) enum FieldKind {
 #[derive(Clone)]
 pub(crate) enum SingularOrOneofField {
     Singular(SingularField),
-    _Oneof(OneofField),
+    Oneof(OneofField),
+}
+
+impl SingularOrOneofField {
+    fn elem(&self) -> &FieldElem {
+        match self {
+            SingularOrOneofField::Singular(SingularField { ref elem, .. }) => elem,
+            SingularOrOneofField::Oneof(OneofField { ref elem, .. }) => elem,
+        }
+    }
+
+    // Type of get_xxx function for singular type
+    pub fn get_xxx_return_type(&self) -> RustType {
+        let elem = self.elem();
+        if let FieldElem::Enum(ref en) = elem {
+            en.enum_rust_type()
+        } else if elem.is_copy() {
+            elem.rust_storage_elem_type()
+        } else {
+            elem.rust_storage_elem_type().ref_type()
+        }
+    }
 }
 
 // Representation of map entry: key type and value type
@@ -386,17 +407,6 @@ impl FieldElem {
             FieldElem::Group => RustType::Group,
             FieldElem::Message(ref name, ..) => RustType::Message(name.clone()),
             FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(),
-        }
-    }
-
-    // Type of get_xxx function for singular type
-    pub fn rust_get_xxx_return_type(&self) -> RustType {
-        if let FieldElem::Enum(ref en) = *self {
-            en.enum_rust_type()
-        } else if self.is_copy() {
-            self.rust_storage_elem_type()
-        } else {
-            self.rust_storage_elem_type().ref_type()
         }
     }
 
@@ -785,9 +795,13 @@ impl<'a> FieldGen<'a> {
 
     // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
-        match self.kind {
-            FieldKind::Singular(SingularField { ref elem, .. }) |
-            FieldKind::Oneof(OneofField { ref elem, .. }) => elem.rust_get_xxx_return_type(),
+        match &self.kind {
+            FieldKind::Singular(s) => {
+                SingularOrOneofField::Singular(s.clone()).get_xxx_return_type()
+            }
+            FieldKind::Oneof(o) => {
+                SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type()
+            }
             FieldKind::Repeated(RepeatedField { ref elem, .. }) => RustType::Ref(Box::new(
                 RustType::Slice(Box::new(elem.rust_storage_elem_type())),
             )),
@@ -1485,7 +1499,7 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter,
     ) {
         match field_kind {
-            SingularOrOneofField::_Oneof(oneof) => {
+            SingularOrOneofField::Oneof(oneof) => {
                 w.write_line(format!(
                     "self.{} = ::std::option::Option::Some({}({}))",
                     oneof.oneof_name,
