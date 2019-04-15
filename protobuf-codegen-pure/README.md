@@ -4,7 +4,24 @@ API to generate `.rs` files to be used e. g. [from build.rs](https://github.com/
 
 Example code:
 
+With stable rust-protobuf:
+
+```rust
+extern crate protobuf_codegen_pure;
+
+protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
+    out_dir: "src/protos",
+    input: &["protos/a.proto", "protos/b.proto"],
+    includes: &["protos"],
+    customize: protobuf_codegen_pure::Customize {
+      ..Default::default()
+    },
+}).expect("protoc");
 ```
+
+With rust-protobuf from master:
+
+```rust
 extern crate protobuf_codegen_pure;
 
 protobuf_codegen_pure::Args::new()
