@@ -72,6 +72,21 @@ protobuf = { version = "~2.0", features = ["with-bytes"] }
 
 with `Customize` when codegen is invoked programmatically:
 
+With stable rust-protobuf:
+
+```rust
+protoc_rust::run(protoc_rust::Args {
+    ...
+    customize: Customize {
+        carllerche_bytes_for_bytes: Some(true),
+        carllerche_bytes_for_string: Some(true),
+        ..Default::default()
+    },
+ });
+```
+
+With rust-protobuf from master:
+
 ```rust
 protoc_rust::Args::new()
     ...
@@ -108,6 +123,20 @@ To enable `serde` you need to:
 1. Enable serde option
 
 with `Customize` when codegen is invoked programmatically:
+
+with stable rust-protobuf:
+
+```rust
+protoc_rust::run(protoc_rust::Args {
+    ...
+    customize: Customize {
+        serde_derive: Some(true),
+        ..Default::default()
+    },
+});
+```
+ 
+with rust-protobuf from master:
 
 ```rust
 protoc_rust::Args::new()
