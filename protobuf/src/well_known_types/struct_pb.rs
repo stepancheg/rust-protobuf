@@ -206,7 +206,7 @@ impl<'a> ::std::default::Default for &'a Value {
     }
 }
 
-#[derive(Clone,PartialEq)]
+#[derive(Clone,PartialEq,Debug)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub enum Value_oneof_kind {
     null_value(NullValue),
