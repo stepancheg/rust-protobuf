@@ -146,6 +146,11 @@ impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
     }
 }
 
+
+pub enum ReflectValueMut<'a> {
+    Message(&'a mut Message),
+}
+
 #[derive(Debug, Clone)]
 pub enum ReflectValueBox {
     U32(u32),

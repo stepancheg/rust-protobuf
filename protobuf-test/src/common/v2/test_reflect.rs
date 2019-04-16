@@ -175,3 +175,16 @@ fn test_nested_enum() {
     assert_eq!("test_reflect.WithNestedMessage.NestedEnum",
         with_nested_message::NestedEnum::enum_descriptor_static().full_name());
 }
+
+#[test]
+fn test_mut_message() {
+    let mut m = TestTypesSingular::new();
+    {
+        let message_field_field = m.descriptor().field_by_name("message_field").unwrap();
+        let sub_m = message_field_field.mut_message(&mut m);
+        let n_field = sub_m.descriptor().field_by_name("n").unwrap();
+        n_field.set_singular_field(sub_m, ReflectValueBox::I32(10));
+        // TODO: test `mut_message` works for oneof fields
+    }
+    assert_eq!(10, m.get_message_field().get_n());
+}

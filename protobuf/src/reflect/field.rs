@@ -18,6 +18,7 @@ use Message;
 use reflect::accessor::singular::SingularFieldAccessorHolder;
 use reflect::accessor::repeated::RepeatedFieldAccessorHolder;
 use reflect::accessor::map::MapFieldAccessorHolder;
+use reflect::value::ReflectValueMut;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 pub enum ReflectFieldRef<'a> {
@@ -166,9 +167,13 @@ impl FieldDescriptor {
         }
     }
 
-    /// Not implemented
-    pub fn mut_message<'a>(&self, _m: &'a mut Message) -> &'a mut Message {
-        unimplemented!()
+    /// Get a mutable reference to a message field.
+    /// Initialize field with default message if unset.
+    /// Panic if field type is not singular message.
+    pub fn mut_message<'a>(&self, m: &'a mut Message) -> &'a mut Message {
+        match self.mut_singular_field_or_default(m) {
+            ReflectValueMut::Message(m) => m,
+        }
     }
 
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
@@ -243,6 +248,11 @@ impl FieldDescriptor {
 
     pub fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
         self.singular().accessor.get_singular_field_or_default(m)
+    }
+
+    // Not public because it is not implemented for all types
+    fn mut_singular_field_or_default<'a>(&self, m: &'a mut Message) -> ReflectValueMut<'a> {
+        self.singular().accessor.mut_singular_field_or_default(m)
     }
 
     pub fn singular_runtime_type(&self) -> &RuntimeTypeDynamic {

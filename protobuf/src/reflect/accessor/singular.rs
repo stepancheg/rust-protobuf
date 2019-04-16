@@ -13,12 +13,13 @@ use std::marker;
 use Message;
 use ProtobufEnum;
 use ProtobufEnumOrUnknown;
+use reflect::value::ReflectValueMut;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>>;
-
     fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a>;
+    fn mut_singular_field_or_default<'a>(&self, m: &'a mut Message) -> ReflectValueMut<'a>;
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox);
 }
 
@@ -35,30 +36,61 @@ trait GetOrDefaultImpl<M>: Send + Sync + 'static {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
 }
 
+trait MutOrDefaultImpl<M>: Send + Sync + 'static {
+    fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a>;
+}
+
 trait SetImpl<M>: Send + Sync + 'static {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox);
 }
 
-struct SingularFieldAccessorImpl<M, V, G, D, S>
+struct MutOrDefaultUnmplemented<M>
+    where M: Message,
+{
+    _marker: marker::PhantomData<M>,
+}
+
+impl<M> MutOrDefaultUnmplemented<M>
+    where M: Message,
+{
+    fn new() -> MutOrDefaultUnmplemented<M> {
+        MutOrDefaultUnmplemented {
+            _marker: marker::PhantomData,
+        }
+    }
+}
+
+impl<M> MutOrDefaultImpl<M> for MutOrDefaultUnmplemented<M>
+    where M: Message,
+{
+    fn mut_singular_field_or_default_impl<'a>(&self, _m: &'a mut M) -> ReflectValueMut<'a> {
+        unimplemented!()
+    }
+}
+
+struct SingularFieldAccessorImpl<M, V, G, D, E, S>
 where
     M: Message,
     V: ProtobufType,
     G: GetOptionImpl<M>,
     D: GetOrDefaultImpl<M>,
+    E: MutOrDefaultImpl<M>,
     S: SetImpl<M>,
 {
     get_option_impl: G,
     get_or_default_impl: D,
+    mut_or_default_impl: E,
     set_impl: S,
     _marker: marker::PhantomData<(M, V)>,
 }
 
-impl<M, V, G, D, S> SingularFieldAccessor for SingularFieldAccessorImpl<M, V, G, D, S>
+impl<M, V, G, D, E, S> SingularFieldAccessor for SingularFieldAccessorImpl<M, V, G, D, E, S>
 where
     M: Message,
     V: ProtobufType,
     G: GetOptionImpl<M>,
     D: GetOrDefaultImpl<M>,
+    E: MutOrDefaultImpl<M>,
     S: SetImpl<M>,
 {
     fn get_reflect<'a>(&self, m: &'a Message) -> Option<ReflectValueRef<'a>> {
@@ -70,6 +102,12 @@ where
         let m = m.downcast_ref().unwrap();
         self.get_or_default_impl
             .get_singular_field_or_default_impl(m)
+    }
+
+    fn mut_singular_field_or_default<'a>(&self, m: &'a mut Message) -> ReflectValueMut<'a> {
+        let m = m.downcast_mut().unwrap();
+        self.mut_or_default_impl
+            .mut_singular_field_or_default_impl(m)
     }
 
     fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
@@ -269,6 +307,49 @@ where
     }
 }
 
+struct MutOrDefaultGetMut<M, V>
+where
+    M: Message,
+    V: RuntimeType,
+{
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut V::Value,
+}
+
+impl<M, V> MutOrDefaultImpl<M> for MutOrDefaultGetMut<M, V>
+    where
+        M: Message,
+        V: RuntimeType,
+{
+    fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
+        V::as_mut((self.mut_field)(m))
+    }
+}
+
+struct MutOrDefaultOptionMut<M, V, O>
+where
+    M: Message,
+    V: RuntimeType,
+    O: OptionLike<V::Value> + Sync + Send + 'static,
+{
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
+    _marker: marker::PhantomData<V>,
+}
+
+impl<M, V, O> MutOrDefaultImpl<M> for MutOrDefaultOptionMut<M, V, O>
+    where
+        M: Message,
+        V: RuntimeType,
+        O: OptionLike<V::Value> + Sync + Send + 'static,
+{
+    fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
+        let option = (self.mut_field)(m);
+        if option.as_option_ref().is_none() {
+            option.set_value(V::Value::default());
+        }
+        V::as_mut(option.as_option_mut().unwrap())
+    }
+}
+
 struct SetImplFieldPointer<M, V>
 where
     M: Message,
@@ -344,9 +425,10 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
                 get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplSetField::<M, V::RuntimeType> { set_field: set },
                 _marker: marker::PhantomData,
             }),
@@ -369,9 +451,10 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
                 get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> { get_field: get },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplSetField::<M, F::RuntimeType> { set_field: set },
                 _marker: marker::PhantomData,
             }),
@@ -384,7 +467,7 @@ pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
     name: &'static str,
     has_field: fn(&M) -> bool,
     get_field: for<'a> fn(&'a M) -> &'a F,
-    _mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
     set_field: fn(&mut M, F),
 ) -> FieldAccessor
 where
@@ -400,12 +483,14 @@ where
                 _,
                 _,
                 _,
+                _,
             > {
                 get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {
                     get: get_field,
                     has: has_field,
                 },
                 get_or_default_impl: GetOrDefaultGetRef::<M, RuntimeTypeMessage<F>> { get_field },
+                mut_or_default_impl: MutOrDefaultGetMut::<M, RuntimeTypeMessage<F>> { mut_field },
                 set_impl: SetImplSetField::<M, RuntimeTypeMessage<F>> { set_field },
                 _marker: marker::PhantomData,
             }),
@@ -427,13 +512,17 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
                     get_field,
                     _marker: marker::PhantomData,
                 },
                 get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
                     get_field,
+                    _marker: marker::PhantomData,
+                },
+                mut_or_default_impl: MutOrDefaultOptionMut::<M, V::RuntimeType, _> {
+                    mut_field,
                     _marker: marker::PhantomData,
                 },
                 set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
@@ -461,7 +550,7 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     get_field,
                     _marker: marker::PhantomData,
@@ -469,6 +558,7 @@ where
                 get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> {
                     get_field: get_value,
                 },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     mut_field,
                     _marker: marker::PhantomData,
@@ -507,7 +597,7 @@ pub fn make_option_enum_accessor<M, E>(
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeEnumOrUnknown<E>, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeEnumOrUnknown<E>, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, RuntimeTypeEnumOrUnknown<E>, Option<ProtobufEnumOrUnknown<E>>> {
                     get_field,
                     _marker: marker::PhantomData,
@@ -516,6 +606,7 @@ pub fn make_option_enum_accessor<M, E>(
                     get_field,
                     default_value,
                 },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplOptionFieldPointer::<M, RuntimeTypeEnumOrUnknown<E>, Option<ProtobufEnumOrUnknown<E>>> {
                     mut_field,
                     _marker: marker::PhantomData,
@@ -527,6 +618,7 @@ pub fn make_option_enum_accessor<M, E>(
     }
 }
 
+/// String or bytes field
 pub fn make_option_get_ref_accessor<M, V, O>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a O,
@@ -542,7 +634,7 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     get_field,
                     _marker: marker::PhantomData,
@@ -550,6 +642,7 @@ where
                 get_or_default_impl: GetOrDefaultGetRefDeref::<M, V::RuntimeType> {
                     get_field: get_value,
                 },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     mut_field,
                     _marker: marker::PhantomData,
@@ -573,9 +666,10 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplFieldPointer::<M, V::RuntimeType> { get_field },
                 get_or_default_impl: GetOrDefaultGetRef::<M, V::RuntimeType> { get_field },
+                mut_or_default_impl: MutOrDefaultGetMut::<M, V::RuntimeType> { mut_field },
                 set_impl: SetImplFieldPointer::<M, V::RuntimeType> { mut_field },
                 _marker: marker::PhantomData,
             }),
