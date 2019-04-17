@@ -65,7 +65,7 @@ To enable `Bytes` you need to:
 
 ```toml
 [dependencies]
-protobuf = { version = "~2.0", features = ["with-bytes"] }
+protobuf = { version = "2", features = ["with-bytes"] }
 ```
 
 2. Enable bytes option
