@@ -43,7 +43,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
 
-## [2.5 Unreleased]
+## [2.6 Unreleased]
 
 - [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
 
