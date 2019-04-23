@@ -33,7 +33,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 - [Implement `Hash` for
   `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/113babc8c56deb7e2453f0d11c2bfc21134d540f)
-- [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
 
 ### Improvements
 
@@ -45,6 +44,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   (although protobuf implementation does a couple of unsafe calls).
 
 ## [2.5 Unreleased]
+
+- [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
 
 ## [2.5.0] - 2019-04-15
 
