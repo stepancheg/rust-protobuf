@@ -5,6 +5,7 @@ use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
 use std::fs::File;
 use std::io;
+use std::io::Error;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -69,7 +70,7 @@ fn escape_byte(s: &mut String, b: u8) {
         write!(s, "\\{}", b as char).unwrap();
     } else if b == b'\0' {
         write!(s, "\\0").unwrap();
-    // ASCII printable except space
+        // ASCII printable except space
     } else if b > 0x20 && b < 0x7f {
         write!(s, "{}", b as char).unwrap();
     } else {
@@ -220,6 +221,15 @@ pub fn gen_and_write(
     customize: &Customize,
 ) -> io::Result<()> {
     let results = gen(file_descriptors, files_to_generate, customize);
+
+    let out_dir_meta = std::fs::metadata(out_dir);
+    if out_dir_meta.is_ok() {
+        if out_dir_meta.unwrap().is_file() {
+            return Err(Error::new(std::io::ErrorKind::AlreadyExists, "out_dir is a file"));
+        }
+    } else {
+        std::fs::create_dir_all(out_dir);
+    }
 
     for r in &results {
         let mut file_path = out_dir.to_owned();
