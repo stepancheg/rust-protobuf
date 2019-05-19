@@ -46,6 +46,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
 - Fix [OOM on malformed input](https://github.com/stepancheg/rust-protobuf/issues/411)
+- Minimum supported Rust version is [1.26](https://github.com/stepancheg/rust-protobuf/commit/71f09ae92e86be2ce439e71452c3ca1749a4bda7)
 
 ## [2.5.0] - 2019-04-15
 
