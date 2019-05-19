@@ -149,7 +149,7 @@ impl Hash for UnknownFields {
                 for (k, v) in &**map {
                     let mut entry_hasher = DefaultHasher::new();
                     Hash::hash(&(k, v), &mut entry_hasher);
-                    hash.wrapping_add(entry_hasher.finish());
+                    hash = hash.wrapping_add(entry_hasher.finish());
                 }
                 Hash::hash(&hash, state);
             }
