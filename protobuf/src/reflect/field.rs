@@ -1,24 +1,24 @@
-use descriptor::FieldDescriptorProto;
-use descriptor::field_descriptor_proto;
-use json::json_name;
-use reflect::accessor::AccessorKind;
-use reflect::accessor::FieldAccessor;
-use reflect::map::ReflectMapMut;
-use reflect::map::ReflectMapRef;
-use reflect::reflect_deep_eq::ReflectDeepEq;
-use reflect::repeated::ReflectRepeatedMut;
-use reflect::repeated::ReflectRepeatedRef;
-use reflect::EnumDescriptor;
-use reflect::EnumValueDescriptor;
-use reflect::MessageDescriptor;
-use reflect::ReflectValueBox;
-use reflect::ReflectValueRef;
-use reflect::RuntimeTypeDynamic;
-use Message;
-use reflect::accessor::singular::SingularFieldAccessorHolder;
-use reflect::accessor::repeated::RepeatedFieldAccessorHolder;
-use reflect::accessor::map::MapFieldAccessorHolder;
-use reflect::value::ReflectValueMut;
+use crate::descriptor::FieldDescriptorProto;
+use crate::descriptor::field_descriptor_proto;
+use crate::json::json_name;
+use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::map::ReflectMapMut;
+use crate::reflect::map::ReflectMapRef;
+use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::repeated::ReflectRepeatedMut;
+use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::reflect::RuntimeTypeDynamic;
+use crate::core::Message;
+use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
+use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use crate::reflect::accessor::map::MapFieldAccessorHolder;
+use crate::reflect::value::ReflectValueMut;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 pub enum ReflectFieldRef<'a> {

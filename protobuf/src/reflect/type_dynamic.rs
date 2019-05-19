@@ -1,9 +1,9 @@
 use std::marker;
 
-use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use reflect::runtime_types::RuntimeType;
-use reflect::types::ProtobufType;
-use wire_format::WireType;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::types::ProtobufType;
+use crate::wire_format::WireType;
 
 /// Dynamic version of `RuntimeType`
 pub trait ProtobufTypeDynamic: Send + Sync + 'static {

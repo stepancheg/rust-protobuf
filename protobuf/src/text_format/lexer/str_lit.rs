@@ -1,6 +1,6 @@
 use super::lexer_impl::Lexer;
 use super::lexer_impl::LexerError;
-use text_format::lexer::ParserLanguage;
+use crate::text_format::lexer::ParserLanguage;
 
 #[derive(Debug)]
 pub enum StrLitDecodeError {

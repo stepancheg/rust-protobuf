@@ -1,42 +1,41 @@
 use std::fmt;
 use std::fmt::Write as fmt_Write;
-
-use json::base64;
-use json::float;
-use reflect::ReflectFieldRef;
-use reflect::ReflectMapRef;
-use reflect::ReflectRepeatedRef;
-use reflect::ReflectValueRef;
 use std::f32;
 use std::f64;
-use Message;
+use crate::json::base64;
+use crate::json::float;
+use crate::reflect::ReflectFieldRef;
+use crate::reflect::ReflectMapRef;
+use crate::reflect::ReflectRepeatedRef;
+use crate::reflect::ReflectValueRef;
+use crate::core::Message;
 
 
-use well_known_types::Any;
-use well_known_types::BoolValue;
-use well_known_types::BytesValue;
-use well_known_types::DoubleValue;
-use well_known_types::Duration;
-use well_known_types::FieldMask;
-use well_known_types::FloatValue;
-use well_known_types::Int32Value;
-use well_known_types::Int64Value;
-use well_known_types::ListValue;
-use well_known_types::NullValue;
-use well_known_types::StringValue;
-use well_known_types::Struct;
-use well_known_types::Timestamp;
-use well_known_types::UInt32Value;
-use well_known_types::UInt64Value;
-use well_known_types::Value;
-use well_known_types::value;
+use crate::well_known_types::Any;
+use crate::well_known_types::BoolValue;
+use crate::well_known_types::BytesValue;
+use crate::well_known_types::DoubleValue;
+use crate::well_known_types::Duration;
+use crate::well_known_types::FieldMask;
+use crate::well_known_types::FloatValue;
+use crate::well_known_types::Int32Value;
+use crate::well_known_types::Int64Value;
+use crate::well_known_types::ListValue;
+use crate::well_known_types::NullValue;
+use crate::well_known_types::StringValue;
+use crate::well_known_types::Struct;
+use crate::well_known_types::Timestamp;
+use crate::well_known_types::UInt32Value;
+use crate::well_known_types::UInt64Value;
+use crate::well_known_types::Value;
+use crate::well_known_types::value;
 
-use json::well_known_wrapper::WellKnownWrapper;
+use crate::json::well_known_wrapper::WellKnownWrapper;
 
-use json::rfc_3339::TmUtc;
-use reflect::EnumValueDescriptor;
-use reflect::RuntimeFieldType;
-use reflect::RuntimeTypeBox;
+use crate::json::rfc_3339::TmUtc;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::RuntimeFieldType;
+use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
 pub enum PrintError {

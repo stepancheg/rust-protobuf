@@ -13,34 +13,34 @@ extern crate serde;
 #[cfg(feature = "with-serde")]
 
 extern crate serde_derive;
-pub use clear::Clear;
-pub use core::parse_from_bytes;
+pub use crate::clear::Clear;
+pub use crate::core::parse_from_bytes;
 #[cfg(feature = "bytes")]
-pub use core::parse_from_carllerche_bytes;
-pub use core::parse_from_reader;
-pub use core::Message;
-pub use enums::ProtobufEnum;
-pub use enums::ProtobufEnumOrUnknown;
-pub use oneof::Oneof;
-pub use repeated::RepeatedField;
-pub use singular::SingularField;
-pub use singular::SingularPtrField;
-pub use stream::CodedInputStream;
-pub use stream::CodedOutputStream;
-pub use unknown::UnknownFields;
-pub use unknown::UnknownFieldsIter;
-pub use unknown::UnknownValue;
-pub use unknown::UnknownValueRef;
-pub use unknown::UnknownValues;
-pub use unknown::UnknownValuesIter;
+pub use crate::core::parse_from_carllerche_bytes;
+pub use crate::core::parse_from_reader;
+pub use crate::core::Message;
+pub use crate::enums::ProtobufEnum;
+pub use crate::enums::ProtobufEnumOrUnknown;
+pub use crate::oneof::Oneof;
+pub use crate::repeated::RepeatedField;
+pub use crate::singular::SingularField;
+pub use crate::singular::SingularPtrField;
+pub use crate::stream::CodedInputStream;
+pub use crate::stream::CodedOutputStream;
+pub use crate::unknown::UnknownFields;
+pub use crate::unknown::UnknownFieldsIter;
+pub use crate::unknown::UnknownValue;
+pub use crate::unknown::UnknownValueRef;
+pub use crate::unknown::UnknownValues;
+pub use crate::unknown::UnknownValuesIter;
 pub mod wire_format;
 pub use cached_size::CachedSize;
 #[cfg(feature = "bytes")]
-pub use chars::Chars;
-pub use error::ProtobufError;
-pub use error::ProtobufResult;
+pub use crate::chars::Chars;
+pub use crate::error::ProtobufError;
+pub use crate::error::ProtobufResult;
 
-pub use reflect::types;
+pub use crate::reflect::types;
 
 // generated
 pub mod descriptor;
@@ -83,29 +83,29 @@ mod buf_read_iter;
 
 // so `use protobuf::*` could work in mod descriptor and well_known_types
 mod protobuf {
-    pub use cached_size::CachedSize;
-    pub use clear::Clear;
-    pub use core::*;
-    pub use descriptor;
-    pub use enums::ProtobufEnum;
-    pub use enums::ProtobufEnumOrUnknown;
-    pub use error::*;
-    pub use ext;
-    pub use oneof::Oneof;
-    pub use reflect;
-    pub use reflect::types;
-    pub use repeated::RepeatedField;
-    pub use rt;
-    pub use singular::SingularField;
-    pub use singular::SingularPtrField;
-    pub use stream::*;
-    pub use text_format;
-    pub use unknown::UnknownFields;
-    pub use unknown::UnknownFieldsIter;
-    pub use unknown::UnknownValue;
-    pub use unknown::UnknownValueRef;
-    pub use unknown::UnknownValues;
-    pub use unknown::UnknownValuesIter;
-    pub use well_known_types;
-    pub use wire_format;
+    pub use crate::cached_size::CachedSize;
+    pub use crate::clear::Clear;
+    pub use crate::core::*;
+    pub use crate::descriptor;
+    pub use crate::enums::ProtobufEnum;
+    pub use crate::enums::ProtobufEnumOrUnknown;
+    pub use crate::error::*;
+    pub use crate::ext;
+    pub use crate::oneof::Oneof;
+    pub use crate::reflect;
+    pub use crate::reflect::types;
+    pub use crate::repeated::RepeatedField;
+    pub use crate::rt;
+    pub use crate::singular::SingularField;
+    pub use crate::singular::SingularPtrField;
+    pub use crate::stream::*;
+    pub use crate::text_format;
+    pub use crate::unknown::UnknownFields;
+    pub use crate::unknown::UnknownFieldsIter;
+    pub use crate::unknown::UnknownValue;
+    pub use crate::unknown::UnknownValueRef;
+    pub use crate::unknown::UnknownValues;
+    pub use crate::unknown::UnknownValuesIter;
+    pub use crate::well_known_types;
+    pub use crate::wire_format;
 }

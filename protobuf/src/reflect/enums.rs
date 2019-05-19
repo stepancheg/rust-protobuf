@@ -1,18 +1,20 @@
 use std::collections::HashMap;
-use std::{fmt, ptr};
-
-use descriptor::EnumDescriptorProto;
-use descriptor::EnumValueDescriptorProto;
-use descriptor::FileDescriptorProto;
-use reflect::ProtobufValue;
+use std::fmt;
+use std::ptr;
 use std::any::TypeId;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::marker;
 use std::mem;
-use ::{ProtobufEnum, ProtobufEnumOrUnknown};
-use reflect::find_message_or_enum::find_message_or_enum;
-use reflect::find_message_or_enum::MessageOrEnum;
+
+use crate::descriptor::EnumDescriptorProto;
+use crate::descriptor::EnumValueDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
+use crate::reflect::ProtobufValue;
+use crate::enums::ProtobufEnum;
+use crate::enums::ProtobufEnumOrUnknown;
+use crate::reflect::find_message_or_enum::find_message_or_enum;
+use crate::reflect::find_message_or_enum::MessageOrEnum;
 
 
 #[derive(Clone)]

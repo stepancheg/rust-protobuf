@@ -1,13 +1,13 @@
 use std::slice;
-
-use super::value::ProtobufValue;
-use super::value::ReflectValueRef;
-
-use reflect::reflect_deep_eq::ReflectDeepEq;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use reflect::ReflectValueBox;
-use repeated::RepeatedField;
 use std::fmt;
+
+use crate::reflect::value::ProtobufValue;
+use crate::reflect::value::ReflectValueRef;
+
+use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use crate::reflect::ReflectValueBox;
+use crate::repeated::RepeatedField;
 
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;

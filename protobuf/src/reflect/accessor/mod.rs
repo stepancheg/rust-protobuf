@@ -1,6 +1,6 @@
-use reflect::accessor::singular::SingularFieldAccessorHolder;
-use reflect::accessor::repeated::RepeatedFieldAccessorHolder;
-use reflect::accessor::map::MapFieldAccessorHolder;
+use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
+use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use crate::reflect::accessor::map::MapFieldAccessorHolder;
 
 pub(crate) mod map;
 pub(crate) mod repeated;

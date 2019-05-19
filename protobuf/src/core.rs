@@ -7,16 +7,16 @@ use std::any::TypeId;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
-use clear::Clear;
-use error::ProtobufError;
-use error::ProtobufResult;
-use reflect::MessageDescriptor;
-use reflect::ProtobufValue;
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use stream::WithCodedInputStream;
-use stream::WithCodedOutputStream;
-use unknown::UnknownFields;
+use crate::clear::Clear;
+use crate::error::ProtobufError;
+use crate::error::ProtobufResult;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
+use crate::stream::CodedInputStream;
+use crate::stream::CodedOutputStream;
+use crate::stream::WithCodedInputStream;
+use crate::stream::WithCodedOutputStream;
+use crate::unknown::UnknownFields;
 
 /// Trait implemented for all generated structs for protobuf messages.
 /// Also, generated messages implement `Clone + Default + PartialEq`

@@ -16,7 +16,7 @@ use std::ops::IndexMut;
 use std::slice;
 use std::vec;
 
-use clear::Clear;
+use crate::clear::Clear;
 
 /// Implemented for both `Vec` and `RepeatedField`.
 /// Used to simplify codegen, should not be used directly.

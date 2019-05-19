@@ -2,12 +2,12 @@ use std::marker;
 use std::any::TypeId;
 use std::any::Any;
 
-use reflect::runtime_type_box::RuntimeTypeBox;
-use reflect::runtime_types::RuntimeType;
-use reflect::EnumDescriptor;
-use reflect::MessageDescriptor;
-use reflect::ProtobufValue;
-use reflect::ReflectValueRef;
+use crate::reflect::runtime_type_box::RuntimeTypeBox;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectValueRef;
 
 
 /// Dynamic version of `RuntimeType`

@@ -3,7 +3,7 @@ use super::lexer_impl::LexerResult;
 use super::loc::Loc;
 use super::num_lit::NumLit;
 use super::str_lit::StrLit;
-use text_format::lexer::JsonNumberLit;
+use crate::text_format::lexer::JsonNumberLit;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {

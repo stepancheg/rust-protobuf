@@ -9,42 +9,42 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use buf_read_iter::BufReadIter;
-use core::Message;
-use enums::ProtobufEnum;
-use error::ProtobufError;
-use error::ProtobufResult;
-use error::WireError;
-use misc::remaining_capacity_as_slice_mut;
-use misc::remove_lifetime_mut;
-use unknown::UnknownFields;
-use unknown::UnknownValue;
-use unknown::UnknownValueRef;
-use varint;
-use wire_format;
-use zigzag::decode_zig_zag_32;
-use zigzag::decode_zig_zag_64;
-use zigzag::encode_zig_zag_32;
-use zigzag::encode_zig_zag_64;
+use crate::buf_read_iter::BufReadIter;
+use crate::core::Message;
+use crate::enums::ProtobufEnum;
+use crate::error::ProtobufError;
+use crate::error::ProtobufResult;
+use crate::error::WireError;
+use crate::misc::remaining_capacity_as_slice_mut;
+use crate::misc::remove_lifetime_mut;
+use crate::unknown::UnknownFields;
+use crate::unknown::UnknownValue;
+use crate::unknown::UnknownValueRef;
+use crate::varint;
+use crate::wire_format;
+use crate::zigzag::decode_zig_zag_32;
+use crate::zigzag::decode_zig_zag_64;
+use crate::zigzag::encode_zig_zag_32;
+use crate::zigzag::encode_zig_zag_64;
 
-use reflect::runtime_types::RuntimeType;
-use reflect::types::ProtobufType;
-use reflect::types::ProtobufTypeBool;
-use reflect::types::ProtobufTypeDouble;
-use reflect::types::ProtobufTypeEnum;
-use reflect::types::ProtobufTypeFixed;
-use reflect::types::ProtobufTypeFixed32;
-use reflect::types::ProtobufTypeFixed64;
-use reflect::types::ProtobufTypeFloat;
-use reflect::types::ProtobufTypeInt32;
-use reflect::types::ProtobufTypeInt64;
-use reflect::types::ProtobufTypeSfixed32;
-use reflect::types::ProtobufTypeSfixed64;
-use reflect::types::ProtobufTypeSint32;
-use reflect::types::ProtobufTypeSint64;
-use reflect::types::ProtobufTypeUint32;
-use reflect::types::ProtobufTypeUint64;
-use ProtobufEnumOrUnknown;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::types::ProtobufType;
+use crate::reflect::types::ProtobufTypeBool;
+use crate::reflect::types::ProtobufTypeDouble;
+use crate::reflect::types::ProtobufTypeEnum;
+use crate::reflect::types::ProtobufTypeFixed;
+use crate::reflect::types::ProtobufTypeFixed32;
+use crate::reflect::types::ProtobufTypeFixed64;
+use crate::reflect::types::ProtobufTypeFloat;
+use crate::reflect::types::ProtobufTypeInt32;
+use crate::reflect::types::ProtobufTypeInt64;
+use crate::reflect::types::ProtobufTypeSfixed32;
+use crate::reflect::types::ProtobufTypeSfixed64;
+use crate::reflect::types::ProtobufTypeSint32;
+use crate::reflect::types::ProtobufTypeSint64;
+use crate::reflect::types::ProtobufTypeUint32;
+use crate::reflect::types::ProtobufTypeUint64;
+use crate::enums::ProtobufEnumOrUnknown;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -1157,12 +1157,12 @@ mod test {
     use std::io::Write;
     use std::iter::repeat;
 
-    use error::ProtobufError;
-    use error::ProtobufResult;
-    use hex::decode_hex;
-    use hex::encode_hex;
+    use crate::error::ProtobufError;
+    use crate::error::ProtobufResult;
+    use crate::hex::decode_hex;
+    use crate::hex::encode_hex;
 
-    use super::wire_format;
+    use crate::wire_format;
     use super::CodedInputStream;
     use super::CodedOutputStream;
     use super::READ_RAW_BYTES_MAX_ALLOC;

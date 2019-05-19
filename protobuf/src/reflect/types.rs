@@ -7,37 +7,38 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use core::Message;
-use enums::ProtobufEnum;
-use error::ProtobufResult;
-use reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
-use reflect::runtime_types::RuntimeTypeBool;
+use crate::core::Message;
+use crate::enums::ProtobufEnum;
+use crate::error::ProtobufResult;
+use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
+use crate::reflect::runtime_types::RuntimeTypeBool;
 #[cfg(feature = "bytes")]
-use reflect::runtime_types::RuntimeTypeCarllercheBytes;
+use crate::reflect::runtime_types::RuntimeTypeCarllercheBytes;
 #[cfg(feature = "bytes")]
-use reflect::runtime_types::RuntimeTypeCarllercheChars;
-use reflect::runtime_types::RuntimeTypeEnum;
-use reflect::runtime_types::RuntimeTypeF32;
-use reflect::runtime_types::RuntimeTypeF64;
-use reflect::runtime_types::RuntimeTypeI32;
-use reflect::runtime_types::RuntimeTypeI64;
-use reflect::runtime_types::RuntimeTypeMessage;
-use reflect::runtime_types::RuntimeTypeString;
-use reflect::runtime_types::RuntimeTypeU32;
-use reflect::runtime_types::RuntimeTypeU64;
-use reflect::runtime_types::RuntimeTypeUnreachable;
-use reflect::runtime_types::RuntimeTypeVecU8;
-use reflect::type_dynamic::ProtobufTypeDynamic;
-use reflect::type_dynamic::ProtobufTypeDynamicImpl;
-use reflect::ProtobufValue;
-use ::{rt, ProtobufEnumOrUnknown};
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use unknown::UnknownValues;
-use wire_format::WireType;
-use zigzag::decode_zig_zag_32;
-use zigzag::decode_zig_zag_64;
-use parse_from_bytes;
+use crate::reflect::runtime_types::RuntimeTypeCarllercheChars;
+use crate::reflect::runtime_types::RuntimeTypeEnum;
+use crate::reflect::runtime_types::RuntimeTypeF32;
+use crate::reflect::runtime_types::RuntimeTypeF64;
+use crate::reflect::runtime_types::RuntimeTypeI32;
+use crate::reflect::runtime_types::RuntimeTypeI64;
+use crate::reflect::runtime_types::RuntimeTypeMessage;
+use crate::reflect::runtime_types::RuntimeTypeString;
+use crate::reflect::runtime_types::RuntimeTypeU32;
+use crate::reflect::runtime_types::RuntimeTypeU64;
+use crate::reflect::runtime_types::RuntimeTypeUnreachable;
+use crate::reflect::runtime_types::RuntimeTypeVecU8;
+use crate::reflect::type_dynamic::ProtobufTypeDynamic;
+use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
+use crate::reflect::ProtobufValue;
+use crate::rt;
+use crate::enums::ProtobufEnumOrUnknown;
+use crate::stream::CodedInputStream;
+use crate::stream::CodedOutputStream;
+use crate::unknown::UnknownValues;
+use crate::wire_format::WireType;
+use crate::zigzag::decode_zig_zag_32;
+use crate::zigzag::decode_zig_zag_64;
+use crate::core::parse_from_bytes;
 
 pub trait ProtobufType: Send + Sync + Clone + 'static {
     type RuntimeType: RuntimeType;

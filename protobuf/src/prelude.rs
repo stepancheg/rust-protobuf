@@ -1,8 +1,8 @@
 //! Prelude, should be imported by default when protobuf is used.
 
-use singular::OptionLike;
-use Message;
-use SingularPtrField;
+use crate::singular::OptionLike;
+use crate::core::Message;
+use crate::singular::SingularPtrField;
 
 /// Trait is implemented by types which hold fields of generated messages.
 pub trait MessageField<M: Message + Default> {

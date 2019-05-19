@@ -1,6 +1,6 @@
-use descriptor::FileDescriptorProto;
-use descriptor::DescriptorProto;
-use descriptor::EnumDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
+use crate::descriptor::DescriptorProto;
+use crate::descriptor::EnumDescriptorProto;
 
 pub(crate) enum MessageOrEnum<'a> {
     Message(&'a DescriptorProto),

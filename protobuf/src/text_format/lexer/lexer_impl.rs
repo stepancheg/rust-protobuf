@@ -1,6 +1,7 @@
 use std::char;
 use std::f64;
 use std::num::ParseIntError;
+use std::num::ParseFloatError;
 
 use super::float;
 use super::loc::Loc;
@@ -10,8 +11,7 @@ use super::str_lit::StrLitDecodeError;
 use super::token::Token;
 use super::token::TokenWithLocation;
 use super::ParserLanguage;
-use std::num::ParseFloatError;
-use text_format::lexer::JsonNumberLit;
+use crate::text_format::lexer::JsonNumberLit;
 
 #[derive(Debug)]
 pub enum LexerError {

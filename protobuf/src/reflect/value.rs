@@ -1,16 +1,17 @@
+use std::hash::Hash;
+use std::hash::Hasher;
+use std::mem;
+use std::any::Any;
+
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
 use super::*;
-use core::*;
-use reflect::reflect_deep_eq::ReflectDeepEq;
-use reflect::transmute_eq::transmute_eq;
-use std::hash::Hash;
-use std::hash::Hasher;
-use std::mem;
-use std::any::Any;
+use crate::core::*;
+use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::transmute_eq::transmute_eq;
 
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).

@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use Message;
+use crate::core::Message;
 
-use reflect::accessor::AccessorKind;
-use reflect::accessor::FieldAccessor;
-use reflect::map::ReflectMapMut;
-use reflect::map::ReflectMapRef;
-use reflect::runtime_types::RuntimeType;
-use reflect::type_dynamic::ProtobufTypeDynamic;
-use reflect::types::ProtobufType;
+use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::map::ReflectMapMut;
+use crate::reflect::map::ReflectMapRef;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::type_dynamic::ProtobufTypeDynamic;
+use crate::reflect::types::ProtobufType;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a>;

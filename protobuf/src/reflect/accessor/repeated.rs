@@ -1,18 +1,18 @@
 use std::marker;
-
-use Message;
-use RepeatedField;
-
-use reflect::accessor::AccessorKind;
-use reflect::accessor::FieldAccessor;
-use reflect::repeated::ReflectRepeated;
-use reflect::repeated::ReflectRepeatedMut;
-use reflect::repeated::ReflectRepeatedRef;
-use reflect::runtime_types::RuntimeType;
-use reflect::type_dynamic::ProtobufTypeDynamic;
-use reflect::types::ProtobufType;
-use reflect::ProtobufValue;
 use std::fmt;
+
+use crate::core::Message;
+use crate::repeated::RepeatedField;
+
+use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::repeated::ReflectRepeated;
+use crate::reflect::repeated::ReflectRepeatedMut;
+use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::type_dynamic::ProtobufTypeDynamic;
+use crate::reflect::types::ProtobufType;
+use crate::reflect::ProtobufValue;
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;

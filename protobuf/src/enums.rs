@@ -1,9 +1,9 @@
+use std::marker;
 use std::fmt;
 
-use reflect::EnumDescriptor;
-use reflect::EnumValueDescriptor;
-use reflect::ProtobufValue;
-use std::marker;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::ProtobufValue;
 
 
 /// Trait implemented by all protobuf enum types.

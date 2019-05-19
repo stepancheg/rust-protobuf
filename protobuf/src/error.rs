@@ -3,7 +3,7 @@ use std::fmt;
 use std::io;
 use std::str;
 
-use wire_format::WireType;
+use crate::wire_format::WireType;
 
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
 

@@ -1,5 +1,5 @@
-use reflect::EnumDescriptor;
-use reflect::MessageDescriptor;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::MessageDescriptor;
 
 pub enum RuntimeTypeBox {
     I32,

@@ -12,9 +12,9 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
-use error::WireError;
-use ProtobufError;
-use ProtobufResult;
+use crate::error::WireError;
+use crate::error::ProtobufError;
+use crate::error::ProtobufResult;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.

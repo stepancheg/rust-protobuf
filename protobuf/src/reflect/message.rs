@@ -1,18 +1,18 @@
 use std::collections::HashMap;
 use std::marker;
 
-use Message;
+use crate::core::Message;
 
-use descriptor::DescriptorProto;
-use descriptor::FileDescriptorProto;
+use crate::descriptor::DescriptorProto;
+use crate::descriptor::FileDescriptorProto;
 
-use reflect::accessor::FieldAccessor;
-use reflect::reflect_deep_eq::ReflectDeepEq;
-use reflect::FieldDescriptor;
-use reflect::find_message_or_enum::find_message_or_enum;
-use reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::FieldDescriptor;
+use crate::reflect::find_message_or_enum::find_message_or_enum;
+use crate::reflect::find_message_or_enum::MessageOrEnum;
 
-use json;
+use crate::json;
 
 
 trait MessageFactory: Send + Sync + 'static {

@@ -1,9 +1,9 @@
 use std::fmt;
 use std::fmt::Write;
 
-use core::Message;
-use reflect::ReflectFieldRef;
-use reflect::ReflectValueRef;
+use crate::core::Message;
+use crate::reflect::ReflectFieldRef;
+use crate::reflect::ReflectValueRef;
 
 fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     for &c in bytes {
@@ -190,7 +190,7 @@ pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
 #[cfg(test)]
 mod test {
 
-    use text_format::lexer::StrLit;
+    use crate::text_format::lexer::StrLit;
 
     fn escape(data: &[u8]) -> String {
         let mut s = String::with_capacity(data.len() * 4);

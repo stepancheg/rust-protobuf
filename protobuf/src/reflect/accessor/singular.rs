@@ -1,19 +1,20 @@
-use reflect::accessor::AccessorKind;
-use reflect::accessor::FieldAccessor;
-use reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
-use reflect::runtime_types::RuntimeTypeMessage;
-use reflect::runtime_types::RuntimeTypeWithDeref;
-use reflect::type_dynamic::ProtobufTypeDynamic;
-use reflect::types::{ProtobufType, ProtobufTypeEnumOrUnknown};
-use reflect::types::ProtobufTypeMessage;
-use reflect::ReflectValueBox;
-use reflect::ReflectValueRef;
-use singular::OptionLike;
 use std::marker;
-use Message;
-use ProtobufEnum;
-use ProtobufEnumOrUnknown;
-use reflect::value::ReflectValueMut;
+
+use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
+use crate::reflect::runtime_types::RuntimeTypeMessage;
+use crate::reflect::runtime_types::RuntimeTypeWithDeref;
+use crate::reflect::type_dynamic::ProtobufTypeDynamic;
+use crate::reflect::types::{ProtobufType, ProtobufTypeEnumOrUnknown};
+use crate::reflect::types::ProtobufTypeMessage;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::reflect::value::ReflectValueMut;
+use crate::singular::OptionLike;
+use crate::core::Message;
+use crate::enums::ProtobufEnum;
+use crate::enums::ProtobufEnumOrUnknown;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {

@@ -1,20 +1,20 @@
 use std::str;
 
-use Message;
+use crate::core::Message;
 
-use reflect::EnumDescriptor;
-use reflect::EnumValueDescriptor;
-use reflect::MessageDescriptor;
-use reflect::ReflectValueBox;
-use reflect::RuntimeFieldType;
-use reflect::RuntimeTypeBox;
-use reflect::RuntimeTypeDynamic;
-use text_format::lexer::int;
-use text_format::lexer::Loc;
-use text_format::lexer::ParserLanguage;
-use text_format::lexer::StrLitDecodeError;
-use text_format::lexer::Tokenizer;
-use text_format::lexer::TokenizerError;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::RuntimeFieldType;
+use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeTypeDynamic;
+use crate::text_format::lexer::int;
+use crate::text_format::lexer::Loc;
+use crate::text_format::lexer::ParserLanguage;
+use crate::text_format::lexer::StrLitDecodeError;
+use crate::text_format::lexer::Tokenizer;
+use crate::text_format::lexer::TokenizerError;
 
 #[derive(Debug)]
 pub enum ParseError {

@@ -1,20 +1,24 @@
-#[cfg(feature = "bytes")]
-use bytes::Bytes;
-use reflect::runtime_type_box::RuntimeTypeBox;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
-use reflect::EnumDescriptor;
-use reflect::MessageDescriptor;
-use reflect::ProtobufValue;
-use reflect::ReflectValueBox;
-use reflect::ReflectValueRef;
 use std::fmt;
 use std::marker;
+
 #[cfg(feature = "bytes")]
-use Chars;
-use ::{Message, ProtobufEnumOrUnknown};
-use ProtobufEnum;
-use reflect::value::ReflectValueMut;
+use bytes::Bytes;
+
+use crate::reflect::runtime_type_box::RuntimeTypeBox;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::reflect::value::ReflectValueMut;
+
+#[cfg(feature = "bytes")]
+use crate::chars::Chars;
+use crate::core::Message;
+use crate::enums::ProtobufEnumOrUnknown;
+use crate::enums::ProtobufEnum;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`

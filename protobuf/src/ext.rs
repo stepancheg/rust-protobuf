@@ -1,8 +1,8 @@
 use std::marker::PhantomData;
 
-use core::Message;
-use reflect::runtime_types::RuntimeType;
-use types::ProtobufType;
+use crate::core::Message;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::types::ProtobufType;
 
 /// Optional ext field
 pub struct ExtFieldOptional<M: Message, T: ProtobufType> {
