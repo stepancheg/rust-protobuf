@@ -110,3 +110,12 @@ mod protobuf {
     pub use unknown::UnknownValuesIter;
     pub use well_known_types;
 }
+
+/// This symbol is in generated `version.rs`, include here for IDE
+#[cfg(never)]
+pub const VERSION: &str = "";
+/// This symbol is in generated `version.rs`, include here for IDE
+#[cfg(never)]
+#[doc(hidden)]
+pub const VERSION_SYMBOL: &str = "";
+include!(concat!(env!("OUT_DIR"), "/version.rs"));
