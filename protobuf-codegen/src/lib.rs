@@ -219,6 +219,20 @@ pub fn gen_and_write(
     out_dir: &Path,
     customize: &Customize,
 ) -> io::Result<()> {
+    match out_dir.metadata() {
+        Ok(m) => {
+            if !m.is_dir() {
+                return Err(io::Error::new(
+                    io::ErrorKind::Other,
+                        format!("{} is not a directory", out_dir.display())));
+            }
+        }
+        Err(e) => {
+            return Err(amend_io_error(e,
+                format!("{} does not exist or not accessible", out_dir.display())));
+        }
+    }
+
     let results = gen(file_descriptors, files_to_generate, customize);
 
     for r in &results {
