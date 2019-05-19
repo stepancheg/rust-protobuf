@@ -31,8 +31,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   https://github.com/stepancheg/rust-protobuf/issues/300), which also may be turned on by default later.
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
-- [Implement `Hash` for
-  `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/113babc8c56deb7e2453f0d11c2bfc21134d540f)
 
 ### Improvements
 
@@ -47,6 +45,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
 - Fix [OOM on malformed input](https://github.com/stepancheg/rust-protobuf/issues/411)
 - Minimum supported Rust version is [1.26](https://github.com/stepancheg/rust-protobuf/commit/71f09ae92e86be2ce439e71452c3ca1749a4bda7)
+- [Implement `Hash` for
+  `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/113babc8c56deb7e2453f0d11c2bfc21134d540f)
 
 ## [2.5.0] - 2019-04-15
 
