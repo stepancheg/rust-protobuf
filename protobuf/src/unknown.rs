@@ -151,6 +151,7 @@ impl Hash for UnknownFields {
                     Hash::hash(&(k, v), &mut entry_hasher);
                     hash = hash.wrapping_add(entry_hasher.finish());
                 }
+                Hash::hash(&map.len(), state);
                 Hash::hash(&hash, state);
             }
         }
