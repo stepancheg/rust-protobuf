@@ -39,13 +39,13 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [JSON printing/parsing](https://github.com/stepancheg/rust-protobuf/issues/142) implemented
 - Text format parsing is implemented (previously it was only possible to print to text format)
 - Reflection can now mutate data (previously reflection could only read data)
-- Fix OOM on malformed input
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
 
 ## [2.6 Unreleased]
 
 - [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
+- Fix [OOM on malformed input](https://github.com/stepancheg/rust-protobuf/issues/411)
 
 ## [2.5.0] - 2019-04-15
 
