@@ -2,6 +2,7 @@
 name = "test-protoc"
 version = "0.0.0"
 publish = false
+edition = "2018"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 
 [lib]

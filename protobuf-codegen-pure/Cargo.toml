@@ -2,6 +2,7 @@
 name = "protobuf-codegen-pure"
 version = "3.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+edition = "2018"
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
 repository = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure/"
