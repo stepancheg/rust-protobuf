@@ -8,13 +8,13 @@ cache:
 
 matrix:
   include:
-  - rust: 1.23.0
+  - rust: 1.26.0
     env: PROTOBUF_VERSION=3.5.1
   - rust: stable
     env: PROTOBUF_VERSION=3.5.1
   - rust: beta
     env: PROTOBUF_VERSION=3.5.1
-  - rust: 1.23.0
+  - rust: 1.26.0
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes,with-serde
   - rust: stable
     env: PROTOBUF_VERSION=3.5.1 RUST_PROTOBUF_FEATURES=with-bytes
