@@ -89,8 +89,6 @@ pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScop
 
     w.write_line("");
     w.pub_mod("exts", |w| {
-        w.write_line("use protobuf::Message as Message_imported_for_functions;");
-
         for field in &file.extension {
             if field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
                 continue;
