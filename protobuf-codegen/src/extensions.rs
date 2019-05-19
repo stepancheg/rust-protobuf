@@ -2,12 +2,14 @@ use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
+use Customize;
 
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,
     root_scope: &'a RootScope<'a>,
     field: &'a FieldDescriptorProto,
+    customize: Customize,
 }
 
 impl<'a> ExtGen<'a> {
@@ -58,7 +60,7 @@ impl<'a> ExtGen<'a> {
                 "{}<{}, {}>",
                 field_type,
                 self.extendee_rust_name(),
-                self.return_type_gen().rust_type()
+                self.return_type_gen().rust_type(&self.customize),
             ),
             &format!(
                 "{} {{ field_number: {}, phantom: ::std::marker::PhantomData }}",
@@ -70,7 +72,7 @@ impl<'a> ExtGen<'a> {
 }
 
 
-pub fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter) {
+pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter, customize: &Customize) {
     if file.get_extension().is_empty() {
         return;
     }
@@ -89,6 +91,7 @@ pub fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &
                 file: file,
                 root_scope: root_scope,
                 field: field,
+                customize: customize.clone(),
             }.write(w);
         }
     });

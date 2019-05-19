@@ -15,6 +15,7 @@ use oneof::OneofField;
 
 use float;
 use ident::RustIdent;
+use inside::protobuf_crate_path;
 
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
@@ -278,8 +279,8 @@ impl FieldElem {
     }
 
     /// implementation of ProtobufType trait
-    fn lib_protobuf_type(&self) -> String {
-        self.protobuf_type_gen().rust_type()
+    fn lib_protobuf_type(&self, customize: &Customize) -> String {
+        self.protobuf_type_gen().rust_type(customize)
     }
 
     fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
@@ -424,6 +425,7 @@ pub struct FieldGen<'a> {
     pub kind: FieldKind,
     pub expose_field: bool,
     pub generate_accessors: bool,
+    pub(crate) customize: Customize,
 }
 
 impl<'a> FieldGen<'a> {
@@ -486,6 +488,7 @@ impl<'a> FieldGen<'a> {
             kind: kind,
             expose_field: expose_field,
             generate_accessors: generate_accessors,
+            customize: customize.clone(),
         }
     }
 
@@ -560,7 +563,7 @@ impl<'a> FieldGen<'a> {
 
     fn variant_path(&self) -> String {
         // TODO: should reuse code from OneofVariantGen
-        format!("{}::{}", self.oneof().oneof_type_name, self.rust_name)
+        format!("{}::{}", self.oneof().oneof_type_name.to_code(&self.customize), self.rust_name)
     }
 
     // TODO: drop it
@@ -771,7 +774,7 @@ impl<'a> FieldGen<'a> {
     fn get_xxx_default_value_rust(&self) -> String {
         assert!(self.is_singular() || self.is_oneof());
         self.default_value_from_proto()
-            .unwrap_or_else(|| self.get_xxx_return_type().default_value())
+            .unwrap_or_else(|| self.get_xxx_return_type().default_value(&self.customize))
     }
 
     // default to be assigned to field
@@ -782,7 +785,7 @@ impl<'a> FieldGen<'a> {
             self.reconstruct_def()
         );
         self.default_value_from_proto_typed()
-            .unwrap_or_else(|| self.elem().rust_storage_type().default_value_typed())
+            .unwrap_or_else(|| self.elem().rust_storage_type().default_value_typed(&self.customize))
     }
 
     pub fn reconstruct_def(&self) -> String {
@@ -812,14 +815,14 @@ impl<'a> FieldGen<'a> {
                 let name = format!("make_{}_accessor", coll);
                 AccessorFn {
                     name: name,
-                    type_params: vec![elem.lib_protobuf_type()],
+                    type_params: vec![elem.lib_protobuf_type(&self.customize)],
                     style: AccessorStyle::Lambda,
                 }
             }
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
                 AccessorFn {
                     name: "make_map_accessor".to_owned(),
-                    type_params: vec![key.lib_protobuf_type(), value.lib_protobuf_type()],
+                    type_params: vec![key.lib_protobuf_type(&self.customize), value.lib_protobuf_type(&self.customize)],
                     style: AccessorStyle::Lambda,
                 }
             }
@@ -838,7 +841,7 @@ impl<'a> FieldGen<'a> {
                 } else {
                     AccessorFn {
                         name: "make_simple_field_accessor".to_owned(),
-                        type_params: vec![elem.lib_protobuf_type()],
+                        type_params: vec![elem.lib_protobuf_type(&self.customize)],
                         style: AccessorStyle::Lambda,
                     }
                 }
@@ -856,7 +859,7 @@ impl<'a> FieldGen<'a> {
                 let name = format!("make_{}_accessor", coll);
                 AccessorFn {
                     name: name,
-                    type_params: vec![elem.lib_protobuf_type()],
+                    type_params: vec![elem.lib_protobuf_type(&self.customize)],
                     style: AccessorStyle::Lambda,
                 }
             }
@@ -864,13 +867,13 @@ impl<'a> FieldGen<'a> {
                 // TODO: uses old style
 
                 let suffix = match &self.elem().rust_storage_type() {
-                    t if t.is_primitive() => format!("{}", t),
+                    t if t.is_primitive() => t.to_code(&self.customize),
                     &RustType::String | &RustType::Chars => "string".to_string(),
                     &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
                     &RustType::Bytes  => "bytes".to_string(),
                     &RustType::Enum(..) => "enum".to_string(),
                     &RustType::Message(..) => "message".to_string(),
-                    t => panic!("unexpected field type: {}", t),
+                    t => panic!("unexpected field type: {:?}", t),
                 };
 
                 let name = format!("make_singular_{}_accessor", suffix);
@@ -900,7 +903,7 @@ impl<'a> FieldGen<'a> {
                 self.oneof().oneof_name
             ));
         } else {
-            let clear_expr = self.full_storage_type().clear(&self.self_field());
+            let clear_expr = self.full_storage_type().clear(&self.self_field(), &self.customize);
             w.write_line(&format!("{};", clear_expr));
         }
     }
@@ -936,7 +939,7 @@ impl<'a> FieldGen<'a> {
                         format!(
                             "::protobuf::rt::enum_size({}, {})",
                             self.proto_field.number(),
-                            var_type.into_target(&param_type, var)
+                            var_type.into_target(&param_type, var, &self.customize)
                         )
                     }
                     _ => {
@@ -948,13 +951,13 @@ impl<'a> FieldGen<'a> {
                             format!(
                                 "::protobuf::rt::value_varint_zigzag_size({}, {})",
                                 self.proto_field.number(),
-                                var_type.into_target(&param_type, var)
+                                var_type.into_target(&param_type, var, &self.customize)
                             )
                         } else {
                             format!(
                                 "::protobuf::rt::value_size({}, {}, ::protobuf::wire_format::{:?})",
                                 self.proto_field.number(),
-                                var_type.into_target(&param_type, var),
+                                var_type.into_target(&param_type, var, &self.customize),
                                 self.wire_type
                             )
                         }
@@ -994,7 +997,7 @@ impl<'a> FieldGen<'a> {
                     os,
                     os_write_fn_suffix,
                     number,
-                    ty.into_target(&param_type, var)
+                    ty.into_target(&param_type, var, &self.customize)
                 ));
             }
         }
@@ -1027,7 +1030,7 @@ impl<'a> FieldGen<'a> {
             RustType::Option(e) => RustType::Option(Box::new(e.ref_type())),
             RustType::SingularField(ty) |
             RustType::SingularPtrField(ty) => RustType::Option(Box::new(RustType::Ref(ty))),
-            x => panic!("cannot convert {} to option", x),
+            x => panic!("cannot convert {:?} to option", x),
         }
     }
 
@@ -1086,7 +1089,7 @@ impl<'a> FieldGen<'a> {
                             format!(
                                 "{} != {}",
                                 self.self_field(),
-                                self.full_storage_type().default_value()
+                                self.full_storage_type().default_value(&self.customize)
                             ),
                             |w| { cb(&self.self_field(), &self.full_storage_type(), w); },
                         );
@@ -1127,7 +1130,7 @@ impl<'a> FieldGen<'a> {
             }) => {
                 let cond = format!(
                     "Some({}::{}(ref {}))",
-                    oneof_type_name,
+                    oneof_type_name.to_code(&self.customize),
                     self.rust_name,
                     varn
                 );
@@ -1166,11 +1169,11 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Repeated(..) |
             FieldKind::Map(..) => {
-                let converted = ty.into_target(&self.full_storage_type(), value);
+                let converted = ty.into_target(&self.full_storage_type(), value, &self.customize);
                 self.write_self_field_assign(w, &converted);
             }
             FieldKind::Singular(SingularField { ref elem, ref flag }) => {
-                let converted = ty.into_target(&elem.rust_storage_type(), value);
+                let converted = ty.into_target(&elem.rust_storage_type(), value, &self.customize);
                 let wrapped = if *flag == SingularFieldFlag::WithoutFlag {
                     converted
                 } else {
@@ -1192,7 +1195,7 @@ impl<'a> FieldGen<'a> {
                 self.variant_path(),
                 // TODO: default from .proto is not needed here (?)
                 self.element_default_value_rust()
-                    .into_type(self.full_storage_iter_elem_type())
+                    .into_type(self.full_storage_iter_elem_type(), &self.customize)
                     .value
             ));
         } else {
@@ -1207,8 +1210,8 @@ impl<'a> FieldGen<'a> {
                 _ => {
                     self.write_self_field_assign_some(
                         w,
-                        &self.elem().rust_storage_type().default_value_typed()
-                            .into_type(self.elem().rust_storage_type()).value,
+                        &self.elem().rust_storage_type().default_value_typed(&self.customize)
+                            .into_type(self.elem().rust_storage_type(), &self.customize).value,
                     );
                 }
             }
@@ -1232,7 +1235,7 @@ impl<'a> FieldGen<'a> {
             let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_data_size", zigzag_suffix)
         };
-        format!("::protobuf::rt::{}(&{})", fn_name, self.self_field())
+        format!("{}::rt::{}(&{})", protobuf_crate_path(&self.customize), fn_name, self.self_field())
     }
 
     fn self_field_vec_packed_data_size(&self) -> String {
@@ -1247,8 +1250,9 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_fixed_size(&self) -> String {
         // zero is filtered outside
         format!(
-            "{} + ::protobuf::rt::compute_raw_varint32_size({}) + {}",
+            "{} + {}::rt::compute_raw_varint32_size({}) + {}",
             self.tag_size(),
+            protobuf_crate_path(&self.customize),
             self.self_field_vec_packed_fixed_data_size(),
             self.self_field_vec_packed_fixed_data_size()
         )
@@ -1264,7 +1268,8 @@ impl<'a> FieldGen<'a> {
             format!("vec_packed_varint{}_size", zigzag_suffix)
         };
         format!(
-            "::protobuf::rt::{}({}, &{})",
+            "{}::rt::{}({}, &{})",
+            protobuf_crate_path(&self.customize),
             fn_name,
             self.proto_field.number(),
             self.self_field()
@@ -1310,7 +1315,8 @@ impl<'a> FieldGen<'a> {
 
     fn write_error_unexpected_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.write_line(&format!(
-            "return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type({}));",
+            "return ::std::result::Result::Err({}::rt::unexpected_wire_type({}));",
+            protobuf_crate_path(&self.customize),
             wire_type_var
         ));
     }
@@ -1330,7 +1336,7 @@ impl<'a> FieldGen<'a> {
             rust_type: self.full_storage_iter_elem_type(),
         };
 
-        let maybe_boxed = if f.boxed { typed.boxed() } else { typed };
+        let maybe_boxed = if f.boxed { typed.boxed(&self.customize) } else { typed };
 
         w.write_line(&format!(
             "self.{} = ::std::option::Option::Some({}({}));",
@@ -1345,8 +1351,8 @@ impl<'a> FieldGen<'a> {
         let &MapField { ref key, ref value, .. } = self.map();
         w.write_line(&format!(
             "::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
-            key.lib_protobuf_type(),
-            value.lib_protobuf_type(),
+            key.lib_protobuf_type(&self.customize),
+            value.lib_protobuf_type(&self.customize),
             self.self_field()
         ));
     }
@@ -1410,7 +1416,8 @@ impl<'a> FieldGen<'a> {
             }
             _ => {
                 w.write_line(&format!(
-                    "::protobuf::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                    "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                    protobuf_crate_path(&self.customize),
                     protobuf_name(self.proto_type),
                     wire_type_var,
                     self.rust_name));
@@ -1489,8 +1496,9 @@ impl<'a> FieldGen<'a> {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.proto_field.number();
                     w.write_line(&format!(
-                        "os.write_tag({}, ::protobuf::wire_format::{:?})?;",
+                        "os.write_tag({}, {}::wire_format::{:?})?;",
                         number,
+                        protobuf_crate_path(&self.customize),
                         wire_format::WireTypeLengthDelimited
                     ));
                     w.comment("TODO: Data size is computed again, it should be cached");
@@ -1502,7 +1510,7 @@ impl<'a> FieldGen<'a> {
                         w.write_line(&format!(
                             "os.write_{}_no_tag({})?;",
                             os_write_fn_suffix,
-                            v_type.into_target(&param_type, "v")
+                            v_type.into_target(&param_type, "v", &self.customize)
                         ));
                     });
                 });
@@ -1510,8 +1518,8 @@ impl<'a> FieldGen<'a> {
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
                 w.write_line(&format!(
                     "::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
-                    key.lib_protobuf_type(),
-                    value.lib_protobuf_type(),
+                    key.lib_protobuf_type(&self.customize),
+                    value.lib_protobuf_type(&self.customize),
                     self.proto_field.number(),
                     self.self_field()
                 ));
@@ -1556,10 +1564,11 @@ impl<'a> FieldGen<'a> {
             }
             FieldKind::Map(MapField { ref key, ref value, .. }) => {
                 w.write_line(&format!(
-                    "{} += ::protobuf::rt::compute_map_size::<{}, {}>({}, &{});",
+                    "{} += {}::rt::compute_map_size::<{}, {}>({}, &{});",
                     sum_var,
-                    key.lib_protobuf_type(),
-                    value.lib_protobuf_type(),
+                    protobuf_crate_path(&self.customize),
+                    key.lib_protobuf_type(&self.customize),
+                    value.lib_protobuf_type(&self.customize),
                     self.proto_field.number(),
                     self.self_field()
                 ));
@@ -1583,7 +1592,7 @@ impl<'a> FieldGen<'a> {
             w.write_line(&format!(
                 "{}.as_ref().unwrap_or_else(|| {}::default_instance())",
                 self_field,
-                field_type_name
+                field_type_name.to_code(&self.customize)
             ));
         } else {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
@@ -1595,7 +1604,7 @@ impl<'a> FieldGen<'a> {
                         w.match_expr(&as_option.value, |w| {
                             let v_type = as_option.rust_type.elem_type();
                             let r_type = self.get_xxx_return_type();
-                            w.case_expr("Some(v)", v_type.into_target(&r_type, "v"));
+                            w.case_expr("Some(v)", v_type.into_target(&r_type, "v", &self.customize));
                             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
                             w.case_expr("None", get_xxx_default_value_rust);
                         });
@@ -1610,7 +1619,7 @@ impl<'a> FieldGen<'a> {
                 &SingularField { flag: SingularFieldFlag::WithoutFlag, .. } => {
                     w.write_line(
                         self.full_storage_type()
-                            .into_target(&get_xxx_return_type, &self_field),
+                            .into_target(&get_xxx_return_type, &self_field, &self.customize),
                     );
                 }
             }
@@ -1619,7 +1628,8 @@ impl<'a> FieldGen<'a> {
 
     fn write_message_field_get(&self, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
-        let fn_def = format!("get_{}(&self) -> {}", self.rust_name, get_xxx_return_type);
+        let fn_def = format!("get_{}(&self) -> {}",
+            self.rust_name, get_xxx_return_type.to_code(&self.customize));
 
         w.pub_fn(&fn_def, |w| match self.kind {
             FieldKind::Oneof(OneofField { ref elem, .. }) => {
@@ -1636,7 +1646,7 @@ impl<'a> FieldGen<'a> {
                             self.variant_path(),
                             refv
                         ),
-                        vtype.into_target(&get_xxx_return_type, "v"),
+                        vtype.into_target(&get_xxx_return_type, "v", &self.customize),
                     );
                     w.case_expr("_", self.get_xxx_default_value_rust());
                 })
@@ -1713,12 +1723,12 @@ impl<'a> FieldGen<'a> {
         let set_xxx_param_type = self.set_xxx_param_type();
         w.comment("Param is passed by value, moved");
         let ref name = self.rust_name;
-        w.pub_fn(&format!("set_{}(&mut self, v: {})", name, set_xxx_param_type), |w| {
+        w.pub_fn(&format!("set_{}(&mut self, v: {})", name, set_xxx_param_type.to_code(&self.customize)), |w| {
             if !self.is_oneof() {
                 self.write_self_field_assign_value(w, "v", &set_xxx_param_type);
             } else {
                 let self_field_oneof = self.self_field_oneof();
-                let v = set_xxx_param_type.into_target(&self.oneof().rust_type(), "v");
+                let v = set_xxx_param_type.into_target(&self.oneof().rust_type(), "v", &self.customize);
                 w.write_line(&format!("{} = ::std::option::Option::Some({}({}))",
                     self_field_oneof, self.variant_path(), v));
             }
@@ -1735,9 +1745,9 @@ impl<'a> FieldGen<'a> {
         }
         let fn_def = match mut_xxx_return_type {
             RustType::Ref(ref param) => {
-                format!("mut_{}(&mut self) -> &mut {}", self.rust_name, **param)
+                format!("mut_{}(&mut self) -> &mut {}", self.rust_name, param.to_code(&self.customize))
             }
-            _ => panic!("not a ref: {}", mut_xxx_return_type),
+            _ => panic!("not a ref: {}", mut_xxx_return_type.to_code(&self.customize)),
         };
         w.pub_fn(&fn_def, |w| {
             match self.kind {
@@ -1774,7 +1784,7 @@ impl<'a> FieldGen<'a> {
                             self_field_oneof,
                             self.variant_path(),
                             self.element_default_value_rust()
-                                .into_type(self.oneof().rust_type())
+                                .into_type(self.oneof().rust_type(), &self.customize)
                                 .value));
                     });
 
@@ -1803,7 +1813,7 @@ impl<'a> FieldGen<'a> {
             let self_field_oneof = self.self_field_oneof();
             w.match_expr(format!("{}.take()", self_field_oneof), |w| {
                 let value_in_some = self.oneof().rust_type().value("v".to_owned());
-                let converted = value_in_some.into_type(self.take_xxx_return_type());
+                let converted = value_in_some.into_type(self.take_xxx_return_type(), &self.customize);
                 w.case_expr(
                     format!("::std::option::Option::Some({}(v))", self.variant_path()),
                     &converted.value,
@@ -1816,8 +1826,8 @@ impl<'a> FieldGen<'a> {
             w.write_line(
                 self.elem()
                     .rust_storage_type()
-                    .default_value_typed()
-                    .into_type(take_xxx_return_type.clone())
+                    .default_value_typed(&self.customize)
+                    .into_type(take_xxx_return_type.clone(), &self.customize)
                     .value,
             );
         });
@@ -1831,7 +1841,7 @@ impl<'a> FieldGen<'a> {
             &format!(
                 "take_{}(&mut self) -> {}",
                 self.rust_name,
-                take_xxx_return_type
+                take_xxx_return_type.to_code(&self.customize)
             ),
             |w| match self.kind {
                 FieldKind::Oneof(..) => {
@@ -1842,7 +1852,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!(
                         "::std::mem::replace(&mut self.{}, {})",
                         self.rust_name,
-                        take_xxx_return_type.default_value()
+                        take_xxx_return_type.default_value(&self.customize)
                     ));
 
                 }
@@ -1854,7 +1864,7 @@ impl<'a> FieldGen<'a> {
                         w.write_line(&format!(
                             "{}.take().unwrap_or_else(|| {})",
                             self.self_field(),
-                            elem.rust_storage_type().default_value()
+                            elem.rust_storage_type().default_value(&self.customize)
                         ));
                     } else {
                         w.write_line(&format!(
@@ -1868,7 +1878,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!(
                         "::std::mem::replace(&mut {}, {})",
                         self.self_field(),
-                        self.full_storage_type().default_value()
+                        self.full_storage_type().default_value(&self.customize)
                     ))
                 }
             },

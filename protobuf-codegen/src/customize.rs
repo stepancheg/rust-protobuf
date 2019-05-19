@@ -23,6 +23,9 @@ pub struct Customize {
     pub serde_derive_cfg: Option<String>,
     /// Enable lite runtime
     pub lite_runtime: Option<bool>,
+    /// Used internally to generate protos bundled in protobuf crate
+    /// like `descriptor.proto`
+    pub inside_protobuf: Option<bool>,
 
     // When adding more options please keep in sync with `parse_from_parameter` below.
 
@@ -67,6 +70,9 @@ impl Customize {
         if let Some(v) = that.lite_runtime {
             self.lite_runtime = Some(v);
         }
+        if let Some(v) = that.inside_protobuf {
+            self.inside_protobuf = Some(v);
+        }
     }
 
     /// Update unset fields of self with fields from other customize
@@ -108,6 +114,8 @@ impl Customize {
                 r.serde_derive_cfg = Some(v.to_owned());
             } else if n == "lite_runtime" {
                 r.lite_runtime = Some(parse_bool(v)?);
+            } else if n == "inside_protobuf" {
+                r.inside_protobuf = Some(parse_bool(v)?);
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()));
             }
@@ -126,6 +134,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let serde_derive = rustproto::exts::serde_derive.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
     let lite_runtime = None;
+    let inside_protobuf = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -135,6 +144,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
+        inside_protobuf,
         _future_options: (),
     }
 }
@@ -148,6 +158,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let serde_derive = None;
     let serde_derive_cfg = None;
     let lite_runtime = None;
+    let inside_protobuf = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -157,6 +168,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
+        inside_protobuf,
         _future_options: (),
     }
 }
@@ -170,6 +182,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
+    let inside_protobuf = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -179,6 +192,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
+        inside_protobuf,
         _future_options: (),
     }
 }

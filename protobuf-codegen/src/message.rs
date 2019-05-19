@@ -10,6 +10,7 @@ use super::customize::customize_from_rustproto_for_message;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
 use serde;
+use inside::protobuf_crate_path;
 
 
 /// Message info for codegen
@@ -138,7 +139,12 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
-        w.def_fn("write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()>", |w| {
+        let sig = format!(
+            "write_to_with_cached_sizes(&self, os: &mut {}::CodedOutputStream) -> {}::ProtobufResult<()>",
+            protobuf_crate_path(&self.customize),
+            protobuf_crate_path(&self.customize),
+        );
+        w.def_fn(&sig, |w| {
             // To have access to its methods but not polute the name space.
             for f in self.fields_except_oneof_and_group() {
                 f.write_message_write_field(w);
@@ -182,9 +188,9 @@ impl<'a> MessageGen<'a> {
             self.write_match_each_oneof_variant(w, |w, variant, v, vtype| {
                 variant.field.write_element_size(w, v, vtype, "my_size");
             });
-            w.write_line(
-                "my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());",
-            );
+            w.write_line(&format!(
+                "my_size += {}::rt::unknown_fields_size(self.get_unknown_fields());",
+                protobuf_crate_path(&self.customize)));
             w.write_line("self.cached_size.set(my_size);");
             w.write_line("my_size");
         });
@@ -223,7 +229,12 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()>"), |w| {
+        let sig = format!(
+            "merge_from(&mut self, is: &mut {}::CodedInputStream) -> {}::ProtobufResult<()>",
+            protobuf_crate_path(&self.customize),
+            protobuf_crate_path(&self.customize),
+        );
+        w.def_fn(&sig, |w| {
             w.while_block("!is.eof()?", |w| {
                 w.write_line(&format!("let (field_number, wire_type) = is.read_tag_unpack()?;"));
                 w.match_block("field_number", |w| {
@@ -234,7 +245,7 @@ impl<'a> MessageGen<'a> {
                         });
                     }
                     w.case_block("_", |w| {
-                        w.write_line("::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;");
+                        w.write_line(&format!("{}::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;", protobuf_crate_path(&self.customize)));
                     });
                 });
             });
@@ -423,7 +434,7 @@ impl<'a> MessageGen<'a> {
                         w.field_decl_vis(
                             vis,
                             &field.rust_name,
-                            &field.full_storage_type().to_string(),
+                            &field.full_storage_type().to_code(&self.customize),
                         );
                     }
                 }
@@ -435,14 +446,14 @@ impl<'a> MessageGen<'a> {
                         true => Visibility::Public,
                         false => Visibility::Default,
                     };
-                    w.field_decl_vis(vis, oneof.name(), &oneof.full_storage_type().to_string());
+                    w.field_decl_vis(vis, oneof.name(), &oneof.full_storage_type().to_code(&self.customize));
                 }
             }
             w.comment("special fields");
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.pub_field_decl("unknown_fields", "::protobuf::UnknownFields");
+            w.pub_field_decl("unknown_fields", &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)));
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.pub_field_decl("cached_size", "::protobuf::CachedSize");
+            w.pub_field_decl("cached_size", &format!("{}::CachedSize", protobuf_crate_path(&self.customize)));
         });
     }
 
@@ -454,8 +465,9 @@ impl<'a> MessageGen<'a> {
             |w| {
                 w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
                     w.write_line(&format!(
-                        "<{} as ::protobuf::Message>::default_instance()",
-                        self.type_name
+                        "<{} as {}::Message>::default_instance()",
+                        self.type_name,
+                        protobuf_crate_path(&self.customize),
                     ));
                 });
             },

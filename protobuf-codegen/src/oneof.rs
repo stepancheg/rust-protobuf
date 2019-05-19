@@ -66,6 +66,7 @@ pub struct OneofVariantGen<'a> {
     oneof_field: OneofField,
     pub field: FieldGen<'a>,
     path: String,
+    customize: Customize,
 }
 
 impl<'a> OneofVariantGen<'a> {
@@ -78,12 +79,13 @@ impl<'a> OneofVariantGen<'a> {
             oneof: oneof,
             variant: variant.clone(),
             field: field.clone(),
-            path: format!("{}::{}", oneof.type_name, field.rust_name),
+            path: format!("{}::{}", oneof.type_name.to_code(&field.customize), field.rust_name),
             oneof_field: OneofField::parse(
                 variant.oneof,
                 variant.field,
                 field.oneof().elem.clone(),
             ),
+            customize: field.customize.clone(),
         }
     }
 
@@ -156,12 +158,12 @@ impl<'a> OneofGen<'a> {
         let derive = vec!["Clone", "PartialEq", "Debug"];
         w.derive(&derive);
         serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
-        w.pub_enum(&self.type_name.to_string(), |w| {
+        w.pub_enum(&self.type_name.to_code(&self.customize), |w| {
             for variant in self.variants_except_group() {
                 w.write_line(&format!(
                     "{}({}),",
                     variant.field.rust_name,
-                    &variant.rust_type().to_string()
+                    &variant.rust_type().to_code(&self.customize)
                 ));
             }
         });

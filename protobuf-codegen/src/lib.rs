@@ -23,6 +23,9 @@ mod oneof;
 pub mod float;
 mod ident;
 mod serde;
+mod file_and_mod;
+mod rust_name;
+mod inside;
 
 pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
@@ -33,6 +36,7 @@ use self::message::*;
 use self::enums::*;
 use self::extensions::*;
 use self::code_writer::CodeWriter;
+use inside::protobuf_crate_path;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -53,7 +57,7 @@ fn escape_byte(s: &mut String, b: u8) {
     }
 }
 
-fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
+fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize, w: &mut CodeWriter) {
     let fdp_bytes = file.write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
     w.indented(|w| {
@@ -84,9 +88,10 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     });
     w.write_line("\";");
     w.write_line("");
-    w.lazy_static(
+    w.lazy_static_protobuf_path(
         "file_descriptor_proto_lazy",
-        "::protobuf::descriptor::FileDescriptorProto",
+        &format!("{}::descriptor::FileDescriptorProto", protobuf_crate_path(customize)),
+        protobuf_crate_path(customize),
     );
     w.write_line("");
     w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
@@ -146,11 +151,11 @@ fn gen_file(
             EnumGen::new(enum_type, file, &customize, root_scope).write(&mut w);
         }
 
-        write_extensions(file, &root_scope, &mut w);
+        write_extensions(file, &root_scope, &mut w, &customize);
 
         if !lite_runtime {
             w.write_line("");
-            write_file_descriptor_data(file, &mut w);
+            write_file_descriptor_data(file, &customize, &mut w);
         }
     }
 
