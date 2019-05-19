@@ -41,6 +41,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   (although protobuf implementation does a couple of unsafe calls).
 
 ## [2.6 Unreleased]
+- [Fix `Hash` of
+  `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/7f285cc42990e34bd8a489519aaae216a93584cf)
+
+## [2.6.0] - 2019-05-19
 
 - [lite_runtime rust-protobuf option](https://github.com/stepancheg/rust-protobuf/pull/399)
 - Fix [OOM on malformed input](https://github.com/stepancheg/rust-protobuf/issues/411)
