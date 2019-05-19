@@ -28,6 +28,7 @@ use scope::RootScope;
 use scope::WithScope;
 use syntax::Syntax;
 use file_and_mod::FileAndMod;
+use inside::protobuf_crate_path;
 
 
 fn type_is_copy(field_type: field_descriptor_proto::Type) -> bool {
@@ -207,16 +208,16 @@ impl OptionKind {
         }
     }
 
-    fn wrap_value(&self, value: &str) -> String {
+    fn wrap_value(&self, value: &str, customize: &Customize) -> String {
         match self {
             OptionKind::Option => format!("::std::option::Option::Some({})", value),
             OptionKind::OptionBox => {
                 // TODO: could reuse allocated memory
                 format!("::std::option::Option::Some(Box::new({}))", value)
             }
-            OptionKind::SingularField => format!("::protobuf::SingularField::some({})", value),
+            OptionKind::SingularField => format!("{}::SingularField::some({})", protobuf_crate_path(customize), value),
             OptionKind::SingularPtrField => {
-                format!("::protobuf::SingularPtrField::some({})", value)
+                format!("{}::SingularPtrField::some({})", protobuf_crate_path(customize), value)
             }
         }
     }
@@ -450,7 +451,7 @@ impl<'a> FieldElem<'a> {
 
     /// implementation of ProtobufType trait
     fn lib_protobuf_type(&self, reference: &FileAndMod) -> String {
-        self.protobuf_type_gen(reference).rust_type()
+        self.protobuf_type_gen(reference).rust_type(&reference.customize)
     }
 
     fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
@@ -672,7 +673,7 @@ impl<'a> FieldGen<'a> {
 
     // for message level
     fn get_file_and_mod(&self) -> FileAndMod {
-        self.proto_field.message.scope.get_file_and_mod()
+        self.proto_field.message.scope.get_file_and_mod(self.customize.clone())
     }
 
     fn tag_size(&self) -> u32 {
@@ -790,7 +791,7 @@ impl<'a> FieldGen<'a> {
 
     // for field `foo`, return type of `fn get_foo(..)`
     fn get_xxx_return_type(&self) -> RustType {
-        let reference = self.proto_field.message.scope.get_file_and_mod();
+        let reference = self.proto_field.message.scope.get_file_and_mod(self.customize.clone());
         match &self.kind {
             FieldKind::Singular(s) => {
                 SingularOrOneofField::Singular(s.clone()).get_xxx_return_type(&reference)
@@ -923,7 +924,7 @@ impl<'a> FieldGen<'a> {
                 field_descriptor_proto::Type::TYPE_BYTES => {
                     RustType::Ref(Box::new(RustType::Slice(Box::new(RustType::u8()))))
                 }
-                _ => self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod()),
+                _ => self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
             };
 
             RustValueTyped {
@@ -938,7 +939,7 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Singular(..) | FieldKind::Oneof(..) => {
                 self.default_value_from_proto()
-                    .unwrap_or_else(|| self.get_xxx_return_type().default_value())
+                    .unwrap_or_else(|| self.get_xxx_return_type().default_value(&self.customize))
             }
             _ => unreachable!(),
         }
@@ -951,7 +952,7 @@ impl<'a> FieldGen<'a> {
                 self.default_value_from_proto_typed()
                     .unwrap_or_else(|| {
                         self.elem().rust_storage_elem_type(
-                            &self.proto_field.message.scope.get_file_and_mod()).default_value_typed()
+                            &self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).default_value_typed(&self.customize)
                     })
             }
             _ => unreachable!(),
@@ -987,7 +988,7 @@ impl<'a> FieldGen<'a> {
 
     fn accessor_fn_repeated(&self, repeated_field: &RepeatedField) -> AccessorFn {
         let RepeatedField { ref elem, .. } = repeated_field;
-        let coll = match self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()) {
+        let coll = match self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())) {
             RustType::Vec(..) => "vec",
             RustType::RepeatedField(..) => "repeated_field",
             _ => unreachable!(),
@@ -1055,12 +1056,12 @@ impl<'a> FieldGen<'a> {
         let OneofField { ref elem, .. } = oneof;
         // TODO: uses old style
 
-        let reference = self.proto_field.message.scope.get_file_and_mod();
+        let reference = self.proto_field.message.scope.get_file_and_mod(self.customize.clone());
 
         if let FieldElem::Enum(ref en) = oneof.elem {
             return AccessorFn {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![ProtobufTypeGen::Enum(en.rust_name_relative(&self.get_file_and_mod())).rust_type()],
+                type_params: vec![ProtobufTypeGen::Enum(en.rust_name_relative(&self.get_file_and_mod())).rust_type(&self.customize)],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -1068,7 +1069,7 @@ impl<'a> FieldGen<'a> {
         if elem.rust_storage_elem_type(&reference).is_copy() {
             return AccessorFn {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![elem.protobuf_type_gen(&self.get_file_and_mod()).rust_type()],
+                type_params: vec![elem.protobuf_type_gen(&self.get_file_and_mod()).rust_type(&self.customize)],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -1084,7 +1085,7 @@ impl<'a> FieldGen<'a> {
         // string or bytes
         AccessorFn {
             name: "make_oneof_deref_has_get_set_accessor".to_owned(),
-            type_params: vec![elem.protobuf_type_gen(&self.get_file_and_mod()).rust_type()],
+            type_params: vec![elem.protobuf_type_gen(&self.get_file_and_mod()).rust_type(&self.customize)],
             callback_params: self.make_accessor_fns_has_get_set(),
         }
     }
@@ -1161,8 +1162,9 @@ impl<'a> FieldGen<'a> {
     pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
         let accessor_fn = self.accessor_fn();
         w.write_line(&format!(
-            "{}.push(::protobuf::reflect::rt::{}(",
+            "{}.push({}::reflect::rt::{}(",
             fields_var,
+            protobuf_crate_path(&self.customize),
             accessor_fn.sig()
         ));
         w.indented(|w| {
@@ -1183,7 +1185,8 @@ impl<'a> FieldGen<'a> {
                 ));
             }
             _ => {
-                let clear_expr = self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()).clear(&self.self_field());
+                let clear_expr = self.full_storage_type(
+                    &self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).clear(&self.self_field(), &self.customize);
                 w.write_line(&format!("{};", clear_expr));
             }
         }
@@ -1198,12 +1201,14 @@ impl<'a> FieldGen<'a> {
             None => match self.proto_type {
                 field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
                 field_descriptor_proto::Type::TYPE_BYTES => format!(
-                    "::protobuf::rt::bytes_size({}, &{})",
+                    "{}::rt::bytes_size({}, &{})",
+                    protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
                     var
                 ),
                 field_descriptor_proto::Type::TYPE_STRING => format!(
-                    "::protobuf::rt::string_size({}, &{})",
+                    "{}::rt::string_size({}, &{})",
+                    protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
                     var
                 ),
@@ -1213,9 +1218,10 @@ impl<'a> FieldGen<'a> {
                         t => t.clone(),
                     };
                     format!(
-                        "::protobuf::rt::enum_or_unknown_size({}, {})",
+                        "{}::rt::enum_or_unknown_size({}, {})",
+                        protobuf_crate_path(&self.customize),
                         self.proto_field.number(),
-                        var_type.into_target(&param_type, var)
+                        var_type.into_target(&param_type, var, &self.customize)
                     )
                 }
                 _ => {
@@ -1225,15 +1231,18 @@ impl<'a> FieldGen<'a> {
                     };
                     if self.proto_type.is_s_varint() {
                         format!(
-                            "::protobuf::rt::value_varint_zigzag_size({}, {})",
+                            "{}::rt::value_varint_zigzag_size({}, {})",
+                            protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
-                            var_type.into_target(&param_type, var)
+                            var_type.into_target(&param_type, var, &self.customize)
                         )
                     } else {
                         format!(
-                            "::protobuf::rt::value_size({}, {}, ::protobuf::wire_format::{:?})",
+                            "{}::rt::value_size({}, {}, {}::wire_format::{:?})",
+                            protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
-                            var_type.into_target(&param_type, var),
+                            var_type.into_target(&param_type, var, &self.customize),
+                            protobuf_crate_path(&self.customize),
                             self.wire_type
                         )
                     }
@@ -1250,12 +1259,13 @@ impl<'a> FieldGen<'a> {
 
         match self.proto_type {
             field_descriptor_proto::Type::TYPE_MESSAGE => {
-                let param_type = RustType::Ref(Box::new(self.elem().rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod())));
+                let param_type = RustType::Ref(Box::new(self.elem().rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()))));
 
                 w.write_line(&format!(
-                    "::protobuf::rt::write_message_field_with_cached_size({}, {}, {})?;",
+                    "{}::rt::write_message_field_with_cached_size({}, {}, {})?;",
+                    protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
-                    v.into_type(param_type).value,
+                    v.into_type(param_type, &self.customize).value,
                     os
                 ));
             }
@@ -1268,7 +1278,7 @@ impl<'a> FieldGen<'a> {
                     os,
                     os_write_fn_suffix,
                     number,
-                    v.into_type(param_type).value
+                    v.into_type(param_type, &self.customize).value
                 ));
             }
         }
@@ -1295,7 +1305,7 @@ impl<'a> FieldGen<'a> {
 
     // field data viewed as Option
     fn self_field_as_option(&self, elem: &FieldElem, option_kind: OptionKind) -> RustValueTyped {
-        match self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()) {
+        match self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())) {
             RustType::Option(ref e) if e.is_copy() => {
                 return RustType::Option(e.clone()).value(self.self_field());
             }
@@ -1309,7 +1319,7 @@ impl<'a> FieldGen<'a> {
         //
         //        as_option_type.value(v)
 
-        let as_option_type = option_kind.as_ref_type(elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()));
+        let as_option_type = option_kind.as_ref_type(elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())));
 
         as_option_type.value(format!("{}.as_ref()", self.self_field()))
     }
@@ -1339,7 +1349,7 @@ impl<'a> FieldGen<'a> {
             w.field_decl_vis(
                 vis,
                 self.rust_name.get(),
-                &self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()).to_string(),
+                &self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).to_code(&self.customize),
             );
         }
     }
@@ -1354,7 +1364,7 @@ impl<'a> FieldGen<'a> {
                 ref elem,
             } => {
                 let var = "v";
-                let ref_prefix = match elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()).is_copy() {
+                let ref_prefix = match elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).is_copy() {
                     true => "",
                     false => "",
                 };
@@ -1380,7 +1390,7 @@ impl<'a> FieldGen<'a> {
                     w.if_stmt(format!("!{}.is_empty()", self.self_field()), |w| {
                         let v = RustValueTyped {
                             value: self.self_field(),
-                            rust_type: self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()),
+                            rust_type: self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
                         };
                         cb(&v, w);
                     });
@@ -1390,12 +1400,12 @@ impl<'a> FieldGen<'a> {
                         format!(
                             "{} != {}",
                             self.self_field(),
-                            self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()).default_value()
+                            self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).default_value(&self.customize)
                         ),
                         |w| {
                             let v = RustValueTyped {
                                 value: self.self_field(),
-                                rust_type: self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()),
+                                rust_type: self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
                             };
                             cb(&v, w);
                         },
@@ -1439,11 +1449,11 @@ impl<'a> FieldGen<'a> {
                     type_name, self.rust_name, varn
                 );
                 w.if_let_stmt(&cond, &format!("self.{}", oneof_field_name), |w| {
-                    cb(w, &elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()))
+                    cb(w, &elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())))
                 })
             }
             _ => {
-                let v_type = self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod());
+                let v_type = self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
                 let self_field = self.self_field();
                 w.for_stmt(&format!("&{}", self_field), varn, |w| cb(w, &v_type));
             }
@@ -1461,7 +1471,7 @@ impl<'a> FieldGen<'a> {
                 flag: SingularFieldFlag::WithFlag { option_kind, .. },
                 ..
             } => {
-                self.write_self_field_assign(w, &option_kind.wrap_value(value));
+                self.write_self_field_assign(w, &option_kind.wrap_value(value, &self.customize));
             }
             &SingularField {
                 flag: SingularFieldFlag::WithoutFlag,
@@ -1479,11 +1489,13 @@ impl<'a> FieldGen<'a> {
         value: &RustValueTyped,
     ) {
         let SingularField { ref elem, ref flag } = s;
-        let converted = value.into_type(elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()).clone());
+        let converted = value.into_type(
+            elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).clone(),
+            &self.customize);
         let wrapped = match flag {
             SingularFieldFlag::WithoutFlag => converted.value,
             SingularFieldFlag::WithFlag { option_kind, .. } => {
-                option_kind.wrap_value(&converted.value)
+                option_kind.wrap_value(&converted.value, &self.customize)
             }
         };
         self.write_self_field_assign(w, &wrapped);
@@ -1492,7 +1504,9 @@ impl<'a> FieldGen<'a> {
     fn write_self_field_assign_value(&self, w: &mut CodeWriter, value: &RustValueTyped) {
         match self.kind {
             FieldKind::Repeated(..) | FieldKind::Map(..) => {
-                let converted = value.into_type(self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()));
+                let converted = value.into_type(
+                    self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
+                    &self.customize);
                 self.write_self_field_assign(w, &converted.value);
             }
             FieldKind::Singular(ref s) => {
@@ -1515,7 +1529,9 @@ impl<'a> FieldGen<'a> {
                     oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                     // TODO: default from .proto is not needed here (?)
                     self.element_default_value_rust()
-                        .into_type(self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod()))
+                        .into_type(
+                            self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
+                            &self.customize)
                         .value
                 ));
             }
@@ -1533,8 +1549,10 @@ impl<'a> FieldGen<'a> {
                                 self.write_self_field_assign_some(
                                     w,
                                     singular,
-                                    &self.elem().rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()).default_value_typed()
-                                        .into_type(singular.elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod())).value,
+                                    &self.elem().rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).default_value_typed(&self.customize)
+                                        .into_type(
+                                            singular.elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
+                                            &self.customize).value,
                                 );
                             }
                         }
@@ -1564,7 +1582,7 @@ impl<'a> FieldGen<'a> {
             let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
             format!("vec_packed_varint{}_data_size", zigzag_suffix)
         };
-        format!("::protobuf::rt::{}(&{})", fn_name, self.self_field())
+        format!("{}::rt::{}(&{})", protobuf_crate_path(&self.customize), fn_name, self.self_field())
     }
 
     fn self_field_vec_packed_data_size(&self) -> String {
@@ -1579,8 +1597,9 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_fixed_size(&self) -> String {
         // zero is filtered outside
         format!(
-            "{} + ::protobuf::rt::compute_raw_varint32_size({}) + {}",
+            "{} + {}::rt::compute_raw_varint32_size({}) + {}",
             self.tag_size(),
+            protobuf_crate_path(&self.customize),
             self.self_field_vec_packed_fixed_data_size(),
             self.self_field_vec_packed_fixed_data_size()
         )
@@ -1596,7 +1615,8 @@ impl<'a> FieldGen<'a> {
             format!("vec_packed_varint{}_size", zigzag_suffix)
         };
         format!(
-            "::protobuf::rt::{}({}, &{})",
+            "{}::rt::{}({}, &{})",
+            protobuf_crate_path(&self.customize),
             fn_name,
             self.proto_field.number(),
             self.self_field()
@@ -1632,8 +1652,12 @@ impl<'a> FieldGen<'a> {
             _ => "",
         };
         w.write_line(&format!(
-            "::protobuf::rt::read_repeated_{}{}_into{}(wire_type, is, &mut self.{})?;",
-            carllerche, type_name_for_fn, into_what_suffix, self.rust_name,
+            "{}::rt::read_repeated_{}{}_into{}(wire_type, is, &mut self.{})?;",
+            protobuf_crate_path(&self.customize),
+            carllerche,
+            type_name_for_fn,
+            into_what_suffix,
+            self.rust_name,
         ));
     }
 
@@ -1662,8 +1686,13 @@ impl<'a> FieldGen<'a> {
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
         w.write_line(&format!(
-            "::protobuf::rt::read_{}_{}{}_into{}(wire_type, is, &mut self.{})?;",
-            singular_or_proto3, carllerche, type_name_for_fn, type_params, self.rust_name,
+            "{}::rt::read_{}_{}{}_into{}(wire_type, is, &mut self.{})?;",
+            protobuf_crate_path(&self.customize),
+            singular_or_proto3,
+            carllerche,
+            type_name_for_fn,
+            type_params,
+            self.rust_name,
         ));
     }
 
@@ -1683,7 +1712,8 @@ impl<'a> FieldGen<'a> {
 
     fn write_error_unexpected_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.write_line(&format!(
-            "return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type({}));",
+            "return ::std::result::Result::Err({}::rt::unexpected_wire_type({}));",
+            protobuf_crate_path(&self.customize),
             wire_type_var
         ));
     }
@@ -1691,8 +1721,10 @@ impl<'a> FieldGen<'a> {
     fn write_assert_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.if_stmt(
             &format!(
-                "{} != ::protobuf::wire_format::{:?}",
-                wire_type_var, self.wire_type
+                "{} != {}::wire_format::{:?}",
+                wire_type_var,
+                protobuf_crate_path(&self.customize),
+                self.wire_type,
             ),
             |w| {
                 self.write_error_unexpected_wire_type(wire_type_var, w);
@@ -1706,10 +1738,10 @@ impl<'a> FieldGen<'a> {
 
         let typed = RustValueTyped {
             value: format!("{}?", self.proto_type.read("is", o.elem.primitive_type_variant())),
-            rust_type: self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod()),
+            rust_type: self.full_storage_iter_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
         };
 
-        let maybe_boxed = if o.boxed { typed.boxed() } else { typed };
+        let maybe_boxed = if o.boxed { typed.boxed(&self.customize) } else { typed };
 
         w.write_line(&format!(
             "self.{} = ::std::option::Option::Some({}({}));",
@@ -1725,7 +1757,8 @@ impl<'a> FieldGen<'a> {
             ref key, ref value, ..
         } = self.map();
         w.write_line(&format!(
-            "::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
+            "{}::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
+            protobuf_crate_path(&self.customize),
             key.lib_protobuf_type(&self.get_file_and_mod()),
             value.lib_protobuf_type(&self.get_file_and_mod()),
             self.self_field()
@@ -1768,14 +1801,16 @@ impl<'a> FieldGen<'a> {
             }
             FieldElem::Enum(..) => {
                 w.write_line(&format!(
-                    "::protobuf::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
+                    "{}::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
+                    protobuf_crate_path(&self.customize),
                     wire_type_var,
                     self.rust_name,
                 ));
             }
             _ => {
                 w.write_line(&format!(
-                    "::protobuf::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                    "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                    protobuf_crate_path(&self.customize),
                     protobuf_name(self.proto_type),
                     wire_type_var,
                     self.rust_name
@@ -1824,8 +1859,10 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!("let len = {}.compute_size();", item_var));
                 let tag_size = self.tag_size();
                 w.write_line(&format!(
-                    "{} += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                    sum_var, tag_size
+                    "{} += {} + {}::rt::compute_raw_varint32_size(len) + len;",
+                    sum_var,
+                    tag_size,
+                    protobuf_crate_path(&self.customize),
                 ));
             }
             _ => {
@@ -1858,8 +1895,9 @@ impl<'a> FieldGen<'a> {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.proto_field.number();
                     w.write_line(&format!(
-                        "os.write_tag({}, ::protobuf::wire_format::{:?})?;",
+                        "os.write_tag({}, {}::wire_format::{:?})?;",
                         number,
+                        protobuf_crate_path(&self.customize),
                         wire_format::WireTypeLengthDelimited
                     ));
                     w.comment("TODO: Data size is computed again, it should be cached");
@@ -1871,7 +1909,7 @@ impl<'a> FieldGen<'a> {
                         w.write_line(&format!(
                             "os.write_{}_no_tag({})?;",
                             os_write_fn_suffix,
-                            v_type.into_target(&param_type, "v")
+                            v_type.into_target(&param_type, "v", &self.customize)
                         ));
                     });
                 });
@@ -1880,7 +1918,8 @@ impl<'a> FieldGen<'a> {
                 ref key, ref value, ..
             }) => {
                 w.write_line(&format!(
-                    "::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
+                    "{}::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
+                    protobuf_crate_path(&self.customize),
                     key.lib_protobuf_type(&self.get_file_and_mod()),
                     value.lib_protobuf_type(&self.get_file_and_mod()),
                     self.proto_field.number(),
@@ -1929,8 +1968,9 @@ impl<'a> FieldGen<'a> {
                 ref key, ref value, ..
             }) => {
                 w.write_line(&format!(
-                    "{} += ::protobuf::rt::compute_map_size::<{}, {}>({}, &{});",
+                    "{} += {}::rt::compute_map_size::<{}, {}>({}, &{});",
                     sum_var,
+                    protobuf_crate_path(&self.customize),
                     key.lib_protobuf_type(&self.get_file_and_mod()),
                     value.lib_protobuf_type(&self.get_file_and_mod()),
                     self.proto_field.number(),
@@ -1952,12 +1992,13 @@ impl<'a> FieldGen<'a> {
             SingularFieldFlag::WithoutFlag => unimplemented!(),
             SingularFieldFlag::WithFlag { option_kind, .. } => {
                 let self_field = self.self_field();
-                let ref field_type_name = self.elem().rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod());
+                let ref field_type_name = self.elem().rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
                 w.write_line(option_kind.unwrap_ref_or_else(
                     &format!("{}.as_ref()", self_field),
                     &format!(
-                        "<{} as ::protobuf::Message>::default_instance()",
-                        field_type_name
+                        "<{} as {}::Message>::default_instance()",
+                        field_type_name.to_code(&self.customize),
+                        protobuf_crate_path(&self.customize),
                     ),
                 ));
             }
@@ -2003,7 +2044,7 @@ impl<'a> FieldGen<'a> {
                             w.match_expr(&as_option.value, |w| {
                                 let v_type = as_option.rust_type.elem_type();
                                 let r_type = self.get_xxx_return_type();
-                                w.case_expr("Some(v)", v_type.into_target(&r_type, "v"));
+                                w.case_expr("Some(v)", v_type.into_target(&r_type, "v", &self.customize));
                                 let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
                                 w.case_expr("None", get_xxx_default_value_rust);
                             });
@@ -2019,8 +2060,8 @@ impl<'a> FieldGen<'a> {
                         ..
                     } => {
                         w.write_line(
-                            self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod())
-                                .into_target(&get_xxx_return_type, &self_field),
+                            self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()))
+                                .into_target(&get_xxx_return_type, &self_field, &self.customize),
                         );
                     }
                 }
@@ -2029,13 +2070,13 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_get_oneof(&self, o: &OneofField, w: &mut CodeWriter) {
-        let get_xxx_return_type = SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod());
+        let get_xxx_return_type = SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
         let OneofField { ref elem, .. } = o;
         w.match_expr(&format!("self.{}", o.oneof_field_name), |w| {
             let (refv, vtype) = if !elem.is_copy() {
-                ("ref v", elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()).ref_type())
+                ("ref v", elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).ref_type())
             } else {
-                ("v", elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()))
+                ("v", elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())))
             };
             w.case_expr(
                 format!(
@@ -2043,7 +2084,7 @@ impl<'a> FieldGen<'a> {
                     o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                     refv
                 ),
-                vtype.into_target(&get_xxx_return_type, "v"),
+                vtype.into_target(&get_xxx_return_type, "v", &self.customize),
             );
             w.case_expr("_", self.get_xxx_default_value_rust());
         });
@@ -2051,7 +2092,8 @@ impl<'a> FieldGen<'a> {
 
     fn write_message_field_get(&self, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
-        let fn_def = format!("get_{}(&self) -> {}", self.rust_name, get_xxx_return_type);
+        let fn_def = format!("get_{}(&self) -> {}",
+            self.rust_name, get_xxx_return_type.to_code(&self.customize));
 
         w.pub_fn(&fn_def, |w| match self.kind {
             FieldKind::Oneof(ref o) => {
@@ -2124,11 +2166,11 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_set(&self, w: &mut CodeWriter) {
-        let set_xxx_param_type = self.set_xxx_param_type(&self.proto_field.message.scope.get_file_and_mod());
+        let set_xxx_param_type = self.set_xxx_param_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
         w.comment("Param is passed by value, moved");
         let ref name = self.rust_name;
         w.pub_fn(
-            &format!("set_{}(&mut self, v: {})", name, set_xxx_param_type),
+            &format!("set_{}(&mut self, v: {})", name, set_xxx_param_type.to_code(&self.customize)),
             |w| {
                 let value_typed = RustValueTyped {
                     value: "v".to_owned(),
@@ -2136,7 +2178,7 @@ impl<'a> FieldGen<'a> {
                 };
                 match self.kind {
                     FieldKind::Oneof(ref oneof) => {
-                        let v = set_xxx_param_type.into_target(&oneof.rust_type(&self.proto_field.message.scope.get_file_and_mod()), "v");
+                        let v = set_xxx_param_type.into_target(&oneof.rust_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())), "v", &self.customize);
                         w.write_line(&format!(
                             "self.{} = ::std::option::Option::Some({}({}))",
                             oneof.oneof_field_name,
@@ -2173,16 +2215,16 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_mut(&self, w: &mut CodeWriter) {
-        let mut_xxx_return_type = self.mut_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod());
+        let mut_xxx_return_type = self.mut_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
         w.comment("Mutable pointer to the field.");
         if self.is_singular() {
             w.comment("If field is not initialized, it is initialized with default value first.");
         }
         let fn_def = match mut_xxx_return_type {
             RustType::Ref(ref param) => {
-                format!("mut_{}(&mut self) -> &mut {}", self.rust_name, **param)
+                format!("mut_{}(&mut self) -> &mut {}", self.rust_name, param.to_code(&self.customize))
             }
-            _ => panic!("not a ref: {}", mut_xxx_return_type),
+            _ => panic!("not a ref: {}", mut_xxx_return_type.to_code(&self.customize)),
         };
         w.pub_fn(&fn_def, |w| {
             match self.kind {
@@ -2207,7 +2249,9 @@ impl<'a> FieldGen<'a> {
                                 self_field_oneof,
                                 o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path()),
                                 self.element_default_value_rust()
-                                    .into_type(o.rust_type(&self.proto_field.message.scope.get_file_and_mod()))
+                                    .into_type(
+                                        o.rust_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
+                                        &self.customize)
                                     .value
                             ));
                         },
@@ -2230,15 +2274,17 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_take_oneof(&self, o: &OneofField, w: &mut CodeWriter) {
-        let take_xxx_return_type = self.take_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod());
+        let take_xxx_return_type = self.take_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
 
         // TODO: replace with if let
         w.write_line(&format!("if self.{}() {{", self.has_name()));
         w.indented(|w| {
             let self_field_oneof = format!("self.{}", o.oneof_field_name);
             w.match_expr(format!("{}.take()", self_field_oneof), |w| {
-                let value_in_some = o.rust_type(&self.proto_field.message.scope.get_file_and_mod()).value("v".to_owned());
-                let converted = value_in_some.into_type(self.take_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod()));
+                let value_in_some = o.rust_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).value("v".to_owned());
+                let converted = value_in_some.into_type(
+                    self.take_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())),
+                    &self.customize);
                 w.case_expr(
                     format!("::std::option::Option::Some({}(v))",
                         o.variant_path(&self.proto_field.message.scope.rust_path_to_file().clone().into_path())),
@@ -2251,9 +2297,9 @@ impl<'a> FieldGen<'a> {
         w.indented(|w| {
             w.write_line(
                 self.elem()
-                    .rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod())
-                    .default_value_typed()
-                    .into_type(take_xxx_return_type.clone())
+                    .rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()))
+                    .default_value_typed(&self.customize)
+                    .into_type(take_xxx_return_type.clone(), &self.customize)
                     .value,
             );
         });
@@ -2269,7 +2315,7 @@ impl<'a> FieldGen<'a> {
                 if !elem.is_copy() {
                     w.write_line(&option_kind.unwrap_or_else(
                         &format!("{}.take()", self.self_field()),
-                        &elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod()).default_value(),
+                        &elem.rust_storage_elem_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).default_value(&self.customize),
                     ));
                 } else {
                     w.write_line(&format!(
@@ -2285,18 +2331,18 @@ impl<'a> FieldGen<'a> {
             } => w.write_line(&format!(
                 "::std::mem::replace(&mut {}, {})",
                 self.self_field(),
-                self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod()).default_value()
+                self.full_storage_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone())).default_value(&self.customize)
             )),
         }
     }
 
     fn write_message_field_take(&self, w: &mut CodeWriter) {
-        let take_xxx_return_type = self.take_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod());
+        let take_xxx_return_type = self.take_xxx_return_type(&self.proto_field.message.scope.get_file_and_mod(self.customize.clone()));
         w.comment("Take field");
         w.pub_fn(
             &format!(
                 "take_{}(&mut self) -> {}",
-                self.rust_name, take_xxx_return_type
+                self.rust_name, take_xxx_return_type.to_code(&self.customize)
             ),
             |w| match self.kind {
                 FieldKind::Singular(ref s) => self.write_message_field_take_singular(&s, w),
@@ -2305,7 +2351,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!(
                         "::std::mem::replace(&mut self.{}, {})",
                         self.rust_name,
-                        take_xxx_return_type.default_value()
+                        take_xxx_return_type.default_value(&self.customize)
                     ));
                 }
             },

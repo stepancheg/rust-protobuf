@@ -34,7 +34,7 @@ esac
 protoc \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
-    --rust_opt 'serde_derive=true serde_derive_cfg=serde' \
+    --rust_opt 'serde_derive=true serde_derive_cfg=serde inside_protobuf=true' \
     -I../proto \
     ../proto/google/protobuf/*.proto \
     ../proto/google/protobuf/compiler/* \

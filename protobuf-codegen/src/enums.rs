@@ -13,6 +13,7 @@ use scope::WithScope;
 use rust_name::RustIdentWithPath;
 use rust_name::RustIdent;
 use file_descriptor::file_descriptor_proto_expr;
+use inside::protobuf_crate_path;
 
 
 #[derive(Clone)]
@@ -175,7 +176,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block("::protobuf::ProtobufEnum", &format!("{}", type_name), |w| {
+        w.impl_for_block(&format!("{}::ProtobufEnum", protobuf_crate_path(&self.customize)), &format!("{}", type_name), |w| {
             self.write_fn_value(w);
 
             w.write_line("");
@@ -205,14 +206,22 @@ impl<'a> EnumGen<'a> {
 
             if !self.lite_runtime {
                 w.write_line("");
-                w.def_fn(&format!("enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"), |w| {
-                    w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                        w.write_line(&format!(
-                            "::protobuf::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
-                            self.type_name,
-                            self.enum_with_scope.name_to_package(),
-                            file_descriptor_proto_expr(&self.enum_with_scope.scope)));
-                    });
+                let sig = format!(
+                    "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
+                    protobuf_crate_path(&self.customize));
+                w.def_fn(&sig, |w| {
+                    w.lazy_static_decl_get(
+                        "descriptor",
+                        &format!("{}::reflect::EnumDescriptor", protobuf_crate_path(&self.customize)),
+                        protobuf_crate_path(&self.customize),
+                        |w| {
+                            w.write_line(&format!(
+                                "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
+                                protobuf_crate_path(&self.customize),
+                                self.type_name,
+                                self.enum_with_scope.name_to_package(),
+                                file_descriptor_proto_expr(&self.enum_with_scope.scope)));
+                        });
                 });
             }
         });
@@ -220,7 +229,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
-            "::protobuf::reflect::ProtobufValue",
+            &format!("{}::reflect::ProtobufValue", protobuf_crate_path(&self.customize)),
             &format!("{}", self.type_name),
             |_w| {},
         )
@@ -230,7 +239,9 @@ impl<'a> EnumGen<'a> {
         assert!(self.allow_alias());
         w.impl_for_block("::std::cmp::PartialEq", &format!("{}", self.type_name), |w| {
             w.def_fn("eq(&self, other: &Self) -> bool", |w| {
-                w.write_line("::protobuf::ProtobufEnum::value(self) == ::protobuf::ProtobufEnum::value(other)");
+                w.write_line(&format!("{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
+                    protobuf_crate_path(&self.customize),
+                    protobuf_crate_path(&self.customize)));
             });
         });
     }
@@ -239,7 +250,8 @@ impl<'a> EnumGen<'a> {
         assert!(self.allow_alias());
         w.impl_for_block("::std::hash::Hash", &format!("{}", self.type_name), |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
-                w.write_line("state.write_i32(::protobuf::ProtobufEnum::value(self))");
+                w.write_line(&format!("state.write_i32({}::ProtobufEnum::value(self))",
+                    protobuf_crate_path(&self.customize)));
             });
         });
     }

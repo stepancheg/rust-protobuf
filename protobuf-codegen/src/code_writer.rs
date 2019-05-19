@@ -101,25 +101,28 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("pub const {}: {} = {};", name, field_type, init));
     }
 
-    pub fn lazy_static(&mut self, name: &str, ty: &str) {
+    pub fn lazy_static(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
         self.write_line(&format!(
-            "static {}: ::protobuf::rt::Lazy<{}> = ::protobuf::rt::Lazy::INIT;",
-            name, ty
+            "static {}: {}::rt::Lazy<{}> = {}::rt::Lazy::INIT;",
+            name,
+            protobuf_crate_path,
+            ty,
+            protobuf_crate_path,
         ));
     }
 
-    pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, init: F)
+    pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, protobuf_crate_path: &str, init: F)
     where
         F: Fn(&mut CodeWriter),
     {
-        self.lazy_static(name, ty);
+        self.lazy_static(name, ty, protobuf_crate_path);
         self.write_line(&format!("{}.get(|| {{", name));
         self.indented(|w| init(w));
         self.write_line(&format!("}})"));
     }
 
-    pub fn lazy_static_decl_get_simple(&mut self, name: &str, ty: &str, init: &str) {
-        self.lazy_static(name, ty);
+    pub fn lazy_static_decl_get_simple(&mut self, name: &str, ty: &str, init: &str, protobuf_crate_path: &str) {
+        self.lazy_static(name, ty, protobuf_crate_path);
         self.write_line(&format!("{}.get({})", name, init));
     }
 

@@ -11,7 +11,7 @@ use strx::capitalize;
 use rust::is_rust_keyword;
 use file::proto_path_to_rust_mod;
 use syntax::Syntax;
-use rust;
+use ::{rust, Customize};
 use message::message_name_to_nested_mod_name;
 use protobuf_name::ProtobufAbsolutePath;
 use protobuf_name::ProtobufRelativePath;
@@ -247,10 +247,11 @@ impl<'a> Scope<'a> {
         r
     }
 
-    pub fn get_file_and_mod(&self) -> FileAndMod {
+    pub fn get_file_and_mod(&self, customize: Customize) -> FileAndMod {
         FileAndMod {
             file: self.file_scope.file_descriptor.get_name().to_owned(),
             relative_mod: self.rust_path_to_file(),
+            customize,
         }
     }
 }

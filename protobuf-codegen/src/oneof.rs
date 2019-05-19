@@ -14,6 +14,7 @@ use serde;
 use Customize;
 use rust_name::{RustIdent, RustIdentWithPath, RustPath};
 use file_and_mod::FileAndMod;
+use inside::protobuf_crate_path;
 
 // oneof one { ... }
 #[derive(Clone)]
@@ -150,11 +151,11 @@ impl<'a> OneofGen<'a> {
     }
 
     pub fn full_storage_type(&self) -> RustType {
-        RustType::Option(Box::new(RustType::Oneof(self.type_name_relative(&self.oneof.message.scope.get_file_and_mod().relative_mod.into_path()).clone())))
+        RustType::Option(Box::new(RustType::Oneof(self.type_name_relative(&self.oneof.message.scope.get_file_and_mod(self.customize.clone()).relative_mod.into_path()).clone())))
     }
 
     fn get_file_and_mod(&self) -> FileAndMod {
-        let mut file_and_mod = self.message.message.scope.get_file_and_mod();
+        let mut file_and_mod = self.message.message.scope.get_file_and_mod(self.customize.clone());
         file_and_mod.relative_mod.push_ident(self.message.message.mod_name());
         file_and_mod
     }
@@ -168,14 +169,14 @@ impl<'a> OneofGen<'a> {
                 w.write_line(&format!(
                     "{}({}),",
                     variant.field.rust_name,
-                    &variant.rust_type(&self.get_file_and_mod()).to_string()
+                    &variant.rust_type(&self.get_file_and_mod()).to_code(&self.customize)
                 ));
             }
         });
     }
 
     fn write_impl_oneof(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Oneof", self.oneof.rust_name().ident.to_string(), |_w| {
+        w.impl_for_block(&format!("{}::Oneof", protobuf_crate_path(&self.customize)), self.oneof.rust_name().ident.to_string(), |_w| {
             // nothing here yet
         });
     }

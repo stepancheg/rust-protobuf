@@ -30,6 +30,7 @@ mod serde;
 mod well_known_types;
 pub mod case_convert;
 mod file_descriptor;
+mod inside;
 pub(crate) mod file_and_mod;
 
 pub(crate) mod scope;
@@ -56,6 +57,7 @@ use file::proto_path_to_rust_mod;
 pub use protobuf_name::ProtobufIdent;
 pub use protobuf_name::ProtobufAbsolutePath;
 pub use protobuf_name::ProtobufRelativePath;
+use inside::protobuf_crate_path;
 
 
 fn escape_byte(s: &mut String, b: u8) {
@@ -77,7 +79,7 @@ fn escape_byte(s: &mut String, b: u8) {
     }
 }
 
-fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
+fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize, w: &mut CodeWriter) {
     let fdp_bytes = file.write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
     w.indented(|w| {
@@ -110,18 +112,21 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, w: &mut CodeWriter) {
     w.write_line("");
     w.lazy_static(
         "file_descriptor_proto_lazy",
-        "::protobuf::descriptor::FileDescriptorProto",
+        &format!("{}::descriptor::FileDescriptorProto", protobuf_crate_path(customize)),
+        protobuf_crate_path(customize),
     );
     w.write_line("");
     w.def_fn(
-        "parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto",
+        &format!("parse_descriptor_proto() -> {}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)),
         |w| {
-            w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
+            w.write_line(&format!("{}::parse_from_bytes(file_descriptor_proto_data).unwrap()", protobuf_crate_path(customize)));
         },
     );
     w.write_line("");
     w.pub_fn(
-        "file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto",
+        &format!("file_descriptor_proto() -> &'static {}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)),
         |w| {
             w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
                 w.write_line("parse_descriptor_proto()");
@@ -174,11 +179,11 @@ fn gen_file(
             EnumGen::new(enum_type, &customize, root_scope).write(&mut w);
         }
 
-        write_extensions(file, &root_scope, &mut w);
+        write_extensions(file, &root_scope, &mut w, &customize);
 
         if !lite_runtime {
             w.write_line("");
-            write_file_descriptor_data(file, &mut w);
+            write_file_descriptor_data(file, &customize, &mut w);
         }
     }
 

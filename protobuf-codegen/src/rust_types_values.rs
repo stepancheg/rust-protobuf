@@ -1,5 +1,4 @@
 use std::cmp;
-use std::fmt;
 
 use super::well_known_types::is_well_known_type_full;
 use rust_name::RustIdent;
@@ -9,8 +8,9 @@ use protobuf::descriptor::*;
 use scope::RootScope;
 use scope::WithScope;
 use strx::capitalize;
-use ProtobufAbsolutePath;
+use ::{ProtobufAbsolutePath, Customize};
 use file_and_mod::FileAndMod;
+use inside::protobuf_crate_path;
 
 
 // Represent subset of rust types used in generated code
@@ -52,42 +52,42 @@ pub(crate) enum RustType {
     Group,
 }
 
-impl fmt::Display for RustType {
+impl RustType {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    pub(crate) fn to_code(&self, customize: &Customize) -> String {
         match *self {
-            RustType::Int(true, bits) => write!(f, "i{}", bits),
-            RustType::Int(false, bits) => write!(f, "u{}", bits),
-            RustType::Float(bits) => write!(f, "f{}", bits),
-            RustType::Bool => write!(f, "bool"),
-            RustType::Vec(ref param) => write!(f, "::std::vec::Vec<{}>", **param),
+            RustType::Int(true, bits) => format!("i{}", bits),
+            RustType::Int(false, bits) => format!("u{}", bits),
+            RustType::Float(bits) => format!("f{}", bits),
+            RustType::Bool => format!("bool"),
+            RustType::Vec(ref param) => format!("::std::vec::Vec<{}>", param.to_code(customize)),
             RustType::HashMap(ref key, ref value) => {
-                write!(f, "::std::collections::HashMap<{}, {}>", **key, **value)
+                format!("::std::collections::HashMap<{}, {}>", key.to_code(customize), value.to_code(customize))
             }
-            RustType::String => write!(f, "::std::string::String"),
-            RustType::Slice(ref param) => write!(f, "[{}]", **param),
-            RustType::Str => write!(f, "str"),
-            RustType::Option(ref param) => write!(f, "::std::option::Option<{}>", **param),
+            RustType::String => format!("::std::string::String"),
+            RustType::Slice(ref param) => format!("[{}]", param.to_code(customize)),
+            RustType::Str => format!("str"),
+            RustType::Option(ref param) => format!("::std::option::Option<{}>", param.to_code(customize)),
             RustType::SingularField(ref param) => {
-                write!(f, "::protobuf::SingularField<{}>", **param)
+                format!("{}::SingularField<{}>", protobuf_crate_path(customize), param.to_code(customize))
             }
             RustType::SingularPtrField(ref param) => {
-                write!(f, "::protobuf::SingularPtrField<{}>", **param)
+                format!("{}::SingularPtrField<{}>", protobuf_crate_path(customize), param.to_code(customize))
             }
             RustType::RepeatedField(ref param) => {
-                write!(f, "::protobuf::RepeatedField<{}>", **param)
+                format!("{}::RepeatedField<{}>", protobuf_crate_path(customize), param.to_code(customize))
             }
-            RustType::Uniq(ref param) => write!(f, "::std::boxed::Box<{}>", **param),
-            RustType::Ref(ref param) => write!(f, "&{}", **param),
+            RustType::Uniq(ref param) => format!("::std::boxed::Box<{}>", param.to_code(customize)),
+            RustType::Ref(ref param) => format!("&{}", param.to_code(customize)),
             RustType::Message(ref name)
             | RustType::Enum(ref name, _)
-            | RustType::Oneof(ref name) => write!(f, "{}", name),
+            | RustType::Oneof(ref name) => format!("{}", name),
             RustType::EnumOrUnknown(ref name, _) => {
-                write!(f, "::protobuf::ProtobufEnumOrUnknown<{}>", name)
+                format!("{}::ProtobufEnumOrUnknown<{}>", protobuf_crate_path(customize), name)
             },
-            RustType::Group => write!(f, "<group>"),
-            RustType::Bytes => write!(f, "::bytes::Bytes"),
-            RustType::Chars => write!(f, "::protobuf::Chars"),
+            RustType::Group => format!("<group>"),
+            RustType::Bytes => format!("::bytes::Bytes"),
+            RustType::Chars => format!("{}::Chars", protobuf_crate_path(customize)),
         }
     }
 }
@@ -188,7 +188,7 @@ impl RustType {
     }
 
     // default value for type
-    pub fn default_value(&self) -> String {
+    pub fn default_value(&self, customize: &Customize) -> String {
         match *self {
             RustType::Ref(ref t) if t.is_str() => "\"\"".to_string(),
             RustType::Ref(ref t) if t.is_slice().is_some() => "&[]".to_string(),
@@ -199,34 +199,38 @@ impl RustType {
             RustType::HashMap(..) => "::std::collections::HashMap::new()".to_string(),
             RustType::String => "::std::string::String::new()".to_string(),
             RustType::Bytes => "::bytes::Bytes::new()".to_string(),
-            RustType::Chars => "::protobuf::Chars::new()".to_string(),
+            RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
             RustType::Option(..) => "::std::option::Option::None".to_string(),
-            RustType::SingularField(..) => "::protobuf::SingularField::none()".to_string(),
-            RustType::SingularPtrField(..) => "::protobuf::SingularPtrField::none()".to_string(),
-            RustType::RepeatedField(..) => "::protobuf::RepeatedField::new()".to_string(),
+            RustType::SingularField(..) => format!("{}::SingularField::none()", protobuf_crate_path(customize)),
+            RustType::SingularPtrField(..) => format!("{}::SingularPtrField::none()", protobuf_crate_path(customize)),
+            RustType::RepeatedField(..) => format!("{}::RepeatedField::new()", protobuf_crate_path(customize)),
             RustType::Message(ref name) => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message() => match **m {
                 RustType::Message(ref name) => {
-                    format!("<{} as ::protobuf::Message>::default_instance()", name)
+                    format!("<{} as {}::Message>::default_instance()",
+                        name, protobuf_crate_path(customize))
                 }
                 _ => unreachable!(),
             },
             // Note: default value of enum type may not be equal to default value of field
             RustType::Enum(ref name, ref default) => format!("{}::{}", name, default),
-            RustType::EnumOrUnknown(ref name, ref default) => format!("::protobuf::ProtobufEnumOrUnknown::new({}::{})", name, default),
-            _ => panic!("cannot create default value for: {}", *self),
+            RustType::EnumOrUnknown(ref name, ref default) => {
+                format!("{}::ProtobufEnumOrUnknown::new({}::{})",
+                    protobuf_crate_path(customize), name, default)
+            },
+            _ => panic!("cannot create default value for: {:?}", self),
         }
     }
 
-    pub fn default_value_typed(self) -> RustValueTyped {
+    pub fn default_value_typed(self, customize: &Customize) -> RustValueTyped {
         RustValueTyped {
-            value: self.default_value(),
+            value: self.default_value(customize),
             rust_type: self,
         }
     }
 
     /// Emit a code to clear a variable `v`
-    pub fn clear(&self, v: &str) -> String {
+    pub fn clear(&self, v: &str, customize: &Customize) -> String {
         match *self {
             RustType::Option(..) => format!("{} = ::std::option::Option::None", v),
             RustType::Vec(..)
@@ -236,27 +240,27 @@ impl RustType {
             | RustType::SingularField(..)
             | RustType::SingularPtrField(..)
             | RustType::HashMap(..) => format!("{}.clear()", v),
-            RustType::Chars => format!("::protobuf::Clear::clear(&mut {})", v),
+            RustType::Chars => format!("{}::Clear::clear(&mut {})", protobuf_crate_path(customize), v),
             RustType::Bool
             | RustType::Float(..)
             | RustType::Int(..)
             | RustType::Enum(..)
             | RustType::EnumOrUnknown(..) => {
-                format!("{} = {}", v, self.default_value())
+                format!("{} = {}", v, self.default_value(customize))
             }
             ref ty => panic!("cannot clear type: {:?}", ty),
         }
     }
 
     // expression to convert `v` of type `self` to type `target`
-    pub fn into_target(&self, target: &RustType, v: &str) -> String {
-        self.try_into_target(target, v)
+    pub fn into_target(&self, target: &RustType, v: &str, customize: &Customize) -> String {
+        self.try_into_target(target, v, customize)
             .expect(&format!("failed to convert {:?} into {:?}", self, target))
     }
 
     // https://github.com/rust-lang-nursery/rustfmt/issues/3131
     #[cfg_attr(rustfmt, rustfmt_skip)]
-    fn try_into_target(&self, target: &RustType, v: &str) -> Result<String, ()> {
+    fn try_into_target(&self, target: &RustType, v: &str, customize: &Customize) -> Result<String, ()> {
         {
             if let Some(t1) = self.is_ref().and_then(|t| t.is_box()) {
                 if let Some(t2) = target.is_ref() {
@@ -293,7 +297,10 @@ impl RustType {
                        RustType::Str => true,
                        _ => false,
                     // TODO: from_static
-                   } => return Ok(format!("<::protobuf::Chars as ::std::convert::From<_>>::from({}.to_owned())", v)),
+                   } => {
+                return Ok(format!("<{}::Chars as ::std::convert::From<_>>::from({}.to_owned())",
+                    protobuf_crate_path(customize), v))
+            },
             (&RustType::Ref(ref t1), &RustType::Vec(ref t2))
                 if match (&**t1, &**t2) {
                        (&RustType::Slice(ref x), ref y) => **x == **y,
@@ -318,29 +325,29 @@ impl RustType {
                        _ => false,
                    } => return Ok(format!("&{}", v)),
             (&RustType::Enum(..), &RustType::Int(true, 32)) => {
-                return Ok(format!("::protobuf::ProtobufEnum::value(&{})", v))
+                return Ok(format!("{}::ProtobufEnum::value(&{})", protobuf_crate_path(customize), v))
             },
             (&RustType::EnumOrUnknown(..), &RustType::Int(true, 32)) => {
-                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::value(&{})", v))
+                return Ok(format!("{}::ProtobufEnumOrUnknown::value(&{})", protobuf_crate_path(customize), v))
             },
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
-                return Ok(format!("::protobuf::ProtobufEnum::value({})", v))
+                return Ok(format!("{}::ProtobufEnum::value({})", protobuf_crate_path(customize), v))
             }
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum_or_unknown() => {
-                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::value({})", v))
+                return Ok(format!("{}::ProtobufEnumOrUnknown::value({})", protobuf_crate_path(customize), v))
             },
             (&RustType::EnumOrUnknown(ref f, ..), &RustType::Enum(ref t, ..)) if f == t => {
                 // TODO: ignores default value
-                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::enum_value_or_default(&{})", v))
+                return Ok(format!("{}::ProtobufEnumOrUnknown::enum_value_or_default(&{})", protobuf_crate_path(customize), v))
             }
             (&RustType::Enum(ref f, ..), &RustType::EnumOrUnknown(ref t, ..)) if f == t => {
-                return Ok(format!("::protobuf::ProtobufEnumOrUnknown::new({})", v))
+                return Ok(format!("{}::ProtobufEnumOrUnknown::new({})", protobuf_crate_path(customize), v))
             }
             _ => (),
         };
 
         if let &RustType::Ref(ref s) = self {
-            if let Ok(conv) = s.try_into_target(target, v) {
+            if let Ok(conv) = s.try_into_target(target, v, customize) {
                 return Ok(conv);
             }
         }
@@ -356,7 +363,7 @@ impl RustType {
             &RustType::Bytes => RustType::Slice(Box::new(RustType::u8())),
             &RustType::Message(ref p) => RustType::Message(p.clone()),
             &RustType::Uniq(ref p) => RustType::Uniq(p.clone()),
-            x => panic!("no ref type for {}", x),
+            x => panic!("no ref type for {:?}", x),
         }))
     }
 
@@ -365,7 +372,7 @@ impl RustType {
             &RustType::Option(ref ty) => (**ty).clone(),
             &RustType::SingularField(ref ty) => (**ty).clone(),
             &RustType::SingularPtrField(ref ty) => (**ty).clone(),
-            x => panic!("cannot get elem type of {}", x),
+            x => panic!("cannot get elem type of {:?}", x),
         }
     }
 
@@ -377,7 +384,7 @@ impl RustType {
             | &RustType::RepeatedField(ref ty)
             | &RustType::SingularField(ref ty)
             | &RustType::SingularPtrField(ref ty) => RustType::Ref(ty.clone()),
-            x => panic!("cannot iterate {}", x),
+            x => panic!("cannot iterate {:?}", x),
         }
     }
 
@@ -396,16 +403,16 @@ pub(crate) struct RustValueTyped {
 }
 
 impl RustValueTyped {
-    pub fn into_type(&self, target: RustType) -> RustValueTyped {
-        let target_value = self.rust_type.into_target(&target, &self.value);
+    pub fn into_type(&self, target: RustType, customize: &Customize) -> RustValueTyped {
+        let target_value = self.rust_type.into_target(&target, &self.value, customize);
         RustValueTyped {
             value: target_value,
             rust_type: target,
         }
     }
 
-    pub fn boxed(self) -> RustValueTyped {
-        self.into_type(RustType::Uniq(Box::new(self.rust_type.clone())))
+    pub fn boxed(self, customize: &Customize) -> RustValueTyped {
+        self.into_type(RustType::Uniq(Box::new(self.rust_type.clone())), customize)
     }
 }
 
@@ -512,11 +519,12 @@ pub(crate) fn message_or_enum_to_rust_relative(
     } else if let Some(name) = is_well_known_type_full(&message_or_enum.name_absolute()) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
-        RustIdentWithPath::from(format!("::protobuf::well_known_types::{}", name))
+        RustIdentWithPath::from(format!("{}::well_known_types::{}", protobuf_crate_path(&current.customize), name))
     } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
         // Messages defined in descriptor.proto
         RustIdentWithPath::from(format!(
-            "::protobuf::descriptor::{}",
+            "{}::descriptor::{}",
+            protobuf_crate_path(&current.customize),
             message_or_enum.rust_name_to_file()
         ))
     } else {
@@ -557,29 +565,30 @@ pub(crate) enum ProtobufTypeGen {
 }
 
 impl ProtobufTypeGen {
-    pub fn rust_type(&self) -> String {
+    pub fn rust_type(&self, customize: &Customize) -> String {
         match self {
             &ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => format!(
-                "::protobuf::types::ProtobufType{}",
+                "{}::types::ProtobufType{}",
+                protobuf_crate_path(customize),
                 capitalize(protobuf_name(t))
             ),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_BYTES,
                 PrimitiveTypeVariant::Carllerche,
-            ) => format!("::protobuf::types::ProtobufTypeCarllercheBytes"),
+            ) => format!("{}::types::ProtobufTypeCarllercheBytes", protobuf_crate_path(customize)),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
                 PrimitiveTypeVariant::Carllerche,
-            ) => format!("::protobuf::types::ProtobufTypeCarllercheChars"),
+            ) => format!("{}::types::ProtobufTypeCarllercheChars", protobuf_crate_path(customize)),
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             &ProtobufTypeGen::Message(ref name) => {
-                format!("::protobuf::types::ProtobufTypeMessage<{}>", name)
+                format!("{}::types::ProtobufTypeMessage<{}>", protobuf_crate_path(customize), name)
             }
             &ProtobufTypeGen::EnumOrUnknown(ref name) => {
-                format!("::protobuf::types::ProtobufTypeEnumOrUnknown<{}>", name)
+                format!("{}::types::ProtobufTypeEnumOrUnknown<{}>", protobuf_crate_path(customize), name)
             }
             &ProtobufTypeGen::Enum(ref name) => {
-                format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
+                format!("{}::types::ProtobufTypeEnum<{}>", protobuf_crate_path(customize), name)
             }
         }
     }
@@ -596,6 +605,6 @@ mod test {
         )))));
         let t2 = RustType::Ref(Box::new(RustType::Message(RustIdentWithPath::new("Ab"))));
 
-        assert_eq!("&**v", t1.into_target(&t2, "v"));
+        assert_eq!("&**v", t1.into_target(&t2, "v", &Customize::default()));
     }
 }

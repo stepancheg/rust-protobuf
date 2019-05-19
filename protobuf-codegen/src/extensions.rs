@@ -5,14 +5,16 @@ use scope::RootScope;
 use rust_name::RustIdentWithPath;
 use rust_name::RustRelativePath;
 use field::rust_field_name_for_protobuf_field_name;
-use ProtobufAbsolutePath;
+use ::{ProtobufAbsolutePath, Customize};
 use file_and_mod::FileAndMod;
+use inside::protobuf_crate_path;
 
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,
     root_scope: &'a RootScope<'a>,
     field: &'a FieldDescriptorProto,
+    customize: Customize,
 }
 
 impl<'a> ExtGen<'a> {
@@ -22,6 +24,7 @@ impl<'a> ExtGen<'a> {
             &FileAndMod {
                 file: self.file.get_name().to_owned(),
                 relative_mod: RustRelativePath::from("exts"),
+                customize: self.customize.clone(),
             },
             self.root_scope)
     }
@@ -43,6 +46,7 @@ impl<'a> ExtGen<'a> {
                 &FileAndMod {
                     file: self.file.get_name().to_owned(),
                     relative_mod: RustRelativePath::from("exts"),
+                    customize: self.customize.clone(),
                 },
                 self.root_scope,
             );
@@ -64,14 +68,14 @@ impl<'a> ExtGen<'a> {
         } else {
             "ExtFieldOptional"
         };
-        let field_type = format!("::protobuf::ext::{}", suffix);
+        let field_type = format!("{}::ext::{}", protobuf_crate_path(&self.customize), suffix);
         w.pub_const(
             rust_field_name_for_protobuf_field_name(self.field.get_name()).get(),
             &format!(
                 "{}<{}, {}>",
                 field_type,
                 self.extendee_rust_name(),
-                self.return_type_gen().rust_type()
+                self.return_type_gen().rust_type(&self.customize),
             ),
             &format!(
                 "{} {{ field_number: {}, phantom: ::std::marker::PhantomData }}",
@@ -82,7 +86,13 @@ impl<'a> ExtGen<'a> {
     }
 }
 
-pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter) {
+pub(crate) fn write_extensions(
+    file: &FileDescriptorProto,
+    root_scope: &RootScope,
+    w: &mut CodeWriter,
+    customize: &Customize,
+)
+{
     if file.extension.is_empty() {
         return;
     }
@@ -99,6 +109,7 @@ pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScop
                 file: file,
                 root_scope: root_scope,
                 field: field,
+                customize: customize.clone(),
             }.write(w);
         }
     });
