@@ -135,6 +135,7 @@ fn gen_file(
     _files_map: &HashMap<&Path, &FileDescriptorProto>,
     root_scope: &RootScope,
     customize: &Customize,
+    parser: &str,
 ) -> Option<compiler_plugin::GenResult> {
     // TODO: use it
     let mut customize = customize.clone();
@@ -159,7 +160,7 @@ fn gen_file(
     {
         let mut w = CodeWriter::new(&mut v);
 
-        w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"));
+        w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
 
         for message in &scope.get_messages() {
             // ignore map entries, because they are not used in map fields
@@ -192,6 +193,7 @@ fn gen_file(
 // So be careful changing its signature.
 pub fn gen(
     file_descriptors: &[FileDescriptorProto],
+    parser: &str,
     files_to_generate: &[PathBuf],
     customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
@@ -208,13 +210,14 @@ pub fn gen(
             "file not found in file descriptors: {:?}, files: {:?}",
             file_name, files_map.keys()
         ));
-        results.extend(gen_file(file, &files_map, &root_scope, customize));
+        results.extend(gen_file(file, &files_map, &root_scope, customize, parser));
     }
     results
 }
 
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
+    parser: &str,
     files_to_generate: &[PathBuf],
     out_dir: &Path,
     customize: &Customize,
@@ -233,7 +236,7 @@ pub fn gen_and_write(
         }
     }
 
-    let results = gen(file_descriptors, files_to_generate, customize);
+    let results = gen(file_descriptors, parser, files_to_generate, customize);
 
     for r in &results {
         let mut file_path = out_dir.to_owned();
@@ -254,6 +257,6 @@ pub fn gen_and_write(
 pub fn protoc_gen_rust_main() {
     compiler_plugin::plugin_main(|r| {
         let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
-        gen(r.file_descriptors, r.files_to_generate, &customize)
+        gen(r.file_descriptors, "protoc --rust-out=...", r.files_to_generate, &customize)
     });
 }

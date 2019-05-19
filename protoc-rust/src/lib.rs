@@ -113,6 +113,7 @@ impl Args {
 
         protobuf_codegen::gen_and_write(
             &fds.file,
+            &format!("protoc {}", protoc.version()?),
             &files_to_generate,
             &self.out_dir,
             &self.customize,

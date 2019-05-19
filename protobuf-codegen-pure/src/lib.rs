@@ -78,6 +78,7 @@ impl Args {
 
         protobuf_codegen::gen_and_write(
             &p.file_descriptors,
+            &format!("protobuf-codegen-pure={}", env!("CARGO_PKG_VERSION")),
             &p.relative_paths,
             &self.out_dir,
             &self.customize,

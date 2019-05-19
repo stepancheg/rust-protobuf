@@ -1,5 +1,6 @@
 use std::ffi::{OsStr, OsString};
 use std::io;
+use std::fmt;
 use std::path::{Path, PathBuf};
 use std::process;
 
@@ -322,6 +323,12 @@ pub struct Version {
 impl Version {
     pub fn is_3(&self) -> bool {
         self.version.starts_with("3")
+    }
+}
+
+impl fmt::Display for Version {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&self.version, f)
     }
 }
 
