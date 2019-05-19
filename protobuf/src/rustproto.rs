@@ -19,7 +19,6 @@
 #![allow(unused_results)]
 
 pub mod exts {
-    use protobuf::Message as Message_imported_for_functions;
 
     pub const expose_oneof_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
 
