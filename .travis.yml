@@ -27,8 +27,8 @@ matrix:
     os: windows
     rust: stable
     env: PROTOBUF_VERSION=3.6.1 ON_WINDOWS=1
-  allow_failures:
-  - os: windows
+#  allow_failures:
+#  - os: windows
 
 before_install:
   - ci/env-debug.sh
