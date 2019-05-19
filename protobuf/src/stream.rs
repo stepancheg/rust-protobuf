@@ -124,11 +124,11 @@ pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
 }
 
-struct CodedInputStreamAsRead<'a, 'b> {
+struct CodedInputStreamAsRead<'a, 'b> where 'a: 'b {
     coded_input_stream: &'b mut CodedInputStream<'a>,
 }
 
-impl<'a, 'b> io::Read for CodedInputStreamAsRead<'a, 'b> {
+impl<'a, 'b> io::Read for CodedInputStreamAsRead<'a, 'b> where 'a: 'b {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.coded_input_stream.source.read(buf).map_err(|e| io::Error::new(io::ErrorKind::Other, e))
     }
