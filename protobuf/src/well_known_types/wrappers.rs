@@ -25,14 +25,14 @@ pub struct DoubleValue {
     pub value: f64,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a DoubleValue {
     fn default() -> &'a DoubleValue {
-        <DoubleValue as ::protobuf::Message>::default_instance()
+        <DoubleValue as crate::Message>::default_instance()
     }
 }
 
@@ -42,23 +42,23 @@ impl DoubleValue {
     }
 }
 
-impl ::protobuf::Message for DoubleValue {
+impl crate::Message for DoubleValue {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeFixed64 {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_double()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -72,12 +72,12 @@ impl ::protobuf::Message for DoubleValue {
         if self.value != 0. {
             my_size += 9;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != 0. {
             os.write_double(1, self.value)?;
         }
@@ -89,15 +89,15 @@ impl ::protobuf::Message for DoubleValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -105,16 +105,16 @@ impl ::protobuf::Message for DoubleValue {
         DoubleValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeDouble>(
                 "value",
                 |m: &DoubleValue| { &m.value },
                 |m: &mut DoubleValue| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<DoubleValue>(
+            crate::reflect::MessageDescriptor::new::<DoubleValue>(
                 "DoubleValue",
                 fields,
                 file_descriptor_proto()
@@ -123,12 +123,12 @@ impl ::protobuf::Message for DoubleValue {
     }
 
     fn default_instance() -> &'static DoubleValue {
-        static instance: ::protobuf::rt::Lazy<DoubleValue> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<DoubleValue> = crate::rt::Lazy::INIT;
         instance.get(DoubleValue::new)
     }
 }
 
-impl ::protobuf::Clear for DoubleValue {
+impl crate::Clear for DoubleValue {
     fn clear(&mut self) {
         self.value = 0.;
         self.unknown_fields.clear();
@@ -137,11 +137,11 @@ impl ::protobuf::Clear for DoubleValue {
 
 impl ::std::fmt::Debug for DoubleValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for DoubleValue {
+impl crate::reflect::ProtobufValue for DoubleValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -151,14 +151,14 @@ pub struct FloatValue {
     pub value: f32,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FloatValue {
     fn default() -> &'a FloatValue {
-        <FloatValue as ::protobuf::Message>::default_instance()
+        <FloatValue as crate::Message>::default_instance()
     }
 }
 
@@ -168,23 +168,23 @@ impl FloatValue {
     }
 }
 
-impl ::protobuf::Message for FloatValue {
+impl crate::Message for FloatValue {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeFixed32 {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_float()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -198,12 +198,12 @@ impl ::protobuf::Message for FloatValue {
         if self.value != 0. {
             my_size += 5;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != 0. {
             os.write_float(1, self.value)?;
         }
@@ -215,15 +215,15 @@ impl ::protobuf::Message for FloatValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -231,16 +231,16 @@ impl ::protobuf::Message for FloatValue {
         FloatValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeFloat>(
                 "value",
                 |m: &FloatValue| { &m.value },
                 |m: &mut FloatValue| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<FloatValue>(
+            crate::reflect::MessageDescriptor::new::<FloatValue>(
                 "FloatValue",
                 fields,
                 file_descriptor_proto()
@@ -249,12 +249,12 @@ impl ::protobuf::Message for FloatValue {
     }
 
     fn default_instance() -> &'static FloatValue {
-        static instance: ::protobuf::rt::Lazy<FloatValue> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<FloatValue> = crate::rt::Lazy::INIT;
         instance.get(FloatValue::new)
     }
 }
 
-impl ::protobuf::Clear for FloatValue {
+impl crate::Clear for FloatValue {
     fn clear(&mut self) {
         self.value = 0.;
         self.unknown_fields.clear();
@@ -263,11 +263,11 @@ impl ::protobuf::Clear for FloatValue {
 
 impl ::std::fmt::Debug for FloatValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for FloatValue {
+impl crate::reflect::ProtobufValue for FloatValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -277,14 +277,14 @@ pub struct Int64Value {
     pub value: i64,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Int64Value {
     fn default() -> &'a Int64Value {
-        <Int64Value as ::protobuf::Message>::default_instance()
+        <Int64Value as crate::Message>::default_instance()
     }
 }
 
@@ -294,23 +294,23 @@ impl Int64Value {
     }
 }
 
-impl ::protobuf::Message for Int64Value {
+impl crate::Message for Int64Value {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_int64()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -322,14 +322,14 @@ impl ::protobuf::Message for Int64Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += ::protobuf::rt::value_size(1, self.value, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_int64(1, self.value)?;
         }
@@ -341,15 +341,15 @@ impl ::protobuf::Message for Int64Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -357,16 +357,16 @@ impl ::protobuf::Message for Int64Value {
         Int64Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt64>(
                 "value",
                 |m: &Int64Value| { &m.value },
                 |m: &mut Int64Value| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<Int64Value>(
+            crate::reflect::MessageDescriptor::new::<Int64Value>(
                 "Int64Value",
                 fields,
                 file_descriptor_proto()
@@ -375,12 +375,12 @@ impl ::protobuf::Message for Int64Value {
     }
 
     fn default_instance() -> &'static Int64Value {
-        static instance: ::protobuf::rt::Lazy<Int64Value> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<Int64Value> = crate::rt::Lazy::INIT;
         instance.get(Int64Value::new)
     }
 }
 
-impl ::protobuf::Clear for Int64Value {
+impl crate::Clear for Int64Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -389,11 +389,11 @@ impl ::protobuf::Clear for Int64Value {
 
 impl ::std::fmt::Debug for Int64Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Int64Value {
+impl crate::reflect::ProtobufValue for Int64Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -403,14 +403,14 @@ pub struct UInt64Value {
     pub value: u64,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UInt64Value {
     fn default() -> &'a UInt64Value {
-        <UInt64Value as ::protobuf::Message>::default_instance()
+        <UInt64Value as crate::Message>::default_instance()
     }
 }
 
@@ -420,23 +420,23 @@ impl UInt64Value {
     }
 }
 
-impl ::protobuf::Message for UInt64Value {
+impl crate::Message for UInt64Value {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_uint64()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -448,14 +448,14 @@ impl ::protobuf::Message for UInt64Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += ::protobuf::rt::value_size(1, self.value, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint64(1, self.value)?;
         }
@@ -467,15 +467,15 @@ impl ::protobuf::Message for UInt64Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -483,16 +483,16 @@ impl ::protobuf::Message for UInt64Value {
         UInt64Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeUint64>(
                 "value",
                 |m: &UInt64Value| { &m.value },
                 |m: &mut UInt64Value| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<UInt64Value>(
+            crate::reflect::MessageDescriptor::new::<UInt64Value>(
                 "UInt64Value",
                 fields,
                 file_descriptor_proto()
@@ -501,12 +501,12 @@ impl ::protobuf::Message for UInt64Value {
     }
 
     fn default_instance() -> &'static UInt64Value {
-        static instance: ::protobuf::rt::Lazy<UInt64Value> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<UInt64Value> = crate::rt::Lazy::INIT;
         instance.get(UInt64Value::new)
     }
 }
 
-impl ::protobuf::Clear for UInt64Value {
+impl crate::Clear for UInt64Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -515,11 +515,11 @@ impl ::protobuf::Clear for UInt64Value {
 
 impl ::std::fmt::Debug for UInt64Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for UInt64Value {
+impl crate::reflect::ProtobufValue for UInt64Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -529,14 +529,14 @@ pub struct Int32Value {
     pub value: i32,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Int32Value {
     fn default() -> &'a Int32Value {
-        <Int32Value as ::protobuf::Message>::default_instance()
+        <Int32Value as crate::Message>::default_instance()
     }
 }
 
@@ -546,23 +546,23 @@ impl Int32Value {
     }
 }
 
-impl ::protobuf::Message for Int32Value {
+impl crate::Message for Int32Value {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_int32()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -574,14 +574,14 @@ impl ::protobuf::Message for Int32Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += ::protobuf::rt::value_size(1, self.value, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_int32(1, self.value)?;
         }
@@ -593,15 +593,15 @@ impl ::protobuf::Message for Int32Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -609,16 +609,16 @@ impl ::protobuf::Message for Int32Value {
         Int32Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt32>(
                 "value",
                 |m: &Int32Value| { &m.value },
                 |m: &mut Int32Value| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<Int32Value>(
+            crate::reflect::MessageDescriptor::new::<Int32Value>(
                 "Int32Value",
                 fields,
                 file_descriptor_proto()
@@ -627,12 +627,12 @@ impl ::protobuf::Message for Int32Value {
     }
 
     fn default_instance() -> &'static Int32Value {
-        static instance: ::protobuf::rt::Lazy<Int32Value> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<Int32Value> = crate::rt::Lazy::INIT;
         instance.get(Int32Value::new)
     }
 }
 
-impl ::protobuf::Clear for Int32Value {
+impl crate::Clear for Int32Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -641,11 +641,11 @@ impl ::protobuf::Clear for Int32Value {
 
 impl ::std::fmt::Debug for Int32Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Int32Value {
+impl crate::reflect::ProtobufValue for Int32Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -655,14 +655,14 @@ pub struct UInt32Value {
     pub value: u32,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UInt32Value {
     fn default() -> &'a UInt32Value {
-        <UInt32Value as ::protobuf::Message>::default_instance()
+        <UInt32Value as crate::Message>::default_instance()
     }
 }
 
@@ -672,23 +672,23 @@ impl UInt32Value {
     }
 }
 
-impl ::protobuf::Message for UInt32Value {
+impl crate::Message for UInt32Value {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_uint32()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -700,14 +700,14 @@ impl ::protobuf::Message for UInt32Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += ::protobuf::rt::value_size(1, self.value, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
@@ -719,15 +719,15 @@ impl ::protobuf::Message for UInt32Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -735,16 +735,16 @@ impl ::protobuf::Message for UInt32Value {
         UInt32Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeUint32>(
                 "value",
                 |m: &UInt32Value| { &m.value },
                 |m: &mut UInt32Value| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<UInt32Value>(
+            crate::reflect::MessageDescriptor::new::<UInt32Value>(
                 "UInt32Value",
                 fields,
                 file_descriptor_proto()
@@ -753,12 +753,12 @@ impl ::protobuf::Message for UInt32Value {
     }
 
     fn default_instance() -> &'static UInt32Value {
-        static instance: ::protobuf::rt::Lazy<UInt32Value> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<UInt32Value> = crate::rt::Lazy::INIT;
         instance.get(UInt32Value::new)
     }
 }
 
-impl ::protobuf::Clear for UInt32Value {
+impl crate::Clear for UInt32Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -767,11 +767,11 @@ impl ::protobuf::Clear for UInt32Value {
 
 impl ::std::fmt::Debug for UInt32Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for UInt32Value {
+impl crate::reflect::ProtobufValue for UInt32Value {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -781,14 +781,14 @@ pub struct BoolValue {
     pub value: bool,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a BoolValue {
     fn default() -> &'a BoolValue {
-        <BoolValue as ::protobuf::Message>::default_instance()
+        <BoolValue as crate::Message>::default_instance()
     }
 }
 
@@ -798,23 +798,23 @@ impl BoolValue {
     }
 }
 
-impl ::protobuf::Message for BoolValue {
+impl crate::Message for BoolValue {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_bool()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -828,12 +828,12 @@ impl ::protobuf::Message for BoolValue {
         if self.value != false {
             my_size += 2;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
@@ -845,15 +845,15 @@ impl ::protobuf::Message for BoolValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -861,16 +861,16 @@ impl ::protobuf::Message for BoolValue {
         BoolValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeBool>(
                 "value",
                 |m: &BoolValue| { &m.value },
                 |m: &mut BoolValue| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<BoolValue>(
+            crate::reflect::MessageDescriptor::new::<BoolValue>(
                 "BoolValue",
                 fields,
                 file_descriptor_proto()
@@ -879,12 +879,12 @@ impl ::protobuf::Message for BoolValue {
     }
 
     fn default_instance() -> &'static BoolValue {
-        static instance: ::protobuf::rt::Lazy<BoolValue> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<BoolValue> = crate::rt::Lazy::INIT;
         instance.get(BoolValue::new)
     }
 }
 
-impl ::protobuf::Clear for BoolValue {
+impl crate::Clear for BoolValue {
     fn clear(&mut self) {
         self.value = false;
         self.unknown_fields.clear();
@@ -893,11 +893,11 @@ impl ::protobuf::Clear for BoolValue {
 
 impl ::std::fmt::Debug for BoolValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for BoolValue {
+impl crate::reflect::ProtobufValue for BoolValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -907,14 +907,14 @@ pub struct StringValue {
     pub value: ::std::string::String,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a StringValue {
     fn default() -> &'a StringValue {
-        <StringValue as ::protobuf::Message>::default_instance()
+        <StringValue as crate::Message>::default_instance()
     }
 }
 
@@ -924,20 +924,20 @@ impl StringValue {
     }
 }
 
-impl ::protobuf::Message for StringValue {
+impl crate::Message for StringValue {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.value)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.value)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -949,14 +949,14 @@ impl ::protobuf::Message for StringValue {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.value.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.value);
+            my_size += crate::rt::string_size(1, &self.value);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if !self.value.is_empty() {
             os.write_string(1, &self.value)?;
         }
@@ -968,15 +968,15 @@ impl ::protobuf::Message for StringValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -984,16 +984,16 @@ impl ::protobuf::Message for StringValue {
         StringValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                 "value",
                 |m: &StringValue| { &m.value },
                 |m: &mut StringValue| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<StringValue>(
+            crate::reflect::MessageDescriptor::new::<StringValue>(
                 "StringValue",
                 fields,
                 file_descriptor_proto()
@@ -1002,12 +1002,12 @@ impl ::protobuf::Message for StringValue {
     }
 
     fn default_instance() -> &'static StringValue {
-        static instance: ::protobuf::rt::Lazy<StringValue> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<StringValue> = crate::rt::Lazy::INIT;
         instance.get(StringValue::new)
     }
 }
 
-impl ::protobuf::Clear for StringValue {
+impl crate::Clear for StringValue {
     fn clear(&mut self) {
         self.value.clear();
         self.unknown_fields.clear();
@@ -1016,11 +1016,11 @@ impl ::protobuf::Clear for StringValue {
 
 impl ::std::fmt::Debug for StringValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for StringValue {
+impl crate::reflect::ProtobufValue for StringValue {
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1030,14 +1030,14 @@ pub struct BytesValue {
     pub value: ::std::vec::Vec<u8>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a BytesValue {
     fn default() -> &'a BytesValue {
-        <BytesValue as ::protobuf::Message>::default_instance()
+        <BytesValue as crate::Message>::default_instance()
     }
 }
 
@@ -1047,20 +1047,20 @@ impl BytesValue {
     }
 }
 
-impl ::protobuf::Message for BytesValue {
+impl crate::Message for BytesValue {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.value)?;
+                    crate::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.value)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -1072,14 +1072,14 @@ impl ::protobuf::Message for BytesValue {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.value.is_empty() {
-            my_size += ::protobuf::rt::bytes_size(1, &self.value);
+            my_size += crate::rt::bytes_size(1, &self.value);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if !self.value.is_empty() {
             os.write_bytes(1, &self.value)?;
         }
@@ -1091,15 +1091,15 @@ impl ::protobuf::Message for BytesValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1107,16 +1107,16 @@ impl ::protobuf::Message for BytesValue {
         BytesValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeBytes>(
                 "value",
                 |m: &BytesValue| { &m.value },
                 |m: &mut BytesValue| { &mut m.value },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<BytesValue>(
+            crate::reflect::MessageDescriptor::new::<BytesValue>(
                 "BytesValue",
                 fields,
                 file_descriptor_proto()
@@ -1125,12 +1125,12 @@ impl ::protobuf::Message for BytesValue {
     }
 
     fn default_instance() -> &'static BytesValue {
-        static instance: ::protobuf::rt::Lazy<BytesValue> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<BytesValue> = crate::rt::Lazy::INIT;
         instance.get(BytesValue::new)
     }
 }
 
-impl ::protobuf::Clear for BytesValue {
+impl crate::Clear for BytesValue {
     fn clear(&mut self) {
         self.value.clear();
         self.unknown_fields.clear();
@@ -1139,11 +1139,11 @@ impl ::protobuf::Clear for BytesValue {
 
 impl ::std::fmt::Debug for BytesValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for BytesValue {
+impl crate::reflect::ProtobufValue for BytesValue {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -1267,13 +1267,13 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     roto3\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
 
-fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
+fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
+    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
-pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
+pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     file_descriptor_proto_lazy.get(|| {
         parse_descriptor_proto()
     })

@@ -22,17 +22,17 @@
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldMask {
     // message fields
-    pub paths: ::protobuf::RepeatedField<::std::string::String>,
+    pub paths: crate::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FieldMask {
     fn default() -> &'a FieldMask {
-        <FieldMask as ::protobuf::Message>::default_instance()
+        <FieldMask as crate::Message>::default_instance()
     }
 }
 
@@ -42,20 +42,20 @@ impl FieldMask {
     }
 }
 
-impl ::protobuf::Message for FieldMask {
+impl crate::Message for FieldMask {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -67,14 +67,14 @@ impl ::protobuf::Message for FieldMask {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in &self.paths {
-            my_size += ::protobuf::rt::string_size(1, &value);
+            my_size += crate::rt::string_size(1, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         for v in &self.paths {
             os.write_string(1, &v)?;
         };
@@ -86,15 +86,15 @@ impl ::protobuf::Message for FieldMask {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -102,16 +102,16 @@ impl ::protobuf::Message for FieldMask {
         FieldMask::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::types::ProtobufTypeString>(
                 "paths",
                 |m: &FieldMask| { &m.paths },
                 |m: &mut FieldMask| { &mut m.paths },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<FieldMask>(
+            crate::reflect::MessageDescriptor::new::<FieldMask>(
                 "FieldMask",
                 fields,
                 file_descriptor_proto()
@@ -120,12 +120,12 @@ impl ::protobuf::Message for FieldMask {
     }
 
     fn default_instance() -> &'static FieldMask {
-        static instance: ::protobuf::rt::Lazy<FieldMask> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<FieldMask> = crate::rt::Lazy::INIT;
         instance.get(FieldMask::new)
     }
 }
 
-impl ::protobuf::Clear for FieldMask {
+impl crate::Clear for FieldMask {
     fn clear(&mut self) {
         self.paths.clear();
         self.unknown_fields.clear();
@@ -134,11 +134,11 @@ impl ::protobuf::Clear for FieldMask {
 
 impl ::std::fmt::Debug for FieldMask {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for FieldMask {
+impl crate::reflect::ProtobufValue for FieldMask {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -327,13 +327,13 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x01\x1a\x1bb\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
 
-fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
+fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
+    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
-pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
+pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     file_descriptor_proto_lazy.get(|| {
         parse_descriptor_proto()
     })

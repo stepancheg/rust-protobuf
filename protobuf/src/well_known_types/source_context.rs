@@ -25,14 +25,14 @@ pub struct SourceContext {
     pub file_name: ::std::string::String,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a SourceContext {
     fn default() -> &'a SourceContext {
-        <SourceContext as ::protobuf::Message>::default_instance()
+        <SourceContext as crate::Message>::default_instance()
     }
 }
 
@@ -42,20 +42,20 @@ impl SourceContext {
     }
 }
 
-impl ::protobuf::Message for SourceContext {
+impl crate::Message for SourceContext {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.file_name)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.file_name)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -67,14 +67,14 @@ impl ::protobuf::Message for SourceContext {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.file_name.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.file_name);
+            my_size += crate::rt::string_size(1, &self.file_name);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if !self.file_name.is_empty() {
             os.write_string(1, &self.file_name)?;
         }
@@ -86,15 +86,15 @@ impl ::protobuf::Message for SourceContext {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -102,16 +102,16 @@ impl ::protobuf::Message for SourceContext {
         SourceContext::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                 "file_name",
                 |m: &SourceContext| { &m.file_name },
                 |m: &mut SourceContext| { &mut m.file_name },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<SourceContext>(
+            crate::reflect::MessageDescriptor::new::<SourceContext>(
                 "SourceContext",
                 fields,
                 file_descriptor_proto()
@@ -120,12 +120,12 @@ impl ::protobuf::Message for SourceContext {
     }
 
     fn default_instance() -> &'static SourceContext {
-        static instance: ::protobuf::rt::Lazy<SourceContext> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<SourceContext> = crate::rt::Lazy::INIT;
         instance.get(SourceContext::new)
     }
 }
 
-impl ::protobuf::Clear for SourceContext {
+impl crate::Clear for SourceContext {
     fn clear(&mut self) {
         self.file_name.clear();
         self.unknown_fields.clear();
@@ -134,11 +134,11 @@ impl ::protobuf::Clear for SourceContext {
 
 impl ::std::fmt::Debug for SourceContext {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for SourceContext {
+impl crate::reflect::ProtobufValue for SourceContext {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -197,13 +197,13 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x16b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
 
-fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
+fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
+    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
-pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
+pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     file_descriptor_proto_lazy.get(|| {
         parse_descriptor_proto()
     })

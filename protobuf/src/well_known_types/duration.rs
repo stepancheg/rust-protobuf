@@ -26,14 +26,14 @@ pub struct Duration {
     pub nanos: i32,
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Duration {
     fn default() -> &'a Duration {
-        <Duration as ::protobuf::Message>::default_instance()
+        <Duration as crate::Message>::default_instance()
     }
 }
 
@@ -43,29 +43,29 @@ impl Duration {
     }
 }
 
-impl ::protobuf::Message for Duration {
+impl crate::Message for Duration {
     fn is_initialized(&self) -> bool {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.seconds = is.read_int64()?;
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.nanos = is.read_int32()?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -77,17 +77,17 @@ impl ::protobuf::Message for Duration {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.seconds != 0 {
-            my_size += ::protobuf::rt::value_size(1, self.seconds, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.seconds, crate::wire_format::WireTypeVarint);
         }
         if self.nanos != 0 {
-            my_size += ::protobuf::rt::value_size(2, self.nanos, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(2, self.nanos, crate::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
         if self.seconds != 0 {
             os.write_int64(1, self.seconds)?;
         }
@@ -102,15 +102,15 @@ impl ::protobuf::Message for Duration {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -118,21 +118,21 @@ impl ::protobuf::Message for Duration {
         Duration::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::INIT;
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt64>(
                 "seconds",
                 |m: &Duration| { &m.seconds },
                 |m: &mut Duration| { &mut m.seconds },
             ));
-            fields.push(::protobuf::reflect::rt::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt32>(
                 "nanos",
                 |m: &Duration| { &m.nanos },
                 |m: &mut Duration| { &mut m.nanos },
             ));
-            ::protobuf::reflect::MessageDescriptor::new::<Duration>(
+            crate::reflect::MessageDescriptor::new::<Duration>(
                 "Duration",
                 fields,
                 file_descriptor_proto()
@@ -141,12 +141,12 @@ impl ::protobuf::Message for Duration {
     }
 
     fn default_instance() -> &'static Duration {
-        static instance: ::protobuf::rt::Lazy<Duration> = ::protobuf::rt::Lazy::INIT;
+        static instance: crate::rt::Lazy<Duration> = crate::rt::Lazy::INIT;
         instance.get(Duration::new)
     }
 }
 
-impl ::protobuf::Clear for Duration {
+impl crate::Clear for Duration {
     fn clear(&mut self) {
         self.seconds = 0;
         self.nanos = 0;
@@ -156,11 +156,11 @@ impl ::protobuf::Clear for Duration {
 
 impl ::std::fmt::Debug for Duration {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Duration {
+impl crate::reflect::ProtobufValue for Duration {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -266,13 +266,13 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03f\x10\x11b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
 
-fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
+fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
+    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
-pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
+pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     file_descriptor_proto_lazy.get(|| {
         parse_descriptor_proto()
     })
