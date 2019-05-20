@@ -6,7 +6,7 @@ use std::str;
 
 use bytes::Bytes;
 
-use clear::Clear;
+use crate::clear::Clear;
 
 /// Thin wrapper around `Bytes` which guarantees that bytes are valid UTF-8 string.
 /// Should be API-compatible to `String`.

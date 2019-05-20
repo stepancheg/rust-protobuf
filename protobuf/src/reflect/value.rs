@@ -4,9 +4,9 @@ use std::mem;
 use std::any::Any;
 
 #[cfg(feature = "bytes")]
-use bytes::Bytes;
+use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
-use chars::Chars;
+use crate::chars::Chars;
 
 use super::*;
 use crate::core::*;

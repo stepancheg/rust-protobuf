@@ -3,9 +3,9 @@ use std::marker;
 use std::mem;
 
 #[cfg(feature = "bytes")]
-use bytes::Bytes;
+use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
-use chars::Chars;
+use crate::chars::Chars;
 
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
