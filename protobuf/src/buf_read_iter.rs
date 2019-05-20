@@ -233,15 +233,21 @@ impl<'ignore> BufReadIter<'ignore> {
             self.pos_within_buf += len;
             Ok(r)
         } else {
-            let mut r = BytesMut::with_capacity(len);
-            unsafe {
-                {
+            if len >= READ_RAW_BYTES_MAX_ALLOC {
+                // We cannot trust `len` because protobuf message could be malformed.
+                // Reading should not result in OOM when allocating a buffer.
+                let mut v = Vec::new();
+                self.read_exact_to_vec(len, &mut v)?;
+                Ok(Bytes::from(v))
+            } else {
+                let mut r = BytesMut::with_capacity(len);
+                unsafe {
                     let buf = &mut r.bytes_mut()[..len];
                     self.read_exact(buf)?;
+                    r.advance_mut(len);
                 }
-                r.advance_mut(len);
+                Ok(r.freeze())
             }
-            Ok(r.freeze())
         }
     }
 
