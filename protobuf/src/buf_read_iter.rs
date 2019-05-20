@@ -235,7 +235,7 @@ impl<'ignore> BufReadIter<'ignore> {
             let mut r = BytesMut::with_capacity(len);
             unsafe {
                 {
-                    let mut buf = &mut r.bytes_mut()[..len];
+                    let buf = &mut r.bytes_mut()[..len];
                     self.read_exact(buf)?;
                 }
                 r.advance_mut(len);
