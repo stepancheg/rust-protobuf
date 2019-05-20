@@ -15,6 +15,7 @@ use bytes::BufMut;
 use ProtobufResult;
 use ProtobufError;
 use error::WireError;
+use stream::READ_RAW_BYTES_MAX_ALLOC;
 
 
 // If an input stream is constructed with a `Read`, we create a
@@ -221,6 +222,61 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(r)
     }
 
+    /// Read at most `max` bytes, append to `Vec`.
+    ///
+    /// Returns 0 when EOF or limit reached.
+    fn read_to_vec(&mut self, vec: &mut Vec<u8>, max: usize) -> ProtobufResult<usize> {
+        let rem = self.fill_buf()?;
+
+        let len = cmp::min(rem.len(), max);
+        vec.extend_from_slice(&rem[..len]);
+        self.pos_within_buf += len;
+        Ok(len)
+    }
+
+    /// Read exact number of bytes into `Vec`.
+    ///
+    /// `Vec` is cleared in the beginning.
+    pub fn read_exact_to_vec(&mut self, count: usize, target: &mut Vec<u8>) -> ProtobufResult<()> {
+        // TODO: also do some limits when reading from unlimited source
+        if count as u64 > self.bytes_until_limit() {
+            return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+        }
+
+        target.clear();
+
+        if count >= READ_RAW_BYTES_MAX_ALLOC && count > target.capacity() {
+            // avoid calling `reserve` on buf with very large buffer: could be a malformed message
+
+            target.reserve(READ_RAW_BYTES_MAX_ALLOC);
+
+            while target.len() < count {
+                if count - target.len() <= target.len() {
+                    target.reserve_exact(count - target.len());
+                } else {
+                    target.reserve(1);
+                }
+
+                let max = cmp::min(target.capacity() - target.len(), count - target.len());
+                let read = self.read_to_vec(target, max)?;
+                if read == 0 {
+                    return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+                }
+            }
+        } else {
+            target.reserve_exact(count);
+
+            unsafe {
+                self.read_exact(&mut target.get_unchecked_mut(..count))?;
+                target.set_len(count);
+            }
+        }
+
+        debug_assert_eq!(count, target.len());
+
+        Ok(())
+    }
+
     #[cfg(feature = "bytes")]
     pub fn read_exact_bytes(&mut self, len: usize) -> ProtobufResult<Bytes> {
         if let InputSource::Bytes(bytes) = self.input_source {
@@ -231,15 +287,21 @@ impl<'ignore> BufReadIter<'ignore> {
             self.pos_within_buf += len;
             Ok(r)
         } else {
-            let mut r = BytesMut::with_capacity(len);
-            unsafe {
-                {
-                    let mut buf = &mut r.bytes_mut()[..len];
+            if len >= READ_RAW_BYTES_MAX_ALLOC {
+                // We cannot trust `len` because protobuf message could be malformed.
+                // Reading should not result in OOM when allocating a buffer.
+                let mut v = Vec::new();
+                self.read_exact_to_vec(len, &mut v)?;
+                Ok(Bytes::from(v))
+            } else {
+                let mut r = BytesMut::with_capacity(len);
+                unsafe {
+                    let buf = &mut r.bytes_mut()[..len];
                     self.read_exact(buf)?;
+                    r.advance_mut(len);
                 }
-                r.advance_mut(len);
+                Ok(r.freeze())
             }
-            Ok(r.freeze())
         }
     }
 
