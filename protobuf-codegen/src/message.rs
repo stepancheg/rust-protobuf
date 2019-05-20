@@ -8,20 +8,20 @@ use super::customize::Customize;
 use super::enums::*;
 use super::field::*;
 use super::rust_types_values::*;
-use map::map_entry;
-use oneof::OneofGen;
-use oneof::OneofVariantGen;
-use serde;
-use scope::MessageWithScope;
-use scope::WithScope;
-use scope::RootScope;
-use rust_name::RustIdentWithPath;
-use rust_name::RustIdent;
-use case_convert::snake_case;
-use rust::is_rust_keyword;
-use file_descriptor::file_descriptor_proto_expr;
-use file_and_mod::FileAndMod;
-use inside::protobuf_crate_path;
+use crate::map::map_entry;
+use crate::oneof::OneofGen;
+use crate::oneof::OneofVariantGen;
+use crate::serde;
+use crate::scope::MessageWithScope;
+use crate::scope::WithScope;
+use crate::scope::RootScope;
+use crate::rust_name::RustIdentWithPath;
+use crate::rust_name::RustIdent;
+use crate::case_convert::snake_case;
+use crate::rust::is_rust_keyword;
+use crate::file_descriptor::file_descriptor_proto_expr;
+use crate::file_and_mod::FileAndMod;
+use crate::inside::protobuf_crate_path;
 
 
 /// Message info for codegen

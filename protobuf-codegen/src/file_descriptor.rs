@@ -1,5 +1,5 @@
-use scope::Scope;
-use rust_name::RustIdent;
+use crate::scope::Scope;
+use crate::rust_name::RustIdent;
 
 pub(crate) fn file_descriptor_proto_expr(scope: &Scope) -> String {
     let file_descriptor_proto_path = scope.rust_path_to_file().to_reverse()

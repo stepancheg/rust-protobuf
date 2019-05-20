@@ -7,10 +7,10 @@ use protobuf::text_format::lexer::float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
 
-use parser::Parser;
+use crate::parser::Parser;
 
-pub use parser::ParserError;
-pub use parser::ParserErrorWithLocation;
+pub use crate::parser::ParserError;
+pub use crate::parser::ParserErrorWithLocation;
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]

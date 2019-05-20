@@ -2,8 +2,9 @@
 
 use std::iter;
 use std::path::Path;
+use std::mem;
 
-use model;
+use crate::model;
 
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
@@ -11,11 +12,10 @@ use protobuf::prelude::*;
 use protobuf::Message;
 
 use protobuf::text_format::lexer::StrLitDecodeError;
-use std::mem;
-use protobuf_codegen::case_convert::camel_case;
-use protobuf_codegen::ProtobufAbsolutePath;
-use protobuf_codegen::ProtobufIdent;
-use protobuf_codegen::ProtobufRelativePath;
+use crate::protobuf_codegen::case_convert::camel_case;
+use crate::protobuf_codegen::ProtobufAbsolutePath;
+use crate::protobuf_codegen::ProtobufIdent;
+use crate::protobuf_codegen::ProtobufRelativePath;
 
 
 #[derive(Debug)]

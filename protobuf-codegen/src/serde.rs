@@ -1,5 +1,5 @@
-use code_writer::CodeWriter;
-use Customize;
+use crate::code_writer::CodeWriter;
+use crate::customize::Customize;
 
 /// Write serde attr according to specified codegen option.
 pub fn write_serde_attr(w: &mut CodeWriter, customize: &Customize, attr: &str) {

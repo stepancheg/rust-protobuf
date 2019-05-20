@@ -1,20 +1,20 @@
 //! Oneof-related codegen functions.
 
-use code_writer::CodeWriter;
-use field::FieldElem;
-use field::FieldGen;
-use message::MessageGen;
+use crate::code_writer::CodeWriter;
+use crate::field::FieldElem;
+use crate::field::FieldGen;
+use crate::message::MessageGen;
 use protobuf::descriptor::field_descriptor_proto;
-use scope::{OneofVariantWithContext, FieldWithContext};
-use scope::OneofWithContext;
-use scope::WithScope;
-use rust_types_values::RustType;
-use rust_types_values::make_path;
-use serde;
-use Customize;
-use rust_name::{RustIdent, RustIdentWithPath, RustPath};
-use file_and_mod::FileAndMod;
-use inside::protobuf_crate_path;
+use crate::scope::{OneofVariantWithContext, FieldWithContext};
+use crate::scope::OneofWithContext;
+use crate::scope::WithScope;
+use crate::rust_types_values::RustType;
+use crate::rust_types_values::make_path;
+use crate::serde;
+use crate::customize::Customize;
+use crate::rust_name::{RustIdent, RustIdentWithPath, RustPath};
+use crate::file_and_mod::FileAndMod;
+use crate::inside::protobuf_crate_path;
 
 // oneof one { ... }
 #[derive(Clone)]

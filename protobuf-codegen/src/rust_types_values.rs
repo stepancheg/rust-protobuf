@@ -1,16 +1,17 @@
 use std::cmp;
 
-use super::well_known_types::is_well_known_type_full;
-use rust_name::RustIdent;
-use rust_name::RustIdentWithPath;
-use rust_name::RustPath;
+use crate::well_known_types::is_well_known_type_full;
+use crate::rust_name::RustIdent;
+use crate::rust_name::RustIdentWithPath;
+use crate::rust_name::RustPath;
 use protobuf::descriptor::*;
-use scope::RootScope;
-use scope::WithScope;
-use strx::capitalize;
-use ::{ProtobufAbsolutePath, Customize};
-use file_and_mod::FileAndMod;
-use inside::protobuf_crate_path;
+use crate::scope::RootScope;
+use crate::scope::WithScope;
+use crate::strx::capitalize;
+use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::customize::Customize;
+use crate::file_and_mod::FileAndMod;
+use crate::inside::protobuf_crate_path;
 
 
 // Represent subset of rust types used in generated code

@@ -1,6 +1,6 @@
-use strx;
-use rust;
-use rust_name::RustIdent;
+use crate::strx;
+use crate::rust;
+use crate::rust_name::RustIdent;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
@@ -45,7 +45,7 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
 mod test {
 
     use super::proto_path_to_rust_mod;
-    use rust_name::RustIdent;
+    use crate::rust_name::RustIdent;
 
     #[test]
     fn test_mod_path_proto_ext() {

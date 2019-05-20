@@ -1,13 +1,14 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use protobuf::descriptor::*;
-use scope::RootScope;
-use rust_name::RustIdentWithPath;
-use rust_name::RustRelativePath;
-use field::rust_field_name_for_protobuf_field_name;
-use ::{ProtobufAbsolutePath, Customize};
-use file_and_mod::FileAndMod;
-use inside::protobuf_crate_path;
+use crate::scope::RootScope;
+use crate::rust_name::RustIdentWithPath;
+use crate::rust_name::RustRelativePath;
+use crate::field::rust_field_name_for_protobuf_field_name;
+use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::customize::Customize;
+use crate::file_and_mod::FileAndMod;
+use crate::inside::protobuf_crate_path;
 
 
 struct ExtGen<'a> {

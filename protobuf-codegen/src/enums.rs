@@ -6,14 +6,14 @@ use protobuf::prelude::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
-use serde;
-use scope::{EnumWithScope, EnumValueWithContext};
-use scope::RootScope;
-use scope::WithScope;
-use rust_name::RustIdentWithPath;
-use rust_name::RustIdent;
-use file_descriptor::file_descriptor_proto_expr;
-use inside::protobuf_crate_path;
+use crate::serde;
+use crate::scope::{EnumWithScope, EnumValueWithContext};
+use crate::scope::RootScope;
+use crate::scope::WithScope;
+use crate::rust_name::RustIdentWithPath;
+use crate::rust_name::RustIdent;
+use crate::file_descriptor::file_descriptor_proto_expr;
+use crate::inside::protobuf_crate_path;
 
 
 #[derive(Clone)]

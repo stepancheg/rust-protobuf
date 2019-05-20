@@ -2,7 +2,7 @@ use std::fs;
 use std::io::Read;
 use std::path::Path;
 
-use model;
+use crate::model;
 
 fn parse_recursively(path: &Path) {
     let file_name = path

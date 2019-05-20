@@ -30,7 +30,7 @@ mod test {
 
     use super::remove_suffix;
     use super::remove_to;
-    use strx::capitalize;
+    use super::capitalize;
 
     #[test]
     fn test_remove_to() {

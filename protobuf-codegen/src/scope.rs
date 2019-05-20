@@ -4,20 +4,21 @@ use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
-use rust_name::RustIdent;
-use rust_name::RustRelativePath;
-use rust_name::RustIdentWithPath;
-use strx::capitalize;
-use rust::is_rust_keyword;
-use file::proto_path_to_rust_mod;
-use syntax::Syntax;
-use ::{rust, Customize};
-use message::message_name_to_nested_mod_name;
-use protobuf_name::ProtobufAbsolutePath;
-use protobuf_name::ProtobufRelativePath;
-use protobuf_name::ProtobufIdent;
-use field::rust_field_name_for_protobuf_field_name;
-use file_and_mod::FileAndMod;
+use crate::rust_name::RustIdent;
+use crate::rust_name::RustRelativePath;
+use crate::rust_name::RustIdentWithPath;
+use crate::strx::capitalize;
+use crate::rust::is_rust_keyword;
+use crate::file::proto_path_to_rust_mod;
+use crate::syntax::Syntax;
+use crate::rust;
+use crate::customize::Customize;
+use crate::message::message_name_to_nested_mod_name;
+use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::protobuf_name::ProtobufRelativePath;
+use crate::protobuf_name::ProtobufIdent;
+use crate::field::rust_field_name_for_protobuf_field_name;
+use crate::file_and_mod::FileAndMod;
 
 
 pub(crate) struct RootScope<'a> {

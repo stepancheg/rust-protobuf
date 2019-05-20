@@ -1,4 +1,4 @@
-use Customize;
+use crate::customize::Customize;
 
 /// Path to `protobuf` crate, different when `.proto` file is
 /// used inside or outside of protobuf crate.

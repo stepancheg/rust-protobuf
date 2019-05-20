@@ -2,33 +2,33 @@ use protobuf::prelude::*;
 
 use protobuf::descriptor::*;
 use protobuf::rt;
-use rust;
-use ProtobufAbsolutePath;
+use crate::rust;
+use crate::protobuf_name::ProtobufAbsolutePath;
 use protobuf::text_format;
 use protobuf::text_format::lexer::float;
 use protobuf::wire_format;
 
-use super::code_writer::CodeWriter;
-use super::rust_types_values::*;
+use crate::code_writer::CodeWriter;
+use crate::rust_types_values::*;
 
-use super::customize::customize_from_rustproto_for_field;
-use super::customize::Customize;
-use code_writer::Visibility;
-use rust_name::RustIdent;
-use rust_name::RustRelativePath;
-use rust_name::RustIdentWithPath;
-use map::map_entry;
-use oneof::OneofField;
+use crate::customize::customize_from_rustproto_for_field;
+use crate::customize::Customize;
+use crate::code_writer::Visibility;
+use crate::rust_name::RustIdent;
+use crate::rust_name::RustRelativePath;
+use crate::rust_name::RustIdentWithPath;
+use crate::map::map_entry;
+use crate::oneof::OneofField;
 use protobuf::wire_format::WireType;
-use scope::MessageOrEnumWithScope;
-use scope::MessageWithScope;
-use scope::EnumValueWithContext;
-use scope::FieldWithContext;
-use scope::RootScope;
-use scope::WithScope;
-use syntax::Syntax;
-use file_and_mod::FileAndMod;
-use inside::protobuf_crate_path;
+use crate::scope::MessageOrEnumWithScope;
+use crate::scope::MessageWithScope;
+use crate::scope::EnumValueWithContext;
+use crate::scope::FieldWithContext;
+use crate::scope::RootScope;
+use crate::scope::WithScope;
+use crate::syntax::Syntax;
+use crate::file_and_mod::FileAndMod;
+use crate::inside::protobuf_crate_path;
 
 
 fn type_is_copy(field_type: field_descriptor_proto::Type) -> bool {

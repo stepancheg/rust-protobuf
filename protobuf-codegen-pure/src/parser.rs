@@ -6,7 +6,7 @@ use protobuf::text_format::lexer::ParserLanguage;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::Token;
 
-use model::*;
+use crate::model::*;
 use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
