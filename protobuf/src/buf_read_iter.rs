@@ -306,7 +306,7 @@ impl<'ignore> BufReadIter<'ignore> {
 
         target.clear();
 
-        if count >= READ_RAW_BYTES_MAX_ALLOC {
+        if count >= READ_RAW_BYTES_MAX_ALLOC && count > target.capacity() {
             // avoid calling `reserve` on buf with very large buffer: could be a malformed message
 
             target.reserve(READ_RAW_BYTES_MAX_ALLOC);
