@@ -54,7 +54,7 @@ const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
 
 // Max allocated vec when reading length-delimited from unknown input stream
-const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
+pub(crate) const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
 
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
@@ -506,35 +506,7 @@ impl<'a> CodedInputStream<'a> {
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
     /// overwritten.
     pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
-        let count = count as usize;
-
-        // TODO: also do some limits when reading from unlimited source
-        if count as u64 > self.source.bytes_until_limit() {
-            return Err(ProtobufError::WireError(WireError::TruncatedMessage));
-        }
-
-        unsafe {
-            target.set_len(0);
-        }
-
-        if count >= READ_RAW_BYTES_MAX_ALLOC {
-            // avoid calling `reserve` on buf with very large buffer: could be a malformed message
-
-            let mut take = self.by_ref().take(count as u64);
-            take.read_to_end(target)?;
-
-            if target.len() != count {
-                return Err(ProtobufError::WireError(WireError::TruncatedMessage));
-            }
-        } else {
-            target.reserve(count);
-            unsafe {
-                target.set_len(count);
-            }
-
-            self.source.read_exact(target)?;
-        }
-        Ok(())
+        self.source.read_exact_to_vec(count as usize, target)
     }
 
     /// Read exact number of bytes

@@ -15,6 +15,7 @@ use bytes::BytesMut;
 use crate::error::WireError;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
+use crate::stream::READ_RAW_BYTES_MAX_ALLOC;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -244,6 +245,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
+    /// Returns 0 when EOF or limit reached.
     pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
         self.fill_buf()?;
 
@@ -290,6 +292,53 @@ impl<'ignore> BufReadIter<'ignore> {
         self.pos_of_buf_start += buf.len() as u64;
 
         self.assertions();
+
+        Ok(())
+    }
+
+    /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
+    /// overwritten.
+    pub fn read_exact_to_vec(&mut self, count: usize, target: &mut Vec<u8>) -> ProtobufResult<()> {
+        // TODO: also do some limits when reading from unlimited source
+        if count as u64 > self.bytes_until_limit() {
+            return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+        }
+
+        target.clear();
+
+        if count >= READ_RAW_BYTES_MAX_ALLOC {
+            // avoid calling `reserve` on buf with very large buffer: could be a malformed message
+
+            target.reserve(READ_RAW_BYTES_MAX_ALLOC);
+
+            while target.len() < count {
+                if count - target.len() <= target.len() {
+                    target.reserve_exact(count - target.len());
+                } else {
+                    target.reserve(1);
+                }
+
+                unsafe {
+                    let len = target.len();
+                    let cap = target.capacity();
+                    let read = self.read(target.get_unchecked_mut(len..cap))?;
+                    if read == 0 {
+                        return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+                    }
+
+                    target.set_len(target.len() + read);
+                }
+            }
+        } else {
+            target.reserve_exact(count);
+
+            unsafe {
+                self.read_exact(&mut target.get_unchecked_mut(..count))?;
+                target.set_len(count);
+            }
+        }
+
+        debug_assert_eq!(count, target.len());
 
         Ok(())
     }
