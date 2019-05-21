@@ -226,10 +226,16 @@ impl<'ignore> BufReadIter<'ignore> {
     #[cfg(feature = "bytes")]
     pub fn read_exact_bytes(&mut self, len: usize) -> ProtobufResult<Bytes> {
         if let InputSource::Bytes(bytes) = self.input_source {
-            if self.pos_within_buf + len > self.limit_within_buf {
+            let end = match self.pos_within_buf.checked_add(len) {
+                Some(end) => end,
+                None => return Err(ProtobufError::WireError(WireError::UnexpectedEof)),
+            };
+
+            if end > self.limit_within_buf {
                 return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
-            let r = bytes.slice(self.pos_within_buf, self.pos_within_buf + len);
+
+            let r = bytes.slice(self.pos_within_buf, end);
             self.pos_within_buf += len;
             Ok(r)
         } else {
