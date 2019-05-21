@@ -163,6 +163,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Rebublished branch 1.6 because of
   [backward compatibility issues in 1.6 branch](https://github.com/stepancheg/rust-protobuf/issues/289)
 
+## [1.7.5] - 2018-05-20
+- Fix [OOM on malformed input](https://github.com/stepancheg/rust-protobuf/issues/411)
+
 ## [1.7.4] - 2018-07-11
 
 - [Fix panic on singular string field appeared more than
