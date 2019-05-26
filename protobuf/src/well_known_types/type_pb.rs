@@ -34,7 +34,7 @@ pub struct Type {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Type {
@@ -262,7 +262,7 @@ pub struct Field {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Field {
@@ -694,7 +694,7 @@ pub struct Enum {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Enum {
@@ -900,7 +900,7 @@ pub struct EnumValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValue {
@@ -1063,7 +1063,7 @@ pub struct Option {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Option {

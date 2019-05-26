@@ -29,7 +29,7 @@ pub struct Struct {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Struct {
@@ -148,7 +148,7 @@ pub struct Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Value {
@@ -631,7 +631,7 @@ pub struct ListValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a ListValue {

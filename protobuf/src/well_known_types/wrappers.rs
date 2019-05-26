@@ -29,7 +29,7 @@ pub struct DoubleValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a DoubleValue {
@@ -155,7 +155,7 @@ pub struct FloatValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FloatValue {
@@ -281,7 +281,7 @@ pub struct Int64Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Int64Value {
@@ -407,7 +407,7 @@ pub struct UInt64Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UInt64Value {
@@ -533,7 +533,7 @@ pub struct Int32Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a Int32Value {
@@ -659,7 +659,7 @@ pub struct UInt32Value {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UInt32Value {
@@ -785,7 +785,7 @@ pub struct BoolValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a BoolValue {
@@ -911,7 +911,7 @@ pub struct StringValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a StringValue {
@@ -1034,7 +1034,7 @@ pub struct BytesValue {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a BytesValue {

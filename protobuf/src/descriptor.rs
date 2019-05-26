@@ -29,7 +29,7 @@ pub struct FileDescriptorSet {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FileDescriptorSet {
@@ -169,7 +169,7 @@ pub struct FileDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FileDescriptorProto {
@@ -613,7 +613,7 @@ pub struct DescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a DescriptorProto {
@@ -958,7 +958,7 @@ pub mod descriptor_proto {
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
         #[cfg_attr(serde, serde(skip))]
-        pub cached_size: crate::CachedSize,
+        pub cached_size: crate::rt::CachedSize,
     }
 
     impl<'a> ::std::default::Default for &'a ExtensionRange {
@@ -1143,7 +1143,7 @@ pub mod descriptor_proto {
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
         #[cfg_attr(serde, serde(skip))]
-        pub cached_size: crate::CachedSize,
+        pub cached_size: crate::rt::CachedSize,
     }
 
     impl<'a> ::std::default::Default for &'a ReservedRange {
@@ -1337,7 +1337,7 @@ pub struct FieldDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FieldDescriptorProto {
@@ -2030,7 +2030,7 @@ pub struct OneofDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a OneofDescriptorProto {
@@ -2213,7 +2213,7 @@ pub struct EnumDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumDescriptorProto {
@@ -2417,7 +2417,7 @@ pub struct EnumValueDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValueDescriptorProto {
@@ -2638,7 +2638,7 @@ pub struct ServiceDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a ServiceDescriptorProto {
@@ -2845,7 +2845,7 @@ pub struct MethodDescriptorProto {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a MethodDescriptorProto {
@@ -3220,7 +3220,7 @@ pub struct FileOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FileOptions {
@@ -4009,7 +4009,7 @@ pub struct MessageOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a MessageOptions {
@@ -4296,7 +4296,7 @@ pub struct FieldOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FieldOptions {
@@ -4757,7 +4757,7 @@ pub struct OneofOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a OneofOptions {
@@ -4888,7 +4888,7 @@ pub struct EnumOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumOptions {
@@ -5094,7 +5094,7 @@ pub struct EnumValueOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValueOptions {
@@ -5262,7 +5262,7 @@ pub struct ServiceOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a ServiceOptions {
@@ -5430,7 +5430,7 @@ pub struct MethodOptions {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a MethodOptions {
@@ -5603,7 +5603,7 @@ pub struct UninterpretedOption {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UninterpretedOption {
@@ -6004,7 +6004,7 @@ pub mod uninterpreted_option {
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
         #[cfg_attr(serde, serde(skip))]
-        pub cached_size: crate::CachedSize,
+        pub cached_size: crate::rt::CachedSize,
     }
 
     impl<'a> ::std::default::Default for &'a NamePart {
@@ -6209,7 +6209,7 @@ pub struct SourceCodeInfo {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a SourceCodeInfo {
@@ -6343,7 +6343,7 @@ pub mod source_code_info {
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
         #[cfg_attr(serde, serde(skip))]
-        pub cached_size: crate::CachedSize,
+        pub cached_size: crate::rt::CachedSize,
     }
 
     impl<'a> ::std::default::Default for &'a Location {
@@ -6611,7 +6611,7 @@ pub struct GeneratedCodeInfo {
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    pub cached_size: crate::CachedSize,
+    pub cached_size: crate::rt::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a GeneratedCodeInfo {
@@ -6744,7 +6744,7 @@ pub mod generated_code_info {
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
         #[cfg_attr(serde, serde(skip))]
-        pub cached_size: crate::CachedSize,
+        pub cached_size: crate::rt::CachedSize,
     }
 
     impl<'a> ::std::default::Default for &'a Annotation {

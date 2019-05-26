@@ -458,7 +458,7 @@ impl<'a> MessageGen<'a> {
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
             w.pub_field_decl("unknown_fields", &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)));
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.pub_field_decl("cached_size", &format!("{}::CachedSize", protobuf_crate_path(&self.customize)));
+            w.pub_field_decl("cached_size", &format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)));
         });
     }
 

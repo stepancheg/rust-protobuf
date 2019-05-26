@@ -4,8 +4,11 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 
 /// Cached size field used in generated code.
+///
 /// It is always equal to itself to simplify generated code.
 /// (Generated code can use `#[derive(Eq)]`).
+///
+/// This type should rarely be used directly.
 #[derive(Debug, Default)]
 pub struct CachedSize {
     size: AtomicUsize,

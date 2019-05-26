@@ -34,7 +34,6 @@ pub use crate::unknown::UnknownValueRef;
 pub use crate::unknown::UnknownValues;
 pub use crate::unknown::UnknownValuesIter;
 pub mod wire_format;
-pub use cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 pub use crate::chars::Chars;
 pub use crate::error::ProtobufError;
