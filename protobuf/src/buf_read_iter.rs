@@ -255,12 +255,22 @@ impl<'ignore> BufReadIter<'ignore> {
 
     /// Returns 0 when EOF or limit reached.
     pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
-        self.fill_buf()?;
-
-        let rem = &self.buf[self.pos_within_buf..self.limit_within_buf];
+        let rem = self.fill_buf()?;
 
         let len = cmp::min(rem.len(), buf.len());
         &mut buf[..len].copy_from_slice(&rem[..len]);
+        self.pos_within_buf += len;
+        Ok(len)
+    }
+
+    /// Read at most `max` bytes.
+    ///
+    /// Returns 0 when EOF or limit reached.
+    fn read_to_vec(&mut self, vec: &mut Vec<u8>, max: usize) -> ProtobufResult<usize> {
+        let rem = self.fill_buf()?;
+
+        let len = cmp::min(rem.len(), max);
+        vec.extend_from_slice(&rem[..len]);
         self.pos_within_buf += len;
         Ok(len)
     }
@@ -322,15 +332,10 @@ impl<'ignore> BufReadIter<'ignore> {
                     target.reserve(1);
                 }
 
-                unsafe {
-                    let len = target.len();
-                    let cap = target.capacity();
-                    let read = self.read(target.get_unchecked_mut(len..cap))?;
-                    if read == 0 {
-                        return Err(ProtobufError::WireError(WireError::TruncatedMessage));
-                    }
-
-                    target.set_len(target.len() + read);
+                let max = cmp::min(target.capacity() - target.len(), count - target.len());
+                let read = self.read_to_vec(target, max)?;
+                if read == 0 {
+                    return Err(ProtobufError::WireError(WireError::TruncatedMessage));
                 }
             }
         } else {
