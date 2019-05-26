@@ -18,6 +18,8 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
+//! Generated file from `google/protobuf/compiler/plugin.proto`
+
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct CodeGeneratorRequest {

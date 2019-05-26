@@ -167,6 +167,9 @@ fn gen_file(
 
         w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
 
+        w.write_line("");
+        w.write_line(&format!("//! Generated file from `{}`", file.get_name()));
+
         for message in &scope.get_messages() {
             // ignore map entries, because they are not used in map fields
             if map_entry(message).is_none() {

@@ -18,6 +18,8 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
+//! Generated file from `google/protobuf/api.proto`
+
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Api {

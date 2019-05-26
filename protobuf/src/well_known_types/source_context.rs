@@ -18,6 +18,8 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
+//! Generated file from `google/protobuf/source_context.proto`
+
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct SourceContext {

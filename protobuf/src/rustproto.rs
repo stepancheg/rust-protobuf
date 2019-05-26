@@ -18,6 +18,8 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
+//! Generated file from `rustproto.proto`
+
 pub mod exts {
 
     pub const expose_oneof_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
