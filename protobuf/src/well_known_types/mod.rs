@@ -1,4 +1,7 @@
 // This file is generated. Do not edit
+//! Generated code for "well known types"
+//!
+//! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.
 
 mod any;
 mod api;
