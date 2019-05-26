@@ -51,7 +51,7 @@ pub mod rustproto;
 mod clear;
 mod core;
 mod enums;
-pub mod error;
+mod error;
 pub mod ext;
 pub mod json;
 mod lazy;
