@@ -168,6 +168,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
 }
 
 impl dyn Message {
+    /// Downcast `Box<dyn Message>` to specific message type.
     pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
         if Any::type_id(&*self) == TypeId::of::<T>() {
             unsafe {
@@ -179,6 +180,7 @@ impl dyn Message {
         }
     }
 
+    /// Downcast `&dyn Message` to specific message type.
     pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
         if Any::type_id(&*self) == TypeId::of::<M>() {
             unsafe {
@@ -189,6 +191,7 @@ impl dyn Message {
         }
     }
 
+    /// Downcast `&mut dyn Message` to specific message type.
     pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
         if Any::type_id(&*self) == TypeId::of::<M>() {
             unsafe {
