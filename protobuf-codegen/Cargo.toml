@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen"
-version = "3.0.0"
+version = "3.0.0-pre"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -18,7 +18,7 @@ See `protoc-rust` and `protobuf-codegen-pure` crates.
 bench = false
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "=3.0.0" }
+protobuf = { path = "../protobuf", version = "=3.0.0-pre" }
 
 [[bin]]
 
