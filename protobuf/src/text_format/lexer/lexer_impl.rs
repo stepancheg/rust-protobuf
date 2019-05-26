@@ -2,6 +2,7 @@ use std::char;
 use std::f64;
 use std::num::ParseIntError;
 use std::num::ParseFloatError;
+use std::convert::TryFrom;
 
 use super::float;
 use super::loc::Loc;
@@ -510,13 +511,8 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    // copy-paste of unstable `char::try_from`
     fn char_try_from(i: u32) -> LexerResult<char> {
-        if (i > char::MAX as u32) || (i >= 0xD800 && i <= 0xDFFF) {
-            Err(LexerError::IncorrectUnicodeChar)
-        } else {
-            Ok(unsafe { char::from_u32_unchecked(i) })
-        }
+        char::try_from(i).map_err(|_| LexerError::IncorrectUnicodeChar)
     }
 
     pub fn next_json_char_value(&mut self) -> LexerResult<char> {
