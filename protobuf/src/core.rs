@@ -55,8 +55,6 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
         // TODO: reserve additional
         self.write_to_with_cached_sizes(os)?;
 
-        // TODO: assert we've written same number of bytes as computed
-
         Ok(())
     }
 
