@@ -532,6 +532,7 @@ impl ::std::fmt::Debug for Field {
 impl crate::reflect::ProtobufValue for Field {
 }
 
+/// Nested message and enums of message `Field`
 pub mod field {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]

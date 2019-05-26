@@ -400,6 +400,7 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
 impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 }
 
+/// Nested message and enums of message `CodeGeneratorResponse`
 pub mod code_generator_response {
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]

@@ -605,6 +605,7 @@ impl ::std::fmt::Debug for Value {
 impl crate::reflect::ProtobufValue for Value {
 }
 
+/// Nested message and enums of message `Value`
 pub mod value {
 
     #[derive(Clone,PartialEq,Debug)]

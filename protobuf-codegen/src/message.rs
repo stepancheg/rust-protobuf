@@ -526,6 +526,7 @@ impl<'a> MessageGen<'a> {
 
         if !oneofs.is_empty() || !nested_messages.is_empty() || !nested_enums.is_empty() {
             w.write_line("");
+            w.write_line(&format!("/// Nested message and enums of message `{}`", self.message.message.get_name()));
             w.pub_mod(mod_name.get(), |w| {
                 let mut first = true;
 

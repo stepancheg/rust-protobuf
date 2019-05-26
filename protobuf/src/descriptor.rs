@@ -947,6 +947,7 @@ impl ::std::fmt::Debug for DescriptorProto {
 impl crate::reflect::ProtobufValue for DescriptorProto {
 }
 
+/// Nested message and enums of message `DescriptorProto`
 pub mod descriptor_proto {
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -1875,6 +1876,7 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
 impl crate::reflect::ProtobufValue for FieldDescriptorProto {
 }
 
+/// Nested message and enums of message `FieldDescriptorProto`
 pub mod field_descriptor_proto {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -3945,6 +3947,7 @@ impl ::std::fmt::Debug for FileOptions {
 impl crate::reflect::ProtobufValue for FileOptions {
 }
 
+/// Nested message and enums of message `FileOptions`
 pub mod file_options {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -4650,6 +4653,7 @@ impl ::std::fmt::Debug for FieldOptions {
 impl crate::reflect::ProtobufValue for FieldOptions {
 }
 
+/// Nested message and enums of message `FieldOptions`
 pub mod field_options {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -5993,6 +5997,7 @@ impl ::std::fmt::Debug for UninterpretedOption {
 impl crate::reflect::ProtobufValue for UninterpretedOption {
 }
 
+/// Nested message and enums of message `UninterpretedOption`
 pub mod uninterpreted_option {
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -6329,6 +6334,7 @@ impl ::std::fmt::Debug for SourceCodeInfo {
 impl crate::reflect::ProtobufValue for SourceCodeInfo {
 }
 
+/// Nested message and enums of message `SourceCodeInfo`
 pub mod source_code_info {
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -6731,6 +6737,7 @@ impl ::std::fmt::Debug for GeneratedCodeInfo {
 impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
 }
 
+/// Nested message and enums of message `GeneratedCodeInfo`
 pub mod generated_code_info {
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
