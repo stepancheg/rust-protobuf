@@ -25,6 +25,7 @@ pub enum ParseError {
     MapFieldIsSpecifiedMoreThanOnce(String),
     IntegerOverflow,
     ExpectingBool,
+    MessageNotInitialized,
 }
 
 impl From<TokenizerError> for ParseError {
@@ -304,4 +305,16 @@ pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<
         tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat),
     };
     parser.merge(message)
+}
+
+pub fn parse_from_str<M: Message>(input: &str) -> ParseWithLocResult<M> {
+    let mut m = M::new();
+    merge_from_str(&mut m, input)?;
+    if let Err(_) = m.check_initialized() {
+        return Err(ParseErrorWithLoc {
+            error: ParseError::MessageNotInitialized,
+            loc: Loc::start(),
+        });
+    }
+    Ok(m)
 }
