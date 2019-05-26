@@ -2,7 +2,6 @@ use std::io;
 use std::io::Write;
 use std::io::{BufRead, Read};
 use std::mem;
-use std::slice;
 
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
@@ -242,23 +241,15 @@ impl<'a> CodedInputStream<'a> {
     }
 
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
-        let mut r = 0u32;
-        let bytes: &mut [u8] = unsafe {
-            let p: *mut u8 = mem::transmute(&mut r);
-            slice::from_raw_parts_mut(p, mem::size_of::<u32>())
-        };
-        self.read(bytes)?;
-        Ok(r.to_le())
+        let mut bytes = [0; 4];
+        self.read(&mut bytes)?;
+        Ok(u32::from_le_bytes(bytes))
     }
 
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
-        let mut r = 0u64;
-        let bytes: &mut [u8] = unsafe {
-            let p: *mut u8 = mem::transmute(&mut r);
-            slice::from_raw_parts_mut(p, mem::size_of::<u64>())
-        };
-        self.read(bytes)?;
-        Ok(r.to_le())
+        let mut bytes = [0; 8];
+        self.read(&mut bytes)?;
+        Ok(u64::from_le_bytes(bytes))
     }
 
     #[inline]
