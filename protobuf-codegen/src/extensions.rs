@@ -99,6 +99,7 @@ pub(crate) fn write_extensions(
     }
 
     w.write_line("");
+    w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
         for field in &file.extension {
             if field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
