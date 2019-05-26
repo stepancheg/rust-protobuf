@@ -165,9 +165,25 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     // }
 
     /// Create an empty message object.
+    ///
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>() {
+    /// let m = MyMessage::new();
+    /// # }
+    /// ```
     fn new() -> Self where Self : Sized;
 
     /// Get message descriptor for message type.
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>() {
+    /// let descriptor = MyMessage::descriptor_static();
+    /// assert_eq!("MyMessage", descriptor.name());
+    /// # }
+    /// ```
     fn descriptor_static() -> &'static MessageDescriptor
         where Self : Sized
     {
@@ -177,7 +193,14 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
         );
     }
 
-    /// Return a pointer to default immutable message.
+    /// Return a pointer to default immutable message with static lifetime.
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>() {
+    /// let m: &MyMessage = MyMessage::default_instance();
+    /// # }
+    /// ```
     fn default_instance() -> &'static Self
         where Self : Sized;
 }
