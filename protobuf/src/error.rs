@@ -5,6 +5,7 @@ use std::str;
 
 use wire_format::WireType;
 
+/// `Result` alias for `ProtobufError`
 pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
 /// Enum values added here for diagnostic purposes.
