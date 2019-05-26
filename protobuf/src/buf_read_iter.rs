@@ -140,7 +140,6 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
-        // TODO: return error instead of panic
         let new_limit = match self.pos().checked_add(limit) {
             Some(new_limit) => new_limit,
             None => return Err(ProtobufError::WireError(WireError::Other)),
