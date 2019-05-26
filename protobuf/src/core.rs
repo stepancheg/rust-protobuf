@@ -19,6 +19,7 @@ use crate::stream::WithCodedOutputStream;
 use crate::unknown::UnknownFields;
 
 /// Trait implemented for all generated structs for protobuf messages.
+///
 /// Also, generated messages implement `Clone + Default + PartialEq`
 pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
