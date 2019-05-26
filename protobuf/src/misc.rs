@@ -1,12 +1,9 @@
 use std::mem;
-use std::slice;
 
 /// Slice from `vec[vec.len()..vec.capacity()]`
 pub unsafe fn remaining_capacity_as_slice_mut<A>(vec: &mut Vec<A>) -> &mut [A] {
-    slice::from_raw_parts_mut(
-        vec.as_mut_slice().as_mut_ptr().offset(vec.len() as isize),
-        vec.capacity() - vec.len(),
-    )
+    let range = vec.len()..vec.capacity();
+    vec.get_unchecked_mut(range)
 }
 
 pub unsafe fn remove_lifetime_mut<A: ?Sized>(a: &mut A) -> &'static mut A {
