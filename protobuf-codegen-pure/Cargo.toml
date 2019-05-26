@@ -25,3 +25,6 @@ protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-pre" }
 name = "parse-and-typecheck"
 path = "src/bin/parse-and-typecheck.rs"
 test = false
+
+[package.metadata.docs.rs]
+all-features = true
