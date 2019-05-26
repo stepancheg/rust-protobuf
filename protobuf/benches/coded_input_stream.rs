@@ -8,7 +8,7 @@ extern crate test;
 use std::io;
 use std::io::Read;
 
-use protobuf::stream::CodedInputStream;
+use protobuf::CodedInputStream;
 
 use self::test::Bencher;
 
