@@ -1,6 +1,5 @@
 use std::fmt;
 use std::marker;
-use std::mem;
 
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
@@ -172,7 +171,7 @@ impl ProtobufType for ProtobufTypeFloat {
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f32> {
         unknown_values.fixed32.iter().rev().next()
-            .map(|&bits| unsafe { mem::transmute::<u32, f32>(bits) })
+            .map(|&bits| f32::from_bits(bits) )
     }
 
     fn write_with_cached_size(
@@ -203,7 +202,7 @@ impl ProtobufType for ProtobufTypeDouble {
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f64> {
         unknown_values.fixed64.iter().rev().next()
-            .map(|&bits| unsafe { mem::transmute::<u64, f64>(bits) })
+            .map(|&bits| f64::from_bits(bits))
     }
 
     fn compute_size(_value: &f64) -> u32 {
