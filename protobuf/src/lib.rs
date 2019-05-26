@@ -40,8 +40,6 @@ pub use crate::chars::Chars;
 pub use crate::error::ProtobufError;
 pub use crate::error::ProtobufResult;
 
-pub use crate::reflect::types;
-
 // generated
 pub mod descriptor;
 // TODO: move plugin to mod codegen

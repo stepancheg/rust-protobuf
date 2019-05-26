@@ -54,7 +54,7 @@ impl crate::Message for Struct {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_map_into::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
+                    crate::rt::read_map_into::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -68,14 +68,14 @@ impl crate::Message for Struct {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += crate::rt::compute_map_size::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields);
+        my_size += crate::rt::compute_map_size::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields);
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
-        crate::rt::write_map_with_cached_sizes::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
+        crate::rt::write_map_with_cached_sizes::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -104,7 +104,7 @@ impl crate::Message for Struct {
         static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_map_accessor::<_, crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(
+            fields.push(crate::reflect::rt::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
                 "fields",
                 |m: &Struct| { &m.fields },
                 |m: &mut Struct| { &mut m.fields },
@@ -532,25 +532,25 @@ impl crate::Message for Value {
         static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::types::ProtobufTypeEnum<NullValue>>(
+            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
                 "null_value",
                 Value::has_null_value,
                 Value::get_null_value,
                 Value::set_null_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::types::ProtobufTypeDouble>(
+            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
                 "number_value",
                 Value::has_number_value,
                 Value::get_number_value,
                 Value::set_number_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, crate::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "string_value",
                 Value::has_string_value,
                 Value::get_string_value,
                 Value::set_string_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
                 "bool_value",
                 Value::has_bool_value,
                 Value::get_bool_value,
@@ -716,7 +716,7 @@ impl crate::Message for ListValue {
         static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Value>>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
                 "values",
                 |m: &ListValue| { &m.values },
                 |m: &mut ListValue| { &mut m.values },

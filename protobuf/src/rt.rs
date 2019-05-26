@@ -19,7 +19,7 @@ use crate::repeated::RepeatedField;
 use crate::singular::SingularField;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
-use crate::types::*;
+use crate::reflect::types::*;
 use crate::wire_format;
 use crate::ProtobufEnumOrUnknown;
 use crate::wire_format::WireType;

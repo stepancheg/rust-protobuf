@@ -569,27 +569,27 @@ impl ProtobufTypeGen {
     pub fn rust_type(&self, customize: &Customize) -> String {
         match self {
             &ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => format!(
-                "{}::types::ProtobufType{}",
+                "{}::reflect::types::ProtobufType{}",
                 protobuf_crate_path(customize),
                 capitalize(protobuf_name(t))
             ),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_BYTES,
                 PrimitiveTypeVariant::Carllerche,
-            ) => format!("{}::types::ProtobufTypeCarllercheBytes", protobuf_crate_path(customize)),
+            ) => format!("{}::reflect::types::ProtobufTypeCarllercheBytes", protobuf_crate_path(customize)),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
                 PrimitiveTypeVariant::Carllerche,
-            ) => format!("{}::types::ProtobufTypeCarllercheChars", protobuf_crate_path(customize)),
+            ) => format!("{}::reflect::types::ProtobufTypeCarllercheChars", protobuf_crate_path(customize)),
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             &ProtobufTypeGen::Message(ref name) => {
-                format!("{}::types::ProtobufTypeMessage<{}>", protobuf_crate_path(customize), name)
+                format!("{}::reflect::types::ProtobufTypeMessage<{}>", protobuf_crate_path(customize), name)
             }
             &ProtobufTypeGen::EnumOrUnknown(ref name) => {
-                format!("{}::types::ProtobufTypeEnumOrUnknown<{}>", protobuf_crate_path(customize), name)
+                format!("{}::reflect::types::ProtobufTypeEnumOrUnknown<{}>", protobuf_crate_path(customize), name)
             }
             &ProtobufTypeGen::Enum(ref name) => {
-                format!("{}::types::ProtobufTypeEnum<{}>", protobuf_crate_path(customize), name)
+                format!("{}::reflect::types::ProtobufTypeEnum<{}>", protobuf_crate_path(customize), name)
             }
         }
     }
