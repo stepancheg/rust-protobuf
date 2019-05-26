@@ -61,7 +61,7 @@ pub mod reflect;
 mod repeated;
 pub mod rt;
 mod singular;
-pub mod stream;
+mod stream;
 pub mod text_format;
 pub mod well_known_types;
 
