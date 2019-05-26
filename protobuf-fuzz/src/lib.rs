@@ -45,3 +45,20 @@ pub fn fuzz_target_map(bytes: &[u8]) {
 pub fn fuzz_target_map_read(bytes: &[u8]) {
     test_read::<all_types_pb::TestTypesMap>(bytes);
 }
+
+pub fn fuzz_target_all(bytes: &[u8]) {
+    if bytes.len() == 0 {
+        return;
+    }
+    match bytes[0] {
+        0 => fuzz_target_empty_message(&bytes[1..]),
+        1 => fuzz_target_empty_message_read(&bytes[1..]),
+        2 => fuzz_target_singular(&bytes[1..]),
+        3 => fuzz_target_singular_read(&bytes[1..]),
+        4 => fuzz_target_repeated(&bytes[1..]),
+        5 => fuzz_target_repeated_read(&bytes[1..]),
+        6 => fuzz_target_map(&bytes[1..]),
+        7 => fuzz_target_map_read(&bytes[1..]),
+        _ => {}
+    }
+}
