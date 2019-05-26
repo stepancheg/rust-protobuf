@@ -41,8 +41,12 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   (although protobuf implementation does a couple of unsafe calls).
 
 ## [2.6 Unreleased]
+
+## [2.6.1] - 2019-05-27
+
 - [Fix `Hash` of
   `UnknownFields`](https://github.com/stepancheg/rust-protobuf/commit/7f285cc42990e34bd8a489519aaae216a93584cf)
+- Improve rustdoc a little
 
 ## [2.6.0] - 2019-05-19
 
