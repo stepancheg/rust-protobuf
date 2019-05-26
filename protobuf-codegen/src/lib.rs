@@ -124,6 +124,7 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize,
         },
     );
     w.write_line("");
+    w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
     w.pub_fn(
         &format!("file_descriptor_proto() -> &'static {}::descriptor::FileDescriptorProto",
             protobuf_crate_path(customize)),
