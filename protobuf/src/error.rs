@@ -24,10 +24,14 @@ pub enum WireError {
     Other,
 }
 
+/// Generic protobuf error
 #[derive(Debug)]
 pub enum ProtobufError {
+    /// I/O error when reading or writing
     IoError(io::Error),
+    /// Malformed input
     WireError(WireError),
+    /// Protocol contains a string which is not valid UTF-8 string
     Utf8(str::Utf8Error),
     /// Not all required fields of message set.
     MessageNotInitialized(&'static str),
