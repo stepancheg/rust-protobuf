@@ -269,12 +269,12 @@ impl<'a> CodedInputStream<'a> {
 
     pub fn read_double(&mut self) -> ProtobufResult<f64> {
         let bits = self.read_raw_little_endian64()?;
-        unsafe { Ok(mem::transmute::<u64, f64>(bits)) }
+        Ok(f64::from_bits(bits))
     }
 
     pub fn read_float(&mut self) -> ProtobufResult<f32> {
         let bits = self.read_raw_little_endian32()?;
-        unsafe { Ok(mem::transmute::<u32, f32>(bits)) }
+        Ok(f32::from_bits(bits))
     }
 
     pub fn read_int64(&mut self) -> ProtobufResult<i64> {
