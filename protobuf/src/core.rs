@@ -20,6 +20,7 @@ use error::ProtobufResult;
 
 
 /// Trait implemented for all generated structs for protobuf messages.
+///
 /// Also, generated messages implement `Clone + Default + PartialEq`
 pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// Message descriptor for this message, used for reflection.
