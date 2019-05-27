@@ -1,3 +1,24 @@
+//! Protobuf "text format" implementation.
+//!
+//! Text format message look like this:
+//!
+//! ```text,ignore
+//! size: 17
+//! color: "red"
+//! children {
+//!     size: 18
+//!     color: "blue"
+//! }
+//! children {
+//!     size: 19
+//!     color: "green"
+//! }
+//! ```
+//!
+//! This format is not specified, but it is implemented by all official
+//! protobuf implementations, including `protoc` command which can decode
+//! and encode messages using text format.
+
 use core::Message;
 use reflect::ProtobufValueRef;
 use reflect::ReflectFieldRef;

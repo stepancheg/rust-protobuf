@@ -1,7 +1,6 @@
 //! Library to read and write protocol buffers data.
 
-// TODO: add docs
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
 
 #[cfg(feature = "bytes")]

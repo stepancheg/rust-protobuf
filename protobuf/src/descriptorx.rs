@@ -1,3 +1,6 @@
+// Should not be a part of public API
+#![doc(hidden)]
+
 use descriptor::DescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
@@ -571,6 +574,7 @@ pub struct OneofWithContext<'a> {
 }
 
 impl<'a> OneofWithContext<'a> {
+    /// Oneof rust name
     pub fn name(&'a self) -> &'a str {
         match self.oneof.get_name() {
             "type" => "field_type",
@@ -579,7 +583,7 @@ impl<'a> OneofWithContext<'a> {
         }
     }
 
-    // rust type name of enum
+    /// rust type name of enum
     pub fn rust_name(&self) -> String {
         format!(
             "{}_oneof_{}",
@@ -588,6 +592,7 @@ impl<'a> OneofWithContext<'a> {
         )
     }
 
+    /// Oneof variants
     pub fn variants(&'a self) -> Vec<OneofVariantWithContext<'a>> {
         self.message
             .fields()
@@ -601,7 +606,7 @@ impl<'a> OneofWithContext<'a> {
     }
 }
 
-// find message by rust type name
+/// Find message by rust type name
 pub fn find_message_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
@@ -615,7 +620,7 @@ pub fn find_message_by_rust_name<'a>(
     .unwrap()
 }
 
-// find enum by rust type name
+/// Find enum by rust type name
 pub fn find_enum_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,

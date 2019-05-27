@@ -1,3 +1,5 @@
+//! `CodedInputStream` and `CodedOutputStream` implementations
+
 use std::io;
 use std::io::Write;
 use std::io::{BufRead, Read};
@@ -26,38 +28,49 @@ use zigzag::decode_zig_zag_64;
 use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 
-// Equal to the default buffer size of `BufWriter`, so when
-// `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
+/// Equal to the default buffer size of `BufWriter`, so when
+/// `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
-// Default recursion level limit. 100 is the default value of C++'s implementation.
+/// Default recursion level limit. 100 is the default value of C++'s implementation.
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
 
-// Max allocated vec when reading length-delimited from unknown input stream
+/// Max allocated vec when reading length-delimited from unknown input stream
 const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
 
+/// Serialization constants.
 pub mod wire_format {
     // TODO: temporary
     pub use self::WireType::*;
 
+    /// Tag occupies 3 bits
     pub const TAG_TYPE_BITS: u32 = 3;
+    /// Tag mask
     pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) - 1;
-    // max possible tag number
+    /// Max possible field number
     pub const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
 
+    /// One of six defined protobuf wire types
     #[derive(PartialEq, Eq, Clone, Debug)]
     pub enum WireType {
+        /// Varint (e. g. `int32` or `sint64`)
         WireTypeVarint = 0,
+        /// Fixed size 64 bit (e. g. `fixed64` or `double`)
         WireTypeFixed64 = 1,
+        /// Length-delimited (e. g. `message` or `string`)
         WireTypeLengthDelimited = 2,
+        /// Groups are not supported by rust-protobuf
         WireTypeStartGroup = 3,
+        /// Groups are not supported by rust-protobuf
         WireTypeEndGroup = 4,
+        /// Fixed size 64 bit (e. g. `fixed32` or `float`)
         WireTypeFixed32 = 5,
     }
 
     impl Copy for WireType {}
 
     impl WireType {
+        /// Parse wire type
         pub fn new(n: u32) -> Option<WireType> {
             match n {
                 0 => Some(WireTypeVarint),
@@ -71,6 +84,7 @@ pub mod wire_format {
         }
     }
 
+    /// Parsed protobuf tag, which is a pair of field number and wire type
     #[derive(Clone)]
     pub struct Tag {
         field_number: u32,
@@ -80,10 +94,12 @@ pub mod wire_format {
     impl Copy for Tag {}
 
     impl Tag {
+        /// Pack a tag to integer
         pub fn value(self) -> u32 {
             (self.field_number << TAG_TYPE_BITS) | (self.wire_type as u32)
         }
 
+        /// Parse integer into `Tag` object
         // TODO: should return Result instead of Option
         pub fn new(value: u32) -> Option<Tag> {
             let wire_type = WireType::new(value & TAG_TYPE_MASK);
@@ -100,6 +116,11 @@ pub mod wire_format {
             })
         }
 
+        /// Create a tag from a field number and wire type.
+        ///
+        /// # Panics
+        ///
+        /// If field number is outside of allowed range.
         pub fn make(field_number: u32, wire_type: WireType) -> Tag {
             assert!(field_number > 0 && field_number <= FIELD_NUMBER_MAX);
             Tag {
@@ -108,6 +129,7 @@ pub mod wire_format {
             }
         }
 
+        /// Tag as pair of (field number, wire type)
         pub fn unpack(self) -> (u32, WireType) {
             (self.field_number(), self.wire_type())
         }
@@ -116,6 +138,7 @@ pub mod wire_format {
             self.wire_type
         }
 
+        /// Protobuf field number
         pub fn field_number(self) -> u32 {
             self.field_number
         }
@@ -453,6 +476,7 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
+    /// Read `repeated` packed `double`
     pub fn read_repeated_packed_double_into(
         &mut self,
         target: &mut Vec<f64>,
@@ -469,6 +493,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read `repeated` packed `float`
     pub fn read_repeated_packed_float_into(&mut self, target: &mut Vec<f32>) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
 
@@ -482,6 +507,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read `repeated` packed `int64`
     pub fn read_repeated_packed_int64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len as u64)?;
@@ -814,6 +840,7 @@ impl<'a> BufRead for CodedInputStream<'a> {
     }
 }
 
+#[doc(hidden)]
 pub trait WithCodedOutputStream {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
@@ -844,6 +871,7 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     }
 }
 
+#[doc(hidden)]
 pub fn with_coded_output_stream_to_bytes<F>(cb: F) -> ProtobufResult<Vec<u8>>
 where
     F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<()>,
@@ -853,6 +881,8 @@ where
     Ok(v)
 }
 
+/// Helper internal utility, should not be used directly
+#[doc(hidden)]
 pub trait WithCodedInputStream {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
@@ -1004,6 +1034,7 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Flush the buffer to underlying write
     pub fn flush(&mut self) -> ProtobufResult<()> {
         match self.target {
             OutputTarget::Bytes => Ok(()),
@@ -1206,6 +1237,7 @@ impl<'a> CodedOutputStream<'a> {
         self.write_enum_no_tag(value.value())
     }
 
+    /// Write unknown value
     pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> ProtobufResult<()> {
         match unknown {
             UnknownValueRef::Fixed64(fixed64) => self.write_raw_little_endian64(fixed64),
@@ -1307,6 +1339,7 @@ impl<'a> CodedOutputStream<'a> {
         self.write_enum(field_number, value.value())
     }
 
+    /// Write unknown field
     pub fn write_unknown(
         &mut self,
         field_number: u32,

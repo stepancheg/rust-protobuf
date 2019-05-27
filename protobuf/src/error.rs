@@ -1,3 +1,5 @@
+//! Protobuf error type
+
 use std::error::Error;
 use std::fmt;
 use std::io;
@@ -12,15 +14,25 @@ pub type ProtobufResult<T> = Result<T, ProtobufError>;
 /// Users should not depend on specific values.
 #[derive(Debug)]
 pub enum WireError {
+    /// Could not read complete message because stream is EOF
     UnexpectedEof,
+    /// Wrong wire type for given field
     UnexpectedWireType(WireType),
+    /// Incorrect tag value
     IncorrectTag(u32),
+    /// Malformed map field
     IncompleteMap,
+    /// Malformed varint
     IncorrectVarint,
+    /// String is not valid UTD-8
     Utf8Error,
+    /// Enum value is unknown
     InvalidEnumValue(i32),
+    /// Message is too nested
     OverRecursionLimit,
+    /// Could not read complete message because stream is EOF
     TruncatedMessage,
+    /// Other error
     Other,
 }
 
@@ -33,12 +45,16 @@ pub enum ProtobufError {
     WireError(WireError),
     /// Protocol contains a string which is not valid UTF-8 string
     Utf8(str::Utf8Error),
+    /// Not all required fields set
     MessageNotInitialized {
+        /// Message name
         message: &'static str,
     },
 }
 
 impl ProtobufError {
+    /// Create message not initialized error.
+    #[doc(hidden)]
     pub fn message_not_initialized(message: &'static str) -> ProtobufError {
         ProtobufError::MessageNotInitialized { message: message }
     }
