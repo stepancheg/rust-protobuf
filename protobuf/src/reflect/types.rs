@@ -115,7 +115,7 @@ pub trait ProtobufTypeFixed: ProtobufType {
     /// Encoded size of value in bytes of this type.
     ///
     /// E. g. it is `4` for `fixed32`
-    fn encoded_size() -> u32;
+    const ENCODED_SIZE: u32;
 }
 
 /// `float`
@@ -202,7 +202,7 @@ impl ProtobufType for ProtobufTypeFloat {
     }
 
     fn compute_size(_value: &f32) -> u32 {
-        Self::encoded_size()
+        Self::ENCODED_SIZE
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f32> {
@@ -220,9 +220,7 @@ impl ProtobufType for ProtobufTypeFloat {
 }
 
 impl ProtobufTypeFixed for ProtobufTypeFloat {
-    fn encoded_size() -> u32 {
-        4
-    }
+    const ENCODED_SIZE: u32 = 4;
 }
 
 impl ProtobufType for ProtobufTypeDouble {
@@ -242,7 +240,7 @@ impl ProtobufType for ProtobufTypeDouble {
     }
 
     fn compute_size(_value: &f64) -> u32 {
-        Self::encoded_size()
+        Self::ENCODED_SIZE
     }
 
     fn write_with_cached_size(
@@ -255,9 +253,7 @@ impl ProtobufType for ProtobufTypeDouble {
 }
 
 impl ProtobufTypeFixed for ProtobufTypeDouble {
-    fn encoded_size() -> u32 {
-        8
-    }
+    const ENCODED_SIZE: u32 = 8;
 }
 
 impl ProtobufType for ProtobufTypeInt32 {
@@ -453,7 +449,7 @@ impl ProtobufType for ProtobufTypeFixed32 {
     }
 
     fn compute_size(_value: &u32) -> u32 {
-        Self::encoded_size()
+        Self::ENCODED_SIZE
     }
 
     fn write_with_cached_size(
@@ -466,9 +462,7 @@ impl ProtobufType for ProtobufTypeFixed32 {
 }
 
 impl ProtobufTypeFixed for ProtobufTypeFixed32 {
-    fn encoded_size() -> u32 {
-        4
-    }
+    const ENCODED_SIZE: u32 = 4;
 }
 
 impl ProtobufType for ProtobufTypeFixed64 {
@@ -487,7 +481,7 @@ impl ProtobufType for ProtobufTypeFixed64 {
     }
 
     fn compute_size(_value: &u64) -> u32 {
-        Self::encoded_size()
+        Self::ENCODED_SIZE
     }
 
     fn write_with_cached_size(
@@ -500,9 +494,7 @@ impl ProtobufType for ProtobufTypeFixed64 {
 }
 
 impl ProtobufTypeFixed for ProtobufTypeFixed64 {
-    fn encoded_size() -> u32 {
-        8
-    }
+    const ENCODED_SIZE: u32 = 8;
 }
 
 impl ProtobufType for ProtobufTypeSfixed32 {
@@ -521,7 +513,7 @@ impl ProtobufType for ProtobufTypeSfixed32 {
     }
 
     fn compute_size(_value: &i32) -> u32 {
-        Self::encoded_size()
+        Self::ENCODED_SIZE
     }
 
     fn write_with_cached_size(
@@ -534,9 +526,7 @@ impl ProtobufType for ProtobufTypeSfixed32 {
 }
 
 impl ProtobufTypeFixed for ProtobufTypeSfixed32 {
-    fn encoded_size() -> u32 {
-        4
-    }
+    const ENCODED_SIZE: u32 = 4;
 }
 
 impl ProtobufType for ProtobufTypeSfixed64 {
@@ -568,9 +558,7 @@ impl ProtobufType for ProtobufTypeSfixed64 {
 }
 
 impl ProtobufTypeFixed for ProtobufTypeSfixed64 {
-    fn encoded_size() -> u32 {
-        8
-    }
+    const ENCODED_SIZE: u32 = 8;
 }
 
 impl ProtobufType for ProtobufTypeBool {

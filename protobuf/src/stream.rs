@@ -391,11 +391,11 @@ impl<'a> CodedInputStream<'a> {
         let len_bytes = self.read_raw_varint64()?;
 
         let reserve = if len_bytes <= READ_RAW_BYTES_MAX_ALLOC as u64 {
-            (len_bytes as usize) / (T::encoded_size() as usize)
+            (len_bytes as usize) / (T::ENCODED_SIZE as usize)
         } else {
             // prevent OOM on malformed input
             // probably should truncate
-            READ_RAW_BYTES_MAX_ALLOC / (T::encoded_size() as usize)
+            READ_RAW_BYTES_MAX_ALLOC / (T::ENCODED_SIZE as usize)
         };
 
         target.reserve(reserve);
