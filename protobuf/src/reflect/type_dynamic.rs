@@ -7,7 +7,7 @@ use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::wire_format::WireType;
 
-/// Dynamic version of `ProtobufType`.
+/// Dynamic version of [`ProtobufType`](crate::reflect::types::ProtobufType).
 ///
 /// This is used internally.
 pub trait ProtobufTypeDynamic: Send + Sync + 'static {

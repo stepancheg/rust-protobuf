@@ -6,14 +6,14 @@ mod field;
 mod map;
 mod message;
 mod repeated;
-pub(crate) mod runtime_type_box;
-pub(crate) mod runtime_type_dynamic;
+mod runtime_type_box;
+mod runtime_type_dynamic;
 pub(crate) mod runtime_types;
-pub(crate) mod transmute_eq;
-pub mod type_dynamic;
+mod transmute_eq;
+mod type_dynamic;
 pub mod types;
 mod value;
-pub(crate) mod find_message_or_enum;
+mod find_message_or_enum;
 
 mod reflect_deep_eq;
 

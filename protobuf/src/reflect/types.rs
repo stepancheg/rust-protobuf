@@ -28,7 +28,6 @@ use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
 use crate::reflect::runtime_types::RuntimeTypeUnreachable;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
-use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
 use crate::rt;
@@ -40,6 +39,8 @@ use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
 use crate::core::parse_from_bytes;
+
+pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 
 /// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + 'static {
