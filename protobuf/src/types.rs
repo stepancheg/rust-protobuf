@@ -21,16 +21,22 @@ use wire_format::WireType;
 use zigzag::decode_zig_zag_32;
 use zigzag::decode_zig_zag_64;
 
+/// Protobuf elementary type as generic trait
 pub trait ProtobufType {
+    /// Rust type of value
     type Value: ProtobufValue + Clone + 'static;
 
+    /// Wire type when writing to stream
     fn wire_type() -> WireType;
 
+    /// Read value from `CodedInputStream`
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Self::Value>;
 
+    /// Compute wire size
     fn compute_size(value: &Self::Value) -> u32;
 
-    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::Value>;
+    /// Get value from `UnknownValues`
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Self::Value>;
 
     /// Compute size adding length prefix if wire type is length delimited
     /// (i. e. string, bytes, message)
@@ -68,21 +74,37 @@ pub trait ProtobufType {
     ) -> ProtobufResult<()>;
 }
 
+/// `float`
 pub struct ProtobufTypeFloat;
+/// `double`
 pub struct ProtobufTypeDouble;
+/// `uint32`
 pub struct ProtobufTypeInt32;
+/// `int64`
 pub struct ProtobufTypeInt64;
+/// `uint32`
 pub struct ProtobufTypeUint32;
+/// `uint64`
 pub struct ProtobufTypeUint64;
+/// `sint32`
 pub struct ProtobufTypeSint32;
+/// `sint64`
 pub struct ProtobufTypeSint64;
+/// `fixed32`
 pub struct ProtobufTypeFixed32;
+/// `fixed64`
 pub struct ProtobufTypeFixed64;
+/// `sfixed32`
 pub struct ProtobufTypeSfixed32;
+/// `sfixed64`
 pub struct ProtobufTypeSfixed64;
+/// `bool`
 pub struct ProtobufTypeBool;
+/// `string`
 pub struct ProtobufTypeString;
+/// `bytes`
 pub struct ProtobufTypeBytes;
+/// Something which should be deleted
 pub struct ProtobufTypeChars;
 
 /// `bytes` as [`Bytes`](bytes::Bytes)
@@ -92,7 +114,9 @@ pub struct ProtobufTypeCarllercheBytes;
 #[cfg(feature = "bytes")]
 pub struct ProtobufTypeCarllercheChars;
 
+/// `enum`
 pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+/// `message`
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
 impl ProtobufType for ProtobufTypeFloat {

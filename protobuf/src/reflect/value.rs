@@ -6,19 +6,28 @@ use bytes::Bytes;
 use chars::Chars;
 
 use super::*;
-use core::*;
 
+/// Type implemented by all protobuf elementary types
+/// (ints, floats, bool, string, bytes, enums, messages).
 pub trait ProtobufValue: Any + 'static {
+    /// As ref
     fn as_ref(&self) -> ProtobufValueRef;
 
+    /// Convert to `Any`
     fn as_any(&self) -> &Any {
         unimplemented!()
     }
 
+    /// Is value non-zero?
     fn is_non_zero(&self) -> bool {
         self.as_ref().is_non_zero()
     }
 
+    /// Return `ProtobufValueRef` if self is `Copy`.
+    ///
+    /// # Panics
+    ///
+    /// if `Self` is not `Copy`.
     fn as_ref_copy(&self) -> ProtobufValueRef<'static>
 //where Self : Copy // TODO
     {
@@ -127,21 +136,34 @@ impl<M : Message> ProtobufValue for M {
 }
 */
 
+/// Dynamic reference to a value
 pub enum ProtobufValueRef<'a> {
+    /// `u32`
     U32(u32),
+    /// `u64`
     U64(u64),
+    /// `i32`
     I32(i32),
+    /// `i64`
     I64(i64),
+    /// `f32`
     F32(f32),
+    /// `f64`
     F64(f64),
+    /// `bool`
     Bool(bool),
+    /// `string`
     String(&'a str),
+    /// `bytes`
     Bytes(&'a [u8]),
+    /// `enum`
     Enum(&'static EnumValueDescriptor),
+    /// `message`
     Message(&'a Message),
 }
 
 impl<'a> ProtobufValueRef<'a> {
+    /// Is value non-zero?
     pub fn is_non_zero(&self) -> bool {
         match *self {
             ProtobufValueRef::U32(v) => v != 0,
