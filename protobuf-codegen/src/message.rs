@@ -50,13 +50,7 @@ impl<'a> MessageGen<'a> {
             root_scope: root_scope,
             type_name: message.rust_name(),
             fields: fields,
-            lite_runtime: customize.lite_runtime.unwrap_or_else(|| {
-                message
-                    .get_file_descriptor()
-                    .get_options()
-                    .get_optimize_for()
-                    == FileOptions_OptimizeMode::LITE_RUNTIME
-            }),
+            lite_runtime,
             customize,
         }
     }
@@ -396,6 +390,7 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    #[allow(dead_code)]
     fn supports_derive_partial_eq(&self) -> bool {
         // There's stack overflow in the compiler when struct has too many fields
         // https://github.com/rust-lang/rust/issues/40119
