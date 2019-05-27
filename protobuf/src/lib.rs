@@ -85,5 +85,5 @@ pub const VERSION: &str = "";
 /// This symbol is in generated `version.rs`, include here for IDE
 #[cfg(never)]
 #[doc(hidden)]
-pub const VERSION_SYMBOL: &str = "";
+pub const VERSION_IDENT: &str = "";
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
