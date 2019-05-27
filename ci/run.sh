@@ -19,4 +19,8 @@ protobuf-codegen-pure-test/test.sh
 protoc/test.sh
 cargo build --all --all-targets
 
+if [ -z "$ON_WINDOWS" ]; then
+    cargo doc -p protobuf
+fi
+
 # vim: set ts=4 sw=4 et:
