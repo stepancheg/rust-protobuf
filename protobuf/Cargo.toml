@@ -13,7 +13,6 @@ Rust implementation of Google protocol buffers
 """
 
 [lib]
-doctest = false
 bench = false
 
 [features]
