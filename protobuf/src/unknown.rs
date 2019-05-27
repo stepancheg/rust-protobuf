@@ -10,19 +10,28 @@ use stream::wire_format;
 use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
 
+/// Unknown value.
+///
+/// See [`UnknownFields`](crate::UnknownFields) for the explanations.
 #[derive(Debug)]
 pub enum UnknownValue {
+    /// 32-bit unknown (e. g. `fixed32` or `float`)
     Fixed32(u32),
+    /// 64-bit unknown (e. g. `fixed64` or `double`)
     Fixed64(u64),
+    /// Varint unknown (e. g. `int32` or `bool`)
     Varint(u64),
+    /// Length-delimited unknown (e. g. `message` or `string`)
     LengthDelimited(Vec<u8>),
 }
 
 impl UnknownValue {
+    /// Wire type for this unknown
     pub fn wire_type(&self) -> wire_format::WireType {
         self.get_ref().wire_type()
     }
 
+    /// As ref
     pub fn get_ref<'s>(&'s self) -> UnknownValueRef<'s> {
         match *self {
             UnknownValue::Fixed32(fixed32) => UnknownValueRef::Fixed32(fixed32),
@@ -43,14 +52,22 @@ impl UnknownValue {
     }
 }
 
+/// Reference to unknown value.
+///
+/// See [`UnknownFields`](crate::UnknownFields) for explanations.
 pub enum UnknownValueRef<'o> {
+    /// 32-bit unknown
     Fixed32(u32),
+    /// 64-bit unknown
     Fixed64(u64),
+    /// Varint unknown
     Varint(u64),
+    /// Length-delimited unknown
     LengthDelimited(&'o [u8]),
 }
 
 impl<'o> UnknownValueRef<'o> {
+    /// Wire-type to serialize this unknown
     pub fn wire_type(&self) -> wire_format::WireType {
         match *self {
             UnknownValueRef::Fixed32(_) => wire_format::WireTypeFixed32,
@@ -61,15 +78,23 @@ impl<'o> UnknownValueRef<'o> {
     }
 }
 
+/// Field unknown values.
+///
+/// See [`UnknownFields`](crate::UnknownFields) for explanations.
 #[derive(Clone, PartialEq, Eq, Debug, Default, Hash)]
 pub struct UnknownValues {
+    /// 32-bit unknowns
     pub fixed32: Vec<u32>,
+    /// 64-bit unknowns
     pub fixed64: Vec<u64>,
+    /// Varint unknowns
     pub varint: Vec<u64>,
+    /// Length-delimited unknowns
     pub length_delimited: Vec<Vec<u8>>,
 }
 
 impl UnknownValues {
+    /// Add unknown value
     pub fn add_value(&mut self, value: UnknownValue) {
         match value {
             UnknownValue::Fixed64(fixed64) => self.fixed64.push(fixed64),
@@ -81,6 +106,7 @@ impl UnknownValues {
         };
     }
 
+    /// Iterate over unknown values
     pub fn iter<'s>(&'s self) -> UnknownValuesIter<'s> {
         UnknownValuesIter {
             fixed32: self.fixed32.iter(),
@@ -100,6 +126,7 @@ impl<'a> IntoIterator for &'a UnknownValues {
     }
 }
 
+/// Iterator over unknown values
 pub struct UnknownValuesIter<'o> {
     fixed32: slice::Iter<'o, u32>,
     fixed64: slice::Iter<'o, u64>,
@@ -141,8 +168,10 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
 /// even when working with older `.proto` file, new fields won't be lost.
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub struct UnknownFields {
+    /// The map.
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive
+    // TODO: hide
     pub fields: Option<Box<HashMap<u32, UnknownValues>>>,
 }
 
@@ -167,6 +196,7 @@ impl Hash for UnknownFields {
 }
 
 impl UnknownFields {
+    /// Empty unknown fields
     pub fn new() -> UnknownFields {
         Default::default()
     }
@@ -186,34 +216,41 @@ impl UnknownFields {
         }
     }
 
+    /// Add unknown fixed 32-bit
     pub fn add_fixed32(&mut self, number: u32, fixed32: u32) {
         self.find_field(&number).fixed32.push(fixed32);
     }
 
+    /// Add unknown fixed 64-bit
     pub fn add_fixed64(&mut self, number: u32, fixed64: u64) {
         self.find_field(&number).fixed64.push(fixed64);
     }
 
+    /// Add unknown varint
     pub fn add_varint(&mut self, number: u32, varint: u64) {
         self.find_field(&number).varint.push(varint);
     }
 
+    /// Add unknown length delimited
     pub fn add_length_delimited(&mut self, number: u32, length_delimited: Vec<u8>) {
         self.find_field(&number)
             .length_delimited
             .push(length_delimited);
     }
 
+    /// Add unknown value
     pub fn add_value(&mut self, number: u32, value: UnknownValue) {
         self.find_field(&number).add_value(value);
     }
 
+    /// Iterate over all unknowns
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
         UnknownFieldsIter {
             entries: self.fields.as_ref().map(|m| m.iter()),
         }
     }
 
+    /// Find unknown field by number
     pub fn get(&self, field_number: u32) -> Option<&UnknownValues> {
         match self.fields {
             Some(ref map) => map.get(&field_number),
@@ -239,6 +276,7 @@ impl<'a> IntoIterator for &'a UnknownFields {
     }
 }
 
+/// Iterator over [`UnknownFields`](crate::UnknownFields)
 pub struct UnknownFieldsIter<'s> {
     entries: Option<hash_map::Iter<'s, u32, UnknownValues>>,
 }

@@ -123,6 +123,7 @@ pub mod wire_format {
 
 }
 
+/// Buffered read with handy utilities.
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
     recursion_level: u32,
@@ -130,18 +131,30 @@ pub struct CodedInputStream<'a> {
 }
 
 impl<'a> CodedInputStream<'a> {
+    /// Wrap a `Read`.
+    ///
+    /// Note resulting `CodedInputStream` is buffered even if `Read` is not.
     pub fn new(read: &'a mut Read) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_read(read))
     }
 
+    /// Create from `BufRead`.
+    ///
+    /// `CodedInputStream` will utilize `BufRead` buffer.
     pub fn from_buffered_reader(buf_read: &'a mut BufRead) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_buf_read(buf_read))
     }
 
+    /// Read from byte slice
     pub fn from_bytes(bytes: &'a [u8]) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_byte_slice(bytes))
     }
 
+    /// Read from `Bytes`.
+    ///
+    /// `CodedInputStream` operations like
+    /// [`read_carllerche_bytes`](crate::CodedInputStream::read_carllerche_bytes)
+    /// will return a shared copy of this bytes object.
     #[cfg(feature = "bytes")]
     pub fn from_carllerche_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_bytes(bytes))
@@ -174,42 +187,59 @@ impl<'a> CodedInputStream<'a> {
         self.recursion_level -= 1;
     }
 
+    /// How many bytes processed
     pub fn pos(&self) -> u64 {
         self.source.pos()
     }
 
+    /// How many bytes until current limit
     pub fn bytes_until_limit(&self) -> u64 {
         self.source.bytes_until_limit()
     }
 
+    /// Read bytes into given `buf`.
+    ///
+    /// Return `0` on EOF.
+    // TODO: overload with `Read::read`
     pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         self.source.read_exact(buf)?;
         Ok(())
     }
 
+    /// Read exact number of bytes as `Bytes` object.
+    ///
+    /// This operation returns a shared view if `CodedInputStream` is
+    /// constructed with `Bytes` parameter.
     #[cfg(feature = "bytes")]
     fn read_raw_callerche_bytes(&mut self, count: usize) -> ProtobufResult<Bytes> {
         self.source.read_exact_bytes(count)
     }
 
+    /// Read one byte
     #[inline(always)]
     pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
         self.source.read_byte()
     }
 
+    /// Push new limit, return previous limit.
     pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
         self.source.push_limit(limit)
     }
 
+    /// Restore previous limit.
     pub fn pop_limit(&mut self, old_limit: u64) {
         self.source.pop_limit(old_limit);
     }
 
+    /// Are we at EOF?
     #[inline(always)]
     pub fn eof(&mut self) -> ProtobufResult<bool> {
         self.source.eof()
     }
 
+    /// Check we are at EOF.
+    ///
+    /// Return error if we are not at EOF.
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
         let eof = self.eof()?;
         if !eof {
@@ -235,6 +265,7 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
+    /// Read varint
     #[inline(always)]
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
         'slow: loop {
@@ -302,11 +333,13 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_varint64_slow()
     }
 
+    /// Read varint
     #[inline(always)]
     pub fn read_raw_varint32(&mut self) -> ProtobufResult<u32> {
         self.read_raw_varint64().map(|v| v as u32)
     }
 
+    /// Read little-endian 32-bit integer
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
         let mut r = 0u32;
         let bytes: &mut [u8] = unsafe {
@@ -317,6 +350,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(r.to_le())
     }
 
+    /// Read little-endian 64-bit integer
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
         let mut r = 0u64;
         let bytes: &mut [u8] = unsafe {
@@ -327,6 +361,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(r.to_le())
     }
 
+    /// Read tag
     #[inline]
     pub fn read_tag(&mut self) -> ProtobufResult<wire_format::Tag> {
         let v = self.read_raw_varint32()?;
@@ -336,66 +371,80 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
-    // Read tag, return it is pair (field number, wire type)
+    /// Read tag, return it is pair (field number, wire type)
     #[inline]
     pub fn read_tag_unpack(&mut self) -> ProtobufResult<(u32, wire_format::WireType)> {
         self.read_tag().map(|t| t.unpack())
     }
 
+    /// Read `double`
     pub fn read_double(&mut self) -> ProtobufResult<f64> {
         let bits = self.read_raw_little_endian64()?;
         unsafe { Ok(mem::transmute::<u64, f64>(bits)) }
     }
 
+    /// Read `float`
     pub fn read_float(&mut self) -> ProtobufResult<f32> {
         let bits = self.read_raw_little_endian32()?;
         unsafe { Ok(mem::transmute::<u32, f32>(bits)) }
     }
 
+    /// Read `int64`
     pub fn read_int64(&mut self) -> ProtobufResult<i64> {
         self.read_raw_varint64().map(|v| v as i64)
     }
 
+    /// Read `int32`
     pub fn read_int32(&mut self) -> ProtobufResult<i32> {
         self.read_raw_varint32().map(|v| v as i32)
     }
 
+    /// Read `uint64`
     pub fn read_uint64(&mut self) -> ProtobufResult<u64> {
         self.read_raw_varint64()
     }
 
+    /// Read `uint32`
     pub fn read_uint32(&mut self) -> ProtobufResult<u32> {
         self.read_raw_varint32()
     }
 
+    /// Read `sint64`
     pub fn read_sint64(&mut self) -> ProtobufResult<i64> {
         self.read_uint64().map(decode_zig_zag_64)
     }
 
+    /// Read `sint32`
     pub fn read_sint32(&mut self) -> ProtobufResult<i32> {
         self.read_uint32().map(decode_zig_zag_32)
     }
 
+    /// Read `fixed64`
     pub fn read_fixed64(&mut self) -> ProtobufResult<u64> {
         self.read_raw_little_endian64()
     }
 
+    /// Read `fixed32`
     pub fn read_fixed32(&mut self) -> ProtobufResult<u32> {
         self.read_raw_little_endian32()
     }
 
+    /// Read `sfixed64`
     pub fn read_sfixed64(&mut self) -> ProtobufResult<i64> {
         self.read_raw_little_endian64().map(|v| v as i64)
     }
 
+    /// Read `sfixed32`
     pub fn read_sfixed32(&mut self) -> ProtobufResult<i32> {
         self.read_raw_little_endian32().map(|v| v as i32)
     }
 
+    /// Read `bool`
     pub fn read_bool(&mut self) -> ProtobufResult<bool> {
         self.read_raw_varint32().map(|v| v != 0)
     }
 
+    /// Read `enum` as `ProtobufEnum`
     pub fn read_enum<E: ProtobufEnum>(&mut self) -> ProtobufResult<E> {
         let i = self.read_int32()?;
         match ProtobufEnum::from_i32(i) {
@@ -443,6 +492,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `int32`
     pub fn read_repeated_packed_int32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
@@ -453,6 +503,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `uint64`
     pub fn read_repeated_packed_uint64_into(
         &mut self,
         target: &mut Vec<u64>,
@@ -466,6 +517,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `uint32`
     pub fn read_repeated_packed_uint32_into(
         &mut self,
         target: &mut Vec<u32>,
@@ -479,6 +531,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `sint64`
     pub fn read_repeated_packed_sint64_into(
         &mut self,
         target: &mut Vec<i64>,
@@ -492,6 +545,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `sint32`
     pub fn read_repeated_packed_sint32_into(
         &mut self,
         target: &mut Vec<i32>,
@@ -505,6 +559,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `fixed64`
     pub fn read_repeated_packed_fixed64_into(
         &mut self,
         target: &mut Vec<u64>,
@@ -521,6 +576,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `fixed32`
     pub fn read_repeated_packed_fixed32_into(
         &mut self,
         target: &mut Vec<u32>,
@@ -537,6 +593,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `sfixed64`
     pub fn read_repeated_packed_sfixed64_into(
         &mut self,
         target: &mut Vec<i64>,
@@ -553,6 +610,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `sfixed32`
     pub fn read_repeated_packed_sfixed32_into(
         &mut self,
         target: &mut Vec<i32>,
@@ -569,6 +627,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `bool`
     pub fn read_repeated_packed_bool_into(&mut self, target: &mut Vec<bool>) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
 
@@ -583,6 +642,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read repeated packed `enum` into `ProtobufEnum`
     pub fn read_repeated_packed_enum_into<E: ProtobufEnum>(
         &mut self,
         target: &mut Vec<E>,
@@ -596,6 +656,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read `UnknownValue`
     pub fn read_unknown(
         &mut self,
         wire_type: wire_format::WireType,
@@ -617,6 +678,7 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
+    /// Skip field
     pub fn skip_field(&mut self, wire_type: wire_format::WireType) -> ProtobufResult<()> {
         self.read_unknown(wire_type).map(|_| ())
     }
@@ -662,41 +724,48 @@ impl<'a> CodedInputStream<'a> {
         Ok(r)
     }
 
+    /// Skip exact number of bytes
     pub fn skip_raw_bytes(&mut self, count: u32) -> ProtobufResult<()> {
         // TODO: make it more efficient
         self.read_raw_bytes(count).map(|_| ())
     }
 
+    /// Read `bytes` field, length delimited
     pub fn read_bytes(&mut self) -> ProtobufResult<Vec<u8>> {
         let mut r = Vec::new();
         self.read_bytes_into(&mut r)?;
         Ok(r)
     }
 
+    /// Read `bytes` field, length delimited
     #[cfg(feature = "bytes")]
     pub fn read_carllerche_bytes(&mut self) -> ProtobufResult<Bytes> {
         let len = self.read_raw_varint32()?;
         self.read_raw_callerche_bytes(len as usize)
     }
 
+    /// Read `string` field, length delimited
     #[cfg(feature = "bytes")]
     pub fn read_carllerche_chars(&mut self) -> ProtobufResult<Chars> {
         let bytes = self.read_carllerche_bytes()?;
         Ok(Chars::from_bytes(bytes)?)
     }
 
+    /// Read `bytes` field, length delimited
     pub fn read_bytes_into(&mut self, target: &mut Vec<u8>) -> ProtobufResult<()> {
         let len = self.read_raw_varint32()?;
         self.read_raw_bytes_into(len, target)?;
         Ok(())
     }
 
+    /// Read `string` field, length delimited
     pub fn read_string(&mut self) -> ProtobufResult<String> {
         let mut r = String::new();
         self.read_string_into(&mut r)?;
         Ok(r)
     }
 
+    /// Read `string` field, length delimited
     pub fn read_string_into(&mut self, target: &mut String) -> ProtobufResult<()> {
         target.clear();
         // take target's buffer
@@ -711,6 +780,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read message, do not check if message is initialized
     pub fn merge_message<M: Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
@@ -719,6 +789,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
+    /// Read message
     pub fn read_message<M: Message>(&mut self) -> ProtobufResult<M> {
         let mut r: M = Message::new();
         self.merge_message(&mut r)?;
@@ -843,6 +914,7 @@ enum OutputTarget<'a> {
     Bytes,
 }
 
+/// Buffered write with handy utilities
 pub struct CodedOutputStream<'a> {
     target: OutputTarget<'a>,
     // alias to buf from target
@@ -852,6 +924,9 @@ pub struct CodedOutputStream<'a> {
 }
 
 impl<'a> CodedOutputStream<'a> {
+    /// Construct from given `Write`.
+    ///
+    /// `CodedOutputStream` is buffered even if `Write` is not
     pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
         let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
 
@@ -892,6 +967,11 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    /// Check if EOF is reached.
+    ///
+    /// # Panics
+    ///
+    /// If underlying write has no EOF
     pub fn check_eof(&self) {
         match self.target {
             OutputTarget::Bytes => {
@@ -934,6 +1014,7 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    /// Write a byte
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
         if self.position as usize == self.buffer.len() {
             self.refresh_buffer()?;
@@ -943,6 +1024,7 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write bytes
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         if bytes.len() <= self.buffer.len() - self.position {
             let bottom = self.position as usize;
@@ -979,6 +1061,7 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write a tag
     pub fn write_tag(
         &mut self,
         field_number: u32,
@@ -987,6 +1070,7 @@ impl<'a> CodedOutputStream<'a> {
         self.write_raw_varint32(wire_format::Tag::make(field_number, wire_type).value())
     }
 
+    /// Write varint
     pub fn write_raw_varint32(&mut self, value: u32) -> ProtobufResult<()> {
         if self.buffer.len() - self.position >= 5 {
             // fast path
@@ -1001,6 +1085,7 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    /// Write varint
     pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
         if self.buffer.len() - self.position >= 10 {
             // fast path
@@ -1015,86 +1100,105 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    /// Write 32-bit integer little endian
     pub fn write_raw_little_endian32(&mut self, value: u32) -> ProtobufResult<()> {
         let bytes = unsafe { mem::transmute::<_, [u8; 4]>(value.to_le()) };
         self.write_raw_bytes(&bytes)
     }
 
+    /// Write 64-bit integer little endian
     pub fn write_raw_little_endian64(&mut self, value: u64) -> ProtobufResult<()> {
         let bytes = unsafe { mem::transmute::<_, [u8; 8]>(value.to_le()) };
         self.write_raw_bytes(&bytes)
     }
 
+    /// Write `float`
     pub fn write_float_no_tag(&mut self, value: f32) -> ProtobufResult<()> {
         let bits = unsafe { mem::transmute::<f32, u32>(value) };
         self.write_raw_little_endian32(bits)
     }
 
+    /// Write `double`
     pub fn write_double_no_tag(&mut self, value: f64) -> ProtobufResult<()> {
         let bits = unsafe { mem::transmute::<f64, u64>(value) };
         self.write_raw_little_endian64(bits)
     }
 
+    /// Write `float` field
     pub fn write_float(&mut self, field_number: u32, value: f32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeFixed32)?;
         self.write_float_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `double` field
     pub fn write_double(&mut self, field_number: u32, value: f64) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeFixed64)?;
         self.write_double_no_tag(value)?;
         Ok(())
     }
 
+    /// Write varint
     pub fn write_uint64_no_tag(&mut self, value: u64) -> ProtobufResult<()> {
         self.write_raw_varint64(value)
     }
 
+    /// Write varint
     pub fn write_uint32_no_tag(&mut self, value: u32) -> ProtobufResult<()> {
         self.write_raw_varint32(value)
     }
 
+    /// Write varint
     pub fn write_int64_no_tag(&mut self, value: i64) -> ProtobufResult<()> {
         self.write_raw_varint64(value as u64)
     }
 
+    /// Write varint
     pub fn write_int32_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
         self.write_raw_varint64(value as u64)
     }
 
+    /// Write zigzag varint
     pub fn write_sint64_no_tag(&mut self, value: i64) -> ProtobufResult<()> {
         self.write_uint64_no_tag(encode_zig_zag_64(value))
     }
 
+    /// Write zigzag varint
     pub fn write_sint32_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
         self.write_uint32_no_tag(encode_zig_zag_32(value))
     }
 
+    /// Write `fixed64`
     pub fn write_fixed64_no_tag(&mut self, value: u64) -> ProtobufResult<()> {
         self.write_raw_little_endian64(value)
     }
 
+    /// Write `fixed32`
     pub fn write_fixed32_no_tag(&mut self, value: u32) -> ProtobufResult<()> {
         self.write_raw_little_endian32(value)
     }
 
+    /// Write `sfixed64`
     pub fn write_sfixed64_no_tag(&mut self, value: i64) -> ProtobufResult<()> {
         self.write_raw_little_endian64(value as u64)
     }
 
+    /// Write `sfixed32`
     pub fn write_sfixed32_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
         self.write_raw_little_endian32(value as u32)
     }
 
+    /// Write `bool`
     pub fn write_bool_no_tag(&mut self, value: bool) -> ProtobufResult<()> {
         self.write_raw_varint32(if value { 1 } else { 0 })
     }
 
+    /// Write `enum`
     pub fn write_enum_no_tag(&mut self, value: i32) -> ProtobufResult<()> {
         self.write_int32_no_tag(value)
     }
 
+    /// Write `enum`
     pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> ProtobufResult<()>
     where
         E: ProtobufEnum,
@@ -1111,78 +1215,91 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    /// Write `uint64` field
     pub fn write_uint64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_uint64_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `uint32` field
     pub fn write_uint32(&mut self, field_number: u32, value: u32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_uint32_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `int64` field
     pub fn write_int64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_int64_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `int32` field
     pub fn write_int32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_int32_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `sint64` field
     pub fn write_sint64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_sint64_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `sint32` field
     pub fn write_sint32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_sint32_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `fixed64` field
     pub fn write_fixed64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeFixed64)?;
         self.write_fixed64_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `fixed32` field
     pub fn write_fixed32(&mut self, field_number: u32, value: u32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeFixed32)?;
         self.write_fixed32_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `sfixed64` field
     pub fn write_sfixed64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeFixed64)?;
         self.write_sfixed64_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `sfixed32` field
     pub fn write_sfixed32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeFixed32)?;
         self.write_sfixed32_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `bool` field
     pub fn write_bool(&mut self, field_number: u32, value: bool) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_bool_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `enum` field
     pub fn write_enum(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeVarint)?;
         self.write_enum_no_tag(value)?;
         Ok(())
     }
 
+    /// Write `enum` field
     pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> ProtobufResult<()>
     where
         E: ProtobufEnum,
@@ -1200,6 +1317,7 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write unknown fields
     pub fn write_unknown_fields(&mut self, fields: &UnknownFields) -> ProtobufResult<()> {
         for (number, values) in fields {
             for value in values {
@@ -1209,32 +1327,38 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write bytes
     pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         self.write_raw_varint32(bytes.len() as u32)?;
         self.write_raw_bytes(bytes)?;
         Ok(())
     }
 
+    /// Write string
     pub fn write_string_no_tag(&mut self, s: &str) -> ProtobufResult<()> {
         self.write_bytes_no_tag(s.as_bytes())
     }
 
+    /// Write message
     pub fn write_message_no_tag<M: Message>(&mut self, msg: &M) -> ProtobufResult<()> {
         msg.write_length_delimited_to(self)
     }
 
+    /// Write `bytes` field
     pub fn write_bytes(&mut self, field_number: u32, bytes: &[u8]) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeLengthDelimited)?;
         self.write_bytes_no_tag(bytes)?;
         Ok(())
     }
 
+    /// Write `string` field
     pub fn write_string(&mut self, field_number: u32, s: &str) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeLengthDelimited)?;
         self.write_string_no_tag(s)?;
         Ok(())
     }
 
+    /// Write `message` field
     pub fn write_message<M: Message>(&mut self, field_number: u32, msg: &M) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeLengthDelimited)?;
         self.write_message_no_tag(msg)?;

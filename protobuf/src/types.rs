@@ -1,3 +1,5 @@
+//! Implementations of `ProtobufType` for all types.
+
 use std::marker;
 use std::mem;
 
@@ -58,6 +60,7 @@ pub trait ProtobufType {
         }
     }
 
+    /// Write a value with previously cached size
     fn write_with_cached_size(
         field_number: u32,
         value: &Self::Value,
@@ -82,8 +85,10 @@ pub struct ProtobufTypeString;
 pub struct ProtobufTypeBytes;
 pub struct ProtobufTypeChars;
 
+/// `bytes` as [`Bytes`](bytes::Bytes)
 #[cfg(feature = "bytes")]
 pub struct ProtobufTypeCarllercheBytes;
+/// `string` as [`Chars`](crate::Chars)
 #[cfg(feature = "bytes")]
 pub struct ProtobufTypeCarllercheChars;
 
