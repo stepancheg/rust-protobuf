@@ -11,7 +11,7 @@ pub trait ReflectRepeated: 'static {
     fn get(&self, index: usize) -> &ProtobufValue;
 }
 
-impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
+impl<V: ProtobufValue + 'static> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -28,7 +28,7 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for Vec<V> {
 }
 
 // useless
-impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
+impl<V: ProtobufValue + 'static> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -44,7 +44,7 @@ impl<V : ProtobufValue + 'static> ReflectRepeated for [V] {
     }
 }
 
-impl<V : ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
+impl<V: ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -64,12 +64,13 @@ trait ReflectRepeatedIterTrait<'a> {
     fn next(&mut self) -> Option<&'a ProtobufValue>;
 }
 
-struct ReflectRepeatedIterImplSlice<'a, V : ProtobufValue + 'static> {
+struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
     iter: slice::Iter<'a, V>,
 }
 
-impl<'a, V : ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
-    for ReflectRepeatedIterImplSlice<'a, V> {
+impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
+    for ReflectRepeatedIterImplSlice<'a, V>
+{
     fn next(&mut self) -> Option<&'a ProtobufValue> {
         self.iter.next().map(|v| v as &ProtobufValue)
     }

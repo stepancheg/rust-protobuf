@@ -2,7 +2,7 @@ pub trait PaginatableIterator: Sized {
     fn paginate(self, page: usize) -> Paginate<Self>;
 }
 
-impl<T, U : Iterator<Item = T>> PaginatableIterator for U {
+impl<T, U: Iterator<Item = T>> PaginatableIterator for U {
     fn paginate(self, page: usize) -> Paginate<U> {
         Paginate {
             iter: self,
@@ -16,7 +16,7 @@ pub struct Paginate<I> {
     page: usize,
 }
 
-impl<E, I : Iterator<Item = E>> Iterator for Paginate<I> {
+impl<E, I: Iterator<Item = E>> Iterator for Paginate<I> {
     type Item = Vec<E>;
 
     fn next(&mut self) -> Option<Vec<E>> {

@@ -1,6 +1,6 @@
-use std::io;
 use std::error::Error;
 use std::fmt;
+use std::io;
 use std::str;
 
 use wire_format::WireType;
@@ -33,7 +33,9 @@ pub enum ProtobufError {
     WireError(WireError),
     /// Protocol contains a string which is not valid UTF-8 string
     Utf8(str::Utf8Error),
-    MessageNotInitialized { message: &'static str },
+    MessageNotInitialized {
+        message: &'static str,
+    },
 }
 
 impl ProtobufError {
@@ -53,20 +55,18 @@ impl Error for ProtobufError {
         match self {
             // not sure that cause should be included in message
             &ProtobufError::IoError(ref e) => e.description(),
-            &ProtobufError::WireError(ref e) => {
-                match *e {
-                    WireError::Utf8Error => "invalid UTF-8 sequence",
-                    WireError::UnexpectedWireType(..) => "unexpected wire type",
-                    WireError::InvalidEnumValue(..) => "invalid enum value",
-                    WireError::IncorrectTag(..) => "incorrect tag",
-                    WireError::IncorrectVarint => "incorrect varint",
-                    WireError::IncompleteMap => "incomplete map",
-                    WireError::UnexpectedEof => "unexpected EOF",
-                    WireError::OverRecursionLimit => "over recursion limit",
-                    WireError::TruncatedMessage => "truncated message",
-                    WireError::Other => "other error",
-                }
-            }
+            &ProtobufError::WireError(ref e) => match *e {
+                WireError::Utf8Error => "invalid UTF-8 sequence",
+                WireError::UnexpectedWireType(..) => "unexpected wire type",
+                WireError::InvalidEnumValue(..) => "invalid enum value",
+                WireError::IncorrectTag(..) => "incorrect tag",
+                WireError::IncorrectVarint => "incorrect varint",
+                WireError::IncompleteMap => "incomplete map",
+                WireError::UnexpectedEof => "unexpected EOF",
+                WireError::OverRecursionLimit => "over recursion limit",
+                WireError::TruncatedMessage => "truncated message",
+                WireError::Other => "other error",
+            },
             &ProtobufError::Utf8(ref e) => &e.description(),
             &ProtobufError::MessageNotInitialized { .. } => "not all message fields set",
         }
@@ -101,12 +101,10 @@ impl From<ProtobufError> for io::Error {
             ProtobufError::WireError(e) => {
                 io::Error::new(io::ErrorKind::InvalidData, ProtobufError::WireError(e))
             }
-            ProtobufError::MessageNotInitialized { message: msg } => {
-                io::Error::new(
-                    io::ErrorKind::InvalidInput,
-                    ProtobufError::MessageNotInitialized { message: msg },
-                )
-            }
+            ProtobufError::MessageNotInitialized { message: msg } => io::Error::new(
+                io::ErrorKind::InvalidInput,
+                ProtobufError::MessageNotInitialized { message: msg },
+            ),
             e => io::Error::new(io::ErrorKind::Other, Box::new(e)),
         }
     }

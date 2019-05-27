@@ -1,15 +1,13 @@
-/// utilities to work with descriptor
-
-use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
 use descriptor::FieldDescriptorProto;
+/// utilities to work with descriptor
+use descriptor::FileDescriptorProto;
 use descriptor::OneofDescriptorProto;
 
-use strx;
 use rust;
-
+use strx;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
@@ -34,7 +32,11 @@ pub fn proto_path_to_rust_mod(path: &str) -> String {
             } else {
                 ident_continue(c)
             };
-            if valid { c } else { '_' }
+            if valid {
+                c
+            } else {
+                '_'
+            }
         })
         .collect::<String>();
 
@@ -46,7 +48,6 @@ pub fn proto_path_to_rust_mod(path: &str) -> String {
     name
 }
 
-
 pub struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
 }
@@ -55,7 +56,9 @@ impl<'a> RootScope<'a> {
     fn packages(&'a self) -> Vec<FileScope<'a>> {
         self.file_descriptors
             .iter()
-            .map(|fd| FileScope { file_descriptor: fd })
+            .map(|fd| FileScope {
+                file_descriptor: fd,
+            })
             .collect()
     }
 
@@ -83,19 +86,19 @@ impl<'a> RootScope<'a> {
             .into_iter()
             .flat_map(|p| {
                 (if p.get_package().is_empty() {
-                     p.find_message_or_enum(fqn1)
-                 } else if fqn1.starts_with(&(p.get_package().to_string() + ".")) {
-                     let remaining = &fqn1[(p.get_package().len() + 1)..];
-                     p.find_message_or_enum(remaining)
-                 } else {
-                     None
-                 }).into_iter()
+                    p.find_message_or_enum(fqn1)
+                } else if fqn1.starts_with(&(p.get_package().to_string() + ".")) {
+                    let remaining = &fqn1[(p.get_package().len() + 1)..];
+                    p.find_message_or_enum(remaining)
+                } else {
+                    None
+                })
+                .into_iter()
             })
             .next()
             .expect(&format!("enum not found by name: {}", fqn))
     }
 }
-
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Syntax {
@@ -112,7 +115,6 @@ impl Syntax {
         }
     }
 }
-
 
 #[derive(Clone)]
 pub struct FileScope<'a> {
@@ -147,8 +149,9 @@ impl<'a> FileScope<'a> {
     pub fn find_enums(&self) -> Vec<EnumWithScope<'a>> {
         let mut r = Vec::new();
 
-        self.to_scope()
-            .walk_scopes(|scope| { r.extend(scope.get_enums()); });
+        self.to_scope().walk_scopes(|scope| {
+            r.extend(scope.get_enums());
+        });
 
         r
     }
@@ -157,8 +160,9 @@ impl<'a> FileScope<'a> {
     pub fn find_messages(&self) -> Vec<MessageWithScope<'a>> {
         let mut r = Vec::new();
 
-        self.to_scope()
-            .walk_scopes(|scope| { r.extend(scope.get_messages()); });
+        self.to_scope().walk_scopes(|scope| {
+            r.extend(scope.get_messages());
+        });
 
         r
     }
@@ -167,20 +171,19 @@ impl<'a> FileScope<'a> {
     pub fn find_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
         let mut r = Vec::new();
 
-        self.to_scope()
-            .walk_scopes(|scope| { r.extend(scope.get_messages_and_enums()); });
+        self.to_scope().walk_scopes(|scope| {
+            r.extend(scope.get_messages_and_enums());
+        });
 
         r
     }
 }
-
 
 #[derive(Clone)]
 pub struct Scope<'a> {
     pub file_scope: FileScope<'a>,
     pub path: Vec<&'a DescriptorProto>,
 }
-
 
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
@@ -209,11 +212,9 @@ impl<'a> Scope<'a> {
     pub fn get_messages(&self) -> Vec<MessageWithScope<'a>> {
         self.get_message_descriptors()
             .iter()
-            .map(|m| {
-                MessageWithScope {
-                    scope: self.clone(),
-                    message: m,
-                }
+            .map(|m| MessageWithScope {
+                scope: self.clone(),
+                message: m,
             })
             .collect()
     }
@@ -222,11 +223,9 @@ impl<'a> Scope<'a> {
     pub fn get_enums(&self) -> Vec<EnumWithScope<'a>> {
         self.get_enum_descriptors()
             .iter()
-            .map(|e| {
-                EnumWithScope {
-                    scope: self.clone(),
-                    en: e,
-                }
+            .map(|e| EnumWithScope {
+                scope: self.clone(),
+                en: e,
             })
             .collect()
     }
@@ -256,7 +255,7 @@ impl<'a> Scope<'a> {
             .collect()
     }
 
-    fn walk_scopes_impl<F : FnMut(&Scope<'a>)>(&self, callback: &mut F) {
+    fn walk_scopes_impl<F: FnMut(&Scope<'a>)>(&self, callback: &mut F) {
         (*callback)(self);
 
         for nested in self.nested_scopes() {
@@ -267,7 +266,7 @@ impl<'a> Scope<'a> {
     // apply callback for this scope and all nested scopes
     fn walk_scopes<F>(&self, mut callback: F)
     where
-        F : FnMut(&Scope<'a>),
+        F: FnMut(&Scope<'a>),
     {
         self.walk_scopes_impl(&mut callback);
     }
@@ -347,7 +346,6 @@ pub struct MessageWithScope<'a> {
     pub message: &'a DescriptorProto,
 }
 
-
 impl<'a> WithScope<'a> for MessageWithScope<'a> {
     fn get_scope(&self) -> &Scope<'a> {
         &self.scope
@@ -376,11 +374,9 @@ impl<'a> MessageWithScope<'a> {
         self.message
             .get_field()
             .iter()
-            .map(|f| {
-                FieldWithContext {
-                    field: f,
-                    message: self.clone(),
-                }
+            .map(|f| FieldWithContext {
+                field: f,
+                message: self.clone(),
             })
             .collect()
     }
@@ -390,12 +386,10 @@ impl<'a> MessageWithScope<'a> {
             .get_oneof_decl()
             .iter()
             .enumerate()
-            .map(|(index, oneof)| {
-                OneofWithContext {
-                    message: &self,
-                    oneof: &oneof,
-                    index: index as u32,
-                }
+            .map(|(index, oneof)| OneofWithContext {
+                message: &self,
+                oneof: &oneof,
+                index: index as u32,
             })
             .collect()
     }
@@ -407,11 +401,13 @@ impl<'a> MessageWithScope<'a> {
     /// Pair of (key, value) if this message is map entry
     pub fn map_entry(&'a self) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
         if self.message.get_options().get_map_entry() {
-            let key = self.fields()
+            let key = self
+                .fields()
                 .into_iter()
                 .find(|f| f.field.get_number() == 1)
                 .unwrap();
-            let value = self.fields()
+            let value = self
+                .fields()
                 .into_iter()
                 .find(|f| f.field.get_number() == 2)
                 .unwrap();
@@ -422,13 +418,11 @@ impl<'a> MessageWithScope<'a> {
     }
 }
 
-
 #[derive(Clone)]
 pub struct EnumWithScope<'a> {
     pub scope: Scope<'a>,
     pub en: &'a EnumDescriptorProto,
 }
-
 
 impl<'a> EnumWithScope<'a> {
     // enum values
@@ -474,7 +468,6 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
         self.en.get_name()
     }
 }
-
 
 pub enum MessageOrEnumWithScope<'a> {
     Message(MessageWithScope<'a>),
@@ -564,13 +557,11 @@ impl<'a> FieldWithContext<'a> {
     }
 }
 
-
 #[derive(Clone)]
 pub struct OneofVariantWithContext<'a> {
     pub oneof: &'a OneofWithContext<'a>,
     pub field: &'a FieldDescriptorProto,
 }
-
 
 #[derive(Clone)]
 pub struct OneofWithContext<'a> {
@@ -601,30 +592,27 @@ impl<'a> OneofWithContext<'a> {
         self.message
             .fields()
             .iter()
-            .filter(|f| {
-                f.field.has_oneof_index() && f.field.get_oneof_index() == self.index as i32
-            })
-            .map(|f| {
-                OneofVariantWithContext {
-                    oneof: self,
-                    field: &f.field,
-                }
+            .filter(|f| f.field.has_oneof_index() && f.field.get_oneof_index() == self.index as i32)
+            .map(|f| OneofVariantWithContext {
+                oneof: self,
+                field: &f.field,
             })
             .collect()
     }
 }
-
 
 // find message by rust type name
 pub fn find_message_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
 ) -> MessageWithScope<'a> {
-    FileScope { file_descriptor: fd }
-        .find_messages()
-        .into_iter()
-        .find(|m| m.rust_name() == rust_name)
-        .unwrap()
+    FileScope {
+        file_descriptor: fd,
+    }
+    .find_messages()
+    .into_iter()
+    .find(|m| m.rust_name() == rust_name)
+    .unwrap()
 }
 
 // find enum by rust type name
@@ -632,11 +620,13 @@ pub fn find_enum_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
 ) -> EnumWithScope<'a> {
-    FileScope { file_descriptor: fd }
-        .find_enums()
-        .into_iter()
-        .find(|e| e.rust_name() == rust_name)
-        .unwrap()
+    FileScope {
+        file_descriptor: fd,
+    }
+    .find_enums()
+    .into_iter()
+    .find(|e| e.rust_name() == rust_name)
+    .unwrap()
 }
 
 #[cfg(test)]

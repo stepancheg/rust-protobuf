@@ -6,18 +6,18 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use error::ProtobufResult;
 use core::Message;
 use enums::ProtobufEnum;
-use wire_format::WireType;
-use rt;
+use error::ProtobufResult;
+use parse_from_bytes;
 use reflect::ProtobufValue;
+use rt;
+use stream::CodedInputStream;
+use stream::CodedOutputStream;
 use unknown::UnknownValues;
+use wire_format::WireType;
 use zigzag::decode_zig_zag_32;
 use zigzag::decode_zig_zag_64;
-use parse_from_bytes;
 
 pub trait ProtobufType {
     type Value: ProtobufValue + Clone + 'static;
@@ -28,9 +28,7 @@ pub trait ProtobufType {
 
     fn compute_size(value: &Self::Value) -> u32;
 
-    fn get_from_unknown(
-        _unknown_values: &UnknownValues,
-    ) -> Option<Self::Value>;
+    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::Value>;
 
     /// Compute size adding length prefix if wire type is length delimited
     /// (i. e. string, bytes, message)
@@ -89,8 +87,8 @@ pub struct ProtobufTypeCarllercheBytes;
 #[cfg(feature = "bytes")]
 pub struct ProtobufTypeCarllercheChars;
 
-pub struct ProtobufTypeEnum<E : ProtobufEnum>(marker::PhantomData<E>);
-pub struct ProtobufTypeMessage<M : Message>(marker::PhantomData<M>);
+pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
 impl ProtobufType for ProtobufTypeFloat {
     type Value = f32;
@@ -108,7 +106,11 @@ impl ProtobufType for ProtobufTypeFloat {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f32> {
-        unknown_values.fixed32.iter().rev().next()
+        unknown_values
+            .fixed32
+            .iter()
+            .rev()
+            .next()
             .map(|&bits| unsafe { mem::transmute::<u32, f32>(bits) })
     }
 
@@ -133,7 +135,11 @@ impl ProtobufType for ProtobufTypeDouble {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f64> {
-        unknown_values.fixed64.iter().rev().next()
+        unknown_values
+            .fixed64
+            .iter()
+            .rev()
+            .next()
             .map(|&bits| unsafe { mem::transmute::<u64, f64>(bits) })
     }
 
@@ -164,7 +170,7 @@ impl ProtobufType for ProtobufTypeInt32 {
     fn compute_size(value: &i32) -> u32 {
         // See also: https://github.com/protocolbuffers/protobuf/blob/bd00671b924310c0353a730bf8fa77c44e0a9c72/src/google/protobuf/io/coded_stream.h#L1300-L1306
         if *value < 0 {
-            return 10
+            return 10;
         }
         rt::compute_raw_varint32_size(*value as u32)
     }
@@ -178,8 +184,7 @@ impl ProtobufType for ProtobufTypeInt32 {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i32> {
-        unknown_values.varint.iter().rev().next()
-            .map(|&v| v as i32)
+        unknown_values.varint.iter().rev().next().map(|&v| v as i32)
     }
 }
 
@@ -195,8 +200,7 @@ impl ProtobufType for ProtobufTypeInt64 {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i64> {
-        unknown_values.varint.iter().rev().next()
-            .map(|&v| v as i64)
+        unknown_values.varint.iter().rev().next().map(|&v| v as i64)
     }
 
     fn compute_size(value: &i64) -> u32 {
@@ -224,8 +228,7 @@ impl ProtobufType for ProtobufTypeUint32 {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<u32> {
-        unknown_values.varint.iter().rev().next()
-            .map(|&v| v as u32)
+        unknown_values.varint.iter().rev().next().map(|&v| v as u32)
     }
 
     fn compute_size(value: &u32) -> u32 {
@@ -281,8 +284,7 @@ impl ProtobufType for ProtobufTypeSint32 {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i32> {
-        ProtobufTypeUint32::get_from_unknown(unknown_values)
-            .map(decode_zig_zag_32)
+        ProtobufTypeUint32::get_from_unknown(unknown_values).map(decode_zig_zag_32)
     }
 
     fn compute_size(value: &i32) -> u32 {
@@ -310,8 +312,7 @@ impl ProtobufType for ProtobufTypeSint64 {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<i64> {
-        ProtobufTypeUint64::get_from_unknown(unknown_values)
-            .map(decode_zig_zag_64)
+        ProtobufTypeUint64::get_from_unknown(unknown_values).map(decode_zig_zag_64)
     }
 
     fn compute_size(value: &i64) -> u32 {
@@ -538,8 +539,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Bytes> {
-        ProtobufTypeBytes::get_from_unknown(unknown_values)
-            .map(Bytes::from)
+        ProtobufTypeBytes::get_from_unknown(unknown_values).map(Bytes::from)
     }
 
     fn compute_size(value: &Bytes) -> u32 {
@@ -568,8 +568,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Chars> {
-        ProtobufTypeString::get_from_unknown(unknown_values)
-            .map(Chars::from)
+        ProtobufTypeString::get_from_unknown(unknown_values).map(Chars::from)
     }
 
     fn compute_size(value: &Chars) -> u32 {
@@ -585,7 +584,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 }
 
-impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
+impl<E: ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
     type Value = E;
 
     fn wire_type() -> WireType {
@@ -615,7 +614,7 @@ impl<E : ProtobufEnum + ProtobufValue> ProtobufType for ProtobufTypeEnum<E> {
     }
 }
 
-impl<M : Message + Clone + ProtobufValue> ProtobufType for ProtobufTypeMessage<M> {
+impl<M: Message + Clone + ProtobufValue> ProtobufType for ProtobufTypeMessage<M> {
     type Value = M;
 
     fn wire_type() -> WireType {
@@ -628,7 +627,11 @@ impl<M : Message + Clone + ProtobufValue> ProtobufType for ProtobufTypeMessage<M
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<M> {
         // TODO: do not panic
-        unknown_values.length_delimited.iter().rev().next()
+        unknown_values
+            .length_delimited
+            .iter()
+            .rev()
+            .next()
             .map(|bytes| parse_from_bytes(bytes).expect("cannot parse message"))
     }
 

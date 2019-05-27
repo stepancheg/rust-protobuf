@@ -1,6 +1,6 @@
-use std::str;
-use std::ops::Deref;
 use std::fmt;
+use std::ops::Deref;
+use std::str;
 
 use bytes::Bytes;
 
@@ -79,7 +79,6 @@ impl fmt::Debug for Chars {
         fmt::Debug::fmt(&**self, f)
     }
 }
-
 
 #[cfg(test)]
 mod test {

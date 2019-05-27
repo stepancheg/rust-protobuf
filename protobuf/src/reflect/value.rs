@@ -5,8 +5,8 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use core::*;
 use super::*;
+use core::*;
 
 pub trait ProtobufValue: Any + 'static {
     fn as_ref(&self) -> ProtobufValueRef;
@@ -31,9 +31,9 @@ pub trait ProtobufValue: Any + 'static {
             ProtobufValueRef::F32(v) => ProtobufValueRef::F32(v),
             ProtobufValueRef::F64(v) => ProtobufValueRef::F64(v),
             ProtobufValueRef::Enum(v) => ProtobufValueRef::Enum(v),
-            ProtobufValueRef::String(..) |
-            ProtobufValueRef::Bytes(..) |
-            ProtobufValueRef::Message(..) => unreachable!(),
+            ProtobufValueRef::String(..)
+            | ProtobufValueRef::Bytes(..)
+            | ProtobufValueRef::Message(..) => unreachable!(),
         }
     }
 }
@@ -126,7 +126,6 @@ impl<M : Message> ProtobufValue for M {
     }
 }
 */
-
 
 pub enum ProtobufValueRef<'a> {
     U32(u32),

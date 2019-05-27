@@ -5,30 +5,28 @@ use std::default::Default;
 use std::marker;
 
 use core::Message;
-use enums::ProtobufEnum;
-use descriptor::FileDescriptorProto;
 use descriptor::DescriptorProto;
-use descriptor::FieldDescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
+use descriptor::FieldDescriptorProto;
 use descriptor::FieldDescriptorProto_Label;
+use descriptor::FileDescriptorProto;
 use descriptorx::find_enum_by_rust_name;
 use descriptorx::find_message_by_rust_name;
+use enums::ProtobufEnum;
 use reflect::accessor::FieldAccessor;
-
 
 pub mod accessor;
 mod map;
+mod optional;
 mod repeated;
 mod value;
-mod optional;
 
-use self::repeated::ReflectRepeated;
 use self::map::ReflectMap;
+use self::repeated::ReflectRepeated;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueRef;
-
 
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
@@ -116,7 +114,6 @@ impl FieldDescriptor {
     }
 }
 
-
 trait MessageFactory {
     fn new_instance(&self) -> Box<Message>;
 }
@@ -135,7 +132,7 @@ impl<M> MessageFactoryTyped<M> {
     }
 }
 
-impl<M : 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> {
+impl<M: 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> {
     fn new_instance(&self) -> Box<Message> {
         let m: M = Default::default();
         Box::new(m)
@@ -158,11 +155,11 @@ impl MessageDescriptor {
         self.proto
     }
 
-    pub fn for_type<M : Message>() -> &'static MessageDescriptor {
+    pub fn for_type<M: Message>() -> &'static MessageDescriptor {
         M::descriptor_static()
     }
 
-    pub fn new<M : 'static + Message + Default>(
+    pub fn new<M: 'static + Message + Default>(
         rust_name: &'static str,
         fields: Vec<Box<FieldAccessor + 'static>>,
         file: &'static FileDescriptorProto,
@@ -261,7 +258,7 @@ impl EnumDescriptor {
         self.proto.get_name()
     }
 
-    pub fn for_type<E : ProtobufEnum>() -> &'static EnumDescriptor {
+    pub fn for_type<E: ProtobufEnum>() -> &'static EnumDescriptor {
         E::enum_descriptor_static()
     }
 
@@ -297,7 +294,6 @@ impl EnumDescriptor {
         &self.values[index]
     }
 }
-
 
 pub enum ReflectFieldRef<'a> {
     Repeated(&'a ReflectRepeated),

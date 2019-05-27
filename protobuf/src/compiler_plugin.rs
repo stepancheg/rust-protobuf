@@ -1,13 +1,13 @@
 // TODO: move into separate crate
 #![doc(hidden)]
 
+use plugin::*;
+use protobuf::descriptor::FileDescriptorProto;
+use protobuf::parse_from_reader;
+use protobuf::Message;
 use std::io::stdin;
 use std::io::stdout;
 use std::str;
-use plugin::*;
-use protobuf::parse_from_reader;
-use protobuf::Message;
-use protobuf::descriptor::FileDescriptorProto;
 
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
@@ -21,13 +21,15 @@ pub struct GenResult {
 }
 
 pub fn plugin_main<F>(gen: F)
-    where F : Fn(&[FileDescriptorProto], &[String]) -> Vec<GenResult>
+where
+    F: Fn(&[FileDescriptorProto], &[String]) -> Vec<GenResult>,
 {
     plugin_main_2(|r| gen(r.file_descriptors, r.files_to_generate))
 }
 
 pub fn plugin_main_2<F>(gen: F)
-    where F : Fn(&GenRequest) -> Vec<GenResult>
+where
+    F: Fn(&GenRequest) -> Vec<GenResult>,
 {
     let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin()).unwrap();
     let result = gen(&GenRequest {
@@ -45,6 +47,7 @@ pub fn plugin_main_2<F>(gen: F)
                 r.set_content(str::from_utf8(file.content.as_ref()).unwrap().to_string());
                 r
             })
-            .collect());
+            .collect(),
+    );
     resp.write_to_writer(&mut stdout()).unwrap();
 }

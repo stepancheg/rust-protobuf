@@ -8,16 +8,15 @@ use std::io::Write;
 use bytes::Bytes;
 
 use clear::Clear;
-use reflect::MessageDescriptor;
-use unknown::UnknownFields;
-use stream::WithCodedInputStream;
-use stream::WithCodedOutputStream;
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use stream::with_coded_output_stream_to_bytes;
 use error::ProtobufError;
 use error::ProtobufResult;
-
+use reflect::MessageDescriptor;
+use stream::with_coded_output_stream_to_bytes;
+use stream::CodedInputStream;
+use stream::CodedOutputStream;
+use stream::WithCodedInputStream;
+use stream::WithCodedOutputStream;
+use unknown::UnknownFields;
 
 /// Trait implemented for all generated structs for protobuf messages.
 ///
@@ -89,7 +88,9 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// Check if all required fields of this object are initialized.
     fn check_initialized(&self) -> ProtobufResult<()> {
         if !self.is_initialized() {
-            Err(ProtobufError::message_not_initialized(self.descriptor().name()))
+            Err(ProtobufError::message_not_initialized(
+                self.descriptor().name(),
+            ))
         } else {
             Ok(())
         }
@@ -172,7 +173,9 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// let m = MyMessage::new();
     /// # }
     /// ```
-    fn new() -> Self where Self : Sized;
+    fn new() -> Self
+    where
+        Self: Sized;
 
     /// Get message descriptor for message type.
     ///
@@ -184,7 +187,8 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// # }
     /// ```
     fn descriptor_static() -> &'static MessageDescriptor
-        where Self : Sized
+    where
+        Self: Sized,
     {
         panic!(
             "descriptor_static is not implemented for message, \
@@ -201,16 +205,16 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// # }
     /// ```
     fn default_instance() -> &'static Self
-        where Self : Sized;
+    where
+        Self: Sized;
 }
 
-pub fn message_down_cast<'a, M : Message + 'a>(m: &'a Message) -> &'a M {
+pub fn message_down_cast<'a, M: Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
-
 /// Parse message from stream.
-pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     let mut r: M = Message::new();
     r.merge_from(is)?;
     r.check_initialized()?;
@@ -219,21 +223,19 @@ pub fn parse_from<M : Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M : Message>(reader: &mut Read) -> ProtobufResult<M> {
+pub fn parse_from_reader<M: Message>(reader: &mut Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
 /// Parse message from byte array.
-pub fn parse_from_bytes<M : Message>(bytes: &[u8]) -> ProtobufResult<M> {
+pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
 /// Parse message from `Bytes` object.
 /// Resulting message may share references to the passed bytes object.
 #[cfg(feature = "bytes")]
-pub fn parse_from_carllerche_bytes<M : Message>(
-    bytes: &Bytes,
-) -> ProtobufResult<M> {
+pub fn parse_from_carllerche_bytes<M: Message>(bytes: &Bytes) -> ProtobufResult<M> {
     // Call trait explicitly to avoid accidental construction from `&[u8]`
     WithCodedInputStream::with_coded_input_stream(bytes, |is| parse_from::<M>(is))
 }
@@ -244,9 +246,7 @@ pub fn parse_from_carllerche_bytes<M : Message>(
 ///
 /// This function is deprecated and will be removed in the next major release.
 #[deprecated]
-pub fn parse_length_delimited_from<M : Message>(
-    is: &mut CodedInputStream,
-) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
     is.read_message::<M>()
 }
 
@@ -254,9 +254,7 @@ pub fn parse_length_delimited_from<M : Message>(
 ///
 /// This function is deprecated and will be removed in the next major release.
 #[deprecated]
-pub fn parse_length_delimited_from_reader<M : Message>(
-    r: &mut Read,
-) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_reader<M: Message>(r: &mut Read) -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| is.read_message::<M>())
 }
@@ -265,8 +263,6 @@ pub fn parse_length_delimited_from_reader<M : Message>(
 ///
 /// This function is deprecated and will be removed in the next major release.
 #[deprecated]
-pub fn parse_length_delimited_from_bytes<M : Message>(
-    bytes: &[u8],
-) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
     bytes.with_coded_input_stream(|is| is.read_message::<M>())
 }

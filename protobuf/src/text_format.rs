@@ -1,10 +1,9 @@
+use core::Message;
+use reflect::ProtobufValueRef;
+use reflect::ReflectFieldRef;
 use std;
 use std::fmt;
 use std::fmt::Write;
-use core::Message;
-use reflect::ReflectFieldRef;
-use reflect::ProtobufValueRef;
-
 
 fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     for &c in bytes {
@@ -80,7 +79,7 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
                 let d2 = parse_if_digit(chars);
                 let d3 = parse_if_digit(chars);
                 return (d1 * 64 + d2 * 8 + d3) as u8;
-            },
+            }
             'x' => {
                 let d1 = parse_hex_digit(chars);
                 let d2 = parse_hex_digit(chars);
