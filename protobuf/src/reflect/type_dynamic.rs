@@ -22,7 +22,7 @@ pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufType>(pub marker::PhantomDa
 
 impl<T: ProtobufType> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T> {
     fn wire_type(&self) -> WireType {
-        T::wire_type()
+        T::WIRE_TYPE
     }
 
     fn runtime_type(&self) -> &RuntimeTypeDynamic {

@@ -56,7 +56,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     }
 
     /// Wire type for encoding objects of this type
-    fn wire_type() -> WireType;
+    const WIRE_TYPE: WireType;
 
     /// Read a value from `CodedInputStream`
     fn read(is: &mut CodedInputStream)
@@ -76,7 +76,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
         value: &<Self::RuntimeType as RuntimeType>::Value,
     ) -> u32 {
         let size = Self::compute_size(value);
-        if Self::wire_type() == WireType::WireTypeLengthDelimited {
+        if Self::WIRE_TYPE == WireType::WireTypeLengthDelimited {
             rt::compute_raw_varint32_size(size) + size
         } else {
             size
@@ -95,7 +95,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
         value: &<Self::RuntimeType as RuntimeType>::Value,
     ) -> u32 {
         let size = Self::get_cached_size(value);
-        if Self::wire_type() == WireType::WireTypeLengthDelimited {
+        if Self::WIRE_TYPE == WireType::WireTypeLengthDelimited {
             rt::compute_raw_varint32_size(size) + size
         } else {
             size
@@ -193,9 +193,7 @@ pub struct ProtobufTypeUnreachable;
 impl ProtobufType for ProtobufTypeFloat {
     type RuntimeType = RuntimeTypeF32;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeFixed32
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeFixed32;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<f32> {
         is.read_float()
@@ -226,9 +224,7 @@ impl ProtobufTypeFixed for ProtobufTypeFloat {
 impl ProtobufType for ProtobufTypeDouble {
     type RuntimeType = RuntimeTypeF64;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeFixed64
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeFixed64;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<f64> {
         is.read_double()
@@ -259,9 +255,7 @@ impl ProtobufTypeFixed for ProtobufTypeDouble {
 impl ProtobufType for ProtobufTypeInt32 {
     type RuntimeType = RuntimeTypeI32;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
         is.read_int32()
@@ -292,9 +286,7 @@ impl ProtobufType for ProtobufTypeInt32 {
 impl ProtobufType for ProtobufTypeInt64 {
     type RuntimeType = RuntimeTypeI64;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
         is.read_int64()
@@ -321,9 +313,7 @@ impl ProtobufType for ProtobufTypeInt64 {
 impl ProtobufType for ProtobufTypeUint32 {
     type RuntimeType = RuntimeTypeU32;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<u32> {
         is.read_uint32()
@@ -350,9 +340,7 @@ impl ProtobufType for ProtobufTypeUint32 {
 impl ProtobufType for ProtobufTypeUint64 {
     type RuntimeType = RuntimeTypeU64;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
         is.read_uint64()
@@ -378,9 +366,7 @@ impl ProtobufType for ProtobufTypeUint64 {
 impl ProtobufType for ProtobufTypeSint32 {
     type RuntimeType = RuntimeTypeI32;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
         is.read_sint32()
@@ -407,9 +393,7 @@ impl ProtobufType for ProtobufTypeSint32 {
 impl ProtobufType for ProtobufTypeSint64 {
     type RuntimeType = RuntimeTypeI64;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
         is.read_sint64()
@@ -436,9 +420,7 @@ impl ProtobufType for ProtobufTypeSint64 {
 impl ProtobufType for ProtobufTypeFixed32 {
     type RuntimeType = RuntimeTypeU32;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeFixed32
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeFixed32;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<u32> {
         is.read_fixed32()
@@ -468,9 +450,7 @@ impl ProtobufTypeFixed for ProtobufTypeFixed32 {
 impl ProtobufType for ProtobufTypeFixed64 {
     type RuntimeType = RuntimeTypeU64;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeFixed64
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeFixed64;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
         is.read_fixed64()
@@ -500,9 +480,7 @@ impl ProtobufTypeFixed for ProtobufTypeFixed64 {
 impl ProtobufType for ProtobufTypeSfixed32 {
     type RuntimeType = RuntimeTypeI32;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeFixed32
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeFixed32;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
         is.read_sfixed32()
@@ -532,9 +510,7 @@ impl ProtobufTypeFixed for ProtobufTypeSfixed32 {
 impl ProtobufType for ProtobufTypeSfixed64 {
     type RuntimeType = RuntimeTypeI64;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeFixed64
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeFixed64;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
         is.read_sfixed64()
@@ -564,9 +540,7 @@ impl ProtobufTypeFixed for ProtobufTypeSfixed64 {
 impl ProtobufType for ProtobufTypeBool {
     type RuntimeType = RuntimeTypeBool;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<bool> {
         is.read_bool()
@@ -592,9 +566,7 @@ impl ProtobufType for ProtobufTypeBool {
 impl ProtobufType for ProtobufTypeString {
     type RuntimeType = RuntimeTypeString;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeLengthDelimited
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<String> {
         is.read_string()
@@ -622,9 +594,7 @@ impl ProtobufType for ProtobufTypeString {
 impl ProtobufType for ProtobufTypeBytes {
     type RuntimeType = RuntimeTypeVecU8;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeLengthDelimited
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Vec<u8>> {
         is.read_bytes()
@@ -651,9 +621,7 @@ impl ProtobufType for ProtobufTypeBytes {
 impl ProtobufType for ProtobufTypeCarllercheBytes {
     type RuntimeType = RuntimeTypeCarllercheBytes;
 
-    fn wire_type() -> WireType {
-        ProtobufTypeBytes::wire_type()
-    }
+    const WIRE_TYPE: WireType = ProtobufTypeBytes::wire_type();
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Bytes> {
         is.read_carllerche_bytes()
@@ -681,9 +649,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
 impl ProtobufType for ProtobufTypeCarllercheChars {
     type RuntimeType = RuntimeTypeCarllercheChars;
 
-    fn wire_type() -> WireType {
-        ProtobufTypeBytes::wire_type()
-    }
+    const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Chars> {
         is.read_carllerche_chars()
@@ -710,9 +676,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
 impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
     type RuntimeType = RuntimeTypeEnum<E>;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<E> {
         is.read_enum()
@@ -740,9 +704,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeVarint
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<ProtobufEnumOrUnknown<E>> {
         is.read_enum_or_unknown()
@@ -769,9 +731,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
     type RuntimeType = RuntimeTypeMessage<M>;
 
-    fn wire_type() -> WireType {
-        WireType::WireTypeLengthDelimited
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<M> {
         is.read_message()
@@ -806,9 +766,7 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
 impl ProtobufType for ProtobufTypeUnreachable {
     type RuntimeType = RuntimeTypeUnreachable;
 
-    fn wire_type() -> WireType {
-        unreachable!()
-    }
+    const WIRE_TYPE: WireType = WireType::WireTypeEndGroup;
 
     fn read(_is: &mut CodedInputStream) -> ProtobufResult<u32> {
         unreachable!()
