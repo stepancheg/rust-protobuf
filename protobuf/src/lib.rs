@@ -1,7 +1,8 @@
 //! Library to read and write protocol buffers data.
 
 // TODO: add docs
-//#![deny(missing_docs)]
+#![warn(missing_docs)]
+#![deny(intra_doc_link_resolution_failure)]
 
 #[cfg(feature = "bytes")]
 extern crate bytes;

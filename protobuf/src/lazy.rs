@@ -5,7 +5,6 @@ use std::mem;
 use std::sync;
 
 /// Lasily initialized data.
-// Fields are public until `const` functions available in stable.
 pub struct Lazy<T> {
     #[doc(hidden)]
     pub lock: sync::Once,
