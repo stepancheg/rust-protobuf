@@ -2,40 +2,40 @@ extern crate protobuf;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
-use std::path::Path;
 use std::fs::File;
 use std::io;
-use std::io::Write as Write;
+use std::io::Write;
+use std::path::Path;
 
-use protobuf::descriptor::*;
-use protobuf::Message;
 use protobuf::compiler_plugin;
+use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
+use protobuf::Message;
 
-mod message;
-mod enums;
-mod rust_types_values;
-mod well_known_types;
-mod field;
 mod customize;
+mod enums;
 mod extensions;
-mod oneof;
+mod field;
+mod file_and_mod;
 pub mod float;
 mod ident;
-mod serde;
-mod file_and_mod;
-mod rust_name;
 mod inside;
+mod message;
+mod oneof;
+mod rust_name;
+mod rust_types_values;
+mod serde;
+mod well_known_types;
 
-pub use customize::Customize;
 use customize::customize_from_rustproto_for_file;
+pub use customize::Customize;
 
 pub mod code_writer;
 
-use self::message::*;
+use self::code_writer::CodeWriter;
 use self::enums::*;
 use self::extensions::*;
-use self::code_writer::CodeWriter;
+use self::message::*;
 use inside::protobuf_crate_path;
 
 fn escape_byte(s: &mut String, b: u8) {
@@ -49,7 +49,7 @@ fn escape_byte(s: &mut String, b: u8) {
         write!(s, "\\{}", b as char).unwrap();
     } else if b == b'\0' {
         write!(s, "\\0").unwrap();
-        // ASCII printable except space
+    // ASCII printable except space
     } else if b > 0x20 && b < 0x7f {
         write!(s, "{}", b as char).unwrap();
     } else {
@@ -57,7 +57,11 @@ fn escape_byte(s: &mut String, b: u8) {
     }
 }
 
-fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize, w: &mut CodeWriter) {
+fn write_file_descriptor_data(
+    file: &FileDescriptorProto,
+    customize: &Customize,
+    w: &mut CodeWriter,
+) {
     let fdp_bytes = file.write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
     w.indented(|w| {
@@ -90,21 +94,30 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize,
     w.write_line("");
     w.lazy_static_protobuf_path(
         "file_descriptor_proto_lazy",
-        &format!("{}::descriptor::FileDescriptorProto", protobuf_crate_path(customize)),
+        &format!(
+            "{}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)
+        ),
         protobuf_crate_path(customize),
     );
     w.write_line("");
-    w.def_fn("parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto", |w| {
-        w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
-    });
+    w.def_fn(
+        "parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto",
+        |w| {
+            w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
+        },
+    );
     w.write_line("");
-    w.pub_fn("file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto", |w| {
-        w.unsafe_expr(|w| {
-            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line("parse_descriptor_proto()");
+    w.pub_fn(
+        "file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto",
+        |w| {
+            w.unsafe_expr(|w| {
+                w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+                    w.write_line("parse_descriptor_proto()");
+                });
             });
-        });
-    });
+        },
+    );
 }
 
 fn gen_file(
@@ -118,12 +131,12 @@ fn gen_file(
     // options specified in invocation have precedence over options specified in file
     customize.update_with(&customize_from_rustproto_for_file(file.get_options()));
 
-    let scope = FileScope { file_descriptor: file }.to_scope();
+    let scope = FileScope {
+        file_descriptor: file,
+    }
+    .to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
-        file
-            .get_options()
-            .get_optimize_for()
-            == FileOptions_OptimizeMode::LITE_RUNTIME
+        file.get_options().get_optimize_for() == FileOptions_OptimizeMode::LITE_RUNTIME
     });
 
     let mut v = Vec::new();
@@ -135,9 +148,7 @@ fn gen_file(
 
         w.write_line("");
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
-        w.write_line(
-            "use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;",
-        );
+        w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
 
         for message in &scope.get_messages() {
             // ignore map entries, because they are not used in map fields
@@ -173,7 +184,9 @@ pub fn gen(
     files_to_generate: &[String],
     customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
-    let root_scope = RootScope { file_descriptors: file_descriptors };
+    let root_scope = RootScope {
+        file_descriptors: file_descriptors,
+    };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
     let files_map: HashMap<&str, &FileDescriptorProto> =
@@ -184,8 +197,7 @@ pub fn gen(
     for file_name in files_to_generate {
         let file = files_map.get(&file_name[..]).expect(&format!(
             "file not found in file descriptors: {:?}, files: {:?}",
-            file_name,
-            all_file_names
+            file_name, all_file_names
         ));
         results.extend(gen_file(file, &files_map, &root_scope, customize));
     }
@@ -196,9 +208,8 @@ pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     files_to_generate: &[String],
     out_dir: &Path,
-    customize: &Customize)
-    -> io::Result<()>
-{
+    customize: &Customize,
+) -> io::Result<()> {
     let results = gen(file_descriptors, files_to_generate, customize);
 
     for r in &results {

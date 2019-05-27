@@ -1,9 +1,8 @@
-use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
+use protobuf::descriptor::*;
+use protobuf::descriptorx::*;
 use Customize;
-
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,
@@ -36,9 +35,9 @@ impl<'a> ExtGen<'a> {
                 self.root_scope,
             );
             match self.field.get_field_type() {
-                FieldDescriptorProto_Type::TYPE_MESSAGE => ProtobufTypeGen::Message(
-                    rust_name_relative,
-                ),
+                FieldDescriptorProto_Type::TYPE_MESSAGE => {
+                    ProtobufTypeGen::Message(rust_name_relative)
+                }
                 FieldDescriptorProto_Type::TYPE_ENUM => ProtobufTypeGen::Enum(rust_name_relative),
                 t => panic!("unknown type: {:?}", t),
             }
@@ -71,8 +70,12 @@ impl<'a> ExtGen<'a> {
     }
 }
 
-
-pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScope, w: &mut CodeWriter, customize: &Customize) {
+pub(crate) fn write_extensions(
+    file: &FileDescriptorProto,
+    root_scope: &RootScope,
+    w: &mut CodeWriter,
+    customize: &Customize,
+) {
     if file.get_extension().is_empty() {
         return;
     }
@@ -92,7 +95,8 @@ pub(crate) fn write_extensions(file: &FileDescriptorProto, root_scope: &RootScop
                 root_scope: root_scope,
                 field: field,
                 customize: customize.clone(),
-            }.write(w);
+            }
+            .write(w);
         }
     });
 }
