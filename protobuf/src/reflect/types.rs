@@ -621,7 +621,7 @@ impl ProtobufType for ProtobufTypeBytes {
 impl ProtobufType for ProtobufTypeCarllercheBytes {
     type RuntimeType = RuntimeTypeCarllercheBytes;
 
-    const WIRE_TYPE: WireType = ProtobufTypeBytes::wire_type();
+    const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<Bytes> {
         is.read_carllerche_bytes()
