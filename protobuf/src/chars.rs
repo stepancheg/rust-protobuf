@@ -28,6 +28,7 @@ impl Chars {
         self.0.len()
     }
 
+    /// Self-explanatory
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
