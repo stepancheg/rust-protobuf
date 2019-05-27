@@ -5,7 +5,6 @@ use std::cell::UnsafeCell;
 use std::sync;
 
 /// Lasily initialized data.
-// Fields are public until `const` functions available in stable.
 pub struct Lazy<T> {
     lock: sync::Once,
     ptr: UnsafeCell<*const T>,
@@ -14,6 +13,7 @@ pub struct Lazy<T> {
 unsafe impl<T> Sync for Lazy<T> {}
 
 impl<T> Lazy<T> {
+    /// Uninitialized `Lazy` object.
     pub const INIT: Lazy<T> = Lazy {
         lock: sync::Once::new(),
         ptr: UnsafeCell::new(0 as *const T),

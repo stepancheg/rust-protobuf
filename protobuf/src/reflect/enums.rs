@@ -17,6 +17,9 @@ use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 
 
+/// Description for enum variant.
+///
+/// Used in reflection.
 #[derive(Clone)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
@@ -68,10 +71,14 @@ impl EnumValueDescriptor {
         self.protobuf_value
     }
 
+    /// Get descriptor of enum holding this value.
     pub fn enum_descriptor(&self) -> &EnumDescriptor {
         self.get_descriptor.descriptor()
     }
 
+    /// Convert this value descriptor into proper enum object.
+    ///
+    /// See [`EnumDescriptor::cast`](crate::reflect::EnumDescriptor::cast) for more details.
     pub fn cast<E: 'static>(&self) -> Option<E> {
         self.enum_descriptor().cast(self.value())
     }
@@ -95,6 +102,9 @@ impl<E: ProtobufEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
     }
 }
 
+/// Dynamic representation of enum type.
+///
+/// Can be used in reflective operations.
 pub struct EnumDescriptor {
     full_name: String,
     proto: &'static EnumDescriptorProto,
@@ -118,14 +128,17 @@ impl PartialEq for EnumDescriptor {
 }
 
 impl EnumDescriptor {
+    /// Enum name as given in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
     }
 
+    /// Fully qualified protobuf name of enum
     pub fn full_name(&self) -> &str {
         &self.full_name[..]
     }
 
+    /// Get `EnumDescriptor` object for given enum type
     pub fn for_type<E: ProtobufEnum>() -> &'static EnumDescriptor {
         E::enum_descriptor_static()
     }
@@ -145,6 +158,9 @@ impl EnumDescriptor {
         full_name
     }
 
+    /// Construct `EnumDescriptor` given enum name and `FileDescriptorProto`.
+    ///
+    /// This function is called from generated code, and should rarely be called directly.
     pub fn new<E>(name_in_file: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
     where
         E: ProtobufEnum,
@@ -189,24 +205,36 @@ impl EnumDescriptor {
         }
     }
 
+    /// This enum values
     pub fn values(&self) -> &[EnumValueDescriptor] {
         &self.values
     }
 
+    /// Find enum variant by name
     pub fn value_by_name(&self, name: &str) -> Option<&EnumValueDescriptor> {
         let &index = self.index_by_name.get(name)?;
         Some(&self.values[index])
     }
 
+    /// Find enum variant by number
     pub fn value_by_number(&self, number: i32) -> Option<&EnumValueDescriptor> {
         let &index = self.index_by_number.get(&number)?;
         Some(&self.values[index])
     }
 
+    /// Check if this enum descriptor corresponds given enum type
     pub fn is<E: 'static>(&self) -> bool {
         TypeId::of::<E>() == self.type_id
     }
 
+    /// Create enum object from given value.
+    ///
+    /// Type parameter `E` can be either [`ProtobufEnum`](crate::ProtobufEnum)
+    /// or [`ProtobufEnumOrUnknown`](crate::ProtobufEnumOrUnknown).
+    ///
+    /// # Panics
+    ///
+    /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
     pub fn cast<E: 'static>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() == self.type_id {
             unsafe {

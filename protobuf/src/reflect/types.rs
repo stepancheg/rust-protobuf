@@ -1,3 +1,5 @@
+//! Implementations of `ProtobufType` for all types.
+
 use std::fmt;
 use std::marker;
 
@@ -39,9 +41,12 @@ use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
 use crate::core::parse_from_bytes;
 
+/// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + 'static {
+    /// Rust runtime type for this protobuf type.
     type RuntimeType: RuntimeType;
 
+    /// Dynamic version of this
     fn dynamic() -> &'static ProtobufTypeDynamic
     where
         Self: Sized,
@@ -49,15 +54,19 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
         &ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
+    /// Wire type for encoding objects of this type
     fn wire_type() -> WireType;
 
+    /// Read a value from `CodedInputStream`
     fn read(is: &mut CodedInputStream)
         -> ProtobufResult<<Self::RuntimeType as RuntimeType>::Value>;
 
+    /// Take a value from `UnknownValues`
     fn get_from_unknown(
         _unknown_values: &UnknownValues,
     ) -> Option<<Self::RuntimeType as RuntimeType>::Value>;
 
+    /// Compute serialized size of a value
     fn compute_size(value: &<Self::RuntimeType as RuntimeType>::Value) -> u32;
 
     /// Compute size adding length prefix if wire type is length delimited
@@ -92,6 +101,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
         }
     }
 
+    /// Write a value with previously cached size
     fn write_with_cached_size(
         field_number: u32,
         value: &<Self::RuntimeType as RuntimeType>::Value,
@@ -101,56 +111,81 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
 
 /// All fixed size types
 pub trait ProtobufTypeFixed: ProtobufType {
+    /// Encoded size of value in bytes of this type.
+    ///
+    /// E. g. it is `4` for `fixed32`
     fn encoded_size() -> u32;
 }
 
+/// `float`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeFloat;
+/// `double`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeDouble;
+/// `int32`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeInt32;
+/// `int64`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeInt64;
+/// `uint32`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeUint32;
+/// `uint64`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeUint64;
+/// `sint32`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeSint32;
+/// `sint64`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeSint64;
+/// `fixed32`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeFixed32;
+/// `fixed64`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeFixed64;
+/// `sfixed32`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeSfixed32;
+/// `sfixed64`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeSfixed64;
+/// `bool`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeBool;
+/// `string`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeString;
+/// `bytes`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeBytes;
+/// `chars`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeChars;
 
+/// `bytes` as [`Bytes`](bytes::Bytes)
 #[cfg(feature = "bytes")]
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeCarllercheBytes;
+/// `string` as [`Chars`](crate::Chars)
 #[cfg(feature = "bytes")]
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeCarllercheChars;
 
+/// `enum` as `ProtobufEnum`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+/// `enum` as `ProtobufEnumOrUnknown`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
+/// `message`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
+/// Nonexisting type, useful in certain situations
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeUnreachable;
 

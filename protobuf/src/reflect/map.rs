@@ -97,6 +97,7 @@ impl<'a> IntoIterator for &'a ReflectMap {
     }
 }
 
+/// Dynamic reference to `map` field
 #[derive(Copy, Clone)]
 pub struct ReflectMapRef<'a> {
     pub(crate) map: &'a ReflectMap,
@@ -104,6 +105,7 @@ pub struct ReflectMapRef<'a> {
     pub(crate) value_dynamic: &'a RuntimeTypeDynamic,
 }
 
+/// Dynamic mutable reference to `map` field
 pub struct ReflectMapMut<'a> {
     pub(crate) map: &'a mut ReflectMap,
     pub(crate) key_dynamic: &'a RuntimeTypeDynamic,
@@ -111,24 +113,29 @@ pub struct ReflectMapMut<'a> {
 }
 
 impl<'a> ReflectMapRef<'a> {
+    /// Size of the map
     pub fn len(&self) -> usize {
         self.map.len()
     }
 
+    /// Is map empty?
     pub fn is_empty(&self) -> bool {
         self.map.is_empty()
     }
 
+    /// Find a value by given key.
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
         self.map
             .get(key)
             .map(|v| self.value_dynamic.value_to_ref(v))
     }
 
+    /// Map key type
     pub fn key_type(&self) -> &RuntimeTypeDynamic {
         self.key_dynamic
     }
 
+    /// Map value type
     pub fn value_type(&self) -> &RuntimeTypeDynamic {
         self.value_dynamic
     }
@@ -166,37 +173,45 @@ impl<'a> ReflectMapMut<'a> {
         }
     }
 
+    /// Map key type
     pub fn key_type(&self) -> &RuntimeTypeDynamic {
         self.key_dynamic
     }
 
+    /// Map value type
     pub fn value_type(&self) -> &RuntimeTypeDynamic {
         self.value_dynamic
     }
 
+    /// Number of map entries
     pub fn len(&self) -> usize {
         self.as_ref().len()
     }
 
+    /// Is this map empty?
     pub fn is_empty(&self) -> bool {
         self.as_ref().is_empty()
     }
 
+    /// Find a value for given key
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
         self.map
             .get(key)
             .map(|v| self.value_dynamic.value_to_ref(v))
     }
 
+    /// Insert a value into the map
     pub fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
         self.map.insert(key, value)
     }
 
+    /// Clear
     pub fn clear(&mut self) {
         self.map.clear();
     }
 }
 
+/// Iterator over map
 pub struct ReflectMapRefIter<'a> {
     iter: ReflectMapIter<'a>,
     key_dynamic: &'a RuntimeTypeDynamic,

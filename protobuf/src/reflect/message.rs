@@ -49,6 +49,9 @@ where
     }
 }
 
+/// Dynamic representation of message type.
+///
+/// Used for reflection.
 pub struct MessageDescriptor {
     full_name: String,
     file_descriptor_proto: &'static FileDescriptorProto,
@@ -67,6 +70,7 @@ impl MessageDescriptor {
         self.proto
     }
 
+    /// Get a message descriptor for given message type
     pub fn for_type<M: Message>() -> &'static MessageDescriptor {
         M::descriptor_static()
     }
@@ -145,6 +149,10 @@ impl MessageDescriptor {
         }
     }
 
+    /// Construct a new message descriptor.
+    ///
+    /// This operation is called from generated code and rarely
+    /// need to be called directly.
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
@@ -154,6 +162,7 @@ impl MessageDescriptor {
         MessageDescriptor::new_non_generic(rust_name, fields, file_descriptor_proto, factory)
     }
 
+    /// `FileDescriptorProto` containg this message type
     pub fn file_descriptor_proto(&self) -> &FileDescriptorProto {
         self.file_descriptor_proto
     }
@@ -175,14 +184,18 @@ impl MessageDescriptor {
 
     /// Check if two messages equal.
     ///
-    /// Panic is any message has different type than this descriptor.
+    /// # Panics
+    ///
+    /// Is any message has different type than this descriptor.
     pub fn eq(&self, a: &Message, b: &Message) -> bool {
         self.factory.eq(a, b)
     }
 
     /// Similar to `eq`, but considers `NaN` values equal.
     ///
-    /// Panics is any message has different type than this descriptor.
+    /// # Panics
+    ///
+    /// Is any message has different type than this descriptor.
     pub fn deep_eq(&self, a: &Message, b: &Message) -> bool {
         // Explicitly force panic even if field list is empty
         assert_eq!(
@@ -204,20 +217,25 @@ impl MessageDescriptor {
         true
     }
 
+    /// Message name as given in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
     }
 
+    /// Fully qualified protobuf message name
     pub fn full_name(&self) -> &str {
         &self.full_name[..]
     }
 
-    pub fn fields<'a>(&'a self) -> &'a [FieldDescriptor] {
+    /// Message field descriptors.
+    pub fn fields(&self) -> &[FieldDescriptor] {
         &self.fields
     }
 
-    /// Find message field by field name
-    pub fn field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+    /// Find message field by protobuf field name
+    ///
+    /// Note: protobuf field name might be different for Rust field name.
+    pub fn field_by_name(&self, name: &str) -> Option<&FieldDescriptor> {
         let &index = self.index_by_name.get(name)?;
         Some(&self.fields[index])
     }
@@ -234,6 +252,8 @@ impl MessageDescriptor {
         Some(&self.fields[index])
     }
 
+    /// This operation is not needed here
+    // TODO: remove it
     pub fn cast<M: 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {
         message.downcast_box::<M>().map(|m| *m)
     }

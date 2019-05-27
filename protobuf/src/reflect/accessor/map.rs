@@ -70,6 +70,7 @@ where
     }
 }
 
+/// Make accessor for map field
 pub fn make_map_accessor<M, K, V>(
     name: &'static str,
     get_field: for<'a> fn(

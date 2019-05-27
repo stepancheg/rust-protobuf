@@ -45,9 +45,13 @@ impl<'a> ReflectDeepEq for ReflectFieldRef<'a> {
     }
 }
 
+/// Reflective representation of field type
 pub enum RuntimeFieldType {
+    /// Singular field (required, optional for proto2 or singular for proto3)
     Singular(&'static RuntimeTypeDynamic),
+    /// Repeated field
     Repeated(&'static RuntimeTypeDynamic),
+    /// Map field
     Map(&'static RuntimeTypeDynamic, &'static RuntimeTypeDynamic),
 }
 
@@ -56,6 +60,9 @@ fn _assert_sync<'a>() {
     _assert_send_sync::<ReflectFieldRef<'a>>();
 }
 
+/// Field descriptor.
+///
+/// Can be used for runtime reflection.
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
     accessor: FieldAccessor,
@@ -76,23 +83,37 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `.proto` description of field
     pub fn proto(&self) -> &'static FieldDescriptorProto {
         self.proto
     }
 
+    /// Field name as specified in `.proto` file
     pub fn name(&self) -> &str {
         self.accessor.name
     }
 
+    /// JSON field name.
+    ///
+    /// Can be different from `.proto` field name.
+    ///
+    /// See [JSON mapping][json] for details.
+    ///
+    /// [json]: https://developers.google.com/protocol-buffers/docs/proto3#json
     pub fn json_name(&self) -> &str {
         &self.json_name
     }
 
+    /// If this field repeated?
     pub fn is_repeated(&self) -> bool {
         self.proto.get_label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
-    /// Return enum descriptor for enum field, panics if field type is not enum.
+    /// Return enum descriptor for enum field.
+    ///
+    /// # Panics
+    ///
+    /// If field type is not enum.
     pub fn enum_descriptor(&self) -> &'static EnumDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.element_type.runtime_type().enum_descriptor(),
@@ -103,7 +124,11 @@ impl FieldDescriptor {
         }
     }
 
-    /// Return enum descriptor for message field, panics if field type is not message.
+    /// Return enum descriptor for message field.
+    ///
+    /// # Panics
+    ///
+    /// If field type is not message.
     pub fn message_descriptor(&self) -> &'static MessageDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.element_type.runtime_type().message_descriptor(),
@@ -115,6 +140,14 @@ impl FieldDescriptor {
         }
     }
 
+    /// Check if field is set in given message.
+    ///
+    /// For repeated field or map field return `true` if
+    /// collection is not empty.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &Message) -> bool {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.accessor.get_reflect(m).is_some(),
@@ -123,6 +156,13 @@ impl FieldDescriptor {
         }
     }
 
+    /// Return length of repeated field.
+    ///
+    /// For singualar field return `1` if field is set and `0` otherwise.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type.
     pub fn len_field(&self, m: &Message) -> usize {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => if a.accessor.get_reflect(m).is_some() {
@@ -159,7 +199,10 @@ impl FieldDescriptor {
     }
 
     /// Get message field or default instance if field is unset.
-    /// Panic if field type is not message.
+    ///
+    /// # Panics
+    /// If this field belongs to a different message type or
+    /// field type is not message.
     pub fn get_message<'a>(&self, m: &'a Message) -> &'a Message {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Message(m) => m,
@@ -169,13 +212,23 @@ impl FieldDescriptor {
 
     /// Get a mutable reference to a message field.
     /// Initialize field with default message if unset.
-    /// Panic if field type is not singular message.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or
+    /// field type is not singular message.
     pub fn mut_message<'a>(&self, m: &'a mut Message) -> &'a mut Message {
         match self.mut_singular_field_or_default(m) {
             ReflectValueMut::Message(m) => m,
         }
     }
 
+    /// Get `enum` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `enum`.
     pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Enum(v) => v,
@@ -183,6 +236,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `string` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `string`.
     pub fn get_str<'a>(&self, m: &'a Message) -> &'a str {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::String(v) => v,
@@ -190,6 +249,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `bytes` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `bytes`.
     pub fn get_bytes<'a>(&self, m: &'a Message) -> &'a [u8] {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Bytes(v) => v,
@@ -197,6 +262,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `u32` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `u32`.
     pub fn get_u32(&self, m: &Message) -> u32 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::U32(v) => v,
@@ -204,6 +275,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `u64` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `u64`.
     pub fn get_u64(&self, m: &Message) -> u64 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::U64(v) => v,
@@ -211,6 +288,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `i32` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `i32`.
     pub fn get_i32(&self, m: &Message) -> i32 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::I32(v) => v,
@@ -218,6 +301,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `i64` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `i64`.
     pub fn get_i64(&self, m: &Message) -> i64 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::I64(v) => v,
@@ -225,6 +314,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `bool` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or
+    /// field type is not singular `bool`.
     pub fn get_bool(&self, m: &Message) -> bool {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Bool(v) => v,
@@ -232,6 +327,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `float` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or
+    /// field type is not singular `float`.
     pub fn get_f32(&self, m: &Message) -> f32 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::F32(v) => v,
@@ -239,6 +340,12 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get `double` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type
+    /// or field type is not singular `double`.
     pub fn get_f64(&self, m: &Message) -> f64 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::F64(v) => v,
@@ -246,6 +353,13 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get singular field value.
+    ///
+    /// Return field default value if field is unset.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or fields is not singular.
     pub fn get_singular_field_or_default<'a>(&self, m: &'a Message) -> ReflectValueRef<'a> {
         self.singular().accessor.get_singular_field_or_default(m)
     }
@@ -255,14 +369,26 @@ impl FieldDescriptor {
         self.singular().accessor.mut_singular_field_or_default(m)
     }
 
+    /// Runtime representation of singular field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not singular.
     pub fn singular_runtime_type(&self) -> &RuntimeTypeDynamic {
         self.singular().element_type.runtime_type()
     }
 
+    /// Set singular field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or
+    /// field is not singular or value is of different type.
     pub fn set_singular_field(&self, m: &mut Message, value: ReflectValueBox) {
         self.singular().accessor.set_singular_field(m, value)
     }
 
+    /// Dynamic representation of field type.
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorKind::*;
         match self.accessor.accessor {
@@ -276,6 +402,11 @@ impl FieldDescriptor {
         }
     }
 
+    /// Get field of any type.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type.
     pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
         use self::AccessorKind::*;
         match self.accessor.accessor {
@@ -287,20 +418,40 @@ impl FieldDescriptor {
 
     // repeated
 
+    /// Get repeated field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not repeated.
     pub fn get_repeated<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a> {
         self.repeated().accessor.get_reflect(m)
     }
 
+    /// Get a mutable reference to `repeated` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not `repeated`.
     pub fn mut_repeated<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
         self.repeated().accessor.mut_reflect(m)
     }
 
     // map
 
+    /// Get `map` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not `map`.
     pub fn get_map<'a>(&self, m: &'a Message) -> ReflectMapRef<'a> {
         self.map().accessor.get_reflect(m)
     }
 
+    /// Get a mutable reference to `map` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not `map`.
     pub fn mut_map<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
         self.map().accessor.mut_reflect(m)
     }

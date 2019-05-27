@@ -168,6 +168,7 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
     // TODO: unknown fields
 }
 
+/// Text-format
 pub fn print_to(m: &Message, buf: &mut String) {
     print_to_internal(m, buf, false, 0)
 }
@@ -178,10 +179,12 @@ fn print_to_string_internal(m: &Message, pretty: bool) -> String {
     r.to_string()
 }
 
+/// Text-format
 pub fn print_to_string(m: &Message) -> String {
     print_to_string_internal(m, false)
 }
 
+/// Text-format to `fmt::Formatter`.
 pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
     let pretty = f.alternate();
     f.write_str(&print_to_string_internal(m, pretty))

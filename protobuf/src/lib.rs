@@ -1,7 +1,7 @@
 //! Library to read and write protocol buffers data.
 
-// TODO: add docs
-//#![deny(missing_docs)]
+#![deny(missing_docs)]
+#![deny(intra_doc_link_resolution_failure)]
 
 #![cfg_attr(rustc_nightly, feature(specialization))]
 

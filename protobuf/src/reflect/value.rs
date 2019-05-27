@@ -52,22 +52,36 @@ impl<M : Message> ProtobufValue for M {
 }
 */
 
+/// A reference to a value
 #[derive(Debug)]
 pub enum ReflectValueRef<'a> {
+    /// `u32`
     U32(u32),
+    /// `u64`
     U64(u64),
+    /// `i32`
     I32(i32),
+    /// `i64`
     I64(i64),
+    /// `f32`
     F32(f32),
+    /// `f64`
     F64(f64),
+    /// `bool`
     Bool(bool),
+    /// `string`
     String(&'a str),
+    /// `bytes`
     Bytes(&'a [u8]),
+    /// `enum`
+    // TODO: change to (i32, EnumDescriptor)
     Enum(&'static EnumValueDescriptor),
+    /// `message`
     Message(&'a Message),
 }
 
 impl<'a> ReflectValueRef<'a> {
+    /// Value is "non-zero"?
     pub fn is_non_zero(&self) -> bool {
         match *self {
             ReflectValueRef::U32(v) => v != 0,
@@ -84,7 +98,7 @@ impl<'a> ReflectValueRef<'a> {
         }
     }
 
-    // Clone to box
+    /// Clone to a box
     pub fn to_box(&self) -> ReflectValueBox {
         match *self {
             ReflectValueRef::U32(v) => ReflectValueBox::U32(v),
@@ -152,18 +166,31 @@ pub enum ReflectValueMut<'a> {
     Message(&'a mut Message),
 }
 
+/// Owner value of any elementary type
 #[derive(Debug, Clone)]
 pub enum ReflectValueBox {
+    /// `u32`
     U32(u32),
+    /// `u64`
     U64(u64),
+    /// `i32`
     I32(i32),
+    /// `i64`
     I64(i64),
+    /// `f32`
     F32(f32),
+    /// `f64`
     F64(f64),
+    /// `bool`
     Bool(bool),
+    /// `string`
     String(String),
+    /// `bytes`
     Bytes(Vec<u8>),
+    /// `enum`
+    // TODO: change to `(i32, EnumDescriptor)`
     Enum(&'static EnumValueDescriptor),
+    /// `message`
     Message(Box<Message>),
 }
 
@@ -248,6 +275,7 @@ type StringOrChars = String;
 type StringOrChars = Chars;
 
 impl ReflectValueBox {
+    /// As ref
     pub fn as_value_ref(&self) -> ReflectValueRef {
         use std::ops::Deref;
         match *self {
@@ -265,6 +293,9 @@ impl ReflectValueBox {
         }
     }
 
+    /// Downcast to real typed value.
+    ///
+    /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
     pub fn downcast<V: 'static>(self) -> Result<V, Self> {
         match self {
             ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),

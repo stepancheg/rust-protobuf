@@ -412,6 +412,7 @@ where
 // TODO: make_singular_xxx_accessor are used only for oneof fields
 // oneof codegen should be changed
 
+/// Make accessor for `Copy` field
 pub fn make_oneof_copy_has_get_set_accessors<M, V>(
     name: &'static str,
     has: fn(&M) -> bool,
@@ -438,6 +439,7 @@ where
     }
 }
 
+/// Make accessor for `oneof` field
 pub fn make_oneof_deref_has_get_set_accessor<M, F>(
     name: &'static str,
     has: fn(&M) -> bool,
@@ -464,6 +466,7 @@ where
     }
 }
 
+/// Make accessor for `oneof` `message` field
 pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
     name: &'static str,
     has_field: fn(&M) -> bool,
@@ -500,6 +503,7 @@ where
     }
 }
 
+/// Make accessor for option or option-like field
 pub fn make_option_accessor<M, V, O>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a O,
@@ -537,6 +541,7 @@ where
     }
 }
 
+/// Make accessor for option-like field
 pub fn make_option_get_copy_accessor<M, V, O>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a O,
@@ -585,6 +590,7 @@ impl<M: Message, E: ProtobufEnum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E>
     }
 }
 
+/// Make accessor for enum field
 pub fn make_option_enum_accessor<M, E>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<ProtobufEnumOrUnknown<E>>,
@@ -655,6 +661,7 @@ where
     }
 }
 
+/// Make accessor for simple field
 pub fn make_simple_field_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeType>::Value,

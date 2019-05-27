@@ -1,3 +1,5 @@
+//! Implementations of `RuntimeType` for all types.
+
 use std::fmt;
 use std::marker;
 

@@ -511,14 +511,11 @@ impl Printer {
     }
 }
 
-pub fn print_to_string(message: &Message) -> PrintResult<String> {
-    print_to_string_with_options(message, &PrintOptions::default())
-}
-
 /// Options for printing JSON to string
 #[derive(Default, Debug, Clone)]
 pub struct PrintOptions {
     /// Use ints instead of strings for enums.
+    ///
     /// Note both string or int can be parsed.
     pub enum_values_int: bool,
     /// Use protobuf field names instead of `lowerCamelCase` which is used by default.
@@ -528,6 +525,7 @@ pub struct PrintOptions {
     pub always_output_default_values: bool,
 }
 
+/// Serialize message to JSON according to protobuf specification.
 pub fn print_to_string_with_options(
     message: &Message,
     print_options: &PrintOptions,
@@ -538,4 +536,9 @@ pub fn print_to_string_with_options(
     };
     printer.print_message(message)?;
     Ok(printer.buf)
+}
+
+/// Serialize message to JSON according to protobuf specification.
+pub fn print_to_string(message: &Message) -> PrintResult<String> {
+    print_to_string_with_options(message, &PrintOptions::default())
 }

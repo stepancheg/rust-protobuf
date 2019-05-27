@@ -421,6 +421,7 @@ impl<T: Default + Clear> SingularField<T> {
         self.value
     }
 
+    /// Set object to `Some(T::default())`.
     // TODO: inline
     #[inline]
     pub fn set_default(&mut self) -> &mut T {
@@ -442,6 +443,7 @@ impl<T: Default + Clear> SingularPtrField<T> {
         }
     }
 
+    /// Set object to `Some(T::default())`.
     // TODO: inline
     #[inline]
     pub fn set_default(&mut self) -> &mut T {

@@ -1,3 +1,5 @@
+//! Reflection internals.
+
 use std::marker;
 
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
@@ -5,10 +7,14 @@ use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::wire_format::WireType;
 
-/// Dynamic version of `RuntimeType`
+/// Dynamic version of `ProtobufType`.
+///
+/// This is used internally.
 pub trait ProtobufTypeDynamic: Send + Sync + 'static {
+    /// Wire type for this type.
     fn wire_type(&self) -> WireType;
 
+    /// Get runtime type for this protobuf type.
     fn runtime_type(&self) -> &RuntimeTypeDynamic;
 }
 

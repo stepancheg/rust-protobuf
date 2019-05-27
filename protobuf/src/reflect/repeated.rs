@@ -239,31 +239,37 @@ impl<'a> IntoIterator for &'a ReflectRepeatedRefUnused<'a> {
     }
 }
 
+/// Dynamic reference to repeated field
 #[derive(Copy, Clone)]
 pub struct ReflectRepeatedRef<'a> {
     pub(crate) repeated: &'a ReflectRepeated,
     pub(crate) dynamic: &'static RuntimeTypeDynamic,
 }
 
+/// Dynamic mutable reference to repeated field
 pub struct ReflectRepeatedMut<'a> {
     pub(crate) repeated: &'a mut ReflectRepeated,
     pub(crate) dynamic: &'static RuntimeTypeDynamic,
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
+    /// Number of elements in repeated field
     pub fn len(&self) -> usize {
         self.repeated.len()
     }
 
+    /// Repeated field is empty
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Get item by index
     // TODO: replace with index
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
     }
 
+    /// Runtime type of element
     pub fn element_type(&self) -> &RuntimeTypeDynamic {
         self.dynamic
     }
@@ -347,35 +353,53 @@ impl<'a> ReflectRepeatedMut<'a> {
         }
     }
 
+    /// Number of elements in repeated field
     pub fn len(&self) -> usize {
         self.repeated.len()
     }
 
+    /// Self-explanatory
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Get an item by index
+    ///
+    /// Note: return immutable reference.
     pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
         self.dynamic.value_to_ref(self.repeated.get(index))
     }
 
+    /// Runtime type of element
     pub fn element_type(&self) -> &RuntimeTypeDynamic {
         self.dynamic
     }
 
+    /// Set a value at given index.
+    ///
+    /// # Panics
+    ///
+    /// If index if out of range or value type does not match container element type
     pub fn set(&mut self, index: usize, value: ReflectValueBox) {
         self.repeated.set(index, value);
     }
 
+    /// Push an item to repeated field.
+    ///
+    /// # Panics
+    ///
+    /// If index if out of range or value type does not match container element type
     pub fn push(&mut self, value: ReflectValueBox) {
         self.repeated.push(value);
     }
 
+    /// Self-explanatory
     pub fn clear(&mut self) {
         self.repeated.clear();
     }
 }
 
+/// Iterator over repeated field.
 pub struct ReflectRepeatedRefIter<'a> {
     repeated: ReflectRepeatedRef<'a>,
     index: usize,

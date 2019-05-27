@@ -796,6 +796,10 @@ impl<'a> Parser<'a> {
 /// JSON parse options.
 #[derive(Default, Debug, Clone)]
 pub struct ParseOptions {
+    /// Ignore unknown fields when parsing.
+    ///
+    /// When `true` fields with unknown names are ignored.
+    /// When `false` parser returns an error on unknown field.
     pub ignore_unknown_fields: bool,
 }
 

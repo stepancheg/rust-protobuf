@@ -132,12 +132,13 @@ impl<T> RepeatedField<T> {
         self.vec.capacity()
     }
 
-    /// View data as mutable slice.
+    /// View data as slice.
     #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T] {
         &self.vec[..self.len]
     }
 
+    /// View data as mutable slice.
     #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         &mut self.vec[..self.len]

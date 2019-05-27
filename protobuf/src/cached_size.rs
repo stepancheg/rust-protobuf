@@ -15,10 +15,12 @@ pub struct CachedSize {
 }
 
 impl CachedSize {
+    /// Get cached size
     pub fn get(&self) -> u32 {
         self.size.load(Ordering::Relaxed) as u32
     }
 
+    /// Set cached size
     pub fn set(&self, size: u32) {
         self.size.store(size as usize, Ordering::Relaxed)
     }

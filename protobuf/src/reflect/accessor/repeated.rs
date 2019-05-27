@@ -101,6 +101,7 @@ where
     }
 }
 
+/// Make accessor for `Vec` field
 pub fn make_vec_accessor<M, V>(
     name: &'static str,
     get_vec: for<'a> fn(&'a M) -> &'a Vec<<V::RuntimeType as RuntimeType>::Value>,
@@ -128,6 +129,7 @@ where
     }
 }
 
+/// Make accessor for `RepeatedField`
 pub fn make_repeated_field_accessor<M, V>(
     name: &'static str,
     get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<<V::RuntimeType as RuntimeType>::Value>,

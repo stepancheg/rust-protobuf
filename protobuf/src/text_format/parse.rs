@@ -300,6 +300,9 @@ impl<'a> Parser<'a> {
     }
 }
 
+/// Parse text format message.
+///
+/// This function does not check if message required fields are set.
 pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
         tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat),
@@ -307,6 +310,7 @@ pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<
     parser.merge(message)
 }
 
+/// Parse text format message.
 pub fn parse_from_str<M: Message>(input: &str) -> ParseWithLocResult<M> {
     let mut m = M::new();
     merge_from_str(&mut m, input)?;
