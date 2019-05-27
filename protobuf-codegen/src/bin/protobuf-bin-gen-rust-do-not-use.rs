@@ -14,8 +14,14 @@ fn write_file(bin: &str) {
     let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut Read).unwrap();
 
     let file_names: Vec<PathBuf> = fds.file.iter().map(|f| f.get_name().into()).collect();
-    gen_and_write(&fds.file, &format!("unknown, file {}", bin), &file_names, Path::new("."), &Default::default())
-        .expect("gen_and_write");
+    gen_and_write(
+        &fds.file,
+        &format!("unknown, file {}", bin),
+        &file_names,
+        Path::new("."),
+        &Default::default(),
+    )
+    .expect("gen_and_write");
 }
 
 fn main() {

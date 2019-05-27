@@ -1,15 +1,14 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
-use protobuf::descriptor::*;
-use crate::scope::RootScope;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustRelativePath;
-use crate::field::rust_field_name_for_protobuf_field_name;
-use crate::protobuf_name::ProtobufAbsolutePath;
 use crate::customize::Customize;
+use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
-
+use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::rust_name::RustIdentWithPath;
+use crate::rust_name::RustRelativePath;
+use crate::scope::RootScope;
+use protobuf::descriptor::*;
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,
@@ -27,7 +26,8 @@ impl<'a> ExtGen<'a> {
                 relative_mod: RustRelativePath::from("exts"),
                 customize: self.customize.clone(),
             },
-            self.root_scope)
+            self.root_scope,
+        )
     }
 
     fn repeated(&self) -> bool {
@@ -55,7 +55,9 @@ impl<'a> ExtGen<'a> {
                 field_descriptor_proto::Type::TYPE_MESSAGE => {
                     ProtobufTypeGen::Message(rust_name_relative)
                 }
-                field_descriptor_proto::Type::TYPE_ENUM => ProtobufTypeGen::EnumOrUnknown(rust_name_relative),
+                field_descriptor_proto::Type::TYPE_ENUM => {
+                    ProtobufTypeGen::EnumOrUnknown(rust_name_relative)
+                }
                 t => panic!("unknown type: {:?}", t),
             }
         } else {
@@ -92,8 +94,7 @@ pub(crate) fn write_extensions(
     root_scope: &RootScope,
     w: &mut CodeWriter,
     customize: &Customize,
-)
-{
+) {
     if file.extension.is_empty() {
         return;
     }
@@ -112,7 +113,8 @@ pub(crate) fn write_extensions(
                 root_scope: root_scope,
                 field: field,
                 customize: customize.clone(),
-            }.write(w);
+            }
+            .write(w);
         }
     });
 }

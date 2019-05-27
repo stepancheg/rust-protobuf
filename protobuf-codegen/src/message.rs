@@ -8,21 +8,20 @@ use super::customize::Customize;
 use super::enums::*;
 use super::field::*;
 use super::rust_types_values::*;
+use crate::case_convert::snake_case;
+use crate::file_and_mod::FileAndMod;
+use crate::file_descriptor::file_descriptor_proto_expr;
+use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::oneof::OneofGen;
 use crate::oneof::OneofVariantGen;
-use crate::serde;
-use crate::scope::MessageWithScope;
-use crate::scope::WithScope;
-use crate::scope::RootScope;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustIdent;
-use crate::case_convert::snake_case;
 use crate::rust::is_rust_keyword;
-use crate::file_descriptor::file_descriptor_proto_expr;
-use crate::file_and_mod::FileAndMod;
-use crate::inside::protobuf_crate_path;
-
+use crate::rust_name::RustIdent;
+use crate::rust_name::RustIdentWithPath;
+use crate::scope::MessageWithScope;
+use crate::scope::RootScope;
+use crate::scope::WithScope;
+use crate::serde;
 
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
@@ -102,10 +101,13 @@ impl<'a> MessageGen<'a> {
     }
 
     fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
-        self.fields.iter().filter(|f| match f.kind {
-            FieldKind::Oneof(..) => false,
-            _ => true,
-        }).collect()
+        self.fields
+            .iter()
+            .filter(|f| match f.kind {
+                FieldKind::Oneof(..) => false,
+                _ => true,
+            })
+            .collect()
     }
 
     fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
@@ -118,11 +120,9 @@ impl<'a> MessageGen<'a> {
     fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
         self.fields
             .iter()
-            .filter(|f| {
-                match f.kind {
-                    FieldKind::Oneof(..) => false,
-                    _ => f.proto_type != field_descriptor_proto::Type::TYPE_GROUP,
-                }
+            .filter(|f| match f.kind {
+                FieldKind::Oneof(..) => false,
+                _ => f.proto_type != field_descriptor_proto::Type::TYPE_GROUP,
             })
             .collect()
     }
@@ -149,11 +149,17 @@ impl<'a> MessageGen<'a> {
                             let (refv, vtype) = if field.elem_type_is_copy() {
                                 ("v", variant.rust_type(&self.get_file_and_mod()))
                             } else {
-                                ("ref v", variant.rust_type(&self.get_file_and_mod()).ref_type())
+                                (
+                                    "ref v",
+                                    variant.rust_type(&self.get_file_and_mod()).ref_type(),
+                                )
                             };
-                            w.case_block(format!("&{}({})", variant.path(&self.get_file_and_mod()), refv), |w| {
-                                cb(w, &variant, "v", &vtype);
-                            });
+                            w.case_block(
+                                format!("&{}({})", variant.path(&self.get_file_and_mod()), refv),
+                                |w| {
+                                    cb(w, &variant, "v", &vtype);
+                                },
+                            );
                         }
                     });
                 },
@@ -173,7 +179,10 @@ impl<'a> MessageGen<'a> {
                 f.write_message_write_field(w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
-                let v = RustValueTyped { value: v.to_owned(), rust_type: v_type.clone() };
+                let v = RustValueTyped {
+                    value: v.to_owned(),
+                    rust_type: v_type.clone(),
+                };
                 variant.field.write_write_element(w, "os", &v);
             });
             w.write_line("os.write_unknown_fields(self.get_unknown_fields())?;");
@@ -219,7 +228,8 @@ impl<'a> MessageGen<'a> {
             });
             w.write_line(&format!(
                 "my_size += {}::rt::unknown_fields_size(self.get_unknown_fields());",
-                protobuf_crate_path(&self.customize)));
+                protobuf_crate_path(&self.customize)
+            ));
             w.write_line("self.cached_size.set(my_size);");
             w.write_line("my_size");
         });
@@ -243,23 +253,21 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
-        let sig = format!("get_unknown_fields(&self) -> &{}::UnknownFields",
-            protobuf_crate_path(&self.customize));
-        w.def_fn(
-            &sig,
-            |w| {
-                w.write_line("&self.unknown_fields");
-            },
+        let sig = format!(
+            "get_unknown_fields(&self) -> &{}::UnknownFields",
+            protobuf_crate_path(&self.customize)
         );
+        w.def_fn(&sig, |w| {
+            w.write_line("&self.unknown_fields");
+        });
         w.write_line("");
-        let sig = format!("mut_unknown_fields(&mut self) -> &mut {}::UnknownFields",
-            protobuf_crate_path(&self.customize));
-        w.def_fn(
-            &sig,
-            |w| {
-                w.write_line("&mut self.unknown_fields");
-            },
+        let sig = format!(
+            "mut_unknown_fields(&mut self) -> &mut {}::UnknownFields",
+            protobuf_crate_path(&self.customize)
         );
+        w.def_fn(&sig, |w| {
+            w.write_line("&mut self.unknown_fields");
+        });
     }
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
@@ -288,40 +296,42 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
-        let sig = format!("descriptor_static() -> &'static {}::reflect::MessageDescriptor",
-            protobuf_crate_path(&self.customize));
-        w.def_fn(
-            &sig,
-            |w| {
-                w.lazy_static_decl_get(
-                    "descriptor",
-                    &format!("{}::reflect::MessageDescriptor", protobuf_crate_path(&self.customize)),
-                    protobuf_crate_path(&self.customize),
-                    |w| {
-                        let fields = self.fields_except_group();
-                        if fields.is_empty() {
-                            w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
-                        } else {
-                            w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
-                        }
-                        for field in fields {
-                            field.write_descriptor_field("fields", w);;
-                        }
-                        w.write_line(&format!(
-                            "{}::reflect::MessageDescriptor::new::<{}>(",
-                            protobuf_crate_path(&self.customize),
-                            self.type_name,
-                        ));
-                        w.indented(|w| {
-                            w.write_line(&format!("\"{}\",", self.message.name_to_package()));
-                            w.write_line("fields,");
-                            w.write_line(&file_descriptor_proto_expr(&self.message.scope));
-                        });
-                        w.write_line(")");
-                    },
-                );
-            },
+        let sig = format!(
+            "descriptor_static() -> &'static {}::reflect::MessageDescriptor",
+            protobuf_crate_path(&self.customize)
         );
+        w.def_fn(&sig, |w| {
+            w.lazy_static_decl_get(
+                "descriptor",
+                &format!(
+                    "{}::reflect::MessageDescriptor",
+                    protobuf_crate_path(&self.customize)
+                ),
+                protobuf_crate_path(&self.customize),
+                |w| {
+                    let fields = self.fields_except_group();
+                    if fields.is_empty() {
+                        w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
+                    } else {
+                        w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
+                    }
+                    for field in fields {
+                        field.write_descriptor_field("fields", w);;
+                    }
+                    w.write_line(&format!(
+                        "{}::reflect::MessageDescriptor::new::<{}>(",
+                        protobuf_crate_path(&self.customize),
+                        self.type_name,
+                    ));
+                    w.indented(|w| {
+                        w.write_line(&format!("\"{}\",", self.message.name_to_package()));
+                        w.write_line("fields,");
+                        w.write_line(&file_descriptor_proto_expr(&self.message.scope));
+                    });
+                    w.write_line(")");
+                },
+            );
+        });
     }
 
     fn write_is_initialized(&self, w: &mut CodeWriter) {
@@ -354,41 +364,51 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
-        w.impl_for_block(&format!("{}::Message", protobuf_crate_path(&self.customize)), &format!("{}", self.type_name), |w| {
-            self.write_is_initialized(w);
-            w.write_line("");
-            self.write_merge_from(w);
-            w.write_line("");
-            self.write_compute_size(w);
-            w.write_line("");
-            self.write_write_to_with_cached_sizes(w);
-            w.write_line("");
-            self.write_get_cached_size(w);
-            w.write_line("");
-            self.write_unknown_fields(w);
-            w.write_line("");
-            w.def_fn(
-                &format!("descriptor(&self) -> &'static {}::reflect::MessageDescriptor", protobuf_crate_path(&self.customize)),
-                |w| {
-                    w.write_line("Self::descriptor_static()");
-                },
-            );
-            w.write_line("");
-            w.def_fn(&format!("new() -> {}", self.type_name), |w| {
-                w.write_line(&format!("{}::new()", self.type_name));
-            });
-            if !self.lite_runtime {
+        w.impl_for_block(
+            &format!("{}::Message", protobuf_crate_path(&self.customize)),
+            &format!("{}", self.type_name),
+            |w| {
+                self.write_is_initialized(w);
                 w.write_line("");
-                self.write_descriptor_static(w);
-            }
-            w.write_line("");
-            self.write_default_instance(w);
-        });
+                self.write_merge_from(w);
+                w.write_line("");
+                self.write_compute_size(w);
+                w.write_line("");
+                self.write_write_to_with_cached_sizes(w);
+                w.write_line("");
+                self.write_get_cached_size(w);
+                w.write_line("");
+                self.write_unknown_fields(w);
+                w.write_line("");
+                w.def_fn(
+                    &format!(
+                        "descriptor(&self) -> &'static {}::reflect::MessageDescriptor",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                    |w| {
+                        w.write_line("Self::descriptor_static()");
+                    },
+                );
+                w.write_line("");
+                w.def_fn(&format!("new() -> {}", self.type_name), |w| {
+                    w.write_line(&format!("{}::new()", self.type_name));
+                });
+                if !self.lite_runtime {
+                    w.write_line("");
+                    self.write_descriptor_static(w);
+                }
+                w.write_line("");
+                self.write_default_instance(w);
+            },
+        );
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
-            &format!("{}::reflect::ProtobufValue", protobuf_crate_path(&self.customize)),
+            &format!(
+                "{}::reflect::ProtobufValue",
+                protobuf_crate_path(&self.customize)
+            ),
             &format!("{}", self.type_name),
             |_w| {},
         );
@@ -399,21 +419,28 @@ impl<'a> MessageGen<'a> {
             w.def_fn(
                 "fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result",
                 |w| {
-                    w.write_line(&format!("{}::text_format::fmt(self, f)", protobuf_crate_path(&self.customize)));
+                    w.write_line(&format!(
+                        "{}::text_format::fmt(self, f)",
+                        protobuf_crate_path(&self.customize)
+                    ));
                 },
             );
         });
     }
 
     fn write_impl_clear(&self, w: &mut CodeWriter) {
-        w.impl_for_block(&format!("{}::Clear", protobuf_crate_path(&self.customize)), &format!("{}", self.type_name), |w| {
-            w.def_fn("clear(&mut self)", |w| {
-                for f in self.fields_except_group() {
-                    f.write_clear(w);
-                }
-                w.write_line("self.unknown_fields.clear();");
-            });
-        });
+        w.impl_for_block(
+            &format!("{}::Clear", protobuf_crate_path(&self.customize)),
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("clear(&mut self)", |w| {
+                    for f in self.fields_except_group() {
+                        f.write_clear(w);
+                    }
+                    w.write_line("self.unknown_fields.clear();");
+                });
+            },
+        );
     }
 
     fn supports_derive_partial_eq(&self) -> bool {
@@ -450,15 +477,22 @@ impl<'a> MessageGen<'a> {
                     w.field_decl_vis(
                         vis,
                         &oneof.oneof.field_name().to_string(),
-                        &oneof.full_storage_type().to_code(&self.customize));
+                        &oneof.full_storage_type().to_code(&self.customize),
+                    );
                 }
             }
             w.comment("special fields");
 
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.pub_field_decl("unknown_fields", &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)));
+            w.pub_field_decl(
+                "unknown_fields",
+                &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)),
+            );
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.pub_field_decl("cached_size", &format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)));
+            w.pub_field_decl(
+                "cached_size",
+                &format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)),
+            );
         });
     }
 
@@ -480,12 +514,16 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_dummy_impl_partial_eq(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::cmp::PartialEq", &format!("{}", self.type_name), |w| {
-            w.def_fn("eq(&self, _: &Self) -> bool", |w| {
-                w.comment("https://github.com/rust-lang/rust/issues/40119");
-                w.unimplemented();
-            });
-        });
+        w.impl_for_block(
+            "::std::cmp::PartialEq",
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("eq(&self, _: &Self) -> bool", |w| {
+                    w.comment("https://github.com/rust-lang/rust/issues/40119");
+                    w.unimplemented();
+                });
+            },
+        );
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
@@ -515,7 +553,10 @@ impl<'a> MessageGen<'a> {
         let mod_name = message_name_to_nested_mod_name(&self.message.message.get_name());
 
         let oneofs = self.oneofs();
-        let nested_messages: Vec<_> = self.message.to_scope().get_messages()
+        let nested_messages: Vec<_> = self
+            .message
+            .to_scope()
+            .get_messages()
             .into_iter()
             .filter(|nested| {
                 // ignore map entries, because they are not used in map fields
@@ -526,7 +567,10 @@ impl<'a> MessageGen<'a> {
 
         if !oneofs.is_empty() || !nested_messages.is_empty() || !nested_enums.is_empty() {
             w.write_line("");
-            w.write_line(&format!("/// Nested message and enums of message `{}`", self.message.message.get_name()));
+            w.write_line(&format!(
+                "/// Nested message and enums of message `{}`",
+                self.message.message.get_name()
+            ));
             w.pub_mod(mod_name.get(), |w| {
                 let mut first = true;
 

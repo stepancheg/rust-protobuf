@@ -1,5 +1,5 @@
-extern crate protobuf;
 extern crate proc_macro;
+extern crate protobuf;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
@@ -14,29 +14,29 @@ use protobuf::Message;
 use protobuf::prelude::*;
 
 mod amend_io_error_util;
+pub mod case_convert;
 mod compiler_plugin;
 mod customize;
 mod enums;
-mod file;
 mod extensions;
 mod field;
-mod rust_name;
-mod protobuf_name;
+mod file;
+pub(crate) mod file_and_mod;
+mod file_descriptor;
+mod inside;
 mod map;
 mod message;
 mod oneof;
+mod protobuf_name;
+mod rust_name;
 mod rust_types_values;
 mod serde;
 mod well_known_types;
-pub mod case_convert;
-mod file_descriptor;
-mod inside;
-pub(crate) mod file_and_mod;
 
-pub(crate) mod scope;
-pub(crate) mod syntax;
-pub(crate) mod strx;
 pub(crate) mod rust;
+pub(crate) mod scope;
+pub(crate) mod strx;
+pub(crate) mod syntax;
 
 use customize::customize_from_rustproto_for_file;
 pub use customize::Customize;
@@ -49,16 +49,15 @@ use self::extensions::*;
 use self::message::*;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
-use map::map_entry;
-use scope::RootScope;
-use scope::FileScope;
 use file::proto_path_to_rust_mod;
+use map::map_entry;
+use scope::FileScope;
+use scope::RootScope;
 
-pub use protobuf_name::ProtobufIdent;
-pub use protobuf_name::ProtobufAbsolutePath;
-pub use protobuf_name::ProtobufRelativePath;
 use inside::protobuf_crate_path;
-
+pub use protobuf_name::ProtobufAbsolutePath;
+pub use protobuf_name::ProtobufIdent;
+pub use protobuf_name::ProtobufRelativePath;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -79,7 +78,11 @@ fn escape_byte(s: &mut String, b: u8) {
     }
 }
 
-fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize, w: &mut CodeWriter) {
+fn write_file_descriptor_data(
+    file: &FileDescriptorProto,
+    customize: &Customize,
+    w: &mut CodeWriter,
+) {
     let fdp_bytes = file.write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
     w.indented(|w| {
@@ -112,22 +115,32 @@ fn write_file_descriptor_data(file: &FileDescriptorProto, customize: &Customize,
     w.write_line("");
     w.lazy_static(
         "file_descriptor_proto_lazy",
-        &format!("{}::descriptor::FileDescriptorProto", protobuf_crate_path(customize)),
+        &format!(
+            "{}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)
+        ),
         protobuf_crate_path(customize),
     );
     w.write_line("");
     w.def_fn(
-        &format!("parse_descriptor_proto() -> {}::descriptor::FileDescriptorProto",
-            protobuf_crate_path(customize)),
+        &format!(
+            "parse_descriptor_proto() -> {}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)
+        ),
         |w| {
-            w.write_line(&format!("{}::parse_from_bytes(file_descriptor_proto_data).unwrap()", protobuf_crate_path(customize)));
+            w.write_line(&format!(
+                "{}::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                protobuf_crate_path(customize)
+            ));
         },
     );
     w.write_line("");
     w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
     w.pub_fn(
-        &format!("file_descriptor_proto() -> &'static {}::descriptor::FileDescriptorProto",
-            protobuf_crate_path(customize)),
+        &format!(
+            "file_descriptor_proto() -> &'static {}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)
+        ),
         |w| {
             w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
                 w.write_line("parse_descriptor_proto()");
@@ -152,13 +165,10 @@ fn gen_file(
 
     let scope = FileScope {
         file_descriptor: file,
-    }.to_scope();
+    }
+    .to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
-        file
-            .options
-            .get_message()
-            .get_optimize_for()
-            == file_options::OptimizeMode::LITE_RUNTIME
+        file.options.get_message().get_optimize_for() == file_options::OptimizeMode::LITE_RUNTIME
     });
 
     let mut v = Vec::new();
@@ -174,8 +184,11 @@ fn gen_file(
             w.write_line("");
             w.write_line("/// Generated files are compatible only with the same version");
             w.write_line("/// of protobuf runtime.");
-            w.write_line(&format!("const _PROTOBUF_VERSION_CHECK: () = {}::{};",
-                protobuf_crate_path(&customize), protobuf::VERSION_IDENT));
+            w.write_line(&format!(
+                "const _PROTOBUF_VERSION_CHECK: () = {}::{};",
+                protobuf_crate_path(&customize),
+                protobuf::VERSION_IDENT
+            ));
         }
 
         for message in &scope.get_messages() {
@@ -218,13 +231,16 @@ pub fn gen(
     };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
-    let files_map: HashMap<&Path, &FileDescriptorProto> =
-        file_descriptors.iter().map(|f| (Path::new(f.get_name()), f)).collect();
+    let files_map: HashMap<&Path, &FileDescriptorProto> = file_descriptors
+        .iter()
+        .map(|f| (Path::new(f.get_name()), f))
+        .collect();
 
     for file_name in files_to_generate {
         let file = files_map.get(file_name.as_path()).expect(&format!(
             "file not found in file descriptors: {:?}, files: {:?}",
-            file_name, files_map.keys()
+            file_name,
+            files_map.keys()
         ));
         results.extend(gen_file(file, &files_map, &root_scope, customize, parser));
     }
@@ -243,12 +259,15 @@ pub fn gen_and_write(
             if !m.is_dir() {
                 return Err(io::Error::new(
                     io::ErrorKind::Other,
-                        format!("{} is not a directory", out_dir.display())));
+                    format!("{} is not a directory", out_dir.display()),
+                ));
             }
         }
         Err(e) => {
-            return Err(amend_io_error(e,
-                format!("{} does not exist or not accessible", out_dir.display())));
+            return Err(amend_io_error(
+                e,
+                format!("{} does not exist or not accessible", out_dir.display()),
+            ));
         }
     }
 
@@ -273,6 +292,11 @@ pub fn gen_and_write(
 pub fn protoc_gen_rust_main() {
     compiler_plugin::plugin_main(|r| {
         let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
-        gen(r.file_descriptors, "protoc --rust-out=...", r.files_to_generate, &customize)
+        gen(
+            r.file_descriptors,
+            "protoc --rust-out=...",
+            r.files_to_generate,
+            &customize,
+        )
     });
 }

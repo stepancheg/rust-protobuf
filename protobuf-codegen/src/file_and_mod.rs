@@ -1,5 +1,5 @@
-use crate::rust_name::RustRelativePath;
 use crate::customize::Customize;
+use crate::rust_name::RustRelativePath;
 
 pub(crate) struct FileAndMod {
     pub file: String,

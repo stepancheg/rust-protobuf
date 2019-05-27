@@ -57,7 +57,7 @@ impl ProtobufRelativePath {
         ProtobufRelativePath { path }
     }
 
-    pub fn from_components<I : IntoIterator<Item = ProtobufIdent>>(i: I) -> ProtobufRelativePath {
+    pub fn from_components<I: IntoIterator<Item = ProtobufIdent>>(i: I) -> ProtobufRelativePath {
         let v: Vec<String> = i.into_iter().map(|c| c.get().to_owned()).collect();
         ProtobufRelativePath::from(v.join("."))
     }
@@ -140,7 +140,10 @@ impl ProtobufRelativePath {
                     ProtobufIdent::from(&self.path[..dot]),
                     ProtobufRelativePath::new(self.path[dot + 1..].to_owned()),
                 ),
-                None => (ProtobufIdent::from(self.path.clone()), ProtobufRelativePath::empty()),
+                None => (
+                    ProtobufIdent::from(self.path.clone()),
+                    ProtobufRelativePath::empty(),
+                ),
             })
         }
     }

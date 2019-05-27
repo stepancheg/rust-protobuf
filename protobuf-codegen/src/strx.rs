@@ -28,9 +28,9 @@ pub fn capitalize(s: &str) -> String {
 #[cfg(test)]
 mod test {
 
+    use super::capitalize;
     use super::remove_suffix;
     use super::remove_to;
-    use super::capitalize;
 
     #[test]
     fn test_remove_to() {

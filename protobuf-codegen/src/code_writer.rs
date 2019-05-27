@@ -28,7 +28,8 @@ impl<'a> CodeWriter<'a> {
         } else {
             let s: String = [self.indent.as_ref(), line.as_ref(), "\n"].concat();
             self.writer.write_all(s.as_bytes())
-        }).unwrap();
+        })
+        .unwrap();
     }
 
     pub fn write_generated(&mut self) {
@@ -42,7 +43,10 @@ impl<'a> CodeWriter<'a> {
             pkg = pkg,
             version = version
         ));
-        self.write_line(format!("// .proto file is parsed by {parser}", parser = parser));
+        self.write_line(format!(
+            "// .proto file is parsed by {parser}",
+            parser = parser
+        ));
         self.write_generated_common();
     }
 
@@ -104,15 +108,17 @@ impl<'a> CodeWriter<'a> {
     pub fn lazy_static(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
         self.write_line(&format!(
             "static {}: {}::rt::Lazy<{}> = {}::rt::Lazy::INIT;",
-            name,
-            protobuf_crate_path,
-            ty,
-            protobuf_crate_path,
+            name, protobuf_crate_path, ty, protobuf_crate_path,
         ));
     }
 
-    pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, protobuf_crate_path: &str, init: F)
-    where
+    pub fn lazy_static_decl_get<F>(
+        &mut self,
+        name: &str,
+        ty: &str,
+        protobuf_crate_path: &str,
+        init: F,
+    ) where
         F: Fn(&mut CodeWriter),
     {
         self.lazy_static(name, ty, protobuf_crate_path);
@@ -121,7 +127,13 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("}})"));
     }
 
-    pub fn lazy_static_decl_get_simple(&mut self, name: &str, ty: &str, init: &str, protobuf_crate_path: &str) {
+    pub fn lazy_static_decl_get_simple(
+        &mut self,
+        name: &str,
+        ty: &str,
+        init: &str,
+        protobuf_crate_path: &str,
+    ) {
         self.lazy_static(name, ty, protobuf_crate_path);
         self.write_line(&format!("{}.get({})", name, init));
     }

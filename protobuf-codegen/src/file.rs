@@ -1,6 +1,6 @@
-use crate::strx;
 use crate::rust;
 use crate::rust_name::RustIdent;
+use crate::strx;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
@@ -30,7 +30,8 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
             } else {
                 '_'
             }
-        }).collect::<String>();
+        })
+        .collect::<String>();
 
     let name = if rust::is_rust_keyword(&name) {
         format!("{}_pb", name)
@@ -40,7 +41,6 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
     RustIdent::from(name)
 }
 
-
 #[cfg(test)]
 mod test {
 
@@ -49,12 +49,18 @@ mod test {
 
     #[test]
     fn test_mod_path_proto_ext() {
-        assert_eq!(RustIdent::from("proto"), proto_path_to_rust_mod("proto.proto"));
+        assert_eq!(
+            RustIdent::from("proto"),
+            proto_path_to_rust_mod("proto.proto")
+        );
     }
 
     #[test]
     fn test_mod_path_unknown_ext() {
-        assert_eq!(RustIdent::from("proto_proto3"), proto_path_to_rust_mod("proto.proto3"));
+        assert_eq!(
+            RustIdent::from("proto_proto3"),
+            proto_path_to_rust_mod("proto.proto3")
+        );
     }
 
     #[test]

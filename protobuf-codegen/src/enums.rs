@@ -6,15 +6,14 @@ use protobuf::prelude::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
-use crate::serde;
-use crate::scope::{EnumWithScope, EnumValueWithContext};
-use crate::scope::RootScope;
-use crate::scope::WithScope;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustIdent;
 use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
-
+use crate::rust_name::RustIdent;
+use crate::rust_name::RustIdentWithPath;
+use crate::scope::RootScope;
+use crate::scope::WithScope;
+use crate::scope::{EnumValueWithContext, EnumWithScope};
+use crate::serde;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -23,7 +22,10 @@ pub(crate) struct EnumValueGen<'a> {
 }
 
 impl<'a> EnumValueGen<'a> {
-    fn parse(value: EnumValueWithContext<'a>, enum_rust_name: &RustIdentWithPath) -> EnumValueGen<'a> {
+    fn parse(
+        value: EnumValueWithContext<'a>,
+        enum_rust_name: &RustIdentWithPath,
+    ) -> EnumValueGen<'a> {
         EnumValueGen {
             value: value.clone(),
             enum_rust_name: enum_rust_name.clone(),
@@ -41,7 +43,9 @@ impl<'a> EnumValueGen<'a> {
     }
 
     pub fn rust_name_outer(&self) -> RustIdentWithPath {
-        self.enum_rust_name.to_path().with_ident(self.rust_name_inner())
+        self.enum_rust_name
+            .to_path()
+            .with_ident(self.rust_name_inner())
     }
 }
 
@@ -59,7 +63,6 @@ impl<'a> EnumGen<'a> {
         customize: &Customize,
         _root_scope: &RootScope,
     ) -> EnumGen<'a> {
-
         let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
                 .get_scope()
@@ -165,7 +168,10 @@ impl<'a> EnumGen<'a> {
             if self.allow_alias() {
                 w.match_expr("*self", |w| {
                     for value in self.values_all() {
-                        w.case_expr(&format!("{}", value.rust_name_outer()), &format!("{}", value.number()));
+                        w.case_expr(
+                            &format!("{}", value.rust_name_outer()),
+                            &format!("{}", value.number()),
+                        );
                     }
                 });
             } else {
@@ -176,60 +182,82 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block(&format!("{}::ProtobufEnum", protobuf_crate_path(&self.customize)), &format!("{}", type_name), |w| {
-            self.write_fn_value(w);
+        w.impl_for_block(
+            &format!("{}::ProtobufEnum", protobuf_crate_path(&self.customize)),
+            &format!("{}", type_name),
+            |w| {
+                self.write_fn_value(w);
 
-            w.write_line("");
-            let ref type_name = self.type_name;
-            w.def_fn(&format!("from_i32(value: i32) -> ::std::option::Option<{}>", type_name), |w| {
-                w.match_expr("value", |w| {
-                    let values = self.values_unique();
-                    for value in values {
-                        w.write_line(&format!("{} => ::std::option::Option::Some({}),",
-                            value.number(), value.rust_name_outer()));
-                    }
-                    w.write_line(&format!("_ => ::std::option::Option::None"));
-                });
-            });
-
-            w.write_line("");
-            w.def_fn(&format!("values() -> &'static [Self]"), |w| {
-                w.write_line(&format!("static values: &'static [{}] = &[", type_name));
-                w.indented(|w| {
-                    for value in self.values_all() {
-                        w.write_line(&format!("{},", value.rust_name_outer()));
-                    }
-                });
-                w.write_line("];");
-                w.write_line("values");
-            });
-
-            if !self.lite_runtime {
                 w.write_line("");
-                let sig = format!(
-                    "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
-                    protobuf_crate_path(&self.customize));
-                w.def_fn(&sig, |w| {
-                    w.lazy_static_decl_get(
-                        "descriptor",
-                        &format!("{}::reflect::EnumDescriptor", protobuf_crate_path(&self.customize)),
-                        protobuf_crate_path(&self.customize),
-                        |w| {
-                            w.write_line(&format!(
-                                "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
-                                protobuf_crate_path(&self.customize),
-                                self.type_name,
-                                self.enum_with_scope.name_to_package(),
-                                file_descriptor_proto_expr(&self.enum_with_scope.scope)));
+                let ref type_name = self.type_name;
+                w.def_fn(
+                    &format!(
+                        "from_i32(value: i32) -> ::std::option::Option<{}>",
+                        type_name
+                    ),
+                    |w| {
+                        w.match_expr("value", |w| {
+                            let values = self.values_unique();
+                            for value in values {
+                                w.write_line(&format!(
+                                    "{} => ::std::option::Option::Some({}),",
+                                    value.number(),
+                                    value.rust_name_outer()
+                                ));
+                            }
+                            w.write_line(&format!("_ => ::std::option::Option::None"));
                         });
+                    },
+                );
+
+                w.write_line("");
+                w.def_fn(&format!("values() -> &'static [Self]"), |w| {
+                    w.write_line(&format!("static values: &'static [{}] = &[", type_name));
+                    w.indented(|w| {
+                        for value in self.values_all() {
+                            w.write_line(&format!("{},", value.rust_name_outer()));
+                        }
+                    });
+                    w.write_line("];");
+                    w.write_line("values");
                 });
-            }
-        });
+
+                if !self.lite_runtime {
+                    w.write_line("");
+                    let sig = format!(
+                        "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
+                        protobuf_crate_path(&self.customize)
+                    );
+                    w.def_fn(&sig, |w| {
+                        w.lazy_static_decl_get(
+                            "descriptor",
+                            &format!(
+                                "{}::reflect::EnumDescriptor",
+                                protobuf_crate_path(&self.customize)
+                            ),
+                            protobuf_crate_path(&self.customize),
+                            |w| {
+                                w.write_line(&format!(
+                                    "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
+                                    protobuf_crate_path(&self.customize),
+                                    self.type_name,
+                                    self.enum_with_scope.name_to_package(),
+                                    file_descriptor_proto_expr(&self.enum_with_scope.scope)
+                                ));
+                            },
+                        );
+                    });
+                }
+            },
+        );
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
-            &format!("{}::reflect::ProtobufValue", protobuf_crate_path(&self.customize)),
+            &format!(
+                "{}::reflect::ProtobufValue",
+                protobuf_crate_path(&self.customize)
+            ),
             &format!("{}", self.type_name),
             |_w| {},
         )
@@ -237,21 +265,29 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_eq(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::cmp::PartialEq", &format!("{}", self.type_name), |w| {
-            w.def_fn("eq(&self, other: &Self) -> bool", |w| {
-                w.write_line(&format!("{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
-                    protobuf_crate_path(&self.customize),
-                    protobuf_crate_path(&self.customize)));
-            });
-        });
+        w.impl_for_block(
+            "::std::cmp::PartialEq",
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("eq(&self, other: &Self) -> bool", |w| {
+                    w.write_line(&format!(
+                        "{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
+                        protobuf_crate_path(&self.customize),
+                        protobuf_crate_path(&self.customize)
+                    ));
+                });
+            },
+        );
     }
 
     fn write_impl_hash(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
         w.impl_for_block("::std::hash::Hash", &format!("{}", self.type_name), |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
-                w.write_line(&format!("state.write_i32({}::ProtobufEnum::value(self))",
-                    protobuf_crate_path(&self.customize)));
+                w.write_line(&format!(
+                    "state.write_i32({}::ProtobufEnum::value(self))",
+                    protobuf_crate_path(&self.customize)
+                ));
             });
         });
     }
@@ -268,14 +304,18 @@ impl<'a> EnumGen<'a> {
             // so this implementation is not completely unreasonable.
             w.comment("Note, `Default` is implemented although default value is not 0");
         }
-        w.impl_for_block("::std::default::Default", &format!("{}", self.type_name), |w| {
-            w.def_fn("default() -> Self", |w| {
-                w.write_line(&format!(
-                    "{}::{}",
-                    &self.type_name,
-                    &first_value.rust_name()
-                ))
-            });
-        });
+        w.impl_for_block(
+            "::std::default::Default",
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("default() -> Self", |w| {
+                    w.write_line(&format!(
+                        "{}::{}",
+                        &self.type_name,
+                        &first_value.rust_name()
+                    ))
+                });
+            },
+        );
     }
 }

@@ -1,20 +1,20 @@
 //! Oneof-related codegen functions.
 
 use crate::code_writer::CodeWriter;
+use crate::customize::Customize;
 use crate::field::FieldElem;
 use crate::field::FieldGen;
-use crate::message::MessageGen;
-use protobuf::descriptor::field_descriptor_proto;
-use crate::scope::{OneofVariantWithContext, FieldWithContext};
-use crate::scope::OneofWithContext;
-use crate::scope::WithScope;
-use crate::rust_types_values::RustType;
-use crate::rust_types_values::make_path;
-use crate::serde;
-use crate::customize::Customize;
-use crate::rust_name::{RustIdent, RustIdentWithPath, RustPath};
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
+use crate::message::MessageGen;
+use crate::rust_name::{RustIdent, RustIdentWithPath, RustPath};
+use crate::rust_types_values::make_path;
+use crate::rust_types_values::RustType;
+use crate::scope::OneofWithContext;
+use crate::scope::WithScope;
+use crate::scope::{FieldWithContext, OneofVariantWithContext};
+use crate::serde;
+use protobuf::descriptor::field_descriptor_proto;
 
 // oneof one { ... }
 #[derive(Clone)]
@@ -61,7 +61,11 @@ impl<'a> OneofField<'a> {
     pub fn variant_path(&self, reference: &RustPath) -> RustIdentWithPath {
         make_path(
             reference,
-            &self.type_name.to_path().with_ident(self.oneof_variant_rust_name.clone()))
+            &self
+                .type_name
+                .to_path()
+                .with_ident(self.oneof_variant_rust_name.clone()),
+        )
     }
 }
 
@@ -84,12 +88,20 @@ impl<'a> OneofVariantGen<'a> {
             oneof,
             variant: variant.clone(),
             field: field.clone(),
-            path: format!("{}::{}", oneof.type_name_relative(&oneof.oneof.message.scope.rust_path_to_file().clone().into_path()), field.rust_name),
-            oneof_field: OneofField::parse(
-                variant.oneof,
-                &field.proto_field,
-                field.elem().clone(),
+            path: format!(
+                "{}::{}",
+                oneof.type_name_relative(
+                    &oneof
+                        .oneof
+                        .message
+                        .scope
+                        .rust_path_to_file()
+                        .clone()
+                        .into_path()
+                ),
+                field.rust_name
             ),
+            oneof_field: OneofField::parse(variant.oneof, &field.proto_field, field.elem().clone()),
         }
     }
 
@@ -98,9 +110,12 @@ impl<'a> OneofVariantGen<'a> {
     }
 
     pub fn path(&self, reference: &FileAndMod) -> RustPath {
-        RustPath::from(format!("{}::{}",
-            self.oneof.type_name_relative(&reference.relative_mod.clone().into_path()),
-            self.field.rust_name))
+        RustPath::from(format!(
+            "{}::{}",
+            self.oneof
+                .type_name_relative(&reference.relative_mod.clone().into_path()),
+            self.field.rust_name
+        ))
     }
 }
 
@@ -147,16 +162,34 @@ impl<'a> OneofGen<'a> {
                     field_descriptor_proto::Type::TYPE_GROUP => None,
                     _ => Some(OneofVariantGen::parse(self, v, field)),
                 }
-            }).collect()
+            })
+            .collect()
     }
 
     pub fn full_storage_type(&self) -> RustType {
-        RustType::Option(Box::new(RustType::Oneof(self.type_name_relative(&self.oneof.message.scope.get_file_and_mod(self.customize.clone()).relative_mod.into_path()).clone())))
+        RustType::Option(Box::new(RustType::Oneof(
+            self.type_name_relative(
+                &self
+                    .oneof
+                    .message
+                    .scope
+                    .get_file_and_mod(self.customize.clone())
+                    .relative_mod
+                    .into_path(),
+            )
+            .clone(),
+        )))
     }
 
     fn get_file_and_mod(&self) -> FileAndMod {
-        let mut file_and_mod = self.message.message.scope.get_file_and_mod(self.customize.clone());
-        file_and_mod.relative_mod.push_ident(self.message.message.mod_name());
+        let mut file_and_mod = self
+            .message
+            .message
+            .scope
+            .get_file_and_mod(self.customize.clone());
+        file_and_mod
+            .relative_mod
+            .push_ident(self.message.message.mod_name());
         file_and_mod
     }
 
@@ -169,16 +202,22 @@ impl<'a> OneofGen<'a> {
                 w.write_line(&format!(
                     "{}({}),",
                     variant.field.rust_name,
-                    &variant.rust_type(&self.get_file_and_mod()).to_code(&self.customize)
+                    &variant
+                        .rust_type(&self.get_file_and_mod())
+                        .to_code(&self.customize)
                 ));
             }
         });
     }
 
     fn write_impl_oneof(&self, w: &mut CodeWriter) {
-        w.impl_for_block(&format!("{}::Oneof", protobuf_crate_path(&self.customize)), self.oneof.rust_name().ident.to_string(), |_w| {
-            // nothing here yet
-        });
+        w.impl_for_block(
+            &format!("{}::Oneof", protobuf_crate_path(&self.customize)),
+            self.oneof.rust_name().ident.to_string(),
+            |_w| {
+                // nothing here yet
+            },
+        );
     }
 
     pub fn write(&self, w: &mut CodeWriter) {

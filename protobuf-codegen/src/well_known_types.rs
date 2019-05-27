@@ -1,7 +1,6 @@
 use crate::protobuf_name::ProtobufAbsolutePath;
 use crate::protobuf_name::ProtobufRelativePath;
 
-
 static NAMES: &'static [&'static str] = &[
     "Any",
     "Api",
@@ -62,6 +61,9 @@ mod test {
             Some(ProtobufRelativePath::from("BoolValue")),
             is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.BoolValue"))
         );
-        assert_eq!(None, is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.Fgfg")));
+        assert_eq!(
+            None,
+            is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.Fgfg"))
+        );
     }
 }

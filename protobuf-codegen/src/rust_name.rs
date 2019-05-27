@@ -1,7 +1,6 @@
 use std::fmt;
 use std::iter;
 
-
 /// Valid Rust identifier
 #[derive(Eq, PartialEq, Debug, Clone)]
 pub(crate) struct RustIdent(String);
@@ -14,7 +13,7 @@ impl RustIdent {
         assert!(!s.contains(":"), "{}", s);
         RustIdent(s.to_owned())
     }
-    
+
     pub fn super_ident() -> RustIdent {
         RustIdent::new("super")
     }
@@ -64,14 +63,12 @@ impl RustRelativePath {
     }
 
     pub fn _empty() -> RustRelativePath {
-        RustRelativePath {
-            path: Vec::new(),
-        }
+        RustRelativePath { path: Vec::new() }
     }
 
-    pub fn from_components<I : IntoIterator<Item = RustIdent>>(i: I) -> RustRelativePath {
+    pub fn from_components<I: IntoIterator<Item = RustIdent>>(i: I) -> RustRelativePath {
         RustRelativePath {
-            path: i.into_iter().collect()
+            path: i.into_iter().collect(),
         }
     }
 
@@ -112,7 +109,9 @@ impl RustRelativePath {
     }
 
     pub fn to_reverse(&self) -> RustRelativePath {
-        RustRelativePath::from_components(iter::repeat(RustIdent::super_ident()).take(self.path.len()))
+        RustRelativePath::from_components(
+            iter::repeat(RustIdent::super_ident()).take(self.path.len()),
+        )
     }
 }
 
@@ -153,10 +152,7 @@ impl RustPath {
     }
 
     pub fn with_ident(self, ident: RustIdent) -> RustIdentWithPath {
-        RustIdentWithPath {
-            path: self,
-            ident,
-        }
+        RustIdentWithPath { path: self, ident }
     }
 
     pub fn first(&self) -> Option<RustIdent> {
@@ -199,9 +195,7 @@ impl RustPath {
     }
 
     pub fn append_with_ident(self, path: RustIdentWithPath) -> RustIdentWithPath {
-        self
-            .append(path.path)
-            .with_ident(path.ident)
+        self.append(path.path).with_ident(path.ident)
     }
 }
 
@@ -244,10 +238,7 @@ impl RustIdentWithPath {
     pub fn new(s: &str) -> RustIdentWithPath {
         let mut path = RustPath::from(s);
         let ident = path.path.path.pop().unwrap();
-        RustIdentWithPath {
-            path,
-            ident,
-        }
+        RustIdentWithPath { path, ident }
     }
 
     pub fn prepend_ident(&mut self, ident: RustIdent) {
