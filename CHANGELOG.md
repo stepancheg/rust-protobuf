@@ -22,8 +22,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   signatures](https://github.com/stepancheg/rust-protobuf/commit/a05a4216fc3305c67b7a2d19011be3bd503d5166)
 - [Remove `descriptorx` from `protobuf`
   crate](https://github.com/stepancheg/rust-protobuf/commit/4e8896645c3e017ac91f529cb69ce76b002f6fc1)
-- [Generated files are now compatible only with the same version of
-  runtime](https://github.com/stepancheg/rust-protobuf/commit/2ab4d50c27c4dd7803b64ce1a43e2c134532c7a6)
   
 ### New features
 
@@ -45,6 +43,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 ## [2.7 Unreleased]
 - `inside_protobuf` option is added which slightly modifies generated code inside protobuf.
   Should not affect users.
+- [Generated files are now compatible only with the same version of
+  runtime](https://github.com/stepancheg/rust-protobuf/commit/2ab4d50c27c4dd7803b64ce1a43e2c134532c7a6)
 
 ## [2.6.1] - 2019-05-27
 
