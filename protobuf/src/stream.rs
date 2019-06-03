@@ -1,3 +1,5 @@
+#![doc(hidden)]
+
 //! `CodedInputStream` and `CodedOutputStream` implementations
 
 use std::io;
