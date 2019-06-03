@@ -2,6 +2,8 @@
 
 #![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
+// Because we need compat with Rust 1.26
+#![allow(bare_trait_objects)]
 
 #[cfg(feature = "bytes")]
 extern crate bytes;
