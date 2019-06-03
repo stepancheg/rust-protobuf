@@ -15,7 +15,7 @@ pub trait ProtobufTypeDynamic: Send + Sync + 'static {
     fn wire_type(&self) -> WireType;
 
     /// Get runtime type for this protobuf type.
-    fn runtime_type(&self) -> &RuntimeTypeDynamic;
+    fn runtime_type(&self) -> &dyn RuntimeTypeDynamic;
 }
 
 pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufType>(pub marker::PhantomData<T>);
@@ -25,7 +25,7 @@ impl<T: ProtobufType> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T> {
         T::WIRE_TYPE
     }
 
-    fn runtime_type(&self) -> &RuntimeTypeDynamic {
+    fn runtime_type(&self) -> &dyn RuntimeTypeDynamic {
         <T::RuntimeType as RuntimeType>::dynamic()
     }
 }

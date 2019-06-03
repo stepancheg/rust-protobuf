@@ -23,8 +23,8 @@ use crate::reflect::find_message_or_enum::MessageOrEnum;
 #[derive(Clone)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
-    protobuf_value: &'static ProtobufValue,
-    get_descriptor: &'static GetEnumDescriptor,
+    protobuf_value: &'static dyn ProtobufValue,
+    get_descriptor: &'static dyn GetEnumDescriptor,
 }
 
 impl PartialEq for EnumValueDescriptor {
@@ -67,7 +67,7 @@ impl EnumValueDescriptor {
     }
 
     /// Convert to generic `ProtobufValue`
-    pub fn protobuf_value(&self) -> &'static ProtobufValue {
+    pub fn protobuf_value(&self) -> &'static dyn ProtobufValue {
         self.protobuf_value
     }
 
@@ -114,7 +114,7 @@ pub struct EnumDescriptor {
     /// Type id of `<ProtobufEnumOrUnknown<E>>`
     enum_or_unknown_type_id: TypeId,
 
-    get_descriptor: &'static GetEnumDescriptor,
+    get_descriptor: &'static dyn GetEnumDescriptor,
 
     index_by_name: HashMap<String, usize>,
     index_by_number: HashMap<i32, usize>,

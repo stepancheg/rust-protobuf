@@ -15,13 +15,13 @@ use crate::reflect::types::ProtobufType;
 use crate::reflect::ProtobufValue;
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
-    fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a>;
-    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a>;
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
+    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a>;
 }
 
 pub(crate) struct RepeatedFieldAccessorHolder {
-    pub accessor: Box<RepeatedFieldAccessor>,
-    pub element_type: &'static ProtobufTypeDynamic,
+    pub accessor: Box<dyn RepeatedFieldAccessor>,
+    pub element_type: &'static dyn ProtobufTypeDynamic,
 }
 
 trait RepeatedFieldGetMut<M, R: ?Sized>: Send + Sync + 'static
@@ -40,31 +40,31 @@ where
     mut_field: for<'a> fn(&'a mut M) -> &'a mut L,
 }
 
-impl<M, V> RepeatedFieldGetMut<M, ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
+impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
 where
     M: Message + 'static,
     V: ProtobufValue + fmt::Debug + 'static,
 {
-    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
-        (self.get_field)(m) as &ReflectRepeated
+    fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
+        (self.get_field)(m) as &dyn ReflectRepeated
     }
 
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectRepeated {
-        (self.mut_field)(m) as &mut ReflectRepeated
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut dyn ReflectRepeated {
+        (self.mut_field)(m) as &mut dyn ReflectRepeated
     }
 }
 
-impl<M, V> RepeatedFieldGetMut<M, ReflectRepeated> for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
+impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
 where
     M: Message + 'static,
     V: ProtobufValue + fmt::Debug + 'static,
 {
-    fn get_field<'a>(&self, m: &'a M) -> &'a ReflectRepeated {
-        (self.get_field)(m) as &ReflectRepeated
+    fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
+        (self.get_field)(m) as &dyn ReflectRepeated
     }
 
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut ReflectRepeated {
-        (self.mut_field)(m) as &mut ReflectRepeated
+    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut dyn ReflectRepeated {
+        (self.mut_field)(m) as &mut dyn ReflectRepeated
     }
 }
 
@@ -73,7 +73,7 @@ where
     M: Message,
     V: ProtobufType,
 {
-    fns: Box<RepeatedFieldGetMut<M, ReflectRepeated>>,
+    fns: Box<dyn RepeatedFieldGetMut<M, dyn ReflectRepeated>>,
     _marker: marker::PhantomData<V>,
 }
 
@@ -82,7 +82,7 @@ where
     M: Message,
     V: ProtobufType,
 {
-    fn get_reflect<'a>(&self, m: &'a Message) -> ReflectRepeatedRef<'a> {
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
         let m = m.downcast_ref().unwrap();
         let repeated = self.fns.get_field(m);
         ReflectRepeatedRef {
@@ -91,7 +91,7 @@ where
         }
     }
 
-    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectRepeatedMut<'a> {
+    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
         let m = m.downcast_mut().unwrap();
         let repeated = self.fns.mut_field(m);
         ReflectRepeatedMut {

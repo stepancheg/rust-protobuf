@@ -22,7 +22,7 @@ pub trait RuntimeTypeDynamic: Send + Sync + 'static {
     /// # Panics
     ///
     /// If value type does not match this type object
-    fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a>;
+    fn value_to_ref<'a>(&self, value: &'a dyn ProtobufValue) -> ReflectValueRef<'a>;
 
     /// Default value for type
     fn default_value_ref(&self) -> ReflectValueRef;
@@ -49,7 +49,7 @@ impl<T: RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
         T::runtime_type_box()
     }
 
-    fn value_to_ref<'a>(&self, value: &'a ProtobufValue) -> ReflectValueRef<'a> {
+    fn value_to_ref<'a>(&self, value: &'a dyn ProtobufValue) -> ReflectValueRef<'a> {
         if Any::type_id(value) == TypeId::of::<T::Value>() {
             unsafe {
                 T::as_ref(&*(value as *const dyn ProtobufValue as *const T::Value))

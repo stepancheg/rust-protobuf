@@ -173,7 +173,7 @@ impl<'a> Parser<'a> {
     fn read_message(
         &mut self,
         descriptor: &'static MessageDescriptor,
-    ) -> ParseResult<Box<Message>> {
+    ) -> ParseResult<Box<dyn Message>> {
         let mut message = descriptor.new_instance();
 
         self.tokenizer.next_symbol_expect_eq('{')?;
@@ -186,8 +186,8 @@ impl<'a> Parser<'a> {
 
     fn read_map_entry(
         &mut self,
-        k: &RuntimeTypeDynamic,
-        v: &RuntimeTypeDynamic,
+        k: &dyn RuntimeTypeDynamic,
+        v: &dyn RuntimeTypeDynamic,
     ) -> ParseResult<(ReflectValueBox, ReflectValueBox)> {
         let key_field_name: &str = "key";
         let value_field_name: &str = "value";
@@ -225,7 +225,7 @@ impl<'a> Parser<'a> {
         Ok((key, value))
     }
 
-    fn read_value_of_type(&mut self, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
+    fn read_value_of_type(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
         Ok(match t.to_box() {
             RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(self.read_enum(e)?),
             RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
@@ -247,7 +247,7 @@ impl<'a> Parser<'a> {
 
     fn merge_field(
         &mut self,
-        message: &mut Message,
+        message: &mut dyn Message,
         descriptor: &MessageDescriptor,
     ) -> ParseResult<()> {
         let field_name = self.next_field_name()?;
@@ -278,7 +278,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_inner(&mut self, message: &mut Message) -> ParseResult<()> {
+    fn merge_inner(&mut self, message: &mut dyn Message) -> ParseResult<()> {
         loop {
             if self.tokenizer.syntax_eof()? {
                 break;
@@ -289,7 +289,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge(&mut self, message: &mut Message) -> ParseWithLocResult<()> {
+    fn merge(&mut self, message: &mut dyn Message) -> ParseWithLocResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseErrorWithLoc {
@@ -303,7 +303,7 @@ impl<'a> Parser<'a> {
 /// Parse text format message.
 ///
 /// This function does not check if message required fields are set.
-pub fn merge_from_str(message: &mut Message, input: &str) -> ParseWithLocResult<()> {
+pub fn merge_from_str(message: &mut dyn Message, input: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
         tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat),
     };

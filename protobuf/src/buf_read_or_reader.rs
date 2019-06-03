@@ -5,8 +5,8 @@ use std::io;
 
 /// Helper type to simplify `BufReadIter` implementation.
 pub(crate) enum BufReadOrReader<'a> {
-    BufReader(BufReader<&'a mut Read>),
-    BufRead(&'a mut BufRead),
+    BufReader(BufReader<&'a mut dyn Read>),
+    BufRead(&'a mut dyn BufRead),
 }
 
 impl<'a> Read for BufReadOrReader<'a> {

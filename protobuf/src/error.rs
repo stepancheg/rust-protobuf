@@ -66,7 +66,7 @@ impl Error for ProtobufError {
         }
     }
 
-    fn cause(&self) -> Option<&Error> {
+    fn cause(&self) -> Option<&dyn Error> {
         match self {
             &ProtobufError::IoError(ref e) => Some(e),
             &ProtobufError::Utf8(ref e) => Some(e),

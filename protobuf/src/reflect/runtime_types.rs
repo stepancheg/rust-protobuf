@@ -33,7 +33,7 @@ use crate::enums::ProtobufEnum;
 pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
-    fn dynamic() -> &'static RuntimeTypeDynamic
+    fn dynamic() -> &'static dyn RuntimeTypeDynamic
     where
         Self: Sized,
     {

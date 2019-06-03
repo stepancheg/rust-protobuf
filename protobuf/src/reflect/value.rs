@@ -77,7 +77,7 @@ pub enum ReflectValueRef<'a> {
     // TODO: change to (i32, EnumDescriptor)
     Enum(&'static EnumValueDescriptor),
     /// `message`
-    Message(&'a Message),
+    Message(&'a dyn Message),
 }
 
 impl<'a> ReflectValueRef<'a> {
@@ -163,7 +163,7 @@ impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
 
 
 pub enum ReflectValueMut<'a> {
-    Message(&'a mut Message),
+    Message(&'a mut dyn Message),
 }
 
 /// Owner value of any elementary type
@@ -191,7 +191,7 @@ pub enum ReflectValueBox {
     // TODO: change to `(i32, EnumDescriptor)`
     Enum(&'static EnumValueDescriptor),
     /// `message`
-    Message(Box<Message>),
+    Message(Box<dyn Message>),
 }
 
 impl From<u32> for ReflectValueBox {
@@ -254,8 +254,8 @@ impl From<&'static EnumValueDescriptor> for ReflectValueBox {
     }
 }
 
-impl From<Box<Message>> for ReflectValueBox {
-    fn from(v: Box<Message>) -> Self {
+impl From<Box<dyn Message>> for ReflectValueBox {
+    fn from(v: Box<dyn Message>) -> Self {
         ReflectValueBox::Message(v)
     }
 }

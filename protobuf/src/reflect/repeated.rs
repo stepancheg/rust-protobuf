@@ -12,7 +12,7 @@ use crate::repeated::RepeatedField;
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
-    fn get(&self, index: usize) -> &ProtobufValue;
+    fn get(&self, index: usize) -> &dyn ProtobufValue;
     fn set(&mut self, index: usize, value: ReflectValueBox);
     fn push(&mut self, value: ReflectValueBox);
     fn clear(&mut self);
@@ -29,7 +29,7 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
         Vec::len(self)
     }
 
-    fn get(&self, index: usize) -> &ProtobufValue {
+    fn get(&self, index: usize) -> &dyn ProtobufValue {
         &self[index]
     }
 
@@ -60,7 +60,7 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
         <[_]>::len(self)
     }
 
-    fn get(&self, index: usize) -> &ProtobufValue {
+    fn get(&self, index: usize) -> &dyn ProtobufValue {
         &self[index]
     }
 
@@ -89,7 +89,7 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<
         RepeatedField::len(self)
     }
 
-    fn get(&self, index: usize) -> &ProtobufValue {
+    fn get(&self, index: usize) -> &dyn ProtobufValue {
         &self[index]
     }
 
@@ -109,7 +109,7 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<
 }
 
 trait ReflectRepeatedIterTrait<'a> {
-    fn next(&mut self) -> Option<&'a ProtobufValue>;
+    fn next(&mut self) -> Option<&'a dyn ProtobufValue>;
 }
 
 struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
@@ -119,25 +119,25 @@ struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
 impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
     for ReflectRepeatedIterImplSlice<'a, V>
 {
-    fn next(&mut self) -> Option<&'a ProtobufValue> {
-        self.iter.next().map(|v| v as &ProtobufValue)
+    fn next(&mut self) -> Option<&'a dyn ProtobufValue> {
+        self.iter.next().map(|v| v as &dyn ProtobufValue)
     }
 }
 
 pub struct ReflectRepeatedIter<'a> {
-    imp: Box<ReflectRepeatedIterTrait<'a> + 'a>,
+    imp: Box<dyn ReflectRepeatedIterTrait<'a> + 'a>,
 }
 
 impl<'a> Iterator for ReflectRepeatedIter<'a> {
-    type Item = &'a ProtobufValue;
+    type Item = &'a dyn ProtobufValue;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.imp.next()
     }
 }
 
-impl<'a> IntoIterator for &'a ReflectRepeated {
-    type Item = &'a ProtobufValue;
+impl<'a> IntoIterator for &'a dyn ReflectRepeated {
+    type Item = &'a dyn ProtobufValue;
     type IntoIter = ReflectRepeatedIter<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -158,7 +158,7 @@ pub trait ReflectRepeatedMessage<'a> {
 }
 
 enum ReflectRepeatedRefUnused<'a> {
-    Generic(&'a ReflectRepeated),
+    Generic(&'a dyn ReflectRepeated),
     U32(&'a [u32]),
     U64(&'a [u64]),
     I32(&'a [i32]),
@@ -168,8 +168,8 @@ enum ReflectRepeatedRefUnused<'a> {
     Bool(&'a [bool]),
     String(&'a [String]),
     Bytes(&'a [Vec<u8>]),
-    Enum(Box<ReflectRepeatedEnum<'a> + 'a>),
-    Message(Box<ReflectRepeatedMessage<'a> + 'a>),
+    Enum(Box<dyn ReflectRepeatedEnum<'a> + 'a>),
+    Message(Box<dyn ReflectRepeatedMessage<'a> + 'a>),
 }
 
 impl<'a> ReflectRepeatedRefUnused<'a> {
@@ -242,14 +242,14 @@ impl<'a> IntoIterator for &'a ReflectRepeatedRefUnused<'a> {
 /// Dynamic reference to repeated field
 #[derive(Copy, Clone)]
 pub struct ReflectRepeatedRef<'a> {
-    pub(crate) repeated: &'a ReflectRepeated,
-    pub(crate) dynamic: &'static RuntimeTypeDynamic,
+    pub(crate) repeated: &'a dyn ReflectRepeated,
+    pub(crate) dynamic: &'static dyn RuntimeTypeDynamic,
 }
 
 /// Dynamic mutable reference to repeated field
 pub struct ReflectRepeatedMut<'a> {
-    pub(crate) repeated: &'a mut ReflectRepeated,
-    pub(crate) dynamic: &'static RuntimeTypeDynamic,
+    pub(crate) repeated: &'a mut dyn ReflectRepeated,
+    pub(crate) dynamic: &'static dyn RuntimeTypeDynamic,
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
@@ -270,7 +270,7 @@ impl<'a> ReflectRepeatedRef<'a> {
     }
 
     /// Runtime type of element
-    pub fn element_type(&self) -> &RuntimeTypeDynamic {
+    pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
         self.dynamic
     }
 }
@@ -371,7 +371,7 @@ impl<'a> ReflectRepeatedMut<'a> {
     }
 
     /// Runtime type of element
-    pub fn element_type(&self) -> &RuntimeTypeDynamic {
+    pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
         self.dynamic
     }
 

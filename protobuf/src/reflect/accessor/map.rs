@@ -12,14 +12,14 @@ use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
-    fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a>;
-    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a>;
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a>;
+    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a>;
 }
 
 pub(crate) struct MapFieldAccessorHolder {
-    pub accessor: Box<MapFieldAccessor>,
-    pub key_type: &'static ProtobufTypeDynamic,
-    pub value_type: &'static ProtobufTypeDynamic,
+    pub accessor: Box<dyn MapFieldAccessor>,
+    pub key_type: &'static dyn ProtobufTypeDynamic,
+    pub value_type: &'static dyn ProtobufTypeDynamic,
 }
 
 struct MapFieldAccessorImpl<M, K, V>
@@ -49,7 +49,7 @@ where
     V: ProtobufType,
     <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
 {
-    fn get_reflect<'a>(&self, m: &'a Message) -> ReflectMapRef<'a> {
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
         let m = m.downcast_ref().unwrap();
         let map = (self.get_field)(m);
         ReflectMapRef {
@@ -59,7 +59,7 @@ where
         }
     }
 
-    fn mut_reflect<'a>(&self, m: &'a mut Message) -> ReflectMapMut<'a> {
+    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
         let m = m.downcast_mut().unwrap();
         let map = (self.mut_field)(m);
         ReflectMapMut {

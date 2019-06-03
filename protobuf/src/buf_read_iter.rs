@@ -67,7 +67,7 @@ impl<'a> Drop for BufReadIter<'a> {
 }
 
 impl<'ignore> BufReadIter<'ignore> {
-    pub fn from_read<'a>(read: &'a mut Read) -> BufReadIter<'a> {
+    pub fn from_read<'a>(read: &'a mut dyn Read) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(BufReadOrReader::BufReader(BufReader::with_capacity(
                 INPUT_STREAM_BUFFER_SIZE,
@@ -81,7 +81,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    pub fn from_buf_read<'a>(buf_read: &'a mut BufRead) -> BufReadIter<'a> {
+    pub fn from_buf_read<'a>(buf_read: &'a mut dyn BufRead) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(BufReadOrReader::BufRead(buf_read)),
             buf: &[],

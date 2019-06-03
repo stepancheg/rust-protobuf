@@ -48,7 +48,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     type RuntimeType: RuntimeType;
 
     /// Dynamic version of this
-    fn dynamic() -> &'static ProtobufTypeDynamic
+    fn dynamic() -> &'static dyn ProtobufTypeDynamic
     where
         Self: Sized,
     {

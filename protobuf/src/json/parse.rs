@@ -376,13 +376,13 @@ impl<'a> Parser<'a> {
         Ok(NullValue::NULL_VALUE)
     }
 
-    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<Message>> {
+    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<dyn Message>> {
         let mut m = descriptor.new_instance();
         self.merge_inner(&mut *m)?;
         Ok(m)
     }
 
-    fn read_value(&mut self, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
+    fn read_value(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
         match t.to_box() {
             RuntimeTypeBox::I32 => self.read_i32().map(ReflectValueBox::from),
             RuntimeTypeBox::I64 => self.read_i64().map(ReflectValueBox::from),
@@ -404,9 +404,9 @@ impl<'a> Parser<'a> {
 
     fn merge_singular_field(
         &mut self,
-        message: &mut Message,
+        message: &mut dyn Message,
         field: &FieldDescriptor,
-        t: &RuntimeTypeDynamic,
+        t: &dyn RuntimeTypeDynamic,
     ) -> ParseResult<()> {
         field.set_singular_field(message, self.read_value(t)?);
         Ok(())
@@ -437,9 +437,9 @@ impl<'a> Parser<'a> {
 
     fn merge_repeated_field(
         &mut self,
-        message: &mut Message,
+        message: &mut dyn Message,
         field: &FieldDescriptor,
-        t: &RuntimeTypeDynamic,
+        t: &dyn RuntimeTypeDynamic,
     ) -> ParseResult<()> {
         let mut repeated = field.mut_repeated(message);
         repeated.clear();
@@ -490,7 +490,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn parse_key(&self, key: String, t: &RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
+    fn parse_key(&self, key: String, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
         match t.to_box() {
             RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
             RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
@@ -511,10 +511,10 @@ impl<'a> Parser<'a> {
 
     fn merge_map_field(
         &mut self,
-        message: &mut Message,
+        message: &mut dyn Message,
         field: &FieldDescriptor,
-        kt: &RuntimeTypeDynamic,
-        vt: &RuntimeTypeDynamic,
+        kt: &dyn RuntimeTypeDynamic,
+        vt: &dyn RuntimeTypeDynamic,
     ) -> ParseResult<()> {
         let mut map = field.mut_map(message);
         map.clear();
@@ -562,7 +562,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_field(&mut self, message: &mut Message, field: &FieldDescriptor) -> ParseResult<()> {
+    fn merge_field(&mut self, message: &mut dyn Message, field: &FieldDescriptor) -> ParseResult<()> {
         match field.runtime_field_type() {
             RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, t),
             RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, t),
@@ -570,7 +570,7 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn merge_inner(&mut self, message: &mut Message) -> ParseResult<()> {
+    fn merge_inner(&mut self, message: &mut dyn Message) -> ParseResult<()> {
         if let Some(duration) = message.downcast_mut() {
             return self.merge_wk_duration(duration);
         }
@@ -782,7 +782,7 @@ impl<'a> Parser<'a> {
         Ok(v)
     }
 
-    fn merge(&mut self, message: &mut Message) -> ParseWithLocResult<()> {
+    fn merge(&mut self, message: &mut dyn Message) -> ParseWithLocResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseErrorWithLoc {
@@ -805,7 +805,7 @@ pub struct ParseOptions {
 
 /// Merge JSON into provided message
 pub fn merge_from_str_with_options(
-    message: &mut Message,
+    message: &mut dyn Message,
     json: &str,
     parse_options: &ParseOptions,
 ) -> ParseWithLocResult<()> {
@@ -817,7 +817,7 @@ pub fn merge_from_str_with_options(
 }
 
 /// Merge JSON into provided message
-pub fn merge_from_str(message: &mut Message, json: &str) -> ParseWithLocResult<()> {
+pub fn merge_from_str(message: &mut dyn Message, json: &str) -> ParseWithLocResult<()> {
     merge_from_str_with_options(message, json, &ParseOptions::default())
 }
 
@@ -826,7 +826,7 @@ pub fn parse_dynamic_from_str_with_options(
     d: &MessageDescriptor,
     json: &str,
     parse_options: &ParseOptions,
-) -> ParseWithLocResult<Box<Message>> {
+) -> ParseWithLocResult<Box<dyn Message>> {
     let mut m = d.new_instance();
     merge_from_str_with_options(&mut *m, json, parse_options)?;
     if let Err(_) = m.check_initialized() {
@@ -842,7 +842,7 @@ pub fn parse_dynamic_from_str_with_options(
 pub fn parse_dynamic_from_str(
     d: &MessageDescriptor,
     json: &str,
-) -> ParseWithLocResult<Box<Message>> {
+) -> ParseWithLocResult<Box<dyn Message>> {
     parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
 }
 

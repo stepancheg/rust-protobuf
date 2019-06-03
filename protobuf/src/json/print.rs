@@ -402,7 +402,7 @@ impl Printer {
         }
     }
 
-    fn print_message(&mut self, message: &Message) -> PrintResult<()> {
+    fn print_message(&mut self, message: &dyn Message) -> PrintResult<()> {
         if let Some(duration) = message.downcast_ref::<Duration>() {
             self.print_printable(duration)
         } else if let Some(timestamp) = message.downcast_ref::<Timestamp>() {
@@ -440,7 +440,7 @@ impl Printer {
         }
     }
 
-    fn print_regular_message(&mut self, message: &Message) -> Result<(), PrintError> {
+    fn print_regular_message(&mut self, message: &dyn Message) -> Result<(), PrintError> {
         let descriptor = message.descriptor();
 
         write!(self.buf, "{{")?;
@@ -527,7 +527,7 @@ pub struct PrintOptions {
 
 /// Serialize message to JSON according to protobuf specification.
 pub fn print_to_string_with_options(
-    message: &Message,
+    message: &dyn Message,
     print_options: &PrintOptions,
 ) -> PrintResult<String> {
     let mut printer = Printer {
@@ -539,6 +539,6 @@ pub fn print_to_string_with_options(
 }
 
 /// Serialize message to JSON according to protobuf specification.
-pub fn print_to_string(message: &Message) -> PrintResult<String> {
+pub fn print_to_string(message: &dyn Message) -> PrintResult<String> {
     print_to_string_with_options(message, &PrintOptions::default())
 }

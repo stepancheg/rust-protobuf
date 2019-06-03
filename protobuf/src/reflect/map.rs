@@ -16,7 +16,7 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
 
     fn is_empty(&self) -> bool;
 
-    fn get(&self, key: ReflectValueRef) -> Option<&ProtobufValue>;
+    fn get(&self, key: ReflectValueRef) -> Option<&dyn ProtobufValue>;
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
 
@@ -40,10 +40,10 @@ impl<K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> Reflect
         self.is_empty()
     }
 
-    fn get(&self, key: ReflectValueRef) -> Option<&ProtobufValue> {
+    fn get(&self, key: ReflectValueRef) -> Option<&dyn ProtobufValue> {
         // TODO: malloc for string or bytes
         let key: K = key.to_box().downcast().expect("wrong key type");
-        self.get(&key).map(|v| v as &ProtobufValue)
+        self.get(&key).map(|v| v as &dyn ProtobufValue)
     }
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
@@ -58,7 +58,7 @@ impl<K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> Reflect
 }
 
 trait ReflectMapIterTrait<'a> {
-    fn next(&mut self) -> Option<(&'a ProtobufValue, &'a ProtobufValue)>;
+    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)>;
 }
 
 struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
@@ -68,28 +68,28 @@ struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
 impl<'a, K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> ReflectMapIterTrait<'a>
     for ReflectMapIterImpl<'a, K, V>
 {
-    fn next(&mut self) -> Option<(&'a ProtobufValue, &'a ProtobufValue)> {
+    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
         match self.iter.next() {
-            Some((k, v)) => Some((k as &ProtobufValue, v as &ProtobufValue)),
+            Some((k, v)) => Some((k as &dyn ProtobufValue, v as &dyn ProtobufValue)),
             None => None,
         }
     }
 }
 
 pub struct ReflectMapIter<'a> {
-    imp: Box<ReflectMapIterTrait<'a> + 'a>,
+    imp: Box<dyn ReflectMapIterTrait<'a> + 'a>,
 }
 
 impl<'a> Iterator for ReflectMapIter<'a> {
-    type Item = (&'a ProtobufValue, &'a ProtobufValue);
+    type Item = (&'a dyn ProtobufValue, &'a dyn ProtobufValue);
 
-    fn next(&mut self) -> Option<(&'a ProtobufValue, &'a ProtobufValue)> {
+    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
         self.imp.next()
     }
 }
 
-impl<'a> IntoIterator for &'a ReflectMap {
-    type Item = (&'a ProtobufValue, &'a ProtobufValue);
+impl<'a> IntoIterator for &'a dyn ReflectMap {
+    type Item = (&'a dyn ProtobufValue, &'a dyn ProtobufValue);
     type IntoIter = ReflectMapIter<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -100,16 +100,16 @@ impl<'a> IntoIterator for &'a ReflectMap {
 /// Dynamic reference to `map` field
 #[derive(Copy, Clone)]
 pub struct ReflectMapRef<'a> {
-    pub(crate) map: &'a ReflectMap,
-    pub(crate) key_dynamic: &'a RuntimeTypeDynamic,
-    pub(crate) value_dynamic: &'a RuntimeTypeDynamic,
+    pub(crate) map: &'a dyn ReflectMap,
+    pub(crate) key_dynamic: &'a dyn RuntimeTypeDynamic,
+    pub(crate) value_dynamic: &'a dyn RuntimeTypeDynamic,
 }
 
 /// Dynamic mutable reference to `map` field
 pub struct ReflectMapMut<'a> {
-    pub(crate) map: &'a mut ReflectMap,
-    pub(crate) key_dynamic: &'a RuntimeTypeDynamic,
-    pub(crate) value_dynamic: &'a RuntimeTypeDynamic,
+    pub(crate) map: &'a mut dyn ReflectMap,
+    pub(crate) key_dynamic: &'a dyn RuntimeTypeDynamic,
+    pub(crate) value_dynamic: &'a dyn RuntimeTypeDynamic,
 }
 
 impl<'a> ReflectMapRef<'a> {
@@ -131,12 +131,12 @@ impl<'a> ReflectMapRef<'a> {
     }
 
     /// Map key type
-    pub fn key_type(&self) -> &RuntimeTypeDynamic {
+    pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
         self.key_dynamic
     }
 
     /// Map value type
-    pub fn value_type(&self) -> &RuntimeTypeDynamic {
+    pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
         self.value_dynamic
     }
 }
@@ -174,12 +174,12 @@ impl<'a> ReflectMapMut<'a> {
     }
 
     /// Map key type
-    pub fn key_type(&self) -> &RuntimeTypeDynamic {
+    pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
         self.key_dynamic
     }
 
     /// Map value type
-    pub fn value_type(&self) -> &RuntimeTypeDynamic {
+    pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
         self.value_dynamic
     }
 
@@ -214,8 +214,8 @@ impl<'a> ReflectMapMut<'a> {
 /// Iterator over map
 pub struct ReflectMapRefIter<'a> {
     iter: ReflectMapIter<'a>,
-    key_dynamic: &'a RuntimeTypeDynamic,
-    value_dynamic: &'a RuntimeTypeDynamic,
+    key_dynamic: &'a dyn RuntimeTypeDynamic,
+    value_dynamic: &'a dyn RuntimeTypeDynamic,
 }
 
 impl<'a> Iterator for ReflectMapRefIter<'a> {

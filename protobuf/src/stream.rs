@@ -66,14 +66,14 @@ impl<'a> CodedInputStream<'a> {
     /// Wrap a `Read`.
     ///
     /// Note resulting `CodedInputStream` is buffered even if `Read` is not.
-    pub fn new(read: &'a mut Read) -> CodedInputStream<'a> {
+    pub fn new(read: &'a mut dyn Read) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_read(read))
     }
 
     /// Create from `BufRead`.
     ///
     /// `CodedInputStream` will utilize `BufRead` buffer.
-    pub fn from_buffered_reader(buf_read: &'a mut BufRead) -> CodedInputStream<'a> {
+    pub fn from_buffered_reader(buf_read: &'a mut dyn BufRead) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_buf_read(buf_read))
     }
 
@@ -668,7 +668,7 @@ pub trait WithCodedOutputStream {
         F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>;
 }
 
-impl<'a> WithCodedOutputStream for &'a mut (Write + 'a) {
+impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
         F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
@@ -698,7 +698,7 @@ pub trait WithCodedInputStream {
         F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
 }
 
-impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
+impl<'a> WithCodedInputStream for &'a mut (dyn Read + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
         F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
@@ -710,7 +710,7 @@ impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
     }
 }
 
-impl<'a> WithCodedInputStream for &'a mut (BufRead + 'a) {
+impl<'a> WithCodedInputStream for &'a mut (dyn BufRead + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
         F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
@@ -748,7 +748,7 @@ impl<'a> WithCodedInputStream for &'a Bytes {
 }
 
 enum OutputTarget<'a> {
-    Write(&'a mut Write, Vec<u8>),
+    Write(&'a mut dyn Write, Vec<u8>),
     Vec(&'a mut Vec<u8>),
     Bytes,
 }
@@ -766,7 +766,7 @@ impl<'a> CodedOutputStream<'a> {
     /// Construct from given `Write`.
     ///
     /// `CodedOutputStream` is buffered even if `Write` is not
-    pub fn new(writer: &'a mut Write) -> CodedOutputStream<'a> {
+    pub fn new(writer: &'a mut dyn Write) -> CodedOutputStream<'a> {
         let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
 
         let mut buffer_storage = Vec::with_capacity(buffer_len);

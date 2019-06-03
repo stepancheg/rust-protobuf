@@ -16,10 +16,10 @@ use crate::json;
 
 
 trait MessageFactory: Send + Sync + 'static {
-    fn new_instance(&self) -> Box<Message>;
-    fn default_instance(&self) -> &Message;
-    fn clone(&self, message: &Message) -> Box<Message>;
-    fn eq(&self, a: &Message, b: &Message) -> bool;
+    fn new_instance(&self) -> Box<dyn Message>;
+    fn default_instance(&self) -> &dyn Message;
+    fn clone(&self, message: &dyn Message) -> Box<dyn Message>;
+    fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool;
 }
 
 struct MessageFactoryImpl<M>(marker::PhantomData<M>);
@@ -28,21 +28,21 @@ impl<M> MessageFactory for MessageFactoryImpl<M>
 where
     M: 'static + Message + Default + Clone + PartialEq,
 {
-    fn new_instance(&self) -> Box<Message> {
+    fn new_instance(&self) -> Box<dyn Message> {
         let m: M = Default::default();
         Box::new(m)
     }
 
-    fn default_instance(&self) -> &Message {
-        M::default_instance() as &Message
+    fn default_instance(&self) -> &dyn Message {
+        M::default_instance() as &dyn Message
     }
 
-    fn clone(&self, message: &Message) -> Box<Message> {
+    fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
         let m: &M = message.downcast_ref().expect("wrong message type");
         Box::new(m.clone())
     }
 
-    fn eq(&self, a: &Message, b: &Message) -> bool {
+    fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
         let a: &M = a.downcast_ref().expect("wrong message type");
         let b: &M = b.downcast_ref().expect("wrong message type");
         a == b
@@ -56,7 +56,7 @@ pub struct MessageDescriptor {
     full_name: String,
     file_descriptor_proto: &'static FileDescriptorProto,
     proto: &'static DescriptorProto,
-    factory: &'static MessageFactory,
+    factory: &'static dyn MessageFactory,
     fields: Vec<FieldDescriptor>,
 
     index_by_name: HashMap<String, usize>,
@@ -96,7 +96,7 @@ impl MessageDescriptor {
         name_in_file: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
-        factory: &'static MessageFactory,
+        factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
         let (path_to_package, proto) = match find_message_or_enum(file_descriptor_proto, name_in_file) {
             (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
@@ -168,17 +168,17 @@ impl MessageDescriptor {
     }
 
     /// New empty message
-    pub fn new_instance(&self) -> Box<Message> {
+    pub fn new_instance(&self) -> Box<dyn Message> {
         self.factory.new_instance()
     }
 
     /// Shared immutable empty message
-    pub fn default_instance(&self) -> &Message {
+    pub fn default_instance(&self) -> &dyn Message {
         self.factory.default_instance()
     }
 
     /// Clone a message
-    pub fn clone(&self, message: &Message) -> Box<Message> {
+    pub fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
         self.factory.clone(message)
     }
 
@@ -187,7 +187,7 @@ impl MessageDescriptor {
     /// # Panics
     ///
     /// Is any message has different type than this descriptor.
-    pub fn eq(&self, a: &Message, b: &Message) -> bool {
+    pub fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
         self.factory.eq(a, b)
     }
 
@@ -196,7 +196,7 @@ impl MessageDescriptor {
     /// # Panics
     ///
     /// Is any message has different type than this descriptor.
-    pub fn deep_eq(&self, a: &Message, b: &Message) -> bool {
+    pub fn deep_eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
         // Explicitly force panic even if field list is empty
         assert_eq!(
             self as *const MessageDescriptor,
@@ -254,7 +254,7 @@ impl MessageDescriptor {
 
     /// This operation is not needed here
     // TODO: remove it
-    pub fn cast<M: 'static>(&self, message: Box<Message>) -> Result<M, Box<Message>> {
+    pub fn cast<M: 'static>(&self, message: Box<dyn Message>) -> Result<M, Box<dyn Message>> {
         message.downcast_box::<M>().map(|m| *m)
     }
 }

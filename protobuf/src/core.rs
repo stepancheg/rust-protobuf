@@ -97,7 +97,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     }
 
     /// Write the message to the writer.
-    fn write_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
+    fn write_to_writer(&self, w: &mut dyn Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| self.write_to(os))
     }
 
@@ -128,7 +128,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
 
     /// Write the message to the writer, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
+    fn write_length_delimited_to_writer(&self, w: &mut dyn Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| self.write_length_delimited_to(os))
     }
 
@@ -199,10 +199,10 @@ impl dyn Message {
     /// let m: Box<MyMessage> = Message::downcast_box(m).unwrap();
     /// # }
     /// ```
-    pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<Message>> {
+    pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<dyn Message>> {
         if Any::type_id(&*self) == TypeId::of::<T>() {
             unsafe {
-                let raw: *mut Message = Box::into_raw(self);
+                let raw: *mut dyn Message = Box::into_raw(self);
                 Ok(Box::from_raw(raw as *mut T))
             }
         } else {
@@ -214,8 +214,8 @@ impl dyn Message {
     ///
     /// ```
     /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: &Message) {
-    /// let m: &Message = message;
+    /// # fn foo<MyMessage: Message>(message: &dyn Message) {
+    /// let m: &dyn Message = message;
     /// let m: &MyMessage = Message::downcast_ref(m).unwrap();
     /// # }
     /// ```
@@ -249,7 +249,7 @@ impl dyn Message {
     }
 }
 
-impl Clone for Box<Message> {
+impl Clone for Box<dyn Message> {
     fn clone(&self) -> Self {
         use std::ops::Deref;
         self.descriptor().clone(self.deref())
@@ -274,7 +274,7 @@ pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M: Message>(reader: &mut Read) -> ProtobufResult<M> {
+pub fn parse_from_reader<M: Message>(reader: &mut dyn Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
