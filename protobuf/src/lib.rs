@@ -67,6 +67,7 @@ pub mod well_known_types;
 mod hex;
 
 // used by rust-grpc
+#[doc(hidden)]
 pub mod descriptorx;
 
 mod cached_size;

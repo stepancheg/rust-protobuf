@@ -1,3 +1,7 @@
+/// Internal implementation details; should not be used by other crates.
+///
+/// Kept public for compatibility reasons.
+
 use descriptor::DescriptorProto;
 use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
@@ -601,7 +605,7 @@ impl<'a> OneofWithContext<'a> {
     }
 }
 
-// find message by rust type name
+/// find message by rust type name
 pub fn find_message_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
@@ -615,7 +619,7 @@ pub fn find_message_by_rust_name<'a>(
     .unwrap()
 }
 
-// find enum by rust type name
+/// find enum by rust type name
 pub fn find_enum_by_rust_name<'a>(
     fd: &'a FileDescriptorProto,
     rust_name: &str,
