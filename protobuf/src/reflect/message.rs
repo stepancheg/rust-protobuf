@@ -93,12 +93,12 @@ impl MessageDescriptor {
     // Non-generic part of `new` is a separate function
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic(
-        name_in_file: &'static str,
+        protobuf_name_to_package: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
-        let (path_to_package, proto) = match find_message_or_enum(file_descriptor_proto, name_in_file) {
+        let (path_to_package, proto) = match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
             (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
             (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
         };
@@ -154,12 +154,12 @@ impl MessageDescriptor {
     /// This operation is called from generated code and rarely
     /// need to be called directly.
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
-        rust_name: &'static str,
+        protobuf_name_to_package: &'static str,
         fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        MessageDescriptor::new_non_generic(rust_name, fields, file_descriptor_proto, factory)
+        MessageDescriptor::new_non_generic(protobuf_name_to_package, fields, file_descriptor_proto, factory)
     }
 
     /// `FileDescriptorProto` containg this message type

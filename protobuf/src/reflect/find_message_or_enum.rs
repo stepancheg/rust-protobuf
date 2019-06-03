@@ -20,10 +20,10 @@ impl<'a> MessageOrEnum<'a> {
     }
 }
 
-pub(crate) fn find_message_or_enum<'a>(file: &'a FileDescriptorProto, full_name: &str)
+pub(crate) fn find_message_or_enum<'a>(file: &'a FileDescriptorProto, name_to_package: &str)
     -> (String, MessageOrEnum<'a>)
 {
-    let mut path = full_name.split('.');
+    let mut path = name_to_package.split('.');
     let first = path.next().unwrap();
     let child_message = file.message_type.iter().find(|m| m.get_name() == first);
     let child_enum = file.enum_type.iter().find(|e| e.get_name() == first);
