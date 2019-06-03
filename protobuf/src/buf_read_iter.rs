@@ -226,10 +226,13 @@ impl<'ignore> BufReadIter<'ignore> {
     ///
     /// Returns 0 when EOF or limit reached.
     fn read_to_vec(&mut self, vec: &mut Vec<u8>, max: usize) -> ProtobufResult<usize> {
-        let rem = self.fill_buf()?;
+        let len = {
+            let rem = self.fill_buf()?;
 
-        let len = cmp::min(rem.len(), max);
-        vec.extend_from_slice(&rem[..len]);
+            let len = cmp::min(rem.len(), max);
+            vec.extend_from_slice(&rem[..len]);
+            len
+        };
         self.pos_within_buf += len;
         Ok(len)
     }
@@ -251,13 +254,14 @@ impl<'ignore> BufReadIter<'ignore> {
             target.reserve(READ_RAW_BYTES_MAX_ALLOC);
 
             while target.len() < count {
-                if count - target.len() <= target.len() {
-                    target.reserve_exact(count - target.len());
+                let need_to_read = count - target.len();
+                if need_to_read <= target.len() {
+                    target.reserve_exact(need_to_read);
                 } else {
                     target.reserve(1);
                 }
 
-                let max = cmp::min(target.capacity() - target.len(), count - target.len());
+                let max = cmp::min(target.capacity() - target.len(), need_to_read);
                 let read = self.read_to_vec(target, max)?;
                 if read == 0 {
                     return Err(ProtobufError::WireError(WireError::TruncatedMessage));
