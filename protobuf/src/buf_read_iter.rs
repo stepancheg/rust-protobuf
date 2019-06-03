@@ -309,6 +309,8 @@ impl<'ignore> BufReadIter<'ignore> {
                 unsafe {
                     let buf = &mut r.bytes_mut()[..len];
                     self.read_exact(buf)?;
+                }
+                unsafe {
                     r.advance_mut(len);
                 }
                 Ok(r.freeze())
