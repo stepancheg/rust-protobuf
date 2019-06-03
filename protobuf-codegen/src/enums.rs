@@ -8,7 +8,6 @@ use super::customize::Customize;
 use rust_types_values::type_name_to_rust_relative;
 use serde;
 
-
 #[derive(Clone)]
 pub struct EnumValueGen {
     proto: EnumValueDescriptorProto,
@@ -42,7 +41,6 @@ impl EnumValueGen {
     }
 }
 
-
 pub struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
     type_name: String,
@@ -57,8 +55,8 @@ impl<'a> EnumGen<'a> {
         customize: &Customize,
         root_scope: &RootScope,
     ) -> EnumGen<'a> {
-        let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name() ==
-            current_file.get_name()
+        let rust_name = if enum_with_scope.get_scope().get_file_descriptor().get_name()
+            == current_file.get_name()
         {
             // field type is a message or enum declared in the same file
             enum_with_scope.rust_name()
@@ -67,7 +65,8 @@ impl<'a> EnumGen<'a> {
                 &enum_with_scope.name_absolute(),
                 current_file,
                 false,
-                root_scope)
+                root_scope,
+            )
         };
         let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
@@ -146,9 +145,7 @@ impl<'a> EnumGen<'a> {
         if !self.allow_alias() {
             derive.push("Hash");
         } else {
-            w.comment(
-                "Note: you cannot use pattern matching for enums with allow_alias option",
-            );
+            w.comment("Note: you cannot use pattern matching for enums with allow_alias option");
         }
         w.derive(&derive);
         serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
@@ -173,12 +170,16 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_fn_value(&self, w: &mut CodeWriter) {
-        w.def_fn("value(&self) -> i32", |w| if self.allow_alias() {
-            w.match_expr("*self", |w| for value in self.values_all() {
-                w.case_expr(value.rust_name_outer(), format!("{}", value.number()));
-            });
-        } else {
-            w.write_line("*self as i32")
+        w.def_fn("value(&self) -> i32", |w| {
+            if self.allow_alias() {
+                w.match_expr("*self", |w| {
+                    for value in self.values_all() {
+                        w.case_expr(value.rust_name_outer(), format!("{}", value.number()));
+                    }
+                });
+            } else {
+                w.write_line("*self as i32")
+            }
         });
     }
 
@@ -228,11 +229,7 @@ impl<'a> EnumGen<'a> {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
             w.def_fn(
                 "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef",
-                |w| {
-                    w.write_line(
-                        "::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())",
-                    )
-                },
+                |w| w.write_line("::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())"),
             )
         })
     }
