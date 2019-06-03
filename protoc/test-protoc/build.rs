@@ -13,6 +13,8 @@ fn main() -> Result<()> {
         panic!("unknown OS")
     };
 
+    // TODO: https://github.com/rust-lang/cargo/issues/4316
+
     let gen_rust_binary = format!("../../target/debug/protoc-gen-rust{}", exe_suffix);
     let gen_rust_binary = PathBuf::from(gen_rust_binary).canonicalize()?;
 
