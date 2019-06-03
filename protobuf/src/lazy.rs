@@ -17,7 +17,7 @@ impl<T> Lazy<T> {
     /// Get lazy field value, initialize it with given function if not yet.
     pub fn get<F>(&'static mut self, init: F) -> &'static T
     where
-        F : FnOnce() -> T,
+        F: FnOnce() -> T,
     {
         // ~ decouple the lifetimes of 'self' and 'self.lock' such we
         // can initialize self.ptr in the call_once closure (note: we
@@ -35,13 +35,12 @@ impl<T> Lazy<T> {
 /// Used to initialize `lock` field in `Lazy` struct.
 pub const ONCE_INIT: sync::Once = sync::ONCE_INIT;
 
-
 #[cfg(test)]
 mod test {
     use super::{Lazy, ONCE_INIT};
-    use std::thread;
+    use std::sync::atomic::{AtomicIsize, Ordering, ATOMIC_ISIZE_INIT};
     use std::sync::{Arc, Barrier};
-    use std::sync::atomic::{ATOMIC_ISIZE_INIT, AtomicIsize, Ordering};
+    use std::thread;
 
     #[test]
     fn many_threads_calling_get() {

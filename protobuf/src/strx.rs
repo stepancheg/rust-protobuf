@@ -16,8 +16,8 @@ pub fn remove_suffix<'s>(s: &'s str, suffix: &str) -> &'s str {
 #[cfg(test)]
 mod test {
 
-    use super::remove_to;
     use super::remove_suffix;
+    use super::remove_to;
 
     #[test]
     fn test_remove_to() {

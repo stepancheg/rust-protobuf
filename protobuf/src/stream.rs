@@ -1,7 +1,7 @@
-use std::mem;
 use std::io;
-use std::io::{BufRead, Read};
 use std::io::Write;
+use std::io::{BufRead, Read};
+use std::mem;
 use std::slice;
 
 #[cfg(feature = "bytes")]
@@ -9,22 +9,22 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use varint;
-use misc::remaining_capacity_as_slice_mut;
-use misc::remove_lifetime_mut;
+use buf_read_iter::BufReadIter;
 use core::Message;
 use enums::ProtobufEnum;
+use error::ProtobufError;
+use error::ProtobufResult;
+use error::WireError;
+use misc::remaining_capacity_as_slice_mut;
+use misc::remove_lifetime_mut;
 use unknown::UnknownFields;
 use unknown::UnknownValue;
 use unknown::UnknownValueRef;
+use varint;
 use zigzag::decode_zig_zag_32;
 use zigzag::decode_zig_zag_64;
 use zigzag::encode_zig_zag_32;
 use zigzag::encode_zig_zag_64;
-use error::ProtobufResult;
-use error::ProtobufError;
-use error::WireError;
-use buf_read_iter::BufReadIter;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -35,7 +35,6 @@ const DEFAULT_RECURSION_LIMIT: u32 = 100;
 
 // Max allocated vec when reading length-delimited from unknown input stream
 pub(crate) const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
-
 
 pub mod wire_format {
     // TODO: temporary
@@ -264,9 +263,9 @@ impl<'a> CodedInputStream<'a> {
                                 let rem = rem;
                                 loop {
                                     if i == 10 {
-                                        return Err(
-                                            ProtobufError::WireError(WireError::IncorrectVarint),
-                                        );
+                                        return Err(ProtobufError::WireError(
+                                            WireError::IncorrectVarint,
+                                        ));
                                     }
 
                                     let b = if true {
@@ -307,7 +306,6 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_raw_varint32(&mut self) -> ProtobufResult<u32> {
         self.read_raw_varint64().map(|v| v as u32)
     }
-
 
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
         let mut r = 0u32;
@@ -398,7 +396,7 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_varint32().map(|v| v != 0)
     }
 
-    pub fn read_enum<E : ProtobufEnum>(&mut self) -> ProtobufResult<E> {
+    pub fn read_enum<E: ProtobufEnum>(&mut self) -> ProtobufResult<E> {
         let i = self.read_int32()?;
         match ProtobufEnum::from_i32(i) {
             Some(e) => Ok(e),
@@ -585,7 +583,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn read_repeated_packed_enum_into<E : ProtobufEnum>(
+    pub fn read_repeated_packed_enum_into<E: ProtobufEnum>(
         &mut self,
         target: &mut Vec<E>,
     ) -> ProtobufResult<()> {
@@ -613,9 +611,9 @@ impl<'a> CodedInputStream<'a> {
                 self.read_raw_bytes(len)
                     .map(|v| UnknownValue::LengthDelimited(v))
             }
-            _ => Err(ProtobufError::WireError(
-                WireError::UnexpectedWireType(wire_type),
-            )),
+            _ => Err(ProtobufError::WireError(WireError::UnexpectedWireType(
+                wire_type,
+            ))),
         }
     }
 
@@ -719,7 +717,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn merge_message<M : Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
+    pub fn merge_message<M: Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
         message.merge_from(self)?;
@@ -727,7 +725,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    pub fn read_message<M : Message>(&mut self) -> ProtobufResult<M> {
+    pub fn read_message<M: Message>(&mut self) -> ProtobufResult<M> {
         let mut r: M = Message::new();
         self.merge_message(&mut r)?;
         r.check_initialized()?;
@@ -754,13 +752,13 @@ impl<'a> BufRead for CodedInputStream<'a> {
 pub trait WithCodedOutputStream {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>;
+        F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedOutputStream for &'a mut (Write + 'a) {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
     {
         let mut os = CodedOutputStream::new(self);
         let r = cb(&mut os)?;
@@ -772,7 +770,7 @@ impl<'a> WithCodedOutputStream for &'a mut (Write + 'a) {
 impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     fn with_coded_output_stream<T, F>(mut self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
     {
         let mut os = CodedOutputStream::vec(&mut self);
         let r = cb(&mut os)?;
@@ -783,7 +781,7 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
 
 pub fn with_coded_output_stream_to_bytes<F>(cb: F) -> ProtobufResult<Vec<u8>>
 where
-    F : FnOnce(&mut CodedOutputStream) -> ProtobufResult<()>,
+    F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<()>,
 {
     let mut v = Vec::new();
     v.with_coded_output_stream(cb)?;
@@ -793,13 +791,13 @@ where
 pub trait WithCodedInputStream {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
+        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::new(self);
         let r = cb(&mut is)?;
@@ -811,7 +809,7 @@ impl<'a> WithCodedInputStream for &'a mut (Read + 'a) {
 impl<'a> WithCodedInputStream for &'a mut (BufRead + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::from_buffered_reader(self);
         let r = cb(&mut is)?;
@@ -823,7 +821,7 @@ impl<'a> WithCodedInputStream for &'a mut (BufRead + 'a) {
 impl<'a> WithCodedInputStream for &'a [u8] {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::from_bytes(self);
         let r = cb(&mut is)?;
@@ -836,7 +834,7 @@ impl<'a> WithCodedInputStream for &'a [u8] {
 impl<'a> WithCodedInputStream for &'a Bytes {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F : FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::from_carllerche_bytes(self);
         let r = cb(&mut is)?;
@@ -845,13 +843,11 @@ impl<'a> WithCodedInputStream for &'a Bytes {
     }
 }
 
-
 enum OutputTarget<'a> {
     Write(&'a mut Write, Vec<u8>),
     Vec(&'a mut Vec<u8>),
     Bytes,
 }
-
 
 pub struct CodedOutputStream<'a> {
     target: OutputTarget<'a>,
@@ -907,8 +903,7 @@ impl<'a> CodedOutputStream<'a> {
             OutputTarget::Bytes => {
                 assert_eq!(self.buffer.len() as u64, self.position as u64);
             }
-            OutputTarget::Write(..) |
-            OutputTarget::Vec(..) => {
+            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
                 panic!("must not be called with Writer or Vec");
             }
         }
@@ -938,8 +933,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn flush(&mut self) -> ProtobufResult<()> {
         match self.target {
             OutputTarget::Bytes => Ok(()),
-            OutputTarget::Write(..) |
-            OutputTarget::Vec(..) => {
+            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
                 // TODO: must not reserve additional in Vec
                 self.refresh_buffer()
             }
@@ -1109,7 +1103,7 @@ impl<'a> CodedOutputStream<'a> {
 
     pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> ProtobufResult<()>
     where
-        E : ProtobufEnum,
+        E: ProtobufEnum,
     {
         self.write_enum_no_tag(value.value())
     }
@@ -1197,7 +1191,7 @@ impl<'a> CodedOutputStream<'a> {
 
     pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> ProtobufResult<()>
     where
-        E : ProtobufEnum,
+        E: ProtobufEnum,
     {
         self.write_enum(field_number, value.value())
     }
@@ -1231,7 +1225,7 @@ impl<'a> CodedOutputStream<'a> {
         self.write_bytes_no_tag(s.as_bytes())
     }
 
-    pub fn write_message_no_tag<M : Message>(&mut self, msg: &M) -> ProtobufResult<()> {
+    pub fn write_message_no_tag<M: Message>(&mut self, msg: &M) -> ProtobufResult<()> {
         msg.write_length_delimited_to(self)
     }
 
@@ -1247,7 +1241,7 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
-    pub fn write_message<M : Message>(&mut self, field_number: u32, msg: &M) -> ProtobufResult<()> {
+    pub fn write_message<M: Message>(&mut self, field_number: u32, msg: &M) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeLengthDelimited)?;
         self.write_message_no_tag(msg)?;
         Ok(())
@@ -1265,21 +1259,20 @@ impl<'a> Write for CodedOutputStream<'a> {
     }
 }
 
-
 #[cfg(test)]
 mod test {
 
+    use std::fmt::Debug;
     use std::io;
-    use std::io::Read;
     use std::io::BufRead;
+    use std::io::Read;
     use std::io::Write;
     use std::iter::repeat;
-    use std::fmt::Debug;
 
-    use hex::encode_hex;
-    use hex::decode_hex;
-    use error::ProtobufResult;
     use error::ProtobufError;
+    use error::ProtobufResult;
+    use hex::decode_hex;
+    use hex::encode_hex;
 
     use super::wire_format;
     use super::CodedInputStream;
@@ -1288,7 +1281,7 @@ mod test {
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
-        F : FnMut(&mut CodedInputStream),
+        F: FnMut(&mut CodedInputStream),
     {
         let d = decode_hex(hex);
         let mut reader = io::Cursor::new(d);
@@ -1299,7 +1292,7 @@ mod test {
 
     fn test_read<F>(hex: &str, mut callback: F)
     where
-        F : FnMut(&mut CodedInputStream),
+        F: FnMut(&mut CodedInputStream),
     {
         let len = decode_hex(hex).len();
         test_read_partial(hex, |reader| {
@@ -1311,8 +1304,8 @@ mod test {
 
     fn test_read_v<F, V>(hex: &str, v: V, mut callback: F)
     where
-        F : FnMut(&mut CodedInputStream) -> ProtobufResult<V>,
-        V : PartialEq + Debug,
+        F: FnMut(&mut CodedInputStream) -> ProtobufResult<V>,
+        V: PartialEq + Debug,
     {
         test_read(hex, |reader| {
             assert_eq!(v, callback(reader).unwrap());
@@ -1405,8 +1398,12 @@ mod test {
 
     #[test]
     fn test_input_stream_skip_raw_bytes() {
-        test_read("", |reader| { reader.skip_raw_bytes(0).unwrap(); });
-        test_read("aa bb", |reader| { reader.skip_raw_bytes(2).unwrap(); });
+        test_read("", |reader| {
+            reader.skip_raw_bytes(0).unwrap();
+        });
+        test_read("aa bb", |reader| {
+            reader.skip_raw_bytes(2).unwrap();
+        });
         test_read("aa bb cc dd ee ff", |reader| {
             reader.skip_raw_bytes(6).unwrap();
         });
@@ -1468,7 +1465,8 @@ mod test {
 
         let mut buf = Vec::new();
 
-        is.read_raw_bytes_into(READ_RAW_BYTES_MAX_ALLOC as u32 + 10, &mut buf).expect("read");
+        is.read_raw_bytes_into(READ_RAW_BYTES_MAX_ALLOC as u32 + 10, &mut buf)
+            .expect("read");
 
         assert_eq!(READ_RAW_BYTES_MAX_ALLOC + 10, buf.len());
 
@@ -1483,7 +1481,7 @@ mod test {
 
     fn test_write<F>(expected: &str, mut gen: F)
     where
-        F : FnMut(&mut CodedOutputStream) -> ProtobufResult<()>,
+        F: FnMut(&mut CodedOutputStream) -> ProtobufResult<()>,
     {
         let expected_bytes = decode_hex(expected);
 
@@ -1592,10 +1590,9 @@ mod test {
 
     #[test]
     fn test_output_stream_write_double_no_tag() {
-        test_write(
-            "40 d5 ab 68 b3 07 3d 46",
-            |os| os.write_double_no_tag(23e29),
-        );
+        test_write("40 d5 ab 68 b3 07 3d 46", |os| {
+            os.write_double_no_tag(23e29)
+        });
     }
 
     #[test]

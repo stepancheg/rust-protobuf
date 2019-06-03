@@ -1,7 +1,6 @@
 use reflect::EnumDescriptor;
 use reflect::EnumValueDescriptor;
 
-
 /// Trait implemented by all protobuf enum types.
 pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
     /// Get enum `i32` value.

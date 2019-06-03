@@ -22,7 +22,7 @@ impl CachedSize {
 impl Clone for CachedSize {
     fn clone(&self) -> CachedSize {
         CachedSize {
-            size: AtomicUsize::new(self.size.load(Ordering::Relaxed))
+            size: AtomicUsize::new(self.size.load(Ordering::Relaxed)),
         }
     }
 }
