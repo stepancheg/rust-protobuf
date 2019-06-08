@@ -41,6 +41,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   (although protobuf implementation does a couple of unsafe calls).
 
 ## [2.7] - Unreleased
+- Minimum supported Rust version
+  [is 1.27](https://github.com/stepancheg/rust-protobuf/commit/f51811e8376f7c46b433479903a1bd8670246aa0).
+  This version stabilizes `dyn Trait` syntax.
 - `inside_protobuf` option is added which slightly modifies generated code inside protobuf.
   Should not affect users.
 - [Generated files are now compatible only with the same version of
