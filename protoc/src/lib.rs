@@ -1,13 +1,19 @@
+//! API to invoke `protoc` command. `protoc` command must be in `$PATH`.
+
+#![deny(missing_docs)]
+
 use std::ffi::{OsStr, OsString};
-use std::io;
 use std::fmt;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
 
 #[macro_use]
 extern crate log;
 
+/// Alias for io::Error
 pub type Error = io::Error;
+/// Alias for io::Result
 pub type Result<T> = io::Result<T>;
 
 fn err_other(s: impl AsRef<str>) -> Error {
@@ -36,26 +42,31 @@ impl Args {
         Self::default()
     }
 
+    /// Set `LANG` part in `--LANG_out=...`
     pub fn lang(&mut self, lang: &str) -> &mut Self {
         self.lang = Some(lang.to_owned());
         self
     }
 
+    /// Set `--LANG_out=...` param
     pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
         self.out_dir = Some(out_dir.as_ref().to_owned());
         self
     }
 
+    /// Set `--plugin` param. Not needed if plugin is in `$PATH`
     pub fn plugin(&mut self, plugin: impl AsRef<OsStr>) -> &mut Self {
         self.plugin = Some(plugin.as_ref().to_owned());
         self
     }
 
+    /// Append a path to `-I` args
     pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
         self.includes.push(include.as_ref().to_owned());
         self
     }
 
+    /// Append multiple paths to `-I` args
     pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for include in includes {
             self.include(include);
@@ -63,11 +74,13 @@ impl Args {
         self
     }
 
+    /// Append a `.proto` file path to compile
     pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
         self.inputs.push(input.as_ref().to_owned());
         self
     }
 
+    /// Append multiple `.proto` file paths to compile
     pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for input in inputs {
             self.input(input);
@@ -144,16 +157,19 @@ pub struct DescriptorSetOutArgs {
 }
 
 impl DescriptorSetOutArgs {
+    /// Set `--file_descriptor_out=...` param
     pub fn out(&mut self, out: impl AsRef<Path>) -> &mut Self {
         self.out = Some(out.as_ref().to_owned());
         self
     }
 
+    /// Append a path to `-I` args
     pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
         self.includes.push(include.as_ref().to_owned());
         self
     }
 
+    /// Append multiple paths to `-I` args
     pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for include in includes {
             self.include(include);
@@ -161,11 +177,13 @@ impl DescriptorSetOutArgs {
         self
     }
 
+    /// Append a `.proto` file path to compile
     pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
         self.inputs.push(input.as_ref().to_owned());
         self
     }
 
+    /// Append multiple `.proto` file paths to compile
     pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for input in inputs {
             self.input(input);
@@ -173,6 +191,7 @@ impl DescriptorSetOutArgs {
         self
     }
 
+    /// Set `--include_imports`
     pub fn include_imports(&mut self, include_imports: bool) -> &mut Self {
         self.include_imports = include_imports;
         self
@@ -291,12 +310,16 @@ impl Protoc {
         let mut child = self.spawn(&mut cmd)?;
 
         if !child.wait()?.success() {
-            return Err(err_other(format!("protoc ({:?}) exited with non-zero exit code", cmd)));
+            return Err(err_other(format!(
+                "protoc ({:?}) exited with non-zero exit code",
+                cmd
+            )));
         }
 
         Ok(())
     }
 
+    /// Get default Args for this command.
     pub fn args(&self) -> Args {
         Args {
             protoc: Some(self.clone()),
@@ -304,6 +327,7 @@ impl Protoc {
         }
     }
 
+    /// Get default DescriptorSetOutArgs for this command.
     pub fn descriptor_set_out_args(&self) -> DescriptorSetOutArgs {
         DescriptorSetOutArgs {
             protoc: self.clone(),
@@ -321,6 +345,7 @@ pub struct Version {
 }
 
 impl Version {
+    /// `true` if the protoc major version is 3.
     pub fn is_3(&self) -> bool {
         self.version.starts_with("3")
     }
