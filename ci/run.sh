@@ -25,6 +25,7 @@ cargo build --all --all-targets
 if [ -z "$ON_WINDOWS" ]; then
     cargo doc -p protobuf
     cargo doc -p protoc
+    cargo doc -p protoc-rust
 fi
 
 # vim: set ts=4 sw=4 et:

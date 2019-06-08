@@ -1,4 +1,9 @@
-//! API to invoke `protoc` command. `protoc` command must be in `$PATH`.
+//! API to invoke `protoc` command.
+//!
+//! `protoc` command must be in `$PATH`, along with `protoc-gen-LANG` command.
+//!
+//! Note that to generate `rust` code from `.proto` files, `protoc-rust` crate
+//! can be used, which does not require `protoc-gen-rust` present in `$PATH`.
 
 #![deny(missing_docs)]
 

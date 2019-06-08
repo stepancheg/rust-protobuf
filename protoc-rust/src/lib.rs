@@ -1,3 +1,27 @@
+//! API to generate `.rs` files.
+//!
+//! This API requires `protoc` command present in `$PATH`.
+//!
+//! ```
+//! extern crate protoc_rust;
+//!
+//! fn main() {
+//!     protoc_rust::Args::new()
+//!         .out_dir("src/protos")
+//!         .inputs(&["protos/a.proto", "protos/b.proto"]),
+//!         .include("protos")
+//!         .run()
+//!         .expect("Running protoc failed.");
+//! }
+//! ```
+//!
+//! It is advisable that `protoc-rust` build-dependecy version be the same as
+//! `protobuf` dependency.
+//!
+//! The alternative is to use `protobuf-codegen-pure`.
+
+#![deny(missing_docs)]
+
 extern crate tempfile;
 
 extern crate protobuf;
@@ -13,6 +37,7 @@ pub use protoc::Result;
 
 pub use protobuf_codegen::Customize;
 
+/// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
 pub struct Args {
     /// --lang_out= param
@@ -26,20 +51,24 @@ pub struct Args {
 }
 
 impl Args {
+    /// Arguments to the `protoc` found in `$PATH`
     pub fn new() -> Self {
         Self::default()
     }
 
+    /// Set `--LANG_out=...` param
     pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
         self.out_dir = out_dir.as_ref().to_owned();
         self
     }
 
+    /// Append a path to `-I` args
     pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
         self.includes.push(include.as_ref().to_owned());
         self
     }
 
+    /// Append multiple paths to `-I` args
     pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for include in includes {
             self.include(include);
@@ -47,11 +76,13 @@ impl Args {
         self
     }
 
+    /// Append a `.proto` file path to compile
     pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
         self.inputs.push(input.as_ref().to_owned());
         self
     }
 
+    /// Append multiple `.proto` file paths to compile
     pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for input in inputs {
             self.input(input);
@@ -59,6 +90,7 @@ impl Args {
         self
     }
 
+    /// Set options to customize code generation
     pub fn customize(&mut self, customize: Customize) -> &mut Self {
         self.customize = customize;
         self
@@ -83,8 +115,8 @@ impl Args {
         let fds = fs::read(temp_file)?;
         drop(temp_dir);
 
-        let fds: protobuf::descriptor::FileDescriptorSet =
-            protobuf::parse_from_bytes(&fds).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+        let fds: protobuf::descriptor::FileDescriptorSet = protobuf::parse_from_bytes(&fds)
+            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
         let default_includes = vec![PathBuf::from(".")];
         let includes = if self.includes.is_empty() {
@@ -104,10 +136,7 @@ impl Args {
 
             return Err(Error::new(
                 io::ErrorKind::Other,
-                format!(
-                    "file {:?} is not found in includes {:?}",
-                    file, includes
-                ),
+                format!("file {:?} is not found in includes {:?}", file, includes),
             ));
         }
 
