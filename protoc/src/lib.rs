@@ -1,3 +1,7 @@
+//! API to invoke `protoc` command. `protoc` command must be in `$PATH`.
+
+#![deny(missing_docs)]
+
 use std::io;
 use std::process;
 
@@ -5,7 +9,9 @@ use std::process;
 extern crate log;
 
 
+/// Alias for io::Error
 pub type Error = io::Error;
+/// Alias for io::Error
 pub type Result<T> = io::Result<T>;
 
 
@@ -196,6 +202,7 @@ pub struct Version {
 }
 
 impl Version {
+    /// `true` if the protoc major version is 3.
     pub fn is_3(&self) -> bool {
         self.version.starts_with("3")
     }
