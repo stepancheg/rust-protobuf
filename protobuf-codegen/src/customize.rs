@@ -28,6 +28,8 @@ pub struct Customize {
     /// Note, it's not possible to have recursive messages with this option enabled.
     pub singular_field_option: Option<bool>,
 
+    /// Use `std::Box<T>` to store oneof message fields.
+    /// This is useful for mutually recursive messages with oneofs.
     pub oneof_field_box: Option<bool>,
     /// Implement serde_derive for messages
     pub serde_derive: Option<bool>,
