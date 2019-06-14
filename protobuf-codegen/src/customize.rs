@@ -27,6 +27,8 @@ pub struct Customize {
     /// Use `std::Option<T>` to store singular messages fields.
     /// Note, it's not possible to have recursive messages with this option enabled.
     pub singular_field_option: Option<bool>,
+
+    pub oneof_field_box: Option<bool>,
     /// Implement serde_derive for messages
     pub serde_derive: Option<bool>,
     /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
@@ -81,6 +83,9 @@ impl Customize {
         }
         if let Some(v) = that.singular_field_option {
             self.singular_field_option = Some(v);
+        }
+        if let Some(v) = that.oneof_field_box {
+            self.oneof_field_box = Some(v);
         }
         if let Some(v) = that.serde_derive {
             self.serde_derive = Some(v);
@@ -138,6 +143,8 @@ impl Customize {
                 r.singular_field_option_box = Some(parse_bool(v)?);
             } else if n == "singular_field_option" {
                 r.singular_field_option = Some(parse_bool(v)?);
+            } else if n == "oneof_field_box" {
+                r.oneof_field_box = Some(parse_bool(v)?);
             } else if n == "serde_derive" {
                 r.serde_derive = Some(parse_bool(v)?);
             } else if n == "serde_derive_cfg" {
@@ -166,6 +173,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let repeated_field_vec = rustproto::exts::repeated_field_vec.get(source);
     let singular_field_option_box = rustproto::exts::singular_field_option_box.get(source);
     let singular_field_option = rustproto::exts::singular_field_option.get(source);
+    let oneof_field_box = rustproto::exts::oneof_field_box.get(source);
     let serde_derive = rustproto::exts::serde_derive.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
     let lite_runtime = None;
@@ -180,6 +188,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         repeated_field_vec,
         singular_field_option_box,
         singular_field_option,
+        oneof_field_box,
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
@@ -199,6 +208,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let repeated_field_vec = rustproto::exts::repeated_field_vec_field.get(source);
     let singular_field_option_box = rustproto::exts::singular_field_option_box_field.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_field.get(source);
+    let oneof_field_box = rustproto::exts::oneof_field_box_field.get(source);
     let serde_derive = None;
     let serde_derive_cfg = None;
     let lite_runtime = None;
@@ -213,6 +223,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         repeated_field_vec,
         singular_field_option_box,
         singular_field_option,
+        oneof_field_box,
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
@@ -231,6 +242,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let repeated_field_vec = rustproto::exts::repeated_field_vec_all.get(source);
     let singular_field_option_box = rustproto::exts::singular_field_option_box_all.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_all.get(source);
+    let oneof_field_box = rustproto::exts::oneof_field_box_all.get(source);
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
@@ -245,6 +257,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         repeated_field_vec,
         singular_field_option_box,
         singular_field_option,
+        oneof_field_box,
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
