@@ -38,6 +38,10 @@ extend google.protobuf.FileOptions {
     
     // When true, will only generate codes that works with lite runtime.
     optional bool lite_runtime_all = 17035;
+
+    // Use `std::Box<T>` to store oneof message fields.
+    // This is useful for mutually recursive messages with oneofs.
+    optional bool oneof_field_box_all = 17036;
 }
 
 extend google.protobuf.MessageOptions {
@@ -64,6 +68,10 @@ extend google.protobuf.MessageOptions {
     optional bool serde_derive = 17030;
     // Guard serde annotations with cfg attr.
     optional string serde_derive_cfg = 17031;
+
+    // Use `std::Box<T>` to store oneof message fields.
+    // This is useful for mutually recursive messages with oneofs.
+    optional bool oneof_field_box = 17036;
 }
 
 extend google.protobuf.FieldOptions {
@@ -84,4 +92,8 @@ extend google.protobuf.FieldOptions {
     // Use `std::Option<T>` to store singular messages fields.
     // Note, it's not possible to have recursive messages with this option enabled.
     optional bool singular_field_option_field = 17025;
+
+    // Use `std::Box<T>` to store oneof message fields.
+    // This is useful for mutually recursive messages with oneofs.
+    optional bool oneof_field_box_field = 17036;
 }
