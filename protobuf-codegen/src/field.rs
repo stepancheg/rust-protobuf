@@ -579,7 +579,7 @@ pub(crate) struct FieldGen<'a> {
     pub expose_field: bool,
     pub generate_accessors: bool,
     pub generate_getter: bool,
-    customize: Customize,
+    pub customize: Customize,
 }
 
 impl<'a> FieldGen<'a> {
@@ -643,7 +643,7 @@ impl<'a> FieldGen<'a> {
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
-            FieldKind::Oneof(OneofField::parse(&oneof, &field, elem))
+            FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, &customize))
         } else {
             let flag = if field.message.scope.file_scope.syntax() == Syntax::PROTO3
                 && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE

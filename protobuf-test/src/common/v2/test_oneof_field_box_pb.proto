@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+package test_oneof_field_box;
+
+message Inner {
+    optional int32 size = 1;
+}
+
+message WithoutOption {
+    oneof x {
+        Inner inner = 1;
+        string s = 2;
+    }
+}
+
+message WithoutOptionRecursive {
+    oneof x {
+        WithoutOptionRecursive inner = 1;
+        string s = 2;
+    }
+}
+
+message WithMessageOption {
+    option (rustproto.oneof_field_box) = true;
+
+    oneof x {
+        Inner inner = 1;
+        string s = 2;
+    }
+}
+
+message WithFieldOption {
+    oneof x {
+        Inner inner = 1;
+        Inner inner_box = 2 [(rustproto.oneof_field_box_field) = true];
+    }
+}

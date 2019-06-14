@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+import "rustproto.proto";
+
 package test_oneof_recursive;
 
 message LinkedList {
@@ -7,4 +9,20 @@ message LinkedList {
     bool tail = 1;
     LinkedList node = 2;
   }
+}
+
+message A {
+    option (rustproto.oneof_field_box) = true;
+    oneof a {
+        int32 i = 1;
+        B b = 2;
+    }
+}
+
+message B {
+    option (rustproto.oneof_field_box) = true;
+    oneof b {
+        int32 i = 1;
+        A a = 2;
+    }
 }

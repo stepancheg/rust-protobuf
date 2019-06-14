@@ -31,10 +31,12 @@ impl<'a> OneofField<'a> {
         oneof: &OneofWithContext<'a>,
         field: &FieldWithContext<'a>,
         elem: FieldElem<'a>,
+        customize: &Customize,
     ) -> OneofField<'a> {
-        // detecting recursion
         let boxed = if let &FieldElem::Message(ref m) = &elem {
-            m.message.name_absolute() == oneof.message.name_absolute()
+            customize.oneof_field_box.unwrap_or(false)
+            // detecting recursion
+            || m.message.name_absolute() == oneof.message.name_absolute()
         } else {
             false
         };
@@ -101,7 +103,7 @@ impl<'a> OneofVariantGen<'a> {
                 ),
                 field.rust_name
             ),
-            oneof_field: OneofField::parse(variant.oneof, &field.proto_field, field.elem().clone()),
+            oneof_field: OneofField::parse(variant.oneof, &field.proto_field, field.elem().clone(), &field.customize),
         }
     }
 
