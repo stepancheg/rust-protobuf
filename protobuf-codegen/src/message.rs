@@ -31,6 +31,8 @@ pub(crate) struct MessageGen<'a> {
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
     customize: Customize,
+    path: &'a [i32],
+    info: Option<&'a SourceCodeInfo>,
 }
 
 impl<'a> MessageGen<'a> {
@@ -38,16 +40,31 @@ impl<'a> MessageGen<'a> {
         message: &'a MessageWithScope<'a>,
         root_scope: &'a RootScope<'a>,
         customize: &Customize,
+        path: &'a [i32],
+        info: Option<&'a SourceCodeInfo>,
     ) -> MessageGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
             message.message.options.get_message(),
         ));
 
+        static FIELD_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+        let field_number = *FIELD_NUMBER.get(|| {
+            protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
+                .field_by_name("field")
+                .map(|d| d.proto().get_number())
+                .expect("`field` must exist")
+        });
+
         let fields: Vec<_> = message
             .fields()
             .into_iter()
-            .map(|field| FieldGen::parse(field, root_scope, &customize))
+            .enumerate()
+            .map(|(id, field)| {
+                let mut path = path.to_vec();
+                path.extend_from_slice(&[field_number, id as i32]);
+                FieldGen::parse(field, root_scope, &customize, path, info)
+            })
             .collect();
         let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
             message
@@ -64,6 +81,8 @@ impl<'a> MessageGen<'a> {
             fields: fields,
             lite_runtime,
             customize,
+            path,
+            info,
         }
     }
 
@@ -527,6 +546,7 @@ impl<'a> MessageGen<'a> {
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
+        w.all_documentation(self.info, self.path);
         self.write_struct(w);
 
         w.write_line("");
@@ -579,20 +599,54 @@ impl<'a> MessageGen<'a> {
                     oneof.write(w);
                 }
 
-                for nested in &nested_messages {
+                static NESTED_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+                let nested_type_number = *NESTED_TYPE_NUMBER.get(|| {
+                    protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
+                        .field_by_name("nested_type")
+                        .map(|d| d.proto().get_number())
+                        .expect("`nested_type` must exist")
+                });
+
+                let mut path = self.path.to_vec();
+                path.extend(&[nested_type_number, 0]);
+                for (id, nested) in nested_messages.iter().enumerate() {
+                    let len = path.len() - 1;
+                    path[len] = id as i32;
+
                     if !first {
                         w.write_line("");
                     }
                     first = false;
-                    MessageGen::new(nested, self.root_scope, &self.customize).write(w);
+                    MessageGen::new(nested, self.root_scope, &self.customize, &path, self.info)
+                        .write(w);
                 }
 
-                for enum_type in &self.message.to_scope().get_enums() {
+                static ENUM_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+                let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
+                    protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
+                        .field_by_name("enum_type")
+                        .map(|d| d.proto().get_number())
+                        .expect("`enum_type` must exist")
+                });
+
+                let len = path.len() - 2;
+                path[len] = enum_type_number;
+                for (id, enum_type) in self.message.to_scope().get_enums().iter().enumerate() {
+                    let len = path.len() - 1;
+                    path[len] = id as i32;
+
                     if !first {
                         w.write_line("");
                     }
                     first = false;
-                    EnumGen::new(enum_type, &self.customize, self.root_scope).write(w);
+                    EnumGen::new(
+                        enum_type,
+                        &self.customize,
+                        self.root_scope,
+                        &path,
+                        self.info,
+                    )
+                    .write(w);
                 }
             });
         }

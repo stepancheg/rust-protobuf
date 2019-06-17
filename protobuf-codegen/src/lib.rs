@@ -191,16 +191,53 @@ fn gen_file(
             ));
         }
 
-        for message in &scope.get_messages() {
+        static NESTED_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+        let message_type_number = *NESTED_TYPE_NUMBER.get(|| {
+            protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
+                .field_by_name("message_type")
+                .map(|d| d.proto().get_number())
+                .expect("`message_type` must exist")
+        });
+
+        let mut path = vec![message_type_number, 0];
+        for (id, message) in scope.get_messages().iter().enumerate() {
             // ignore map entries, because they are not used in map fields
             if map_entry(message).is_none() {
+                path[1] = id as i32;
+
                 w.write_line("");
-                MessageGen::new(message, &root_scope, &customize).write(&mut w);
+                MessageGen::new(
+                    message,
+                    &root_scope,
+                    &customize,
+                    &path,
+                    file.source_code_info.as_ref(),
+                )
+                .write(&mut w);
             }
         }
-        for enum_type in &scope.get_enums() {
+
+        static ENUM_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+        let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
+            protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
+                .field_by_name("enum_type")
+                .map(|d| d.proto().get_number())
+                .expect("`enum_type` must exist")
+        });
+
+        path[0] = enum_type_number;
+        for (id, enum_type) in scope.get_enums().iter().enumerate() {
+            path[1] = id as i32;
+
             w.write_line("");
-            EnumGen::new(enum_type, &customize, root_scope).write(&mut w);
+            EnumGen::new(
+                enum_type,
+                &customize,
+                root_scope,
+                &path,
+                file.source_code_info.as_ref(),
+            )
+            .write(&mut w);
         }
 
         write_extensions(file, &root_scope, &mut w, &customize);

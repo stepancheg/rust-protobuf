@@ -270,6 +270,37 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
+    fn documentation(&mut self, comment: &str) {
+        if comment.is_empty() {
+            self.write_line("///");
+        } else {
+            self.write_line(&format!("/// {}", comment));
+        }
+    }
+
+    pub fn all_documentation(
+        &mut self,
+        info: Option<&protobuf::descriptor::SourceCodeInfo>,
+        path: &[i32],
+    ) {
+        let doc = info
+            .map(|v| &v.location)
+            .and_then(|ls| ls.iter().find(|l| l.path == path))
+            .map(|l| l.get_leading_comments());
+
+        let lines = doc
+            .iter()
+            .map(|doc| doc.lines())
+            .flatten()
+            .collect::<Vec<_>>();
+
+        if !lines.iter().any(|line| line.starts_with("    ")) {
+            for doc in &lines {
+                self.documentation(doc);
+            }
+        }
+    }
+
     pub fn fn_def(&mut self, sig: &str) {
         self.write_line(&format!("fn {};", sig));
     }
