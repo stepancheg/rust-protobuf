@@ -294,6 +294,7 @@ impl<'a> CodeWriter<'a> {
             .flatten()
             .collect::<Vec<_>>();
 
+        // Skip comments with code blocks to avoid rustdoc trying to compile them.
         if !lines.iter().any(|line| line.starts_with("    ")) {
             for doc in &lines {
                 self.documentation(doc);
