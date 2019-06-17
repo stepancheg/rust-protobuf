@@ -580,6 +580,8 @@ pub(crate) struct FieldGen<'a> {
     pub generate_accessors: bool,
     pub generate_getter: bool,
     customize: Customize,
+    path: Vec<i32>,
+    info: Option<&'a SourceCodeInfo>,
 }
 
 impl<'a> FieldGen<'a> {
@@ -587,6 +589,8 @@ impl<'a> FieldGen<'a> {
         field: FieldWithContext<'a>,
         root_scope: &'a RootScope<'a>,
         customize: &Customize,
+        path: Vec<i32>,
+        info: Option<&'a SourceCodeInfo>,
     ) -> FieldGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_field(
@@ -691,6 +695,8 @@ impl<'a> FieldGen<'a> {
             generate_accessors,
             generate_getter,
             customize,
+            path,
+            info,
         }
     }
 
@@ -1454,6 +1460,8 @@ impl<'a> FieldGen<'a> {
         if self.proto_type == field_descriptor_proto::Type::TYPE_GROUP {
             w.comment(&format!("{}: <group>", &self.rust_name));
         } else {
+            w.all_documentation(self.info, &self.path);
+
             let vis = self.visibility();
             w.field_decl_vis(
                 vis,
