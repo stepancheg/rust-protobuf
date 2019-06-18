@@ -270,6 +270,85 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
+    fn documentation(&mut self, comment: &str) {
+        if comment.is_empty() {
+            self.write_line("///");
+        } else {
+            self.write_line(&format!("/// {}", comment));
+        }
+    }
+
+    /// Writes the documentation of the given path.
+    ///
+    /// Protobuf paths are defined in proto/google/protobuf/descriptor.proto,
+    /// in the `SourceCodeInfo` message.
+    ///
+    /// For example, say we have a file like:
+    ///
+    /// ```ignore
+    /// message Foo {
+    ///   optional string foo = 1;
+    /// }
+    /// ```
+    ///
+    /// Let's look at just the field definition. We have the following paths:
+    ///
+    /// ```ignore
+    /// path               represents
+    /// [ 4, 0, 2, 0 ]     The whole field definition.
+    /// [ 4, 0, 2, 0, 4 ]  The label (optional).
+    /// [ 4, 0, 2, 0, 5 ]  The type (string).
+    /// [ 4, 0, 2, 0, 1 ]  The name (foo).
+    /// [ 4, 0, 2, 0, 3 ]  The number (1).
+    /// ```
+    ///
+    /// The `4`s can be obtained using simple introspection:
+    ///
+    /// ```
+    /// use protobuf::descriptor::FileDescriptorProto;
+    /// use protobuf::reflect::MessageDescriptor;
+    ///
+    /// let id = MessageDescriptor::for_type::<FileDescriptorProto>()
+    ///     .field_by_name("message_type")
+    ///     .expect("`message_type` must exist")
+    ///     .proto()
+    ///     .get_number();
+    ///
+    /// assert_eq!(id, 4);
+    /// ```
+    ///
+    /// The first `0` here means this path refers to the first message.
+    ///
+    /// The `2` then refers to the `field` field on the `DescriptorProto` message.
+    ///
+    /// Then comes another `0` to refer to the first field of the current message.
+    ///
+    /// Etc.
+
+    pub fn all_documentation(
+        &mut self,
+        info: Option<&protobuf::descriptor::SourceCodeInfo>,
+        path: &[i32],
+    ) {
+        let doc = info
+            .map(|v| &v.location)
+            .and_then(|ls| ls.iter().find(|l| l.path == path))
+            .map(|l| l.get_leading_comments());
+
+        let lines = doc
+            .iter()
+            .map(|doc| doc.lines())
+            .flatten()
+            .collect::<Vec<_>>();
+
+        // Skip comments with code blocks to avoid rustdoc trying to compile them.
+        if !lines.iter().any(|line| line.starts_with("    ")) {
+            for doc in &lines {
+                self.documentation(doc);
+            }
+        }
+    }
+
     pub fn fn_def(&mut self, sig: &str) {
         self.write_line(&format!("fn {};", sig));
     }

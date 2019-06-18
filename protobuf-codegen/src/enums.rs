@@ -55,6 +55,8 @@ pub(crate) struct EnumGen<'a> {
     type_name: RustIdentWithPath,
     lite_runtime: bool,
     customize: Customize,
+    path: &'a [i32],
+    info: Option<&'a SourceCodeInfo>,
 }
 
 impl<'a> EnumGen<'a> {
@@ -62,6 +64,8 @@ impl<'a> EnumGen<'a> {
         enum_with_scope: &'a EnumWithScope<'a>,
         customize: &Customize,
         _root_scope: &RootScope,
+        path: &'a [i32],
+        info: Option<&'a SourceCodeInfo>,
     ) -> EnumGen<'a> {
         let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
@@ -78,6 +82,8 @@ impl<'a> EnumGen<'a> {
             type_name: enum_with_scope.rust_name().to_path(),
             lite_runtime,
             customize: customize.clone(),
+            path,
+            info,
         }
     }
 
@@ -112,7 +118,7 @@ impl<'a> EnumGen<'a> {
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
-        self.write_struct(w);
+        self.write_enum(w);
         if self.allow_alias() {
             w.write_line("");
             self.write_impl_eq(w);
@@ -127,7 +133,9 @@ impl<'a> EnumGen<'a> {
         self.write_impl_value(w);
     }
 
-    fn write_struct(&self, w: &mut CodeWriter) {
+    fn write_enum(&self, w: &mut CodeWriter) {
+        w.all_documentation(self.info, self.path);
+
         let mut derive = Vec::new();
         derive.push("Clone");
         derive.push("Copy");
