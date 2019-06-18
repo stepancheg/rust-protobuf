@@ -227,7 +227,7 @@ fn gen_file(
                 .get_number()
         });
 
-        path[0] = enum_type_number;
+        let mut path = vec![enum_type_number, 0];
         for (id, enum_type) in scope.get_enums().iter().enumerate() {
             path[1] = id as i32;
 
