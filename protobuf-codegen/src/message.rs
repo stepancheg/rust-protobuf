@@ -52,8 +52,9 @@ impl<'a> MessageGen<'a> {
         let field_number = *FIELD_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                 .field_by_name("field")
-                .map(|d| d.proto().get_number())
                 .expect("`field` must exist")
+                .proto()
+                .get_number()
         });
 
         let fields: Vec<_> = message
@@ -603,8 +604,9 @@ impl<'a> MessageGen<'a> {
                 let nested_type_number = *NESTED_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .field_by_name("nested_type")
-                        .map(|d| d.proto().get_number())
                         .expect("`nested_type` must exist")
+                        .proto()
+                        .get_number()
                 });
 
                 let mut path = self.path.to_vec();
@@ -625,8 +627,9 @@ impl<'a> MessageGen<'a> {
                 let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .field_by_name("enum_type")
-                        .map(|d| d.proto().get_number())
                         .expect("`enum_type` must exist")
+                        .proto()
+                        .get_number()
                 });
 
                 let len = path.len() - 2;

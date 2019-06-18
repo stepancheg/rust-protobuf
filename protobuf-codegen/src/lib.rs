@@ -195,8 +195,9 @@ fn gen_file(
         let message_type_number = *NESTED_TYPE_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
                 .field_by_name("message_type")
-                .map(|d| d.proto().get_number())
                 .expect("`message_type` must exist")
+                .proto()
+                .get_number()
         });
 
         let mut path = vec![message_type_number, 0];
@@ -221,8 +222,9 @@ fn gen_file(
         let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
                 .field_by_name("enum_type")
-                .map(|d| d.proto().get_number())
                 .expect("`enum_type` must exist")
+                .proto()
+                .get_number()
         });
 
         path[0] = enum_type_number;
