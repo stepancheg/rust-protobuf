@@ -278,6 +278,53 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
+    /// Writes the documentation of the given path.
+    ///
+    /// Protobuf paths are defined in proto/google/protobuf/descriptor.proto,
+    /// in the `SourceCodeInfo` message.
+    ///
+    /// For example, say we have a file like:
+    ///
+    /// ```ignore
+    /// message Foo {
+    ///   optional string foo = 1;
+    /// }
+    /// ```
+    ///
+    /// Let's look at just the field definition. We have the following paths:
+    ///
+    /// ```ignore
+    /// path               represents
+    /// [ 4, 0, 2, 0 ]     The whole field definition.
+    /// [ 4, 0, 2, 0, 4 ]  The label (optional).
+    /// [ 4, 0, 2, 0, 5 ]  The type (string).
+    /// [ 4, 0, 2, 0, 1 ]  The name (foo).
+    /// [ 4, 0, 2, 0, 3 ]  The number (1).
+    /// ```
+    ///
+    /// The `4`s can be obtained using simple introspection:
+    ///
+    /// ```
+    /// use protobuf::descriptor::FileDescriptorProto;
+    /// use protobuf::reflect::MessageDescriptor;
+    ///
+    /// let id = MessageDescriptor::for_type::<FileDescriptorProto>()
+    ///     .field_by_name("message_type")
+    ///     .expect("`message_type` must exist")
+    ///     .proto()
+    ///     .get_number();
+    ///
+    /// assert_eq!(id, 4);
+    /// ```
+    ///
+    /// The first `0` here means this path refers to the first message.
+    ///
+    /// The `2` then refers to the `field` field on the `DescriptorProto` message.
+    ///
+    /// Then comes another `0` to refer to the first field of the current message.
+    ///
+    /// Etc.
+
     pub fn all_documentation(
         &mut self,
         info: Option<&protobuf::descriptor::SourceCodeInfo>,
