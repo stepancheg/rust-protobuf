@@ -48,6 +48,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   Should not affect users.
 - [Generated files are now compatible only with the same version of
   runtime](https://github.com/stepancheg/rust-protobuf/commit/2ab4d50c27c4dd7803b64ce1a43e2c134532c7a6)
+- [Fixed codegen for mutually recursive messages with
+  oneofs](https://github.com/stepancheg/rust-protobuf/pull/420)
 
 ## [2.6.2] - 2019-06-03
 - Fix [OOM on malformed input for fields of type
