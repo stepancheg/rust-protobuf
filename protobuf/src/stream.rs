@@ -1444,7 +1444,7 @@ mod test {
     {
         let d = decode_hex(hex);
         let mut reader = io::Cursor::new(d);
-        let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut BufRead);
+        let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut dyn BufRead);
         assert_eq!(0, is.pos());
         callback(&mut is);
     }
@@ -1648,7 +1648,7 @@ mod test {
         {
             let mut v = Vec::new();
             {
-                let mut os = CodedOutputStream::new(&mut v as &mut Write);
+                let mut os = CodedOutputStream::new(&mut v as &mut dyn Write);
                 gen(&mut os).unwrap();
                 os.flush().unwrap();
             }
@@ -1769,7 +1769,7 @@ mod test {
         {
             let mut v = Vec::new();
             {
-                let mut os = CodedOutputStream::new(&mut v as &mut Write);
+                let mut os = CodedOutputStream::new(&mut v as &mut dyn Write);
                 Write::write(&mut os, &expected).expect("io::Write::write");
                 Write::flush(&mut os).expect("io::Write::flush");
             }
