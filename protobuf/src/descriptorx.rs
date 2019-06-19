@@ -521,7 +521,8 @@ pub struct FieldWithContext<'a> {
 }
 
 impl<'a> FieldWithContext<'a> {
-    fn is_oneof(&self) -> bool {
+    #[doc(hidden)]
+    pub fn is_oneof(&self) -> bool {
         self.field.has_oneof_index()
     }
 

@@ -8,3 +8,21 @@ message LinkedList {
     LinkedList node = 2;
   }
 }
+
+message RecursiveA {
+    oneof x {
+        RecursiveB b = 1;
+    }
+}
+
+message RecursiveB {
+    oneof x {
+        RecursiveC c = 1;
+    }
+}
+
+message RecursiveC {
+    oneof x {
+        RecursiveA a = 1;
+    }
+}

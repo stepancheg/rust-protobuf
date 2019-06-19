@@ -14,8 +14,8 @@ use serde;
 
 /// Message info for codegen
 pub struct MessageGen<'a> {
-    message: &'a MessageWithScope<'a>,
-    root_scope: &'a RootScope<'a>,
+    pub(crate) message: &'a MessageWithScope<'a>,
+    pub(crate) root_scope: &'a RootScope<'a>,
     type_name: String,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,

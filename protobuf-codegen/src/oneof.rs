@@ -6,11 +6,12 @@ use field::FieldGen;
 use message::MessageGen;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto_Type;
-use protobuf::descriptorx::OneofVariantWithContext;
 use protobuf::descriptorx::OneofWithContext;
 use protobuf::descriptorx::WithScope;
+use protobuf::descriptorx::{FieldWithContext, OneofVariantWithContext, RootScope};
 use rust_types_values::RustType;
 use serde;
+use std::collections::HashSet;
 use Customize;
 
 // oneof one { ... }
@@ -23,21 +24,35 @@ pub struct OneofField {
 }
 
 impl OneofField {
+    // Detecting recursion: if oneof fields contains a self-reference
+    // or another message which has a reference to self,
+    // put oneof variant into a box.
+    fn need_boxed(field: &FieldWithContext, root_scope: &RootScope, owner_name: &str) -> bool {
+        let mut visited_messages = HashSet::new();
+        let mut fields = vec![field.clone()];
+        while let Some(field) = fields.pop() {
+            if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_MESSAGE {
+                let message_name = field.field.get_type_name().to_owned();
+                if !visited_messages.insert(message_name.clone()) {
+                    continue;
+                }
+                if message_name == *owner_name {
+                    return true;
+                }
+                let message = root_scope.find_message(&message_name);
+                fields.extend(message.fields().into_iter().filter(|f| f.is_oneof()));
+            }
+        }
+        false
+    }
+
     pub fn parse(
         oneof: &OneofWithContext,
-        _field: &FieldDescriptorProto,
+        field: &FieldWithContext,
         elem: FieldElem,
+        root_scope: &RootScope,
     ) -> OneofField {
-        // detecting recursion
-        let boxed = if let &FieldElem::Message(ref name, ..) = &elem {
-            if *name == oneof.message.rust_name() {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        };
+        let boxed = OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute());
 
         OneofField {
             elem: elem,
@@ -73,6 +88,8 @@ impl<'a> OneofVariantGen<'a> {
         oneof: &'a OneofGen<'a>,
         variant: OneofVariantWithContext<'a>,
         field: &'a FieldGen,
+        root_scope: &RootScope,
+        customize: Customize,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {
             oneof: oneof,
@@ -85,10 +102,11 @@ impl<'a> OneofVariantGen<'a> {
             ),
             oneof_field: OneofField::parse(
                 variant.oneof,
-                variant.field,
+                &field.proto_field,
                 field.oneof().elem.clone(),
+                oneof.message.root_scope,
             ),
-            customize: field.customize.clone(),
+            customize,
         }
     }
 
@@ -149,7 +167,13 @@ impl<'a> OneofGen<'a> {
                     .expect(&format!("field not found by name: {}", v.field.get_name()));
                 match field.proto_type {
                     FieldDescriptorProto_Type::TYPE_GROUP => None,
-                    _ => Some(OneofVariantGen::parse(self, v, field)),
+                    _ => Some(OneofVariantGen::parse(
+                        self,
+                        v,
+                        field,
+                        self.message.root_scope,
+                        self.customize.clone(),
+                    )),
                 }
             })
             .collect()
