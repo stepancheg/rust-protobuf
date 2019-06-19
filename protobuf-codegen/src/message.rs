@@ -26,7 +26,7 @@ use crate::serde;
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
     pub message: &'a MessageWithScope<'a>,
-    root_scope: &'a RootScope<'a>,
+    pub root_scope: &'a RootScope<'a>,
     type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,

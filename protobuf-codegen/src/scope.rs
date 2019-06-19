@@ -43,7 +43,7 @@ impl<'a> RootScope<'a> {
     }
 
     // find message by fully qualified name
-    pub fn _find_message(&'a self, fqn: &ProtobufAbsolutePath) -> MessageWithScope<'a> {
+    pub fn find_message(&'a self, fqn: &ProtobufAbsolutePath) -> MessageWithScope<'a> {
         match self.find_message_or_enum(fqn) {
             MessageOrEnumWithScope::Message(m) => m,
             _ => panic!("not a message: {}", fqn),

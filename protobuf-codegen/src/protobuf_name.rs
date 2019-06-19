@@ -231,7 +231,7 @@ mod relative_path_test {
     }
 }
 
-#[derive(Clone, Eq, PartialEq, Debug)]
+#[derive(Clone, Eq, PartialEq, Debug, Hash)]
 pub struct ProtobufAbsolutePath {
     pub path: String,
 }

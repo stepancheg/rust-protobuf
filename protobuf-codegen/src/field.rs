@@ -647,7 +647,7 @@ impl<'a> FieldGen<'a> {
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
-            FieldKind::Oneof(OneofField::parse(&oneof, &field, elem))
+            FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
         } else {
             let flag = if field.message.scope.file_scope.syntax() == Syntax::PROTO3
                 && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE
