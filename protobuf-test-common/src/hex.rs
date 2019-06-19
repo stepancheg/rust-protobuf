@@ -4,9 +4,9 @@ use std::char;
 
 fn decode_hex_digit(digit: char) -> u8 {
     match digit {
-        '0'...'9' => digit as u8 - '0' as u8,
-        'a'...'f' => digit as u8 - 'a' as u8 + 10,
-        'A'...'F' => digit as u8 - 'A' as u8 + 10,
+        '0'..='9' => digit as u8 - '0' as u8,
+        'a'..='f' => digit as u8 - 'a' as u8 + 10,
+        'A'..='F' => digit as u8 - 'A' as u8 + 10,
         _ => panic!(),
     }
 }
