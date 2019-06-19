@@ -4,7 +4,6 @@ use code_writer::CodeWriter;
 use field::FieldElem;
 use field::FieldGen;
 use message::MessageGen;
-use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto_Type;
 use protobuf::descriptorx::OneofWithContext;
 use protobuf::descriptorx::WithScope;
@@ -88,7 +87,7 @@ impl<'a> OneofVariantGen<'a> {
         oneof: &'a OneofGen<'a>,
         variant: OneofVariantWithContext<'a>,
         field: &'a FieldGen,
-        root_scope: &RootScope,
+        _root_scope: &RootScope,
         customize: Customize,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {

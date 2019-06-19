@@ -34,7 +34,7 @@ fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
             b'\t' => buf.push_str(r"\t"),
             b'"' => buf.push_str("\\\""),
             b'\\' => buf.push_str(r"\\"),
-            b'\x20'...b'\x7e' => buf.push(c as char),
+            b'\x20'..=b'\x7e' => buf.push(c as char),
             _ => {
                 buf.push('\\');
                 buf.push((b'0' + (c >> 6)) as char);
@@ -67,7 +67,7 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
             Some(f) => f,
         };
         let d = match f {
-            '0'...'9' => (f as u8 - b'0'),
+            '0'..='9' => (f as u8 - b'0'),
             _ => return 0,
         };
         *chars = copy;
@@ -76,9 +76,9 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
 
     fn parse_hex_digit(chars: &mut std::str::Chars) -> u8 {
         match chars.next().unwrap() {
-            c @ '0'...'9' => (c as u8) - b'0',
-            c @ 'a'...'f' => (c as u8) - b'a' + 10,
-            c @ 'A'...'F' => (c as u8) - b'A' + 10,
+            c @ '0'..='9' => (c as u8) - b'0',
+            c @ 'a'..='f' => (c as u8) - b'a' + 10,
+            c @ 'A'..='F' => (c as u8) - b'A' + 10,
             _ => panic!("incorrect hex escape"),
         }
     }
@@ -95,7 +95,7 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
             'v' => return b'\x0b',
             '"' => return b'"',
             '\'' => return b'\'',
-            '0'...'9' => {
+            '0'..='9' => {
                 let d1 = n as u8 - b'0';
                 let d2 = parse_if_digit(chars);
                 let d3 = parse_if_digit(chars);

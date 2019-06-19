@@ -1,5 +1,4 @@
 use std::env;
-use std::env::VarError;
 use std::io::{Read, Write};
 use std::process;
 use std::fs::File;
