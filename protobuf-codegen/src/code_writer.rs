@@ -54,6 +54,7 @@ impl<'a> CodeWriter<'a> {
         self.comment("https://github.com/Manishearth/rust-clippy/issues/702");
         self.write_line("#![allow(unknown_lints)]");
         self.write_line("#![allow(clippy)]");
+        self.write_line("#![allow(clippy::all)]");
         self.write_line("");
         self.write_line("#![cfg_attr(rustfmt, rustfmt_skip)]");
         self.write_line("");
