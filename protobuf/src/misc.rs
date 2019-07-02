@@ -12,50 +12,135 @@ pub unsafe fn remove_lifetime_mut<A: ?Sized>(a: &mut A) -> &'static mut A {
     mem::transmute(a)
 }
 
-macro_rules! map_rust_type_to_protobuf {
-    ($rust:path, $protobuf:path) => {
-        impl From<$protobuf> for $rust {
-            fn from(inner: $protobuf) -> Self {
-                inner.value
-            }
-        }
+// bool -> BoolValue
 
-        impl From<$rust> for $protobuf {
-            fn from(inner: $rust) -> Self {
-                let mut value = Self::new();
-                value.value = inner;
-                value
-            }
-        }
-    };
-}
-
-// Map some of well known types to Rust equivalents.
-
-map_rust_type_to_protobuf! { bool, well_known_types::BoolValue }
-map_rust_type_to_protobuf! { Vec<u8>, well_known_types::BytesValue }
-map_rust_type_to_protobuf! { f64, well_known_types::DoubleValue }
-map_rust_type_to_protobuf! { f32, well_known_types::FloatValue }
-map_rust_type_to_protobuf! { i32, well_known_types::Int32Value }
-map_rust_type_to_protobuf! { i64, well_known_types::Int64Value }
-map_rust_type_to_protobuf! { u32, well_known_types::UInt32Value }
-map_rust_type_to_protobuf! { u64, well_known_types::UInt64Value }
-map_rust_type_to_protobuf! { String, well_known_types::StringValue }
-
-impl From<well_known_types::Duration> for Duration {
-    fn from(inner: well_known_types::Duration) -> Self {
-        Duration::new(inner.seconds as u64, inner.nanos as u32)
+impl From<well_known_types::BoolValue> for bool {
+    fn from(inner: well_known_types::BoolValue) -> Self {
+        inner.value
     }
 }
 
-impl From<Duration> for well_known_types::Duration {
-    fn from(inner: Duration) -> Self {
-        let mut value = well_known_types::Duration::new();
-        value.seconds = inner.as_secs() as i64;
-        value.nanos = inner.subsec_nanos() as i32;
+impl From<bool> for well_known_types::BoolValue {
+    fn from(inner: bool) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
         value
     }
 }
+
+// Vec<u8> -> BytesValue
+
+impl From<well_known_types::BytesValue> for Vec<u8> {
+    fn from(inner: well_known_types::BytesValue) -> Self {
+        inner.value
+    }
+}
+
+impl From<Vec<u8>> for well_known_types::BytesValue {
+    fn from(inner: Vec<u8>) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// f64 -> DoubleValue
+
+impl From<well_known_types::DoubleValue> for f64 {
+    fn from(inner: well_known_types::DoubleValue) -> Self {
+        inner.value
+    }
+}
+
+impl From<f64> for well_known_types::DoubleValue {
+    fn from(inner: f64) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// f32 -> FloatValue
+
+impl From<well_known_types::FloatValue> for f32 {
+    fn from(inner: well_known_types::FloatValue) -> Self {
+        inner.value
+    }
+}
+
+impl From<f32> for well_known_types::FloatValue {
+    fn from(inner: f32) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// i32 -> Int32Value
+
+impl From<well_known_types::Int32Value> for i32 {
+    fn from(inner: well_known_types::Int32Value) -> Self {
+        inner.value
+    }
+}
+
+impl From<i32> for well_known_types::Int32Value {
+    fn from(inner: i32) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// i64 -> Int64Value
+
+impl From<well_known_types::Int64Value> for i64 {
+    fn from(inner: well_known_types::Int64Value) -> Self {
+        inner.value
+    }
+}
+
+impl From<i64> for well_known_types::Int64Value {
+    fn from(inner: i64) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// u32 -> UInt32Value
+
+impl From<well_known_types::UInt32Value> for u32 {
+    fn from(inner: well_known_types::UInt32Value) -> Self {
+        inner.value
+    }
+}
+
+impl From<u32> for well_known_types::UInt32Value {
+    fn from(inner: u32) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// u64 -> UInt64Value
+
+impl From<well_known_types::UInt64Value> for u64 {
+    fn from(inner: well_known_types::UInt64Value) -> Self {
+        inner.value
+    }
+}
+
+impl From<u64> for well_known_types::UInt64Value {
+    fn from(inner: u64) -> Self {
+        let mut value = Self::new();
+        value.value = inner;
+        value
+    }
+}
+
+// () -> Empty
 
 impl From<well_known_types::Empty> for () {
     fn from(_inner: well_known_types::Empty) -> Self {
@@ -68,6 +153,11 @@ impl From<()> for well_known_types::Empty {
         Self::new()
     }
 }
+
+// We can't map `std::time::Duration` type to `well_known_types::Duration` because
+// first does not accept negative values in constrast to second.
+// Also, we can't map `std::time::SystemTime` to `well_known_types::Timestamp`,
+// because it does not guarantee that it is UTC.
 
 #[cfg(test)]
 mod test {
@@ -90,23 +180,4 @@ mod test {
         }
         assert_eq!(vec![10, 11, 12, 13, 14], v);
     }
-
-    #[test]
-    fn test_duration_protobuf_to_rust_mapping() {
-        let mut proto_duration = well_known_types::Duration::new();
-        proto_duration.seconds = 1_000;
-        proto_duration.nanos = 100;
-
-        let rust_duration = Duration::from(proto_duration);
-        assert_eq!(rust_duration, Duration::new(1_000, 100));
-    }
-
-    #[test]
-    fn test_duration_rust_to_protobuf_mapping() {
-        let rust_duration = Duration::new(1_000, 100);
-
-        let proto_duration = well_known_types::Duration::from(rust_duration);
-        assert_eq!(proto_duration.seconds, 1_000);
-        assert_eq!(proto_duration.nanos, 100);
-    }    
 }
