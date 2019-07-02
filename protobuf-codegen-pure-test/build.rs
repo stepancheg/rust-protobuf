@@ -43,7 +43,7 @@ enum FileNameClass {
     Ignore,
 }
 
-fn classify_file_name(name: &str) -> FileNameClass {
+fn classify_file_name(dir: &str, name: &str) -> FileNameClass {
     if name.starts_with(".") || name.ends_with(".md") || name.ends_with(".sh") {
         FileNameClass::Ignore
     } else if name.ends_with("_pb.rs") || name.ends_with("_pb_proto3.rs") {
@@ -53,7 +53,11 @@ fn classify_file_name(name: &str) -> FileNameClass {
     } else if name.ends_with(".proto") || name.ends_with(".proto3") {
         FileNameClass::Proto
     } else if name.ends_with(".rs") {
-        FileNameClass::TestRs
+        if dir == "src/google/protobuf" {
+            FileNameClass::GeneratedRs
+        } else {
+            FileNameClass::TestRs
+        }
     } else {
         panic!("unknown test file: {}", name);
     }
@@ -65,7 +69,7 @@ fn copy_tests(dir: &str) {
     for entry in fs::read_dir(&src_dir).expect(&format!("read_dir {}", src_dir)) {
         let file_name = entry.expect("entry").file_name().into_string().unwrap();
 
-        match classify_file_name(&file_name) {
+        match classify_file_name(dir, &file_name) {
             FileNameClass::ModRs | FileNameClass::Ignore | FileNameClass::GeneratedRs => {}
             FileNameClass::TestRs | FileNameClass::Proto => {
                 copy_from_protobuf_test(&format!("{}/{}", dir, file_name))
