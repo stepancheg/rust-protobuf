@@ -1,11 +1,9 @@
 use std::collections::HashMap;
 use std::fmt;
-use std::ptr;
 use std::any::TypeId;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::marker;
-use std::mem;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
@@ -114,6 +112,7 @@ pub struct EnumDescriptor {
     /// Type id of `<ProtobufEnumOrUnknown<E>>`
     enum_or_unknown_type_id: TypeId,
 
+    #[cfg(not(rustc_nightly))]
     get_descriptor: &'static dyn GetEnumDescriptor,
 
     index_by_name: HashMap<String, usize>,
@@ -199,6 +198,7 @@ impl EnumDescriptor {
             values,
             type_id: TypeId::of::<E>(),
             enum_or_unknown_type_id: TypeId::of::<ProtobufEnumOrUnknown<E>>(),
+            #[cfg(not(rustc_nightly))]
             get_descriptor,
             index_by_name,
             index_by_number,
@@ -237,22 +237,83 @@ impl EnumDescriptor {
     /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
     pub fn cast<E: 'static>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() == self.type_id {
-            unsafe {
-                let mut r = mem::uninitialized();
-                self.get_descriptor
-                    .copy_to(value, &mut r as *mut E as *mut ());
-                Some(r)
-            }
+            Some(self.cast_to_protobuf_enum(value))
         } else if TypeId::of::<E>() == self.enum_or_unknown_type_id {
-            debug_assert_eq!(mem::size_of::<E>(), mem::size_of::<i32>());
-            unsafe {
-                // This works because `ProtobufEnumOrUnknown<E>` is `#[repr(transparent)]`
-                let mut r = mem::uninitialized();
-                ptr::copy(&value, &mut r as *mut E as *mut i32, 1);
-                Some(r)
-            }
+            Some(self.cast_to_protobuf_enum_or_unknown(value))
         } else {
             None
+        }
+    }
+
+    #[cfg(rustc_nightly)]
+    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> E {
+        <E as cast_impl::CastValueToProtobufEnum>::cast(value).unwrap()
+    }
+
+    #[cfg(not(rustc_nightly))]
+    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> E {
+        use std::mem;
+        unsafe {
+            let mut r = mem::uninitialized();
+            self.get_descriptor
+                .copy_to(value, &mut r as *mut E as *mut ());
+            r
+        }
+    }
+
+    #[cfg(rustc_nightly)]
+    fn cast_to_protobuf_enum_or_unknown<E: 'static>(&self, value: i32) -> E {
+        <E as cast_impl::CastValueToProtobufEnumOrUnknown>::cast(value).unwrap()
+    }
+
+    #[cfg(not(rustc_nightly))]
+    fn cast_to_protobuf_enum_or_unknown<E: 'static>(&self, value: i32) -> E {
+        use std::ptr;
+        use std::mem;
+        debug_assert_eq!(mem::size_of::<E>(), mem::size_of::<i32>());
+        unsafe {
+            // This works because `ProtobufEnumOrUnknown<E>` is `#[repr(transparent)]`
+            let mut r = mem::uninitialized();
+            ptr::copy(&value, &mut r as *mut E as *mut i32, 1);
+            r
+        }
+    }
+
+}
+
+#[cfg(rustc_nightly)]
+mod cast_impl {
+    use super::*;
+
+    pub(crate) trait CastValueToProtobufEnumOrUnknown: Sized {
+        fn cast(value: i32) -> Option<Self>;
+    }
+
+    impl <T> CastValueToProtobufEnumOrUnknown for T {
+        default fn cast(_value: i32) -> Option<T> {
+            None
+        }
+    }
+
+    impl <E: ProtobufEnum> CastValueToProtobufEnumOrUnknown for ProtobufEnumOrUnknown<E> {
+        fn cast(value: i32) -> Option<ProtobufEnumOrUnknown<E>> {
+            Some(ProtobufEnumOrUnknown::from_i32(value))
+        }
+    }
+
+    pub(crate) trait CastValueToProtobufEnum: Sized {
+        fn cast(value: i32) -> Option<Self>;
+    }
+
+    impl <T> CastValueToProtobufEnum for T {
+        default fn cast(_value: i32) -> Option<T> {
+            None
+        }
+    }
+
+    impl <E: ProtobufEnum> CastValueToProtobufEnum for E {
+        fn cast(value: i32) -> Option<E> {
+            Some(E::from_i32(value).expect(&format!("unknown enum value: {}", value)))
         }
     }
 }
