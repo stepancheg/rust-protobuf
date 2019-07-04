@@ -12,7 +12,7 @@ pub unsafe fn remove_lifetime_mut<A: ?Sized>(a: &mut A) -> &'static mut A {
     mem::transmute(a)
 }
 
-// bool -> BoolValue
+// bool <-> BoolValue
 
 impl From<well_known_types::BoolValue> for bool {
     fn from(inner: well_known_types::BoolValue) -> Self {
@@ -28,7 +28,7 @@ impl From<bool> for well_known_types::BoolValue {
     }
 }
 
-// Vec<u8> -> BytesValue
+// Vec<u8> <-> BytesValue
 
 impl From<well_known_types::BytesValue> for Vec<u8> {
     fn from(inner: well_known_types::BytesValue) -> Self {
@@ -44,7 +44,7 @@ impl From<Vec<u8>> for well_known_types::BytesValue {
     }
 }
 
-// f64 -> DoubleValue
+// f64 <-> DoubleValue
 
 impl From<well_known_types::DoubleValue> for f64 {
     fn from(inner: well_known_types::DoubleValue) -> Self {
@@ -60,7 +60,7 @@ impl From<f64> for well_known_types::DoubleValue {
     }
 }
 
-// f32 -> FloatValue
+// f32 <-> FloatValue
 
 impl From<well_known_types::FloatValue> for f32 {
     fn from(inner: well_known_types::FloatValue) -> Self {
@@ -76,7 +76,7 @@ impl From<f32> for well_known_types::FloatValue {
     }
 }
 
-// i32 -> Int32Value
+// i32 <-> Int32Value
 
 impl From<well_known_types::Int32Value> for i32 {
     fn from(inner: well_known_types::Int32Value) -> Self {
@@ -92,7 +92,7 @@ impl From<i32> for well_known_types::Int32Value {
     }
 }
 
-// i64 -> Int64Value
+// i64 <-> Int64Value
 
 impl From<well_known_types::Int64Value> for i64 {
     fn from(inner: well_known_types::Int64Value) -> Self {
@@ -108,7 +108,7 @@ impl From<i64> for well_known_types::Int64Value {
     }
 }
 
-// u32 -> UInt32Value
+// u32 <-> UInt32Value
 
 impl From<well_known_types::UInt32Value> for u32 {
     fn from(inner: well_known_types::UInt32Value) -> Self {
@@ -124,7 +124,7 @@ impl From<u32> for well_known_types::UInt32Value {
     }
 }
 
-// u64 -> UInt64Value
+// u64 <-> UInt64Value
 
 impl From<well_known_types::UInt64Value> for u64 {
     fn from(inner: well_known_types::UInt64Value) -> Self {
@@ -140,12 +140,10 @@ impl From<u64> for well_known_types::UInt64Value {
     }
 }
 
-// () -> Empty
+// () <-> Empty
 
 impl From<well_known_types::Empty> for () {
-    fn from(_inner: well_known_types::Empty) -> Self {
-        ()
-    }
+    fn from(_inner: well_known_types::Empty) -> Self {}
 }
 
 impl From<()> for well_known_types::Empty {
@@ -154,10 +152,7 @@ impl From<()> for well_known_types::Empty {
     }
 }
 
-// We can't map `std::time::Duration` type to `well_known_types::Duration` because
-// first does not accept negative values in constrast to second.
-// Also, we can't map `std::time::SystemTime` to `well_known_types::Timestamp`,
-// because it does not guarantee that it is UTC.
+// TODO Think about `std::time::Duration` and `std::time::SystemTime` conversions.
 
 #[cfg(test)]
 mod test {
