@@ -21,6 +21,8 @@ with-serde = ["serde", "protobuf/with-serde"]
 glob         = "0.2"
 log          = "0.*"
 env_logger   = "0.5.*"
+# regex 1.1.8 does `#[repr(transparent)]` which is available since Rust 1.28
+regex        = "=1.1.7"
 tempfile     = "3.0"
 serde        = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
