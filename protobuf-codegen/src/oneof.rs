@@ -106,7 +106,7 @@ impl<'a> OneofVariantGen<'a> {
         oneof: &'a OneofGen<'a>,
         variant: OneofVariantWithContext<'a>,
         field: &'a FieldGen,
-        root_scope: &RootScope,
+        _root_scope: &RootScope,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {
             oneof,

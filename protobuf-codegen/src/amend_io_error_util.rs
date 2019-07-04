@@ -19,7 +19,7 @@ impl Error for IoErrorWithMessage {
         &self.message
     }
 
-    fn cause(&self) -> Option<&Error> {
+    fn cause(&self) -> Option<&dyn Error> {
         Some(&self.underlying)
     }
 }

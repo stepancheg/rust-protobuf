@@ -13,7 +13,7 @@ use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
 use protobuf::Message;
 
-fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor) -> Box<Message> {
+fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor) -> Box<dyn Message> {
     let mut message = message_descriptor.new_instance();
 
     merge_from_str(&mut *message, text).expect(&format!("merge_from_str: {:?}", text));
@@ -21,7 +21,7 @@ fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor)
     message
 }
 
-fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<Message> {
+fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<dyn Message> {
     let temp_dir = tempfile::Builder::new()
         .prefix(message_descriptor.name())
         .tempdir()
@@ -82,7 +82,7 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
     expected
 }
 
-fn print_using_protoc(message: &Message) -> String {
+fn print_using_protoc(message: &dyn Message) -> String {
     let message_descriptor = message.descriptor();
 
     // TODO: copy-paste of parse_using_protoc
@@ -167,13 +167,13 @@ pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageD
     );
 }
 
-pub fn test_text_format_str_message(expected: &str, message: &Message) {
+pub fn test_text_format_str_message(expected: &str, message: &dyn Message) {
     assert_eq!(expected, &*print_to_string(message));
 
     test_text_format_str_descriptor(expected, message.descriptor());
 }
 
-pub fn test_text_format_message(message: &Message) {
+pub fn test_text_format_message(message: &dyn Message) {
     let descriptor = message.descriptor();
 
     let printed_with_rust_protobuf = print_to_string(message);

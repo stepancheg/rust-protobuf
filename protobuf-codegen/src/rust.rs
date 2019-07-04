@@ -87,7 +87,7 @@ pub fn quote_escape_bytes(bytes: &[u8]) -> String {
             b'\t' => buf.push_str(r"\t"),
             b'"' => buf.push_str("\\\""),
             b'\\' => buf.push_str(r"\\"),
-            b'\x20'...b'\x7e' => buf.push(b as char),
+            b'\x20'..=b'\x7e' => buf.push(b as char),
             _ => {
                 buf.push_str(r"\x");
                 buf.push(hex_digit((b as u32) >> 4));

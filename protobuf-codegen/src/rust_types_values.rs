@@ -531,7 +531,7 @@ pub(crate) fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIden
 }
 
 pub(crate) fn message_or_enum_to_rust_relative(
-    message_or_enum: &WithScope,
+    message_or_enum: &dyn WithScope,
     current: &FileAndMod,
 ) -> RustIdentWithPath {
     let same_file = message_or_enum.get_scope().get_file_descriptor().get_name() == current.file;

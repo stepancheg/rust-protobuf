@@ -10,12 +10,12 @@ pub enum Visibility {
 }
 
 pub struct CodeWriter<'a> {
-    writer: &'a mut (Write + 'a),
+    writer: &'a mut (dyn Write + 'a),
     indent: String,
 }
 
 impl<'a> CodeWriter<'a> {
-    pub fn new(writer: &'a mut Write) -> CodeWriter<'a> {
+    pub fn new(writer: &'a mut dyn Write) -> CodeWriter<'a> {
         CodeWriter {
             writer: writer,
             indent: "".to_string(),

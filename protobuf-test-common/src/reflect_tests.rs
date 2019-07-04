@@ -11,7 +11,7 @@ use protobuf::well_known_types::Value;
 use protobuf::well_known_types::value;
 use protobuf::Message;
 
-pub fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBox {
+pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectValueBox {
     match field_type.to_box() {
         RuntimeTypeBox::U32 => ReflectValueBox::U32(11),
         RuntimeTypeBox::U64 => ReflectValueBox::U64(12),
@@ -31,7 +31,7 @@ pub fn value_for_runtime_type(field_type: &RuntimeTypeDynamic) -> ReflectValueBo
     }
 }
 
-fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<Message>> {
+fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Message>> {
     if descriptor == Value::descriptor_static() {
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
@@ -45,7 +45,7 @@ fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<Message>> 
     }
 }
 
-pub fn values_for_runtime_type(field_type: &RuntimeTypeDynamic) -> Vec<ReflectValueBox> {
+pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<ReflectValueBox> {
     match field_type.to_box() {
         RuntimeTypeBox::U32 => vec![
             ReflectValueBox::U32(11),
@@ -116,7 +116,7 @@ pub fn values_for_runtime_type(field_type: &RuntimeTypeDynamic) -> Vec<ReflectVa
     }
 }
 
-pub fn special_values_for_field(f: &FieldDescriptor, d: &MessageDescriptor) -> Vec<Box<Message>> {
+pub fn special_values_for_field(f: &FieldDescriptor, d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
     let mut r = Vec::new();
     match f.runtime_field_type() {
         RuntimeFieldType::Singular(t) => {
@@ -146,7 +146,7 @@ pub fn special_values_for_field(f: &FieldDescriptor, d: &MessageDescriptor) -> V
     r
 }
 
-pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<Message>> {
+pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
     let mut r = Vec::new();
     for f in d.fields() {
         r.extend(special_values_for_field(f, d));
