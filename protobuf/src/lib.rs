@@ -69,7 +69,6 @@ mod hex;
 
 mod cached_size;
 mod chars;
-mod paginate;
 mod unknown;
 mod varint;
 mod zigzag;
