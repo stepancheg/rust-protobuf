@@ -16,6 +16,7 @@ bench = false
 
 [dependencies]
 log = "0.*"
+which = "2.0"
 
 [package.metadata.docs.rs]
 all-features = true
