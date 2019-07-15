@@ -9,12 +9,13 @@
 
 use std::ffi::{OsStr, OsString};
 use std::fmt;
-use std::io;
+use std::{io, env};
 use std::path::{Path, PathBuf};
 use std::process;
 
 #[macro_use]
 extern crate log;
+extern crate which;
 
 /// Alias for io::Error
 pub type Error = io::Error;
@@ -245,8 +246,22 @@ pub struct Protoc {
 impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
-        Protoc {
-            exec: OsString::from("protoc"),
+        if which::which("protoc").is_ok() {
+            Protoc { exec: OsString::from("protoc") }
+        } else {
+            let protoc_bin_name = match (env::consts::OS, env::consts::ARCH) {
+                ("linux", "x86") => "protoc-linux-x86_32",
+                ("linux", "x86_64") => "protoc-linux-x86_64",
+                ("linux", "aarch64") => "protoc-linux-aarch_64",
+                ("linux", "ppcle64") => "protoc-linux-ppcle_64",
+                ("macos", "x86_64") => "protoc-osx-x86_64",
+                ("windows", _) => "protoc-win32.exe",
+                (os, arch) => panic!("protoc can't be found for your platform {}-{}", os, arch),
+            };
+            let bin_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("bin")
+                .join(protoc_bin_name);
+            Protoc { exec: bin_path.into_os_string() }
         }
     }
 
