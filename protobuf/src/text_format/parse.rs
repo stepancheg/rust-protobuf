@@ -1,3 +1,4 @@
+use std::fmt;
 use std::str;
 
 use crate::core::Message;
@@ -51,6 +52,14 @@ pub struct ParseErrorWithLoc {
     error: ParseError,
     loc: Loc,
 }
+
+impl fmt::Display for ParseErrorWithLoc {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}: {:?}", self.loc, self.error)
+    }
+}
+
+impl std::error::Error for ParseErrorWithLoc {}
 
 pub type ParseResult<A> = Result<A, ParseError>;
 pub type ParseWithLocResult<A> = Result<A, ParseErrorWithLoc>;
