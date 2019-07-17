@@ -153,3 +153,10 @@ fn test_reflect() {
     l.set_ts(special_messages_typed().into());
     test_text_format_message(&l);
 }
+
+#[test]
+fn test_parse_error() {
+    let e = protobuf::text_format::parse_from_str::<TestTypes>("nonexistent: 42").unwrap_err();
+    let _error: &dyn std::error::Error = &e;
+    assert_eq!(e.to_string(), "1:1: UnknownField(\"nonexistent\")");
+}
