@@ -1,4 +1,4 @@
-= How to report bugs
+# How to report bugs
 
 When you report a bug, please always specify:
 
