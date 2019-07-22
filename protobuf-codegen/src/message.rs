@@ -19,6 +19,7 @@ pub struct MessageGen<'a> {
     type_name: String,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
+    pub dyn_trait: bool,
     customize: Customize,
 }
 
@@ -45,12 +46,14 @@ impl<'a> MessageGen<'a> {
                 .get_optimize_for()
                 == FileOptions_OptimizeMode::LITE_RUNTIME
         });
+        let dyn_trait = customize.dyn_trait.unwrap_or_else(|| false);
         MessageGen {
             message: message,
             root_scope: root_scope,
             type_name: message.rust_name(),
             fields: fields,
             lite_runtime,
+            dyn_trait,
             customize,
         }
     }
@@ -359,14 +362,19 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_unknown_fields(w);
             w.write_line("");
-            w.def_fn("as_any(&self) -> &::std::any::Any", |w| {
-                w.write_line("self as &::std::any::Any");
+            let any = if self.dyn_trait {
+                "dyn ::std::any::Any"
+            } else {
+                "::std::any::Any"
+            };
+            w.def_fn(&format!("as_any(&self) -> &{}", any), |w| {
+                w.write_line(&format!("self as &{}", any));
             });
-            w.def_fn("as_any_mut(&mut self) -> &mut ::std::any::Any", |w| {
-                w.write_line("self as &mut ::std::any::Any");
+            w.def_fn(&format!("as_any_mut(&mut self) -> &mut {}", any), |w| {
+                w.write_line(&format!("self as &mut {}", any));
             });
             w.def_fn(
-                "into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any>",
+                &format!("into_any(self: Box<Self>) -> ::std::boxed::Box<{}>", any),
                 |w| {
                     w.write_line("self");
                 },
