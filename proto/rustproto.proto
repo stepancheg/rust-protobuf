@@ -25,6 +25,8 @@ extend google.protobuf.FileOptions {
 
     // When true, will only generate codes that works with lite runtime.
     optional bool lite_runtime_all = 17035;
+    // When true, will generate dyn Trait for 2018 edition.
+    optional bool dyn_trait_all = 17036;
 }
 
 extend google.protobuf.MessageOptions {
