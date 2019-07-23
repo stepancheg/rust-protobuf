@@ -42,6 +42,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.8] - Unreleased
 
+## [2.8.0] - 2019-07-22
+
 - [Fix `dyn Trait` warning (again)](https://github.com/stepancheg/rust-protobuf/issues/414)
 
 ## [2.7.0] - 2019-07-02
