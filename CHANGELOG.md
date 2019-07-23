@@ -42,6 +42,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.8] - Unreleased
 
+- [Fix `dyn Trait` warning (again)](https://github.com/stepancheg/rust-protobuf/issues/414)
+
 ## [2.7.0] - 2019-07-02
 - Minimum supported Rust version
   [is 1.27](https://github.com/stepancheg/rust-protobuf/commit/f51811e8376f7c46b433479903a1bd8670246aa0).
