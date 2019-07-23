@@ -40,7 +40,11 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
 
-## [2.7] - Unreleased
+## [2.8] - Unreleased
+
+- Minimum supported Rust version
+  [is 1.32](https://github.com/stepancheg/rust-protobuf/issues/414).
+  Needed to enable edition 2018, because it's too hard to mute `dyn Trait` warning in older versions.
 
 ## [2.7.0] - 2019-07-02
 - Minimum supported Rust version
