@@ -359,14 +359,14 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_unknown_fields(w);
             w.write_line("");
-            w.def_fn("as_any(&self) -> &::std::any::Any", |w| {
-                w.write_line("self as &::std::any::Any");
+            w.def_fn("as_any(&self) -> &dyn (::std::any::Any)", |w| {
+                w.write_line("self as &dyn (::std::any::Any)");
             });
-            w.def_fn("as_any_mut(&mut self) -> &mut ::std::any::Any", |w| {
-                w.write_line("self as &mut ::std::any::Any");
+            w.def_fn("as_any_mut(&mut self) -> &mut dyn (::std::any::Any)", |w| {
+                w.write_line("self as &mut dyn (::std::any::Any)");
             });
             w.def_fn(
-                "into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any>",
+                "into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)>",
                 |w| {
                     w.write_line("self");
                 },
