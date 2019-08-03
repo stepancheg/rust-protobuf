@@ -974,12 +974,12 @@ impl<'a> Parser<'a> {
             let name = self.tokenizer.next_ident()?;
             self.tokenizer.next_symbol_expect_eq('(')?;
             let client_streaming = self.tokenizer.next_ident_if_eq("stream")?;
-            let input_type = self.tokenizer.next_ident()?;
+            let input_type = self.next_message_or_enum_type()?;
             self.tokenizer.next_symbol_expect_eq(')')?;
             self.tokenizer.next_ident_expect_eq("returns")?;
             self.tokenizer.next_symbol_expect_eq('(')?;
             let server_streaming = self.tokenizer.next_ident_if_eq("stream")?;
-            let output_type = self.tokenizer.next_ident()?;
+            let output_type = self.next_message_or_enum_type()?;
             self.tokenizer.next_symbol_expect_eq(')')?;
             let options = self.next_options_or_colon()?;
             Ok(Some(Method {
