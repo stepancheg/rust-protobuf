@@ -1,0 +1,34 @@
+syntax = "proto2";
+
+import "google/protobuf/descriptor.proto";
+
+import "test_basic_pb.proto";
+
+package service;
+
+extend google.protobuf.MethodOptions {
+    optional FancyMethodOptions fancy = 50000;
+}
+
+message FancyMethodOptions {
+    optional bool dotted = 1;
+}
+
+service Service {
+    rpc ShortForm(Request) returns(Response);
+    rpc LongForm(Request) returns(Response) {
+        option (service.fancy).dotted = true;
+    }
+    // Dots in request and response types.
+    rpc DottyShortForm(basic.Test1) returns(basic.Test2);
+    rpc DottyLongForm(basic.Test1) returns(basic.Test2) {
+        // Alternate form of above.
+        option (fancy).dotted = true;
+    }
+}
+
+message Request {
+}
+
+message Response {
+}
