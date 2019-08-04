@@ -131,7 +131,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "write_to_with_cached_sizes(&self, os: &mut {}::CodedOutputStream) -> {}::ProtobufResult<()>",
+            "write_to_with_cached_sizes(&self, os: &mut {}::CodedOutputStream<'_>) -> {}::ProtobufResult<()>",
             protobuf_crate_path(&self.customize),
             protobuf_crate_path(&self.customize),
         );
@@ -231,7 +231,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "merge_from(&mut self, is: &mut {}::CodedInputStream) -> {}::ProtobufResult<()>",
+            "merge_from(&mut self, is: &mut {}::CodedInputStream<'_>) -> {}::ProtobufResult<()>",
             protobuf_crate_path(&self.customize),
             protobuf_crate_path(&self.customize),
         );
@@ -394,7 +394,7 @@ impl<'a> MessageGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
             w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef",
+                "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef<'_>",
                 |w| w.write_line("::protobuf::reflect::ProtobufValueRef::Message(self)"),
             )
         })
@@ -403,7 +403,7 @@ impl<'a> MessageGen<'a> {
     fn write_impl_show(&self, w: &mut CodeWriter) {
         w.impl_for_block("::std::fmt::Debug", &self.type_name, |w| {
             w.def_fn(
-                "fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result",
+                "fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result",
                 |w| {
                     w.write_line("::protobuf::text_format::fmt(self, f)");
                 },

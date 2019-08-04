@@ -228,7 +228,7 @@ impl<'a> EnumGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
             w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef",
+                "as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef<'_>",
                 |w| w.write_line("::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())"),
             )
         })
