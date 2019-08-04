@@ -2,7 +2,7 @@
 // .proto file is parsed by protoc --rust-out=...
 // @generated
 
-// https://github.com/Manishearth/rust-clippy/issues/702
+// https://github.com/rust-lang/rust-clippy/issues/702
 #![allow(unknown_lints)]
 #![allow(clippy::all)]
 
