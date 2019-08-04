@@ -106,7 +106,7 @@ impl crate::Message for Api {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -176,7 +176,7 @@ impl crate::Message for Api {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -289,7 +289,7 @@ impl crate::Clear for Api {
 }
 
 impl ::std::fmt::Debug for Api {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -345,7 +345,7 @@ impl crate::Message for Method {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -418,7 +418,7 @@ impl crate::Message for Method {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -531,7 +531,7 @@ impl crate::Clear for Method {
 }
 
 impl ::std::fmt::Debug for Method {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -572,7 +572,7 @@ impl crate::Message for Mixin {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -605,7 +605,7 @@ impl crate::Message for Mixin {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -673,7 +673,7 @@ impl crate::Clear for Mixin {
 }
 
 impl ::std::fmt::Debug for Mixin {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -735,24 +735,24 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     Y,\x20OR\x20TORT\n\x20(INCLUDING\x20NEGLIGENCE\x20OR\x20OTHERWISE)\x20AR\
     ISING\x20IN\x20ANY\x20WAY\x20OUT\x20OF\x20THE\x20USE\n\x20OF\x20THIS\x20\
     SOFTWARE,\x20EVEN\x20IF\x20ADVISED\x20OF\x20THE\x20POSSIBILITY\x20OF\x20\
-    SUCH\x20DAMAGE.\n\n\x08\n\x01\x02\x12\x03\x20\x08\x17\n\t\n\x02\x03\0\
-    \x12\x03\"\x07-\n\t\n\x02\x03\x01\x12\x03#\x07#\n\x08\n\x01\x08\x12\x03%\
-    \0;\n\t\n\x02\x08%\x12\x03%\0;\n\x08\n\x01\x08\x12\x03&\0,\n\t\n\x02\x08\
-    \x01\x12\x03&\0,\n\x08\n\x01\x08\x12\x03'\0)\n\t\n\x02\x08\x08\x12\x03'\
-    \0)\n\x08\n\x01\x08\x12\x03(\0\"\n\t\n\x02\x08\n\x12\x03(\0\"\n\x08\n\
-    \x01\x08\x12\x03)\0!\n\t\n\x02\x08$\x12\x03)\0!\nM\n\x02\x04\0\x12\x04,\
-    \0Y\x01\x1aA\x20Api\x20is\x20a\x20light-weight\x20descriptor\x20for\x20a\
-    \x20protocol\x20buffer\x20service.\n\n\n\n\x03\x04\0\x01\x12\x03,\x08\
-    \x0b\no\n\x04\x04\0\x02\0\x12\x030\x02\x12\x1ab\x20The\x20fully\x20quali\
-    fied\x20name\x20of\x20this\x20api,\x20including\x20package\x20name\n\x20\
-    followed\x20by\x20the\x20api's\x20simple\x20name.\n\n\r\n\x05\x04\0\x02\
-    \0\x04\x12\x040\x02,\r\n\x0c\n\x05\x04\0\x02\0\x05\x12\x030\x02\x08\n\
-    \x0c\n\x05\x04\0\x02\0\x01\x12\x030\t\r\n\x0c\n\x05\x04\0\x02\0\x03\x12\
-    \x030\x10\x11\n=\n\x04\x04\0\x02\x01\x12\x033\x02\x1e\x1a0\x20The\x20met\
-    hods\x20of\x20this\x20api,\x20in\x20unspecified\x20order.\n\n\x0c\n\x05\
-    \x04\0\x02\x01\x04\x12\x033\x02\n\n\x0c\n\x05\x04\0\x02\x01\x06\x12\x033\
-    \x0b\x11\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x033\x12\x19\n\x0c\n\x05\x04\
-    \0\x02\x01\x03\x12\x033\x1c\x1d\n0\n\x04\x04\0\x02\x02\x12\x036\x02\x1e\
+    SUCH\x20DAMAGE.\n\n\x08\n\x01\x02\x12\x03\x20\0\x18\n\t\n\x02\x03\0\x12\
+    \x03\"\0.\n\t\n\x02\x03\x01\x12\x03#\0$\n\x08\n\x01\x08\x12\x03%\0;\n\t\
+    \n\x02\x08%\x12\x03%\0;\n\x08\n\x01\x08\x12\x03&\0,\n\t\n\x02\x08\x01\
+    \x12\x03&\0,\n\x08\n\x01\x08\x12\x03'\0)\n\t\n\x02\x08\x08\x12\x03'\0)\n\
+    \x08\n\x01\x08\x12\x03(\0\"\n\t\n\x02\x08\n\x12\x03(\0\"\n\x08\n\x01\x08\
+    \x12\x03)\0!\n\t\n\x02\x08$\x12\x03)\0!\nM\n\x02\x04\0\x12\x04,\0Y\x01\
+    \x1aA\x20Api\x20is\x20a\x20light-weight\x20descriptor\x20for\x20a\x20pro\
+    tocol\x20buffer\x20service.\n\n\n\n\x03\x04\0\x01\x12\x03,\x08\x0b\no\n\
+    \x04\x04\0\x02\0\x12\x030\x02\x12\x1ab\x20The\x20fully\x20qualified\x20n\
+    ame\x20of\x20this\x20api,\x20including\x20package\x20name\n\x20followed\
+    \x20by\x20the\x20api's\x20simple\x20name.\n\n\r\n\x05\x04\0\x02\0\x04\
+    \x12\x040\x02,\r\n\x0c\n\x05\x04\0\x02\0\x05\x12\x030\x02\x08\n\x0c\n\
+    \x05\x04\0\x02\0\x01\x12\x030\t\r\n\x0c\n\x05\x04\0\x02\0\x03\x12\x030\
+    \x10\x11\n=\n\x04\x04\0\x02\x01\x12\x033\x02\x1e\x1a0\x20The\x20methods\
+    \x20of\x20this\x20api,\x20in\x20unspecified\x20order.\n\n\x0c\n\x05\x04\
+    \0\x02\x01\x04\x12\x033\x02\n\n\x0c\n\x05\x04\0\x02\x01\x06\x12\x033\x0b\
+    \x11\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x033\x12\x19\n\x0c\n\x05\x04\0\
+    \x02\x01\x03\x12\x033\x1c\x1d\n0\n\x04\x04\0\x02\x02\x12\x036\x02\x1e\
     \x1a#\x20Any\x20metadata\x20attached\x20to\x20the\x20API.\n\n\x0c\n\x05\
     \x04\0\x02\x02\x04\x12\x036\x02\n\n\x0c\n\x05\x04\0\x02\x02\x06\x12\x036\
     \x0b\x11\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x036\x12\x19\n\x0c\n\x05\x04\
