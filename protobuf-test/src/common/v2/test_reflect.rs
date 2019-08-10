@@ -43,7 +43,7 @@ fn test_singular_basic() {
     assert_eq!(true, bool_field.get_bool(&message));
 }
 
-fn test_singular_field(message: &mut Message, field: &FieldDescriptor) {
+fn test_singular_field(message: &mut dyn Message, field: &FieldDescriptor) {
     assert!(!field.has_field(message));
 
     // should not crash
@@ -75,7 +75,7 @@ fn test_repeated_debug() {
     assert_eq!("[10, 20, 30]", format!("{:?}", field));
 }
 
-fn test_repeated_field(message: &mut Message, field: &FieldDescriptor) {
+fn test_repeated_field(message: &mut dyn Message, field: &FieldDescriptor) {
     assert_eq!(0, field.len_field(message));
     assert!(!field.has_field(message));
 
@@ -117,7 +117,7 @@ fn test_repeated() {
     }
 }
 
-fn test_map_field(message: &mut Message, field: &FieldDescriptor) {
+fn test_map_field(message: &mut dyn Message, field: &FieldDescriptor) {
     assert!(field.get_map(message).is_empty());
     assert_eq!(0, field.get_map(message).len());
     assert!(field.mut_map(message).is_empty());
