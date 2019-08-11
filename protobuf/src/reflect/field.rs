@@ -13,13 +13,13 @@ pub struct FieldDescriptor {
 
 impl FieldDescriptor {
     pub(crate) fn new(
-        a: Box<FieldAccessor + 'static>,
+        accessor: Box<FieldAccessor + 'static>,
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
-        assert_eq!(proto.get_name(), a.name_generic());
+        assert_eq!(proto.get_name(), accessor.name_generic());
         FieldDescriptor {
-            proto: proto,
-            accessor: a,
+            proto,
+            accessor,
         }
     }
 
