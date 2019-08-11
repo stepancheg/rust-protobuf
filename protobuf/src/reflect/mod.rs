@@ -13,7 +13,6 @@ use reflect::accessor::FieldAccessor;
 pub mod accessor;
 mod enums;
 mod field;
-mod field;
 mod map;
 mod optional;
 mod repeated;
