@@ -1,4 +1,4 @@
-use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::{FieldDescriptor, ReflectFieldRef, ReflectValueRef};
 use protobuf::reflect::ReflectValueBox;
 use protobuf::Message;
 use protobuf::ProtobufEnum;
@@ -187,4 +187,45 @@ fn test_mut_message() {
         // TODO: test `mut_message` works for oneof fields
     }
     assert_eq!(10, m.get_message_field().get_n());
+}
+
+#[test]
+fn test_get_reflect_singular() {
+    let mut m = TestTypesSingular::new();
+    m.set_int64_field(10);
+    let f = m.descriptor().field_by_name("int64_field").unwrap();
+    match f.get_reflect(&m) {
+        ReflectFieldRef::Optional(Some(ReflectValueRef::I64(10))) => {},
+        _ => panic!(),
+    }
+}
+
+#[test]
+fn test_get_reflect_repeated() {
+    let mut m = TestTypesRepeated::new();
+    m.set_int64_field(vec![10, 20]);
+    let f = m.descriptor().field_by_name("int64_field").unwrap();
+    match f.get_reflect(&m) {
+        ReflectFieldRef::Repeated(repeated) => {
+            assert_eq!(2, repeated.len());
+            assert_eq!(ReflectValueRef::I64(10), repeated.get(0));
+            assert_eq!(ReflectValueRef::I64(20), repeated.get(1));
+        },
+        _ => panic!(),
+    }
+}
+
+#[test]
+fn test_get_reflect_map() {
+    let mut m = TestTypesMap::new();
+    m.set_int64_field(vec![(10, 33), (20, 44)].into_iter().collect());
+    let f = m.descriptor().field_by_name("int64_field").unwrap();
+    match f.get_reflect(&m) {
+        ReflectFieldRef::Map(map) => {
+            assert_eq!(2, map.len());
+            assert_eq!(Some(ReflectValueRef::I64(33)), map.get(ReflectValueRef::I64(10)));
+            assert_eq!(Some(ReflectValueRef::I64(44)), map.get(ReflectValueRef::I64(20)));
+        },
+        _ => panic!(),
+    }
 }

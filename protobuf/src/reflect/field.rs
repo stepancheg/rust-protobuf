@@ -21,6 +21,7 @@ use crate::reflect::accessor::map::MapFieldAccessorHolder;
 use crate::reflect::value::ReflectValueMut;
 
 /// Reference to a value stored in a field, optional, repeated or map.
+// TODO: implement Eq
 pub enum ReflectFieldRef<'a> {
     /// Singular field, optional or required in proto3 and just plain field in proto3
     Optional(Option<ReflectValueRef<'a>>),
