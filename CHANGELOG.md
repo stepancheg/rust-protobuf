@@ -44,6 +44,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
   `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
+- [Debug is not implemented for `EnumValueDescriptor` and
+  `ReflectValueRef`](https://github.com/stepancheg/rust-protobuf/commit/0e6a2f4c50f07d2c6f8007abd469daa08bc09b9c)
 
 ## [2.8.0] - 2019-07-22
 
