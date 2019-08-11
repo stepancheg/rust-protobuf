@@ -7,7 +7,7 @@ use descriptorx::find_enum_by_rust_name;
 /// Description for enum variant.
 ///
 /// Used in reflection.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
 }
