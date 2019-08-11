@@ -137,6 +137,7 @@ impl<M : Message> ProtobufValue for M {
 */
 
 /// A reference to a value
+#[derive(Debug)]
 pub enum ReflectValueRef<'a> {
     /// `u32`
     U32(u32),

@@ -8,7 +8,7 @@ use ProtobufEnum;
 /// Description for enum variant.
 ///
 /// Used in reflection.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
 }
