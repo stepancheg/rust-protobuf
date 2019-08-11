@@ -40,7 +40,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
   (although protobuf implementation does a couple of unsafe calls).
 
-## [2.8] - Unreleased
+## [2.9] - Unreleased
+
+- [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
+  `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
 
 ## [2.8.0] - 2019-07-22
 
