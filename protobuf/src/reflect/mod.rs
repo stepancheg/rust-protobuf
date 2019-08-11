@@ -21,6 +21,7 @@ mod map;
 mod optional;
 mod repeated;
 mod value;
+mod field;
 
 use self::map::ReflectMap;
 use self::repeated::ReflectRepeated;
@@ -28,109 +29,7 @@ use self::repeated::ReflectRepeated;
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueRef;
 
-/// Dynamic field
-pub struct FieldDescriptor {
-    proto: &'static FieldDescriptorProto,
-    accessor: Box<FieldAccessor + 'static>,
-}
-
-impl FieldDescriptor {
-    fn new(
-        a: Box<FieldAccessor + 'static>,
-        proto: &'static FieldDescriptorProto,
-    ) -> FieldDescriptor {
-        assert_eq!(proto.get_name(), a.name_generic());
-        FieldDescriptor {
-            proto: proto,
-            accessor: a,
-        }
-    }
-
-    /// Protobuf field descriptor
-    pub fn proto(&self) -> &'static FieldDescriptorProto {
-        self.proto
-    }
-
-    /// Field protobuf name
-    pub fn name(&self) -> &'static str {
-        self.proto.get_name()
-    }
-
-    /// If field repeated?
-    pub fn is_repeated(&self) -> bool {
-        self.proto.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED
-    }
-
-    /// Is field set?
-    pub fn has_field(&self, m: &Message) -> bool {
-        self.accessor.has_field_generic(m)
-    }
-
-    /// Get length of `repeated` or `map` field
-    pub fn len_field(&self, m: &Message) -> usize {
-        self.accessor.len_field_generic(m)
-    }
-
-    /// Get singular `message`
-    pub fn get_message<'a>(&self, m: &'a Message) -> &'a Message {
-        self.accessor.get_message_generic(m)
-    }
-
-    /// Get singular `enum`
-    pub fn get_enum(&self, m: &Message) -> &'static EnumValueDescriptor {
-        self.accessor.get_enum_generic(m)
-    }
-
-    /// Get singular `string`
-    pub fn get_str<'a>(&self, m: &'a Message) -> &'a str {
-        self.accessor.get_str_generic(m)
-    }
-
-    /// Get singular `bytes`
-    pub fn get_bytes<'a>(&self, m: &'a Message) -> &'a [u8] {
-        self.accessor.get_bytes_generic(m)
-    }
-
-    /// Get singular `u32`
-    pub fn get_u32(&self, m: &Message) -> u32 {
-        self.accessor.get_u32_generic(m)
-    }
-
-    /// Get singular `u64`
-    pub fn get_u64(&self, m: &Message) -> u64 {
-        self.accessor.get_u64_generic(m)
-    }
-
-    /// Get singular `i32`
-    pub fn get_i32(&self, m: &Message) -> i32 {
-        self.accessor.get_i32_generic(m)
-    }
-
-    /// Get singular `i64`
-    pub fn get_i64(&self, m: &Message) -> i64 {
-        self.accessor.get_i64_generic(m)
-    }
-
-    /// Get singular `bool`
-    pub fn get_bool(&self, m: &Message) -> bool {
-        self.accessor.get_bool_generic(m)
-    }
-
-    /// Get singular `f32`
-    pub fn get_f32(&self, m: &Message) -> f32 {
-        self.accessor.get_f32_generic(m)
-    }
-
-    /// Get singular `f64`
-    pub fn get_f64(&self, m: &Message) -> f64 {
-        self.accessor.get_f64_generic(m)
-    }
-
-    /// Get a field
-    pub fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a> {
-        self.accessor.get_reflect(m)
-    }
-}
+pub use self::field::FieldDescriptor;
 
 trait MessageFactory {
     fn new_instance(&self) -> Box<Message>;
