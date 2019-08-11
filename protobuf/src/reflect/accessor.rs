@@ -20,7 +20,7 @@ use super::repeated::ReflectRepeated;
 use super::repeated::ReflectRepeatedEnum;
 use super::repeated::ReflectRepeatedMessage;
 use super::value::ProtobufValue;
-use super::value::ProtobufValueRef;
+use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
@@ -85,7 +85,7 @@ trait GetRepeatedEnum<M: Message + 'static> {
 }
 
 trait GetSetCopyFns<M> {
-    fn get_field<'a>(&self, m: &'a M) -> ProtobufValueRef<'a>;
+    fn get_field<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
 }
 
 struct GetSetCopyFnsImpl<M, V: ProtobufValue + Copy> {
@@ -94,7 +94,7 @@ struct GetSetCopyFnsImpl<M, V: ProtobufValue + Copy> {
 }
 
 impl<M, V: ProtobufValue + Copy> GetSetCopyFns<M> for GetSetCopyFnsImpl<M, V> {
-    fn get_field<'a>(&self, m: &'a M) -> ProtobufValueRef<'a> {
+    fn get_field<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         (&(self.get)(m) as &ProtobufValue).as_ref_copy()
     }
 }
@@ -108,13 +108,13 @@ enum SingularGetSet<M> {
 }
 
 impl<M: Message + 'static> SingularGetSet<M> {
-    fn get_ref<'a>(&self, m: &'a M) -> ProtobufValueRef<'a> {
+    fn get_ref<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         match self {
             &SingularGetSet::Copy(ref copy) => copy.get_field(m),
-            &SingularGetSet::String(get, _) => ProtobufValueRef::String(get(m)),
-            &SingularGetSet::Bytes(get, _) => ProtobufValueRef::Bytes(get(m)),
-            &SingularGetSet::Enum(ref get) => ProtobufValueRef::Enum(get.get_enum(m)),
-            &SingularGetSet::Message(ref get) => ProtobufValueRef::Message(get.get_message(m)),
+            &SingularGetSet::String(get, _) => ReflectValueRef::String(get(m)),
+            &SingularGetSet::Bytes(get, _) => ReflectValueRef::Bytes(get(m)),
+            &SingularGetSet::Enum(ref get) => ReflectValueRef::Enum(get.get_enum(m)),
+            &SingularGetSet::Message(ref get) => ReflectValueRef::Message(get.get_message(m)),
         }
     }
 }
@@ -171,7 +171,7 @@ struct FieldAccessorImpl<M> {
 }
 
 impl<M: Message> FieldAccessorImpl<M> {
-    fn get_value_option<'a>(&self, m: &'a M) -> Option<ProtobufValueRef<'a>> {
+    fn get_value_option<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         match self.fns {
             FieldAccessorFunctions::Repeated(..) | FieldAccessorFunctions::Map(..) => {
                 panic!("repeated")
@@ -239,7 +239,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
                     .expect("field unset")
                     .as_ref()
                 {
-                    ProtobufValueRef::Message(m) => m,
+                    ReflectValueRef::Message(m) => m,
                     _ => panic!("not a message"),
                 }
             }
@@ -259,7 +259,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_str_generic<'a>(&self, m: &'a Message) -> &'a str {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::String(v)) => v,
+            Some(ReflectValueRef::String(v)) => v,
             Some(_) => panic!("wrong type"),
             None => "", // TODO: check type
         }
@@ -267,7 +267,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_bytes_generic<'a>(&self, m: &'a Message) -> &'a [u8] {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::Bytes(v)) => v,
+            Some(ReflectValueRef::Bytes(v)) => v,
             Some(_) => panic!("wrong type"),
             None => b"", // TODO: check type
         }
@@ -275,7 +275,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_u32_generic(&self, m: &Message) -> u32 {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::U32(v)) => v,
+            Some(ReflectValueRef::U32(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0, // TODO: check type
         }
@@ -283,7 +283,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_u64_generic(&self, m: &Message) -> u64 {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::U64(v)) => v,
+            Some(ReflectValueRef::U64(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0, // TODO: check type
         }
@@ -291,7 +291,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_i32_generic(&self, m: &Message) -> i32 {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::I32(v)) => v,
+            Some(ReflectValueRef::I32(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0, // TODO: check type
         }
@@ -299,7 +299,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_i64_generic(&self, m: &Message) -> i64 {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::I64(v)) => v,
+            Some(ReflectValueRef::I64(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0, // TODO: check type
         }
@@ -307,7 +307,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_f32_generic(&self, m: &Message) -> f32 {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::F32(v)) => v,
+            Some(ReflectValueRef::F32(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0.0, // TODO: check type
         }
@@ -315,7 +315,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_f64_generic(&self, m: &Message) -> f64 {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::F64(v)) => v,
+            Some(ReflectValueRef::F64(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0.0, // TODO: check type
         }
@@ -323,7 +323,7 @@ impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
 
     fn get_bool_generic(&self, m: &Message) -> bool {
         match self.get_value_option(message_down_cast(m)) {
-            Some(ProtobufValueRef::Bool(v)) => v,
+            Some(ReflectValueRef::Bool(v)) => v,
             Some(_) => panic!("wrong type"),
             None => false, // TODO: check type
         }
