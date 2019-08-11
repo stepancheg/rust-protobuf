@@ -136,7 +136,7 @@ impl<M : Message> ProtobufValue for M {
 }
 */
 
-/// Dynamic reference to a value
+/// A reference to a value
 pub enum ReflectValueRef<'a> {
     /// `u32`
     U32(u32),
@@ -157,13 +157,14 @@ pub enum ReflectValueRef<'a> {
     /// `bytes`
     Bytes(&'a [u8]),
     /// `enum`
+    // TODO: change to (i32, EnumDescriptor)
     Enum(&'static EnumValueDescriptor),
     /// `message`
-    Message(&'a Message),
+    Message(&'a dyn Message),
 }
 
 impl<'a> ReflectValueRef<'a> {
-    /// Is value non-zero?
+    /// Value is "non-zero"?
     pub fn is_non_zero(&self) -> bool {
         match *self {
             ReflectValueRef::U32(v) => v != 0,
