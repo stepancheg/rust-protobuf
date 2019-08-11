@@ -17,17 +17,20 @@ use enums::ProtobufEnum;
 use reflect::accessor::FieldAccessor;
 
 pub mod accessor;
+mod field;
 mod map;
 mod optional;
 mod repeated;
 mod value;
-mod field;
 
 use self::map::ReflectMap;
 use self::repeated::ReflectRepeated;
 
 pub use self::value::ProtobufValue;
-pub use self::value::ProtobufValueRef;
+pub use self::value::ReflectValueRef;
+#[doc(hidden)]
+#[deprecated] // deprecated alias
+pub use self::value::ReflectValueRef as ProtobufValueRef;
 
 pub use self::field::FieldDescriptor;
 
@@ -241,5 +244,5 @@ pub enum ReflectFieldRef<'a> {
     /// Map field
     Map(&'a ReflectMap),
     /// Optional field
-    Optional(Option<ProtobufValueRef<'a>>),
+    Optional(Option<ReflectValueRef<'a>>),
 }

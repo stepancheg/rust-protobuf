@@ -20,8 +20,8 @@
 //! and encode messages using text format.
 
 use core::Message;
-use reflect::ProtobufValueRef;
 use reflect::ReflectFieldRef;
+use reflect::ReflectValueRef;
 use std;
 use std::fmt;
 use std::fmt::Write;
@@ -167,12 +167,12 @@ fn print_field(
     indent: usize,
     first: &mut bool,
     field_name: &str,
-    value: ProtobufValueRef,
+    value: ReflectValueRef,
 ) {
     print_start_field(buf, pretty, indent, first, field_name);
 
     match value {
-        ProtobufValueRef::Message(m) => {
+        ReflectValueRef::Message(m) => {
             buf.push_str(" {");
             if pretty {
                 buf.push_str("\n");
@@ -181,37 +181,37 @@ fn print_field(
             do_indent(buf, pretty, indent);
             buf.push_str("}");
         }
-        ProtobufValueRef::Enum(e) => {
+        ReflectValueRef::Enum(e) => {
             buf.push_str(": ");
             buf.push_str(e.name());
         }
-        ProtobufValueRef::String(s) => {
+        ReflectValueRef::String(s) => {
             buf.push_str(": ");
             print_str_to(s, buf);
         }
-        ProtobufValueRef::Bytes(b) => {
+        ReflectValueRef::Bytes(b) => {
             buf.push_str(": ");
             quote_escape_bytes_to(b, buf);
         }
-        ProtobufValueRef::I32(v) => {
+        ReflectValueRef::I32(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::I64(v) => {
+        ReflectValueRef::I64(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::U32(v) => {
+        ReflectValueRef::U32(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::U64(v) => {
+        ReflectValueRef::U64(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::Bool(v) => {
+        ReflectValueRef::Bool(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::F32(v) => {
+        ReflectValueRef::F32(v) => {
             write!(buf, ": {}", v).unwrap();
         }
-        ProtobufValueRef::F64(v) => {
+        ReflectValueRef::F64(v) => {
             write!(buf, ": {}", v).unwrap();
         }
     }

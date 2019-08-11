@@ -11,7 +11,7 @@ use super::*;
 /// (ints, floats, bool, string, bytes, enums, messages).
 pub trait ProtobufValue: Any + 'static {
     /// As ref
-    fn as_ref(&self) -> ProtobufValueRef;
+    fn as_ref(&self) -> ReflectValueRef;
 
     /// Convert to `Any`
     fn as_any(&self) -> &Any {
@@ -28,96 +28,96 @@ pub trait ProtobufValue: Any + 'static {
     /// # Panics
     ///
     /// if `Self` is not `Copy`.
-    fn as_ref_copy(&self) -> ProtobufValueRef<'static>
+    fn as_ref_copy(&self) -> ReflectValueRef<'static>
 //where Self : Copy // TODO
     {
         match self.as_ref() {
-            ProtobufValueRef::Bool(v) => ProtobufValueRef::Bool(v),
-            ProtobufValueRef::U32(v) => ProtobufValueRef::U32(v),
-            ProtobufValueRef::U64(v) => ProtobufValueRef::U64(v),
-            ProtobufValueRef::I32(v) => ProtobufValueRef::I32(v),
-            ProtobufValueRef::I64(v) => ProtobufValueRef::I64(v),
-            ProtobufValueRef::F32(v) => ProtobufValueRef::F32(v),
-            ProtobufValueRef::F64(v) => ProtobufValueRef::F64(v),
-            ProtobufValueRef::Enum(v) => ProtobufValueRef::Enum(v),
-            ProtobufValueRef::String(..)
-            | ProtobufValueRef::Bytes(..)
-            | ProtobufValueRef::Message(..) => unreachable!(),
+            ReflectValueRef::Bool(v) => ReflectValueRef::Bool(v),
+            ReflectValueRef::U32(v) => ReflectValueRef::U32(v),
+            ReflectValueRef::U64(v) => ReflectValueRef::U64(v),
+            ReflectValueRef::I32(v) => ReflectValueRef::I32(v),
+            ReflectValueRef::I64(v) => ReflectValueRef::I64(v),
+            ReflectValueRef::F32(v) => ReflectValueRef::F32(v),
+            ReflectValueRef::F64(v) => ReflectValueRef::F64(v),
+            ReflectValueRef::Enum(v) => ReflectValueRef::Enum(v),
+            ReflectValueRef::String(..)
+            | ReflectValueRef::Bytes(..)
+            | ReflectValueRef::Message(..) => unreachable!(),
         }
     }
 }
 
 impl ProtobufValue for u32 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::U32(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::U32(*self)
     }
 }
 
 impl ProtobufValue for u64 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::U64(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::U64(*self)
     }
 }
 
 impl ProtobufValue for i32 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::I32(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::I32(*self)
     }
 }
 
 impl ProtobufValue for i64 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::I64(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::I64(*self)
     }
 }
 
 impl ProtobufValue for f32 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::F32(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::F32(*self)
     }
 }
 
 impl ProtobufValue for f64 {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::F64(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::F64(*self)
     }
 }
 
 impl ProtobufValue for bool {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Bool(*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::Bool(*self)
     }
 }
 
 impl ProtobufValue for String {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::String(*&self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::String(*&self)
     }
 }
 
 impl ProtobufValue for str {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::String(self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::String(self)
     }
 }
 
 impl ProtobufValue for Vec<u8> {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Bytes(*&self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::Bytes(*&self)
     }
 }
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Bytes {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Bytes(&*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::Bytes(&*self)
     }
 }
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Chars {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::String(&*self)
+    fn as_ref(&self) -> ReflectValueRef {
+        ReflectValueRef::String(&*self)
     }
 }
 
@@ -137,7 +137,7 @@ impl<M : Message> ProtobufValue for M {
 */
 
 /// Dynamic reference to a value
-pub enum ProtobufValueRef<'a> {
+pub enum ReflectValueRef<'a> {
     /// `u32`
     U32(u32),
     /// `u64`
@@ -162,21 +162,21 @@ pub enum ProtobufValueRef<'a> {
     Message(&'a Message),
 }
 
-impl<'a> ProtobufValueRef<'a> {
+impl<'a> ReflectValueRef<'a> {
     /// Is value non-zero?
     pub fn is_non_zero(&self) -> bool {
         match *self {
-            ProtobufValueRef::U32(v) => v != 0,
-            ProtobufValueRef::U64(v) => v != 0,
-            ProtobufValueRef::I32(v) => v != 0,
-            ProtobufValueRef::I64(v) => v != 0,
-            ProtobufValueRef::F32(v) => v != 0.,
-            ProtobufValueRef::F64(v) => v != 0.,
-            ProtobufValueRef::Bool(v) => v,
-            ProtobufValueRef::String(v) => !v.is_empty(),
-            ProtobufValueRef::Bytes(v) => !v.is_empty(),
-            ProtobufValueRef::Enum(v) => v.value() != 0,
-            ProtobufValueRef::Message(_) => true,
+            ReflectValueRef::U32(v) => v != 0,
+            ReflectValueRef::U64(v) => v != 0,
+            ReflectValueRef::I32(v) => v != 0,
+            ReflectValueRef::I64(v) => v != 0,
+            ReflectValueRef::F32(v) => v != 0.,
+            ReflectValueRef::F64(v) => v != 0.,
+            ReflectValueRef::Bool(v) => v,
+            ReflectValueRef::String(v) => !v.is_empty(),
+            ReflectValueRef::Bytes(v) => !v.is_empty(),
+            ReflectValueRef::Enum(v) => v.value() != 0,
+            ReflectValueRef::Message(_) => true,
         }
     }
 }

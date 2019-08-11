@@ -1,7 +1,7 @@
 use descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
 use reflect::accessor::FieldAccessor;
-use Message;
 use reflect::{EnumValueDescriptor, ReflectFieldRef};
+use Message;
 
 /// Field descriptor.
 ///
