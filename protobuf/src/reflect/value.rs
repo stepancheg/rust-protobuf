@@ -182,4 +182,120 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::Message(_) => true,
         }
     }
+
+    /// Clone to a box
+    pub(crate) fn to_box(&self) -> ReflectValueBox {
+        match *self {
+            ReflectValueRef::U32(v) => ReflectValueBox::U32(v),
+            ReflectValueRef::U64(v) => ReflectValueBox::U64(v),
+            ReflectValueRef::I32(v) => ReflectValueBox::I32(v),
+            ReflectValueRef::I64(v) => ReflectValueBox::I64(v),
+            ReflectValueRef::F32(v) => ReflectValueBox::F32(v),
+            ReflectValueRef::F64(v) => ReflectValueBox::F64(v),
+            ReflectValueRef::Bool(v) => ReflectValueBox::Bool(v),
+            ReflectValueRef::String(v) => ReflectValueBox::String(v.to_owned()),
+            ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes(v.to_owned()),
+            ReflectValueRef::Enum(v) => ReflectValueBox::Enum(v),
+            ReflectValueRef::Message(v) => ReflectValueBox::Message(v.descriptor().clone(v)),
+        }
+    }
+}
+
+/// Owner value of any elementary type
+#[derive(Debug, Clone)]
+pub(crate) enum ReflectValueBox {
+    /// `u32`
+    U32(u32),
+    /// `u64`
+    U64(u64),
+    /// `i32`
+    I32(i32),
+    /// `i64`
+    I64(i64),
+    /// `f32`
+    F32(f32),
+    /// `f64`
+    F64(f64),
+    /// `bool`
+    Bool(bool),
+    /// `string`
+    String(String),
+    /// `bytes`
+    Bytes(Vec<u8>),
+    /// `enum`
+    // TODO: change to (i32, EnumDescriptor)
+    Enum(&'static EnumValueDescriptor),
+    /// `message`
+    Message(Box<dyn Message>),
+}
+
+impl From<u32> for ReflectValueBox {
+    fn from(v: u32) -> Self {
+        ReflectValueBox::U32(v)
+    }
+}
+
+impl From<u64> for ReflectValueBox {
+    fn from(v: u64) -> Self {
+        ReflectValueBox::U64(v)
+    }
+}
+
+impl From<i32> for ReflectValueBox {
+    fn from(v: i32) -> Self {
+        ReflectValueBox::I32(v)
+    }
+}
+
+impl From<i64> for ReflectValueBox {
+    fn from(v: i64) -> Self {
+        ReflectValueBox::I64(v)
+    }
+}
+
+impl From<f32> for ReflectValueBox {
+    fn from(v: f32) -> Self {
+        ReflectValueBox::F32(v)
+    }
+}
+
+impl From<f64> for ReflectValueBox {
+    fn from(v: f64) -> Self {
+        ReflectValueBox::F64(v)
+    }
+}
+
+impl From<bool> for ReflectValueBox {
+    fn from(v: bool) -> Self {
+        ReflectValueBox::Bool(v)
+    }
+}
+
+impl From<String> for ReflectValueBox {
+    fn from(v: String) -> Self {
+        ReflectValueBox::String(v)
+    }
+}
+
+impl From<Vec<u8>> for ReflectValueBox {
+    fn from(v: Vec<u8>) -> Self {
+        ReflectValueBox::Bytes(v)
+    }
+}
+
+impl From<&'static EnumValueDescriptor> for ReflectValueBox {
+    fn from(v: &'static EnumValueDescriptor) -> Self {
+        ReflectValueBox::Enum(v)
+    }
+}
+
+impl From<Box<dyn Message>> for ReflectValueBox {
+    fn from(v: Box<dyn Message>) -> Self {
+        ReflectValueBox::Message(v)
+    }
+}
+
+fn _assert_value_box_send_sync() {
+    fn _assert_send_sync<T: Send + Sync>() {}
+    _assert_send_sync::<ReflectValueBox>();
 }
