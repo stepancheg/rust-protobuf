@@ -166,6 +166,7 @@ pub enum ReflectValueRef<'a> {
 
 impl<'a> ReflectValueRef<'a> {
     /// Value is "non-zero"?
+    #[doc(hidden)]
     pub fn is_non_zero(&self) -> bool {
         match *self {
             ReflectValueRef::U32(v) => v != 0,
