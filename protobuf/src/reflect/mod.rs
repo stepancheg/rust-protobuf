@@ -1,8 +1,6 @@
 //! Reflection implementation for protobuf types.
 
 use core::Message;
-use descriptorx::find_message_by_rust_name;
-use reflect::accessor::FieldAccessor;
 
 pub mod accessor;
 mod enums;
@@ -12,9 +10,6 @@ mod message;
 mod optional;
 mod repeated;
 mod value;
-
-use self::map::ReflectMap;
-use self::repeated::ReflectRepeated;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ReflectValueRef;
@@ -27,13 +22,4 @@ pub use self::enums::EnumValueDescriptor;
 pub use self::message::MessageDescriptor;
 
 pub use self::field::FieldDescriptor;
-
-/// Dynamic field reference
-pub enum ReflectFieldRef<'a> {
-    /// Repeated field
-    Repeated(&'a ReflectRepeated),
-    /// Map field
-    Map(&'a ReflectMap),
-    /// Optional field
-    Optional(Option<ReflectValueRef<'a>>),
-}
+pub use self::field::ReflectFieldRef;

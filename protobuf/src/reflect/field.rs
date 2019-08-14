@@ -1,7 +1,20 @@
 use descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
 use reflect::accessor::FieldAccessor;
-use reflect::{EnumValueDescriptor, ReflectFieldRef};
+use reflect::{EnumValueDescriptor, ReflectValueRef};
 use Message;
+use reflect::repeated::ReflectRepeated;
+use reflect::map::ReflectMap;
+
+/// Reference to a value stored in a field, optional, repeated or map.
+// TODO: implement Eq
+pub enum ReflectFieldRef<'a> {
+    /// Singular field, optional or required in proto3 and just plain field in proto3
+    Optional(Option<ReflectValueRef<'a>>),
+    /// Repeated field
+    Repeated(&'a ReflectRepeated),
+    /// Map field
+    Map(&'a ReflectMap),
+}
 
 /// Field descriptor.
 ///
