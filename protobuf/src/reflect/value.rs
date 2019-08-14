@@ -81,7 +81,7 @@ pub enum ReflectValueRef<'a> {
 
 impl<'a> ReflectValueRef<'a> {
     /// Value is "non-zero"?
-    pub fn is_non_zero(&self) -> bool {
+    fn _is_non_zero(&self) -> bool {
         match *self {
             ReflectValueRef::U32(v) => v != 0,
             ReflectValueRef::U64(v) => v != 0,
