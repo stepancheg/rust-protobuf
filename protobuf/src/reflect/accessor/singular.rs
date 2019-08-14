@@ -583,9 +583,9 @@ struct GetOrDefaultEnum<M, E: ProtobufEnum> {
 
 impl<M: Message, E: ProtobufEnum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        ReflectValueRef::Enum(match (self.get_field)(m) {
-            Some(e) => e.enum_value_or_default().descriptor(),
-            None => self.default_value.descriptor()
+        ReflectValueRef::Enum(E::enum_descriptor_static(), match (self.get_field)(m) {
+            Some(e) => e.value(),
+            None => self.default_value.value(),
         })
     }
 }

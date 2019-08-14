@@ -232,7 +232,7 @@ impl FieldDescriptor {
     /// or field type is not singular `enum`.
     pub fn get_enum(&self, m: &dyn Message) -> &'static EnumValueDescriptor {
         match self.get_singular_field_or_default(m) {
-            ReflectValueRef::Enum(v) => v,
+            ReflectValueRef::Enum(d, v) => d.value_by_number_or_default(v),
             _ => panic!("not enum"),
         }
     }

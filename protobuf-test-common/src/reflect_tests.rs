@@ -26,7 +26,7 @@ pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectVal
         RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
             ReflectValueBox::Bytes(b"there".as_ref().to_owned())
         }
-        RuntimeTypeBox::Enum(e) => ReflectValueBox::Enum(&e.values()[0]),
+        RuntimeTypeBox::Enum(e) => ReflectValueBox::from(&e.values()[0]),
         RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
 }
@@ -106,8 +106,8 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
             ReflectValueBox::Bytes(b"".as_ref().to_owned()),
         ],
         RuntimeTypeBox::Enum(e) => vec![
-            ReflectValueBox::Enum(&e.values()[0]),
-            ReflectValueBox::Enum(&e.values()[e.values().len() - 1]),
+            ReflectValueBox::from(&e.values()[0]),
+            ReflectValueBox::from(&e.values()[e.values().len() - 1]),
         ],
         RuntimeTypeBox::Message(m) => values_for_message_type(m)
             .into_iter()

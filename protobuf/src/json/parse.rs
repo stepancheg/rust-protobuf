@@ -504,7 +504,7 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
                 self.parse_bytes(&key).map(ReflectValueBox::Bytes)
             }
-            RuntimeTypeBox::Enum(e) => self.parse_enum(key, e).map(ReflectValueBox::Enum),
+            RuntimeTypeBox::Enum(e) => self.parse_enum(key, e).map(|v| ReflectValueBox::Enum(v.enum_descriptor(), v.value())),
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }

@@ -615,7 +615,7 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(&Self::enum_descriptor().values()[0])
+        ReflectValueRef::Enum(Self::enum_descriptor(), Self::enum_descriptor().values()[0].value())
     }
 
     fn enum_descriptor() -> &'static EnumDescriptor {
@@ -624,21 +624,22 @@ where
 
     fn from_value_box(value_box: ReflectValueBox) -> E {
         match value_box {
-            ReflectValueBox::Enum(v) => E::from_i32(v.value()).expect("unknown enum value"),
+            // TODO: panic
+            ReflectValueBox::Enum(_d, v) => E::from_i32(v).expect("unknown enum value"),
             _ => panic!("wrong type"),
         }
     }
 
     fn into_value_box(value: E) -> ReflectValueBox {
-        ReflectValueBox::Enum(value.descriptor())
+        ReflectValueBox::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn into_static_value_ref(value: E) -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(value.descriptor())
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn as_ref(value: &E) -> ReflectValueRef {
-        ReflectValueRef::Enum(value.descriptor())
+        ReflectValueRef::Enum(Self::enum_descriptor(), value.value())
     }
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
@@ -664,7 +665,7 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(&Self::enum_descriptor().values()[0])
+        ReflectValueRef::Enum(Self::enum_descriptor(), Self::enum_descriptor().values()[0].value())
     }
 
     fn enum_descriptor() -> &'static EnumDescriptor {
@@ -673,24 +674,21 @@ where
 
     fn from_value_box(value_box: ReflectValueBox) -> ProtobufEnumOrUnknown<E> {
         match value_box {
-            ReflectValueBox::Enum(v) => ProtobufEnumOrUnknown::from_i32(v.value()),
+            ReflectValueBox::Enum(_d, v) => ProtobufEnumOrUnknown::from_i32(v),
             _ => panic!("wrong type"),
         }
     }
 
     fn into_value_box(value: ProtobufEnumOrUnknown<E>) -> ReflectValueBox {
-        // TODO: do not panic
-        ReflectValueBox::Enum(value.enum_value().unwrap().descriptor())
+        ReflectValueBox::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn into_static_value_ref(value: ProtobufEnumOrUnknown<E>) -> ReflectValueRef<'static> {
-        // TODO: do not panic
-        ReflectValueRef::Enum(value.enum_value().unwrap().descriptor())
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn as_ref(value: &ProtobufEnumOrUnknown<E>) -> ReflectValueRef {
-        // TODO: do not panic
-        ReflectValueRef::Enum(value.enum_value().unwrap().descriptor())
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {

@@ -119,6 +119,15 @@ pub struct EnumDescriptor {
     index_by_number: HashMap<i32, usize>,
 }
 
+impl fmt::Debug for EnumDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("EnumDescriptor")
+            .field("full_name", &self.full_name)
+            .field("..", &"..")
+            .finish()
+    }
+}
+
 /// Identity comparison: message descriptor are equal if their addresses are equal
 impl PartialEq for EnumDescriptor {
     fn eq(&self, other: &EnumDescriptor) -> bool {
@@ -220,6 +229,13 @@ impl EnumDescriptor {
     pub fn value_by_number(&self, number: i32) -> Option<&EnumValueDescriptor> {
         let &index = self.index_by_number.get(&number)?;
         Some(&self.values[index])
+    }
+
+    pub(crate) fn value_by_number_or_default(&self, number: i32) -> &EnumValueDescriptor {
+        match self.value_by_number(number) {
+            Some(v) => v,
+            None => &self.values()[0],
+        }
     }
 
     /// Check if this enum descriptor corresponds given enum type
