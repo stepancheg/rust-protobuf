@@ -6,6 +6,7 @@ use std::f64;
 
 use super::base64;
 
+use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::json::base64::FromBase64Error;
 use crate::reflect::EnumDescriptor;
@@ -23,13 +24,13 @@ use crate::text_format::lexer::ParserLanguage;
 use crate::text_format::lexer::Token;
 use crate::text_format::lexer::Tokenizer;
 use crate::text_format::lexer::TokenizerError;
-use crate::core::Message;
 
 use super::float;
 use super::rfc_3339;
 use crate::text_format::lexer::JsonNumberLit;
 
 use crate::json::well_known_wrapper::WellKnownWrapper;
+use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
 use crate::well_known_types::BytesValue;
@@ -47,8 +48,6 @@ use crate::well_known_types::Timestamp;
 use crate::well_known_types::UInt32Value;
 use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
-use crate::well_known_types::value;
-
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -504,7 +503,9 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
                 self.parse_bytes(&key).map(ReflectValueBox::Bytes)
             }
-            RuntimeTypeBox::Enum(e) => self.parse_enum(key, e).map(|v| ReflectValueBox::Enum(v.enum_descriptor(), v.value())),
+            RuntimeTypeBox::Enum(e) => self
+                .parse_enum(key, e)
+                .map(|v| ReflectValueBox::Enum(v.enum_descriptor(), v.value())),
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }
@@ -562,7 +563,11 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_field(&mut self, message: &mut dyn Message, field: &FieldDescriptor) -> ParseResult<()> {
+    fn merge_field(
+        &mut self,
+        message: &mut dyn Message,
+        field: &FieldDescriptor,
+    ) -> ParseResult<()> {
         match field.runtime_field_type() {
             RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, t),
             RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, t),

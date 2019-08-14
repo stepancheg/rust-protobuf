@@ -1,10 +1,9 @@
-use std::marker;
 use std::fmt;
+use std::marker;
 
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValue;
-
 
 /// Trait implemented by all protobuf enum types.
 pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
@@ -116,8 +115,7 @@ impl<E: ProtobufEnum> fmt::Debug for ProtobufEnumOrUnknown<E> {
     }
 }
 
-impl<E: ProtobufEnum> ProtobufValue for ProtobufEnumOrUnknown<E> {
-}
+impl<E: ProtobufEnum> ProtobufValue for ProtobufEnumOrUnknown<E> {}
 
 #[cfg(feature = "with-serde")]
 impl<E: serde::Serialize + ProtobufEnum> serde::Serialize for ProtobufEnumOrUnknown<E> {
@@ -125,8 +123,8 @@ impl<E: serde::Serialize + ProtobufEnum> serde::Serialize for ProtobufEnumOrUnkn
         &self,
         serializer: S,
     ) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error>
-        where
-            S: serde::Serializer,
+    where
+        S: serde::Serializer,
     {
         // TODO: serialize number when unknown
         self.enum_value_or_default().serialize(serializer)
@@ -134,12 +132,13 @@ impl<E: serde::Serialize + ProtobufEnum> serde::Serialize for ProtobufEnumOrUnkn
 }
 
 #[cfg(feature = "with-serde")]
-impl<'de, E: serde::Deserialize<'de> + ProtobufEnum> serde::Deserialize<'de> for ProtobufEnumOrUnknown<E> {
+impl<'de, E: serde::Deserialize<'de> + ProtobufEnum> serde::Deserialize<'de>
+    for ProtobufEnumOrUnknown<E>
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, <D as serde::Deserializer<'de>>::Error>
-        where
-            D: serde::Deserializer<'de>,
+    where
+        D: serde::Deserializer<'de>,
     {
         Ok(ProtobufEnumOrUnknown::new(E::deserialize(deserializer)?))
     }
 }
-

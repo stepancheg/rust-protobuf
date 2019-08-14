@@ -1,8 +1,8 @@
 use std::any::Any;
+use std::any::TypeId;
 use std::fmt;
 use std::io::Read;
 use std::io::Write;
-use std::any::TypeId;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -221,9 +221,7 @@ impl dyn Message {
     /// ```
     pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
         if Any::type_id(&*self) == TypeId::of::<M>() {
-            unsafe {
-                Some(&*(self as *const dyn Message as *const M))
-            }
+            unsafe { Some(&*(self as *const dyn Message as *const M)) }
         } else {
             None
         }
@@ -240,9 +238,7 @@ impl dyn Message {
     /// ```
     pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
         if Any::type_id(&*self) == TypeId::of::<M>() {
-            unsafe {
-                Some(&mut *(self as *mut dyn Message as *mut M))
-            }
+            unsafe { Some(&mut *(self as *mut dyn Message as *mut M)) }
         } else {
             None
         }

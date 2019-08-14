@@ -19,7 +19,6 @@ mod transmute_eq_impl {
         mem::forget(from);
         Ok(to)
     }
-
 }
 
 #[cfg(rustc_nightly)]

@@ -1,6 +1,10 @@
-use crate::descriptor::FieldDescriptorProto;
+use crate::core::Message;
 use crate::descriptor::field_descriptor_proto;
+use crate::descriptor::FieldDescriptorProto;
 use crate::json::json_name;
+use crate::reflect::accessor::map::MapFieldAccessorHolder;
+use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
 use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
@@ -8,17 +12,13 @@ use crate::reflect::map::ReflectMapRef;
 use crate::reflect::reflect_deep_eq::ReflectDeepEq;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::value::ReflectValueMut;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeDynamic;
-use crate::core::Message;
-use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
-use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
-use crate::reflect::accessor::map::MapFieldAccessorHolder;
-use crate::reflect::value::ReflectValueMut;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -53,7 +53,10 @@ pub enum RuntimeFieldType {
     /// Repeated field
     Repeated(&'static dyn RuntimeTypeDynamic),
     /// Map field
-    Map(&'static dyn RuntimeTypeDynamic, &'static dyn RuntimeTypeDynamic),
+    Map(
+        &'static dyn RuntimeTypeDynamic,
+        &'static dyn RuntimeTypeDynamic,
+    ),
 }
 
 fn _assert_sync<'a>() {
@@ -118,9 +121,7 @@ impl FieldDescriptor {
     pub fn enum_descriptor(&self) -> &'static EnumDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.element_type.runtime_type().enum_descriptor(),
-            AccessorKind::Repeated(ref a) => {
-                a.element_type.runtime_type().enum_descriptor()
-            }
+            AccessorKind::Repeated(ref a) => a.element_type.runtime_type().enum_descriptor(),
             _ => panic!("not a singular or repeated field"),
         }
     }
@@ -133,10 +134,7 @@ impl FieldDescriptor {
     pub fn message_descriptor(&self) -> &'static MessageDescriptor {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => a.element_type.runtime_type().message_descriptor(),
-            AccessorKind::Repeated(ref a) => a
-                .element_type
-                .runtime_type()
-                .message_descriptor(),
+            AccessorKind::Repeated(ref a) => a.element_type.runtime_type().message_descriptor(),
             _ => panic!("not a singular or repeated field"),
         }
     }
@@ -166,11 +164,13 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn len_field(&self, m: &dyn Message) -> usize {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => if a.accessor.get_reflect(m).is_some() {
-                1
-            } else {
-                0
-            },
+            AccessorKind::Singular(ref a) => {
+                if a.accessor.get_reflect(m).is_some() {
+                    1
+                } else {
+                    0
+                }
+            }
             AccessorKind::Repeated(ref a) => a.accessor.get_reflect(m).len(),
             AccessorKind::Map(ref a) => a.accessor.get_reflect(m).len(),
         }
@@ -394,9 +394,7 @@ impl FieldDescriptor {
         use self::AccessorKind::*;
         match self.accessor.accessor {
             Singular(ref a) => RuntimeFieldType::Singular(a.element_type.runtime_type()),
-            Repeated(ref a) => {
-                RuntimeFieldType::Repeated(a.element_type.runtime_type())
-            }
+            Repeated(ref a) => RuntimeFieldType::Repeated(a.element_type.runtime_type()),
             Map(ref a) => {
                 RuntimeFieldType::Map(a.key_type.runtime_type(), a.value_type.runtime_type())
             }

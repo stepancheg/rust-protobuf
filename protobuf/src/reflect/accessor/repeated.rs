@@ -1,5 +1,5 @@
-use std::marker;
 use std::fmt;
+use std::marker;
 
 use crate::core::Message;
 use crate::repeated::RepeatedField;
@@ -54,7 +54,8 @@ where
     }
 }
 
-impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
+impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated>
+    for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
 where
     M: Message + 'static,
     V: ProtobufValue + fmt::Debug + 'static,

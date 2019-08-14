@@ -1,6 +1,6 @@
-use std::marker;
-use std::any::TypeId;
 use std::any::Any;
+use std::any::TypeId;
+use std::marker;
 
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::runtime_types::RuntimeType;
@@ -8,7 +8,6 @@ use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueRef;
-
 
 /// Dynamic version of `RuntimeType`.
 ///
@@ -51,9 +50,7 @@ impl<T: RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
 
     fn value_to_ref<'a>(&self, value: &'a dyn ProtobufValue) -> ReflectValueRef<'a> {
         if Any::type_id(value) == TypeId::of::<T::Value>() {
-            unsafe {
-                T::as_ref(&*(value as *const dyn ProtobufValue as *const T::Value))
-            }
+            unsafe { T::as_ref(&*(value as *const dyn ProtobufValue as *const T::Value)) }
         } else {
             panic!("wrong type")
         }

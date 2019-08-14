@@ -1,16 +1,16 @@
-use std::fmt;
-use std::fmt::Write as fmt_Write;
-use std::f32;
-use std::f64;
+use crate::core::Message;
 use crate::json::base64;
 use crate::json::float;
-use crate::reflect::{ReflectFieldRef, EnumDescriptor};
 use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueRef;
-use crate::core::Message;
+use crate::reflect::{EnumDescriptor, ReflectFieldRef};
+use std::f32;
+use std::f64;
+use std::fmt;
+use std::fmt::Write as fmt_Write;
 
-
+use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
 use crate::well_known_types::BytesValue;
@@ -28,7 +28,6 @@ use crate::well_known_types::Timestamp;
 use crate::well_known_types::UInt32Value;
 use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
-use crate::well_known_types::value;
 
 use crate::json::well_known_wrapper::WellKnownWrapper;
 
@@ -250,7 +249,7 @@ impl PrintableToJson for Value {
             Some(value::Kind::null_value(null_value)) => {
                 // TODO: number if unknown
                 w.print_wk_null_value(&null_value.enum_value_or_default())
-            },
+            }
             Some(value::Kind::bool_value(b)) => w.print_printable(&b),
             Some(value::Kind::number_value(n)) => w.print_printable(&n),
             Some(value::Kind::string_value(ref s)) => w.print_printable::<String>(&s),
@@ -290,7 +289,9 @@ impl<'a> ObjectKey for ReflectValueRef<'a> {
             // do not quote, because printable is quoted
             ReflectValueRef::U64(v) => return w.print_printable(v),
             ReflectValueRef::I64(v) => return w.print_printable(v),
-            ReflectValueRef::Enum(d, v) if !w.print_options.enum_values_int => return w.print_enum(d, *v),
+            ReflectValueRef::Enum(d, v) if !w.print_options.enum_values_int => {
+                return w.print_enum(d, *v)
+            }
             _ => {}
         }
 

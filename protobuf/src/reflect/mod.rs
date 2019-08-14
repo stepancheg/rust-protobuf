@@ -3,6 +3,7 @@
 mod accessor;
 mod enums;
 mod field;
+mod find_message_or_enum;
 mod map;
 mod message;
 mod repeated;
@@ -13,7 +14,6 @@ mod transmute_eq;
 mod type_dynamic;
 pub mod types;
 mod value;
-mod find_message_or_enum;
 
 mod reflect_deep_eq;
 

@@ -29,13 +29,13 @@ where
     V: ProtobufType,
 {
     get_field: fn(
-        &M
+        &M,
     ) -> &HashMap<
         <K::RuntimeType as RuntimeType>::Value,
         <V::RuntimeType as RuntimeType>::Value,
     >,
     mut_field: fn(
-        &mut M
+        &mut M,
     ) -> &mut HashMap<
         <K::RuntimeType as RuntimeType>::Value,
         <V::RuntimeType as RuntimeType>::Value,
@@ -74,13 +74,13 @@ where
 pub fn make_map_accessor<M, K, V>(
     name: &'static str,
     get_field: for<'a> fn(
-        &'a M
+        &'a M,
     ) -> &'a HashMap<
         <K::RuntimeType as RuntimeType>::Value,
         <V::RuntimeType as RuntimeType>::Value,
     >,
     mut_field: for<'a> fn(
-        &'a mut M
+        &'a mut M,
     ) -> &'a mut HashMap<
         <K::RuntimeType as RuntimeType>::Value,
         <V::RuntimeType as RuntimeType>::Value,

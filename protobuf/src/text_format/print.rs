@@ -207,7 +207,8 @@ mod test {
     fn unescape_string(escaped: &str) -> Vec<u8> {
         StrLit {
             escaped: escaped.to_owned(),
-        }.decode_bytes()
+        }
+        .decode_bytes()
         .expect("decode_bytes")
     }
 
@@ -221,10 +222,7 @@ mod test {
         assert_eq!("ab", escape(b"ab"));
         assert_eq!("a\\\\023", escape(b"a\\023"));
         assert_eq!("a\\r\\n\\t '\\\"\\\\", escape(b"a\r\n\t '\"\\"));
-        assert_eq!(
-            "\\344\\275\\240\\345\\245\\275",
-            escape("你好".as_bytes())
-        );
+        assert_eq!("\\344\\275\\240\\345\\245\\275", escape("你好".as_bytes()));
     }
 
     #[test]

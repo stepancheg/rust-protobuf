@@ -1,7 +1,7 @@
+use std::any::Any;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
-use std::any::Any;
 
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
@@ -157,7 +157,6 @@ impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
         }
     }
 }
-
 
 pub enum ReflectValueMut<'a> {
     Message(&'a mut dyn Message),
@@ -425,5 +424,4 @@ mod test {
             ReflectValueBox::Bool(false).downcast::<StringOrChars>()
         );
     }
-
 }

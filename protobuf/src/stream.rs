@@ -26,6 +26,7 @@ use crate::zigzag::decode_zig_zag_64;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
 
+use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
@@ -43,7 +44,6 @@ use crate::reflect::types::ProtobufTypeSint32;
 use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
-use crate::enums::ProtobufEnumOrUnknown;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -378,9 +378,9 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read `enum` as `ProtobufEnumOrUnknown`
-    pub fn read_enum_or_unknown<E: ProtobufEnum>(&mut self)
-        -> ProtobufResult<ProtobufEnumOrUnknown<E>>
-    {
+    pub fn read_enum_or_unknown<E: ProtobufEnum>(
+        &mut self,
+    ) -> ProtobufResult<ProtobufEnumOrUnknown<E>> {
         Ok(ProtobufEnumOrUnknown::from_i32(self.read_int32()?))
     }
 
@@ -1044,10 +1044,12 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `enum`
-    pub fn write_enum_or_unknown_no_tag<E>(&mut self, value: ProtobufEnumOrUnknown<E>)
-        -> ProtobufResult<()>
-        where
-            E: ProtobufEnum,
+    pub fn write_enum_or_unknown_no_tag<E>(
+        &mut self,
+        value: ProtobufEnumOrUnknown<E>,
+    ) -> ProtobufResult<()>
+    where
+        E: ProtobufEnum,
     {
         self.write_enum_no_tag(value.value())
     }
@@ -1155,8 +1157,11 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `enum` field
-    pub fn write_enum_or_unknown<E>(&mut self, field_number: u32, value: ProtobufEnumOrUnknown<E>)
-        -> ProtobufResult<()>
+    pub fn write_enum_or_unknown<E>(
+        &mut self,
+        field_number: u32,
+        value: ProtobufEnumOrUnknown<E>,
+    ) -> ProtobufResult<()>
     where
         E: ProtobufEnum,
     {
@@ -1256,10 +1261,10 @@ mod test {
     use crate::hex::decode_hex;
     use crate::hex::encode_hex;
 
-    use crate::wire_format;
     use super::CodedInputStream;
     use super::CodedOutputStream;
     use super::READ_RAW_BYTES_MAX_ALLOC;
+    use crate::wire_format;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where

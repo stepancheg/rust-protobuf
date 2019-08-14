@@ -1,20 +1,20 @@
 use std::marker;
 
-use crate::reflect::accessor::AccessorKind;
-use crate::reflect::accessor::FieldAccessor;
-use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
-use crate::reflect::runtime_types::RuntimeTypeMessage;
-use crate::reflect::runtime_types::RuntimeTypeWithDeref;
-use crate::reflect::type_dynamic::ProtobufTypeDynamic;
-use crate::reflect::types::{ProtobufType, ProtobufTypeEnumOrUnknown};
-use crate::reflect::types::ProtobufTypeMessage;
-use crate::reflect::ReflectValueBox;
-use crate::reflect::ReflectValueRef;
-use crate::reflect::value::ReflectValueMut;
-use crate::singular::OptionLike;
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
+use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::runtime_types::RuntimeTypeMessage;
+use crate::reflect::runtime_types::RuntimeTypeWithDeref;
+use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
+use crate::reflect::type_dynamic::ProtobufTypeDynamic;
+use crate::reflect::types::ProtobufTypeMessage;
+use crate::reflect::types::{ProtobufType, ProtobufTypeEnumOrUnknown};
+use crate::reflect::value::ReflectValueMut;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::singular::OptionLike;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
@@ -46,13 +46,15 @@ trait SetImpl<M>: Send + Sync + 'static {
 }
 
 struct MutOrDefaultUnmplemented<M>
-    where M: Message,
+where
+    M: Message,
 {
     _marker: marker::PhantomData<M>,
 }
 
 impl<M> MutOrDefaultUnmplemented<M>
-    where M: Message,
+where
+    M: Message,
 {
     fn new() -> MutOrDefaultUnmplemented<M> {
         MutOrDefaultUnmplemented {
@@ -62,7 +64,8 @@ impl<M> MutOrDefaultUnmplemented<M>
 }
 
 impl<M> MutOrDefaultImpl<M> for MutOrDefaultUnmplemented<M>
-    where M: Message,
+where
+    M: Message,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, _m: &'a mut M) -> ReflectValueMut<'a> {
         unimplemented!()
@@ -317,9 +320,9 @@ where
 }
 
 impl<M, V> MutOrDefaultImpl<M> for MutOrDefaultGetMut<M, V>
-    where
-        M: Message,
-        V: RuntimeType,
+where
+    M: Message,
+    V: RuntimeType,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
         V::as_mut((self.mut_field)(m))
@@ -337,10 +340,10 @@ where
 }
 
 impl<M, V, O> MutOrDefaultImpl<M> for MutOrDefaultOptionMut<M, V, O>
-    where
-        M: Message,
-        V: RuntimeType,
-        O: OptionLike<V::Value> + Sync + Send + 'static,
+where
+    M: Message,
+    V: RuntimeType,
+    O: OptionLike<V::Value> + Sync + Send + 'static,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
         let option = (self.mut_field)(m);
@@ -456,7 +459,9 @@ where
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
-                get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> { get_field: get },
+                get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> {
+                    get_field: get,
+                },
                 mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplSetField::<M, F::RuntimeType> { set_field: set },
                 _marker: marker::PhantomData,
@@ -481,23 +486,22 @@ where
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<
-                M,
-                ProtobufTypeMessage<F>,
-                _,
-                _,
-                _,
-                _,
-            > {
-                get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {
-                    get: get_field,
-                    has: has_field,
+            accessor: Box::new(
+                SingularFieldAccessorImpl::<M, ProtobufTypeMessage<F>, _, _, _, _> {
+                    get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {
+                        get: get_field,
+                        has: has_field,
+                    },
+                    get_or_default_impl: GetOrDefaultGetRef::<M, RuntimeTypeMessage<F>> {
+                        get_field,
+                    },
+                    mut_or_default_impl: MutOrDefaultGetMut::<M, RuntimeTypeMessage<F>> {
+                        mut_field,
+                    },
+                    set_impl: SetImplSetField::<M, RuntimeTypeMessage<F>> { set_field },
+                    _marker: marker::PhantomData,
                 },
-                get_or_default_impl: GetOrDefaultGetRef::<M, RuntimeTypeMessage<F>> { get_field },
-                mut_or_default_impl: MutOrDefaultGetMut::<M, RuntimeTypeMessage<F>> { mut_field },
-                set_impl: SetImplSetField::<M, RuntimeTypeMessage<F>> { set_field },
-                _marker: marker::PhantomData,
-            }),
+            ),
             element_type: ProtobufTypeMessage::<F>::dynamic(),
         }),
     }
@@ -583,10 +587,13 @@ struct GetOrDefaultEnum<M, E: ProtobufEnum> {
 
 impl<M: Message, E: ProtobufEnum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        ReflectValueRef::Enum(E::enum_descriptor_static(), match (self.get_field)(m) {
-            Some(e) => e.value(),
-            None => self.default_value.value(),
-        })
+        ReflectValueRef::Enum(
+            E::enum_descriptor_static(),
+            match (self.get_field)(m) {
+                Some(e) => e.value(),
+                None => self.default_value.value(),
+            },
+        )
     }
 }
 
@@ -597,15 +604,26 @@ pub fn make_option_enum_accessor<M, E>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<ProtobufEnumOrUnknown<E>>,
     default_value: E,
 ) -> FieldAccessor
-    where
-        M: Message + 'static,
-        E: ProtobufEnum,
+where
+    M: Message + 'static,
+    E: ProtobufEnum,
 {
     FieldAccessor {
         name,
         accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, ProtobufTypeEnumOrUnknown<E>, _, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, RuntimeTypeEnumOrUnknown<E>, Option<ProtobufEnumOrUnknown<E>>> {
+            accessor: Box::new(SingularFieldAccessorImpl::<
+                M,
+                ProtobufTypeEnumOrUnknown<E>,
+                _,
+                _,
+                _,
+                _,
+            > {
+                get_option_impl: GetOptionImplOptionFieldPointer::<
+                    M,
+                    RuntimeTypeEnumOrUnknown<E>,
+                    Option<ProtobufEnumOrUnknown<E>>,
+                > {
                     get_field,
                     _marker: marker::PhantomData,
                 },
@@ -614,14 +632,18 @@ pub fn make_option_enum_accessor<M, E>(
                     default_value,
                 },
                 mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplOptionFieldPointer::<M, RuntimeTypeEnumOrUnknown<E>, Option<ProtobufEnumOrUnknown<E>>> {
+                set_impl: SetImplOptionFieldPointer::<
+                    M,
+                    RuntimeTypeEnumOrUnknown<E>,
+                    Option<ProtobufEnumOrUnknown<E>>,
+                > {
                     mut_field,
                     _marker: marker::PhantomData,
                 },
                 _marker: marker::PhantomData,
             }),
             element_type: ProtobufTypeEnumOrUnknown::<E>::dynamic(),
-        })
+        }),
     }
 }
 

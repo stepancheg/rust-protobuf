@@ -2,7 +2,6 @@
 
 #![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
-
 #![cfg_attr(rustc_nightly, feature(specialization))]
 
 #[cfg(feature = "bytes")]
@@ -11,7 +10,6 @@ extern crate bytes;
 extern crate serde;
 #[macro_use]
 #[cfg(feature = "with-serde")]
-
 extern crate serde_derive;
 pub use crate::clear::Clear;
 pub use crate::core::parse_from_bytes;

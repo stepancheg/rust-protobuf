@@ -1,6 +1,6 @@
-use crate::descriptor::FileDescriptorProto;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
 
 pub(crate) enum MessageOrEnum<'a> {
     Message(&'a DescriptorProto),
@@ -8,9 +8,10 @@ pub(crate) enum MessageOrEnum<'a> {
 }
 
 impl<'a> MessageOrEnum<'a> {
-    fn from_two_options(m: Option<&'a DescriptorProto>, e: Option<&'a EnumDescriptorProto>)
-        -> MessageOrEnum<'a>
-    {
+    fn from_two_options(
+        m: Option<&'a DescriptorProto>,
+        e: Option<&'a EnumDescriptorProto>,
+    ) -> MessageOrEnum<'a> {
         match (m, e) {
             (Some(_), Some(_)) => panic!("enum and message with the same name"),
             (Some(m), None) => MessageOrEnum::Message(m),
@@ -20,9 +21,10 @@ impl<'a> MessageOrEnum<'a> {
     }
 }
 
-pub(crate) fn find_message_or_enum<'a>(file: &'a FileDescriptorProto, name_to_package: &str)
-    -> (String, MessageOrEnum<'a>)
-{
+pub(crate) fn find_message_or_enum<'a>(
+    file: &'a FileDescriptorProto,
+    name_to_package: &str,
+) -> (String, MessageOrEnum<'a>) {
     let mut path = name_to_package.split('.');
     let first = path.next().unwrap();
     let child_message = file.message_type.iter().find(|m| m.get_name() == first);

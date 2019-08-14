@@ -1,5 +1,5 @@
-use std::slice;
 use std::fmt;
+use std::slice;
 
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueRef;

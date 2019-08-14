@@ -16,19 +16,19 @@ use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
+use crate::reflect::types::*;
 use crate::repeated::RepeatedField;
 use crate::singular::SingularField;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
-use crate::reflect::types::*;
 use crate::wire_format;
-use crate::ProtobufEnumOrUnknown;
 use crate::wire_format::WireType;
 use crate::wire_format::WireTypeFixed32;
 use crate::wire_format::WireTypeFixed64;
 use crate::wire_format::WireTypeLengthDelimited;
 use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
+use crate::ProtobufEnumOrUnknown;
 
 use crate::reflect::runtime_types::RuntimeType;
 use crate::repeated::VecLike;
@@ -36,8 +36,8 @@ use crate::unknown::UnknownFields;
 
 use crate::prelude::*;
 
-pub use crate::lazy::Lazy;
 pub use crate::cached_size::CachedSize;
+pub use crate::lazy::Lazy;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {
@@ -160,7 +160,9 @@ pub fn vec_packed_enum_data_size<E: ProtobufEnum>(vec: &[E]) -> u32 {
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_or_unknown_data_size<E: ProtobufEnum>(vec: &[ProtobufEnumOrUnknown<E>]) -> u32 {
+pub fn vec_packed_enum_or_unknown_data_size<E: ProtobufEnum>(
+    vec: &[ProtobufEnumOrUnknown<E>],
+) -> u32 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
         .fold(0, |a, i| a + i)
@@ -197,7 +199,10 @@ pub fn vec_packed_enum_size<E: ProtobufEnum>(field_number: u32, vec: &[E]) -> u3
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_enum_or_unknown_size<E: ProtobufEnum>(field_number: u32, vec: &[ProtobufEnumOrUnknown<E>]) -> u32 {
+pub fn vec_packed_enum_or_unknown_size<E: ProtobufEnum>(
+    field_number: u32,
+    vec: &[ProtobufEnumOrUnknown<E>],
+) -> u32 {
     if vec.is_empty() {
         0
     } else {
@@ -252,7 +257,10 @@ pub fn enum_size<E: ProtobufEnum>(field_number: u32, value: E) -> u32 {
 }
 
 /// Size of encoded enum field value.
-pub fn enum_or_unknown_size<E: ProtobufEnum>(field_number: u32, value: ProtobufEnumOrUnknown<E>) -> u32 {
+pub fn enum_or_unknown_size<E: ProtobufEnum>(
+    field_number: u32,
+    value: ProtobufEnumOrUnknown<E>,
+) -> u32 {
     tag_size(field_number) + enum_or_unknown_size_no_tag(value)
 }
 
@@ -605,10 +613,7 @@ pub fn read_repeated_enum_or_unknown_into<E: ProtobufEnum>(
     target: &mut Vec<ProtobufEnumOrUnknown<E>>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => read_repeated_packed_enum_or_unknown_into(
-            is,
-            target,
-        ),
+        WireTypeLengthDelimited => read_repeated_packed_enum_or_unknown_into(is, target),
         WireTypeVarint => {
             target.push(is.read_enum_or_unknown()?);
             Ok(())

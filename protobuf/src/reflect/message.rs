@@ -7,13 +7,12 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
 use crate::reflect::accessor::FieldAccessor;
-use crate::reflect::reflect_deep_eq::ReflectDeepEq;
-use crate::reflect::FieldDescriptor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::FieldDescriptor;
 
 use crate::json;
-
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;
@@ -78,7 +77,7 @@ impl MessageDescriptor {
     fn compute_full_name(package: &str, path_to_package: &str, proto: &DescriptorProto) -> String {
         let mut full_name = package.to_owned();
         if path_to_package.len() != 0 {
-            if full_name.len()!= 0 {
+            if full_name.len() != 0 {
                 full_name.push('.');
             }
             full_name.push_str(path_to_package);
@@ -98,10 +97,11 @@ impl MessageDescriptor {
         file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
-        let (path_to_package, proto) = match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
-            (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
-            (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
-        };
+        let (path_to_package, proto) =
+            match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
+                (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
+                (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
+            };
 
         let mut field_proto_by_name = HashMap::new();
         for field_proto in &proto.field {
@@ -114,11 +114,9 @@ impl MessageDescriptor {
         for (i, f) in proto.field.iter().enumerate() {
             assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
             assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
-            assert!(
-                index_by_name_or_json_name
-                    .insert(f.get_name().to_owned(), i)
-                    .is_none()
-            );
+            assert!(index_by_name_or_json_name
+                .insert(f.get_name().to_owned(), i)
+                .is_none());
 
             let json_name = json::json_name(f.get_name());
 
@@ -133,7 +131,10 @@ impl MessageDescriptor {
 
         MessageDescriptor {
             full_name: MessageDescriptor::compute_full_name(
-                file_descriptor_proto.get_package(), &path_to_package, &proto),
+                file_descriptor_proto.get_package(),
+                &path_to_package,
+                &proto,
+            ),
             proto,
             factory,
             fields: fields
@@ -141,7 +142,8 @@ impl MessageDescriptor {
                 .map(|f| {
                     let proto = *field_proto_by_name.get(f.name).unwrap();
                     FieldDescriptor::new(f, proto)
-                }).collect(),
+                })
+                .collect(),
             index_by_name,
             index_by_name_or_json_name,
             index_by_number,
@@ -159,7 +161,12 @@ impl MessageDescriptor {
         file_descriptor_proto: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        MessageDescriptor::new_non_generic(protobuf_name_to_package, fields, file_descriptor_proto, factory)
+        MessageDescriptor::new_non_generic(
+            protobuf_name_to_package,
+            fields,
+            file_descriptor_proto,
+            factory,
+        )
     }
 
     /// `FileDescriptorProto` containg this message type

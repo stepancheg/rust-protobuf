@@ -12,11 +12,11 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
-use crate::error::WireError;
+use crate::buf_read_or_reader::BufReadOrReader;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
+use crate::error::WireError;
 use crate::stream::READ_RAW_BYTES_MAX_ALLOC;
-use crate::buf_read_or_reader::BufReadOrReader;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -437,7 +437,6 @@ mod test_bytes {
         assert_eq!(&bytes[..90].as_ptr(), &read.as_ptr());
         assert_eq!(bytes[90], bri.read_byte().expect("read_byte"));
     }
-
 }
 
 #[cfg(test)]

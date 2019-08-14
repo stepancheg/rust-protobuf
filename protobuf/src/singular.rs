@@ -102,10 +102,7 @@ impl<T> SingularField<T> {
     /// Construct this object from given value.
     #[inline]
     pub fn some(value: T) -> SingularField<T> {
-        SingularField {
-            value,
-            set: true,
-        }
+        SingularField { value, set: true }
     }
 
     /// True iff this object contains data.
@@ -684,8 +681,8 @@ impl<'de, T: serde::Deserialize<'de> + Default> serde::Deserialize<'de> for Sing
 
 #[cfg(test)]
 mod test {
-    use crate::singular::SingularField;
     use crate::clear::Clear;
+    use crate::singular::SingularField;
 
     #[test]
     fn test_set_default_clears() {

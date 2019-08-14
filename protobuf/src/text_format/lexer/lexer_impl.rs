@@ -1,8 +1,8 @@
 use std::char;
-use std::f64;
-use std::num::ParseIntError;
-use std::num::ParseFloatError;
 use std::convert::TryFrom;
+use std::f64;
+use std::num::ParseFloatError;
+use std::num::ParseIntError;
 
 use super::float;
 use super::loc::Loc;
@@ -732,5 +732,4 @@ mod test {
         let mess = lex(msg, |p| p.next_token_inner());
         assert_eq!(Token::FloatLit(12.3), mess);
     }
-
 }

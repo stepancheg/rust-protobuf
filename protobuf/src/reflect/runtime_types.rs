@@ -9,18 +9,18 @@ use bytes::Bytes;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
+use crate::reflect::value::ReflectValueMut;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::value::ReflectValueMut;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::core::Message;
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::enums::ProtobufEnum;
+use crate::enums::ProtobufEnumOrUnknown;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -615,7 +615,10 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(Self::enum_descriptor(), Self::enum_descriptor().values()[0].value())
+        ReflectValueRef::Enum(
+            Self::enum_descriptor(),
+            Self::enum_descriptor().values()[0].value(),
+        )
     }
 
     fn enum_descriptor() -> &'static EnumDescriptor {
@@ -665,7 +668,10 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(Self::enum_descriptor(), Self::enum_descriptor().values()[0].value())
+        ReflectValueRef::Enum(
+            Self::enum_descriptor(),
+            Self::enum_descriptor().values()[0].value(),
+        )
     }
 
     fn enum_descriptor() -> &'static EnumDescriptor {
@@ -723,9 +729,7 @@ where
 
     fn from_value_box(value_box: ReflectValueBox) -> M {
         match value_box {
-            ReflectValueBox::Message(v) => {
-                *v.downcast_box().expect("wrong message type")
-            }
+            ReflectValueBox::Message(v) => *v.downcast_box().expect("wrong message type"),
             _ => panic!("wrong type"),
         }
     }

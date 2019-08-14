@@ -2,9 +2,9 @@ use std::collections::hash_map;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::reflect::value::ProtobufValue;
 use crate::reflect::reflect_deep_eq::ReflectDeepEq;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use crate::reflect::value::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 

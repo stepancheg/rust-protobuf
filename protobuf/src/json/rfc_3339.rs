@@ -407,7 +407,8 @@ impl TmUtc {
             minute,
             second,
             nanos,
-        }.to_protobuf_timestamp();
+        }
+        .to_protobuf_timestamp();
 
         Ok((seconds - offset_seconds, nanos))
     }

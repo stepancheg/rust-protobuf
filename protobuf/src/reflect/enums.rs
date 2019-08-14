@@ -1,6 +1,6 @@
+use std::any::TypeId;
 use std::collections::HashMap;
 use std::fmt;
-use std::any::TypeId;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::marker;
@@ -8,12 +8,11 @@ use std::marker;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::ProtobufValue;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-
+use crate::reflect::ProtobufValue;
 
 /// Description for enum variant.
 ///
@@ -151,10 +150,14 @@ impl EnumDescriptor {
         E::enum_descriptor_static()
     }
 
-    fn compute_full_name(package: &str, path_to_package: &str, proto: &EnumDescriptorProto) -> String {
+    fn compute_full_name(
+        package: &str,
+        path_to_package: &str,
+        proto: &EnumDescriptorProto,
+    ) -> String {
         let mut full_name = package.to_owned();
         if path_to_package.len() != 0 {
-            if full_name.len()!= 0 {
+            if full_name.len() != 0 {
                 full_name.push('.');
             }
             full_name.push_str(path_to_package);
@@ -198,11 +201,15 @@ impl EnumDescriptor {
                 proto: p,
                 protobuf_value: c,
                 get_descriptor,
-            }).collect();
+            })
+            .collect();
 
         EnumDescriptor {
             full_name: EnumDescriptor::compute_full_name(
-                file.get_package(), &path_to_package, &proto),
+                file.get_package(),
+                &path_to_package,
+                &proto,
+            ),
             proto,
             values,
             type_id: TypeId::of::<E>(),
@@ -284,8 +291,8 @@ impl EnumDescriptor {
 
     #[cfg(not(rustc_nightly))]
     fn cast_to_protobuf_enum_or_unknown<E: 'static>(&self, value: i32) -> E {
-        use std::ptr;
         use std::mem;
+        use std::ptr;
         debug_assert_eq!(mem::size_of::<E>(), mem::size_of::<i32>());
         unsafe {
             // This works because `ProtobufEnumOrUnknown<E>` is `#[repr(transparent)]`
@@ -294,7 +301,6 @@ impl EnumDescriptor {
             r
         }
     }
-
 }
 
 #[cfg(rustc_nightly)]
@@ -305,13 +311,13 @@ mod cast_impl {
         fn cast(value: i32) -> Option<Self>;
     }
 
-    impl <T> CastValueToProtobufEnumOrUnknown for T {
+    impl<T> CastValueToProtobufEnumOrUnknown for T {
         default fn cast(_value: i32) -> Option<T> {
             None
         }
     }
 
-    impl <E: ProtobufEnum> CastValueToProtobufEnumOrUnknown for ProtobufEnumOrUnknown<E> {
+    impl<E: ProtobufEnum> CastValueToProtobufEnumOrUnknown for ProtobufEnumOrUnknown<E> {
         fn cast(value: i32) -> Option<ProtobufEnumOrUnknown<E>> {
             Some(ProtobufEnumOrUnknown::from_i32(value))
         }
@@ -321,13 +327,13 @@ mod cast_impl {
         fn cast(value: i32) -> Option<Self>;
     }
 
-    impl <T> CastValueToProtobufEnum for T {
+    impl<T> CastValueToProtobufEnum for T {
         default fn cast(_value: i32) -> Option<T> {
             None
         }
     }
 
-    impl <E: ProtobufEnum> CastValueToProtobufEnum for E {
+    impl<E: ProtobufEnum> CastValueToProtobufEnum for E {
         fn cast(value: i32) -> Option<E> {
             Some(E::from_i32(value).expect(&format!("unknown enum value: {}", value)))
         }
