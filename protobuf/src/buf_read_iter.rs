@@ -13,10 +13,9 @@ use bytes::Bytes;
 use bytes::BytesMut;
 
 use error::WireError;
+use stream::READ_RAW_BYTES_MAX_ALLOC;
 use ProtobufError;
 use ProtobufResult;
-use stream::READ_RAW_BYTES_MAX_ALLOC;
-
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -457,7 +456,6 @@ mod test_bytes {
         assert_eq!(&bytes[..90].as_ptr(), &read.as_ptr());
         assert_eq!(bytes[90], bri.read_byte().expect("read_byte"));
     }
-
 }
 
 #[cfg(test)]

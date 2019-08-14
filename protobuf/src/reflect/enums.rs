@@ -1,8 +1,7 @@
-use descriptor::{EnumValueDescriptorProto, EnumDescriptorProto, FileDescriptorProto};
+use descriptor::{EnumDescriptorProto, EnumValueDescriptorProto, FileDescriptorProto};
+use descriptorx::find_enum_by_rust_name;
 use std::collections::HashMap;
 use ProtobufEnum;
-use descriptorx::find_enum_by_rust_name;
-
 
 /// Description for enum variant.
 ///

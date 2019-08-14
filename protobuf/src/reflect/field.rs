@@ -1,7 +1,7 @@
 use descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
 use reflect::accessor::FieldAccessor;
-use Message;
 use reflect::{EnumValueDescriptor, ReflectFieldRef};
+use Message;
 
 /// Field descriptor.
 ///
@@ -17,10 +17,7 @@ impl FieldDescriptor {
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), accessor.name_generic());
-        FieldDescriptor {
-            proto,
-            accessor,
-        }
+        FieldDescriptor { proto, accessor }
     }
 
     /// Get `.proto` description of field

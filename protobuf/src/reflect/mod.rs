@@ -11,12 +11,12 @@ use descriptorx::find_message_by_rust_name;
 use reflect::accessor::FieldAccessor;
 
 pub mod accessor;
+mod enums;
+mod field;
 mod map;
 mod optional;
 mod repeated;
 mod value;
-mod field;
-mod enums;
 
 use self::map::ReflectMap;
 use self::repeated::ReflectRepeated;

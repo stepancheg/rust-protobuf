@@ -20,8 +20,8 @@
 //! and encode messages using text format.
 
 use core::Message;
-use reflect::ReflectValueRef;
 use reflect::ReflectFieldRef;
+use reflect::ReflectValueRef;
 use std;
 use std::fmt;
 use std::fmt::Write;
@@ -306,10 +306,7 @@ mod test {
         assert_eq!("ab", escape(b"ab"));
         assert_eq!("a\\\\023", escape(b"a\\023"));
         assert_eq!("a\\r\\n\\t '\\\"\\\\", escape(b"a\r\n\t '\"\\"));
-        assert_eq!(
-            "\\344\\275\\240\\345\\245\\275",
-            escape("你好".as_bytes())
-        );
+        assert_eq!("\\344\\275\\240\\345\\245\\275", escape("你好".as_bytes()));
     }
 
     #[test]

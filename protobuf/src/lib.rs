@@ -11,7 +11,6 @@ extern crate bytes;
 extern crate serde;
 #[macro_use]
 #[cfg(feature = "with-serde")]
-
 extern crate serde_derive;
 pub use cached_size::CachedSize;
 #[cfg(feature = "bytes")]
