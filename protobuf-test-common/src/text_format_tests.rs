@@ -2,6 +2,7 @@ use std::fs;
 use std::io::Read;
 use std::io::Write;
 use std::process;
+use std::error::Error;
 
 use tempfile;
 
@@ -13,12 +14,15 @@ use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
 use protobuf::Message;
 
-fn parse_using_rust_protobuf(text: &str, message_descriptor: &MessageDescriptor) -> Box<dyn Message> {
+pub fn parse_using_rust_protobuf(
+    text: &str,
+    message_descriptor: &MessageDescriptor
+) -> Result<Box<dyn Message>, Box<dyn Error>>  {
     let mut message = message_descriptor.new_instance();
 
-    merge_from_str(&mut *message, text).expect(&format!("merge_from_str: {:?}", text));
+    merge_from_str(&mut *message, text)?;
 
-    message
+    Ok(message)
 }
 
 fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<dyn Message> {
@@ -145,7 +149,8 @@ fn print_using_protoc(message: &dyn Message) -> String {
 }
 
 pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageDescriptor) {
-    let message = parse_using_rust_protobuf(text, message_descriptor);
+    let message = parse_using_rust_protobuf(text, message_descriptor)
+        .expect(format!("parse_using_rust_protobuf: {:?}", &text).as_str());
     let expected = parse_using_protoc(text, message_descriptor);
 
     assert!(
@@ -157,7 +162,8 @@ pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageD
 
     // print using protoc and parse using rust-protobuf
     let printed_using_protoc = print_using_protoc(&*message);
-    let pp = parse_using_rust_protobuf(&printed_using_protoc, message_descriptor);
+    let pp = parse_using_rust_protobuf(&printed_using_protoc, message_descriptor)
+        .expect(format!("parse_using_rust_protobuf: {:?}", &printed_using_protoc).as_str());
 
     assert!(
         message_descriptor.eq(&*expected, &*pp),
@@ -179,7 +185,8 @@ pub fn test_text_format_message(message: &dyn Message) {
     let printed_with_rust_protobuf = print_to_string(message);
     let printed_with_protoc = print_using_protoc(message);
 
-    let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, descriptor);
+    let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, descriptor)
+        .expect(format!("parse_using_rust_protobuf: {:?}", &printed_with_protoc).as_str());
     let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, descriptor);
 
     assert!(
