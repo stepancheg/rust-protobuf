@@ -186,11 +186,12 @@ impl<'a> Parser<'a> {
     ) -> ParseResult<Box<dyn Message>> {
         let mut message = descriptor.new_instance();
 
-        self.tokenizer.next_symbol_expect_eq('{')?;
-        while !self.tokenizer.lookahead_is_symbol('}')? {
+        let symbol = self.tokenizer.next_symbol_expect_eq_oneof(&['{', '<'])?;
+        let terminator = if symbol == '{' { '}' } else { '>' };
+        while !self.tokenizer.lookahead_is_symbol(terminator)? {
             self.merge_field(&mut *message, descriptor)?;
         }
-        self.tokenizer.next_symbol_expect_eq('}')?;
+        self.tokenizer.next_symbol_expect_eq(terminator)?;
         Ok(message)
     }
 

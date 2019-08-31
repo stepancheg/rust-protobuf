@@ -131,6 +131,13 @@ fn test_message() {
         "test_message_repeated { value: 10 } test_message_repeated { value: 20 }",
         TestTypes::descriptor_static(),
     );
+
+    test_text_format_str_descriptor("test_message_singular <>", TestTypes::descriptor_static());
+
+    test_text_format_str_descriptor(
+        "test_message_singular < value: 10 >",
+        TestTypes::descriptor_static()
+    );
 }
 
 #[test]
