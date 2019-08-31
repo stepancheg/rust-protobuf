@@ -20,6 +20,7 @@ pub enum TokenizerError {
     ExpectIdent,
     ExpectNamedIdent(String),
     ExpectChar(char),
+    ExpectAnyChar(Vec<char>),
 }
 
 pub type TokenizerResult<R> = Result<R, TokenizerError>;
@@ -197,6 +198,18 @@ impl<'a> Tokenizer<'a> {
         } else {
             Err(TokenizerError::ExpectChar(symbol))
         }
+    }
+
+    pub fn next_symbol_expect_eq_oneof(
+        &mut self,
+        symbols: &[char],
+    ) -> TokenizerResult<char> {
+        for symbol in symbols {
+            if let Ok(()) = self.next_symbol_expect_eq(*symbol) {
+                return Ok(*symbol);
+            }
+        }
+        Err(TokenizerError::ExpectAnyChar(symbols.to_owned()))
     }
 
     pub fn lookahead_is_str_lit(&mut self) -> TokenizerResult<bool> {
