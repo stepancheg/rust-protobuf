@@ -137,7 +137,25 @@ fn test_message() {
 
     test_text_format_str_descriptor(
         "test_message_singular < value: 10 >",
-        TestTypes::descriptor_static()
+        TestTypes::descriptor_static(),
+    );
+
+    assert!(
+        parse_using_rust_protobuf(
+            "test_message_singular < value: 10 }",
+            TestTypes::descriptor_static()
+        )
+        .is_err(),
+        "Parsing a message with mismatched message start and terminator symbols should fail."
+    );
+
+    assert!(
+        parse_using_rust_protobuf(
+            "test_message_singular { value: 10 >",
+            TestTypes::descriptor_static()
+        )
+        .is_err(),
+        "Parsing a message with mismatched message start and terminator symbols should fail."
     );
 }
 
