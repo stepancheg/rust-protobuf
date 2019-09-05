@@ -92,6 +92,9 @@ impl MessageDescriptor {
     ///
     /// This operation is called from generated code and rarely
     /// need to be called directly.
+    ///
+    /// This function is not a part of public API.
+    #[doc(hidden)]
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<Box<FieldAccessor + 'static>>,
