@@ -44,16 +44,14 @@ impl MessageDescriptor {
         M::descriptor_static()
     }
 
-    /// Create new message descriptor.
-    ///
-    /// This function is called from generated code and rarely needed otherwise.
-    pub fn new<M: 'static + Message + Default + PartialEq + Clone>(
+    // Non-generic part of `new` is a separate function
+    // to reduce code bloat from multiple instantiations.
+    fn new_non_generic(
         rust_name: &'static str,
         fields: Vec<Box<FieldAccessor + 'static>>,
         file: &'static FileDescriptorProto,
+        factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
-        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-
         let proto = find_message_by_rust_name(file, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
@@ -88,6 +86,24 @@ impl MessageDescriptor {
             index_by_name,
             index_by_number,
         }
+    }
+
+    /// Construct a new message descriptor.
+    ///
+    /// This operation is called from generated code and rarely
+    /// need to be called directly.
+    pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
+        rust_name: &'static str,
+        fields: Vec<Box<FieldAccessor + 'static>>,
+        file: &'static FileDescriptorProto,
+    ) -> MessageDescriptor {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+        MessageDescriptor::new_non_generic(
+            rust_name,
+            fields,
+            file,
+            factory,
+        )
     }
 
     /// New empty message
