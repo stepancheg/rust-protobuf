@@ -155,6 +155,9 @@ impl MessageDescriptor {
     ///
     /// This operation is called from generated code and rarely
     /// need to be called directly.
+    ///
+    /// This function is not a part of public API.
+    #[doc(hidden)]
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         protobuf_name_to_package: &'static str,
         fields: Vec<FieldAccessor>,
