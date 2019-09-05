@@ -7,6 +7,8 @@ use chars::Chars;
 
 use super::*;
 
+use crate::reflect::transmute_eq::transmute_eq;
+
 /// Type implemented by all protobuf elementary types
 /// (ints, floats, bool, string, bytes, enums, messages).
 pub trait ProtobufValue: Any + 'static {
@@ -298,4 +300,41 @@ impl From<Box<dyn Message>> for ReflectValueBox {
 fn _assert_value_box_send_sync() {
     fn _assert_send_sync<T: Send + Sync>() {}
     _assert_send_sync::<ReflectValueBox>();
+}
+
+#[cfg(not(feature = "bytes"))]
+type VecU8OrBytes = Vec<u8>;
+#[cfg(feature = "bytes")]
+type VecU8OrBytes = Vec<u8>;
+#[cfg(not(feature = "bytes"))]
+type StringOrChars = String;
+#[cfg(feature = "bytes")]
+type StringOrChars = Chars;
+
+impl ReflectValueBox {
+    /// Downcast to real typed value.
+    ///
+    /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
+    pub fn downcast<V: ProtobufValue>(self) -> Result<V, Self> {
+        match self {
+            ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),
+            ReflectValueBox::U64(v) => transmute_eq(v).map_err(ReflectValueBox::U64),
+            ReflectValueBox::I32(v) => transmute_eq(v).map_err(ReflectValueBox::I32),
+            ReflectValueBox::I64(v) => transmute_eq(v).map_err(ReflectValueBox::I64),
+            ReflectValueBox::F32(v) => transmute_eq(v).map_err(ReflectValueBox::F32),
+            ReflectValueBox::F64(v) => transmute_eq(v).map_err(ReflectValueBox::F64),
+            ReflectValueBox::Bool(v) => transmute_eq(v).map_err(ReflectValueBox::Bool),
+            ReflectValueBox::String(v) => transmute_eq::<String, _>(v)
+                .or_else(|v: String| transmute_eq::<StringOrChars, _>(v.into()))
+                .map_err(|v: StringOrChars| ReflectValueBox::String(v.into())),
+            ReflectValueBox::Bytes(v) => transmute_eq::<Vec<u8>, _>(v)
+                .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
+                .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into())),
+            ReflectValueBox::Enum(v) => v.enum_descriptor().cast_to_protobuf_enum(v.value()).ok_or(ReflectValueBox::Enum(v)),
+            ReflectValueBox::Message(m) => m
+                .downcast_box::<V>()
+                .map(|m| *m)
+                .map_err(ReflectValueBox::Message),
+        }
+    }
 }

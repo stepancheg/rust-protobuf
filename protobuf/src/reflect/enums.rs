@@ -4,6 +4,7 @@ use crate::ProtobufEnum;
 use std::any::TypeId;
 use std::collections::HashMap;
 use std::fmt;
+use reflect::ProtobufValue;
 
 /// Description for enum variant.
 ///
@@ -139,5 +140,50 @@ impl EnumDescriptor {
     /// ```
     pub fn is<E: ProtobufEnum>(&self) -> bool {
         TypeId::of::<E>() == self.type_id
+    }
+
+    #[cfg(rustc_nightly)]
+    pub(crate) fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
+        if TypeId::of::<E>() != self.type_id {
+            return None;
+        }
+
+        Some(<E as cast_impl::CastValueToProtobufEnum>::cast(value))
+    }
+
+    #[cfg(not(rustc_nightly))]
+    pub(crate) fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
+        if TypeId::of::<E>() != self.type_id {
+            return None;
+        }
+
+        use std::mem;
+        unsafe {
+            let mut r = mem::uninitialized();
+            self.get_descriptor
+                .copy_to(value, &mut r as *mut E as *mut ());
+            Some(r)
+        }
+    }
+}
+
+#[cfg(rustc_nightly)]
+mod cast_impl {
+    use super::*;
+
+    pub(crate) trait CastValueToProtobufEnum: Sized {
+        fn cast(value: i32) -> Self;
+    }
+
+    impl<T> CastValueToProtobufEnum for T {
+        default fn cast(_value: i32) -> T {
+            unreachable!();
+        }
+    }
+
+    impl<E: ProtobufEnum> CastValueToProtobufEnum for E {
+        fn cast(value: i32) -> E {
+            E::from_i32(value).expect(&format!("unknown enum value: {}", value))
+        }
     }
 }
