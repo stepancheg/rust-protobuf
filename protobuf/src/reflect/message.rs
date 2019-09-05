@@ -5,9 +5,12 @@ use reflect::FieldDescriptor;
 use std::collections::HashMap;
 use std::marker;
 use Message;
+use core::message_down_cast;
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;
+    fn default_instance(&self) -> &dyn Message;
+    fn clone(&self, message: &dyn Message) -> Box<dyn Message>;
 }
 
 struct MessageFactoryImpl<M>(marker::PhantomData<M>);
@@ -19,6 +22,15 @@ where
     fn new_instance(&self) -> Box<dyn Message> {
         let m: M = Default::default();
         Box::new(m)
+    }
+
+    fn default_instance(&self) -> &dyn Message {
+        M::default_instance() as &dyn Message
+    }
+
+    fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
+        let m: &M = message_down_cast(message);
+        Box::new(m.clone())
     }
 }
 
@@ -114,7 +126,17 @@ impl MessageDescriptor {
         self.factory.new_instance()
     }
 
-    /// Protobuf message name
+    /// Shared immutable empty message
+    pub fn default_instance(&self) -> &dyn Message {
+        self.factory.default_instance()
+    }
+
+    /// Clone a message
+    pub fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
+        self.factory.clone(message)
+    }
+
+    /// Message name as given in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
     }
