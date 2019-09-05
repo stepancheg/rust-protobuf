@@ -1,21 +1,15 @@
 #[cfg(not(rustc_nightly))]
 mod transmute_eq_impl {
-    use std::any::Any;
+    use std::any::TypeId;
     use std::mem;
 
     #[inline(always)]
-    pub fn transmute_eq<F: 'static, T: 'static>(mut from: F) -> Result<T, F> {
-        // call downcast twice to work around borrow checked
-        if (&mut from as &mut Any).downcast_mut::<T>().is_none() {
+    pub fn transmute_eq<F: 'static, T: 'static>(from: F) -> Result<T, F> {
+        if TypeId::of::<T>() != TypeId::of::<F>() {
             return Err(from);
         }
 
-        let to = unsafe {
-            let from_as_to = (&mut from as &mut Any).downcast_mut().unwrap();
-            let mut to = mem::uninitialized();
-            mem::swap(from_as_to, &mut to);
-            to
-        };
+        let to: T = unsafe { mem::transmute_copy(&from) };
         mem::forget(from);
         Ok(to)
     }
