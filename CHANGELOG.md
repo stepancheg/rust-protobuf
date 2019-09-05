@@ -46,6 +46,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
 - [`Debug` is now implemented for `EnumValueDescriptor` and
   `ReflectValueRef`](https://github.com/stepancheg/rust-protobuf/commit/0e6a2f4c50f07d2c6f8007abd469daa08bc09b9c)
+- [`Box<dyn Message>` now implements
+  `Clone`](https://github.com/stepancheg/rust-protobuf/commit/08aedca14f6a4cf8bb85c3e82d2dae05cddf57b8)
 
 ## [2.8.0] - 2019-07-22
 
