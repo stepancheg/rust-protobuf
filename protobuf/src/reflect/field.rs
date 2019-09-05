@@ -1,9 +1,9 @@
 use descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
 use reflect::accessor::FieldAccessor;
+use reflect::map::ReflectMap;
+use reflect::repeated::ReflectRepeated;
 use reflect::{EnumValueDescriptor, ReflectValueRef};
 use Message;
-use reflect::repeated::ReflectRepeated;
-use reflect::map::ReflectMap;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
