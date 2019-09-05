@@ -4,6 +4,7 @@
 #![deny(intra_doc_link_resolution_failure)]
 // Because we need compat with Rust 1.26
 #![allow(bare_trait_objects)]
+#![cfg_attr(rustc_nightly, feature(specialization))]
 
 #[cfg(feature = "bytes")]
 extern crate bytes;

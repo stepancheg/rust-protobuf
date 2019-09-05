@@ -9,6 +9,7 @@ mod map;
 mod message;
 mod optional;
 mod repeated;
+mod transmute_eq;
 mod value;
 
 pub use self::value::ProtobufValue;
