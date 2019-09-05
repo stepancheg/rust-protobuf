@@ -6,26 +6,17 @@ use std::collections::HashMap;
 use std::marker;
 use Message;
 
-trait MessageFactory {
-    fn new_instance(&self) -> Box<Message>;
+trait MessageFactory: Send + Sync + 'static {
+    fn new_instance(&self) -> Box<dyn Message>;
 }
 
-struct MessageFactoryTyped<M> {
-    _dummy: (),
-    _phantom_data: marker::PhantomData<M>,
-}
+struct MessageFactoryImpl<M>(marker::PhantomData<M>);
 
-impl<M> MessageFactoryTyped<M> {
-    fn new() -> MessageFactoryTyped<M> {
-        MessageFactoryTyped {
-            _dummy: (),
-            _phantom_data: marker::PhantomData,
-        }
-    }
-}
-
-impl<M: 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> {
-    fn new_instance(&self) -> Box<Message> {
+impl<M> MessageFactory for MessageFactoryImpl<M>
+where
+    M: 'static + Message + Default + Clone + PartialEq,
+{
+    fn new_instance(&self) -> Box<dyn Message> {
         let m: M = Default::default();
         Box::new(m)
     }
@@ -35,7 +26,7 @@ impl<M: 'static + Message + Default> MessageFactory for MessageFactoryTyped<M> {
 pub struct MessageDescriptor {
     full_name: String,
     proto: &'static DescriptorProto,
-    factory: Box<MessageFactory + 'static>,
+    factory: &'static dyn MessageFactory,
     fields: Vec<FieldDescriptor>,
 
     index_by_name: HashMap<String, usize>,
@@ -48,7 +39,7 @@ impl MessageDescriptor {
         self.proto
     }
 
-    /// Get message descriptor for given message type.
+    /// Get a message descriptor for given message type
     pub fn for_type<M: Message>() -> &'static MessageDescriptor {
         M::descriptor_static()
     }
@@ -56,11 +47,13 @@ impl MessageDescriptor {
     /// Create new message descriptor.
     ///
     /// This function is called from generated code and rarely needed otherwise.
-    pub fn new<M: 'static + Message + Default>(
+    pub fn new<M: 'static + Message + Default + PartialEq + Clone>(
         rust_name: &'static str,
         fields: Vec<Box<FieldAccessor + 'static>>,
         file: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+
         let proto = find_message_by_rust_name(file, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
@@ -84,7 +77,7 @@ impl MessageDescriptor {
         MessageDescriptor {
             full_name: full_name,
             proto: proto.message,
-            factory: Box::new(MessageFactoryTyped::<M>::new()),
+            factory,
             fields: fields
                 .into_iter()
                 .map(|f| {
@@ -92,13 +85,13 @@ impl MessageDescriptor {
                     FieldDescriptor::new(f, proto)
                 })
                 .collect(),
-            index_by_name: index_by_name,
-            index_by_number: index_by_number,
+            index_by_name,
+            index_by_number,
         }
     }
 
-    /// Create a new message of this type
-    pub fn new_instance(&self) -> Box<Message> {
+    /// New empty message
+    pub fn new_instance(&self) -> Box<dyn Message> {
         self.factory.new_instance()
     }
 
@@ -107,13 +100,13 @@ impl MessageDescriptor {
         self.proto.get_name()
     }
 
-    /// Full protobuf message name
+    /// Fully qualified protobuf message name
     pub fn full_name(&self) -> &str {
         &self.full_name[..]
     }
 
-    /// Get all fields
-    pub fn fields<'a>(&'a self) -> &'a [FieldDescriptor] {
+    /// Message field descriptors.
+    pub fn fields(&self) -> &[FieldDescriptor] {
         &self.fields
     }
 
