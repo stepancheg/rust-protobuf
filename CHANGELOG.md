@@ -51,7 +51,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [`Box<dyn Message>` now implements
   `Clone`](https://github.com/stepancheg/rust-protobuf/commit/08aedca14f6a4cf8bb85c3e82d2dae05cddf57b8)
 
-## [2.8] - Unreleased
+## [2.8.1] - 2019-09-06
 
 - [hidden lifetime parameters in types are deprecated](https://github.com/stepancheg/rust-protobuf/issues/435)
 
