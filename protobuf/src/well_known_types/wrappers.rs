@@ -53,7 +53,7 @@ impl crate::Message for DoubleValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -83,7 +83,7 @@ impl crate::Message for DoubleValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != 0. {
             os.write_double(1, self.value)?;
         }
@@ -142,7 +142,7 @@ impl crate::Clear for DoubleValue {
 }
 
 impl ::std::fmt::Debug for DoubleValue {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -183,7 +183,7 @@ impl crate::Message for FloatValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -213,7 +213,7 @@ impl crate::Message for FloatValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != 0. {
             os.write_float(1, self.value)?;
         }
@@ -272,7 +272,7 @@ impl crate::Clear for FloatValue {
 }
 
 impl ::std::fmt::Debug for FloatValue {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -313,7 +313,7 @@ impl crate::Message for Int64Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -343,7 +343,7 @@ impl crate::Message for Int64Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_int64(1, self.value)?;
         }
@@ -402,7 +402,7 @@ impl crate::Clear for Int64Value {
 }
 
 impl ::std::fmt::Debug for Int64Value {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -443,7 +443,7 @@ impl crate::Message for UInt64Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -473,7 +473,7 @@ impl crate::Message for UInt64Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint64(1, self.value)?;
         }
@@ -532,7 +532,7 @@ impl crate::Clear for UInt64Value {
 }
 
 impl ::std::fmt::Debug for UInt64Value {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -573,7 +573,7 @@ impl crate::Message for Int32Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -603,7 +603,7 @@ impl crate::Message for Int32Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_int32(1, self.value)?;
         }
@@ -662,7 +662,7 @@ impl crate::Clear for Int32Value {
 }
 
 impl ::std::fmt::Debug for Int32Value {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -703,7 +703,7 @@ impl crate::Message for UInt32Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -733,7 +733,7 @@ impl crate::Message for UInt32Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
@@ -792,7 +792,7 @@ impl crate::Clear for UInt32Value {
 }
 
 impl ::std::fmt::Debug for UInt32Value {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -833,7 +833,7 @@ impl crate::Message for BoolValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -863,7 +863,7 @@ impl crate::Message for BoolValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
@@ -922,7 +922,7 @@ impl crate::Clear for BoolValue {
 }
 
 impl ::std::fmt::Debug for BoolValue {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -963,7 +963,7 @@ impl crate::Message for StringValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -990,7 +990,7 @@ impl crate::Message for StringValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.value.is_empty() {
             os.write_string(1, &self.value)?;
         }
@@ -1049,7 +1049,7 @@ impl crate::Clear for StringValue {
 }
 
 impl ::std::fmt::Debug for StringValue {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -1090,7 +1090,7 @@ impl crate::Message for BytesValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -1117,7 +1117,7 @@ impl crate::Message for BytesValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.value.is_empty() {
             os.write_bytes(1, &self.value)?;
         }
@@ -1176,7 +1176,7 @@ impl crate::Clear for BytesValue {
 }
 
 impl ::std::fmt::Debug for BytesValue {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
 }
@@ -1236,15 +1236,15 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     the\x20`google.protobuf.Any`\x20type\x20and\x20for\x20places\n\x20where\
     \x20we\x20need\x20to\x20distinguish\x20between\x20the\x20absence\x20of\
     \x20a\x20primitive\n\x20typed\x20field\x20and\x20its\x20default\x20value\
-    .\n\n\x08\n\x01\x02\x12\x03%\x08\x17\n\x08\n\x01\x08\x12\x03'\0;\n\t\n\
-    \x02\x08%\x12\x03'\0;\n\x08\n\x01\x08\x12\x03(\0\x1f\n\t\n\x02\x08\x1f\
-    \x12\x03(\0\x1f\n\x08\n\x01\x08\x12\x03)\0A\n\t\n\x02\x08\x0b\x12\x03)\0\
-    A\n\x08\n\x01\x08\x12\x03*\0,\n\t\n\x02\x08\x01\x12\x03*\0,\n\x08\n\x01\
-    \x08\x12\x03+\0.\n\t\n\x02\x08\x08\x12\x03+\0.\n\x08\n\x01\x08\x12\x03,\
-    \0\"\n\t\n\x02\x08\n\x12\x03,\0\"\n\x08\n\x01\x08\x12\x03-\0!\n\t\n\x02\
-    \x08$\x12\x03-\0!\ng\n\x02\x04\0\x12\x042\05\x01\x1a[\x20Wrapper\x20mess\
-    age\x20for\x20`double`.\n\n\x20The\x20JSON\x20representation\x20for\x20`\
-    DoubleValue`\x20is\x20JSON\x20number.\n\n\n\n\x03\x04\0\x01\x12\x032\x08\
+    .\n\n\x08\n\x01\x02\x12\x03%\0\x18\n\x08\n\x01\x08\x12\x03'\0;\n\t\n\x02\
+    \x08%\x12\x03'\0;\n\x08\n\x01\x08\x12\x03(\0\x1f\n\t\n\x02\x08\x1f\x12\
+    \x03(\0\x1f\n\x08\n\x01\x08\x12\x03)\0A\n\t\n\x02\x08\x0b\x12\x03)\0A\n\
+    \x08\n\x01\x08\x12\x03*\0,\n\t\n\x02\x08\x01\x12\x03*\0,\n\x08\n\x01\x08\
+    \x12\x03+\0.\n\t\n\x02\x08\x08\x12\x03+\0.\n\x08\n\x01\x08\x12\x03,\0\"\
+    \n\t\n\x02\x08\n\x12\x03,\0\"\n\x08\n\x01\x08\x12\x03-\0!\n\t\n\x02\x08$\
+    \x12\x03-\0!\ng\n\x02\x04\0\x12\x042\05\x01\x1a[\x20Wrapper\x20message\
+    \x20for\x20`double`.\n\n\x20The\x20JSON\x20representation\x20for\x20`Dou\
+    bleValue`\x20is\x20JSON\x20number.\n\n\n\n\x03\x04\0\x01\x12\x032\x08\
     \x13\n\x20\n\x04\x04\0\x02\0\x12\x034\x02\x13\x1a\x13\x20The\x20double\
     \x20value.\n\n\r\n\x05\x04\0\x02\0\x04\x12\x044\x022\x15\n\x0c\n\x05\x04\
     \0\x02\0\x05\x12\x034\x02\x08\n\x0c\n\x05\x04\0\x02\0\x01\x12\x034\t\x0e\
