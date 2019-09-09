@@ -238,10 +238,7 @@ impl RustType {
     // wrap value in storage type
     pub fn wrap_value(&self, value: &str, customize: &Customize) -> String {
         match *self {
-            RustType::Option(..) => format!(
-                "::std::option::Option::Some({})",
-                value,
-            ),
+            RustType::Option(..) => format!("::std::option::Option::Some({})", value,),
             RustType::SingularField(..) => format!(
                 "{}::SingularField::some({})",
                 protobuf_crate_path(customize),

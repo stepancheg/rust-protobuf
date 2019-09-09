@@ -916,12 +916,14 @@ impl<'a> FieldGen<'a> {
             None => match self.proto_type {
                 FieldDescriptorProto_Type::TYPE_MESSAGE => panic!("not a single-liner"),
                 FieldDescriptorProto_Type::TYPE_BYTES => format!(
-                    "::protobuf::rt::bytes_size({}, &{})",
+                    "{}::rt::bytes_size({}, &{})",
+                    protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
                     var
                 ),
                 FieldDescriptorProto_Type::TYPE_STRING => format!(
-                    "::protobuf::rt::string_size({}, &{})",
+                    "{}::rt::string_size({}, &{})",
+                    protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
                     var
                 ),
@@ -931,7 +933,8 @@ impl<'a> FieldGen<'a> {
                         t => t.clone(),
                     };
                     format!(
-                        "::protobuf::rt::enum_size({}, {})",
+                        "{}::rt::enum_size({}, {})",
+                        protobuf_crate_path(&self.customize),
                         self.proto_field.number(),
                         var_type.into_target(&param_type, var, &self.customize)
                     )
@@ -943,15 +946,18 @@ impl<'a> FieldGen<'a> {
                     };
                     if self.proto_type.is_s_varint() {
                         format!(
-                            "::protobuf::rt::value_varint_zigzag_size({}, {})",
+                            "{}::rt::value_varint_zigzag_size({}, {})",
+                            protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize)
                         )
                     } else {
                         format!(
-                            "::protobuf::rt::value_size({}, {}, ::protobuf::wire_format::{:?})",
+                            "{}::rt::value_size({}, {}, {}::wire_format::{:?})",
+                            protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize),
+                            protobuf_crate_path(&self.customize),
                             self.wire_type
                         )
                     }
@@ -969,9 +975,10 @@ impl<'a> FieldGen<'a> {
         match self.proto_type {
             FieldDescriptorProto_Type::TYPE_MESSAGE => {
                 w.write_line(&format!(
-                    "{}.write_tag({}, ::protobuf::wire_format::{:?})?;",
+                    "{}.write_tag({}, {}::wire_format::{:?})?;",
                     os,
                     self.proto_field.number(),
+                    protobuf_crate_path(&self.customize),
                     wire_format::WireTypeLengthDelimited
                 ));
                 w.write_line(&format!(
@@ -1150,7 +1157,10 @@ impl<'a> FieldGen<'a> {
                 flag: SingularFieldFlag::WithFlag { .. },
                 ..
             } => {
-                self.write_self_field_assign(w, &full_storage_type.wrap_value(value, &self.customize));
+                self.write_self_field_assign(
+                    w,
+                    &full_storage_type.wrap_value(value, &self.customize),
+                );
             }
             &SingularField {
                 flag: SingularFieldFlag::WithoutFlag,
@@ -1172,7 +1182,8 @@ impl<'a> FieldGen<'a> {
                 let wrapped = if *flag == SingularFieldFlag::WithoutFlag {
                     converted
                 } else {
-                    self.full_storage_type().wrap_value(&converted, &self.customize)
+                    self.full_storage_type()
+                        .wrap_value(&converted, &self.customize)
                 };
                 self.write_self_field_assign(w, &wrapped);
             }
@@ -1308,8 +1319,12 @@ impl<'a> FieldGen<'a> {
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
         w.write_line(&format!(
-            "::protobuf::rt::read_{}_{}{}_into(wire_type, is, &mut self.{})?;",
-            singular_or_repeated, carllerche, type_name_for_fn, self.rust_name
+            "{}::rt::read_{}_{}{}_into(wire_type, is, &mut self.{})?;",
+            protobuf_crate_path(&self.customize),
+            singular_or_repeated,
+            carllerche,
+            type_name_for_fn,
+            self.rust_name
         ));
     }
 
@@ -1324,8 +1339,10 @@ impl<'a> FieldGen<'a> {
     fn write_assert_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.if_stmt(
             &format!(
-                "{} != ::protobuf::wire_format::{:?}",
-                wire_type_var, self.wire_type
+                "{} != {}::wire_format::{:?}",
+                wire_type_var,
+                protobuf_crate_path(&self.customize),
+                self.wire_type,
             ),
             |w| {
                 self.write_error_unexpected_wire_type(wire_type_var, w);
@@ -1365,7 +1382,8 @@ impl<'a> FieldGen<'a> {
             ref key, ref value, ..
         } = self.map();
         w.write_line(&format!(
-            "::protobuf::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
+            "{}::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
+            protobuf_crate_path(&self.customize),
             key.lib_protobuf_type(&self.customize),
             value.lib_protobuf_type(&self.customize),
             self.self_field()
@@ -1391,7 +1409,8 @@ impl<'a> FieldGen<'a> {
                     SingularFieldFlag::WithoutFlag => "proto3",
                 };
                 w.write_line(&format!(
-                    "::protobuf::rt::read_{}_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    "{}::rt::read_{}_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    protobuf_crate_path(&self.customize),
                     version,
                     wire_type_var,
                     self.rust_name,
@@ -1426,7 +1445,8 @@ impl<'a> FieldGen<'a> {
             }
             FieldElem::Enum(..) => {
                 w.write_line(&format!(
-                    "::protobuf::rt::read_repeated_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    "{}::rt::read_repeated_enum_with_unknown_fields_into({}, is, &mut self.{}, {}, &mut self.unknown_fields)?",
+                    protobuf_crate_path(&self.customize),
                     wire_type_var,
                     self.rust_name,
                     self.proto_field.number()
@@ -1484,8 +1504,10 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!("let len = {}.compute_size();", item_var));
                 let tag_size = self.tag_size();
                 w.write_line(&format!(
-                    "{} += {} + ::protobuf::rt::compute_raw_varint32_size(len) + len;",
-                    sum_var, tag_size
+                    "{} += {} + {}::rt::compute_raw_varint32_size(len) + len;",
+                    sum_var,
+                    tag_size,
+                    protobuf_crate_path(&self.customize),
                 ));
             }
             _ => {
@@ -1537,7 +1559,8 @@ impl<'a> FieldGen<'a> {
                 ref key, ref value, ..
             }) => {
                 w.write_line(&format!(
-                    "::protobuf::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
+                    "{}::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
+                    protobuf_crate_path(&self.customize),
                     key.lib_protobuf_type(&self.customize),
                     value.lib_protobuf_type(&self.customize),
                     self.proto_field.number(),
