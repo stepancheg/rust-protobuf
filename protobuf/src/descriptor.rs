@@ -86,7 +86,7 @@ impl crate::Message for FileDescriptorSet {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -102,7 +102,7 @@ impl crate::Message for FileDescriptorSet {
         let mut my_size = 0;
         for value in &self.file {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -111,7 +111,7 @@ impl crate::Message for FileDescriptorSet {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.file {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(1, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -625,13 +625,13 @@ impl crate::Message for FileDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.package)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.package)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
                 },
                 10 => {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency)?;
@@ -640,25 +640,25 @@ impl crate::Message for FileDescriptorProto {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.message_type)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.message_type)?;
                 },
                 5 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.enum_type)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.enum_type)?;
                 },
                 6 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.service)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.service)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.extension)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.extension)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_code_info)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.source_code_info)?;
                 },
                 12 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.syntax)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.syntax)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -673,46 +673,46 @@ impl crate::Message for FileDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(ref v) = self.package.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+            my_size += crate::rt::string_size(2, &v);
         }
         for value in &self.dependency {
-            my_size += ::protobuf::rt::string_size(3, &value);
+            my_size += crate::rt::string_size(3, &value);
         };
         for value in &self.public_dependency {
-            my_size += ::protobuf::rt::value_size(10, *value, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(10, *value, crate::wire_format::WireTypeVarint);
         };
         for value in &self.weak_dependency {
-            my_size += ::protobuf::rt::value_size(11, *value, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(11, *value, crate::wire_format::WireTypeVarint);
         };
         for value in &self.message_type {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.enum_type {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.service {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.extension {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         if let Some(ref v) = self.source_code_info.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         if let Some(ref v) = self.syntax.as_ref() {
-            my_size += ::protobuf::rt::string_size(12, &v);
+            my_size += crate::rt::string_size(12, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -736,32 +736,32 @@ impl crate::Message for FileDescriptorProto {
             os.write_int32(11, *v)?;
         };
         for v in &self.message_type {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(4, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.enum_type {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(5, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.service {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(6, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.extension {
-            os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(7, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(8, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
         if let Some(ref v) = self.source_code_info.as_ref() {
-            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(9, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -1272,34 +1272,34 @@ impl crate::Message for DescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.field)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.field)?;
                 },
                 6 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.extension)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.extension)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.nested_type)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.nested_type)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.enum_type)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.enum_type)?;
                 },
                 5 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.extension_range)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.extension_range)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.oneof_decl)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.oneof_decl)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.reserved_range)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.reserved_range)?;
                 },
                 10 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1314,42 +1314,42 @@ impl crate::Message for DescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.field {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.extension {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.nested_type {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.enum_type {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.extension_range {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.oneof_decl {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         for value in &self.reserved_range {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.reserved_name {
-            my_size += ::protobuf::rt::string_size(10, &value);
+            my_size += crate::rt::string_size(10, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -1361,42 +1361,42 @@ impl crate::Message for DescriptorProto {
             os.write_string(1, &v)?;
         }
         for v in &self.field {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.extension {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(6, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.nested_type {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.enum_type {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(4, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.extension_range {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(5, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.oneof_decl {
-            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(8, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(7, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
         for v in &self.reserved_range {
-            os.write_tag(9, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(9, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -1616,14 +1616,14 @@ impl crate::Message for DescriptorProto_ExtensionRange {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
@@ -1642,10 +1642,10 @@ impl crate::Message for DescriptorProto_ExtensionRange {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(v) = self.start {
-            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.end {
-            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -1824,14 +1824,14 @@ impl crate::Message for DescriptorProto_ReservedRange {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
@@ -1850,10 +1850,10 @@ impl crate::Message for DescriptorProto_ReservedRange {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(v) = self.start {
-            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(1, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.end {
-            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2296,42 +2296,42 @@ impl crate::Message for FieldDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.number = ::std::option::Option::Some(tmp);
                 },
                 4 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.label, 4, &mut self.unknown_fields)?
+                    crate::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.label, 4, &mut self.unknown_fields)?
                 },
                 5 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.field_type, 5, &mut self.unknown_fields)?
+                    crate::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.field_type, 5, &mut self.unknown_fields)?
                 },
                 6 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.type_name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.type_name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.extendee)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.extendee)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.default_value)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.default_value)?;
                 },
                 9 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.oneof_index = ::std::option::Option::Some(tmp);
                 },
                 10 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.json_name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.json_name)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2346,35 +2346,35 @@ impl crate::Message for FieldDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.number {
-            my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(3, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.label {
-            my_size += ::protobuf::rt::enum_size(4, v);
+            my_size += crate::rt::enum_size(4, v);
         }
         if let Some(v) = self.field_type {
-            my_size += ::protobuf::rt::enum_size(5, v);
+            my_size += crate::rt::enum_size(5, v);
         }
         if let Some(ref v) = self.type_name.as_ref() {
-            my_size += ::protobuf::rt::string_size(6, &v);
+            my_size += crate::rt::string_size(6, &v);
         }
         if let Some(ref v) = self.extendee.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+            my_size += crate::rt::string_size(2, &v);
         }
         if let Some(ref v) = self.default_value.as_ref() {
-            my_size += ::protobuf::rt::string_size(7, &v);
+            my_size += crate::rt::string_size(7, &v);
         }
         if let Some(v) = self.oneof_index {
-            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(9, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(ref v) = self.json_name.as_ref() {
-            my_size += ::protobuf::rt::string_size(10, &v);
+            my_size += crate::rt::string_size(10, &v);
         }
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2410,7 +2410,7 @@ impl crate::Message for FieldDescriptorProto {
             os.write_string(10, &v)?;
         }
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(8, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -2828,10 +2828,10 @@ impl crate::Message for OneofDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2846,11 +2846,11 @@ impl crate::Message for OneofDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2862,7 +2862,7 @@ impl crate::Message for OneofDescriptorProto {
             os.write_string(1, &v)?;
         }
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -3098,13 +3098,13 @@ impl crate::Message for EnumDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.value)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.value)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3119,15 +3119,15 @@ impl crate::Message for EnumDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.value {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -3139,12 +3139,12 @@ impl crate::Message for EnumDescriptorProto {
             os.write_string(1, &v)?;
         }
         for v in &self.value {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -3375,17 +3375,17 @@ impl crate::Message for EnumValueDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.number = ::std::option::Option::Some(tmp);
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3400,14 +3400,14 @@ impl crate::Message for EnumValueDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.number {
-            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -3422,7 +3422,7 @@ impl crate::Message for EnumValueDescriptorProto {
             os.write_int32(2, v)?;
         }
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -3664,13 +3664,13 @@ impl crate::Message for ServiceDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.method)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.method)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3685,15 +3685,15 @@ impl crate::Message for ServiceDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.method {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -3705,12 +3705,12 @@ impl crate::Message for ServiceDescriptorProto {
             os.write_string(1, &v)?;
         }
         for v in &self.method {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -4035,26 +4035,26 @@ impl crate::Message for MethodDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.input_type)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.input_type)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.output_type)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.output_type)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 5 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.client_streaming = ::std::option::Option::Some(tmp);
                 },
                 6 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
@@ -4073,17 +4073,17 @@ impl crate::Message for MethodDescriptorProto {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(ref v) = self.input_type.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+            my_size += crate::rt::string_size(2, &v);
         }
         if let Some(ref v) = self.output_type.as_ref() {
-            my_size += ::protobuf::rt::string_size(3, &v);
+            my_size += crate::rt::string_size(3, &v);
         }
         if let Some(ref v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         if let Some(v) = self.client_streaming {
             my_size += 2;
@@ -4107,7 +4107,7 @@ impl crate::Message for MethodDescriptorProto {
             os.write_string(3, &v)?;
         }
         if let Some(ref v) = self.options.as_ref() {
-            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(4, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
@@ -4662,81 +4662,81 @@ impl crate::Message for FileOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.java_package)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.java_package)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.java_outer_classname)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.java_outer_classname)?;
                 },
                 10 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_multiple_files = ::std::option::Option::Some(tmp);
                 },
                 20 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_generate_equals_and_hash = ::std::option::Option::Some(tmp);
                 },
                 27 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_string_check_utf8 = ::std::option::Option::Some(tmp);
                 },
                 9 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.optimize_for, 9, &mut self.unknown_fields)?
+                    crate::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.optimize_for, 9, &mut self.unknown_fields)?
                 },
                 11 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.go_package)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.go_package)?;
                 },
                 16 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.cc_generic_services = ::std::option::Option::Some(tmp);
                 },
                 17 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_generic_services = ::std::option::Option::Some(tmp);
                 },
                 18 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.py_generic_services = ::std::option::Option::Some(tmp);
                 },
                 23 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 31 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.cc_enable_arenas = ::std::option::Option::Some(tmp);
                 },
                 36 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.objc_class_prefix)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.objc_class_prefix)?;
                 },
                 37 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.csharp_namespace)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.csharp_namespace)?;
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -4751,10 +4751,10 @@ impl crate::Message for FileOptions {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.java_package.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(ref v) = self.java_outer_classname.as_ref() {
-            my_size += ::protobuf::rt::string_size(8, &v);
+            my_size += crate::rt::string_size(8, &v);
         }
         if let Some(v) = self.java_multiple_files {
             my_size += 2;
@@ -4766,10 +4766,10 @@ impl crate::Message for FileOptions {
             my_size += 3;
         }
         if let Some(v) = self.optimize_for {
-            my_size += ::protobuf::rt::enum_size(9, v);
+            my_size += crate::rt::enum_size(9, v);
         }
         if let Some(ref v) = self.go_package.as_ref() {
-            my_size += ::protobuf::rt::string_size(11, &v);
+            my_size += crate::rt::string_size(11, &v);
         }
         if let Some(v) = self.cc_generic_services {
             my_size += 3;
@@ -4787,14 +4787,14 @@ impl crate::Message for FileOptions {
             my_size += 3;
         }
         if let Some(ref v) = self.objc_class_prefix.as_ref() {
-            my_size += ::protobuf::rt::string_size(36, &v);
+            my_size += crate::rt::string_size(36, &v);
         }
         if let Some(ref v) = self.csharp_namespace.as_ref() {
-            my_size += ::protobuf::rt::string_size(37, &v);
+            my_size += crate::rt::string_size(37, &v);
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -4845,7 +4845,7 @@ impl crate::Message for FileOptions {
             os.write_string(37, &v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -5223,35 +5223,35 @@ impl crate::Message for MessageOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.message_set_wire_format = ::std::option::Option::Some(tmp);
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.no_standard_descriptor_accessor = ::std::option::Option::Some(tmp);
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 7 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.map_entry = ::std::option::Option::Some(tmp);
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5279,7 +5279,7 @@ impl crate::Message for MessageOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -5300,7 +5300,7 @@ impl crate::Message for MessageOptions {
             os.write_bool(7, v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -5598,41 +5598,41 @@ impl crate::Message for FieldOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.ctype, 1, &mut self.unknown_fields)?
+                    crate::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.ctype, 1, &mut self.unknown_fields)?
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.packed = ::std::option::Option::Some(tmp);
                 },
                 6 => {
-                    ::protobuf::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.jstype, 6, &mut self.unknown_fields)?
+                    crate::rt::read_proto2_enum_with_unknown_fields_into(wire_type, is, &mut self.jstype, 6, &mut self.unknown_fields)?
                 },
                 5 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.lazy = ::std::option::Option::Some(tmp);
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 10 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.weak = ::std::option::Option::Some(tmp);
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5647,13 +5647,13 @@ impl crate::Message for FieldOptions {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
-            my_size += ::protobuf::rt::enum_size(1, v);
+            my_size += crate::rt::enum_size(1, v);
         }
         if let Some(v) = self.packed {
             my_size += 2;
         }
         if let Some(v) = self.jstype {
-            my_size += ::protobuf::rt::enum_size(6, v);
+            my_size += crate::rt::enum_size(6, v);
         }
         if let Some(v) = self.lazy {
             my_size += 2;
@@ -5666,7 +5666,7 @@ impl crate::Message for FieldOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -5693,7 +5693,7 @@ impl crate::Message for FieldOptions {
             os.write_bool(10, v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -6001,7 +6001,7 @@ impl crate::Message for OneofOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6017,7 +6017,7 @@ impl crate::Message for OneofOptions {
         let mut my_size = 0;
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -6026,7 +6026,7 @@ impl crate::Message for OneofOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -6220,21 +6220,21 @@ impl crate::Message for EnumOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.allow_alias = ::std::option::Option::Some(tmp);
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6256,7 +6256,7 @@ impl crate::Message for EnumOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -6271,7 +6271,7 @@ impl crate::Message for EnumOptions {
             os.write_bool(3, v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -6457,14 +6457,14 @@ impl crate::Message for EnumValueOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6483,7 +6483,7 @@ impl crate::Message for EnumValueOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -6495,7 +6495,7 @@ impl crate::Message for EnumValueOptions {
             os.write_bool(1, v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -6675,14 +6675,14 @@ impl crate::Message for ServiceOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 33 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6701,7 +6701,7 @@ impl crate::Message for ServiceOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -6713,7 +6713,7 @@ impl crate::Message for ServiceOptions {
             os.write_bool(33, v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -6893,14 +6893,14 @@ impl crate::Message for MethodOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 33 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 999 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6919,7 +6919,7 @@ impl crate::Message for MethodOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -6931,7 +6931,7 @@ impl crate::Message for MethodOptions {
             os.write_bool(33, v)?;
         }
         for v in &self.uninterpreted_option {
-            os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(999, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -7262,37 +7262,37 @@ impl crate::Message for UninterpretedOption {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 2 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.name)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.identifier_value)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.identifier_value)?;
                 },
                 4 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.positive_int_value = ::std::option::Option::Some(tmp);
                 },
                 5 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int64()?;
                     self.negative_int_value = ::std::option::Option::Some(tmp);
                 },
                 6 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                    if wire_type != crate::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_double()?;
                     self.double_value = ::std::option::Option::Some(tmp);
                 },
                 7 => {
-                    ::protobuf::rt::read_singular_bytes_into(wire_type, is, &mut self.string_value)?;
+                    crate::rt::read_singular_bytes_into(wire_type, is, &mut self.string_value)?;
                 },
                 8 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.aggregate_value)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.aggregate_value)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -7308,25 +7308,25 @@ impl crate::Message for UninterpretedOption {
         let mut my_size = 0;
         for value in &self.name {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if let Some(ref v) = self.identifier_value.as_ref() {
-            my_size += ::protobuf::rt::string_size(3, &v);
+            my_size += crate::rt::string_size(3, &v);
         }
         if let Some(v) = self.positive_int_value {
-            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(4, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.negative_int_value {
-            my_size += ::protobuf::rt::value_size(5, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(5, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.double_value {
             my_size += 9;
         }
         if let Some(ref v) = self.string_value.as_ref() {
-            my_size += ::protobuf::rt::bytes_size(7, &v);
+            my_size += crate::rt::bytes_size(7, &v);
         }
         if let Some(ref v) = self.aggregate_value.as_ref() {
-            my_size += ::protobuf::rt::string_size(8, &v);
+            my_size += crate::rt::string_size(8, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -7335,7 +7335,7 @@ impl crate::Message for UninterpretedOption {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.name {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -7575,10 +7575,10 @@ impl crate::Message for UninterpretedOption_NamePart {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name_part)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name_part)?;
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
@@ -7597,7 +7597,7 @@ impl crate::Message for UninterpretedOption_NamePart {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name_part.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.is_extension {
             my_size += 2;
@@ -7770,7 +7770,7 @@ impl crate::Message for SourceCodeInfo {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.location)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.location)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -7786,7 +7786,7 @@ impl crate::Message for SourceCodeInfo {
         let mut my_size = 0;
         for value in &self.location {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -7795,7 +7795,7 @@ impl crate::Message for SourceCodeInfo {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.location {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(1, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -8076,13 +8076,13 @@ impl crate::Message for SourceCodeInfo_Location {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments)?;
                 },
                 6 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -8103,13 +8103,13 @@ impl crate::Message for SourceCodeInfo_Location {
             my_size += crate::rt::vec_packed_varint_size(2, &self.span);
         }
         if let Some(ref v) = self.leading_comments.as_ref() {
-            my_size += ::protobuf::rt::string_size(3, &v);
+            my_size += crate::rt::string_size(3, &v);
         }
         if let Some(ref v) = self.trailing_comments.as_ref() {
-            my_size += ::protobuf::rt::string_size(4, &v);
+            my_size += crate::rt::string_size(4, &v);
         }
         for value in &self.leading_detached_comments {
-            my_size += ::protobuf::rt::string_size(6, &value);
+            my_size += crate::rt::string_size(6, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -8316,7 +8316,7 @@ impl crate::Message for GeneratedCodeInfo {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.annotation)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.annotation)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -8332,7 +8332,7 @@ impl crate::Message for GeneratedCodeInfo {
         let mut my_size = 0;
         for value in &self.annotation {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -8341,7 +8341,7 @@ impl crate::Message for GeneratedCodeInfo {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.annotation {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(1, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -8570,17 +8570,17 @@ impl crate::Message for GeneratedCodeInfo_Annotation {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.begin = ::std::option::Option::Some(tmp);
                 },
                 4 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
@@ -8602,13 +8602,13 @@ impl crate::Message for GeneratedCodeInfo_Annotation {
             my_size += crate::rt::vec_packed_varint_size(1, &self.path);
         }
         if let Some(ref v) = self.source_file.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+            my_size += crate::rt::string_size(2, &v);
         }
         if let Some(v) = self.begin {
-            my_size += ::protobuf::rt::value_size(3, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(3, v, crate::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.end {
-            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += crate::rt::value_size(4, v, crate::wire_format::WireTypeVarint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);

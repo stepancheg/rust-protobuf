@@ -149,13 +149,13 @@ impl crate::Message for CodeGeneratorRequest {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate)?;
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.parameter)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.parameter)?;
                 },
                 15 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -170,14 +170,14 @@ impl crate::Message for CodeGeneratorRequest {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in &self.file_to_generate {
-            my_size += ::protobuf::rt::string_size(1, &value);
+            my_size += crate::rt::string_size(1, &value);
         };
         if let Some(ref v) = self.parameter.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+            my_size += crate::rt::string_size(2, &v);
         }
         for value in &self.proto_file {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -192,7 +192,7 @@ impl crate::Message for CodeGeneratorRequest {
             os.write_string(2, &v)?;
         }
         for v in &self.proto_file {
-            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(15, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -395,10 +395,10 @@ impl crate::Message for CodeGeneratorResponse {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.error)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.error)?;
                 },
                 15 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -413,11 +413,11 @@ impl crate::Message for CodeGeneratorResponse {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.error.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.file {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -429,7 +429,7 @@ impl crate::Message for CodeGeneratorResponse {
             os.write_string(1, &v)?;
         }
         for v in &self.file {
-            os.write_tag(15, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(15, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -669,13 +669,13 @@ impl crate::Message for CodeGeneratorResponse_File {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point)?;
                 },
                 15 => {
-                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content)?;
+                    crate::rt::read_singular_string_into(wire_type, is, &mut self.content)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -690,13 +690,13 @@ impl crate::Message for CodeGeneratorResponse_File {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if let Some(ref v) = self.name.as_ref() {
-            my_size += ::protobuf::rt::string_size(1, &v);
+            my_size += crate::rt::string_size(1, &v);
         }
         if let Some(ref v) = self.insertion_point.as_ref() {
-            my_size += ::protobuf::rt::string_size(2, &v);
+            my_size += crate::rt::string_size(2, &v);
         }
         if let Some(ref v) = self.content.as_ref() {
-            my_size += ::protobuf::rt::string_size(15, &v);
+            my_size += crate::rt::string_size(15, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);

@@ -81,7 +81,7 @@ impl crate::Message for Struct {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_map_into::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
+                    crate::rt::read_map_into::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -102,7 +102,7 @@ impl crate::Message for Struct {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
-        ::protobuf::rt::write_map_with_cached_sizes::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
+        crate::rt::write_map_with_cached_sizes::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -466,37 +466,37 @@ impl crate::Message for Value {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = ::std::option::Option::Some(Value_oneof_kind::null_value(is.read_enum()?));
                 },
                 2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                    if wire_type != crate::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = ::std::option::Option::Some(Value_oneof_kind::number_value(is.read_double()?));
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = ::std::option::Option::Some(Value_oneof_kind::string_value(is.read_string()?));
                 },
                 4 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = ::std::option::Option::Some(Value_oneof_kind::bool_value(is.read_bool()?));
                 },
                 5 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = ::std::option::Option::Some(Value_oneof_kind::struct_value(is.read_message()?));
                 },
                 6 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = ::std::option::Option::Some(Value_oneof_kind::list_value(is.read_message()?));
@@ -516,24 +516,24 @@ impl crate::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &Value_oneof_kind::null_value(v) => {
-                    my_size += ::protobuf::rt::enum_size(1, v);
+                    my_size += crate::rt::enum_size(1, v);
                 },
                 &Value_oneof_kind::number_value(v) => {
                     my_size += 9;
                 },
                 &Value_oneof_kind::string_value(ref v) => {
-                    my_size += ::protobuf::rt::string_size(3, &v);
+                    my_size += crate::rt::string_size(3, &v);
                 },
                 &Value_oneof_kind::bool_value(v) => {
                     my_size += 2;
                 },
                 &Value_oneof_kind::struct_value(ref v) => {
                     let len = v.compute_size();
-                    my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+                    my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
                 },
                 &Value_oneof_kind::list_value(ref v) => {
                     let len = v.compute_size();
-                    my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+                    my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
                 },
             };
         }
@@ -558,12 +558,12 @@ impl crate::Message for Value {
                     os.write_bool(4, v)?;
                 },
                 &Value_oneof_kind::struct_value(ref v) => {
-                    os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+                    os.write_tag(5, crate::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
                 },
                 &Value_oneof_kind::list_value(ref v) => {
-                    os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+                    os.write_tag(6, crate::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
                 },
@@ -749,7 +749,7 @@ impl crate::Message for ListValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.values)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.values)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -765,7 +765,7 @@ impl crate::Message for ListValue {
         let mut my_size = 0;
         for value in &self.values {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -774,7 +774,7 @@ impl crate::Message for ListValue {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.values {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(1, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };

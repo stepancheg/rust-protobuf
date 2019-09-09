@@ -82,7 +82,7 @@ impl crate::Message for SourceContext {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.file_name)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.file_name)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -97,7 +97,7 @@ impl crate::Message for SourceContext {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.file_name.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.file_name);
+            my_size += crate::rt::string_size(1, &self.file_name);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);

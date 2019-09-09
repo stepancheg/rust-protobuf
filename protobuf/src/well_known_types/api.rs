@@ -257,25 +257,25 @@ impl crate::Message for Api {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.methods)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.methods)?;
                 },
                 3 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.options)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.version)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.version)?;
                 },
                 5 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source_context)?;
+                    crate::rt::read_singular_message_into(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.mixins)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.mixins)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 7, &mut self.unknown_fields)?
+                    crate::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 7, &mut self.unknown_fields)?
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -290,29 +290,29 @@ impl crate::Message for Api {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.name);
+            my_size += crate::rt::string_size(1, &self.name);
         }
         for value in &self.methods {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         for value in &self.options {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if !self.version.is_empty() {
-            my_size += ::protobuf::rt::string_size(4, &self.version);
+            my_size += crate::rt::string_size(4, &self.version);
         }
         if let Some(ref v) = self.source_context.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
         for value in &self.mixins {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
-            my_size += ::protobuf::rt::enum_size(7, self.syntax);
+            my_size += crate::rt::enum_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -324,12 +324,12 @@ impl crate::Message for Api {
             os.write_string(1, &self.name)?;
         }
         for v in &self.methods {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
         for v in &self.options {
-            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -337,12 +337,12 @@ impl crate::Message for Api {
             os.write_string(4, &self.version)?;
         }
         if let Some(ref v) = self.source_context.as_ref() {
-            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(5, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         }
         for v in &self.mixins {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(6, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -664,33 +664,33 @@ impl crate::Message for Method {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.request_type_url)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.request_type_url)?;
                 },
                 3 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.request_streaming = tmp;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.response_type_url)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.response_type_url)?;
                 },
                 5 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.response_streaming = tmp;
                 },
                 6 => {
-                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into(wire_type, is, &mut self.options)?;
                 },
                 7 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 7, &mut self.unknown_fields)?
+                    crate::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.syntax, 7, &mut self.unknown_fields)?
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -705,26 +705,26 @@ impl crate::Message for Method {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.name);
+            my_size += crate::rt::string_size(1, &self.name);
         }
         if !self.request_type_url.is_empty() {
-            my_size += ::protobuf::rt::string_size(2, &self.request_type_url);
+            my_size += crate::rt::string_size(2, &self.request_type_url);
         }
         if self.request_streaming != false {
             my_size += 2;
         }
         if !self.response_type_url.is_empty() {
-            my_size += ::protobuf::rt::string_size(4, &self.response_type_url);
+            my_size += crate::rt::string_size(4, &self.response_type_url);
         }
         if self.response_streaming != false {
             my_size += 2;
         }
         for value in &self.options {
             let len = value.compute_size();
-            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
         if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
-            my_size += ::protobuf::rt::enum_size(7, self.syntax);
+            my_size += crate::rt::enum_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -748,7 +748,7 @@ impl crate::Message for Method {
             os.write_bool(5, self.response_streaming)?;
         }
         for v in &self.options {
-            os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(6, crate::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -964,10 +964,10 @@ impl crate::Message for Mixin {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.root)?;
+                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.root)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -982,10 +982,10 @@ impl crate::Message for Mixin {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.name);
+            my_size += crate::rt::string_size(1, &self.name);
         }
         if !self.root.is_empty() {
-            my_size += ::protobuf::rt::string_size(2, &self.root);
+            my_size += crate::rt::string_size(2, &self.root);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);

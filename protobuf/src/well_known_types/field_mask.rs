@@ -81,7 +81,7 @@ impl crate::Message for FieldMask {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -96,7 +96,7 @@ impl crate::Message for FieldMask {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         for value in &self.paths {
-            my_size += ::protobuf::rt::string_size(1, &value);
+            my_size += crate::rt::string_size(1, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
