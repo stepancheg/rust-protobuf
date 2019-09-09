@@ -115,5 +115,4 @@ mod test {
             quote_escape_bytes(b"\x00\x01\x12\xfe\xff")
         );
     }
-
 }
