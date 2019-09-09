@@ -13,7 +13,13 @@ struct ExtGen<'a> {
 
 impl<'a> ExtGen<'a> {
     fn extendee_rust_name(&self) -> String {
-        type_name_to_rust_relative(self.field.get_extendee(), self.file, true, self.root_scope)
+        type_name_to_rust_relative(
+            self.field.get_extendee(),
+            self.file,
+            true,
+            &self.customize,
+            self.root_scope,
+        )
     }
 
     fn repeated(&self) -> bool {
@@ -32,6 +38,7 @@ impl<'a> ExtGen<'a> {
                 self.field.get_type_name(),
                 self.file,
                 true,
+                &self.customize,
                 self.root_scope,
             );
             match self.field.get_field_type() {

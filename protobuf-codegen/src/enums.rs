@@ -66,6 +66,7 @@ impl<'a> EnumGen<'a> {
                 &enum_with_scope.name_absolute(),
                 current_file,
                 false,
+                &customize,
                 root_scope,
             )
         };

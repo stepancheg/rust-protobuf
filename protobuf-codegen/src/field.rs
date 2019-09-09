@@ -305,6 +305,7 @@ fn field_elem(
             field.field.get_type_name(),
             field.message.get_scope().file_scope.file_descriptor,
             false,
+            customize,
             root_scope,
         );
         match (field.field.get_field_type(), message_or_enum) {
@@ -1149,7 +1150,7 @@ impl<'a> FieldGen<'a> {
                 flag: SingularFieldFlag::WithFlag { .. },
                 ..
             } => {
-                self.write_self_field_assign(w, &full_storage_type.wrap_value(value));
+                self.write_self_field_assign(w, &full_storage_type.wrap_value(value, &self.customize));
             }
             &SingularField {
                 flag: SingularFieldFlag::WithoutFlag,
@@ -1171,7 +1172,7 @@ impl<'a> FieldGen<'a> {
                 let wrapped = if *flag == SingularFieldFlag::WithoutFlag {
                     converted
                 } else {
-                    self.full_storage_type().wrap_value(&converted)
+                    self.full_storage_type().wrap_value(&converted, &self.customize)
                 };
                 self.write_self_field_assign(w, &wrapped);
             }
