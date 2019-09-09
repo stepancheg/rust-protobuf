@@ -1,16 +1,16 @@
 // Should not be a part of public API
 #![doc(hidden)]
 
-use descriptor::DescriptorProto;
-use descriptor::EnumDescriptorProto;
-use descriptor::EnumValueDescriptorProto;
-use descriptor::FieldDescriptorProto;
+use crate::descriptor::DescriptorProto;
+use crate::descriptor::EnumDescriptorProto;
+use crate::descriptor::EnumValueDescriptorProto;
+use crate::descriptor::FieldDescriptorProto;
 /// utilities to work with descriptor
-use descriptor::FileDescriptorProto;
-use descriptor::OneofDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
+use crate::descriptor::OneofDescriptorProto;
 
-use rust;
-use strx;
+use crate::rust;
+use crate::strx;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {

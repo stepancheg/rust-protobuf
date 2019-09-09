@@ -8,18 +8,18 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use core::Message;
-use enums::ProtobufEnum;
-use error::ProtobufResult;
-use parse_from_bytes;
-use reflect::ProtobufValue;
-use rt;
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use unknown::UnknownValues;
-use wire_format::WireType;
-use zigzag::decode_zig_zag_32;
-use zigzag::decode_zig_zag_64;
+use crate::core::Message;
+use crate::enums::ProtobufEnum;
+use crate::error::ProtobufResult;
+use crate::parse_from_bytes;
+use crate::reflect::ProtobufValue;
+use crate::rt;
+use crate::stream::CodedInputStream;
+use crate::stream::CodedOutputStream;
+use crate::unknown::UnknownValues;
+use crate::wire_format::WireType;
+use crate::zigzag::decode_zig_zag_32;
+use crate::zigzag::decode_zig_zag_64;
 
 /// Protobuf elementary type as generic trait
 pub trait ProtobufType {

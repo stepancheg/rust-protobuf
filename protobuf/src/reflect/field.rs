@@ -1,9 +1,9 @@
-use descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
-use reflect::accessor::FieldAccessor;
-use reflect::map::ReflectMap;
-use reflect::repeated::ReflectRepeated;
-use reflect::{EnumValueDescriptor, ReflectValueRef};
-use Message;
+use crate::descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::map::ReflectMap;
+use crate::reflect::repeated::ReflectRepeated;
+use crate::reflect::{EnumValueDescriptor, ReflectValueRef};
+use crate::Message;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq

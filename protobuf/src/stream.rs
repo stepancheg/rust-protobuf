@@ -13,22 +13,22 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use buf_read_iter::BufReadIter;
-use core::Message;
-use enums::ProtobufEnum;
-use error::ProtobufError;
-use error::ProtobufResult;
-use error::WireError;
-use misc::remaining_capacity_as_slice_mut;
-use misc::remove_lifetime_mut;
-use unknown::UnknownFields;
-use unknown::UnknownValue;
-use unknown::UnknownValueRef;
-use varint;
-use zigzag::decode_zig_zag_32;
-use zigzag::decode_zig_zag_64;
-use zigzag::encode_zig_zag_32;
-use zigzag::encode_zig_zag_64;
+use crate::buf_read_iter::BufReadIter;
+use crate::core::Message;
+use crate::enums::ProtobufEnum;
+use crate::error::ProtobufError;
+use crate::error::ProtobufResult;
+use crate::error::WireError;
+use crate::misc::remaining_capacity_as_slice_mut;
+use crate::misc::remove_lifetime_mut;
+use crate::unknown::UnknownFields;
+use crate::unknown::UnknownValue;
+use crate::unknown::UnknownValueRef;
+use crate::varint;
+use crate::zigzag::decode_zig_zag_32;
+use crate::zigzag::decode_zig_zag_64;
+use crate::zigzag::encode_zig_zag_32;
+use crate::zigzag::encode_zig_zag_64;
 
 /// Equal to the default buffer size of `BufWriter`, so when
 /// `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -1427,10 +1427,10 @@ mod test {
     use std::io::Write;
     use std::iter::repeat;
 
-    use error::ProtobufError;
-    use error::ProtobufResult;
-    use hex::decode_hex;
-    use hex::encode_hex;
+    use crate::error::ProtobufError;
+    use crate::error::ProtobufResult;
+    use crate::hex::decode_hex;
+    use crate::hex::encode_hex;
 
     use super::wire_format;
     use super::CodedInputStream;

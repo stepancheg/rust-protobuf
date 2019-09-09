@@ -1,11 +1,11 @@
-use descriptor::{DescriptorProto, FileDescriptorProto};
-use descriptorx::find_message_by_rust_name;
-use reflect::accessor::FieldAccessor;
-use reflect::FieldDescriptor;
+use crate::descriptor::{DescriptorProto, FileDescriptorProto};
+use crate::descriptorx::find_message_by_rust_name;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::FieldDescriptor;
 use std::collections::HashMap;
 use std::marker;
-use Message;
-use core::message_down_cast;
+use crate::Message;
+use crate::core::message_down_cast;
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;

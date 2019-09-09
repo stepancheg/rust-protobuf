@@ -1,6 +1,6 @@
 //! Reflection implementation for protobuf types.
 
-use core::Message;
+use crate::core::Message;
 
 pub mod accessor;
 mod enums;

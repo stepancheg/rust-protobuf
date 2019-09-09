@@ -8,7 +8,7 @@ use std::hash::Hasher;
 use std::mem;
 use std::option;
 
-use clear::Clear;
+use crate::clear::Clear;
 
 /// Like `Option<T>`, but keeps the actual element on `clear`.
 pub struct SingularField<T> {
@@ -552,7 +552,7 @@ impl<'de, T: serde::Deserialize<'de> + Default> serde::Deserialize<'de> for Sing
 #[cfg(test)]
 mod test {
     use super::SingularField;
-    use clear::Clear;
+    use crate::clear::Clear;
 
     #[test]
     fn test_set_default_clears() {

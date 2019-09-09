@@ -4,15 +4,15 @@ use std::collections::HashMap;
 use std::fmt;
 use std::hash::Hash;
 
-use core::message_down_cast;
-use core::Message;
-use enums::ProtobufEnum;
-use reflect::EnumValueDescriptor;
-use types::*;
+use crate::core::message_down_cast;
+use crate::core::Message;
+use crate::enums::ProtobufEnum;
+use crate::reflect::EnumValueDescriptor;
+use crate::types::*;
 
-use repeated::RepeatedField;
-use singular::SingularField;
-use singular::SingularPtrField;
+use crate::repeated::RepeatedField;
+use crate::singular::SingularField;
+use crate::singular::SingularPtrField;
 
 use super::map::ReflectMap;
 use super::optional::ReflectOptional;
@@ -123,8 +123,8 @@ trait FieldAccessor2<M, R: ?Sized>
 where
     M: Message + 'static,
 {
-    fn get_field<'a>(&self, &'a M) -> &'a R;
-    fn mut_field<'a>(&self, &'a mut M) -> &'a mut R;
+    fn get_field<'a>(&self, _: &'a M) -> &'a R;
+    fn mut_field<'a>(&self, _: &'a mut M) -> &'a mut R;
 }
 
 struct MessageGetMut<M, L>

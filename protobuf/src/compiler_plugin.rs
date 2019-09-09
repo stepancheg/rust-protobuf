@@ -1,10 +1,10 @@
 // TODO: move into separate crate
 #![doc(hidden)]
 
-use plugin::*;
-use protobuf::descriptor::FileDescriptorProto;
-use protobuf::parse_from_reader;
-use protobuf::Message;
+use crate::plugin::*;
+use crate::protobuf::descriptor::FileDescriptorProto;
+use crate::protobuf::parse_from_reader;
+use crate::protobuf::Message;
 use std::io::stdin;
 use std::io::stdout;
 use std::str;
