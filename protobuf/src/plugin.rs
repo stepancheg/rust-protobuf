@@ -26,19 +26,19 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
-    file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
-    parameter: ::protobuf::SingularField<::std::string::String>,
-    proto_file: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
+    file_to_generate: crate::RepeatedField<::std::string::String>,
+    parameter: crate::SingularField<::std::string::String>,
+    proto_file: crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a CodeGeneratorRequest {
     fn default() -> &'a CodeGeneratorRequest {
-        <CodeGeneratorRequest as ::protobuf::Message>::default_instance()
+        <CodeGeneratorRequest as crate::Message>::default_instance()
     }
 }
 
@@ -58,18 +58,18 @@ impl CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_file_to_generate(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_file_to_generate(&mut self, v: crate::RepeatedField<::std::string::String>) {
         self.file_to_generate = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file_to_generate(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_file_to_generate(&mut self) -> &mut crate::RepeatedField<::std::string::String> {
         &mut self.file_to_generate
     }
 
     // Take field
-    pub fn take_file_to_generate(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
-        ::std::mem::replace(&mut self.file_to_generate, ::protobuf::RepeatedField::new())
+    pub fn take_file_to_generate(&mut self) -> crate::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.file_to_generate, crate::RepeatedField::new())
     }
 
     // optional string parameter = 2;
@@ -119,18 +119,18 @@ impl CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_proto_file(&mut self, v: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>) {
+    pub fn set_proto_file(&mut self, v: crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto>) {
         self.proto_file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&mut self) -> &mut ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
+    pub fn mut_proto_file(&mut self) -> &mut crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
         &mut self.proto_file
     }
 
     // Take field
-    pub fn take_proto_file(&mut self) -> ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
-        ::std::mem::replace(&mut self.proto_file, ::protobuf::RepeatedField::new())
+    pub fn take_proto_file(&mut self) -> crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
+        ::std::mem::replace(&mut self.proto_file, crate::RepeatedField::new())
     }
 }
 
@@ -144,7 +144,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -158,7 +158,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.proto_file)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -179,12 +179,12 @@ impl ::protobuf::Message for CodeGeneratorRequest {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.file_to_generate {
             os.write_string(1, &v)?;
         };
@@ -248,7 +248,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                     |m: &CodeGeneratorRequest| { &m.parameter },
                     |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
                     "proto_file",
                     |m: &CodeGeneratorRequest| { &m.proto_file },
                     |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -298,18 +298,18 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct CodeGeneratorResponse {
     // message fields
-    error: ::protobuf::SingularField<::std::string::String>,
-    file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
+    error: crate::SingularField<::std::string::String>,
+    file: crate::RepeatedField<CodeGeneratorResponse_File>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a CodeGeneratorResponse {
     fn default() -> &'a CodeGeneratorResponse {
-        <CodeGeneratorResponse as ::protobuf::Message>::default_instance()
+        <CodeGeneratorResponse as crate::Message>::default_instance()
     }
 }
 
@@ -365,18 +365,18 @@ impl CodeGeneratorResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_file(&mut self, v: ::protobuf::RepeatedField<CodeGeneratorResponse_File>) {
+    pub fn set_file(&mut self, v: crate::RepeatedField<CodeGeneratorResponse_File>) {
         self.file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&mut self) -> &mut ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
+    pub fn mut_file(&mut self) -> &mut crate::RepeatedField<CodeGeneratorResponse_File> {
         &mut self.file
     }
 
     // Take field
-    pub fn take_file(&mut self) -> ::protobuf::RepeatedField<CodeGeneratorResponse_File> {
-        ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
+    pub fn take_file(&mut self) -> crate::RepeatedField<CodeGeneratorResponse_File> {
+        ::std::mem::replace(&mut self.file, crate::RepeatedField::new())
     }
 }
 
@@ -390,7 +390,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -401,7 +401,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -419,12 +419,12 @@ impl ::protobuf::Message for CodeGeneratorResponse {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.error.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -480,7 +480,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                     |m: &CodeGeneratorResponse| { &m.error },
                     |m: &mut CodeGeneratorResponse| { &mut m.error },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
                     |m: &CodeGeneratorResponse| { &m.file },
                     |m: &mut CodeGeneratorResponse| { &mut m.file },
@@ -529,19 +529,19 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct CodeGeneratorResponse_File {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    insertion_point: ::protobuf::SingularField<::std::string::String>,
-    content: ::protobuf::SingularField<::std::string::String>,
+    name: crate::SingularField<::std::string::String>,
+    insertion_point: crate::SingularField<::std::string::String>,
+    content: crate::SingularField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a CodeGeneratorResponse_File {
     fn default() -> &'a CodeGeneratorResponse_File {
-        <CodeGeneratorResponse_File as ::protobuf::Message>::default_instance()
+        <CodeGeneratorResponse_File as crate::Message>::default_instance()
     }
 }
 
@@ -664,7 +664,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -678,7 +678,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.content)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -698,12 +698,12 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         if let Some(ref v) = self.content.as_ref() {
             my_size += ::protobuf::rt::string_size(15, &v);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -1001,9 +1001,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x02\x01\x03\x12\x04\x94\x01\x17\x19\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
+    lock: crate::lazy::ONCE_INIT,
+    ptr: 0 as *const crate::descriptor::FileDescriptorProto,
 };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {

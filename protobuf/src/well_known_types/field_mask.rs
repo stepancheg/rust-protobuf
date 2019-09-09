@@ -26,17 +26,17 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FieldMask {
     // message fields
-    pub paths: ::protobuf::RepeatedField<::std::string::String>,
+    pub paths: crate::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FieldMask {
     fn default() -> &'a FieldMask {
-        <FieldMask as ::protobuf::Message>::default_instance()
+        <FieldMask as crate::Message>::default_instance()
     }
 }
 
@@ -56,18 +56,18 @@ impl FieldMask {
     }
 
     // Param is passed by value, moved
-    pub fn set_paths(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_paths(&mut self, v: crate::RepeatedField<::std::string::String>) {
         self.paths = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_paths(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_paths(&mut self) -> &mut crate::RepeatedField<::std::string::String> {
         &mut self.paths
     }
 
     // Take field
-    pub fn take_paths(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
-        ::std::mem::replace(&mut self.paths, ::protobuf::RepeatedField::new())
+    pub fn take_paths(&mut self) -> crate::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.paths, crate::RepeatedField::new())
     }
 }
 
@@ -76,7 +76,7 @@ impl ::protobuf::Message for FieldMask {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -84,7 +84,7 @@ impl ::protobuf::Message for FieldMask {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -98,12 +98,12 @@ impl ::protobuf::Message for FieldMask {
         for value in &self.paths {
             my_size += ::protobuf::rt::string_size(1, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.paths {
             os.write_string(1, &v)?;
         };
@@ -379,9 +379,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x01\x1a\x1bb\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
+    lock: crate::lazy::ONCE_INIT,
+    ptr: 0 as *const crate::descriptor::FileDescriptorProto,
 };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {

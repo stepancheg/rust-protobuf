@@ -26,17 +26,17 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FileDescriptorSet {
     // message fields
-    file: ::protobuf::RepeatedField<FileDescriptorProto>,
+    file: crate::RepeatedField<FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FileDescriptorSet {
     fn default() -> &'a FileDescriptorSet {
-        <FileDescriptorSet as ::protobuf::Message>::default_instance()
+        <FileDescriptorSet as crate::Message>::default_instance()
     }
 }
 
@@ -56,18 +56,18 @@ impl FileDescriptorSet {
     }
 
     // Param is passed by value, moved
-    pub fn set_file(&mut self, v: ::protobuf::RepeatedField<FileDescriptorProto>) {
+    pub fn set_file(&mut self, v: crate::RepeatedField<FileDescriptorProto>) {
         self.file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_file(&mut self) -> &mut ::protobuf::RepeatedField<FileDescriptorProto> {
+    pub fn mut_file(&mut self) -> &mut crate::RepeatedField<FileDescriptorProto> {
         &mut self.file
     }
 
     // Take field
-    pub fn take_file(&mut self) -> ::protobuf::RepeatedField<FileDescriptorProto> {
-        ::std::mem::replace(&mut self.file, ::protobuf::RepeatedField::new())
+    pub fn take_file(&mut self) -> crate::RepeatedField<FileDescriptorProto> {
+        ::std::mem::replace(&mut self.file, crate::RepeatedField::new())
     }
 }
 
@@ -81,7 +81,7 @@ impl ::protobuf::Message for FileDescriptorSet {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -89,7 +89,7 @@ impl ::protobuf::Message for FileDescriptorSet {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.file)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -104,12 +104,12 @@ impl ::protobuf::Message for FileDescriptorSet {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.file {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -157,7 +157,7 @@ impl ::protobuf::Message for FileDescriptorSet {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FileDescriptorProto>>(
                     "file",
                     |m: &FileDescriptorSet| { &m.file },
                     |m: &mut FileDescriptorSet| { &mut m.file },
@@ -205,28 +205,28 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorSet {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FileDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    package: ::protobuf::SingularField<::std::string::String>,
-    dependency: ::protobuf::RepeatedField<::std::string::String>,
+    name: crate::SingularField<::std::string::String>,
+    package: crate::SingularField<::std::string::String>,
+    dependency: crate::RepeatedField<::std::string::String>,
     public_dependency: ::std::vec::Vec<i32>,
     weak_dependency: ::std::vec::Vec<i32>,
-    message_type: ::protobuf::RepeatedField<DescriptorProto>,
-    enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
-    service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
-    extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    options: ::protobuf::SingularPtrField<FileOptions>,
-    source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
-    syntax: ::protobuf::SingularField<::std::string::String>,
+    message_type: crate::RepeatedField<DescriptorProto>,
+    enum_type: crate::RepeatedField<EnumDescriptorProto>,
+    service: crate::RepeatedField<ServiceDescriptorProto>,
+    extension: crate::RepeatedField<FieldDescriptorProto>,
+    options: crate::SingularPtrField<FileOptions>,
+    source_code_info: crate::SingularPtrField<SourceCodeInfo>,
+    syntax: crate::SingularField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FileDescriptorProto {
     fn default() -> &'a FileDescriptorProto {
-        <FileDescriptorProto as ::protobuf::Message>::default_instance()
+        <FileDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -318,18 +318,18 @@ impl FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_dependency(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_dependency(&mut self, v: crate::RepeatedField<::std::string::String>) {
         self.dependency = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_dependency(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_dependency(&mut self) -> &mut crate::RepeatedField<::std::string::String> {
         &mut self.dependency
     }
 
     // Take field
-    pub fn take_dependency(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
-        ::std::mem::replace(&mut self.dependency, ::protobuf::RepeatedField::new())
+    pub fn take_dependency(&mut self) -> crate::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.dependency, crate::RepeatedField::new())
     }
 
     // repeated int32 public_dependency = 10;
@@ -393,18 +393,18 @@ impl FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_message_type(&mut self, v: ::protobuf::RepeatedField<DescriptorProto>) {
+    pub fn set_message_type(&mut self, v: crate::RepeatedField<DescriptorProto>) {
         self.message_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_message_type(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto> {
+    pub fn mut_message_type(&mut self) -> &mut crate::RepeatedField<DescriptorProto> {
         &mut self.message_type
     }
 
     // Take field
-    pub fn take_message_type(&mut self) -> ::protobuf::RepeatedField<DescriptorProto> {
-        ::std::mem::replace(&mut self.message_type, ::protobuf::RepeatedField::new())
+    pub fn take_message_type(&mut self) -> crate::RepeatedField<DescriptorProto> {
+        ::std::mem::replace(&mut self.message_type, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
@@ -418,18 +418,18 @@ impl FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_enum_type(&mut self, v: ::protobuf::RepeatedField<EnumDescriptorProto>) {
+    pub fn set_enum_type(&mut self, v: crate::RepeatedField<EnumDescriptorProto>) {
         self.enum_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&mut self) -> &mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+    pub fn mut_enum_type(&mut self) -> &mut crate::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
     // Take field
-    pub fn take_enum_type(&mut self) -> ::protobuf::RepeatedField<EnumDescriptorProto> {
-        ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
+    pub fn take_enum_type(&mut self) -> crate::RepeatedField<EnumDescriptorProto> {
+        ::std::mem::replace(&mut self.enum_type, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.ServiceDescriptorProto service = 6;
@@ -443,18 +443,18 @@ impl FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_service(&mut self, v: ::protobuf::RepeatedField<ServiceDescriptorProto>) {
+    pub fn set_service(&mut self, v: crate::RepeatedField<ServiceDescriptorProto>) {
         self.service = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_service(&mut self) -> &mut ::protobuf::RepeatedField<ServiceDescriptorProto> {
+    pub fn mut_service(&mut self) -> &mut crate::RepeatedField<ServiceDescriptorProto> {
         &mut self.service
     }
 
     // Take field
-    pub fn take_service(&mut self) -> ::protobuf::RepeatedField<ServiceDescriptorProto> {
-        ::std::mem::replace(&mut self.service, ::protobuf::RepeatedField::new())
+    pub fn take_service(&mut self) -> crate::RepeatedField<ServiceDescriptorProto> {
+        ::std::mem::replace(&mut self.service, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.FieldDescriptorProto extension = 7;
@@ -468,18 +468,18 @@ impl FileDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension(&mut self, v: ::protobuf::RepeatedField<FieldDescriptorProto>) {
+    pub fn set_extension(&mut self, v: crate::RepeatedField<FieldDescriptorProto>) {
         self.extension = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_extension(&mut self) -> &mut crate::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
     // Take field
-    pub fn take_extension(&mut self) -> ::protobuf::RepeatedField<FieldDescriptorProto> {
-        ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
+    pub fn take_extension(&mut self) -> crate::RepeatedField<FieldDescriptorProto> {
+        ::std::mem::replace(&mut self.extension, crate::RepeatedField::new())
     }
 
     // optional .google.protobuf.FileOptions options = 8;
@@ -620,7 +620,7 @@ impl ::protobuf::Message for FileDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -634,10 +634,10 @@ impl ::protobuf::Message for FileDescriptorProto {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
                 },
                 10 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency)?;
+                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency)?;
                 },
                 11 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
+                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
                 },
                 4 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.message_type)?;
@@ -661,7 +661,7 @@ impl ::protobuf::Message for FileDescriptorProto {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.syntax)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -714,12 +714,12 @@ impl ::protobuf::Message for FileDescriptorProto {
         if let Some(ref v) = self.syntax.as_ref() {
             my_size += ::protobuf::rt::string_size(12, &v);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -835,32 +835,32 @@ impl ::protobuf::Message for FileDescriptorProto {
                     |m: &FileDescriptorProto| { &m.weak_dependency },
                     |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto>>(
                     "message_type",
                     |m: &FileDescriptorProto| { &m.message_type },
                     |m: &mut FileDescriptorProto| { &mut m.message_type },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                     "enum_type",
                     |m: &FileDescriptorProto| { &m.enum_type },
                     |m: &mut FileDescriptorProto| { &mut m.enum_type },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
                     "service",
                     |m: &FileDescriptorProto| { &m.service },
                     |m: &mut FileDescriptorProto| { &mut m.service },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "extension",
                     |m: &FileDescriptorProto| { &m.extension },
                     |m: &mut FileDescriptorProto| { &mut m.extension },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<FileOptions>>(
                     "options",
                     |m: &FileDescriptorProto| { &m.options },
                     |m: &mut FileDescriptorProto| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<SourceCodeInfo>>(
                     "source_code_info",
                     |m: &FileDescriptorProto| { &m.source_code_info },
                     |m: &mut FileDescriptorProto| { &mut m.source_code_info },
@@ -924,26 +924,26 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorProto {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct DescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    field: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    nested_type: ::protobuf::RepeatedField<DescriptorProto>,
-    enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
-    extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
-    oneof_decl: ::protobuf::RepeatedField<OneofDescriptorProto>,
-    options: ::protobuf::SingularPtrField<MessageOptions>,
-    reserved_range: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>,
-    reserved_name: ::protobuf::RepeatedField<::std::string::String>,
+    name: crate::SingularField<::std::string::String>,
+    field: crate::RepeatedField<FieldDescriptorProto>,
+    extension: crate::RepeatedField<FieldDescriptorProto>,
+    nested_type: crate::RepeatedField<DescriptorProto>,
+    enum_type: crate::RepeatedField<EnumDescriptorProto>,
+    extension_range: crate::RepeatedField<DescriptorProto_ExtensionRange>,
+    oneof_decl: crate::RepeatedField<OneofDescriptorProto>,
+    options: crate::SingularPtrField<MessageOptions>,
+    reserved_range: crate::RepeatedField<DescriptorProto_ReservedRange>,
+    reserved_name: crate::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a DescriptorProto {
     fn default() -> &'a DescriptorProto {
-        <DescriptorProto as ::protobuf::Message>::default_instance()
+        <DescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -999,18 +999,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_field(&mut self, v: ::protobuf::RepeatedField<FieldDescriptorProto>) {
+    pub fn set_field(&mut self, v: crate::RepeatedField<FieldDescriptorProto>) {
         self.field = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_field(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_field(&mut self) -> &mut crate::RepeatedField<FieldDescriptorProto> {
         &mut self.field
     }
 
     // Take field
-    pub fn take_field(&mut self) -> ::protobuf::RepeatedField<FieldDescriptorProto> {
-        ::std::mem::replace(&mut self.field, ::protobuf::RepeatedField::new())
+    pub fn take_field(&mut self) -> crate::RepeatedField<FieldDescriptorProto> {
+        ::std::mem::replace(&mut self.field, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.FieldDescriptorProto extension = 6;
@@ -1024,18 +1024,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension(&mut self, v: ::protobuf::RepeatedField<FieldDescriptorProto>) {
+    pub fn set_extension(&mut self, v: crate::RepeatedField<FieldDescriptorProto>) {
         self.extension = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension(&mut self) -> &mut ::protobuf::RepeatedField<FieldDescriptorProto> {
+    pub fn mut_extension(&mut self) -> &mut crate::RepeatedField<FieldDescriptorProto> {
         &mut self.extension
     }
 
     // Take field
-    pub fn take_extension(&mut self) -> ::protobuf::RepeatedField<FieldDescriptorProto> {
-        ::std::mem::replace(&mut self.extension, ::protobuf::RepeatedField::new())
+    pub fn take_extension(&mut self) -> crate::RepeatedField<FieldDescriptorProto> {
+        ::std::mem::replace(&mut self.extension, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.DescriptorProto nested_type = 3;
@@ -1049,18 +1049,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_nested_type(&mut self, v: ::protobuf::RepeatedField<DescriptorProto>) {
+    pub fn set_nested_type(&mut self, v: crate::RepeatedField<DescriptorProto>) {
         self.nested_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_nested_type(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto> {
+    pub fn mut_nested_type(&mut self) -> &mut crate::RepeatedField<DescriptorProto> {
         &mut self.nested_type
     }
 
     // Take field
-    pub fn take_nested_type(&mut self) -> ::protobuf::RepeatedField<DescriptorProto> {
-        ::std::mem::replace(&mut self.nested_type, ::protobuf::RepeatedField::new())
+    pub fn take_nested_type(&mut self) -> crate::RepeatedField<DescriptorProto> {
+        ::std::mem::replace(&mut self.nested_type, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
@@ -1074,18 +1074,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_enum_type(&mut self, v: ::protobuf::RepeatedField<EnumDescriptorProto>) {
+    pub fn set_enum_type(&mut self, v: crate::RepeatedField<EnumDescriptorProto>) {
         self.enum_type = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_enum_type(&mut self) -> &mut ::protobuf::RepeatedField<EnumDescriptorProto> {
+    pub fn mut_enum_type(&mut self) -> &mut crate::RepeatedField<EnumDescriptorProto> {
         &mut self.enum_type
     }
 
     // Take field
-    pub fn take_enum_type(&mut self) -> ::protobuf::RepeatedField<EnumDescriptorProto> {
-        ::std::mem::replace(&mut self.enum_type, ::protobuf::RepeatedField::new())
+    pub fn take_enum_type(&mut self) -> crate::RepeatedField<EnumDescriptorProto> {
+        ::std::mem::replace(&mut self.enum_type, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
@@ -1099,18 +1099,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_extension_range(&mut self, v: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>) {
+    pub fn set_extension_range(&mut self, v: crate::RepeatedField<DescriptorProto_ExtensionRange>) {
         self.extension_range = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_extension_range(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
+    pub fn mut_extension_range(&mut self) -> &mut crate::RepeatedField<DescriptorProto_ExtensionRange> {
         &mut self.extension_range
     }
 
     // Take field
-    pub fn take_extension_range(&mut self) -> ::protobuf::RepeatedField<DescriptorProto_ExtensionRange> {
-        ::std::mem::replace(&mut self.extension_range, ::protobuf::RepeatedField::new())
+    pub fn take_extension_range(&mut self) -> crate::RepeatedField<DescriptorProto_ExtensionRange> {
+        ::std::mem::replace(&mut self.extension_range, crate::RepeatedField::new())
     }
 
     // repeated .google.protobuf.OneofDescriptorProto oneof_decl = 8;
@@ -1124,18 +1124,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_oneof_decl(&mut self, v: ::protobuf::RepeatedField<OneofDescriptorProto>) {
+    pub fn set_oneof_decl(&mut self, v: crate::RepeatedField<OneofDescriptorProto>) {
         self.oneof_decl = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_oneof_decl(&mut self) -> &mut ::protobuf::RepeatedField<OneofDescriptorProto> {
+    pub fn mut_oneof_decl(&mut self) -> &mut crate::RepeatedField<OneofDescriptorProto> {
         &mut self.oneof_decl
     }
 
     // Take field
-    pub fn take_oneof_decl(&mut self) -> ::protobuf::RepeatedField<OneofDescriptorProto> {
-        ::std::mem::replace(&mut self.oneof_decl, ::protobuf::RepeatedField::new())
+    pub fn take_oneof_decl(&mut self) -> crate::RepeatedField<OneofDescriptorProto> {
+        ::std::mem::replace(&mut self.oneof_decl, crate::RepeatedField::new())
     }
 
     // optional .google.protobuf.MessageOptions options = 7;
@@ -1182,18 +1182,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_reserved_range(&mut self, v: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>) {
+    pub fn set_reserved_range(&mut self, v: crate::RepeatedField<DescriptorProto_ReservedRange>) {
         self.reserved_range = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_reserved_range(&mut self) -> &mut ::protobuf::RepeatedField<DescriptorProto_ReservedRange> {
+    pub fn mut_reserved_range(&mut self) -> &mut crate::RepeatedField<DescriptorProto_ReservedRange> {
         &mut self.reserved_range
     }
 
     // Take field
-    pub fn take_reserved_range(&mut self) -> ::protobuf::RepeatedField<DescriptorProto_ReservedRange> {
-        ::std::mem::replace(&mut self.reserved_range, ::protobuf::RepeatedField::new())
+    pub fn take_reserved_range(&mut self) -> crate::RepeatedField<DescriptorProto_ReservedRange> {
+        ::std::mem::replace(&mut self.reserved_range, crate::RepeatedField::new())
     }
 
     // repeated string reserved_name = 10;
@@ -1207,18 +1207,18 @@ impl DescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_reserved_name(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_reserved_name(&mut self, v: crate::RepeatedField<::std::string::String>) {
         self.reserved_name = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_reserved_name(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_reserved_name(&mut self) -> &mut crate::RepeatedField<::std::string::String> {
         &mut self.reserved_name
     }
 
     // Take field
-    pub fn take_reserved_name(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
-        ::std::mem::replace(&mut self.reserved_name, ::protobuf::RepeatedField::new())
+    pub fn take_reserved_name(&mut self) -> crate::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.reserved_name, crate::RepeatedField::new())
     }
 }
 
@@ -1267,7 +1267,7 @@ impl ::protobuf::Message for DescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -1302,7 +1302,7 @@ impl ::protobuf::Message for DescriptorProto {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -1351,12 +1351,12 @@ impl ::protobuf::Message for DescriptorProto {
         for value in &self.reserved_name {
             my_size += ::protobuf::rt::string_size(10, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -1450,42 +1450,42 @@ impl ::protobuf::Message for DescriptorProto {
                     |m: &DescriptorProto| { &m.name },
                     |m: &mut DescriptorProto| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "field",
                     |m: &DescriptorProto| { &m.field },
                     |m: &mut DescriptorProto| { &mut m.field },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "extension",
                     |m: &DescriptorProto| { &m.extension },
                     |m: &mut DescriptorProto| { &mut m.extension },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto>>(
                     "nested_type",
                     |m: &DescriptorProto| { &m.nested_type },
                     |m: &mut DescriptorProto| { &mut m.nested_type },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                     "enum_type",
                     |m: &DescriptorProto| { &m.enum_type },
                     |m: &mut DescriptorProto| { &mut m.enum_type },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
                     "extension_range",
                     |m: &DescriptorProto| { &m.extension_range },
                     |m: &mut DescriptorProto| { &mut m.extension_range },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<OneofDescriptorProto>>(
                     "oneof_decl",
                     |m: &DescriptorProto| { &m.oneof_decl },
                     |m: &mut DescriptorProto| { &mut m.oneof_decl },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MessageOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<MessageOptions>>(
                     "options",
                     |m: &DescriptorProto| { &m.options },
                     |m: &mut DescriptorProto| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
                     "reserved_range",
                     |m: &DescriptorProto| { &m.reserved_range },
                     |m: &mut DescriptorProto| { &mut m.reserved_range },
@@ -1551,14 +1551,14 @@ pub struct DescriptorProto_ExtensionRange {
     end: ::std::option::Option<i32>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a DescriptorProto_ExtensionRange {
     fn default() -> &'a DescriptorProto_ExtensionRange {
-        <DescriptorProto_ExtensionRange as ::protobuf::Message>::default_instance()
+        <DescriptorProto_ExtensionRange as crate::Message>::default_instance()
     }
 }
 
@@ -1611,26 +1611,26 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.end = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -1647,12 +1647,12 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.start {
             os.write_int32(1, v)?;
         }
@@ -1759,14 +1759,14 @@ pub struct DescriptorProto_ReservedRange {
     end: ::std::option::Option<i32>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a DescriptorProto_ReservedRange {
     fn default() -> &'a DescriptorProto_ReservedRange {
-        <DescriptorProto_ReservedRange as ::protobuf::Message>::default_instance()
+        <DescriptorProto_ReservedRange as crate::Message>::default_instance()
     }
 }
 
@@ -1819,26 +1819,26 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.start = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.end = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -1855,12 +1855,12 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.start {
             os.write_int32(1, v)?;
         }
@@ -1963,26 +1963,26 @@ impl ::protobuf::reflect::ProtobufValue for DescriptorProto_ReservedRange {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FieldDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
+    name: crate::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
     label: ::std::option::Option<FieldDescriptorProto_Label>,
     field_type: ::std::option::Option<FieldDescriptorProto_Type>,
-    type_name: ::protobuf::SingularField<::std::string::String>,
-    extendee: ::protobuf::SingularField<::std::string::String>,
-    default_value: ::protobuf::SingularField<::std::string::String>,
+    type_name: crate::SingularField<::std::string::String>,
+    extendee: crate::SingularField<::std::string::String>,
+    default_value: crate::SingularField<::std::string::String>,
     oneof_index: ::std::option::Option<i32>,
-    json_name: ::protobuf::SingularField<::std::string::String>,
-    options: ::protobuf::SingularPtrField<FieldOptions>,
+    json_name: crate::SingularField<::std::string::String>,
+    options: crate::SingularPtrField<FieldOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FieldDescriptorProto {
     fn default() -> &'a FieldDescriptorProto {
-        <FieldDescriptorProto as ::protobuf::Message>::default_instance()
+        <FieldDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -2291,7 +2291,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -2300,7 +2300,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.number = ::std::option::Option::Some(tmp);
@@ -2322,7 +2322,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                 },
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.oneof_index = ::std::option::Option::Some(tmp);
@@ -2334,7 +2334,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -2376,12 +2376,12 @@ impl ::protobuf::Message for FieldDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -2501,7 +2501,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     |m: &FieldDescriptorProto| { &m.json_name },
                     |m: &mut FieldDescriptorProto| { &mut m.json_name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FieldOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldOptions>>(
                     "options",
                     |m: &FieldDescriptorProto| { &m.options },
                     |m: &mut FieldDescriptorProto| { &mut m.options },
@@ -2723,18 +2723,18 @@ impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct OneofDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    options: ::protobuf::SingularPtrField<OneofOptions>,
+    name: crate::SingularField<::std::string::String>,
+    options: crate::SingularPtrField<OneofOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a OneofDescriptorProto {
     fn default() -> &'a OneofDescriptorProto {
-        <OneofDescriptorProto as ::protobuf::Message>::default_instance()
+        <OneofDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -2823,7 +2823,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -2834,7 +2834,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -2852,12 +2852,12 @@ impl ::protobuf::Message for OneofDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -2913,7 +2913,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
                     |m: &OneofDescriptorProto| { &m.name },
                     |m: &mut OneofDescriptorProto| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<OneofOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<OneofOptions>>(
                     "options",
                     |m: &OneofDescriptorProto| { &m.options },
                     |m: &mut OneofDescriptorProto| { &mut m.options },
@@ -2962,19 +2962,19 @@ impl ::protobuf::reflect::ProtobufValue for OneofDescriptorProto {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct EnumDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
-    options: ::protobuf::SingularPtrField<EnumOptions>,
+    name: crate::SingularField<::std::string::String>,
+    value: crate::RepeatedField<EnumValueDescriptorProto>,
+    options: crate::SingularPtrField<EnumOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumDescriptorProto {
     fn default() -> &'a EnumDescriptorProto {
-        <EnumDescriptorProto as ::protobuf::Message>::default_instance()
+        <EnumDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -3030,18 +3030,18 @@ impl EnumDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: ::protobuf::RepeatedField<EnumValueDescriptorProto>) {
+    pub fn set_value(&mut self, v: crate::RepeatedField<EnumValueDescriptorProto>) {
         self.value = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_value(&mut self) -> &mut ::protobuf::RepeatedField<EnumValueDescriptorProto> {
+    pub fn mut_value(&mut self) -> &mut crate::RepeatedField<EnumValueDescriptorProto> {
         &mut self.value
     }
 
     // Take field
-    pub fn take_value(&mut self) -> ::protobuf::RepeatedField<EnumValueDescriptorProto> {
-        ::std::mem::replace(&mut self.value, ::protobuf::RepeatedField::new())
+    pub fn take_value(&mut self) -> crate::RepeatedField<EnumValueDescriptorProto> {
+        ::std::mem::replace(&mut self.value, crate::RepeatedField::new())
     }
 
     // optional .google.protobuf.EnumOptions options = 3;
@@ -3093,7 +3093,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -3107,7 +3107,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -3129,12 +3129,12 @@ impl ::protobuf::Message for EnumDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -3195,12 +3195,12 @@ impl ::protobuf::Message for EnumDescriptorProto {
                     |m: &EnumDescriptorProto| { &m.name },
                     |m: &mut EnumDescriptorProto| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
                     "value",
                     |m: &EnumDescriptorProto| { &m.value },
                     |m: &mut EnumDescriptorProto| { &mut m.value },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumOptions>>(
                     "options",
                     |m: &EnumDescriptorProto| { &m.options },
                     |m: &mut EnumDescriptorProto| { &mut m.options },
@@ -3250,19 +3250,19 @@ impl ::protobuf::reflect::ProtobufValue for EnumDescriptorProto {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct EnumValueDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
+    name: crate::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
-    options: ::protobuf::SingularPtrField<EnumValueOptions>,
+    options: crate::SingularPtrField<EnumValueOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValueDescriptorProto {
     fn default() -> &'a EnumValueDescriptorProto {
-        <EnumValueDescriptorProto as ::protobuf::Message>::default_instance()
+        <EnumValueDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -3370,7 +3370,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -3379,7 +3379,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.number = ::std::option::Option::Some(tmp);
@@ -3388,7 +3388,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -3409,12 +3409,12 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -3478,7 +3478,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                     |m: &EnumValueDescriptorProto| { &m.number },
                     |m: &mut EnumValueDescriptorProto| { &mut m.number },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<EnumValueOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumValueOptions>>(
                     "options",
                     |m: &EnumValueDescriptorProto| { &m.options },
                     |m: &mut EnumValueDescriptorProto| { &mut m.options },
@@ -3528,19 +3528,19 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueDescriptorProto {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct ServiceDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    method: ::protobuf::RepeatedField<MethodDescriptorProto>,
-    options: ::protobuf::SingularPtrField<ServiceOptions>,
+    name: crate::SingularField<::std::string::String>,
+    method: crate::RepeatedField<MethodDescriptorProto>,
+    options: crate::SingularPtrField<ServiceOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a ServiceDescriptorProto {
     fn default() -> &'a ServiceDescriptorProto {
-        <ServiceDescriptorProto as ::protobuf::Message>::default_instance()
+        <ServiceDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -3596,18 +3596,18 @@ impl ServiceDescriptorProto {
     }
 
     // Param is passed by value, moved
-    pub fn set_method(&mut self, v: ::protobuf::RepeatedField<MethodDescriptorProto>) {
+    pub fn set_method(&mut self, v: crate::RepeatedField<MethodDescriptorProto>) {
         self.method = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_method(&mut self) -> &mut ::protobuf::RepeatedField<MethodDescriptorProto> {
+    pub fn mut_method(&mut self) -> &mut crate::RepeatedField<MethodDescriptorProto> {
         &mut self.method
     }
 
     // Take field
-    pub fn take_method(&mut self) -> ::protobuf::RepeatedField<MethodDescriptorProto> {
-        ::std::mem::replace(&mut self.method, ::protobuf::RepeatedField::new())
+    pub fn take_method(&mut self) -> crate::RepeatedField<MethodDescriptorProto> {
+        ::std::mem::replace(&mut self.method, crate::RepeatedField::new())
     }
 
     // optional .google.protobuf.ServiceOptions options = 3;
@@ -3659,7 +3659,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -3673,7 +3673,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.options)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -3695,12 +3695,12 @@ impl ::protobuf::Message for ServiceDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -3761,12 +3761,12 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                     |m: &ServiceDescriptorProto| { &m.name },
                     |m: &mut ServiceDescriptorProto| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodDescriptorProto>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<MethodDescriptorProto>>(
                     "method",
                     |m: &ServiceDescriptorProto| { &m.method },
                     |m: &mut ServiceDescriptorProto| { &mut m.method },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<ServiceOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<ServiceOptions>>(
                     "options",
                     |m: &ServiceDescriptorProto| { &m.options },
                     |m: &mut ServiceDescriptorProto| { &mut m.options },
@@ -3816,22 +3816,22 @@ impl ::protobuf::reflect::ProtobufValue for ServiceDescriptorProto {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct MethodDescriptorProto {
     // message fields
-    name: ::protobuf::SingularField<::std::string::String>,
-    input_type: ::protobuf::SingularField<::std::string::String>,
-    output_type: ::protobuf::SingularField<::std::string::String>,
-    options: ::protobuf::SingularPtrField<MethodOptions>,
+    name: crate::SingularField<::std::string::String>,
+    input_type: crate::SingularField<::std::string::String>,
+    output_type: crate::SingularField<::std::string::String>,
+    options: crate::SingularPtrField<MethodOptions>,
     client_streaming: ::std::option::Option<bool>,
     server_streaming: ::std::option::Option<bool>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a MethodDescriptorProto {
     fn default() -> &'a MethodDescriptorProto {
-        <MethodDescriptorProto as ::protobuf::Message>::default_instance()
+        <MethodDescriptorProto as crate::Message>::default_instance()
     }
 }
 
@@ -4030,7 +4030,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -4048,20 +4048,20 @@ impl ::protobuf::Message for MethodDescriptorProto {
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.client_streaming = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.server_streaming = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -4091,12 +4091,12 @@ impl ::protobuf::Message for MethodDescriptorProto {
         if let Some(v) = self.server_streaming {
             my_size += 2;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -4174,7 +4174,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
                     |m: &MethodDescriptorProto| { &m.output_type },
                     |m: &mut MethodDescriptorProto| { &mut m.output_type },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<MethodOptions>>(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<MethodOptions>>(
                     "options",
                     |m: &MethodDescriptorProto| { &m.options },
                     |m: &mut MethodDescriptorProto| { &mut m.options },
@@ -4237,31 +4237,31 @@ impl ::protobuf::reflect::ProtobufValue for MethodDescriptorProto {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FileOptions {
     // message fields
-    java_package: ::protobuf::SingularField<::std::string::String>,
-    java_outer_classname: ::protobuf::SingularField<::std::string::String>,
+    java_package: crate::SingularField<::std::string::String>,
+    java_outer_classname: crate::SingularField<::std::string::String>,
     java_multiple_files: ::std::option::Option<bool>,
     java_generate_equals_and_hash: ::std::option::Option<bool>,
     java_string_check_utf8: ::std::option::Option<bool>,
     optimize_for: ::std::option::Option<FileOptions_OptimizeMode>,
-    go_package: ::protobuf::SingularField<::std::string::String>,
+    go_package: crate::SingularField<::std::string::String>,
     cc_generic_services: ::std::option::Option<bool>,
     java_generic_services: ::std::option::Option<bool>,
     py_generic_services: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     cc_enable_arenas: ::std::option::Option<bool>,
-    objc_class_prefix: ::protobuf::SingularField<::std::string::String>,
-    csharp_namespace: ::protobuf::SingularField<::std::string::String>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    objc_class_prefix: crate::SingularField<::std::string::String>,
+    csharp_namespace: crate::SingularField<::std::string::String>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FileOptions {
     fn default() -> &'a FileOptions {
-        <FileOptions as ::protobuf::Message>::default_instance()
+        <FileOptions as crate::Message>::default_instance()
     }
 }
 
@@ -4632,18 +4632,18 @@ impl FileOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -4657,7 +4657,7 @@ impl ::protobuf::Message for FileOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -4669,21 +4669,21 @@ impl ::protobuf::Message for FileOptions {
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_multiple_files = ::std::option::Option::Some(tmp);
                 },
                 20 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_generate_equals_and_hash = ::std::option::Option::Some(tmp);
                 },
                 27 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_string_check_utf8 = ::std::option::Option::Some(tmp);
@@ -4696,35 +4696,35 @@ impl ::protobuf::Message for FileOptions {
                 },
                 16 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.cc_generic_services = ::std::option::Option::Some(tmp);
                 },
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.java_generic_services = ::std::option::Option::Some(tmp);
                 },
                 18 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.py_generic_services = ::std::option::Option::Some(tmp);
                 },
                 23 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 31 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.cc_enable_arenas = ::std::option::Option::Some(tmp);
@@ -4739,7 +4739,7 @@ impl ::protobuf::Message for FileOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -4796,12 +4796,12 @@ impl ::protobuf::Message for FileOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.java_package.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -4961,7 +4961,7 @@ impl ::protobuf::Message for FileOptions {
                     |m: &FileOptions| { &m.csharp_namespace },
                     |m: &mut FileOptions| { &mut m.csharp_namespace },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &FileOptions| { &m.uninterpreted_option },
                     |m: &mut FileOptions| { &mut m.uninterpreted_option },
@@ -5087,17 +5087,17 @@ pub struct MessageOptions {
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     map_entry: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a MessageOptions {
     fn default() -> &'a MessageOptions {
-        <MessageOptions as ::protobuf::Message>::default_instance()
+        <MessageOptions as crate::Message>::default_instance()
     }
 }
 
@@ -5193,18 +5193,18 @@ impl MessageOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -5218,34 +5218,34 @@ impl ::protobuf::Message for MessageOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.message_set_wire_format = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.no_standard_descriptor_accessor = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.map_entry = ::std::option::Option::Some(tmp);
@@ -5254,7 +5254,7 @@ impl ::protobuf::Message for MessageOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -5281,12 +5281,12 @@ impl ::protobuf::Message for MessageOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.message_set_wire_format {
             os.write_bool(1, v)?;
         }
@@ -5366,7 +5366,7 @@ impl ::protobuf::Message for MessageOptions {
                     |m: &MessageOptions| { &m.map_entry },
                     |m: &mut MessageOptions| { &mut m.map_entry },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &MessageOptions| { &m.uninterpreted_option },
                     |m: &mut MessageOptions| { &mut m.uninterpreted_option },
@@ -5424,17 +5424,17 @@ pub struct FieldOptions {
     lazy: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     weak: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a FieldOptions {
     fn default() -> &'a FieldOptions {
-        <FieldOptions as ::protobuf::Message>::default_instance()
+        <FieldOptions as crate::Message>::default_instance()
     }
 }
 
@@ -5568,18 +5568,18 @@ impl FieldOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -5593,7 +5593,7 @@ impl ::protobuf::Message for FieldOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -5602,7 +5602,7 @@ impl ::protobuf::Message for FieldOptions {
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.packed = ::std::option::Option::Some(tmp);
@@ -5612,21 +5612,21 @@ impl ::protobuf::Message for FieldOptions {
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.lazy = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
                 },
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.weak = ::std::option::Option::Some(tmp);
@@ -5635,7 +5635,7 @@ impl ::protobuf::Message for FieldOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -5668,12 +5668,12 @@ impl ::protobuf::Message for FieldOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.ctype {
             os.write_enum(1, v.value())?;
         }
@@ -5769,7 +5769,7 @@ impl ::protobuf::Message for FieldOptions {
                     |m: &FieldOptions| { &m.weak },
                     |m: &mut FieldOptions| { &mut m.weak },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &FieldOptions| { &m.uninterpreted_option },
                     |m: &mut FieldOptions| { &mut m.uninterpreted_option },
@@ -5941,17 +5941,17 @@ impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct OneofOptions {
     // message fields
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a OneofOptions {
     fn default() -> &'a OneofOptions {
-        <OneofOptions as ::protobuf::Message>::default_instance()
+        <OneofOptions as crate::Message>::default_instance()
     }
 }
 
@@ -5971,18 +5971,18 @@ impl OneofOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -5996,7 +5996,7 @@ impl ::protobuf::Message for OneofOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -6004,7 +6004,7 @@ impl ::protobuf::Message for OneofOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6019,12 +6019,12 @@ impl ::protobuf::Message for OneofOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.uninterpreted_option {
             os.write_tag(999, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6072,7 +6072,7 @@ impl ::protobuf::Message for OneofOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &OneofOptions| { &m.uninterpreted_option },
                     |m: &mut OneofOptions| { &mut m.uninterpreted_option },
@@ -6122,17 +6122,17 @@ pub struct EnumOptions {
     // message fields
     allow_alias: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumOptions {
     fn default() -> &'a EnumOptions {
-        <EnumOptions as ::protobuf::Message>::default_instance()
+        <EnumOptions as crate::Message>::default_instance()
     }
 }
 
@@ -6190,18 +6190,18 @@ impl EnumOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -6215,20 +6215,20 @@ impl ::protobuf::Message for EnumOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.allow_alias = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
@@ -6237,7 +6237,7 @@ impl ::protobuf::Message for EnumOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6258,12 +6258,12 @@ impl ::protobuf::Message for EnumOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.allow_alias {
             os.write_bool(2, v)?;
         }
@@ -6327,7 +6327,7 @@ impl ::protobuf::Message for EnumOptions {
                     |m: &EnumOptions| { &m.deprecated },
                     |m: &mut EnumOptions| { &mut m.deprecated },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &EnumOptions| { &m.uninterpreted_option },
                     |m: &mut EnumOptions| { &mut m.uninterpreted_option },
@@ -6378,17 +6378,17 @@ impl ::protobuf::reflect::ProtobufValue for EnumOptions {
 pub struct EnumValueOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValueOptions {
     fn default() -> &'a EnumValueOptions {
-        <EnumValueOptions as ::protobuf::Message>::default_instance()
+        <EnumValueOptions as crate::Message>::default_instance()
     }
 }
 
@@ -6427,18 +6427,18 @@ impl EnumValueOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -6452,13 +6452,13 @@ impl ::protobuf::Message for EnumValueOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
@@ -6467,7 +6467,7 @@ impl ::protobuf::Message for EnumValueOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6485,12 +6485,12 @@ impl ::protobuf::Message for EnumValueOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(1, v)?;
         }
@@ -6546,7 +6546,7 @@ impl ::protobuf::Message for EnumValueOptions {
                     |m: &EnumValueOptions| { &m.deprecated },
                     |m: &mut EnumValueOptions| { &mut m.deprecated },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &EnumValueOptions| { &m.uninterpreted_option },
                     |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
@@ -6596,17 +6596,17 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueOptions {
 pub struct ServiceOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a ServiceOptions {
     fn default() -> &'a ServiceOptions {
-        <ServiceOptions as ::protobuf::Message>::default_instance()
+        <ServiceOptions as crate::Message>::default_instance()
     }
 }
 
@@ -6645,18 +6645,18 @@ impl ServiceOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -6670,13 +6670,13 @@ impl ::protobuf::Message for ServiceOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 33 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
@@ -6685,7 +6685,7 @@ impl ::protobuf::Message for ServiceOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6703,12 +6703,12 @@ impl ::protobuf::Message for ServiceOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
         }
@@ -6764,7 +6764,7 @@ impl ::protobuf::Message for ServiceOptions {
                     |m: &ServiceOptions| { &m.deprecated },
                     |m: &mut ServiceOptions| { &mut m.deprecated },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &ServiceOptions| { &m.uninterpreted_option },
                     |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
@@ -6814,17 +6814,17 @@ impl ::protobuf::reflect::ProtobufValue for ServiceOptions {
 pub struct MethodOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a MethodOptions {
     fn default() -> &'a MethodOptions {
-        <MethodOptions as ::protobuf::Message>::default_instance()
+        <MethodOptions as crate::Message>::default_instance()
     }
 }
 
@@ -6863,18 +6863,18 @@ impl MethodOptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_uninterpreted_option(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption>) {
+    pub fn set_uninterpreted_option(&mut self, v: crate::RepeatedField<UninterpretedOption>) {
         self.uninterpreted_option = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_uninterpreted_option(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption> {
+    pub fn mut_uninterpreted_option(&mut self) -> &mut crate::RepeatedField<UninterpretedOption> {
         &mut self.uninterpreted_option
     }
 
     // Take field
-    pub fn take_uninterpreted_option(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption> {
-        ::std::mem::replace(&mut self.uninterpreted_option, ::protobuf::RepeatedField::new())
+    pub fn take_uninterpreted_option(&mut self) -> crate::RepeatedField<UninterpretedOption> {
+        ::std::mem::replace(&mut self.uninterpreted_option, crate::RepeatedField::new())
     }
 }
 
@@ -6888,13 +6888,13 @@ impl ::protobuf::Message for MethodOptions {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 33 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.deprecated = ::std::option::Option::Some(tmp);
@@ -6903,7 +6903,7 @@ impl ::protobuf::Message for MethodOptions {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6921,12 +6921,12 @@ impl ::protobuf::Message for MethodOptions {
             let len = value.compute_size();
             my_size += 2 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
         }
@@ -6982,7 +6982,7 @@ impl ::protobuf::Message for MethodOptions {
                     |m: &MethodOptions| { &m.deprecated },
                     |m: &mut MethodOptions| { &mut m.deprecated },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &MethodOptions| { &m.uninterpreted_option },
                     |m: &mut MethodOptions| { &mut m.uninterpreted_option },
@@ -7031,23 +7031,23 @@ impl ::protobuf::reflect::ProtobufValue for MethodOptions {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct UninterpretedOption {
     // message fields
-    name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
-    identifier_value: ::protobuf::SingularField<::std::string::String>,
+    name: crate::RepeatedField<UninterpretedOption_NamePart>,
+    identifier_value: crate::SingularField<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
     negative_int_value: ::std::option::Option<i64>,
     double_value: ::std::option::Option<f64>,
-    string_value: ::protobuf::SingularField<::std::vec::Vec<u8>>,
-    aggregate_value: ::protobuf::SingularField<::std::string::String>,
+    string_value: crate::SingularField<::std::vec::Vec<u8>>,
+    aggregate_value: crate::SingularField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UninterpretedOption {
     fn default() -> &'a UninterpretedOption {
-        <UninterpretedOption as ::protobuf::Message>::default_instance()
+        <UninterpretedOption as crate::Message>::default_instance()
     }
 }
 
@@ -7067,18 +7067,18 @@ impl UninterpretedOption {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::protobuf::RepeatedField<UninterpretedOption_NamePart>) {
+    pub fn set_name(&mut self, v: crate::RepeatedField<UninterpretedOption_NamePart>) {
         self.name = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_name(&mut self) -> &mut ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
+    pub fn mut_name(&mut self) -> &mut crate::RepeatedField<UninterpretedOption_NamePart> {
         &mut self.name
     }
 
     // Take field
-    pub fn take_name(&mut self) -> ::protobuf::RepeatedField<UninterpretedOption_NamePart> {
-        ::std::mem::replace(&mut self.name, ::protobuf::RepeatedField::new())
+    pub fn take_name(&mut self) -> crate::RepeatedField<UninterpretedOption_NamePart> {
+        ::std::mem::replace(&mut self.name, crate::RepeatedField::new())
     }
 
     // optional string identifier_value = 3;
@@ -7257,7 +7257,7 @@ impl ::protobuf::Message for UninterpretedOption {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -7269,21 +7269,21 @@ impl ::protobuf::Message for UninterpretedOption {
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.positive_int_value = ::std::option::Option::Some(tmp);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int64()?;
                     self.negative_int_value = ::std::option::Option::Some(tmp);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_double()?;
                     self.double_value = ::std::option::Option::Some(tmp);
@@ -7295,7 +7295,7 @@ impl ::protobuf::Message for UninterpretedOption {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.aggregate_value)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -7328,12 +7328,12 @@ impl ::protobuf::Message for UninterpretedOption {
         if let Some(ref v) = self.aggregate_value.as_ref() {
             my_size += ::protobuf::rt::string_size(8, &v);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.name {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7399,7 +7399,7 @@ impl ::protobuf::Message for UninterpretedOption {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
                     "name",
                     |m: &UninterpretedOption| { &m.name },
                     |m: &mut UninterpretedOption| { &mut m.name },
@@ -7483,18 +7483,18 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct UninterpretedOption_NamePart {
     // message fields
-    name_part: ::protobuf::SingularField<::std::string::String>,
+    name_part: crate::SingularField<::std::string::String>,
     is_extension: ::std::option::Option<bool>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a UninterpretedOption_NamePart {
     fn default() -> &'a UninterpretedOption_NamePart {
-        <UninterpretedOption_NamePart as ::protobuf::Message>::default_instance()
+        <UninterpretedOption_NamePart as crate::Message>::default_instance()
     }
 }
 
@@ -7570,7 +7570,7 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -7579,13 +7579,13 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_extension = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -7602,12 +7602,12 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
         if let Some(v) = self.is_extension {
             my_size += 2;
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(ref v) = self.name_part.as_ref() {
             os.write_string(1, &v)?;
         }
@@ -7710,17 +7710,17 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption_NamePart {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
-    location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
+    location: crate::RepeatedField<SourceCodeInfo_Location>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a SourceCodeInfo {
     fn default() -> &'a SourceCodeInfo {
-        <SourceCodeInfo as ::protobuf::Message>::default_instance()
+        <SourceCodeInfo as crate::Message>::default_instance()
     }
 }
 
@@ -7740,18 +7740,18 @@ impl SourceCodeInfo {
     }
 
     // Param is passed by value, moved
-    pub fn set_location(&mut self, v: ::protobuf::RepeatedField<SourceCodeInfo_Location>) {
+    pub fn set_location(&mut self, v: crate::RepeatedField<SourceCodeInfo_Location>) {
         self.location = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_location(&mut self) -> &mut ::protobuf::RepeatedField<SourceCodeInfo_Location> {
+    pub fn mut_location(&mut self) -> &mut crate::RepeatedField<SourceCodeInfo_Location> {
         &mut self.location
     }
 
     // Take field
-    pub fn take_location(&mut self) -> ::protobuf::RepeatedField<SourceCodeInfo_Location> {
-        ::std::mem::replace(&mut self.location, ::protobuf::RepeatedField::new())
+    pub fn take_location(&mut self) -> crate::RepeatedField<SourceCodeInfo_Location> {
+        ::std::mem::replace(&mut self.location, crate::RepeatedField::new())
     }
 }
 
@@ -7765,7 +7765,7 @@ impl ::protobuf::Message for SourceCodeInfo {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -7773,7 +7773,7 @@ impl ::protobuf::Message for SourceCodeInfo {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.location)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -7788,12 +7788,12 @@ impl ::protobuf::Message for SourceCodeInfo {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.location {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7841,7 +7841,7 @@ impl ::protobuf::Message for SourceCodeInfo {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
                     "location",
                     |m: &SourceCodeInfo| { &m.location },
                     |m: &mut SourceCodeInfo| { &mut m.location },
@@ -7891,19 +7891,19 @@ pub struct SourceCodeInfo_Location {
     // message fields
     path: ::std::vec::Vec<i32>,
     span: ::std::vec::Vec<i32>,
-    leading_comments: ::protobuf::SingularField<::std::string::String>,
-    trailing_comments: ::protobuf::SingularField<::std::string::String>,
-    leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
+    leading_comments: crate::SingularField<::std::string::String>,
+    trailing_comments: crate::SingularField<::std::string::String>,
+    leading_detached_comments: crate::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a SourceCodeInfo_Location {
     fn default() -> &'a SourceCodeInfo_Location {
-        <SourceCodeInfo_Location as ::protobuf::Message>::default_instance()
+        <SourceCodeInfo_Location as crate::Message>::default_instance()
     }
 }
 
@@ -8045,18 +8045,18 @@ impl SourceCodeInfo_Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_leading_detached_comments(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_leading_detached_comments(&mut self, v: crate::RepeatedField<::std::string::String>) {
         self.leading_detached_comments = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_leading_detached_comments(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+    pub fn mut_leading_detached_comments(&mut self) -> &mut crate::RepeatedField<::std::string::String> {
         &mut self.leading_detached_comments
     }
 
     // Take field
-    pub fn take_leading_detached_comments(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
-        ::std::mem::replace(&mut self.leading_detached_comments, ::protobuf::RepeatedField::new())
+    pub fn take_leading_detached_comments(&mut self) -> crate::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.leading_detached_comments, crate::RepeatedField::new())
     }
 }
 
@@ -8065,15 +8065,15 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
+                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
+                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
                 },
                 3 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
@@ -8085,7 +8085,7 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -8097,10 +8097,10 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.path.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
+            my_size += crate::rt::vec_packed_varint_size(1, &self.path);
         }
         if !self.span.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(2, &self.span);
+            my_size += crate::rt::vec_packed_varint_size(2, &self.span);
         }
         if let Some(ref v) = self.leading_comments.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
@@ -8111,24 +8111,24 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
         for value in &self.leading_detached_comments {
             my_size += ::protobuf::rt::string_size(6, &value);
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.path.is_empty() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(1, crate::wire_format::WireTypeLengthDelimited)?;
             // TODO: Data size is computed again, it should be cached
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path))?;
+            os.write_raw_varint32(crate::rt::vec_packed_varint_data_size(&self.path))?;
             for v in &self.path {
                 os.write_int32_no_tag(*v)?;
             };
         }
         if !self.span.is_empty() {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(2, crate::wire_format::WireTypeLengthDelimited)?;
             // TODO: Data size is computed again, it should be cached
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.span))?;
+            os.write_raw_varint32(crate::rt::vec_packed_varint_data_size(&self.span))?;
             for v in &self.span {
                 os.write_int32_no_tag(*v)?;
             };
@@ -8256,17 +8256,17 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo_Location {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct GeneratedCodeInfo {
     // message fields
-    annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
+    annotation: crate::RepeatedField<GeneratedCodeInfo_Annotation>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a GeneratedCodeInfo {
     fn default() -> &'a GeneratedCodeInfo {
-        <GeneratedCodeInfo as ::protobuf::Message>::default_instance()
+        <GeneratedCodeInfo as crate::Message>::default_instance()
     }
 }
 
@@ -8286,18 +8286,18 @@ impl GeneratedCodeInfo {
     }
 
     // Param is passed by value, moved
-    pub fn set_annotation(&mut self, v: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>) {
+    pub fn set_annotation(&mut self, v: crate::RepeatedField<GeneratedCodeInfo_Annotation>) {
         self.annotation = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_annotation(&mut self) -> &mut ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation> {
+    pub fn mut_annotation(&mut self) -> &mut crate::RepeatedField<GeneratedCodeInfo_Annotation> {
         &mut self.annotation
     }
 
     // Take field
-    pub fn take_annotation(&mut self) -> ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation> {
-        ::std::mem::replace(&mut self.annotation, ::protobuf::RepeatedField::new())
+    pub fn take_annotation(&mut self) -> crate::RepeatedField<GeneratedCodeInfo_Annotation> {
+        ::std::mem::replace(&mut self.annotation, crate::RepeatedField::new())
     }
 }
 
@@ -8311,7 +8311,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -8319,7 +8319,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.annotation)?;
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -8334,12 +8334,12 @@ impl ::protobuf::Message for GeneratedCodeInfo {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         for v in &self.annotation {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -8387,7 +8387,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
                     "annotation",
                     |m: &GeneratedCodeInfo| { &m.annotation },
                     |m: &mut GeneratedCodeInfo| { &mut m.annotation },
@@ -8436,19 +8436,19 @@ impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo {
 pub struct GeneratedCodeInfo_Annotation {
     // message fields
     path: ::std::vec::Vec<i32>,
-    source_file: ::protobuf::SingularField<::std::string::String>,
+    source_file: crate::SingularField<::std::string::String>,
     begin: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub unknown_fields: ::protobuf::UnknownFields,
+    pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(feature = "with-serde", serde(skip))]
-    pub cached_size: ::protobuf::CachedSize,
+    pub cached_size: crate::CachedSize,
 }
 
 impl<'a> ::std::default::Default for &'a GeneratedCodeInfo_Annotation {
     fn default() -> &'a GeneratedCodeInfo_Annotation {
-        <GeneratedCodeInfo_Annotation as ::protobuf::Message>::default_instance()
+        <GeneratedCodeInfo_Annotation as crate::Message>::default_instance()
     }
 }
 
@@ -8562,32 +8562,32 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
+                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                 },
                 2 => {
                     ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.begin = ::std::option::Option::Some(tmp);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.end = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -8599,7 +8599,7 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if !self.path.is_empty() {
-            my_size += ::protobuf::rt::vec_packed_varint_size(1, &self.path);
+            my_size += crate::rt::vec_packed_varint_size(1, &self.path);
         }
         if let Some(ref v) = self.source_file.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
@@ -8610,16 +8610,16 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
         if let Some(v) = self.end {
             my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
         }
-        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if !self.path.is_empty() {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(1, crate::wire_format::WireTypeLengthDelimited)?;
             // TODO: Data size is computed again, it should be cached
-            os.write_raw_varint32(::protobuf::rt::vec_packed_varint_data_size(&self.path))?;
+            os.write_raw_varint32(crate::rt::vec_packed_varint_data_size(&self.path))?;
             for v in &self.path {
                 os.write_int32_no_tag(*v)?;
             };
@@ -10002,9 +10002,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03\x12\x04\xa1\x06\x19\x1a\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
+    lock: crate::lazy::ONCE_INIT,
+    ptr: 0 as *const crate::descriptor::FileDescriptorProto,
 };
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
