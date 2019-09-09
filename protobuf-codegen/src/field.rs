@@ -733,9 +733,7 @@ impl<'a> FieldGen<'a> {
                     rust::quote_escape_bytes(&text_format::unescape_string(proto_default))
                 }
                 // TODO: resolve outer message prefix
-                FieldDescriptorProto_Type::TYPE_GROUP | FieldDescriptorProto_Type::TYPE_ENUM => {
-                    unreachable!()
-                }
+                FieldDescriptorProto_Type::TYPE_GROUP | FieldDescriptorProto_Type::TYPE_ENUM => unreachable!(),
                 FieldDescriptorProto_Type::TYPE_MESSAGE => panic!(
                     "default value is not implemented for type: {:?}",
                     self.proto_type
