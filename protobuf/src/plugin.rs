@@ -28,7 +28,7 @@ pub struct CodeGeneratorRequest {
     // message fields
     file_to_generate: crate::RepeatedField<::std::string::String>,
     parameter: crate::SingularField<::std::string::String>,
-    proto_file: crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
+    proto_file: crate::RepeatedField<crate::descriptor::FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -91,7 +91,7 @@ impl CodeGeneratorRequest {
 
     // Param is passed by value, moved
     pub fn set_parameter(&mut self, v: ::std::string::String) {
-        self.parameter = ::protobuf::SingularField::some(v);
+        self.parameter = crate::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -111,7 +111,7 @@ impl CodeGeneratorRequest {
     // repeated .google.protobuf.FileDescriptorProto proto_file = 15;
 
 
-    pub fn get_proto_file(&self) -> &[::protobuf::descriptor::FileDescriptorProto] {
+    pub fn get_proto_file(&self) -> &[crate::descriptor::FileDescriptorProto] {
         &self.proto_file
     }
     pub fn clear_proto_file(&mut self) {
@@ -119,17 +119,17 @@ impl CodeGeneratorRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_proto_file(&mut self, v: crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto>) {
+    pub fn set_proto_file(&mut self, v: crate::RepeatedField<crate::descriptor::FileDescriptorProto>) {
         self.proto_file = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_proto_file(&mut self) -> &mut crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
+    pub fn mut_proto_file(&mut self) -> &mut crate::RepeatedField<crate::descriptor::FileDescriptorProto> {
         &mut self.proto_file
     }
 
     // Take field
-    pub fn take_proto_file(&mut self) -> crate::RepeatedField<::protobuf::descriptor::FileDescriptorProto> {
+    pub fn take_proto_file(&mut self) -> crate::RepeatedField<crate::descriptor::FileDescriptorProto> {
         ::std::mem::replace(&mut self.proto_file, crate::RepeatedField::new())
     }
 }
@@ -238,17 +238,17 @@ impl crate::Message for CodeGeneratorRequest {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "file_to_generate",
                     |m: &CodeGeneratorRequest| { &m.file_to_generate },
                     |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "parameter",
                     |m: &CodeGeneratorRequest| { &m.parameter },
                     |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
                     "proto_file",
                     |m: &CodeGeneratorRequest| { &m.proto_file },
                     |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -337,7 +337,7 @@ impl CodeGeneratorResponse {
 
     // Param is passed by value, moved
     pub fn set_error(&mut self, v: ::std::string::String) {
-        self.error = ::protobuf::SingularField::some(v);
+        self.error = crate::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -475,7 +475,7 @@ impl crate::Message for CodeGeneratorResponse {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "error",
                     |m: &CodeGeneratorResponse| { &m.error },
                     |m: &mut CodeGeneratorResponse| { &mut m.error },
@@ -569,7 +569,7 @@ impl CodeGeneratorResponse_File {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = ::protobuf::SingularField::some(v);
+        self.name = crate::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -605,7 +605,7 @@ impl CodeGeneratorResponse_File {
 
     // Param is passed by value, moved
     pub fn set_insertion_point(&mut self, v: ::std::string::String) {
-        self.insertion_point = ::protobuf::SingularField::some(v);
+        self.insertion_point = crate::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -641,7 +641,7 @@ impl CodeGeneratorResponse_File {
 
     // Param is passed by value, moved
     pub fn set_content(&mut self, v: ::std::string::String) {
-        self.content = ::protobuf::SingularField::some(v);
+        self.content = crate::SingularField::some(v);
     }
 
     // Mutable pointer to the field.
@@ -755,17 +755,17 @@ impl crate::Message for CodeGeneratorResponse_File {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &CodeGeneratorResponse_File| { &m.name },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "insertion_point",
                     |m: &CodeGeneratorResponse_File| { &m.insertion_point },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "content",
                     |m: &CodeGeneratorResponse_File| { &m.content },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.content },

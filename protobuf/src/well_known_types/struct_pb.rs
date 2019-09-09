@@ -81,7 +81,7 @@ impl crate::Message for Struct {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
+                    ::protobuf::rt::read_map_into::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -95,14 +95,14 @@ impl crate::Message for Struct {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += crate::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields);
+        my_size += crate::rt::compute_map_size::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields);
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
+        ::protobuf::rt::write_map_with_cached_sizes::<crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -145,7 +145,7 @@ impl crate::Message for Struct {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(
+                fields.push(crate::reflect::accessor::make_map_accessor::<_, crate::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(
                     "fields",
                     |m: &Struct| { &m.fields },
                     |m: &mut Struct| { &mut m.fields },

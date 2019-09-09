@@ -28,11 +28,11 @@ pub struct Api {
     // message fields
     pub name: ::std::string::String,
     pub methods: crate::RepeatedField<Method>,
-    pub options: crate::RepeatedField<::protobuf::well_known_types::Option>,
+    pub options: crate::RepeatedField<crate::well_known_types::Option>,
     pub version: ::std::string::String,
-    pub source_context: crate::SingularPtrField<::protobuf::well_known_types::SourceContext>,
+    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
     pub mixins: crate::RepeatedField<Mixin>,
-    pub syntax: ::protobuf::well_known_types::Syntax,
+    pub syntax: crate::well_known_types::Syntax,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -105,7 +105,7 @@ impl Api {
     // repeated .google.protobuf.Option options = 3;
 
 
-    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
+    pub fn get_options(&self) -> &[crate::well_known_types::Option] {
         &self.options
     }
     pub fn clear_options(&mut self) {
@@ -113,17 +113,17 @@ impl Api {
     }
 
     // Param is passed by value, moved
-    pub fn set_options(&mut self, v: crate::RepeatedField<::protobuf::well_known_types::Option>) {
+    pub fn set_options(&mut self, v: crate::RepeatedField<crate::well_known_types::Option>) {
         self.options = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_options(&mut self) -> &mut crate::RepeatedField<::protobuf::well_known_types::Option> {
+    pub fn mut_options(&mut self) -> &mut crate::RepeatedField<crate::well_known_types::Option> {
         &mut self.options
     }
 
     // Take field
-    pub fn take_options(&mut self) -> crate::RepeatedField<::protobuf::well_known_types::Option> {
+    pub fn take_options(&mut self) -> crate::RepeatedField<crate::well_known_types::Option> {
         ::std::mem::replace(&mut self.options, crate::RepeatedField::new())
     }
 
@@ -156,8 +156,8 @@ impl Api {
     // .google.protobuf.SourceContext source_context = 5;
 
 
-    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+    pub fn get_source_context(&self) -> &crate::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| crate::well_known_types::SourceContext::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -168,13 +168,13 @@ impl Api {
     }
 
     // Param is passed by value, moved
-    pub fn set_source_context(&mut self, v: ::protobuf::well_known_types::SourceContext) {
-        self.source_context = ::protobuf::SingularPtrField::some(v);
+    pub fn set_source_context(&mut self, v: crate::well_known_types::SourceContext) {
+        self.source_context = crate::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_context(&mut self) -> &mut ::protobuf::well_known_types::SourceContext {
+    pub fn mut_source_context(&mut self) -> &mut crate::well_known_types::SourceContext {
         if self.source_context.is_none() {
             self.source_context.set_default();
         }
@@ -182,8 +182,8 @@ impl Api {
     }
 
     // Take field
-    pub fn take_source_context(&mut self) -> ::protobuf::well_known_types::SourceContext {
-        self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
+    pub fn take_source_context(&mut self) -> crate::well_known_types::SourceContext {
+        self.source_context.take().unwrap_or_else(|| crate::well_known_types::SourceContext::new())
     }
 
     // repeated .google.protobuf.Mixin mixins = 6;
@@ -214,15 +214,15 @@ impl Api {
     // .google.protobuf.Syntax syntax = 7;
 
 
-    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
+    pub fn get_syntax(&self) -> crate::well_known_types::Syntax {
         self.syntax
     }
     pub fn clear_syntax(&mut self) {
-        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
+        self.syntax = crate::well_known_types::Syntax::SYNTAX_PROTO2;
     }
 
     // Param is passed by value, moved
-    pub fn set_syntax(&mut self, v: ::protobuf::well_known_types::Syntax) {
+    pub fn set_syntax(&mut self, v: crate::well_known_types::Syntax) {
         self.syntax = v;
     }
 }
@@ -311,7 +311,7 @@ impl crate::Message for Api {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
             my_size += ::protobuf::rt::enum_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -346,7 +346,7 @@ impl crate::Message for Api {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
             os.write_enum(7, self.syntax.value())?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -391,7 +391,7 @@ impl crate::Message for Api {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Api| { &m.name },
                     |m: &mut Api| { &mut m.name },
@@ -401,17 +401,17 @@ impl crate::Message for Api {
                     |m: &Api| { &m.methods },
                     |m: &mut Api| { &mut m.methods },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
                     "options",
                     |m: &Api| { &m.options },
                     |m: &mut Api| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "version",
                     |m: &Api| { &m.version },
                     |m: &mut Api| { &mut m.version },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Api| { &m.source_context },
                     |m: &mut Api| { &mut m.source_context },
@@ -421,7 +421,7 @@ impl crate::Message for Api {
                     |m: &Api| { &m.mixins },
                     |m: &mut Api| { &mut m.mixins },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeEnum<crate::well_known_types::Syntax>>(
                     "syntax",
                     |m: &Api| { &m.syntax },
                     |m: &mut Api| { &mut m.syntax },
@@ -454,7 +454,7 @@ impl crate::Clear for Api {
         self.version.clear();
         self.source_context.clear();
         self.mixins.clear();
-        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
+        self.syntax = crate::well_known_types::Syntax::SYNTAX_PROTO2;
         self.unknown_fields.clear();
     }
 }
@@ -480,8 +480,8 @@ pub struct Method {
     pub request_streaming: bool,
     pub response_type_url: ::std::string::String,
     pub response_streaming: bool,
-    pub options: crate::RepeatedField<::protobuf::well_known_types::Option>,
-    pub syntax: ::protobuf::well_known_types::Syntax,
+    pub options: crate::RepeatedField<crate::well_known_types::Option>,
+    pub syntax: crate::well_known_types::Syntax,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -611,7 +611,7 @@ impl Method {
     // repeated .google.protobuf.Option options = 6;
 
 
-    pub fn get_options(&self) -> &[::protobuf::well_known_types::Option] {
+    pub fn get_options(&self) -> &[crate::well_known_types::Option] {
         &self.options
     }
     pub fn clear_options(&mut self) {
@@ -619,32 +619,32 @@ impl Method {
     }
 
     // Param is passed by value, moved
-    pub fn set_options(&mut self, v: crate::RepeatedField<::protobuf::well_known_types::Option>) {
+    pub fn set_options(&mut self, v: crate::RepeatedField<crate::well_known_types::Option>) {
         self.options = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_options(&mut self) -> &mut crate::RepeatedField<::protobuf::well_known_types::Option> {
+    pub fn mut_options(&mut self) -> &mut crate::RepeatedField<crate::well_known_types::Option> {
         &mut self.options
     }
 
     // Take field
-    pub fn take_options(&mut self) -> crate::RepeatedField<::protobuf::well_known_types::Option> {
+    pub fn take_options(&mut self) -> crate::RepeatedField<crate::well_known_types::Option> {
         ::std::mem::replace(&mut self.options, crate::RepeatedField::new())
     }
 
     // .google.protobuf.Syntax syntax = 7;
 
 
-    pub fn get_syntax(&self) -> ::protobuf::well_known_types::Syntax {
+    pub fn get_syntax(&self) -> crate::well_known_types::Syntax {
         self.syntax
     }
     pub fn clear_syntax(&mut self) {
-        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
+        self.syntax = crate::well_known_types::Syntax::SYNTAX_PROTO2;
     }
 
     // Param is passed by value, moved
-    pub fn set_syntax(&mut self, v: ::protobuf::well_known_types::Syntax) {
+    pub fn set_syntax(&mut self, v: crate::well_known_types::Syntax) {
         self.syntax = v;
     }
 }
@@ -723,7 +723,7 @@ impl crate::Message for Method {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
             my_size += ::protobuf::rt::enum_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -752,7 +752,7 @@ impl crate::Message for Method {
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
-        if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
+        if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
             os.write_enum(7, self.syntax.value())?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -797,37 +797,37 @@ impl crate::Message for Method {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Method| { &m.name },
                     |m: &mut Method| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "request_type_url",
                     |m: &Method| { &m.request_type_url },
                     |m: &mut Method| { &mut m.request_type_url },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeBool>(
                     "request_streaming",
                     |m: &Method| { &m.request_streaming },
                     |m: &mut Method| { &mut m.request_streaming },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "response_type_url",
                     |m: &Method| { &m.response_type_url },
                     |m: &mut Method| { &mut m.response_type_url },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeBool>(
                     "response_streaming",
                     |m: &Method| { &m.response_streaming },
                     |m: &mut Method| { &mut m.response_streaming },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
                     "options",
                     |m: &Method| { &m.options },
                     |m: &mut Method| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeEnum<crate::well_known_types::Syntax>>(
                     "syntax",
                     |m: &Method| { &m.syntax },
                     |m: &mut Method| { &mut m.syntax },
@@ -860,7 +860,7 @@ impl crate::Clear for Method {
         self.response_type_url.clear();
         self.response_streaming = false;
         self.options.clear();
-        self.syntax = ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2;
+        self.syntax = crate::well_known_types::Syntax::SYNTAX_PROTO2;
         self.unknown_fields.clear();
     }
 }
@@ -1041,12 +1041,12 @@ impl crate::Message for Mixin {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Mixin| { &m.name },
                     |m: &mut Mixin| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "root",
                     |m: &Mixin| { &m.root },
                     |m: &mut Mixin| { &mut m.root },

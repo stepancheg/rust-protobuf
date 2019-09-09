@@ -30,7 +30,7 @@ pub struct Type {
     pub fields: crate::RepeatedField<Field>,
     pub oneofs: crate::RepeatedField<::std::string::String>,
     pub options: crate::RepeatedField<Option>,
-    pub source_context: crate::SingularPtrField<::protobuf::well_known_types::SourceContext>,
+    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
@@ -154,8 +154,8 @@ impl Type {
     // .google.protobuf.SourceContext source_context = 5;
 
 
-    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+    pub fn get_source_context(&self) -> &crate::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| crate::well_known_types::SourceContext::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -166,13 +166,13 @@ impl Type {
     }
 
     // Param is passed by value, moved
-    pub fn set_source_context(&mut self, v: ::protobuf::well_known_types::SourceContext) {
-        self.source_context = ::protobuf::SingularPtrField::some(v);
+    pub fn set_source_context(&mut self, v: crate::well_known_types::SourceContext) {
+        self.source_context = crate::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_context(&mut self) -> &mut ::protobuf::well_known_types::SourceContext {
+    pub fn mut_source_context(&mut self) -> &mut crate::well_known_types::SourceContext {
         if self.source_context.is_none() {
             self.source_context.set_default();
         }
@@ -180,8 +180,8 @@ impl Type {
     }
 
     // Take field
-    pub fn take_source_context(&mut self) -> ::protobuf::well_known_types::SourceContext {
-        self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
+    pub fn take_source_context(&mut self) -> crate::well_known_types::SourceContext {
+        self.source_context.take().unwrap_or_else(|| crate::well_known_types::SourceContext::new())
     }
 
     // .google.protobuf.Syntax syntax = 6;
@@ -347,7 +347,7 @@ impl crate::Message for Type {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Type| { &m.name },
                     |m: &mut Type| { &mut m.name },
@@ -357,7 +357,7 @@ impl crate::Message for Type {
                     |m: &Type| { &m.fields },
                     |m: &mut Type| { &mut m.fields },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "oneofs",
                     |m: &Type| { &m.oneofs },
                     |m: &mut Type| { &mut m.oneofs },
@@ -367,12 +367,12 @@ impl crate::Message for Type {
                     |m: &Type| { &m.options },
                     |m: &mut Type| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Type| { &m.source_context },
                     |m: &mut Type| { &mut m.source_context },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeEnum<Syntax>>(
                     "syntax",
                     |m: &Type| { &m.syntax },
                     |m: &mut Type| { &mut m.syntax },
@@ -837,37 +837,37 @@ impl crate::Message for Field {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Kind>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeEnum<Field_Kind>>(
                     "kind",
                     |m: &Field| { &m.kind },
                     |m: &mut Field| { &mut m.kind },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Field_Cardinality>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeEnum<Field_Cardinality>>(
                     "cardinality",
                     |m: &Field| { &m.cardinality },
                     |m: &mut Field| { &mut m.cardinality },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt32>(
                     "number",
                     |m: &Field| { &m.number },
                     |m: &mut Field| { &mut m.number },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Field| { &m.name },
                     |m: &mut Field| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "type_url",
                     |m: &Field| { &m.type_url },
                     |m: &mut Field| { &mut m.type_url },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt32>(
                     "oneof_index",
                     |m: &Field| { &m.oneof_index },
                     |m: &mut Field| { &mut m.oneof_index },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeBool>(
                     "packed",
                     |m: &Field| { &m.packed },
                     |m: &mut Field| { &mut m.packed },
@@ -877,12 +877,12 @@ impl crate::Message for Field {
                     |m: &Field| { &m.options },
                     |m: &mut Field| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "json_name",
                     |m: &Field| { &m.json_name },
                     |m: &mut Field| { &mut m.json_name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "default_value",
                     |m: &Field| { &m.default_value },
                     |m: &mut Field| { &mut m.default_value },
@@ -1111,7 +1111,7 @@ pub struct Enum {
     pub name: ::std::string::String,
     pub enumvalue: crate::RepeatedField<EnumValue>,
     pub options: crate::RepeatedField<Option>,
-    pub source_context: crate::SingularPtrField<::protobuf::well_known_types::SourceContext>,
+    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
     pub syntax: Syntax,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
@@ -1210,8 +1210,8 @@ impl Enum {
     // .google.protobuf.SourceContext source_context = 4;
 
 
-    pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+    pub fn get_source_context(&self) -> &crate::well_known_types::SourceContext {
+        self.source_context.as_ref().unwrap_or_else(|| crate::well_known_types::SourceContext::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -1222,13 +1222,13 @@ impl Enum {
     }
 
     // Param is passed by value, moved
-    pub fn set_source_context(&mut self, v: ::protobuf::well_known_types::SourceContext) {
-        self.source_context = ::protobuf::SingularPtrField::some(v);
+    pub fn set_source_context(&mut self, v: crate::well_known_types::SourceContext) {
+        self.source_context = crate::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_source_context(&mut self) -> &mut ::protobuf::well_known_types::SourceContext {
+    pub fn mut_source_context(&mut self) -> &mut crate::well_known_types::SourceContext {
         if self.source_context.is_none() {
             self.source_context.set_default();
         }
@@ -1236,8 +1236,8 @@ impl Enum {
     }
 
     // Take field
-    pub fn take_source_context(&mut self) -> ::protobuf::well_known_types::SourceContext {
-        self.source_context.take().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::new())
+    pub fn take_source_context(&mut self) -> crate::well_known_types::SourceContext {
+        self.source_context.take().unwrap_or_else(|| crate::well_known_types::SourceContext::new())
     }
 
     // .google.protobuf.Syntax syntax = 5;
@@ -1394,7 +1394,7 @@ impl crate::Message for Enum {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Enum| { &m.name },
                     |m: &mut Enum| { &mut m.name },
@@ -1409,12 +1409,12 @@ impl crate::Message for Enum {
                     |m: &Enum| { &m.options },
                     |m: &mut Enum| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Enum| { &m.source_context },
                     |m: &mut Enum| { &mut m.source_context },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Syntax>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeEnum<Syntax>>(
                     "syntax",
                     |m: &Enum| { &m.syntax },
                     |m: &mut Enum| { &mut m.syntax },
@@ -1662,12 +1662,12 @@ impl crate::Message for EnumValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &EnumValue| { &m.name },
                     |m: &mut EnumValue| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeInt32>(
                     "number",
                     |m: &EnumValue| { &m.number },
                     |m: &mut EnumValue| { &mut m.number },
@@ -1723,7 +1723,7 @@ impl crate::reflect::ProtobufValue for EnumValue {
 pub struct Option {
     // message fields
     pub name: ::std::string::String,
-    pub value: crate::SingularPtrField<::protobuf::well_known_types::Any>,
+    pub value: crate::SingularPtrField<crate::well_known_types::Any>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1771,8 +1771,8 @@ impl Option {
     // .google.protobuf.Any value = 2;
 
 
-    pub fn get_value(&self) -> &::protobuf::well_known_types::Any {
-        self.value.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::Any::default_instance())
+    pub fn get_value(&self) -> &crate::well_known_types::Any {
+        self.value.as_ref().unwrap_or_else(|| crate::well_known_types::Any::default_instance())
     }
     pub fn clear_value(&mut self) {
         self.value.clear();
@@ -1783,13 +1783,13 @@ impl Option {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: ::protobuf::well_known_types::Any) {
-        self.value = ::protobuf::SingularPtrField::some(v);
+    pub fn set_value(&mut self, v: crate::well_known_types::Any) {
+        self.value = crate::SingularPtrField::some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_value(&mut self) -> &mut ::protobuf::well_known_types::Any {
+    pub fn mut_value(&mut self) -> &mut crate::well_known_types::Any {
         if self.value.is_none() {
             self.value.set_default();
         }
@@ -1797,8 +1797,8 @@ impl Option {
     }
 
     // Take field
-    pub fn take_value(&mut self) -> ::protobuf::well_known_types::Any {
-        self.value.take().unwrap_or_else(|| ::protobuf::well_known_types::Any::new())
+    pub fn take_value(&mut self) -> crate::well_known_types::Any {
+        self.value.take().unwrap_or_else(|| crate::well_known_types::Any::new())
     }
 }
 
@@ -1897,12 +1897,12 @@ impl crate::Message for Option {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "name",
                     |m: &Option| { &m.name },
                     |m: &mut Option| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Any>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<crate::well_known_types::Any>>(
                     "value",
                     |m: &Option| { &m.value },
                     |m: &mut Option| { &mut m.value },

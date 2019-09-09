@@ -25,43 +25,43 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 pub mod exts {
     use protobuf::Message as Message_imported_for_functions;
 
-    pub const expose_oneof_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
+    pub const expose_oneof_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
 
-    pub const expose_fields_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
+    pub const expose_fields_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
 
-    pub const generate_accessors_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
+    pub const generate_accessors_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_bytes_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_bytes_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_string_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_string_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
 
-    pub const serde_derive_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17030, phantom: ::std::marker::PhantomData };
+    pub const serde_derive_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17030, phantom: ::std::marker::PhantomData };
 
-    pub const serde_derive_cfg_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeString> = ::protobuf::ext::ExtFieldOptional { field_number: 17031, phantom: ::std::marker::PhantomData };
+    pub const serde_derive_cfg_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeString> = ::protobuf::ext::ExtFieldOptional { field_number: 17031, phantom: ::std::marker::PhantomData };
 
-    pub const lite_runtime_all: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FileOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17035, phantom: ::std::marker::PhantomData };
+    pub const lite_runtime_all: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17035, phantom: ::std::marker::PhantomData };
 
-    pub const expose_oneof: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
+    pub const expose_oneof: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17001, phantom: ::std::marker::PhantomData };
 
-    pub const expose_fields: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
+    pub const expose_fields: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
 
-    pub const generate_accessors: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
+    pub const generate_accessors: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_bytes: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_bytes: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_string: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_string: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
 
-    pub const serde_derive: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17030, phantom: ::std::marker::PhantomData };
+    pub const serde_derive: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17030, phantom: ::std::marker::PhantomData };
 
-    pub const serde_derive_cfg: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::MessageOptions, ::protobuf::types::ProtobufTypeString> = ::protobuf::ext::ExtFieldOptional { field_number: 17031, phantom: ::std::marker::PhantomData };
+    pub const serde_derive_cfg: ::protobuf::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::types::ProtobufTypeString> = ::protobuf::ext::ExtFieldOptional { field_number: 17031, phantom: ::std::marker::PhantomData };
 
-    pub const expose_fields_field: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
+    pub const expose_fields_field: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
 
-    pub const generate_accessors_field: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
+    pub const generate_accessors_field: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_bytes_field: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_bytes_field: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
 
-    pub const carllerche_bytes_for_string_field: ::protobuf::ext::ExtFieldOptional<::protobuf::descriptor::FieldOptions, ::protobuf::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const carllerche_bytes_for_string_field: ::protobuf::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::types::ProtobufTypeBool> = ::protobuf::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

@@ -150,7 +150,7 @@ impl crate::Message for SourceContext {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "file_name",
                     |m: &SourceContext| { &m.file_name },
                     |m: &mut SourceContext| { &mut m.file_name },

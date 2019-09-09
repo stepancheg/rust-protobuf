@@ -186,12 +186,12 @@ impl crate::Message for Any {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeString>(
                     "type_url",
                     |m: &Any| { &m.type_url },
                     |m: &mut Any| { &mut m.type_url },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::types::ProtobufTypeBytes>(
                     "value",
                     |m: &Any| { &m.value },
                     |m: &mut Any| { &mut m.value },
