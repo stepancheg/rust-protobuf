@@ -7,6 +7,7 @@ use super::code_writer::*;
 use super::customize::Customize;
 use rust_types_values::type_name_to_rust_relative;
 use serde;
+use inside::protobuf_crate_path;
 
 #[derive(Clone)]
 pub struct EnumValueGen {
@@ -185,7 +186,10 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block("::protobuf::ProtobufEnum", &type_name, |w| {
+        w.impl_for_block(
+            &format!("{}::ProtobufEnum", protobuf_crate_path(&self.customize)),
+            &format!("{}", type_name),
+            |w| {
             self.write_fn_value(w);
 
             w.write_line("");
@@ -215,21 +219,49 @@ impl<'a> EnumGen<'a> {
 
             if !self.lite_runtime {
                 w.write_line("");
-                w.def_fn(&format!("enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"), |w| {
-                    w.lazy_static_decl_get("descriptor", "::protobuf::reflect::EnumDescriptor", |w| {
-                        let ref type_name = self.type_name;
-                        w.write_line(&format!("::protobuf::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())", type_name));
-                    });
+                let sig = format!(
+                    "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
+                    protobuf_crate_path(&self.customize)
+                );
+                w.def_fn(&sig, |w| {
+                    w.lazy_static_decl_get(
+                        "descriptor",
+                        &format!(
+                            "{}::reflect::EnumDescriptor",
+                            protobuf_crate_path(&self.customize)
+                        ),
+                        |w| {
+                            let ref type_name = self.type_name;
+                            w.write_line(&format!(
+                                "{}::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())",
+                                protobuf_crate_path(&self.customize),
+                                type_name));
+                        });
                 });
             }
         });
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
-                |w| w.write_line("::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())"),
+        w.impl_for_block(
+            &format!(
+                "{}::reflect::ProtobufValue",
+                protobuf_crate_path(&self.customize)
+            ),
+            &format!("{}", self.type_name),
+            |w| {
+                let sig = format!(
+                    "as_ref(&self) -> {}::reflect::ReflectValueRef",
+                    protobuf_crate_path(&self.customize)
+                );
+                w.def_fn(
+                    &sig,
+                    |w| {
+                    w.write_line(&format!(
+                        "{}::reflect::ReflectValueRef::Enum(self.descriptor())",
+                        protobuf_crate_path(&self.customize)
+                    ))
+                },
             )
         })
     }
