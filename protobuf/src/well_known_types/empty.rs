@@ -44,7 +44,7 @@ impl Empty {
     }
 }
 
-impl ::protobuf::Message for Empty {
+impl crate::Message for Empty {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -79,11 +79,11 @@ impl ::protobuf::Message for Empty {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -97,7 +97,7 @@ impl ::protobuf::Message for Empty {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -105,15 +105,15 @@ impl ::protobuf::Message for Empty {
         Empty::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let fields = ::std::vec::Vec::new();
-                ::protobuf::reflect::MessageDescriptor::new::<Empty>(
+                crate::reflect::MessageDescriptor::new::<Empty>(
                     "Empty",
                     fields,
                     file_descriptor_proto()
@@ -133,7 +133,7 @@ impl ::protobuf::Message for Empty {
     }
 }
 
-impl ::protobuf::Clear for Empty {
+impl crate::Clear for Empty {
     fn clear(&mut self) {
         self.unknown_fields.clear();
     }
@@ -141,13 +141,13 @@ impl ::protobuf::Clear for Empty {
 
 impl ::std::fmt::Debug for Empty {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Empty {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Empty {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

@@ -71,7 +71,7 @@ impl Struct {
     }
 }
 
-impl ::protobuf::Message for Struct {
+impl crate::Message for Struct {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -111,11 +111,11 @@ impl ::protobuf::Message for Struct {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -129,7 +129,7 @@ impl ::protobuf::Message for Struct {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -137,20 +137,20 @@ impl ::protobuf::Message for Struct {
         Struct::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(
+                fields.push(crate::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, crate::types::ProtobufTypeMessage<Value>>(
                     "fields",
                     |m: &Struct| { &m.fields },
                     |m: &mut Struct| { &mut m.fields },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Struct>(
+                crate::reflect::MessageDescriptor::new::<Struct>(
                     "Struct",
                     fields,
                     file_descriptor_proto()
@@ -170,7 +170,7 @@ impl ::protobuf::Message for Struct {
     }
 }
 
-impl ::protobuf::Clear for Struct {
+impl crate::Clear for Struct {
     fn clear(&mut self) {
         self.fields.clear();
         self.unknown_fields.clear();
@@ -179,13 +179,13 @@ impl ::protobuf::Clear for Struct {
 
 impl ::std::fmt::Debug for Struct {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Struct {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Struct {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -446,7 +446,7 @@ impl Value {
     }
 }
 
-impl ::protobuf::Message for Value {
+impl crate::Message for Value {
     fn is_initialized(&self) -> bool {
         if let Some(Value_oneof_kind::struct_value(ref v)) = self.kind {
             if !v.is_initialized() {
@@ -577,11 +577,11 @@ impl ::protobuf::Message for Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -595,7 +595,7 @@ impl ::protobuf::Message for Value {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -603,45 +603,45 @@ impl ::protobuf::Message for Value {
         Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_enum_accessor::<_, NullValue>(
+                fields.push(crate::reflect::accessor::make_singular_enum_accessor::<_, NullValue>(
                     "null_value",
                     Value::has_null_value,
                     Value::get_null_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_f64_accessor::<_>(
+                fields.push(crate::reflect::accessor::make_singular_f64_accessor::<_>(
                     "number_value",
                     Value::has_number_value,
                     Value::get_number_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor::<_>(
+                fields.push(crate::reflect::accessor::make_singular_string_accessor::<_>(
                     "string_value",
                     Value::has_string_value,
                     Value::get_string_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_bool_accessor::<_>(
+                fields.push(crate::reflect::accessor::make_singular_bool_accessor::<_>(
                     "bool_value",
                     Value::has_bool_value,
                     Value::get_bool_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, Struct>(
+                fields.push(crate::reflect::accessor::make_singular_message_accessor::<_, Struct>(
                     "struct_value",
                     Value::has_struct_value,
                     Value::get_struct_value,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, ListValue>(
+                fields.push(crate::reflect::accessor::make_singular_message_accessor::<_, ListValue>(
                     "list_value",
                     Value::has_list_value,
                     Value::get_list_value,
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Value>(
+                crate::reflect::MessageDescriptor::new::<Value>(
                     "Value",
                     fields,
                     file_descriptor_proto()
@@ -661,7 +661,7 @@ impl ::protobuf::Message for Value {
     }
 }
 
-impl ::protobuf::Clear for Value {
+impl crate::Clear for Value {
     fn clear(&mut self) {
         self.kind = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
@@ -675,13 +675,13 @@ impl ::protobuf::Clear for Value {
 
 impl ::std::fmt::Debug for Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Value {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -734,7 +734,7 @@ impl ListValue {
     }
 }
 
-impl ::protobuf::Message for ListValue {
+impl crate::Message for ListValue {
     fn is_initialized(&self) -> bool {
         for v in &self.values {
             if !v.is_initialized() {
@@ -786,11 +786,11 @@ impl ::protobuf::Message for ListValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -804,7 +804,7 @@ impl ::protobuf::Message for ListValue {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -812,20 +812,20 @@ impl ::protobuf::Message for ListValue {
         ListValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Value>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Value>>(
                     "values",
                     |m: &ListValue| { &m.values },
                     |m: &mut ListValue| { &mut m.values },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<ListValue>(
+                crate::reflect::MessageDescriptor::new::<ListValue>(
                     "ListValue",
                     fields,
                     file_descriptor_proto()
@@ -845,7 +845,7 @@ impl ::protobuf::Message for ListValue {
     }
 }
 
-impl ::protobuf::Clear for ListValue {
+impl crate::Clear for ListValue {
     fn clear(&mut self) {
         self.values.clear();
         self.unknown_fields.clear();
@@ -854,13 +854,13 @@ impl ::protobuf::Clear for ListValue {
 
 impl ::std::fmt::Debug for ListValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for ListValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for ListValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -870,7 +870,7 @@ pub enum NullValue {
     NULL_VALUE = 0,
 }
 
-impl ::protobuf::ProtobufEnum for NullValue {
+impl crate::ProtobufEnum for NullValue {
     fn value(&self) -> i32 {
         *self as i32
     }
@@ -889,14 +889,14 @@ impl ::protobuf::ProtobufEnum for NullValue {
         values
     }
 
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
+    fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+            ptr: 0 as *const crate::reflect::EnumDescriptor,
         };
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("NullValue", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new("NullValue", file_descriptor_proto())
             })
         }
     }
@@ -911,9 +911,9 @@ impl ::std::default::Default for NullValue {
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for NullValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+impl crate::reflect::ProtobufValue for NullValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Enum(self.descriptor())
     }
 }
 

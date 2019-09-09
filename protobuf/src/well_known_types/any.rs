@@ -99,7 +99,7 @@ impl Any {
     }
 }
 
-impl ::protobuf::Message for Any {
+impl crate::Message for Any {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -152,11 +152,11 @@ impl ::protobuf::Message for Any {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -170,7 +170,7 @@ impl ::protobuf::Message for Any {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -178,25 +178,25 @@ impl ::protobuf::Message for Any {
         Any::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "type_url",
                     |m: &Any| { &m.type_url },
                     |m: &mut Any| { &mut m.type_url },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
                     "value",
                     |m: &Any| { &m.value },
                     |m: &mut Any| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Any>(
+                crate::reflect::MessageDescriptor::new::<Any>(
                     "Any",
                     fields,
                     file_descriptor_proto()
@@ -216,7 +216,7 @@ impl ::protobuf::Message for Any {
     }
 }
 
-impl ::protobuf::Clear for Any {
+impl crate::Clear for Any {
     fn clear(&mut self) {
         self.type_url.clear();
         self.value.clear();
@@ -226,13 +226,13 @@ impl ::protobuf::Clear for Any {
 
 impl ::std::fmt::Debug for Any {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Any {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Any {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

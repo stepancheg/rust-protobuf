@@ -77,7 +77,7 @@ impl Timestamp {
     }
 }
 
-impl ::protobuf::Message for Timestamp {
+impl crate::Message for Timestamp {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -138,11 +138,11 @@ impl ::protobuf::Message for Timestamp {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -156,7 +156,7 @@ impl ::protobuf::Message for Timestamp {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -164,25 +164,25 @@ impl ::protobuf::Message for Timestamp {
         Timestamp::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "seconds",
                     |m: &Timestamp| { &m.seconds },
                     |m: &mut Timestamp| { &mut m.seconds },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "nanos",
                     |m: &Timestamp| { &m.nanos },
                     |m: &mut Timestamp| { &mut m.nanos },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Timestamp>(
+                crate::reflect::MessageDescriptor::new::<Timestamp>(
                     "Timestamp",
                     fields,
                     file_descriptor_proto()
@@ -202,7 +202,7 @@ impl ::protobuf::Message for Timestamp {
     }
 }
 
-impl ::protobuf::Clear for Timestamp {
+impl crate::Clear for Timestamp {
     fn clear(&mut self) {
         self.seconds = 0;
         self.nanos = 0;
@@ -212,13 +212,13 @@ impl ::protobuf::Clear for Timestamp {
 
 impl ::std::fmt::Debug for Timestamp {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Timestamp {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Timestamp {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

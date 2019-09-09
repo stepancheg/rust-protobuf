@@ -72,7 +72,7 @@ impl SourceContext {
     }
 }
 
-impl ::protobuf::Message for SourceContext {
+impl crate::Message for SourceContext {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -116,11 +116,11 @@ impl ::protobuf::Message for SourceContext {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -134,7 +134,7 @@ impl ::protobuf::Message for SourceContext {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -142,20 +142,20 @@ impl ::protobuf::Message for SourceContext {
         SourceContext::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_name",
                     |m: &SourceContext| { &m.file_name },
                     |m: &mut SourceContext| { &mut m.file_name },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceContext>(
+                crate::reflect::MessageDescriptor::new::<SourceContext>(
                     "SourceContext",
                     fields,
                     file_descriptor_proto()
@@ -175,7 +175,7 @@ impl ::protobuf::Message for SourceContext {
     }
 }
 
-impl ::protobuf::Clear for SourceContext {
+impl crate::Clear for SourceContext {
     fn clear(&mut self) {
         self.file_name.clear();
         self.unknown_fields.clear();
@@ -184,13 +184,13 @@ impl ::protobuf::Clear for SourceContext {
 
 impl ::std::fmt::Debug for SourceContext {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for SourceContext {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for SourceContext {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

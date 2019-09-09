@@ -71,7 +71,7 @@ impl FieldMask {
     }
 }
 
-impl ::protobuf::Message for FieldMask {
+impl crate::Message for FieldMask {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -115,11 +115,11 @@ impl ::protobuf::Message for FieldMask {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -133,7 +133,7 @@ impl ::protobuf::Message for FieldMask {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -141,20 +141,20 @@ impl ::protobuf::Message for FieldMask {
         FieldMask::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "paths",
                     |m: &FieldMask| { &m.paths },
                     |m: &mut FieldMask| { &mut m.paths },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FieldMask>(
+                crate::reflect::MessageDescriptor::new::<FieldMask>(
                     "FieldMask",
                     fields,
                     file_descriptor_proto()
@@ -174,7 +174,7 @@ impl ::protobuf::Message for FieldMask {
     }
 }
 
-impl ::protobuf::Clear for FieldMask {
+impl crate::Clear for FieldMask {
     fn clear(&mut self) {
         self.paths.clear();
         self.unknown_fields.clear();
@@ -183,13 +183,13 @@ impl ::protobuf::Clear for FieldMask {
 
 impl ::std::fmt::Debug for FieldMask {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for FieldMask {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for FieldMask {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

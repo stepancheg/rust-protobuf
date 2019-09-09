@@ -227,7 +227,7 @@ impl Api {
     }
 }
 
-impl ::protobuf::Message for Api {
+impl crate::Message for Api {
     fn is_initialized(&self) -> bool {
         for v in &self.methods {
             if !v.is_initialized() {
@@ -357,11 +357,11 @@ impl ::protobuf::Message for Api {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -375,7 +375,7 @@ impl ::protobuf::Message for Api {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -383,50 +383,50 @@ impl ::protobuf::Message for Api {
         Api::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Api| { &m.name },
                     |m: &mut Api| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Method>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Method>>(
                     "methods",
                     |m: &Api| { &m.methods },
                     |m: &mut Api| { &mut m.methods },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
                     "options",
                     |m: &Api| { &m.options },
                     |m: &mut Api| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "version",
                     |m: &Api| { &m.version },
                     |m: &mut Api| { &mut m.version },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Api| { &m.source_context },
                     |m: &mut Api| { &mut m.source_context },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Mixin>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<Mixin>>(
                     "mixins",
                     |m: &Api| { &m.mixins },
                     |m: &mut Api| { &mut m.mixins },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
                     "syntax",
                     |m: &Api| { &m.syntax },
                     |m: &mut Api| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Api>(
+                crate::reflect::MessageDescriptor::new::<Api>(
                     "Api",
                     fields,
                     file_descriptor_proto()
@@ -446,7 +446,7 @@ impl ::protobuf::Message for Api {
     }
 }
 
-impl ::protobuf::Clear for Api {
+impl crate::Clear for Api {
     fn clear(&mut self) {
         self.name.clear();
         self.methods.clear();
@@ -461,13 +461,13 @@ impl ::protobuf::Clear for Api {
 
 impl ::std::fmt::Debug for Api {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Api {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Api {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -649,7 +649,7 @@ impl Method {
     }
 }
 
-impl ::protobuf::Message for Method {
+impl crate::Message for Method {
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -763,11 +763,11 @@ impl ::protobuf::Message for Method {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -781,7 +781,7 @@ impl ::protobuf::Message for Method {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -789,50 +789,50 @@ impl ::protobuf::Message for Method {
         Method::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Method| { &m.name },
                     |m: &mut Method| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "request_type_url",
                     |m: &Method| { &m.request_type_url },
                     |m: &mut Method| { &mut m.request_type_url },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "request_streaming",
                     |m: &Method| { &m.request_streaming },
                     |m: &mut Method| { &mut m.request_streaming },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "response_type_url",
                     |m: &Method| { &m.response_type_url },
                     |m: &mut Method| { &mut m.response_type_url },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "response_streaming",
                     |m: &Method| { &m.response_streaming },
                     |m: &mut Method| { &mut m.response_streaming },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
                     "options",
                     |m: &Method| { &m.options },
                     |m: &mut Method| { &mut m.options },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
                     "syntax",
                     |m: &Method| { &m.syntax },
                     |m: &mut Method| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Method>(
+                crate::reflect::MessageDescriptor::new::<Method>(
                     "Method",
                     fields,
                     file_descriptor_proto()
@@ -852,7 +852,7 @@ impl ::protobuf::Message for Method {
     }
 }
 
-impl ::protobuf::Clear for Method {
+impl crate::Clear for Method {
     fn clear(&mut self) {
         self.name.clear();
         self.request_type_url.clear();
@@ -867,13 +867,13 @@ impl ::protobuf::Clear for Method {
 
 impl ::std::fmt::Debug for Method {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Method {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Method {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -954,7 +954,7 @@ impl Mixin {
     }
 }
 
-impl ::protobuf::Message for Mixin {
+impl crate::Message for Mixin {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1007,11 +1007,11 @@ impl ::protobuf::Message for Mixin {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -1025,7 +1025,7 @@ impl ::protobuf::Message for Mixin {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1033,25 +1033,25 @@ impl ::protobuf::Message for Mixin {
         Mixin::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &Mixin| { &m.name },
                     |m: &mut Mixin| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "root",
                     |m: &Mixin| { &m.root },
                     |m: &mut Mixin| { &mut m.root },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Mixin>(
+                crate::reflect::MessageDescriptor::new::<Mixin>(
                     "Mixin",
                     fields,
                     file_descriptor_proto()
@@ -1071,7 +1071,7 @@ impl ::protobuf::Message for Mixin {
     }
 }
 
-impl ::protobuf::Clear for Mixin {
+impl crate::Clear for Mixin {
     fn clear(&mut self) {
         self.name.clear();
         self.root.clear();
@@ -1081,13 +1081,13 @@ impl ::protobuf::Clear for Mixin {
 
 impl ::std::fmt::Debug for Mixin {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Mixin {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Mixin {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

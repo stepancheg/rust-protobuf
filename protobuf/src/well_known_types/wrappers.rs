@@ -61,7 +61,7 @@ impl DoubleValue {
     }
 }
 
-impl ::protobuf::Message for DoubleValue {
+impl crate::Message for DoubleValue {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -109,11 +109,11 @@ impl ::protobuf::Message for DoubleValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -127,7 +127,7 @@ impl ::protobuf::Message for DoubleValue {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -135,20 +135,20 @@ impl ::protobuf::Message for DoubleValue {
         DoubleValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
                     "value",
                     |m: &DoubleValue| { &m.value },
                     |m: &mut DoubleValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<DoubleValue>(
+                crate::reflect::MessageDescriptor::new::<DoubleValue>(
                     "DoubleValue",
                     fields,
                     file_descriptor_proto()
@@ -168,7 +168,7 @@ impl ::protobuf::Message for DoubleValue {
     }
 }
 
-impl ::protobuf::Clear for DoubleValue {
+impl crate::Clear for DoubleValue {
     fn clear(&mut self) {
         self.value = 0.;
         self.unknown_fields.clear();
@@ -177,13 +177,13 @@ impl ::protobuf::Clear for DoubleValue {
 
 impl ::std::fmt::Debug for DoubleValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for DoubleValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for DoubleValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -226,7 +226,7 @@ impl FloatValue {
     }
 }
 
-impl ::protobuf::Message for FloatValue {
+impl crate::Message for FloatValue {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -274,11 +274,11 @@ impl ::protobuf::Message for FloatValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -292,7 +292,7 @@ impl ::protobuf::Message for FloatValue {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -300,20 +300,20 @@ impl ::protobuf::Message for FloatValue {
         FloatValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
                     "value",
                     |m: &FloatValue| { &m.value },
                     |m: &mut FloatValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FloatValue>(
+                crate::reflect::MessageDescriptor::new::<FloatValue>(
                     "FloatValue",
                     fields,
                     file_descriptor_proto()
@@ -333,7 +333,7 @@ impl ::protobuf::Message for FloatValue {
     }
 }
 
-impl ::protobuf::Clear for FloatValue {
+impl crate::Clear for FloatValue {
     fn clear(&mut self) {
         self.value = 0.;
         self.unknown_fields.clear();
@@ -342,13 +342,13 @@ impl ::protobuf::Clear for FloatValue {
 
 impl ::std::fmt::Debug for FloatValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for FloatValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for FloatValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -391,7 +391,7 @@ impl Int64Value {
     }
 }
 
-impl ::protobuf::Message for Int64Value {
+impl crate::Message for Int64Value {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -439,11 +439,11 @@ impl ::protobuf::Message for Int64Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -457,7 +457,7 @@ impl ::protobuf::Message for Int64Value {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -465,20 +465,20 @@ impl ::protobuf::Message for Int64Value {
         Int64Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
                     "value",
                     |m: &Int64Value| { &m.value },
                     |m: &mut Int64Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Int64Value>(
+                crate::reflect::MessageDescriptor::new::<Int64Value>(
                     "Int64Value",
                     fields,
                     file_descriptor_proto()
@@ -498,7 +498,7 @@ impl ::protobuf::Message for Int64Value {
     }
 }
 
-impl ::protobuf::Clear for Int64Value {
+impl crate::Clear for Int64Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -507,13 +507,13 @@ impl ::protobuf::Clear for Int64Value {
 
 impl ::std::fmt::Debug for Int64Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Int64Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Int64Value {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -556,7 +556,7 @@ impl UInt64Value {
     }
 }
 
-impl ::protobuf::Message for UInt64Value {
+impl crate::Message for UInt64Value {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -604,11 +604,11 @@ impl ::protobuf::Message for UInt64Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -622,7 +622,7 @@ impl ::protobuf::Message for UInt64Value {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -630,20 +630,20 @@ impl ::protobuf::Message for UInt64Value {
         UInt64Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "value",
                     |m: &UInt64Value| { &m.value },
                     |m: &mut UInt64Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<UInt64Value>(
+                crate::reflect::MessageDescriptor::new::<UInt64Value>(
                     "UInt64Value",
                     fields,
                     file_descriptor_proto()
@@ -663,7 +663,7 @@ impl ::protobuf::Message for UInt64Value {
     }
 }
 
-impl ::protobuf::Clear for UInt64Value {
+impl crate::Clear for UInt64Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -672,13 +672,13 @@ impl ::protobuf::Clear for UInt64Value {
 
 impl ::std::fmt::Debug for UInt64Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for UInt64Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for UInt64Value {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -721,7 +721,7 @@ impl Int32Value {
     }
 }
 
-impl ::protobuf::Message for Int32Value {
+impl crate::Message for Int32Value {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -769,11 +769,11 @@ impl ::protobuf::Message for Int32Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -787,7 +787,7 @@ impl ::protobuf::Message for Int32Value {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -795,20 +795,20 @@ impl ::protobuf::Message for Int32Value {
         Int32Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
                     "value",
                     |m: &Int32Value| { &m.value },
                     |m: &mut Int32Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Int32Value>(
+                crate::reflect::MessageDescriptor::new::<Int32Value>(
                     "Int32Value",
                     fields,
                     file_descriptor_proto()
@@ -828,7 +828,7 @@ impl ::protobuf::Message for Int32Value {
     }
 }
 
-impl ::protobuf::Clear for Int32Value {
+impl crate::Clear for Int32Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -837,13 +837,13 @@ impl ::protobuf::Clear for Int32Value {
 
 impl ::std::fmt::Debug for Int32Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for Int32Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for Int32Value {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -886,7 +886,7 @@ impl UInt32Value {
     }
 }
 
-impl ::protobuf::Message for UInt32Value {
+impl crate::Message for UInt32Value {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -934,11 +934,11 @@ impl ::protobuf::Message for UInt32Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -952,7 +952,7 @@ impl ::protobuf::Message for UInt32Value {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -960,20 +960,20 @@ impl ::protobuf::Message for UInt32Value {
         UInt32Value::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
                     "value",
                     |m: &UInt32Value| { &m.value },
                     |m: &mut UInt32Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<UInt32Value>(
+                crate::reflect::MessageDescriptor::new::<UInt32Value>(
                     "UInt32Value",
                     fields,
                     file_descriptor_proto()
@@ -993,7 +993,7 @@ impl ::protobuf::Message for UInt32Value {
     }
 }
 
-impl ::protobuf::Clear for UInt32Value {
+impl crate::Clear for UInt32Value {
     fn clear(&mut self) {
         self.value = 0;
         self.unknown_fields.clear();
@@ -1002,13 +1002,13 @@ impl ::protobuf::Clear for UInt32Value {
 
 impl ::std::fmt::Debug for UInt32Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for UInt32Value {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for UInt32Value {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -1051,7 +1051,7 @@ impl BoolValue {
     }
 }
 
-impl ::protobuf::Message for BoolValue {
+impl crate::Message for BoolValue {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1099,11 +1099,11 @@ impl ::protobuf::Message for BoolValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -1117,7 +1117,7 @@ impl ::protobuf::Message for BoolValue {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1125,20 +1125,20 @@ impl ::protobuf::Message for BoolValue {
         BoolValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                     "value",
                     |m: &BoolValue| { &m.value },
                     |m: &mut BoolValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<BoolValue>(
+                crate::reflect::MessageDescriptor::new::<BoolValue>(
                     "BoolValue",
                     fields,
                     file_descriptor_proto()
@@ -1158,7 +1158,7 @@ impl ::protobuf::Message for BoolValue {
     }
 }
 
-impl ::protobuf::Clear for BoolValue {
+impl crate::Clear for BoolValue {
     fn clear(&mut self) {
         self.value = false;
         self.unknown_fields.clear();
@@ -1167,13 +1167,13 @@ impl ::protobuf::Clear for BoolValue {
 
 impl ::std::fmt::Debug for BoolValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for BoolValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for BoolValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -1227,7 +1227,7 @@ impl StringValue {
     }
 }
 
-impl ::protobuf::Message for StringValue {
+impl crate::Message for StringValue {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1271,11 +1271,11 @@ impl ::protobuf::Message for StringValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -1289,7 +1289,7 @@ impl ::protobuf::Message for StringValue {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1297,20 +1297,20 @@ impl ::protobuf::Message for StringValue {
         StringValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "value",
                     |m: &StringValue| { &m.value },
                     |m: &mut StringValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<StringValue>(
+                crate::reflect::MessageDescriptor::new::<StringValue>(
                     "StringValue",
                     fields,
                     file_descriptor_proto()
@@ -1330,7 +1330,7 @@ impl ::protobuf::Message for StringValue {
     }
 }
 
-impl ::protobuf::Clear for StringValue {
+impl crate::Clear for StringValue {
     fn clear(&mut self) {
         self.value.clear();
         self.unknown_fields.clear();
@@ -1339,13 +1339,13 @@ impl ::protobuf::Clear for StringValue {
 
 impl ::std::fmt::Debug for StringValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for StringValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for StringValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -1399,7 +1399,7 @@ impl BytesValue {
     }
 }
 
-impl ::protobuf::Message for BytesValue {
+impl crate::Message for BytesValue {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1443,11 +1443,11 @@ impl ::protobuf::Message for BytesValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -1461,7 +1461,7 @@ impl ::protobuf::Message for BytesValue {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1469,20 +1469,20 @@ impl ::protobuf::Message for BytesValue {
         BytesValue::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
                     "value",
                     |m: &BytesValue| { &m.value },
                     |m: &mut BytesValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<BytesValue>(
+                crate::reflect::MessageDescriptor::new::<BytesValue>(
                     "BytesValue",
                     fields,
                     file_descriptor_proto()
@@ -1502,7 +1502,7 @@ impl ::protobuf::Message for BytesValue {
     }
 }
 
-impl ::protobuf::Clear for BytesValue {
+impl crate::Clear for BytesValue {
     fn clear(&mut self) {
         self.value.clear();
         self.unknown_fields.clear();
@@ -1511,13 +1511,13 @@ impl ::protobuf::Clear for BytesValue {
 
 impl ::std::fmt::Debug for BytesValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for BytesValue {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for BytesValue {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 

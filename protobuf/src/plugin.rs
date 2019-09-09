@@ -134,7 +134,7 @@ impl CodeGeneratorRequest {
     }
 }
 
-impl ::protobuf::Message for CodeGeneratorRequest {
+impl crate::Message for CodeGeneratorRequest {
     fn is_initialized(&self) -> bool {
         for v in &self.proto_file {
             if !v.is_initialized() {
@@ -204,11 +204,11 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -222,7 +222,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -230,30 +230,30 @@ impl ::protobuf::Message for CodeGeneratorRequest {
         CodeGeneratorRequest::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "file_to_generate",
                     |m: &CodeGeneratorRequest| { &m.file_to_generate },
                     |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "parameter",
                     |m: &CodeGeneratorRequest| { &m.parameter },
                     |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<::protobuf::descriptor::FileDescriptorProto>>(
                     "proto_file",
                     |m: &CodeGeneratorRequest| { &m.proto_file },
                     |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
+                crate::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
                     "CodeGeneratorRequest",
                     fields,
                     file_descriptor_proto()
@@ -273,7 +273,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 }
 
-impl ::protobuf::Clear for CodeGeneratorRequest {
+impl crate::Clear for CodeGeneratorRequest {
     fn clear(&mut self) {
         self.file_to_generate.clear();
         self.parameter.clear();
@@ -284,13 +284,13 @@ impl ::protobuf::Clear for CodeGeneratorRequest {
 
 impl ::std::fmt::Debug for CodeGeneratorRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -380,7 +380,7 @@ impl CodeGeneratorResponse {
     }
 }
 
-impl ::protobuf::Message for CodeGeneratorResponse {
+impl crate::Message for CodeGeneratorResponse {
     fn is_initialized(&self) -> bool {
         for v in &self.file {
             if !v.is_initialized() {
@@ -441,11 +441,11 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -459,7 +459,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -467,25 +467,25 @@ impl ::protobuf::Message for CodeGeneratorResponse {
         CodeGeneratorResponse::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "error",
                     |m: &CodeGeneratorResponse| { &m.error },
                     |m: &mut CodeGeneratorResponse| { &mut m.error },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
                     |m: &CodeGeneratorResponse| { &m.file },
                     |m: &mut CodeGeneratorResponse| { &mut m.file },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
+                crate::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
                     "CodeGeneratorResponse",
                     fields,
                     file_descriptor_proto()
@@ -505,7 +505,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 }
 
-impl ::protobuf::Clear for CodeGeneratorResponse {
+impl crate::Clear for CodeGeneratorResponse {
     fn clear(&mut self) {
         self.error.clear();
         self.file.clear();
@@ -515,13 +515,13 @@ impl ::protobuf::Clear for CodeGeneratorResponse {
 
 impl ::std::fmt::Debug for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
@@ -659,7 +659,7 @@ impl CodeGeneratorResponse_File {
     }
 }
 
-impl ::protobuf::Message for CodeGeneratorResponse_File {
+impl crate::Message for CodeGeneratorResponse_File {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -721,11 +721,11 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
     }
 
@@ -739,7 +739,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         self
     }
 
-    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -747,30 +747,30 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
         CodeGeneratorResponse_File::new()
     }
 
-    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<crate::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+            ptr: 0 as *const crate::reflect::MessageDescriptor,
         };
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "name",
                     |m: &CodeGeneratorResponse_File| { &m.name },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "insertion_point",
                     |m: &CodeGeneratorResponse_File| { &m.insertion_point },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "content",
                     |m: &CodeGeneratorResponse_File| { &m.content },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.content },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
+                crate::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
                     "CodeGeneratorResponse_File",
                     fields,
                     file_descriptor_proto()
@@ -790,7 +790,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 }
 
-impl ::protobuf::Clear for CodeGeneratorResponse_File {
+impl crate::Clear for CodeGeneratorResponse_File {
     fn clear(&mut self) {
         self.name.clear();
         self.insertion_point.clear();
@@ -801,13 +801,13 @@ impl ::protobuf::Clear for CodeGeneratorResponse_File {
 
 impl ::std::fmt::Debug for CodeGeneratorResponse_File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        ::protobuf::text_format::fmt(self, f)
+        crate::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for CodeGeneratorResponse_File {
-    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Message(self)
+impl crate::reflect::ProtobufValue for CodeGeneratorResponse_File {
+    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
+        crate::reflect::ReflectValueRef::Message(self)
     }
 }
 
