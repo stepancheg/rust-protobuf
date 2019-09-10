@@ -1635,9 +1635,10 @@ impl<'a> FieldGen<'a> {
             let self_field = self.self_field();
             let ref field_type_name = self.elem().rust_storage_type();
             w.write_line(&format!(
-                "{}.as_ref().unwrap_or_else(|| {}::default_instance())",
+                "{}.as_ref().unwrap_or_else(|| <{} as {}::Message>::default_instance())",
                 self_field,
-                field_type_name.to_code(&self.customize)
+                field_type_name.to_code(&self.customize),
+                protobuf_crate_path(&self.customize),
             ));
         } else {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
