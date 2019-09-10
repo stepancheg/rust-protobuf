@@ -323,3 +323,11 @@ fn test_reflect() {
         test_json_message(&*m);
     }
 }
+
+#[test]
+fn test_use_json_name() {
+    let mut m = TestJsonName::new();
+    m.set_field_with_json_name(true);
+    let json = json::print_to_string(&m).unwrap();
+    assert_eq!("{\"Field With json_name\": true}", json);
+}

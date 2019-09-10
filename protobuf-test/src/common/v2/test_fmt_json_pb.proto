@@ -84,3 +84,7 @@ message TestIncludeDefaultValues {
         bool bbb = 4;
     }
 }
+
+message TestJsonName {
+    optional bool field_with_json_name = 1 [json_name = "Field With json_name"];
+}
