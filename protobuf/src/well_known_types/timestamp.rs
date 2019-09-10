@@ -19,9 +19,6 @@
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/timestamp.proto`
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Timestamp {

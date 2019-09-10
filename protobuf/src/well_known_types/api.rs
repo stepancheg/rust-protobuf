@@ -19,9 +19,6 @@
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/api.proto`
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Api {
@@ -157,7 +154,7 @@ impl Api {
 
 
     pub fn get_source_context(&self) -> &crate::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| crate::well_known_types::SourceContext::default_instance())
+        self.source_context.as_ref().unwrap_or_else(|| <crate::well_known_types::SourceContext as crate::Message>::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();

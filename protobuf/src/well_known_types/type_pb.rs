@@ -19,9 +19,6 @@
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/type.proto`
 
-use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Type {
@@ -155,7 +152,7 @@ impl Type {
 
 
     pub fn get_source_context(&self) -> &crate::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| crate::well_known_types::SourceContext::default_instance())
+        self.source_context.as_ref().unwrap_or_else(|| <crate::well_known_types::SourceContext as crate::Message>::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -1211,7 +1208,7 @@ impl Enum {
 
 
     pub fn get_source_context(&self) -> &crate::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| crate::well_known_types::SourceContext::default_instance())
+        self.source_context.as_ref().unwrap_or_else(|| <crate::well_known_types::SourceContext as crate::Message>::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
@@ -1772,7 +1769,7 @@ impl Option {
 
 
     pub fn get_value(&self) -> &crate::well_known_types::Any {
-        self.value.as_ref().unwrap_or_else(|| crate::well_known_types::Any::default_instance())
+        self.value.as_ref().unwrap_or_else(|| <crate::well_known_types::Any as crate::Message>::default_instance())
     }
     pub fn clear_value(&mut self) {
         self.value.clear();
