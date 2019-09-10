@@ -118,11 +118,11 @@ impl MessageDescriptor {
                 .insert(f.get_name().to_owned(), i)
                 .is_none());
 
-            let json_name = json::json_name(f.get_name());
-
-            if !f.get_json_name().is_empty() {
-                assert_eq!(json_name, f.get_json_name());
-            }
+            let json_name = if !f.get_json_name().is_empty() {
+                f.get_json_name().to_string()
+            } else {
+                json::json_name(f.get_name())
+            };
 
             if json_name != f.get_name() {
                 assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
