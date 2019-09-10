@@ -255,11 +255,11 @@ static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::File
     ptr: 0 as *const crate::descriptor::FileDescriptorProto,
 };
 
-fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
-    ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
+fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
+    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
-pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
+pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     unsafe {
         file_descriptor_proto_lazy.get(|| {
             parse_descriptor_proto()
