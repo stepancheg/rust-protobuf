@@ -347,7 +347,7 @@ impl crate::Message for Api {
             v.write_to_with_cached_sizes(os)?;
         };
         if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, self.syntax.value())?;
+            os.write_enum(7, crate::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -753,7 +753,7 @@ impl crate::Message for Method {
             v.write_to_with_cached_sizes(os)?;
         };
         if self.syntax != crate::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, self.syntax.value())?;
+            os.write_enum(7, crate::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())

@@ -303,7 +303,7 @@ impl crate::Message for Type {
             v.write_to_with_cached_sizes(os)?;
         }
         if self.syntax != Syntax::SYNTAX_PROTO2 {
-            os.write_enum(6, self.syntax.value())?;
+            os.write_enum(6, crate::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -764,10 +764,10 @@ impl crate::Message for Field {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if self.kind != Field_Kind::TYPE_UNKNOWN {
-            os.write_enum(1, self.kind.value())?;
+            os.write_enum(1, crate::ProtobufEnum::value(&self.kind))?;
         }
         if self.cardinality != Field_Cardinality::CARDINALITY_UNKNOWN {
-            os.write_enum(2, self.cardinality.value())?;
+            os.write_enum(2, crate::ProtobufEnum::value(&self.cardinality))?;
         }
         if self.number != 0 {
             os.write_int32(3, self.number)?;
@@ -1038,7 +1038,7 @@ impl ::std::default::Default for Field_Kind {
 
 impl crate::reflect::ProtobufValue for Field_Kind {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -1100,7 +1100,7 @@ impl ::std::default::Default for Field_Cardinality {
 
 impl crate::reflect::ProtobufValue for Field_Cardinality {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -1350,7 +1350,7 @@ impl crate::Message for Enum {
             v.write_to_with_cached_sizes(os)?;
         }
         if self.syntax != Syntax::SYNTAX_PROTO2 {
-            os.write_enum(5, self.syntax.value())?;
+            os.write_enum(5, crate::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -1999,7 +1999,7 @@ impl ::std::default::Default for Syntax {
 
 impl crate::reflect::ProtobufValue for Syntax {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 

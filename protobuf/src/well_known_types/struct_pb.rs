@@ -353,7 +353,7 @@ impl Value {
     pub fn get_struct_value(&self) -> &Struct {
         match self.kind {
             ::std::option::Option::Some(Value_oneof_kind::struct_value(ref v)) => v,
-            _ => Struct::default_instance(),
+            _ => <Struct as crate::Message>::default_instance(),
         }
     }
     pub fn clear_struct_value(&mut self) {
@@ -402,7 +402,7 @@ impl Value {
     pub fn get_list_value(&self) -> &ListValue {
         match self.kind {
             ::std::option::Option::Some(Value_oneof_kind::list_value(ref v)) => v,
-            _ => ListValue::default_instance(),
+            _ => <ListValue as crate::Message>::default_instance(),
         }
     }
     pub fn clear_list_value(&mut self) {
@@ -546,7 +546,7 @@ impl crate::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &Value_oneof_kind::null_value(v) => {
-                    os.write_enum(1, v.value())?;
+                    os.write_enum(1, crate::ProtobufEnum::value(&v))?;
                 },
                 &Value_oneof_kind::number_value(v) => {
                     os.write_double(2, v)?;
@@ -913,7 +913,7 @@ impl ::std::default::Default for NullValue {
 
 impl crate::reflect::ProtobufValue for NullValue {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 

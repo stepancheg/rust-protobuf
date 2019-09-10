@@ -2389,10 +2389,10 @@ impl crate::Message for FieldDescriptorProto {
             os.write_int32(3, v)?;
         }
         if let Some(v) = self.label {
-            os.write_enum(4, v.value())?;
+            os.write_enum(4, crate::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.field_type {
-            os.write_enum(5, v.value())?;
+            os.write_enum(5, crate::ProtobufEnum::value(&v))?;
         }
         if let Some(ref v) = self.type_name.as_ref() {
             os.write_string(6, &v)?;
@@ -2655,7 +2655,7 @@ impl ::std::default::Default for FieldDescriptorProto_Type {
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto_Type {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -2715,7 +2715,7 @@ impl ::std::default::Default for FieldDescriptorProto_Label {
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto_Label {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -4818,7 +4818,7 @@ impl crate::Message for FileOptions {
             os.write_bool(27, v)?;
         }
         if let Some(v) = self.optimize_for {
-            os.write_enum(9, v.value())?;
+            os.write_enum(9, crate::ProtobufEnum::value(&v))?;
         }
         if let Some(ref v) = self.go_package.as_ref() {
             os.write_string(11, &v)?;
@@ -5075,7 +5075,7 @@ impl ::std::default::Default for FileOptions_OptimizeMode {
 
 impl crate::reflect::ProtobufValue for FileOptions_OptimizeMode {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -5675,13 +5675,13 @@ impl crate::Message for FieldOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.ctype {
-            os.write_enum(1, v.value())?;
+            os.write_enum(1, crate::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.packed {
             os.write_bool(2, v)?;
         }
         if let Some(v) = self.jstype {
-            os.write_enum(6, v.value())?;
+            os.write_enum(6, crate::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.lazy {
             os.write_bool(5, v)?;
@@ -5874,7 +5874,7 @@ impl ::std::default::Default for FieldOptions_CType {
 
 impl crate::reflect::ProtobufValue for FieldOptions_CType {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -5933,7 +5933,7 @@ impl ::std::default::Default for FieldOptions_JSType {
 
 impl crate::reflect::ProtobufValue for FieldOptions_JSType {
     fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(self.descriptor())
+        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
     }
 }
 
