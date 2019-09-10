@@ -50,6 +50,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   `ReflectValueRef`](https://github.com/stepancheg/rust-protobuf/commit/0e6a2f4c50f07d2c6f8007abd469daa08bc09b9c)
 - [`Box<dyn Message>` now implements
   `Clone`](https://github.com/stepancheg/rust-protobuf/commit/08aedca14f6a4cf8bb85c3e82d2dae05cddf57b8)
+- Generated code is slightly cleaner now (does not use `use` statements)
 
 ## [2.8.1] - 2019-09-06
 
