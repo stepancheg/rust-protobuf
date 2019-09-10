@@ -3,6 +3,7 @@ use super::rust_types_values::*;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 use Customize;
+use inside::protobuf_crate_path;
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,
@@ -59,7 +60,11 @@ impl<'a> ExtGen<'a> {
         } else {
             "Optional"
         };
-        let field_type = format!("::protobuf::ext::ExtField{}", suffix);
+        let field_type = format!(
+            "{}::ext::ExtField{}",
+            protobuf_crate_path(&self.customize),
+            suffix,
+        );
         w.pub_const(
             &self.field.rust_name(),
             &format!(
