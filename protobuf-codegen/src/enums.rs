@@ -268,8 +268,9 @@ impl<'a> EnumGen<'a> {
                 );
                 w.def_fn(&sig, |w| {
                     w.write_line(&format!(
-                        "{}::reflect::ReflectValueRef::Enum(self.descriptor())",
-                        protobuf_crate_path(&self.customize)
+                        "{}::reflect::ReflectValueRef::Enum({}::ProtobufEnum::descriptor(self))",
+                        protobuf_crate_path(&self.customize),
+                        protobuf_crate_path(&self.customize),
                     ))
                 })
             },

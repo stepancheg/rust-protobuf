@@ -196,7 +196,11 @@ impl RustType {
             }
             RustType::Message(ref name) => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message() => match **m {
-                RustType::Message(ref name) => format!("{}::default_instance()", name),
+                RustType::Message(ref name) => format!(
+                    "<{} as {}::Message>::default_instance()",
+                    name,
+                    protobuf_crate_path(customize)
+                ),
                 _ => unreachable!(),
             },
             // Note: default value of enum type may not be equal to default value of field
@@ -340,9 +344,11 @@ impl RustType {
             {
                 return Ok(format!("&{}", v))
             }
-            (&RustType::Enum(..), &RustType::Int(true, 32)) => return Ok(format!("{}.value()", v)),
+            (&RustType::Enum(..), &RustType::Int(true, 32)) => {
+                return Ok(format!("{}::ProtobufEnum::value(&{})", protobuf_crate_path(customize), v))
+            },
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
-                return Ok(format!("{}.value()", v))
+                return Ok(format!("{}::ProtobufEnum::value({})", protobuf_crate_path(customize), v))
             }
             _ => (),
         };
