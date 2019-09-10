@@ -1,9 +1,9 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
+use inside::protobuf_crate_path;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 use Customize;
-use inside::protobuf_crate_path;
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,

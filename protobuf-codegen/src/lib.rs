@@ -102,14 +102,23 @@ fn write_file_descriptor_data(
     );
     w.write_line("");
     w.def_fn(
-        "parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto",
+        &format!(
+            "parse_descriptor_proto() -> {}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)
+        ),
         |w| {
-            w.write_line("::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()");
+            w.write_line(&format!(
+                "{}::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                protobuf_crate_path(customize)
+            ));
         },
     );
     w.write_line("");
     w.pub_fn(
-        "file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto",
+        &format!(
+            "file_descriptor_proto() -> &'static {}::descriptor::FileDescriptorProto",
+            protobuf_crate_path(customize)
+        ),
         |w| {
             w.unsafe_expr(|w| {
                 w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
