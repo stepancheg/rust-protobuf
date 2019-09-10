@@ -157,6 +157,7 @@ fn gen_file(
         w.write_line(&format!("//! Generated file from `{}`", file.get_name()));
 
         w.write_line("");
+        // TODO: use FQNs, do not import
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
         w.write_line("use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;");
         if customize.inside_protobuf != Some(true) {
