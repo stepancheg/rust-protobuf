@@ -189,18 +189,16 @@ impl<'a> Run<'a> {
 
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v.parsed).collect();
 
-        let descriptor =
-            convert::file_descriptor(protobuf_path, &parsed, &this_file_deps).map_err(
-                |e| {
-                    io::Error::new(
-                        io::ErrorKind::Other,
-                        WithFileError {
-                            file: format!("{}", fs_path.display()),
-                            error: e.into(),
-                        },
-                    )
-                },
-            )?;
+        let descriptor = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
+            .map_err(|e| {
+                io::Error::new(
+                    io::ErrorKind::Other,
+                    WithFileError {
+                        file: format!("{}", fs_path.display()),
+                        error: e.into(),
+                    },
+                )
+            })?;
 
         self.parsed_files.insert(
             protobuf_path.to_owned(),
@@ -258,7 +256,10 @@ pub struct ParsedAndTypechecked {
 }
 
 #[doc(hidden)]
-pub fn parse_and_typecheck(includes: &[PathBuf], input: &[PathBuf]) -> io::Result<ParsedAndTypechecked> {
+pub fn parse_and_typecheck(
+    includes: &[PathBuf],
+    input: &[PathBuf],
+) -> io::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: HashMap::new(),
         includes: includes,

@@ -889,7 +889,8 @@ impl<'a> Parser<'a> {
                 .map(|field| {
                     let extendee = extendee.clone();
                     Extension { extendee, field }
-                }).collect();
+                })
+                .collect();
 
             Ok(Some(extensions))
         } else {
@@ -938,7 +939,6 @@ impl<'a> Parser<'a> {
         }
 
         Ok(options)
-
     }
 
     // stream = "stream" streamName "(" messageType "," messageType ")"
