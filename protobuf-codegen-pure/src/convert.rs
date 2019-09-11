@@ -1,8 +1,8 @@
 //! Convert parser model to rust-protobuf model
 
 use std::iter;
-use std::path::Path;
 use std::mem;
+use std::path::Path;
 
 use crate::model;
 
@@ -11,12 +11,11 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::prelude::*;
 use protobuf::Message;
 
-use protobuf::text_format::lexer::StrLitDecodeError;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
 use crate::protobuf_codegen::ProtobufRelativePath;
-
+use protobuf::text_format::lexer::StrLitDecodeError;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -47,6 +46,17 @@ trait ProtobufOptions {
             None => Ok(None),
         }
     }
+
+    fn by_name_string(&self, name: &str) -> ConvertResult<Option<String>> {
+        match self.by_name(name) {
+            Some(model::ProtobufConstant::String(s)) => s
+                .decode_utf8()
+                .map(Some)
+                .map_err(ConvertError::StrLitDecodeError),
+            Some(_) => Err(ConvertError::WrongOptionType),
+            None => Ok(None),
+        }
+    }
 }
 
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
@@ -69,7 +79,9 @@ enum MessageOrEnum {
 impl MessageOrEnum {
     fn descriptor_type(&self) -> protobuf::descriptor::field_descriptor_proto::Type {
         match *self {
-            MessageOrEnum::Message => protobuf::descriptor::field_descriptor_proto::Type::TYPE_MESSAGE,
+            MessageOrEnum::Message => {
+                protobuf::descriptor::field_descriptor_proto::Type::TYPE_MESSAGE
+            }
             MessageOrEnum::Enum => protobuf::descriptor::field_descriptor_proto::Type::TYPE_ENUM,
         }
     }
@@ -89,7 +101,9 @@ impl<'a> LookupScope<'a> {
     }
 
     fn find_message(&self, simple_name: &ProtobufIdent) -> Option<&model::Message> {
-        self.messages().into_iter().find(|m| m.name == simple_name.get())
+        self.messages()
+            .into_iter()
+            .find(|m| m.name == simple_name.get())
     }
 
     fn enums(&self) -> &[model::Enumeration] {
@@ -123,7 +137,8 @@ impl<'a> LookupScope<'a> {
                 } else {
                     None
                 }
-            }).next()
+            })
+            .next()
     }
 
     fn resolve_message_or_enum(
@@ -396,6 +411,10 @@ impl<'a> Resolver<'a> {
             output.set_oneof_index(oneof_index);
         }
 
+        if let Some(json_name) = input.options.as_slice().by_name_string("json_name")? {
+            output.set_json_name(json_name);
+        }
+
         Ok(output)
     }
 
@@ -423,7 +442,8 @@ impl<'a> Resolver<'a> {
         if !name.starts_with(".") {
             for p in path_in_file.self_and_parents() {
                 let relative_path_with_name = p.clone();
-                let relative_path_with_name = relative_path_with_name.append(&ProtobufRelativePath::from(name));
+                let relative_path_with_name =
+                    relative_path_with_name.append(&ProtobufRelativePath::from(name));
                 for file in self.current_file_package_files() {
                     if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
                         &ProtobufAbsolutePath::from_path_without_dot(&file.package),
@@ -531,7 +551,8 @@ impl<'a> Resolver<'a> {
                 (me.descriptor_type(), Some(name))
             }
             model::FieldType::Map(..) => {
-                let mut type_name = ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
+                let mut type_name =
+                    ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
                 type_name.push_relative(path_in_file);
                 type_name.push_simple(Resolver::map_entry_name_for_field_name(name));
                 (
@@ -634,50 +655,54 @@ impl<'a> Resolver<'a> {
                 }
             }
             // TODO: check overflow
-            &model::ProtobufConstant::U64(v) => {
-                match field_type {
-                    &model::FieldType::Fixed64
-                    | model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v)),
-                    &model::FieldType::Fixed32
-                    | model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
-                    &model::FieldType::Int64
-                    | &model::FieldType::Int32
-                    | &model::FieldType::Uint64
-                    | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
-                    &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
-                    &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
-                    _ => Err(()),
+            &model::ProtobufConstant::U64(v) => match field_type {
+                &model::FieldType::Fixed64 | model::FieldType::Sfixed64 => {
+                    Ok(protobuf::UnknownValue::Fixed64(v))
                 }
-            }
-            &model::ProtobufConstant::I64(v) => {
-                match field_type {
-                    &model::FieldType::Fixed64
-                    | model::FieldType::Sfixed64 => Ok(protobuf::UnknownValue::Fixed64(v as u64)),
-                    &model::FieldType::Fixed32
-                    | model::FieldType::Sfixed32 => Ok(protobuf::UnknownValue::Fixed32(v as u32)),
-                    &model::FieldType::Int64
-                    | &model::FieldType::Int32
-                    | &model::FieldType::Uint64
-                    | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v as u64)),
-                    &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
-                    &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
-                    _ => Err(()),
+                &model::FieldType::Fixed32 | model::FieldType::Sfixed32 => {
+                    Ok(protobuf::UnknownValue::Fixed32(v as u32))
                 }
-            }
-            &model::ProtobufConstant::F64(f) => {
-                match field_type {
-                    &model::FieldType::Float => Ok(protobuf::UnknownValue::Fixed32(unsafe { mem::transmute::<f32, u32>(f as f32) })),
-                    &model::FieldType::Double => Ok(protobuf::UnknownValue::Fixed64(unsafe { mem::transmute::<f64, u64>(f) })),
-                    _ => Err(()),
+                &model::FieldType::Int64
+                | &model::FieldType::Int32
+                | &model::FieldType::Uint64
+                | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
+                &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
+                &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
+                _ => Err(()),
+            },
+            &model::ProtobufConstant::I64(v) => match field_type {
+                &model::FieldType::Fixed64 | model::FieldType::Sfixed64 => {
+                    Ok(protobuf::UnknownValue::Fixed64(v as u64))
                 }
-            }
-            &model::ProtobufConstant::String(ref s) => {
-                match field_type {
-                    &model::FieldType::String => Ok(protobuf::UnknownValue::LengthDelimited(s.decode_utf8()?.into_bytes())),
-                    &model::FieldType::Bytes => Ok(protobuf::UnknownValue::LengthDelimited(s.decode_bytes()?)),
-                    _ => Err(()),
+                &model::FieldType::Fixed32 | model::FieldType::Sfixed32 => {
+                    Ok(protobuf::UnknownValue::Fixed32(v as u32))
                 }
-            }
+                &model::FieldType::Int64
+                | &model::FieldType::Int32
+                | &model::FieldType::Uint64
+                | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v as u64)),
+                &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
+                &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
+                _ => Err(()),
+            },
+            &model::ProtobufConstant::F64(f) => match field_type {
+                &model::FieldType::Float => Ok(protobuf::UnknownValue::Fixed32(unsafe {
+                    mem::transmute::<f32, u32>(f as f32)
+                })),
+                &model::FieldType::Double => Ok(protobuf::UnknownValue::Fixed64(unsafe {
+                    mem::transmute::<f64, u64>(f)
+                })),
+                _ => Err(()),
+            },
+            &model::ProtobufConstant::String(ref s) => match field_type {
+                &model::FieldType::String => Ok(protobuf::UnknownValue::LengthDelimited(
+                    s.decode_utf8()?.into_bytes(),
+                )),
+                &model::FieldType::Bytes => {
+                    Ok(protobuf::UnknownValue::LengthDelimited(s.decode_bytes()?))
+                }
+                _ => Err(()),
+            },
             _ => Err(()),
         };
 
@@ -705,7 +730,11 @@ impl<'a> Resolver<'a> {
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
         let relative_path = ProtobufRelativePath::new("".to_owned());
         let mut field = self.field(&input.field, None, &relative_path)?;
-        field.set_extendee(self.resolve_message_or_enum(&input.extendee, &relative_path).0.path);
+        field.set_extendee(
+            self.resolve_message_or_enum(&input.extendee, &relative_path)
+                .0
+                .path,
+        );
         Ok(field)
     }
 }
@@ -719,9 +748,15 @@ fn syntax(input: model::Syntax) -> String {
 
 fn label(input: model::Rule) -> protobuf::descriptor::field_descriptor_proto::Label {
     match input {
-        model::Rule::Optional => protobuf::descriptor::field_descriptor_proto::Label::LABEL_OPTIONAL,
-        model::Rule::Required => protobuf::descriptor::field_descriptor_proto::Label::LABEL_REQUIRED,
-        model::Rule::Repeated => protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED,
+        model::Rule::Optional => {
+            protobuf::descriptor::field_descriptor_proto::Label::LABEL_OPTIONAL
+        }
+        model::Rule::Required => {
+            protobuf::descriptor::field_descriptor_proto::Label::LABEL_REQUIRED
+        }
+        model::Rule::Repeated => {
+            protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED
+        }
     }
 }
 
