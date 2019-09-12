@@ -1,7 +1,7 @@
 use crate::descriptor::{EnumDescriptorProto, EnumValueDescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_enum_by_rust_name;
-use std::collections::HashMap;
 use crate::ProtobufEnum;
+use std::collections::HashMap;
 
 /// Description for enum variant.
 ///

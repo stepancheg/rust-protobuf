@@ -1,11 +1,11 @@
+use crate::core::message_down_cast;
 use crate::descriptor::{DescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_message_by_rust_name;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::FieldDescriptor;
+use crate::Message;
 use std::collections::HashMap;
 use std::marker;
-use crate::Message;
-use crate::core::message_down_cast;
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;
@@ -113,12 +113,7 @@ impl MessageDescriptor {
         file: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        MessageDescriptor::new_non_generic(
-            rust_name,
-            fields,
-            file,
-            factory,
-        )
+        MessageDescriptor::new_non_generic(rust_name, fields, file, factory)
     }
 
     /// New empty message

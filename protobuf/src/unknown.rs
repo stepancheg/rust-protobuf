@@ -1,4 +1,7 @@
 use crate::clear::Clear;
+use crate::stream::wire_format;
+use crate::zigzag::encode_zig_zag_32;
+use crate::zigzag::encode_zig_zag_64;
 use std::collections::hash_map;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
@@ -6,9 +9,6 @@ use std::default::Default;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::slice;
-use crate::stream::wire_format;
-use crate::zigzag::encode_zig_zag_32;
-use crate::zigzag::encode_zig_zag_64;
 
 /// Unknown value.
 ///
