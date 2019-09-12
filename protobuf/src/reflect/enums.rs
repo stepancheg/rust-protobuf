@@ -2,13 +2,23 @@ use crate::descriptor::{EnumDescriptorProto, EnumValueDescriptorProto, FileDescr
 use crate::descriptorx::find_enum_by_rust_name;
 use crate::ProtobufEnum;
 use std::collections::HashMap;
+use std::fmt;
 
 /// Description for enum variant.
 ///
 /// Used in reflection.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
+}
+
+impl fmt::Debug for EnumValueDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("EnumValueDescriptor")
+            .field("proto", self.proto)
+            .field("value", &"...")
+            .finish()
+    }
 }
 
 impl Copy for EnumValueDescriptor {}
@@ -66,8 +76,8 @@ impl EnumDescriptor {
                 .iter()
                 .map(|v| EnumValueDescriptor { proto: v })
                 .collect(),
-            index_by_name: index_by_name,
-            index_by_number: index_by_number,
+            index_by_name,
+            index_by_number,
         }
     }
 
