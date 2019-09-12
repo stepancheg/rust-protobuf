@@ -3,8 +3,8 @@
 //! This crate can be seen as a rust transcription of the
 //! [descriptor.proto](https://github.com/google/protobuf/blob/master/src/google/protobuf/descriptor.proto) file
 
-use parser::Parser;
 use parser::Loc;
+use parser::Parser;
 
 pub use parser::ParserError;
 pub use parser::ParserErrorWithLocation;
