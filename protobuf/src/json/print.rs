@@ -37,15 +37,19 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
-pub enum PrintError {
+enum PrintErrorInner {
     Fmt(fmt::Error),
     AnyPrintingIsNotImplemented,
     TimestampNegativeNanos,
 }
 
+/// Print to JSON error.
+#[derive(Debug)]
+pub struct PrintError(PrintErrorInner);
+
 impl From<fmt::Error> for PrintError {
     fn from(e: fmt::Error) -> Self {
-        PrintError::Fmt(e)
+        PrintError(PrintErrorInner::Fmt(e))
     }
 }
 
@@ -222,7 +226,7 @@ impl PrintableToJson for Duration {
 impl PrintableToJson for Timestamp {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
         if self.nanos < 0 {
-            return Err(PrintError::TimestampNegativeNanos);
+            return Err(PrintError(PrintErrorInner::TimestampNegativeNanos));
         }
         let tm_utc = TmUtc::from_protobuf_timestamp(self.seconds, self.nanos as u32);
         w.print_printable(&tm_utc.to_string())
@@ -237,7 +241,7 @@ impl PrintableToJson for FieldMask {
 
 impl PrintableToJson for Any {
     fn print_to_json(&self, _w: &mut Printer) -> PrintResult<()> {
-        Err(PrintError::AnyPrintingIsNotImplemented)
+        Err(PrintError(PrintErrorInner::AnyPrintingIsNotImplemented))
     }
 }
 

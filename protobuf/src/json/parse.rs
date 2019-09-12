@@ -50,7 +50,7 @@ use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
 
 #[derive(Debug)]
-pub enum ParseError {
+enum ParseErrorInner {
     TokenizerError(TokenizerError),
     UnknownFieldName(String),
     UnknownEnumVariantName(String),
@@ -69,33 +69,37 @@ pub enum ParseError {
     MessageNotInitialized,
 }
 
+/// JSON parse error.
+#[derive(Debug)]
+pub struct ParseError(ParseErrorInner);
+
 impl From<TokenizerError> for ParseError {
     fn from(e: TokenizerError) -> Self {
-        ParseError::TokenizerError(e)
+        ParseError(ParseErrorInner::TokenizerError(e))
     }
 }
 
 impl From<FromBase64Error> for ParseError {
     fn from(e: FromBase64Error) -> Self {
-        ParseError::FromBase64Error(e)
+        ParseError(ParseErrorInner::FromBase64Error(e))
     }
 }
 
 impl From<ParseIntError> for ParseError {
     fn from(e: ParseIntError) -> Self {
-        ParseError::ParseIntError(e)
+        ParseError(ParseErrorInner::ParseIntError(e))
     }
 }
 
 impl From<ParseFloatError> for ParseError {
     fn from(e: ParseFloatError) -> Self {
-        ParseError::ParseFloatError(e)
+        ParseError(ParseErrorInner::ParseFloatError(e))
     }
 }
 
 impl From<rfc_3339::Rfc3339ParseError> for ParseError {
     fn from(e: rfc_3339::Rfc3339ParseError) -> Self {
-        ParseError::Rfc3339(e)
+        ParseError(ParseErrorInner::Rfc3339(e))
     }
 }
 
@@ -227,7 +231,7 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.next_ident_if_eq("false")? {
             Ok(false)
         } else {
-            Err(ParseError::ExpectingBool)
+            Err(ParseError(ParseErrorInner::ExpectingBool))
         }
     }
 
@@ -237,7 +241,7 @@ impl<'a> Parser<'a> {
         } else if s == "false" {
             Ok(false)
         } else {
-            Err(ParseError::ExpectingBool)
+            Err(ParseError(ParseErrorInner::ExpectingBool))
         }
     }
 
@@ -255,7 +259,7 @@ impl<'a> Parser<'a> {
             let v = self.read_string()?;
             self.parse_number(&v)
         } else {
-            Err(ParseError::ExpectingNumber)
+            Err(ParseError(ParseErrorInner::ExpectingNumber))
         }
     }
 
@@ -320,7 +324,8 @@ impl<'a> Parser<'a> {
             r.push(
                 lexer
                     .next_json_char_value()
-                    .map_err(ParseError::IncorrectStrLit)?,
+                    .map_err(ParseErrorInner::IncorrectStrLit)
+                    .map_err(ParseError)?,
             );
         }
         Ok(r)
@@ -351,10 +356,12 @@ impl<'a> Parser<'a> {
             match descriptor.value_by_number(number) {
                 Some(v) => Ok(v),
                 // TODO: EnumValueOrUnknown
-                None => Err(ParseError::UnknownEnumVariantNumber(number)),
+                None => Err(ParseError(ParseErrorInner::UnknownEnumVariantNumber(
+                    number,
+                ))),
             }
         } else {
-            Err(ParseError::ExpectingStrOrInt)
+            Err(ParseError(ParseErrorInner::ExpectingStrOrInt))
         }
     }
 
@@ -366,7 +373,7 @@ impl<'a> Parser<'a> {
         // TODO: can map key be int
         match descriptor.value_by_name(&name) {
             Some(v) => Ok(v),
-            None => Err(ParseError::UnknownEnumVariantName(name)),
+            None => Err(ParseError(ParseErrorInner::UnknownEnumVariantName(name))),
         }
     }
 
@@ -558,7 +565,7 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.lookahead_is_symbol('{')? {
             self.read_map(|_, _| Ok(()), |s, ()| s.skip_json_value())?;
         } else {
-            return Err(ParseError::UnexpectedToken);
+            return Err(ParseError(ParseErrorInner::UnexpectedToken));
         }
         Ok(())
     }
@@ -662,7 +669,7 @@ impl<'a> Parser<'a> {
                     self.tokenizer.next_symbol_expect_eq(':')?;
                     self.skip_json_value()?;
                 }
-                None => return Err(ParseError::UnknownFieldName(field_name)),
+                None => return Err(ParseError(ParseErrorInner::UnknownFieldName(field_name))),
             };
         }
         Ok(())
@@ -680,20 +687,20 @@ impl<'a> Parser<'a> {
             } else {
                 match s.parse() {
                     Ok(n) => Ok((n, s.len() as u32)),
-                    Err(_) => Err(ParseError::IncorrectDuration),
+                    Err(_) => Err(ParseError(ParseErrorInner::IncorrectDuration)),
                 }
             }
         }
 
         let minus = lexer.next_char_if_eq('-');
         let seconds = match next_dec(&mut lexer)? {
-            (_, 0) => return Err(ParseError::IncorrectDuration),
+            (_, 0) => return Err(ParseError(ParseErrorInner::IncorrectDuration)),
             (s, _) => s,
         };
         let nanos = if lexer.next_char_if_eq('.') {
             let (mut a, mut b) = next_dec(&mut lexer)?;
             if b > 9 {
-                return Err(ParseError::IncorrectDuration);
+                return Err(ParseError(ParseErrorInner::IncorrectDuration));
             }
             while b != 9 {
                 b += 1;
@@ -701,7 +708,7 @@ impl<'a> Parser<'a> {
             }
 
             if a > 999_999_999 {
-                return Err(ParseError::IncorrectDuration);
+                return Err(ParseError(ParseErrorInner::IncorrectDuration));
             }
 
             a
@@ -711,11 +718,11 @@ impl<'a> Parser<'a> {
 
         // The suffix "s" is required
         if !lexer.next_char_if_eq('s') {
-            return Err(ParseError::IncorrectDuration);
+            return Err(ParseError(ParseErrorInner::IncorrectDuration));
         }
 
         if !lexer.eof() {
-            return Err(ParseError::IncorrectDuration);
+            return Err(ParseError(ParseErrorInner::IncorrectDuration));
         }
 
         if minus {
@@ -772,13 +779,13 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.lookahead_is_symbol('{')? {
             value.kind = Some(value::Kind::struct_value(self.read_wk_struct()?));
         } else {
-            return Err(ParseError::UnexpectedToken);
+            return Err(ParseError(ParseErrorInner::UnexpectedToken));
         }
         Ok(())
     }
 
     fn merge_wk_any(&mut self, _value: &mut Any) -> ParseResult<()> {
-        Err(ParseError::AnyParsingIsNotImplemented)
+        Err(ParseError(ParseErrorInner::AnyParsingIsNotImplemented))
     }
 
     fn read_wk_value(&mut self) -> ParseResult<Value> {
@@ -836,7 +843,7 @@ pub fn parse_dynamic_from_str_with_options(
     merge_from_str_with_options(&mut *m, json, parse_options)?;
     if let Err(_) = m.check_initialized() {
         return Err(ParseErrorWithLoc {
-            error: ParseError::MessageNotInitialized,
+            error: ParseError(ParseErrorInner::MessageNotInitialized),
             loc: Loc::start(),
         });
     }
