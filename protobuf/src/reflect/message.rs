@@ -12,8 +12,6 @@ use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::reflect_deep_eq::ReflectDeepEq;
 use crate::reflect::FieldDescriptor;
 
-use crate::json;
-
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;
     fn default_instance(&self) -> &dyn Message;
@@ -111,24 +109,32 @@ impl MessageDescriptor {
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.field.iter().enumerate() {
-            assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
-            assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
+
+        let fields: Vec<_> = fields
+            .into_iter()
+            .map(|f| {
+                let proto = *field_proto_by_name.get(f.name).unwrap();
+                FieldDescriptor::new(f, proto)
+            })
+            .collect();
+
+        for (i, f) in fields.iter().enumerate() {
+            assert!(index_by_number
+                .insert(f.proto().get_number() as u32, i)
+                .is_none());
+            assert!(index_by_name
+                .insert(f.proto().get_name().to_owned(), i)
+                .is_none());
             assert!(index_by_name_or_json_name
-                .insert(f.get_name().to_owned(), i)
+                .insert(f.proto().get_name().to_owned(), i)
                 .is_none());
 
-            let json_name = json::json_name(f.get_name());
+            let json_name = f.json_name().to_owned();
 
-            if !f.get_json_name().is_empty() {
-                assert_eq!(json_name, f.get_json_name());
-            }
-
-            if json_name != f.get_name() {
+            if json_name != f.proto().get_name() {
                 assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
             }
         }
-
         MessageDescriptor {
             full_name: MessageDescriptor::compute_full_name(
                 file_descriptor_proto.get_package(),
@@ -137,13 +143,7 @@ impl MessageDescriptor {
             ),
             proto,
             factory,
-            fields: fields
-                .into_iter()
-                .map(|f| {
-                    let proto = *field_proto_by_name.get(f.name).unwrap();
-                    FieldDescriptor::new(f, proto)
-                })
-                .collect(),
+            fields,
             index_by_name,
             index_by_name_or_json_name,
             index_by_number,

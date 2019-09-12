@@ -79,11 +79,16 @@ impl FieldDescriptor {
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), accessor.name);
+        let json_name = if !proto.get_json_name().is_empty() {
+            proto.get_json_name().to_string()
+        } else {
+            json_name(proto.get_name())
+        };
         FieldDescriptor {
             proto,
             accessor,
             // probably could be lazy-init
-            json_name: json_name(proto.get_name()),
+            json_name,
         }
     }
 
