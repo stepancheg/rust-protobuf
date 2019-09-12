@@ -40,6 +40,17 @@ trait ProtobufOptions {
             None => Ok(None),
         }
     }
+
+    fn by_name_string(&self, name: &str) -> ConvertResult<Option<String>> {
+        match self.by_name(name) {
+            Some(model::ProtobufConstant::String(s)) => s
+                .decode_utf8()
+                .map(Some)
+                .map_err(ConvertError::StrLitDecodeError),
+            Some(_) => Err(ConvertError::WrongOptionType),
+            None => Ok(None),
+        }
+    }
 }
 
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
@@ -623,6 +634,10 @@ impl<'a> Resolver<'a> {
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
+        }
+
+        if let Some(json_name) = input.options.as_slice().by_name_string("json_name")? {
+            output.set_json_name(json_name);
         }
 
         Ok(output)
