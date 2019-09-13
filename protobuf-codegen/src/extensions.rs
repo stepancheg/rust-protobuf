@@ -88,13 +88,14 @@ pub(crate) fn write_extensions(
     w: &mut CodeWriter,
     customize: &Customize,
 ) {
-    if file.get_extension().is_empty() {
+    if file.extension.is_empty() {
         return;
     }
 
     w.write_line("");
+    w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
-        for field in file.get_extension() {
+        for field in &file.extension {
             if field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
                 continue;
             }
