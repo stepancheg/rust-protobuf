@@ -57,9 +57,12 @@ impl EnumDescriptor {
         E::enum_descriptor_static()
     }
 
-    /// Create new enum descriptor.
+    /// Construct `EnumDescriptor` given enum name and `FileDescriptorProto`.
     ///
-    /// This function is called by generated code, and rarely needed otherwise.
+    /// This function is called from generated code, and should rarely be called directly.
+    ///
+    /// This function is not a part of public API.
+    #[doc(hidden)]
     pub fn new(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
