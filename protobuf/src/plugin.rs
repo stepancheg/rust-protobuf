@@ -23,9 +23,9 @@
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
-    file_to_generate: crate::RepeatedField<::std::string::String>,
+    pub file_to_generate: crate::RepeatedField<::std::string::String>,
     parameter: crate::SingularField<::std::string::String>,
-    proto_file: crate::RepeatedField<crate::descriptor::FileDescriptorProto>,
+    pub proto_file: crate::RepeatedField<crate::descriptor::FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -296,7 +296,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
 pub struct CodeGeneratorResponse {
     // message fields
     error: crate::SingularField<::std::string::String>,
-    file: crate::RepeatedField<CodeGeneratorResponse_File>,
+    pub file: crate::RepeatedField<CodeGeneratorResponse_File>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,

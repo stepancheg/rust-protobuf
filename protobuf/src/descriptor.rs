@@ -23,7 +23,7 @@
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FileDescriptorSet {
     // message fields
-    file: crate::RepeatedField<FileDescriptorProto>,
+    pub file: crate::RepeatedField<FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -204,15 +204,15 @@ pub struct FileDescriptorProto {
     // message fields
     name: crate::SingularField<::std::string::String>,
     package: crate::SingularField<::std::string::String>,
-    dependency: crate::RepeatedField<::std::string::String>,
-    public_dependency: ::std::vec::Vec<i32>,
-    weak_dependency: ::std::vec::Vec<i32>,
-    message_type: crate::RepeatedField<DescriptorProto>,
-    enum_type: crate::RepeatedField<EnumDescriptorProto>,
-    service: crate::RepeatedField<ServiceDescriptorProto>,
-    extension: crate::RepeatedField<FieldDescriptorProto>,
-    options: crate::SingularPtrField<FileOptions>,
-    source_code_info: crate::SingularPtrField<SourceCodeInfo>,
+    pub dependency: crate::RepeatedField<::std::string::String>,
+    pub public_dependency: ::std::vec::Vec<i32>,
+    pub weak_dependency: ::std::vec::Vec<i32>,
+    pub message_type: crate::RepeatedField<DescriptorProto>,
+    pub enum_type: crate::RepeatedField<EnumDescriptorProto>,
+    pub service: crate::RepeatedField<ServiceDescriptorProto>,
+    pub extension: crate::RepeatedField<FieldDescriptorProto>,
+    pub options: crate::SingularPtrField<FileOptions>,
+    pub source_code_info: crate::SingularPtrField<SourceCodeInfo>,
     syntax: crate::SingularField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
@@ -922,15 +922,15 @@ impl crate::reflect::ProtobufValue for FileDescriptorProto {
 pub struct DescriptorProto {
     // message fields
     name: crate::SingularField<::std::string::String>,
-    field: crate::RepeatedField<FieldDescriptorProto>,
-    extension: crate::RepeatedField<FieldDescriptorProto>,
-    nested_type: crate::RepeatedField<DescriptorProto>,
-    enum_type: crate::RepeatedField<EnumDescriptorProto>,
-    extension_range: crate::RepeatedField<DescriptorProto_ExtensionRange>,
-    oneof_decl: crate::RepeatedField<OneofDescriptorProto>,
-    options: crate::SingularPtrField<MessageOptions>,
-    reserved_range: crate::RepeatedField<DescriptorProto_ReservedRange>,
-    reserved_name: crate::RepeatedField<::std::string::String>,
+    pub field: crate::RepeatedField<FieldDescriptorProto>,
+    pub extension: crate::RepeatedField<FieldDescriptorProto>,
+    pub nested_type: crate::RepeatedField<DescriptorProto>,
+    pub enum_type: crate::RepeatedField<EnumDescriptorProto>,
+    pub extension_range: crate::RepeatedField<DescriptorProto_ExtensionRange>,
+    pub oneof_decl: crate::RepeatedField<OneofDescriptorProto>,
+    pub options: crate::SingularPtrField<MessageOptions>,
+    pub reserved_range: crate::RepeatedField<DescriptorProto_ReservedRange>,
+    pub reserved_name: crate::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1969,7 +1969,7 @@ pub struct FieldDescriptorProto {
     default_value: crate::SingularField<::std::string::String>,
     oneof_index: ::std::option::Option<i32>,
     json_name: crate::SingularField<::std::string::String>,
-    options: crate::SingularPtrField<FieldOptions>,
+    pub options: crate::SingularPtrField<FieldOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2721,7 +2721,7 @@ impl crate::reflect::ProtobufValue for FieldDescriptorProto_Label {
 pub struct OneofDescriptorProto {
     // message fields
     name: crate::SingularField<::std::string::String>,
-    options: crate::SingularPtrField<OneofOptions>,
+    pub options: crate::SingularPtrField<OneofOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2960,8 +2960,8 @@ impl crate::reflect::ProtobufValue for OneofDescriptorProto {
 pub struct EnumDescriptorProto {
     // message fields
     name: crate::SingularField<::std::string::String>,
-    value: crate::RepeatedField<EnumValueDescriptorProto>,
-    options: crate::SingularPtrField<EnumOptions>,
+    pub value: crate::RepeatedField<EnumValueDescriptorProto>,
+    pub options: crate::SingularPtrField<EnumOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -3249,7 +3249,7 @@ pub struct EnumValueDescriptorProto {
     // message fields
     name: crate::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
-    options: crate::SingularPtrField<EnumValueOptions>,
+    pub options: crate::SingularPtrField<EnumValueOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -3526,8 +3526,8 @@ impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
 pub struct ServiceDescriptorProto {
     // message fields
     name: crate::SingularField<::std::string::String>,
-    method: crate::RepeatedField<MethodDescriptorProto>,
-    options: crate::SingularPtrField<ServiceOptions>,
+    pub method: crate::RepeatedField<MethodDescriptorProto>,
+    pub options: crate::SingularPtrField<ServiceOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -3816,7 +3816,7 @@ pub struct MethodDescriptorProto {
     name: crate::SingularField<::std::string::String>,
     input_type: crate::SingularField<::std::string::String>,
     output_type: crate::SingularField<::std::string::String>,
-    options: crate::SingularPtrField<MethodOptions>,
+    pub options: crate::SingularPtrField<MethodOptions>,
     client_streaming: ::std::option::Option<bool>,
     server_streaming: ::std::option::Option<bool>,
     // special fields
@@ -4248,7 +4248,7 @@ pub struct FileOptions {
     cc_enable_arenas: ::std::option::Option<bool>,
     objc_class_prefix: crate::SingularField<::std::string::String>,
     csharp_namespace: crate::SingularField<::std::string::String>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5084,7 +5084,7 @@ pub struct MessageOptions {
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     map_entry: ::std::option::Option<bool>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5421,7 +5421,7 @@ pub struct FieldOptions {
     lazy: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     weak: ::std::option::Option<bool>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5938,7 +5938,7 @@ impl crate::reflect::ProtobufValue for FieldOptions_JSType {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct OneofOptions {
     // message fields
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6119,7 +6119,7 @@ pub struct EnumOptions {
     // message fields
     allow_alias: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6375,7 +6375,7 @@ impl crate::reflect::ProtobufValue for EnumOptions {
 pub struct EnumValueOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6593,7 +6593,7 @@ impl crate::reflect::ProtobufValue for EnumValueOptions {
 pub struct ServiceOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6811,7 +6811,7 @@ impl crate::reflect::ProtobufValue for ServiceOptions {
 pub struct MethodOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -7028,7 +7028,7 @@ impl crate::reflect::ProtobufValue for MethodOptions {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct UninterpretedOption {
     // message fields
-    name: crate::RepeatedField<UninterpretedOption_NamePart>,
+    pub name: crate::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: crate::SingularField<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
     negative_int_value: ::std::option::Option<i64>,
@@ -7707,7 +7707,7 @@ impl crate::reflect::ProtobufValue for UninterpretedOption_NamePart {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
-    location: crate::RepeatedField<SourceCodeInfo_Location>,
+    pub location: crate::RepeatedField<SourceCodeInfo_Location>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -7886,11 +7886,11 @@ impl crate::reflect::ProtobufValue for SourceCodeInfo {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo_Location {
     // message fields
-    path: ::std::vec::Vec<i32>,
-    span: ::std::vec::Vec<i32>,
+    pub path: ::std::vec::Vec<i32>,
+    pub span: ::std::vec::Vec<i32>,
     leading_comments: crate::SingularField<::std::string::String>,
     trailing_comments: crate::SingularField<::std::string::String>,
-    leading_detached_comments: crate::RepeatedField<::std::string::String>,
+    pub leading_detached_comments: crate::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -8253,7 +8253,7 @@ impl crate::reflect::ProtobufValue for SourceCodeInfo_Location {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct GeneratedCodeInfo {
     // message fields
-    annotation: crate::RepeatedField<GeneratedCodeInfo_Annotation>,
+    pub annotation: crate::RepeatedField<GeneratedCodeInfo_Annotation>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -8432,7 +8432,7 @@ impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct GeneratedCodeInfo_Annotation {
     // message fields
-    path: ::std::vec::Vec<i32>,
+    pub path: ::std::vec::Vec<i32>,
     source_file: crate::SingularField<::std::string::String>,
     begin: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,
