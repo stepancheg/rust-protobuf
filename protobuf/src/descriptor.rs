@@ -2634,7 +2634,7 @@ impl crate::ProtobufEnum for FieldDescriptorProto_Type {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("FieldDescriptorProto_Type", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<FieldDescriptorProto_Type>("FieldDescriptorProto_Type", file_descriptor_proto())
             })
         }
     }
@@ -2694,7 +2694,7 @@ impl crate::ProtobufEnum for FieldDescriptorProto_Label {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("FieldDescriptorProto_Label", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<FieldDescriptorProto_Label>("FieldDescriptorProto_Label", file_descriptor_proto())
             })
         }
     }
@@ -5054,7 +5054,7 @@ impl crate::ProtobufEnum for FileOptions_OptimizeMode {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("FileOptions_OptimizeMode", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<FileOptions_OptimizeMode>("FileOptions_OptimizeMode", file_descriptor_proto())
             })
         }
     }
@@ -5854,7 +5854,7 @@ impl crate::ProtobufEnum for FieldOptions_CType {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("FieldOptions_CType", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<FieldOptions_CType>("FieldOptions_CType", file_descriptor_proto())
             })
         }
     }
@@ -5913,7 +5913,7 @@ impl crate::ProtobufEnum for FieldOptions_JSType {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("FieldOptions_JSType", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<FieldOptions_JSType>("FieldOptions_JSType", file_descriptor_proto())
             })
         }
     }

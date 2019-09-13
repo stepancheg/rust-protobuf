@@ -63,7 +63,7 @@ impl EnumDescriptor {
     ///
     /// This function is not a part of public API.
     #[doc(hidden)]
-    pub fn new(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
+    pub fn new<E: ProtobufEnum>(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();

@@ -243,9 +243,10 @@ impl<'a> EnumGen<'a> {
                             |w| {
                                 let ref type_name = self.type_name;
                                 w.write_line(&format!(
-                                "{}::reflect::EnumDescriptor::new(\"{}\", file_descriptor_proto())",
-                                protobuf_crate_path(&self.customize),
-                                type_name));
+                                    "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", file_descriptor_proto())",
+                                    protobuf_crate_path(&self.customize),
+                                    self.type_name,
+                                    type_name));
                             },
                         );
                     });

@@ -893,7 +893,7 @@ impl crate::ProtobufEnum for NullValue {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("NullValue", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<NullValue>("NullValue", file_descriptor_proto())
             })
         }
     }

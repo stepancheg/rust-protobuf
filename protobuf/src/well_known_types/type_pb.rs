@@ -1018,7 +1018,7 @@ impl crate::ProtobufEnum for Field_Kind {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("Field_Kind", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<Field_Kind>("Field_Kind", file_descriptor_proto())
             })
         }
     }
@@ -1080,7 +1080,7 @@ impl crate::ProtobufEnum for Field_Cardinality {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("Field_Cardinality", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<Field_Cardinality>("Field_Cardinality", file_descriptor_proto())
             })
         }
     }
@@ -1979,7 +1979,7 @@ impl crate::ProtobufEnum for Syntax {
         };
         unsafe {
             descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new("Syntax", file_descriptor_proto())
+                crate::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
             })
         }
     }
