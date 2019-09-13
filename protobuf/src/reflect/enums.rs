@@ -172,6 +172,9 @@ impl EnumDescriptor {
     /// Construct `EnumDescriptor` given enum name and `FileDescriptorProto`.
     ///
     /// This function is called from generated code, and should rarely be called directly.
+    ///
+    /// This function is not a part of public API.
+    #[doc(hidden)]
     pub fn new<E>(name_in_file: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
     where
         E: ProtobufEnum,
