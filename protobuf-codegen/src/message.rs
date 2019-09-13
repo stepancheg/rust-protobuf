@@ -293,12 +293,13 @@ impl<'a> MessageGen<'a> {
             protobuf_crate_path(&self.customize)
         );
         w.def_fn(&sig, |w| {
-            w.lazy_static_decl_get(
+            w.lazy_static_protobuf_path_decl_get(
                 "descriptor",
                 &format!(
                     "{}::reflect::MessageDescriptor",
                     protobuf_crate_path(&self.customize)
                 ),
+                protobuf_crate_path(&self.customize),
                 |w| {
                     let fields = self.fields_except_group();
                     if fields.is_empty() {
