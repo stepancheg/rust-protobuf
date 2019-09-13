@@ -21,6 +21,7 @@ use crate::reflect::ProtobufValue;
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
     protobuf_value: &'static dyn ProtobufValue,
+    enum_descriptor_static: fn() -> &'static EnumDescriptor,
     get_descriptor: &'static dyn GetEnumDescriptor,
 }
 
@@ -70,7 +71,7 @@ impl EnumValueDescriptor {
 
     /// Get descriptor of enum holding this value.
     pub fn enum_descriptor(&self) -> &EnumDescriptor {
-        self.get_descriptor.descriptor()
+        (self.enum_descriptor_static)()
     }
 
     /// Convert this value descriptor into proper enum object.
@@ -90,17 +91,12 @@ impl EnumValueDescriptor {
 }
 
 trait GetEnumDescriptor: Send + Sync + 'static {
-    fn descriptor(&self) -> &EnumDescriptor;
     unsafe fn copy_to(&self, value: i32, dest: *mut ());
 }
 
 struct GetDescriptorImpl<E: ProtobufEnum>(marker::PhantomData<E>);
 
 impl<E: ProtobufEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
-    fn descriptor(&self) -> &EnumDescriptor {
-        E::enum_descriptor_static()
-    }
-
     unsafe fn copy_to(&self, value: i32, dest: *mut ()) {
         let e = E::from_i32(value).expect("unknown value");
         (&e as *const E).copy_to(dest as *mut E, 1);
@@ -218,6 +214,7 @@ impl EnumDescriptor {
             .map(|(p, c)| EnumValueDescriptor {
                 proto: p,
                 protobuf_value: c,
+                enum_descriptor_static: E::enum_descriptor_static,
                 get_descriptor,
             })
             .collect();
