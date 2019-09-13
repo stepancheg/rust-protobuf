@@ -331,7 +331,7 @@ impl EnumDescriptor {
 
     #[cfg(not(rustc_nightly))]
     fn cast_to_protobuf_enum_or_unknown<E: 'static>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() == self.enum_or_unknown_type_id {
+        if TypeId::of::<E>() != self.enum_or_unknown_type_id {
             return None;
         }
 
