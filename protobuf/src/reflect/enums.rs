@@ -74,6 +74,16 @@ impl EnumValueDescriptor {
     }
 
     /// Convert this value descriptor into proper enum object.
+    ///
+    /// ```
+    /// # use protobuf::well_known_types::NullValue;
+    /// # use protobuf::ProtobufEnum;
+    /// # use protobuf::reflect::EnumValueDescriptor;
+    ///
+    /// let value: &EnumValueDescriptor = NullValue::NULL_VALUE.descriptor();
+    /// let null: Option<NullValue> = value.cast();
+    /// assert_eq!(Some(NullValue::NULL_VALUE), null);
+    /// ```
     pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
         self.enum_descriptor().cast_to_protobuf_enum(self.value())
     }
@@ -278,7 +288,7 @@ impl EnumDescriptor {
     /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
     pub(crate) fn cast<E: 'static>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() == self.type_id {
-            Some(self.cast_to_protobuf_enum(value))
+            Some(self.cast_to_protobuf_enum(value).unwrap())
         } else if TypeId::of::<E>() == self.enum_or_unknown_type_id {
             Some(self.cast_to_protobuf_enum_or_unknown(value))
         } else {
@@ -287,18 +297,22 @@ impl EnumDescriptor {
     }
 
     #[cfg(rustc_nightly)]
-    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> E {
-        <E as cast_impl::CastValueToProtobufEnum>::cast(value).unwrap()
+    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> Option<E> {
+        <E as cast_impl::CastValueToProtobufEnum>::cast(value)
     }
 
     #[cfg(not(rustc_nightly))]
-    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> E {
+    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> Option<E> {
+        if TypeId::of::<E>() != self.type_id {
+            return None;
+        }
+
         use std::mem;
         unsafe {
             let mut r = mem::uninitialized();
             self.get_descriptor
                 .copy_to(value, &mut r as *mut E as *mut ());
-            r
+            Some(r)
         }
     }
 
