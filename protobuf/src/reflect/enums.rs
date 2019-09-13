@@ -75,7 +75,10 @@ impl EnumDescriptor {
     ///
     /// This function is not a part of public API.
     #[doc(hidden)]
-    pub fn new<E: ProtobufEnum>(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
+    pub fn new<E: ProtobufEnum>(
+        rust_name: &'static str,
+        file: &'static FileDescriptorProto,
+    ) -> EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let (index_by_name, index_by_number) = EnumDescriptor::make_indices(proto.en);
         EnumDescriptor {
