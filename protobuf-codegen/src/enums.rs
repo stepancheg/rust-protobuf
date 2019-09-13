@@ -120,7 +120,7 @@ impl<'a> EnumGen<'a> {
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
-        self.write_struct(w);
+        self.write_enum(w);
         if self.allow_alias() {
             w.write_line("");
             self.write_impl_eq(w);
@@ -137,7 +137,7 @@ impl<'a> EnumGen<'a> {
         self.write_impl_value(w);
     }
 
-    fn write_struct(&self, w: &mut CodeWriter) {
+    fn write_enum(&self, w: &mut CodeWriter) {
         let mut derive = Vec::new();
         derive.push("Clone");
         if !self.allow_alias() {
