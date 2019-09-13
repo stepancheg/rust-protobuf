@@ -7,10 +7,10 @@ use super::customize::Customize;
 use super::enums::*;
 use super::field::*;
 use super::rust_types_values::*;
-use inside::protobuf_crate_path;
-use oneof::OneofGen;
-use oneof::OneofVariantGen;
-use serde;
+use crate::inside::protobuf_crate_path;
+use crate::oneof::OneofGen;
+use crate::oneof::OneofVariantGen;
+use crate::serde;
 
 /// Message info for codegen
 pub struct MessageGen<'a> {

@@ -11,11 +11,11 @@ use super::rust_types_values::*;
 
 use super::customize::customize_from_rustproto_for_field;
 use super::customize::Customize;
-use oneof::OneofField;
+use crate::oneof::OneofField;
 
-use float;
-use ident::RustIdent;
-use inside::protobuf_crate_path;
+use crate::float;
+use crate::ident::RustIdent;
+use crate::inside::protobuf_crate_path;
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
     match field_type {

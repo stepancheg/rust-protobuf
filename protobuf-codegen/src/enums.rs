@@ -5,9 +5,9 @@ use protobuf::descriptorx::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
-use inside::protobuf_crate_path;
-use rust_types_values::type_name_to_rust_relative;
-use serde;
+use crate::inside::protobuf_crate_path;
+use crate::rust_types_values::type_name_to_rust_relative;
+use crate::serde;
 
 #[derive(Clone)]
 pub struct EnumValueGen {

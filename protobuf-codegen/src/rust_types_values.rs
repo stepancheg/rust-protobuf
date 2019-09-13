@@ -1,11 +1,11 @@
 use std::cmp;
 
 use super::well_known_types::is_well_known_type_full;
-use ident::RustIdent;
-use inside::protobuf_crate_path;
+use crate::ident::RustIdent;
+use crate::inside::protobuf_crate_path;
+use crate::Customize;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
-use Customize;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]

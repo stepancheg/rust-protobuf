@@ -1,17 +1,17 @@
 //! Oneof-related codegen functions.
 
-use code_writer::CodeWriter;
-use field::FieldElem;
-use field::FieldGen;
-use message::MessageGen;
+use crate::code_writer::CodeWriter;
+use crate::field::FieldElem;
+use crate::field::FieldGen;
+use crate::message::MessageGen;
+use crate::rust_types_values::RustType;
+use crate::serde;
+use crate::Customize;
 use protobuf::descriptor::FieldDescriptorProto_Type;
 use protobuf::descriptorx::OneofWithContext;
 use protobuf::descriptorx::WithScope;
 use protobuf::descriptorx::{FieldWithContext, OneofVariantWithContext, RootScope};
-use rust_types_values::RustType;
-use serde;
 use std::collections::HashSet;
-use Customize;
 
 // oneof one { ... }
 #[derive(Clone)]

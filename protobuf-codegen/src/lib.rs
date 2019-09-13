@@ -27,8 +27,8 @@ mod rust_types_values;
 mod serde;
 mod well_known_types;
 
-use customize::customize_from_rustproto_for_file;
-pub use customize::Customize;
+use crate::customize::customize_from_rustproto_for_file;
+pub use crate::customize::Customize;
 
 pub mod code_writer;
 
@@ -36,7 +36,7 @@ use self::code_writer::CodeWriter;
 use self::enums::*;
 use self::extensions::*;
 use self::message::*;
-use inside::protobuf_crate_path;
+use crate::inside::protobuf_crate_path;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
