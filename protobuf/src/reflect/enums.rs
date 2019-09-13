@@ -57,6 +57,18 @@ impl EnumDescriptor {
         E::enum_descriptor_static()
     }
 
+    /// Separate function to reduce generated code size bloat.
+    fn make_indices(proto: &EnumDescriptorProto) -> (HashMap<String, usize>, HashMap<i32, usize>) {
+        let mut index_by_name = HashMap::new();
+        let mut index_by_number = HashMap::new();
+        for (i, v) in proto.value.iter().enumerate() {
+            index_by_number.insert(v.get_number(), i);
+            index_by_name.insert(v.get_name().to_string(), i);
+        }
+
+        (index_by_name, index_by_number)
+    }
+
     /// Construct `EnumDescriptor` given enum name and `FileDescriptorProto`.
     ///
     /// This function is called from generated code, and should rarely be called directly.
@@ -65,12 +77,7 @@ impl EnumDescriptor {
     #[doc(hidden)]
     pub fn new<E: ProtobufEnum>(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
-        let mut index_by_name = HashMap::new();
-        let mut index_by_number = HashMap::new();
-        for (i, v) in proto.en.get_value().iter().enumerate() {
-            index_by_number.insert(v.get_number(), i);
-            index_by_name.insert(v.get_name().to_string(), i);
-        }
+        let (index_by_name, index_by_number) = EnumDescriptor::make_indices(proto.en);
         EnumDescriptor {
             proto: proto.en,
             values: proto
