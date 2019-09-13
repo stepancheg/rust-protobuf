@@ -232,7 +232,9 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.next_ident_if_eq("false")? {
             Ok(false)
         } else {
-            Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::ExpectingBool))
+            Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::ExpectingBool,
+            ))
         }
     }
 
@@ -242,7 +244,9 @@ impl<'a> Parser<'a> {
         } else if s == "false" {
             Ok(false)
         } else {
-            Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::ExpectingBool))
+            Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::ExpectingBool,
+            ))
         }
     }
 
@@ -260,7 +264,9 @@ impl<'a> Parser<'a> {
             let v = self.read_string()?;
             self.parse_number(&v)
         } else {
-            Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::ExpectingNumber))
+            Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::ExpectingNumber,
+            ))
         }
     }
 
@@ -357,12 +363,14 @@ impl<'a> Parser<'a> {
             match descriptor.value_by_number(number) {
                 Some(v) => Ok(v),
                 // TODO: EnumValueOrUnknown
-                None => Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::UnknownEnumVariantNumber(
-                    number,
-                ))),
+                None => Err(ParseErrorWithoutLoc(
+                    ParseErrorWithoutLocInner::UnknownEnumVariantNumber(number),
+                )),
             }
         } else {
-            Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::ExpectingStrOrInt))
+            Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::ExpectingStrOrInt,
+            ))
         }
     }
 
@@ -374,7 +382,9 @@ impl<'a> Parser<'a> {
         // TODO: can map key be int
         match descriptor.value_by_name(&name) {
             Some(v) => Ok(v),
-            None => Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::UnknownEnumVariantName(name))),
+            None => Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::UnknownEnumVariantName(name),
+            )),
         }
     }
 
@@ -383,7 +393,10 @@ impl<'a> Parser<'a> {
         Ok(NullValue::NULL_VALUE)
     }
 
-    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResultWithoutLoc<Box<dyn Message>> {
+    fn read_message(
+        &mut self,
+        descriptor: &MessageDescriptor,
+    ) -> ParseResultWithoutLoc<Box<dyn Message>> {
         let mut m = descriptor.new_instance();
         self.merge_inner(&mut *m)?;
         Ok(m)
@@ -497,7 +510,11 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn parse_key(&self, key: String, t: &dyn RuntimeTypeDynamic) -> ParseResultWithoutLoc<ReflectValueBox> {
+    fn parse_key(
+        &self,
+        key: String,
+        t: &dyn RuntimeTypeDynamic,
+    ) -> ParseResultWithoutLoc<ReflectValueBox> {
         match t.to_box() {
             RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
             RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
@@ -566,7 +583,9 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.lookahead_is_symbol('{')? {
             self.read_map(|_, _| Ok(()), |s, ()| s.skip_json_value())?;
         } else {
-            return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::UnexpectedToken));
+            return Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::UnexpectedToken,
+            ));
         }
         Ok(())
     }
@@ -670,7 +689,11 @@ impl<'a> Parser<'a> {
                     self.tokenizer.next_symbol_expect_eq(':')?;
                     self.skip_json_value()?;
                 }
-                None => return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::UnknownFieldName(field_name))),
+                None => {
+                    return Err(ParseErrorWithoutLoc(
+                        ParseErrorWithoutLocInner::UnknownFieldName(field_name),
+                    ))
+                }
             };
         }
         Ok(())
@@ -688,20 +711,28 @@ impl<'a> Parser<'a> {
             } else {
                 match s.parse() {
                     Ok(n) => Ok((n, s.len() as u32)),
-                    Err(_) => Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::IncorrectDuration)),
+                    Err(_) => Err(ParseErrorWithoutLoc(
+                        ParseErrorWithoutLocInner::IncorrectDuration,
+                    )),
                 }
             }
         }
 
         let minus = lexer.next_char_if_eq('-');
         let seconds = match next_dec(&mut lexer)? {
-            (_, 0) => return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::IncorrectDuration)),
+            (_, 0) => {
+                return Err(ParseErrorWithoutLoc(
+                    ParseErrorWithoutLocInner::IncorrectDuration,
+                ))
+            }
             (s, _) => s,
         };
         let nanos = if lexer.next_char_if_eq('.') {
             let (mut a, mut b) = next_dec(&mut lexer)?;
             if b > 9 {
-                return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::IncorrectDuration));
+                return Err(ParseErrorWithoutLoc(
+                    ParseErrorWithoutLocInner::IncorrectDuration,
+                ));
             }
             while b != 9 {
                 b += 1;
@@ -709,7 +740,9 @@ impl<'a> Parser<'a> {
             }
 
             if a > 999_999_999 {
-                return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::IncorrectDuration));
+                return Err(ParseErrorWithoutLoc(
+                    ParseErrorWithoutLocInner::IncorrectDuration,
+                ));
             }
 
             a
@@ -719,11 +752,15 @@ impl<'a> Parser<'a> {
 
         // The suffix "s" is required
         if !lexer.next_char_if_eq('s') {
-            return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::IncorrectDuration));
+            return Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::IncorrectDuration,
+            ));
         }
 
         if !lexer.eof() {
-            return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::IncorrectDuration));
+            return Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::IncorrectDuration,
+            ));
         }
 
         if minus {
@@ -780,13 +817,17 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.lookahead_is_symbol('{')? {
             value.kind = Some(value::Kind::struct_value(self.read_wk_struct()?));
         } else {
-            return Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::UnexpectedToken));
+            return Err(ParseErrorWithoutLoc(
+                ParseErrorWithoutLocInner::UnexpectedToken,
+            ));
         }
         Ok(())
     }
 
     fn merge_wk_any(&mut self, _value: &mut Any) -> ParseResultWithoutLoc<()> {
-        Err(ParseErrorWithoutLoc(ParseErrorWithoutLocInner::AnyParsingIsNotImplemented))
+        Err(ParseErrorWithoutLoc(
+            ParseErrorWithoutLocInner::AnyParsingIsNotImplemented,
+        ))
     }
 
     fn read_wk_value(&mut self) -> ParseResultWithoutLoc<Value> {
@@ -852,10 +893,7 @@ pub fn parse_dynamic_from_str_with_options(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_dynamic_from_str(
-    d: &MessageDescriptor,
-    json: &str,
-) -> ParseResult<Box<dyn Message>> {
+pub fn parse_dynamic_from_str(d: &MessageDescriptor, json: &str) -> ParseResult<Box<dyn Message>> {
     parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
 }
 
