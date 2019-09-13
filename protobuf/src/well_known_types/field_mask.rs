@@ -161,8 +161,8 @@ impl crate::Message for FieldMask {
     }
 
     fn default_instance() -> &'static FieldMask {
-        static mut instance: ::protobuf::lazy::Lazy<FieldMask> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FieldMask> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FieldMask,
         };
         unsafe {

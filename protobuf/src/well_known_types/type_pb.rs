@@ -384,8 +384,8 @@ impl crate::Message for Type {
     }
 
     fn default_instance() -> &'static Type {
-        static mut instance: ::protobuf::lazy::Lazy<Type> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Type> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Type,
         };
         unsafe {
@@ -894,8 +894,8 @@ impl crate::Message for Field {
     }
 
     fn default_instance() -> &'static Field {
-        static mut instance: ::protobuf::lazy::Lazy<Field> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Field> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Field,
         };
         unsafe {
@@ -1426,8 +1426,8 @@ impl crate::Message for Enum {
     }
 
     fn default_instance() -> &'static Enum {
-        static mut instance: ::protobuf::lazy::Lazy<Enum> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Enum> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Enum,
         };
         unsafe {
@@ -1684,8 +1684,8 @@ impl crate::Message for EnumValue {
     }
 
     fn default_instance() -> &'static EnumValue {
-        static mut instance: ::protobuf::lazy::Lazy<EnumValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<EnumValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const EnumValue,
         };
         unsafe {
@@ -1914,8 +1914,8 @@ impl crate::Message for Option {
     }
 
     fn default_instance() -> &'static Option {
-        static mut instance: ::protobuf::lazy::Lazy<Option> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Option> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Option,
         };
         unsafe {

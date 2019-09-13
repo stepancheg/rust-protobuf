@@ -169,8 +169,8 @@ impl crate::Message for FileDescriptorSet {
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
-        static mut instance: ::protobuf::lazy::Lazy<FileDescriptorSet> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FileDescriptorSet> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FileDescriptorSet,
         };
         unsafe {
@@ -877,8 +877,8 @@ impl crate::Message for FileDescriptorProto {
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<FileDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FileDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FileDescriptorProto,
         };
         unsafe {
@@ -1502,8 +1502,8 @@ impl crate::Message for DescriptorProto {
     }
 
     fn default_instance() -> &'static DescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<DescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const DescriptorProto,
         };
         unsafe {
@@ -1718,8 +1718,8 @@ impl crate::Message for DescriptorProto_ExtensionRange {
     }
 
     fn default_instance() -> &'static DescriptorProto_ExtensionRange {
-        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto_ExtensionRange> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<DescriptorProto_ExtensionRange> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const DescriptorProto_ExtensionRange,
         };
         unsafe {
@@ -1926,8 +1926,8 @@ impl crate::Message for DescriptorProto_ReservedRange {
     }
 
     fn default_instance() -> &'static DescriptorProto_ReservedRange {
-        static mut instance: ::protobuf::lazy::Lazy<DescriptorProto_ReservedRange> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<DescriptorProto_ReservedRange> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const DescriptorProto_ReservedRange,
         };
         unsafe {
@@ -2513,8 +2513,8 @@ impl crate::Message for FieldDescriptorProto {
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<FieldDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FieldDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FieldDescriptorProto,
         };
         unsafe {
@@ -2925,8 +2925,8 @@ impl crate::Message for OneofDescriptorProto {
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<OneofDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<OneofDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const OneofDescriptorProto,
         };
         unsafe {
@@ -3212,8 +3212,8 @@ impl crate::Message for EnumDescriptorProto {
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<EnumDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<EnumDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const EnumDescriptorProto,
         };
         unsafe {
@@ -3490,8 +3490,8 @@ impl crate::Message for EnumValueDescriptorProto {
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<EnumValueDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<EnumValueDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const EnumValueDescriptorProto,
         };
         unsafe {
@@ -3778,8 +3778,8 @@ impl crate::Message for ServiceDescriptorProto {
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<ServiceDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<ServiceDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const ServiceDescriptorProto,
         };
         unsafe {
@@ -4196,8 +4196,8 @@ impl crate::Message for MethodDescriptorProto {
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
-        static mut instance: ::protobuf::lazy::Lazy<MethodDescriptorProto> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<MethodDescriptorProto> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const MethodDescriptorProto,
         };
         unsafe {
@@ -4973,8 +4973,8 @@ impl crate::Message for FileOptions {
     }
 
     fn default_instance() -> &'static FileOptions {
-        static mut instance: ::protobuf::lazy::Lazy<FileOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FileOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FileOptions,
         };
         unsafe {
@@ -5378,8 +5378,8 @@ impl crate::Message for MessageOptions {
     }
 
     fn default_instance() -> &'static MessageOptions {
-        static mut instance: ::protobuf::lazy::Lazy<MessageOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<MessageOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const MessageOptions,
         };
         unsafe {
@@ -5781,8 +5781,8 @@ impl crate::Message for FieldOptions {
     }
 
     fn default_instance() -> &'static FieldOptions {
-        static mut instance: ::protobuf::lazy::Lazy<FieldOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FieldOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FieldOptions,
         };
         unsafe {
@@ -6084,8 +6084,8 @@ impl crate::Message for OneofOptions {
     }
 
     fn default_instance() -> &'static OneofOptions {
-        static mut instance: ::protobuf::lazy::Lazy<OneofOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<OneofOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const OneofOptions,
         };
         unsafe {
@@ -6339,8 +6339,8 @@ impl crate::Message for EnumOptions {
     }
 
     fn default_instance() -> &'static EnumOptions {
-        static mut instance: ::protobuf::lazy::Lazy<EnumOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<EnumOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const EnumOptions,
         };
         unsafe {
@@ -6558,8 +6558,8 @@ impl crate::Message for EnumValueOptions {
     }
 
     fn default_instance() -> &'static EnumValueOptions {
-        static mut instance: ::protobuf::lazy::Lazy<EnumValueOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<EnumValueOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const EnumValueOptions,
         };
         unsafe {
@@ -6776,8 +6776,8 @@ impl crate::Message for ServiceOptions {
     }
 
     fn default_instance() -> &'static ServiceOptions {
-        static mut instance: ::protobuf::lazy::Lazy<ServiceOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<ServiceOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const ServiceOptions,
         };
         unsafe {
@@ -6994,8 +6994,8 @@ impl crate::Message for MethodOptions {
     }
 
     fn default_instance() -> &'static MethodOptions {
-        static mut instance: ::protobuf::lazy::Lazy<MethodOptions> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<MethodOptions> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const MethodOptions,
         };
         unsafe {
@@ -7441,8 +7441,8 @@ impl crate::Message for UninterpretedOption {
     }
 
     fn default_instance() -> &'static UninterpretedOption {
-        static mut instance: ::protobuf::lazy::Lazy<UninterpretedOption> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<UninterpretedOption> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const UninterpretedOption,
         };
         unsafe {
@@ -7673,8 +7673,8 @@ impl crate::Message for UninterpretedOption_NamePart {
     }
 
     fn default_instance() -> &'static UninterpretedOption_NamePart {
-        static mut instance: ::protobuf::lazy::Lazy<UninterpretedOption_NamePart> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<UninterpretedOption_NamePart> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const UninterpretedOption_NamePart,
         };
         unsafe {
@@ -7853,8 +7853,8 @@ impl crate::Message for SourceCodeInfo {
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
-        static mut instance: ::protobuf::lazy::Lazy<SourceCodeInfo> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<SourceCodeInfo> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const SourceCodeInfo,
         };
         unsafe {
@@ -8216,8 +8216,8 @@ impl crate::Message for SourceCodeInfo_Location {
     }
 
     fn default_instance() -> &'static SourceCodeInfo_Location {
-        static mut instance: ::protobuf::lazy::Lazy<SourceCodeInfo_Location> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<SourceCodeInfo_Location> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const SourceCodeInfo_Location,
         };
         unsafe {
@@ -8399,8 +8399,8 @@ impl crate::Message for GeneratedCodeInfo {
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
-        static mut instance: ::protobuf::lazy::Lazy<GeneratedCodeInfo> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<GeneratedCodeInfo> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const GeneratedCodeInfo,
         };
         unsafe {
@@ -8702,8 +8702,8 @@ impl crate::Message for GeneratedCodeInfo_Annotation {
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo_Annotation {
-        static mut instance: ::protobuf::lazy::Lazy<GeneratedCodeInfo_Annotation> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<GeneratedCodeInfo_Annotation> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const GeneratedCodeInfo_Annotation,
         };
         unsafe {

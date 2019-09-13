@@ -189,8 +189,8 @@ impl crate::Message for Duration {
     }
 
     fn default_instance() -> &'static Duration {
-        static mut instance: ::protobuf::lazy::Lazy<Duration> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Duration> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Duration,
         };
         unsafe {

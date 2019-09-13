@@ -158,10 +158,11 @@ impl<'a> MessageGen<'a> {
         w.def_fn(
             &format!("default_instance() -> &'static {}", self.type_name),
             |w| {
-                w.lazy_static_decl_get_simple(
+                w.lazy_static_protobuf_path_decl_get_simple(
                     "instance",
                     &self.type_name,
                     &format!("{}::new", self.type_name),
+                    protobuf_crate_path(&self.customize),
                 );
             },
         );

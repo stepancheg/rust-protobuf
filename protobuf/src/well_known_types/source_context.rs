@@ -162,8 +162,8 @@ impl crate::Message for SourceContext {
     }
 
     fn default_instance() -> &'static SourceContext {
-        static mut instance: ::protobuf::lazy::Lazy<SourceContext> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<SourceContext> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const SourceContext,
         };
         unsafe {

@@ -120,8 +120,8 @@ impl crate::Message for Empty {
     }
 
     fn default_instance() -> &'static Empty {
-        static mut instance: ::protobuf::lazy::Lazy<Empty> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Empty> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Empty,
         };
         unsafe {

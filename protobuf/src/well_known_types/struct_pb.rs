@@ -157,8 +157,8 @@ impl crate::Message for Struct {
     }
 
     fn default_instance() -> &'static Struct {
-        static mut instance: ::protobuf::lazy::Lazy<Struct> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Struct> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Struct,
         };
         unsafe {
@@ -648,8 +648,8 @@ impl crate::Message for Value {
     }
 
     fn default_instance() -> &'static Value {
-        static mut instance: ::protobuf::lazy::Lazy<Value> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Value> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Value,
         };
         unsafe {
@@ -832,8 +832,8 @@ impl crate::Message for ListValue {
     }
 
     fn default_instance() -> &'static ListValue {
-        static mut instance: ::protobuf::lazy::Lazy<ListValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<ListValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const ListValue,
         };
         unsafe {

@@ -189,8 +189,8 @@ impl crate::Message for Timestamp {
     }
 
     fn default_instance() -> &'static Timestamp {
-        static mut instance: ::protobuf::lazy::Lazy<Timestamp> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Timestamp> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Timestamp,
         };
         unsafe {

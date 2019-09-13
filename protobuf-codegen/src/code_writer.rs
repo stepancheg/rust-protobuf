@@ -147,6 +147,19 @@ impl<'a> CodeWriter<'a> {
         });
     }
 
+    pub(crate) fn lazy_static_protobuf_path_decl_get_simple(
+        &mut self,
+        name: &str,
+        ty: &str,
+        init: &str,
+        protobuf_crate_path: &str,
+    ) {
+        self.lazy_static_protobuf_path(name, ty, protobuf_crate_path);
+        self.unsafe_expr(|w| {
+            w.write_line(&format!("{}.get({})", name, init));
+        });
+    }
+
     pub fn block<F>(&mut self, first_line: &str, last_line: &str, cb: F)
     where
         F: Fn(&mut CodeWriter),

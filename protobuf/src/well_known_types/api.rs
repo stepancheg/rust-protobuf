@@ -433,8 +433,8 @@ impl crate::Message for Api {
     }
 
     fn default_instance() -> &'static Api {
-        static mut instance: ::protobuf::lazy::Lazy<Api> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Api> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Api,
         };
         unsafe {
@@ -839,8 +839,8 @@ impl crate::Message for Method {
     }
 
     fn default_instance() -> &'static Method {
-        static mut instance: ::protobuf::lazy::Lazy<Method> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Method> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Method,
         };
         unsafe {
@@ -1058,8 +1058,8 @@ impl crate::Message for Mixin {
     }
 
     fn default_instance() -> &'static Mixin {
-        static mut instance: ::protobuf::lazy::Lazy<Mixin> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Mixin> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Mixin,
         };
         unsafe {

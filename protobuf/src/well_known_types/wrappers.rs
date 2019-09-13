@@ -155,8 +155,8 @@ impl crate::Message for DoubleValue {
     }
 
     fn default_instance() -> &'static DoubleValue {
-        static mut instance: ::protobuf::lazy::Lazy<DoubleValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<DoubleValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const DoubleValue,
         };
         unsafe {
@@ -320,8 +320,8 @@ impl crate::Message for FloatValue {
     }
 
     fn default_instance() -> &'static FloatValue {
-        static mut instance: ::protobuf::lazy::Lazy<FloatValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<FloatValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const FloatValue,
         };
         unsafe {
@@ -485,8 +485,8 @@ impl crate::Message for Int64Value {
     }
 
     fn default_instance() -> &'static Int64Value {
-        static mut instance: ::protobuf::lazy::Lazy<Int64Value> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Int64Value> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Int64Value,
         };
         unsafe {
@@ -650,8 +650,8 @@ impl crate::Message for UInt64Value {
     }
 
     fn default_instance() -> &'static UInt64Value {
-        static mut instance: ::protobuf::lazy::Lazy<UInt64Value> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<UInt64Value> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const UInt64Value,
         };
         unsafe {
@@ -815,8 +815,8 @@ impl crate::Message for Int32Value {
     }
 
     fn default_instance() -> &'static Int32Value {
-        static mut instance: ::protobuf::lazy::Lazy<Int32Value> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Int32Value> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Int32Value,
         };
         unsafe {
@@ -980,8 +980,8 @@ impl crate::Message for UInt32Value {
     }
 
     fn default_instance() -> &'static UInt32Value {
-        static mut instance: ::protobuf::lazy::Lazy<UInt32Value> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<UInt32Value> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const UInt32Value,
         };
         unsafe {
@@ -1145,8 +1145,8 @@ impl crate::Message for BoolValue {
     }
 
     fn default_instance() -> &'static BoolValue {
-        static mut instance: ::protobuf::lazy::Lazy<BoolValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<BoolValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const BoolValue,
         };
         unsafe {
@@ -1317,8 +1317,8 @@ impl crate::Message for StringValue {
     }
 
     fn default_instance() -> &'static StringValue {
-        static mut instance: ::protobuf::lazy::Lazy<StringValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<StringValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const StringValue,
         };
         unsafe {
@@ -1489,8 +1489,8 @@ impl crate::Message for BytesValue {
     }
 
     fn default_instance() -> &'static BytesValue {
-        static mut instance: ::protobuf::lazy::Lazy<BytesValue> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<BytesValue> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const BytesValue,
         };
         unsafe {

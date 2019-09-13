@@ -203,8 +203,8 @@ impl crate::Message for Any {
     }
 
     fn default_instance() -> &'static Any {
-        static mut instance: ::protobuf::lazy::Lazy<Any> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
+        static mut instance: crate::lazy::Lazy<Any> = crate::lazy::Lazy {
+            lock: crate::lazy::ONCE_INIT,
             ptr: 0 as *const Any,
         };
         unsafe {
