@@ -266,7 +266,7 @@ impl EnumDescriptor {
     ///
     /// assert!(descriptor.is::<Label>())
     /// ```
-    pub fn is<E: 'static>(&self) -> bool {
+    pub fn is<E: ProtobufEnum>(&self) -> bool {
         TypeId::of::<E>() == self.type_id
     }
 
