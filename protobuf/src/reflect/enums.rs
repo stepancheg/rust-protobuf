@@ -22,7 +22,6 @@ pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
     protobuf_value: &'static dyn ProtobufValue,
     enum_descriptor_static: fn() -> &'static EnumDescriptor,
-    get_descriptor: &'static dyn GetEnumDescriptor,
 }
 
 impl PartialEq for EnumValueDescriptor {
@@ -207,8 +206,6 @@ impl EnumDescriptor {
         let code_values = E::values();
         assert_eq!(proto_values.len(), code_values.len());
 
-        let get_descriptor = &GetDescriptorImpl(marker::PhantomData::<E>);
-
         let values = proto_values
             .iter()
             .zip(code_values)
@@ -216,7 +213,6 @@ impl EnumDescriptor {
                 proto: p,
                 protobuf_value: c,
                 enum_descriptor_static: E::enum_descriptor_static,
-                get_descriptor,
             })
             .collect();
 
@@ -231,7 +227,7 @@ impl EnumDescriptor {
             type_id: TypeId::of::<E>(),
             enum_or_unknown_type_id: TypeId::of::<ProtobufEnumOrUnknown<E>>(),
             #[cfg(not(rustc_nightly))]
-            get_descriptor,
+            get_descriptor: &GetDescriptorImpl(marker::PhantomData::<E>),
             index_by_name,
             index_by_number,
         }
