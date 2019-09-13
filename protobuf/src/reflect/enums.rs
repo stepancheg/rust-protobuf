@@ -230,7 +230,7 @@ impl EnumDescriptor {
     }
 
     /// Find enum variant by name
-    pub fn value_by_name(&self, name: &str) -> Option<&EnumValueDescriptor> {
+    pub fn value_by_name<'a>(&'a self, name: &str) -> Option<&'a EnumValueDescriptor> {
         let &index = self.index_by_name.get(name)?;
         Some(&self.values[index])
     }
