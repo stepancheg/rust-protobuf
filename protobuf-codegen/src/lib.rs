@@ -17,6 +17,7 @@ mod enums;
 mod extensions;
 mod field;
 mod file_and_mod;
+mod file_descriptor;
 pub mod float;
 mod ident;
 mod inside;

@@ -5,6 +5,7 @@ use protobuf::descriptorx::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
+use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
 use crate::rust_types_values::type_name_to_rust_relative;
 use crate::serde;
@@ -243,10 +244,12 @@ impl<'a> EnumGen<'a> {
                             |w| {
                                 let ref type_name = self.type_name;
                                 w.write_line(&format!(
-                                    "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", file_descriptor_proto())",
+                                    "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
                                     protobuf_crate_path(&self.customize),
                                     self.type_name,
-                                    type_name));
+                                    type_name,
+                                    file_descriptor_proto_expr(&self.enum_with_scope.scope)
+                                ));
                             },
                         );
                     });
