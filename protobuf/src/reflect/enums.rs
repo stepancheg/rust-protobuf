@@ -86,7 +86,8 @@ impl EnumValueDescriptor {
     /// assert_eq!(Some(NullValue::NULL_VALUE), null);
     /// ```
     pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
-        self.enum_descriptor().cast_to_protobuf_enum::<E>(self.value())
+        self.enum_descriptor()
+            .cast_to_protobuf_enum::<E>(self.value())
     }
 }
 
@@ -323,7 +324,9 @@ impl EnumDescriptor {
             return None;
         }
 
-        Some(<E as cast_impl::CastValueToProtobufEnumOrUnknown>::cast(value))
+        Some(<E as cast_impl::CastValueToProtobufEnumOrUnknown>::cast(
+            value,
+        ))
     }
 
     #[cfg(not(rustc_nightly))]
