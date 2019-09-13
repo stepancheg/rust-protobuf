@@ -607,11 +607,11 @@ impl<'a> FieldGen<'a> {
 
         let syntax = field.message.scope.file_scope.syntax();
 
-        let field_may_have_custo_default_value = syntax == Syntax::PROTO2
+        let field_may_have_custom_default_value = syntax == Syntax::PROTO2
             && field.field.get_label() != field_descriptor_proto::Label::LABEL_REPEATED
             && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE;
 
-        let default_expose_field = !field_may_have_custo_default_value;
+        let default_expose_field = !field_may_have_custom_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
 
         let default_generate_accessors = !expose_field;
@@ -620,7 +620,7 @@ impl<'a> FieldGen<'a> {
             .unwrap_or(default_generate_accessors)
             || field.is_oneof();
 
-        let default_generate_getter = generate_accessors || field_may_have_custo_default_value;
+        let default_generate_getter = generate_accessors || field_may_have_custom_default_value;
         let generate_getter =
             customize.generate_getter.unwrap_or(default_generate_getter) || field.is_oneof();
 
