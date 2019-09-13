@@ -1304,7 +1304,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x12\x04\xc7\x01\x10\x11b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy {
     lock: crate::lazy::ONCE_INIT,
     ptr: 0 as *const crate::descriptor::FileDescriptorProto,
 };

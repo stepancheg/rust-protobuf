@@ -118,8 +118,8 @@ impl<'a> CodeWriter<'a> {
     pub fn lazy_static_protobuf_path(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
         self.stmt_block(
             &format!(
-                "static mut {}: {}::lazy::Lazy<{}> = ::protobuf::lazy::Lazy",
-                name, protobuf_crate_path, ty
+                "static mut {}: {}::lazy::Lazy<{}> = {}::lazy::Lazy",
+                name, protobuf_crate_path, ty, protobuf_crate_path
             ),
             |w| {
                 w.field_entry("lock", &format!("{}::lazy::ONCE_INIT", protobuf_crate_path));
