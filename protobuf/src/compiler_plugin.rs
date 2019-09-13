@@ -2,7 +2,7 @@
 #![doc(hidden)]
 
 use crate::plugin::*;
-use crate::protobuf::descriptor::FileDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
 use crate::protobuf::parse_from_reader;
 use crate::protobuf::Message;
 use std::io::stdin;
