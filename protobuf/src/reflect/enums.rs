@@ -76,8 +76,8 @@ impl EnumValueDescriptor {
     /// Convert this value descriptor into proper enum object.
     ///
     /// See [`EnumDescriptor::cast`](crate::reflect::EnumDescriptor::cast) for more details.
-    pub fn cast<E: 'static>(&self) -> Option<E> {
-        self.enum_descriptor().cast(self.value())
+    pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
+        self.enum_descriptor().cast_to_protobuf_enum(self.value())
     }
 }
 
