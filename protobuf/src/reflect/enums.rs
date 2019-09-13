@@ -169,6 +169,18 @@ impl EnumDescriptor {
         full_name
     }
 
+    /// Separate function to reduce generated code size bloat.
+    fn make_indices(proto: &EnumDescriptorProto) -> (HashMap<String, usize>, HashMap<i32, usize>) {
+        let mut index_by_name = HashMap::new();
+        let mut index_by_number = HashMap::new();
+        for (i, v) in proto.value.iter().enumerate() {
+            index_by_number.insert(v.get_number(), i);
+            index_by_name.insert(v.get_name().to_string(), i);
+        }
+
+        (index_by_name, index_by_number)
+    }
+
     /// Construct `EnumDescriptor` given enum name and `FileDescriptorProto`.
     ///
     /// This function is called from generated code, and should rarely be called directly.
@@ -184,12 +196,7 @@ impl EnumDescriptor {
             (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
         };
 
-        let mut index_by_name = HashMap::new();
-        let mut index_by_number = HashMap::new();
-        for (i, v) in proto.value.iter().enumerate() {
-            index_by_number.insert(v.get_number(), i);
-            index_by_name.insert(v.get_name().to_string(), i);
-        }
+        let (index_by_name, index_by_number) = EnumDescriptor::make_indices(proto);
 
         let proto_values = &proto.value;
         let code_values = E::values();
