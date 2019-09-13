@@ -278,7 +278,7 @@ impl EnumDescriptor {
     /// # Panics
     ///
     /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
-    pub fn cast<E: 'static>(&self, value: i32) -> Option<E> {
+    pub(crate) fn cast<E: 'static>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() == self.type_id {
             Some(self.cast_to_protobuf_enum(value))
         } else if TypeId::of::<E>() == self.enum_or_unknown_type_id {
