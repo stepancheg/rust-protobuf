@@ -13,6 +13,7 @@ use super::customize::customize_from_rustproto_for_field;
 use super::customize::Customize;
 use crate::oneof::OneofField;
 
+use crate::code_writer::Visibility;
 use crate::float;
 use crate::ident::RustIdent;
 use crate::inside::protobuf_crate_path;
@@ -1045,6 +1046,36 @@ impl<'a> FieldGen<'a> {
 
         self.as_option_type()
             .value(format!("{}{}", self.self_field(), suffix))
+    }
+
+    /// Field visibility in message struct
+    fn visibility(&self) -> Visibility {
+        if self.expose_field {
+            Visibility::Public
+        } else {
+            match self.kind {
+                FieldKind::Repeated(..) => Visibility::Default,
+                FieldKind::Singular(SingularField { ref flag, .. }) => match *flag {
+                    SingularFieldFlag::WithFlag { .. } => Visibility::Default,
+                    SingularFieldFlag::WithoutFlag => Visibility::Public,
+                },
+                FieldKind::Map(..) => Visibility::Public,
+                FieldKind::Oneof(..) => unreachable!(),
+            }
+        }
+    }
+
+    pub fn write_struct_field(&self, w: &mut CodeWriter) {
+        if self.proto_type == FieldDescriptorProto_Type::TYPE_GROUP {
+            w.comment(&format!("{}: <group>", &self.rust_name));
+        } else {
+            let vis = self.visibility();
+            w.field_decl_vis(
+                vis,
+                &self.rust_name,
+                &self.full_storage_type().to_code(&self.customize),
+            );
+        }
     }
 
     fn write_if_let_self_field_is_some<F>(&self, w: &mut CodeWriter, cb: F)
