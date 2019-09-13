@@ -117,6 +117,16 @@ impl EnumDescriptor {
     }
 
     /// Check if this enum descriptor corresponds given enum type
+    ///
+    /// ```
+    /// # use protobuf::ProtobufEnum;
+    /// # use protobuf::descriptor::FieldDescriptorProto_Label;
+    /// # use protobuf::reflect::EnumDescriptor;
+    ///
+    /// let descriptor: &EnumDescriptor = FieldDescriptorProto_Label::enum_descriptor_static();
+    ///
+    /// assert!(descriptor.is::<FieldDescriptorProto_Label>())
+    /// ```
     pub fn is<E: ProtobufEnum>(&self) -> bool {
         TypeId::of::<E>() == self.type_id
     }
