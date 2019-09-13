@@ -1,10 +1,10 @@
 // TODO: move into separate crate
 #![doc(hidden)]
 
-use crate::plugin::*;
 use crate::descriptor::FileDescriptorProto;
-use crate::protobuf::parse_from_reader;
-use crate::protobuf::Message;
+use crate::parse_from_reader;
+use crate::plugin::*;
+use crate::Message;
 use std::io::stdin;
 use std::io::stdout;
 use std::str;
