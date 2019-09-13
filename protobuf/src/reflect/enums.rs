@@ -94,6 +94,11 @@ impl EnumDescriptor {
         }
     }
 
+    /// This enum values
+    pub fn values(&self) -> &[EnumValueDescriptor] {
+        &self.values
+    }
+
     /// Find enum value by name
     pub fn value_by_name<'a>(&'a self, name: &str) -> &'a EnumValueDescriptor {
         // TODO: clone is weird
