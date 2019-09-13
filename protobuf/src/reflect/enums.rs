@@ -3,6 +3,7 @@ use crate::descriptorx::find_enum_by_rust_name;
 use crate::ProtobufEnum;
 use std::collections::HashMap;
 use std::fmt;
+use std::any::TypeId;
 
 /// Description for enum variant.
 ///
@@ -41,6 +42,8 @@ impl EnumValueDescriptor {
 pub struct EnumDescriptor {
     proto: &'static EnumDescriptorProto,
     values: Vec<EnumValueDescriptor>,
+    /// Type id of `<E>`
+    type_id: TypeId,
 
     index_by_name: HashMap<String, usize>,
     index_by_number: HashMap<i32, usize>,
@@ -89,6 +92,7 @@ impl EnumDescriptor {
                 .iter()
                 .map(|v| EnumValueDescriptor { proto: v })
                 .collect(),
+            type_id: TypeId::of::<E>(),
             index_by_name,
             index_by_number,
         }
@@ -110,5 +114,10 @@ impl EnumDescriptor {
     pub fn value_by_number<'a>(&'a self, number: i32) -> &'a EnumValueDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.values[index]
+    }
+
+    /// Check if this enum descriptor corresponds given enum type
+    pub fn is<E: ProtobufEnum>(&self) -> bool {
+        TypeId::of::<E>() == self.type_id
     }
 }
