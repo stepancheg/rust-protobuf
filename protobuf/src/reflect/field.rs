@@ -263,7 +263,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         match &self.accessor.accessor {
-            AccessorKind::Singular(a) => ReflectFieldRef::Optional(a.accessor.get_reflect(m)),
+            AccessorKind::Singular(a) => ReflectFieldRef::Optional(a.accessor.get_field(m)),
             AccessorKind::Repeated(a) => ReflectFieldRef::Repeated(a.accessor.get_reflect(m)),
             AccessorKind::Map(a) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
         }

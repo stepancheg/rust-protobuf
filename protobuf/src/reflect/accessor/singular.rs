@@ -16,7 +16,7 @@ use std::fmt;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
+    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
     fn has_field_generic(&self, m: &dyn Message) -> bool;
     // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a dyn Message) -> &'a dyn Message;
@@ -179,7 +179,7 @@ impl<M: Message + Send + Sync + 'static> FieldAccessorImpl<M> {
 }
 
 impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
+    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
         match self.fns {
             FieldAccessorFunctions::Optional(ref accessor2) => accessor2
                 .get_field(message_down_cast(m))
