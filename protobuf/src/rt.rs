@@ -26,9 +26,9 @@ use crate::stream::wire_format::WireTypeLengthDelimited;
 use crate::stream::wire_format::WireTypeVarint;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
-use crate::types::*;
 use crate::zigzag::*;
 
+use crate::reflect::types::ProtobufType;
 use crate::unknown::UnknownFields;
 
 /// Given `u64` value compute varint encoded length.

@@ -8,7 +8,6 @@ use crate::core::message_down_cast;
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::reflect::EnumValueDescriptor;
-use crate::types::*;
 
 use crate::repeated::RepeatedField;
 use crate::singular::SingularField;
@@ -22,6 +21,7 @@ use super::repeated::ReflectRepeatedMessage;
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
+use crate::reflect::types::ProtobufType;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
 pub trait FieldAccessor {

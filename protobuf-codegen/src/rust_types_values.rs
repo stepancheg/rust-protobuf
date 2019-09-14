@@ -571,7 +571,7 @@ impl ProtobufTypeGen {
     pub fn rust_type(&self, customize: &Customize) -> String {
         match self {
             &ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => format!(
-                "{}::types::ProtobufType{}",
+                "{}::reflect::types::ProtobufType{}",
                 protobuf_crate_path(customize),
                 capitalize(protobuf_name(t))
             ),
@@ -579,24 +579,24 @@ impl ProtobufTypeGen {
                 FieldDescriptorProto_Type::TYPE_BYTES,
                 PrimitiveTypeVariant::Carllerche,
             ) => format!(
-                "{}::types::ProtobufTypeCarllercheBytes",
+                "{}::reflect::types::ProtobufTypeCarllercheBytes",
                 protobuf_crate_path(customize)
             ),
             &ProtobufTypeGen::Primitive(
                 FieldDescriptorProto_Type::TYPE_STRING,
                 PrimitiveTypeVariant::Carllerche,
             ) => format!(
-                "{}::types::ProtobufTypeCarllercheChars",
+                "{}::reflect::types::ProtobufTypeCarllercheChars",
                 protobuf_crate_path(customize)
             ),
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             &ProtobufTypeGen::Message(ref name) => format!(
-                "{}::types::ProtobufTypeMessage<{}>",
+                "{}::reflect::types::ProtobufTypeMessage<{}>",
                 protobuf_crate_path(customize),
                 name
             ),
             &ProtobufTypeGen::Enum(ref name) => format!(
-                "{}::types::ProtobufTypeEnum<{}>",
+                "{}::reflect::types::ProtobufTypeEnum<{}>",
                 protobuf_crate_path(customize),
                 name,
             ),

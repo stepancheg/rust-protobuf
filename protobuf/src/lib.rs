@@ -59,7 +59,6 @@ pub mod rt;
 mod singular;
 pub mod stream;
 pub mod text_format;
-pub mod types;
 pub mod well_known_types;
 
 // used by test

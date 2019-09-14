@@ -154,7 +154,7 @@ impl crate::Message for FileDescriptorSet {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FileDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileDescriptorProto>>(
                     "file",
                     |m: &FileDescriptorSet| { &m.file },
                     |m: &mut FileDescriptorSet| { &mut m.file },
@@ -807,62 +807,62 @@ impl crate::Message for FileDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &FileDescriptorProto| { &m.name },
                     |m: &mut FileDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "package",
                     |m: &FileDescriptorProto| { &m.package },
                     |m: &mut FileDescriptorProto| { &mut m.package },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "dependency",
                     |m: &FileDescriptorProto| { &m.dependency },
                     |m: &mut FileDescriptorProto| { &mut m.dependency },
                 ));
-                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "public_dependency",
                     |m: &FileDescriptorProto| { &m.public_dependency },
                     |m: &mut FileDescriptorProto| { &mut m.public_dependency },
                 ));
-                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "weak_dependency",
                     |m: &FileDescriptorProto| { &m.weak_dependency },
                     |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
                     "message_type",
                     |m: &FileDescriptorProto| { &m.message_type },
                     |m: &mut FileDescriptorProto| { &mut m.message_type },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                     "enum_type",
                     |m: &FileDescriptorProto| { &m.enum_type },
                     |m: &mut FileDescriptorProto| { &mut m.enum_type },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
                     "service",
                     |m: &FileDescriptorProto| { &m.service },
                     |m: &mut FileDescriptorProto| { &mut m.service },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "extension",
                     |m: &FileDescriptorProto| { &m.extension },
                     |m: &mut FileDescriptorProto| { &mut m.extension },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<FileOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileOptions>>(
                     "options",
                     |m: &FileDescriptorProto| { &m.options },
                     |m: &mut FileDescriptorProto| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<SourceCodeInfo>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<SourceCodeInfo>>(
                     "source_code_info",
                     |m: &FileDescriptorProto| { &m.source_code_info },
                     |m: &mut FileDescriptorProto| { &mut m.source_code_info },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "syntax",
                     |m: &FileDescriptorProto| { &m.syntax },
                     |m: &mut FileDescriptorProto| { &mut m.syntax },
@@ -1442,52 +1442,52 @@ impl crate::Message for DescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &DescriptorProto| { &m.name },
                     |m: &mut DescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "field",
                     |m: &DescriptorProto| { &m.field },
                     |m: &mut DescriptorProto| { &mut m.field },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                     "extension",
                     |m: &DescriptorProto| { &m.extension },
                     |m: &mut DescriptorProto| { &mut m.extension },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
                     "nested_type",
                     |m: &DescriptorProto| { &m.nested_type },
                     |m: &mut DescriptorProto| { &mut m.nested_type },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                     "enum_type",
                     |m: &DescriptorProto| { &m.enum_type },
                     |m: &mut DescriptorProto| { &mut m.enum_type },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto_ExtensionRange>>(
                     "extension_range",
                     |m: &DescriptorProto| { &m.extension_range },
                     |m: &mut DescriptorProto| { &mut m.extension_range },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<OneofDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofDescriptorProto>>(
                     "oneof_decl",
                     |m: &DescriptorProto| { &m.oneof_decl },
                     |m: &mut DescriptorProto| { &mut m.oneof_decl },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<MessageOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MessageOptions>>(
                     "options",
                     |m: &DescriptorProto| { &m.options },
                     |m: &mut DescriptorProto| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto_ReservedRange>>(
                     "reserved_range",
                     |m: &DescriptorProto| { &m.reserved_range },
                     |m: &mut DescriptorProto| { &mut m.reserved_range },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "reserved_name",
                     |m: &DescriptorProto| { &m.reserved_name },
                     |m: &mut DescriptorProto| { &mut m.reserved_name },
@@ -1698,12 +1698,12 @@ impl crate::Message for DescriptorProto_ExtensionRange {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "start",
                     |m: &DescriptorProto_ExtensionRange| { &m.start },
                     |m: &mut DescriptorProto_ExtensionRange| { &mut m.start },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "end",
                     |m: &DescriptorProto_ExtensionRange| { &m.end },
                     |m: &mut DescriptorProto_ExtensionRange| { &mut m.end },
@@ -1906,12 +1906,12 @@ impl crate::Message for DescriptorProto_ReservedRange {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "start",
                     |m: &DescriptorProto_ReservedRange| { &m.start },
                     |m: &mut DescriptorProto_ReservedRange| { &mut m.start },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "end",
                     |m: &DescriptorProto_ReservedRange| { &m.end },
                     |m: &mut DescriptorProto_ReservedRange| { &mut m.end },
@@ -2453,52 +2453,52 @@ impl crate::Message for FieldDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &FieldDescriptorProto| { &m.name },
                     |m: &mut FieldDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "number",
                     |m: &FieldDescriptorProto| { &m.number },
                     |m: &mut FieldDescriptorProto| { &mut m.number },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeEnum<FieldDescriptorProto_Label>>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeEnum<FieldDescriptorProto_Label>>(
                     "label",
                     |m: &FieldDescriptorProto| { &m.label },
                     |m: &mut FieldDescriptorProto| { &mut m.label },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeEnum<FieldDescriptorProto_Type>>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeEnum<FieldDescriptorProto_Type>>(
                     "type",
                     |m: &FieldDescriptorProto| { &m.field_type },
                     |m: &mut FieldDescriptorProto| { &mut m.field_type },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "type_name",
                     |m: &FieldDescriptorProto| { &m.type_name },
                     |m: &mut FieldDescriptorProto| { &mut m.type_name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "extendee",
                     |m: &FieldDescriptorProto| { &m.extendee },
                     |m: &mut FieldDescriptorProto| { &mut m.extendee },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "default_value",
                     |m: &FieldDescriptorProto| { &m.default_value },
                     |m: &mut FieldDescriptorProto| { &mut m.default_value },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "oneof_index",
                     |m: &FieldDescriptorProto| { &m.oneof_index },
                     |m: &mut FieldDescriptorProto| { &mut m.oneof_index },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "json_name",
                     |m: &FieldDescriptorProto| { &m.json_name },
                     |m: &mut FieldDescriptorProto| { &mut m.json_name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<FieldOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldOptions>>(
                     "options",
                     |m: &FieldDescriptorProto| { &m.options },
                     |m: &mut FieldDescriptorProto| { &mut m.options },
@@ -2905,12 +2905,12 @@ impl crate::Message for OneofDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &OneofDescriptorProto| { &m.name },
                     |m: &mut OneofDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<OneofOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofOptions>>(
                     "options",
                     |m: &OneofDescriptorProto| { &m.options },
                     |m: &mut OneofDescriptorProto| { &mut m.options },
@@ -3187,17 +3187,17 @@ impl crate::Message for EnumDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &EnumDescriptorProto| { &m.name },
                     |m: &mut EnumDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
                     "value",
                     |m: &EnumDescriptorProto| { &m.value },
                     |m: &mut EnumDescriptorProto| { &mut m.value },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumOptions>>(
                     "options",
                     |m: &EnumDescriptorProto| { &m.options },
                     |m: &mut EnumDescriptorProto| { &mut m.options },
@@ -3465,17 +3465,17 @@ impl crate::Message for EnumValueDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &EnumValueDescriptorProto| { &m.name },
                     |m: &mut EnumValueDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "number",
                     |m: &EnumValueDescriptorProto| { &m.number },
                     |m: &mut EnumValueDescriptorProto| { &mut m.number },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<EnumValueOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueOptions>>(
                     "options",
                     |m: &EnumValueDescriptorProto| { &m.options },
                     |m: &mut EnumValueDescriptorProto| { &mut m.options },
@@ -3753,17 +3753,17 @@ impl crate::Message for ServiceDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &ServiceDescriptorProto| { &m.name },
                     |m: &mut ServiceDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<MethodDescriptorProto>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodDescriptorProto>>(
                     "method",
                     |m: &ServiceDescriptorProto| { &m.method },
                     |m: &mut ServiceDescriptorProto| { &mut m.method },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<ServiceOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceOptions>>(
                     "options",
                     |m: &ServiceDescriptorProto| { &m.options },
                     |m: &mut ServiceDescriptorProto| { &mut m.options },
@@ -4156,32 +4156,32 @@ impl crate::Message for MethodDescriptorProto {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &MethodDescriptorProto| { &m.name },
                     |m: &mut MethodDescriptorProto| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "input_type",
                     |m: &MethodDescriptorProto| { &m.input_type },
                     |m: &mut MethodDescriptorProto| { &mut m.input_type },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "output_type",
                     |m: &MethodDescriptorProto| { &m.output_type },
                     |m: &mut MethodDescriptorProto| { &mut m.output_type },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::types::ProtobufTypeMessage<MethodOptions>>(
+                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodOptions>>(
                     "options",
                     |m: &MethodDescriptorProto| { &m.options },
                     |m: &mut MethodDescriptorProto| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "client_streaming",
                     |m: &MethodDescriptorProto| { &m.client_streaming },
                     |m: &mut MethodDescriptorProto| { &mut m.client_streaming },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "server_streaming",
                     |m: &MethodDescriptorProto| { &m.server_streaming },
                     |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
@@ -4888,77 +4888,77 @@ impl crate::Message for FileOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "java_package",
                     |m: &FileOptions| { &m.java_package },
                     |m: &mut FileOptions| { &mut m.java_package },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "java_outer_classname",
                     |m: &FileOptions| { &m.java_outer_classname },
                     |m: &mut FileOptions| { &mut m.java_outer_classname },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "java_multiple_files",
                     |m: &FileOptions| { &m.java_multiple_files },
                     |m: &mut FileOptions| { &mut m.java_multiple_files },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "java_generate_equals_and_hash",
                     |m: &FileOptions| { &m.java_generate_equals_and_hash },
                     |m: &mut FileOptions| { &mut m.java_generate_equals_and_hash },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "java_string_check_utf8",
                     |m: &FileOptions| { &m.java_string_check_utf8 },
                     |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeEnum<FileOptions_OptimizeMode>>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeEnum<FileOptions_OptimizeMode>>(
                     "optimize_for",
                     |m: &FileOptions| { &m.optimize_for },
                     |m: &mut FileOptions| { &mut m.optimize_for },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "go_package",
                     |m: &FileOptions| { &m.go_package },
                     |m: &mut FileOptions| { &mut m.go_package },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "cc_generic_services",
                     |m: &FileOptions| { &m.cc_generic_services },
                     |m: &mut FileOptions| { &mut m.cc_generic_services },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "java_generic_services",
                     |m: &FileOptions| { &m.java_generic_services },
                     |m: &mut FileOptions| { &mut m.java_generic_services },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "py_generic_services",
                     |m: &FileOptions| { &m.py_generic_services },
                     |m: &mut FileOptions| { &mut m.py_generic_services },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &FileOptions| { &m.deprecated },
                     |m: &mut FileOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "cc_enable_arenas",
                     |m: &FileOptions| { &m.cc_enable_arenas },
                     |m: &mut FileOptions| { &mut m.cc_enable_arenas },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "objc_class_prefix",
                     |m: &FileOptions| { &m.objc_class_prefix },
                     |m: &mut FileOptions| { &mut m.objc_class_prefix },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "csharp_namespace",
                     |m: &FileOptions| { &m.csharp_namespace },
                     |m: &mut FileOptions| { &mut m.csharp_namespace },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &FileOptions| { &m.uninterpreted_option },
                     |m: &mut FileOptions| { &mut m.uninterpreted_option },
@@ -5343,27 +5343,27 @@ impl crate::Message for MessageOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "message_set_wire_format",
                     |m: &MessageOptions| { &m.message_set_wire_format },
                     |m: &mut MessageOptions| { &mut m.message_set_wire_format },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "no_standard_descriptor_accessor",
                     |m: &MessageOptions| { &m.no_standard_descriptor_accessor },
                     |m: &mut MessageOptions| { &mut m.no_standard_descriptor_accessor },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &MessageOptions| { &m.deprecated },
                     |m: &mut MessageOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "map_entry",
                     |m: &MessageOptions| { &m.map_entry },
                     |m: &mut MessageOptions| { &mut m.map_entry },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &MessageOptions| { &m.uninterpreted_option },
                     |m: &mut MessageOptions| { &mut m.uninterpreted_option },
@@ -5736,37 +5736,37 @@ impl crate::Message for FieldOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeEnum<FieldOptions_CType>>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeEnum<FieldOptions_CType>>(
                     "ctype",
                     |m: &FieldOptions| { &m.ctype },
                     |m: &mut FieldOptions| { &mut m.ctype },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "packed",
                     |m: &FieldOptions| { &m.packed },
                     |m: &mut FieldOptions| { &mut m.packed },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeEnum<FieldOptions_JSType>>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeEnum<FieldOptions_JSType>>(
                     "jstype",
                     |m: &FieldOptions| { &m.jstype },
                     |m: &mut FieldOptions| { &mut m.jstype },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "lazy",
                     |m: &FieldOptions| { &m.lazy },
                     |m: &mut FieldOptions| { &mut m.lazy },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &FieldOptions| { &m.deprecated },
                     |m: &mut FieldOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "weak",
                     |m: &FieldOptions| { &m.weak },
                     |m: &mut FieldOptions| { &mut m.weak },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &FieldOptions| { &m.uninterpreted_option },
                     |m: &mut FieldOptions| { &mut m.uninterpreted_option },
@@ -6069,7 +6069,7 @@ impl crate::Message for OneofOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &OneofOptions| { &m.uninterpreted_option },
                     |m: &mut OneofOptions| { &mut m.uninterpreted_option },
@@ -6314,17 +6314,17 @@ impl crate::Message for EnumOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "allow_alias",
                     |m: &EnumOptions| { &m.allow_alias },
                     |m: &mut EnumOptions| { &mut m.allow_alias },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &EnumOptions| { &m.deprecated },
                     |m: &mut EnumOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &EnumOptions| { &m.uninterpreted_option },
                     |m: &mut EnumOptions| { &mut m.uninterpreted_option },
@@ -6538,12 +6538,12 @@ impl crate::Message for EnumValueOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &EnumValueOptions| { &m.deprecated },
                     |m: &mut EnumValueOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &EnumValueOptions| { &m.uninterpreted_option },
                     |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
@@ -6756,12 +6756,12 @@ impl crate::Message for ServiceOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &ServiceOptions| { &m.deprecated },
                     |m: &mut ServiceOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &ServiceOptions| { &m.uninterpreted_option },
                     |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
@@ -6974,12 +6974,12 @@ impl crate::Message for MethodOptions {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "deprecated",
                     |m: &MethodOptions| { &m.deprecated },
                     |m: &mut MethodOptions| { &mut m.deprecated },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                     "uninterpreted_option",
                     |m: &MethodOptions| { &m.uninterpreted_option },
                     |m: &mut MethodOptions| { &mut m.uninterpreted_option },
@@ -7396,37 +7396,37 @@ impl crate::Message for UninterpretedOption {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption_NamePart>>(
                     "name",
                     |m: &UninterpretedOption| { &m.name },
                     |m: &mut UninterpretedOption| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "identifier_value",
                     |m: &UninterpretedOption| { &m.identifier_value },
                     |m: &mut UninterpretedOption| { &mut m.identifier_value },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeUint64>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeUint64>(
                     "positive_int_value",
                     |m: &UninterpretedOption| { &m.positive_int_value },
                     |m: &mut UninterpretedOption| { &mut m.positive_int_value },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt64>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
                     "negative_int_value",
                     |m: &UninterpretedOption| { &m.negative_int_value },
                     |m: &mut UninterpretedOption| { &mut m.negative_int_value },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeDouble>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeDouble>(
                     "double_value",
                     |m: &UninterpretedOption| { &m.double_value },
                     |m: &mut UninterpretedOption| { &mut m.double_value },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeBytes>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
                     "string_value",
                     |m: &UninterpretedOption| { &m.string_value },
                     |m: &mut UninterpretedOption| { &mut m.string_value },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "aggregate_value",
                     |m: &UninterpretedOption| { &m.aggregate_value },
                     |m: &mut UninterpretedOption| { &mut m.aggregate_value },
@@ -7653,12 +7653,12 @@ impl crate::Message for UninterpretedOption_NamePart {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name_part",
                     |m: &UninterpretedOption_NamePart| { &m.name_part },
                     |m: &mut UninterpretedOption_NamePart| { &mut m.name_part },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "is_extension",
                     |m: &UninterpretedOption_NamePart| { &m.is_extension },
                     |m: &mut UninterpretedOption_NamePart| { &mut m.is_extension },
@@ -7838,7 +7838,7 @@ impl crate::Message for SourceCodeInfo {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<SourceCodeInfo_Location>>(
                     "location",
                     |m: &SourceCodeInfo| { &m.location },
                     |m: &mut SourceCodeInfo| { &mut m.location },
@@ -8181,27 +8181,27 @@ impl crate::Message for SourceCodeInfo_Location {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "path",
                     |m: &SourceCodeInfo_Location| { &m.path },
                     |m: &mut SourceCodeInfo_Location| { &mut m.path },
                 ));
-                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "span",
                     |m: &SourceCodeInfo_Location| { &m.span },
                     |m: &mut SourceCodeInfo_Location| { &mut m.span },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "leading_comments",
                     |m: &SourceCodeInfo_Location| { &m.leading_comments },
                     |m: &mut SourceCodeInfo_Location| { &mut m.leading_comments },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "trailing_comments",
                     |m: &SourceCodeInfo_Location| { &m.trailing_comments },
                     |m: &mut SourceCodeInfo_Location| { &mut m.trailing_comments },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "leading_detached_comments",
                     |m: &SourceCodeInfo_Location| { &m.leading_detached_comments },
                     |m: &mut SourceCodeInfo_Location| { &mut m.leading_detached_comments },
@@ -8384,7 +8384,7 @@ impl crate::Message for GeneratedCodeInfo {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
+                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<GeneratedCodeInfo_Annotation>>(
                     "annotation",
                     |m: &GeneratedCodeInfo| { &m.annotation },
                     |m: &mut GeneratedCodeInfo| { &mut m.annotation },
@@ -8672,22 +8672,22 @@ impl crate::Message for GeneratedCodeInfo_Annotation {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "path",
                     |m: &GeneratedCodeInfo_Annotation| { &m.path },
                     |m: &mut GeneratedCodeInfo_Annotation| { &mut m.path },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::types::ProtobufTypeString>(
+                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "source_file",
                     |m: &GeneratedCodeInfo_Annotation| { &m.source_file },
                     |m: &mut GeneratedCodeInfo_Annotation| { &mut m.source_file },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "begin",
                     |m: &GeneratedCodeInfo_Annotation| { &m.begin },
                     |m: &mut GeneratedCodeInfo_Annotation| { &mut m.begin },
                 ));
-                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::types::ProtobufTypeInt32>(
+                fields.push(crate::reflect::accessor::make_option_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                     "end",
                     |m: &GeneratedCodeInfo_Annotation| { &m.end },
                     |m: &mut GeneratedCodeInfo_Annotation| { &mut m.end },

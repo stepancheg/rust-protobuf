@@ -7,7 +7,7 @@
 use std::marker::PhantomData;
 
 use crate::core::Message;
-use crate::types::ProtobufType;
+use crate::reflect::types::ProtobufType;
 
 /// Optional ext field
 pub struct ExtFieldOptional<M: Message, T: ProtobufType> {

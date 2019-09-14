@@ -10,6 +10,7 @@ mod message;
 mod optional;
 mod repeated;
 mod transmute_eq;
+pub mod types;
 mod value;
 
 pub use self::value::ProtobufValue;
