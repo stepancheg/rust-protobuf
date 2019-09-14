@@ -1,5 +1,8 @@
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FieldDescriptorProto_Label;
+use crate::reflect::accessor::map::MapFieldAccessorHolder;
+use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
 use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::map::ReflectMapRef;
@@ -61,7 +64,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &dyn Message) -> bool {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.has_field_generic(m),
+            AccessorKind::Singular(a) => a.accessor.has_field_generic(m),
             AccessorKind::Repeated(a) => !a.accessor.get_reflect(m).is_empty(),
             AccessorKind::Map(a) => !a.accessor.get_reflect(m).is_empty(),
         }
@@ -76,9 +79,38 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn len_field(&self, m: &dyn Message) -> usize {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => if a.has_field_generic(m) { 1 } else { 0 },
+            AccessorKind::Singular(a) => {
+                if a.accessor.has_field_generic(m) {
+                    1
+                } else {
+                    0
+                }
+            }
             AccessorKind::Repeated(a) => a.accessor.get_reflect(m).len(),
             AccessorKind::Map(a) => a.accessor.get_reflect(m).len(),
+        }
+    }
+
+    // accessors
+
+    fn singular(&self) -> &SingularFieldAccessorHolder {
+        match self.accessor.accessor {
+            AccessorKind::Singular(ref a) => a,
+            _ => panic!("not a singular field: {}", self.name()),
+        }
+    }
+
+    fn repeated(&self) -> &RepeatedFieldAccessorHolder {
+        match self.accessor.accessor {
+            AccessorKind::Repeated(ref a) => a,
+            _ => panic!("not a repeated field: {}", self.name()),
+        }
+    }
+
+    fn map(&self) -> &MapFieldAccessorHolder {
+        match self.accessor.accessor {
+            AccessorKind::Map(ref a) => a,
+            _ => panic!("not a map field: {}", self.name()),
         }
     }
 
@@ -89,7 +121,7 @@ impl FieldDescriptor {
     /// field type is not message.
     pub fn get_message<'a>(&self, m: &'a dyn Message) -> &'a dyn Message {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_message_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_message_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -102,7 +134,7 @@ impl FieldDescriptor {
     /// or field type is not singular `enum`.
     pub fn get_enum(&self, m: &dyn Message) -> &'static EnumValueDescriptor {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_enum_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_enum_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -115,7 +147,7 @@ impl FieldDescriptor {
     /// or field type is not singular `string`.
     pub fn get_str<'a>(&self, m: &'a dyn Message) -> &'a str {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_str_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_str_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -128,7 +160,7 @@ impl FieldDescriptor {
     /// or field type is not singular `bytes`.
     pub fn get_bytes<'a>(&self, m: &'a dyn Message) -> &'a [u8] {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_bytes_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_bytes_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -141,7 +173,7 @@ impl FieldDescriptor {
     /// or field type is not singular `u32`.
     pub fn get_u32(&self, m: &dyn Message) -> u32 {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_u32_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_u32_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -154,7 +186,7 @@ impl FieldDescriptor {
     /// or field type is not singular `u64`.
     pub fn get_u64(&self, m: &dyn Message) -> u64 {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_u64_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_u64_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -167,7 +199,7 @@ impl FieldDescriptor {
     /// or field type is not singular `i32`.
     pub fn get_i32(&self, m: &dyn Message) -> i32 {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_i32_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_i32_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -180,7 +212,7 @@ impl FieldDescriptor {
     /// or field type is not singular `i64`.
     pub fn get_i64(&self, m: &dyn Message) -> i64 {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_i64_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_i64_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -193,7 +225,7 @@ impl FieldDescriptor {
     /// field type is not singular `bool`.
     pub fn get_bool(&self, m: &dyn Message) -> bool {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_bool_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_bool_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -206,7 +238,7 @@ impl FieldDescriptor {
     /// field type is not singular `float`.
     pub fn get_f32(&self, m: &dyn Message) -> f32 {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_f32_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_f32_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -219,7 +251,7 @@ impl FieldDescriptor {
     /// or field type is not singular `double`.
     pub fn get_f64(&self, m: &dyn Message) -> f64 {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_f64_generic(m),
+            AccessorKind::Singular(a) => a.accessor.get_f64_generic(m),
             AccessorKind::Repeated(..) | AccessorKind::Map(..) => panic!("not a singular field"),
         }
     }
@@ -231,7 +263,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         match &self.accessor.accessor {
-            AccessorKind::Old(a) => a.get_reflect(m),
+            AccessorKind::Singular(a) => a.accessor.get_reflect(m),
             AccessorKind::Repeated(a) => ReflectFieldRef::Repeated(a.accessor.get_reflect(m)),
             AccessorKind::Map(a) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
         }
