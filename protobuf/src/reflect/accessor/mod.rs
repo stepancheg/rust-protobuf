@@ -16,11 +16,11 @@ use crate::singular::SingularPtrField;
 use super::map::ReflectMap;
 use super::optional::ReflectOptional;
 use super::repeated::ReflectRepeated;
-use super::repeated::ReflectRepeatedEnum;
-use super::repeated::ReflectRepeatedMessage;
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
+use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
+use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 
@@ -49,6 +49,7 @@ pub trait FieldAccessorTrait: 'static {
 }
 
 pub(crate) enum AccessorKind {
+    Repeated(RepeatedFieldAccessorHolder),
     Old(Box<dyn FieldAccessorTrait>),
 }
 
@@ -90,13 +91,13 @@ impl<M: Message, E: ProtobufEnum> GetSingularEnum<M> for GetSingularEnumImpl<M, 
 trait GetRepeatedMessage<M> {
     fn len_field(&self, m: &M) -> usize;
     fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a dyn Message;
-    fn reflect_repeated_message<'a>(&self, m: &'a M) -> Box<dyn ReflectRepeatedMessage<'a> + 'a>;
+    fn reflect_repeated_message<'a>(&self, m: &'a M) -> ReflectRepeatedRef<'a>;
 }
 
 trait GetRepeatedEnum<M: Message + 'static> {
     fn len_field(&self, m: &M) -> usize;
     fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor;
-    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<dyn ReflectRepeatedEnum<'a> + 'a>;
+    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> ReflectRepeatedRef<'a>;
 }
 
 trait GetSetCopyFns<M> {
@@ -160,8 +161,6 @@ enum FieldAccessorFunctions<M> {
     Simple(Box<dyn FieldAccessor2<M, dyn ProtobufValue>>),
     // optional, required or message
     Optional(Box<dyn FieldAccessor2<M, dyn ReflectOptional>>),
-    // repeated
-    Repeated(Box<dyn FieldAccessor2<M, dyn ReflectRepeated>>),
     // protobuf 3 map
     Map(Box<dyn FieldAccessor2<M, dyn ReflectMap>>),
 }
@@ -174,7 +173,6 @@ impl<M> fmt::Debug for FieldAccessorFunctions<M> {
             }
             &FieldAccessorFunctions::Simple(..) => write!(f, "Simple(..)"),
             &FieldAccessorFunctions::Optional(..) => write!(f, "Optional(..)"),
-            &FieldAccessorFunctions::Repeated(..) => write!(f, "Repeated(..)"),
             &FieldAccessorFunctions::Map(..) => write!(f, "Map(..)"),
         }
     }
@@ -187,9 +185,7 @@ struct FieldAccessorImpl<M> {
 impl<M: Message> FieldAccessorImpl<M> {
     fn get_value_option<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         match self.fns {
-            FieldAccessorFunctions::Repeated(..) | FieldAccessorFunctions::Map(..) => {
-                panic!("repeated")
-            }
+            FieldAccessorFunctions::Map(..) => panic!("repeated"),
             FieldAccessorFunctions::Simple(ref a) => Some(a.get_field(m).as_ref()),
             FieldAccessorFunctions::Optional(ref a) => {
                 a.get_field(m).to_option().map(|v| v.as_ref())
@@ -218,7 +214,7 @@ impl<M: Message + 'static> FieldAccessorTrait for FieldAccessorImpl<M> {
             FieldAccessorFunctions::Simple(ref a) => {
                 a.get_field(message_down_cast(m)).is_non_zero()
             }
-            FieldAccessorFunctions::Map(..) | FieldAccessorFunctions::Repeated(..) => {
+            FieldAccessorFunctions::Map(..) => {
                 panic!("has_xxx is not implemented for repeated");
             }
         }
@@ -226,7 +222,6 @@ impl<M: Message + 'static> FieldAccessorTrait for FieldAccessorImpl<M> {
 
     fn len_field_generic(&self, m: &dyn Message) -> usize {
         match self.fns {
-            FieldAccessorFunctions::Repeated(ref a) => a.get_field(message_down_cast(m)).len(),
             FieldAccessorFunctions::Map(ref a) => a.get_field(message_down_cast(m)).len(),
             FieldAccessorFunctions::Simple(..)
             | FieldAccessorFunctions::SingularHasGetSet { .. }
@@ -341,9 +336,6 @@ impl<M: Message + 'static> FieldAccessorTrait for FieldAccessorImpl<M> {
 
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         match self.fns {
-            FieldAccessorFunctions::Repeated(ref accessor2) => {
-                ReflectFieldRef::Repeated(accessor2.get_field(message_down_cast(m)))
-            }
             FieldAccessorFunctions::Map(ref accessor2) => {
                 ReflectFieldRef::Map(accessor2.get_field(message_down_cast(m)))
             }
@@ -575,82 +567,6 @@ pub fn make_singular_message_accessor<M: Message + 'static, F: Message + 'static
                 has,
                 get_set: SingularGetSet::Message(Box::new(GetSingularMessageImpl { get: get })),
             },
-        })),
-    }
-}
-
-// repeated
-
-impl<M, V> FieldAccessor2<M, dyn ReflectRepeated> for MessageGetMut<M, Vec<V>>
-where
-    M: Message + 'static,
-    V: ProtobufValue + 'static,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
-        (self.get_field)(m) as &dyn ReflectRepeated
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut dyn ReflectRepeated {
-        (self.mut_field)(m) as &mut dyn ReflectRepeated
-    }
-}
-
-pub fn make_vec_accessor<M, V>(
-    name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a Vec<<V::RuntimeType as RuntimeType>::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<<V::RuntimeType as RuntimeType>::Value>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
-            fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
-                M,
-                Vec<<V::RuntimeType as RuntimeType>::Value>,
-            > {
-                get_field: get_vec,
-                mut_field: mut_vec,
-            })),
-        })),
-    }
-}
-
-impl<M, V> FieldAccessor2<M, dyn ReflectRepeated> for MessageGetMut<M, RepeatedField<V>>
-where
-    M: Message + 'static,
-    V: ProtobufValue + 'static,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
-        (self.get_field)(m) as &dyn ReflectRepeated
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut dyn ReflectRepeated {
-        (self.mut_field)(m) as &mut dyn ReflectRepeated
-    }
-}
-
-pub fn make_repeated_field_accessor<M, V>(
-    name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
-            fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
-                M,
-                RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
-            > {
-                get_field: get_vec,
-                mut_field: mut_vec,
-            })),
         })),
     }
 }
