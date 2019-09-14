@@ -146,7 +146,7 @@ impl crate::Message for FieldMask {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "paths",
                     |m: &FieldMask| { &m.paths },
                     |m: &mut FieldMask| { &mut m.paths },

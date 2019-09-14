@@ -24,6 +24,10 @@ use super::ReflectFieldRef;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 
+pub(crate) mod map;
+pub(crate) mod repeated;
+pub(crate) mod singular;
+
 /// this trait should not be used directly, use `FieldDescriptor` instead
 pub trait FieldAccessorTrait: 'static {
     fn has_field_generic(&self, m: &dyn Message) -> bool;

@@ -142,7 +142,7 @@ impl crate::Message for Struct {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
+                fields.push(crate::reflect::rt::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
                     "fields",
                     |m: &Struct| { &m.fields },
                     |m: &mut Struct| { &mut m.fields },
@@ -608,32 +608,32 @@ impl crate::Message for Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_enum_accessor::<_, NullValue>(
+                fields.push(crate::reflect::rt::make_singular_enum_accessor::<_, NullValue>(
                     "null_value",
                     Value::has_null_value,
                     Value::get_null_value,
                 ));
-                fields.push(crate::reflect::accessor::make_singular_f64_accessor::<_>(
+                fields.push(crate::reflect::rt::make_singular_f64_accessor::<_>(
                     "number_value",
                     Value::has_number_value,
                     Value::get_number_value,
                 ));
-                fields.push(crate::reflect::accessor::make_singular_string_accessor::<_>(
+                fields.push(crate::reflect::rt::make_singular_string_accessor::<_>(
                     "string_value",
                     Value::has_string_value,
                     Value::get_string_value,
                 ));
-                fields.push(crate::reflect::accessor::make_singular_bool_accessor::<_>(
+                fields.push(crate::reflect::rt::make_singular_bool_accessor::<_>(
                     "bool_value",
                     Value::has_bool_value,
                     Value::get_bool_value,
                 ));
-                fields.push(crate::reflect::accessor::make_singular_message_accessor::<_, Struct>(
+                fields.push(crate::reflect::rt::make_singular_message_accessor::<_, Struct>(
                     "struct_value",
                     Value::has_struct_value,
                     Value::get_struct_value,
                 ));
-                fields.push(crate::reflect::accessor::make_singular_message_accessor::<_, ListValue>(
+                fields.push(crate::reflect::rt::make_singular_message_accessor::<_, ListValue>(
                     "list_value",
                     Value::has_list_value,
                     Value::get_list_value,
@@ -817,7 +817,7 @@ impl crate::Message for ListValue {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
                     "values",
                     |m: &ListValue| { &m.values },
                     |m: &mut ListValue| { &mut m.values },

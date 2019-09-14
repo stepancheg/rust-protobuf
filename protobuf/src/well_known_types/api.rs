@@ -388,37 +388,37 @@ impl crate::Message for Api {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &Api| { &m.name },
                     |m: &mut Api| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Method>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Method>>(
                     "methods",
                     |m: &Api| { &m.methods },
                     |m: &mut Api| { &mut m.methods },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
                     "options",
                     |m: &Api| { &m.options },
                     |m: &mut Api| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "version",
                     |m: &Api| { &m.version },
                     |m: &mut Api| { &mut m.version },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::rt::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
                     "source_context",
                     |m: &Api| { &m.source_context },
                     |m: &mut Api| { &mut m.source_context },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Mixin>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Mixin>>(
                     "mixins",
                     |m: &Api| { &m.mixins },
                     |m: &mut Api| { &mut m.mixins },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<crate::well_known_types::Syntax>>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<crate::well_known_types::Syntax>>(
                     "syntax",
                     |m: &Api| { &m.syntax },
                     |m: &mut Api| { &mut m.syntax },
@@ -794,37 +794,37 @@ impl crate::Message for Method {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &Method| { &m.name },
                     |m: &mut Method| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "request_type_url",
                     |m: &Method| { &m.request_type_url },
                     |m: &mut Method| { &mut m.request_type_url },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "request_streaming",
                     |m: &Method| { &m.request_streaming },
                     |m: &mut Method| { &mut m.request_streaming },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "response_type_url",
                     |m: &Method| { &m.response_type_url },
                     |m: &mut Method| { &mut m.response_type_url },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
                     "response_streaming",
                     |m: &Method| { &m.response_streaming },
                     |m: &mut Method| { &mut m.response_streaming },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
                     "options",
                     |m: &Method| { &m.options },
                     |m: &mut Method| { &mut m.options },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<crate::well_known_types::Syntax>>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<crate::well_known_types::Syntax>>(
                     "syntax",
                     |m: &Method| { &m.syntax },
                     |m: &mut Method| { &mut m.syntax },
@@ -1038,12 +1038,12 @@ impl crate::Message for Mixin {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &Mixin| { &m.name },
                     |m: &mut Mixin| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "root",
                     |m: &Mixin| { &m.root },
                     |m: &mut Mixin| { &mut m.root },

@@ -235,17 +235,17 @@ impl crate::Message for CodeGeneratorRequest {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "file_to_generate",
                     |m: &CodeGeneratorRequest| { &m.file_to_generate },
                     |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "parameter",
                     |m: &CodeGeneratorRequest| { &m.parameter },
                     |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
                     "proto_file",
                     |m: &CodeGeneratorRequest| { &m.proto_file },
                     |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -472,12 +472,12 @@ impl crate::Message for CodeGeneratorResponse {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "error",
                     |m: &CodeGeneratorResponse| { &m.error },
                     |m: &mut CodeGeneratorResponse| { &mut m.error },
                 ));
-                fields.push(crate::reflect::accessor::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
+                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<CodeGeneratorResponse_File>>(
                     "file",
                     |m: &CodeGeneratorResponse| { &m.file },
                     |m: &mut CodeGeneratorResponse| { &mut m.file },
@@ -752,17 +752,17 @@ impl crate::Message for CodeGeneratorResponse_File {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "name",
                     |m: &CodeGeneratorResponse_File| { &m.name },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.name },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "insertion_point",
                     |m: &CodeGeneratorResponse_File| { &m.insertion_point },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.insertion_point },
                 ));
-                fields.push(crate::reflect::accessor::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::make_singular_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "content",
                     |m: &CodeGeneratorResponse_File| { &m.content },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.content },

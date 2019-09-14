@@ -260,7 +260,7 @@ impl<'a> MessageGen<'a> {
     fn write_descriptor_field(&self, fields_var: &str, field: &FieldGen, w: &mut CodeWriter) {
         let accessor_fn = field.accessor_fn();
         w.write_line(&format!(
-            "{}.push({}::reflect::accessor::{}(",
+            "{}.push({}::reflect::rt::{}(",
             fields_var,
             protobuf_crate_path(&self.customize),
             accessor_fn.sig()

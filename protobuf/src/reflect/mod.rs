@@ -2,7 +2,7 @@
 
 use crate::core::Message;
 
-pub mod accessor;
+mod accessor;
 mod enums;
 mod field;
 mod map;
@@ -16,6 +16,8 @@ mod transmute_eq;
 mod type_dynamic;
 pub mod types;
 mod value;
+
+pub mod rt;
 
 pub use self::value::ProtobufValue;
 pub use self::value::ReflectValueBox;
