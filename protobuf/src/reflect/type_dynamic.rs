@@ -2,8 +2,6 @@
 
 use std::marker;
 
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::wire_format::WireType;
 

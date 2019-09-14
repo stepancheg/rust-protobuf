@@ -60,7 +60,7 @@ impl MessageDescriptor {
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic(
         rust_name: &'static str,
-        fields: Vec<Box<FieldAccessor + 'static>>,
+        fields: Vec<FieldAccessor>,
         file: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
@@ -77,7 +77,7 @@ impl MessageDescriptor {
         let fields: Vec<_> = fields
             .into_iter()
             .map(|f| {
-                let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                let proto = *field_proto_by_name.get(&f.name).unwrap();
                 FieldDescriptor::new(f, proto)
             })
             .collect();
@@ -112,7 +112,7 @@ impl MessageDescriptor {
     #[doc(hidden)]
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
-        fields: Vec<Box<FieldAccessor + 'static>>,
+        fields: Vec<FieldAccessor>,
         file: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
