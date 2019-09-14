@@ -261,12 +261,6 @@ impl MessageDescriptor {
         let &index = self.index_by_number.get(&number)?;
         Some(&self.fields[index])
     }
-
-    /// This operation is not needed here
-    // TODO: remove it
-    pub fn cast<M: 'static>(&self, message: Box<dyn Message>) -> Result<M, Box<dyn Message>> {
-        message.downcast_box::<M>().map(|m| *m)
-    }
 }
 
 /// Identity comparison: message descriptor are equal if their addresses are equal

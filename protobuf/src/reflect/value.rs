@@ -307,7 +307,10 @@ impl ReflectValueBox {
                 .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
                 .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into())),
             ReflectValueBox::Enum(d, e) => d.cast(e).ok_or(ReflectValueBox::Enum(d, e)),
-            ReflectValueBox::Message(m) => m.descriptor().cast(m).map_err(ReflectValueBox::Message),
+            ReflectValueBox::Message(m) => m
+                .downcast_box::<V>()
+                .map(|m| *m)
+                .map_err(ReflectValueBox::Message),
         }
     }
 }
