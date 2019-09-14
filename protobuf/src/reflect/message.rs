@@ -257,7 +257,7 @@ impl MessageDescriptor {
     }
 
     /// Find message field by field name
-    pub fn field_by_number<'a>(&'a self, number: u32) -> Option<&'a FieldDescriptor> {
+    pub fn field_by_number(&self, number: u32) -> Option<&FieldDescriptor> {
         let &index = self.index_by_number.get(&number)?;
         Some(&self.fields[index])
     }
