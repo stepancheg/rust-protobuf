@@ -245,7 +245,7 @@ impl MessageDescriptor {
     /// Find message field by protobuf field name
     ///
     /// Note: protobuf field name might be different for Rust field name.
-    pub fn field_by_name(&self, name: &str) -> Option<&FieldDescriptor> {
+    pub fn field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
         let &index = self.index_by_name.get(name)?;
         Some(&self.fields[index])
     }
