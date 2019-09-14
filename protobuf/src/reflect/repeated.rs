@@ -3,12 +3,16 @@ use std::slice;
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 
+use crate::reflect::ReflectValueBox;
 use crate::repeated::RepeatedField;
 
 pub trait ReflectRepeated: 'static {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &dyn ProtobufValue;
+    fn set(&mut self, index: usize, value: ReflectValueBox);
+    fn push(&mut self, value: ReflectValueBox);
+    fn clear(&mut self);
 }
 
 impl<V: ProtobufValue + 'static> ReflectRepeated for Vec<V> {
@@ -24,6 +28,20 @@ impl<V: ProtobufValue + 'static> ReflectRepeated for Vec<V> {
 
     fn get(&self, index: usize) -> &dyn ProtobufValue {
         &self[index]
+    }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self[index] = value;
+    }
+
+    fn push(&mut self, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self.push(value)
+    }
+
+    fn clear(&mut self) {
+        self.clear()
     }
 }
 
@@ -42,6 +60,19 @@ impl<V: ProtobufValue + 'static> ReflectRepeated for [V] {
     fn get(&self, index: usize) -> &dyn ProtobufValue {
         &self[index]
     }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self[index] = value;
+    }
+
+    fn push(&mut self, _value: ReflectValueBox) {
+        panic!("push is not possible for [V]");
+    }
+
+    fn clear(&mut self) {
+        panic!("clear is not possible for [V]");
+    }
 }
 
 impl<V: ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
@@ -57,6 +88,20 @@ impl<V: ProtobufValue + 'static> ReflectRepeated for RepeatedField<V> {
 
     fn get(&self, index: usize) -> &dyn ProtobufValue {
         &self[index]
+    }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self[index] = value;
+    }
+
+    fn push(&mut self, value: ReflectValueBox) {
+        let value = value.downcast().expect("wrong type");
+        self.push(value)
+    }
+
+    fn clear(&mut self) {
+        self.clear()
     }
 }
 
@@ -162,17 +207,18 @@ impl<'a> ReflectRepeatedRef<'a> {
 
 pub struct ReflectRepeatedRefIter<'a> {
     repeated: &'a ReflectRepeatedRef<'a>,
-    pos: usize,
+    index: usize,
 }
 
 impl<'a> Iterator for ReflectRepeatedRefIter<'a> {
     type Item = ReflectValueRef<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.pos < self.repeated.len() {
-            let pos = self.pos;
-            self.pos += 1;
-            Some(self.repeated.get(pos))
+        let index = self.index;
+        if index != self.repeated.len() {
+            let r = self.repeated.get(index);
+            self.index += 1;
+            Some(r)
         } else {
             None
         }
@@ -186,7 +232,7 @@ impl<'a> IntoIterator for &'a ReflectRepeatedRef<'a> {
     fn into_iter(self) -> Self::IntoIter {
         ReflectRepeatedRefIter {
             repeated: self,
-            pos: 0,
+            index: 0,
         }
     }
 }
