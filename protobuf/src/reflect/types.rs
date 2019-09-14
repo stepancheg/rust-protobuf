@@ -77,46 +77,65 @@ pub trait ProtobufType {
 }
 
 /// `float`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeFloat;
 /// `double`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeDouble;
 /// `int32`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeInt32;
 /// `int64`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeInt64;
 /// `uint32`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeUint32;
 /// `uint64`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeUint64;
 /// `sint32`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeSint32;
 /// `sint64`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeSint64;
 /// `fixed32`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeFixed32;
 /// `fixed64`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeFixed64;
 /// `sfixed32`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeSfixed32;
 /// `sfixed64`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeSfixed64;
 /// `bool`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeBool;
 /// `string`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeString;
 /// `bytes`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeBytes;
-/// Something which should be deleted
+/// `chars`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeChars;
 
 /// `bytes` as [`Bytes`](bytes::Bytes)
 #[cfg(feature = "bytes")]
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeCarllercheBytes;
 /// `string` as [`Chars`](crate::Chars)
 #[cfg(feature = "bytes")]
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeCarllercheChars;
 
-/// `enum`
+/// `enum` as `ProtobufEnum`
+#[derive(Copy, Clone)]
 pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
 /// `message`
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
