@@ -1,9 +1,9 @@
 use std::any::Any;
 
 #[cfg(feature = "bytes")]
-use bytes::Bytes;
+use crate::chars::Chars;
 #[cfg(feature = "bytes")]
-use chars::Chars;
+use bytes::Bytes;
 
 use super::*;
 
@@ -330,7 +330,10 @@ impl ReflectValueBox {
             ReflectValueBox::Bytes(v) => transmute_eq::<Vec<u8>, _>(v)
                 .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
                 .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into())),
-            ReflectValueBox::Enum(v) => v.enum_descriptor().cast_to_protobuf_enum(v.value()).ok_or(ReflectValueBox::Enum(v)),
+            ReflectValueBox::Enum(v) => v
+                .enum_descriptor()
+                .cast_to_protobuf_enum(v.value())
+                .ok_or(ReflectValueBox::Enum(v)),
             ReflectValueBox::Message(m) => m
                 .downcast_box::<V>()
                 .map(|m| *m)

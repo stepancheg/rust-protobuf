@@ -16,6 +16,8 @@ extern crate serde_derive;
 pub use crate::cached_size::CachedSize;
 pub use crate::clear::Clear;
 pub use crate::core::parse_from_bytes;
+#[cfg(feature = "bytes")]
+pub use crate::core::parse_from_carllerche_bytes;
 pub use crate::core::parse_from_reader;
 pub use crate::core::parse_length_delimited_from;
 pub use crate::core::parse_length_delimited_from_bytes;
@@ -38,8 +40,6 @@ pub use crate::unknown::UnknownValues;
 pub use crate::unknown::UnknownValuesIter;
 #[cfg(feature = "bytes")]
 pub use chars::Chars;
-#[cfg(feature = "bytes")]
-pub use core::parse_from_carllerche_bytes;
 
 // generated
 pub mod descriptor;

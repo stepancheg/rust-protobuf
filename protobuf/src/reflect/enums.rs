@@ -1,10 +1,10 @@
 use crate::descriptor::{EnumDescriptorProto, EnumValueDescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_enum_by_rust_name;
+use crate::reflect::ProtobufValue;
 use crate::ProtobufEnum;
 use std::any::TypeId;
 use std::collections::HashMap;
 use std::fmt;
-use crate::reflect::ProtobufValue;
 
 /// Description for enum variant.
 ///

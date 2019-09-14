@@ -6,9 +6,9 @@ use std::default::Default;
 use std::hash::Hash;
 
 #[cfg(feature = "bytes")]
-use bytes::Bytes;
+use crate::chars::Chars;
 #[cfg(feature = "bytes")]
-use chars::Chars;
+use bytes::Bytes;
 
 use crate::core::*;
 use crate::enums::ProtobufEnum;

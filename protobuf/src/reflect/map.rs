@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use std::hash::Hash;
 
 use crate::reflect::value::ProtobufValue;
-use crate::reflect::ReflectValueRef;
 use crate::reflect::value::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
 
 /// Implemented for `HashMap` with appropriate keys and values
 pub trait ReflectMap: 'static {
