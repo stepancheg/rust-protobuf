@@ -1,12 +1,15 @@
+#![cfg(feature = "bytes")]
+
 use std::fmt;
 use std::ops::Deref;
 use std::str;
 
 use bytes::Bytes;
 
-use clear::Clear;
+use crate::clear::Clear;
 
 /// Thin wrapper around `Bytes` which guarantees that bytes are valid UTF-8 string.
+/// Should be API-compatible to `String`.
 #[derive(Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Chars(Bytes);
 
@@ -43,6 +46,15 @@ impl<'a> From<&'a str> for Chars {
 impl From<String> for Chars {
     fn from(src: String) -> Chars {
         Chars(Bytes::from(src))
+    }
+}
+
+impl Into<String> for Chars {
+    fn into(self) -> String {
+        unsafe {
+            // TODO: copies here
+            String::from_utf8_unchecked(self.0.as_ref().to_owned())
+        }
     }
 }
 
