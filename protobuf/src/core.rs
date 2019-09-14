@@ -195,8 +195,8 @@ impl dyn Message {
     ///
     /// ```
     /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: Box<Message>) {
-    /// let m: Box<Message> = message;
+    /// # fn foo<MyMessage: Message>(message: Box<dyn Message>) {
+    /// let m: Box<dyn Message> = message;
     /// let m: Box<MyMessage> = Message::downcast_box(m).unwrap();
     /// # }
     /// ```
@@ -232,8 +232,8 @@ impl dyn Message {
     ///
     /// ```
     /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: &mut Message) {
-    /// let m: &mut Message = message;
+    /// # fn foo<MyMessage: Message>(message: &mut dyn Message) {
+    /// let m: &mut dyn Message = message;
     /// let m: &mut MyMessage = Message::downcast_mut(m).unwrap();
     /// # }
     /// ```
