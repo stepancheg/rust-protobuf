@@ -117,9 +117,6 @@ pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
 
-#[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeUnreachable;
-
 impl RuntimeType for RuntimeTypeF32 {
     type Value = f32;
 
@@ -747,40 +744,5 @@ where
 
     fn is_non_zero(_value: &M) -> bool {
         true
-    }
-}
-
-impl RuntimeType for RuntimeTypeUnreachable {
-    type Value = u32;
-
-    fn runtime_type_box() -> RuntimeTypeBox
-    where
-        Self: Sized,
-    {
-        unreachable!()
-    }
-
-    fn default_value_ref() -> ReflectValueRef<'static> {
-        unreachable!()
-    }
-
-    fn from_value_box(_value_box: ReflectValueBox) -> u32 {
-        unreachable!()
-    }
-
-    fn into_value_box(_value: u32) -> ReflectValueBox {
-        unreachable!()
-    }
-
-    fn as_ref(_value: &u32) -> ReflectValueRef {
-        unreachable!()
-    }
-
-    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
-        unimplemented!()
-    }
-
-    fn is_non_zero(_value: &u32) -> bool {
-        unreachable!()
     }
 }

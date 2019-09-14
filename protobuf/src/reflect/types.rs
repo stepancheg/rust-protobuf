@@ -29,7 +29,6 @@ use crate::reflect::runtime_types::RuntimeTypeMessage;
 use crate::reflect::runtime_types::RuntimeTypeString;
 use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
-use crate::reflect::runtime_types::RuntimeTypeUnreachable;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
@@ -184,10 +183,6 @@ pub struct ProtobufTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
 /// `message`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
-
-/// Nonexisting type, useful in certain situations
-#[derive(Copy, Clone)]
-pub struct ProtobufTypeUnreachable;
 
 impl ProtobufType for ProtobufTypeFloat {
     type RuntimeType = RuntimeTypeF32;
@@ -764,31 +759,5 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
         os.write_raw_varint32(value.get_cached_size())?;
         value.write_to_with_cached_sizes(os)?;
         Ok(())
-    }
-}
-
-impl ProtobufType for ProtobufTypeUnreachable {
-    type RuntimeType = RuntimeTypeUnreachable;
-
-    const WIRE_TYPE: WireType = WireType::WireTypeEndGroup;
-
-    fn read(_is: &mut CodedInputStream) -> ProtobufResult<u32> {
-        unreachable!()
-    }
-
-    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<u32> {
-        unreachable!()
-    }
-
-    fn compute_size(_value: &u32) -> u32 {
-        unreachable!()
-    }
-
-    fn write_with_cached_size(
-        _field_number: u32,
-        _value: &u32,
-        _os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
-        unreachable!()
     }
 }
