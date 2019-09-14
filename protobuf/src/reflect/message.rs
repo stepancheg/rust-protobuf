@@ -67,15 +67,24 @@ impl MessageDescriptor {
         let proto = find_message_by_rust_name(file, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
-        for field_proto in proto.message.get_field() {
+        for field_proto in &proto.message.field {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.message.get_field().iter().enumerate() {
-            index_by_number.insert(f.get_number() as u32, i);
-            index_by_name.insert(f.get_name().to_string(), i);
+
+        let fields: Vec<_> = fields
+            .into_iter()
+            .map(|f| {
+                let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                FieldDescriptor::new(f, proto)
+            })
+            .collect();
+
+        for (i, f) in proto.message.field.iter().enumerate() {
+            assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
+            assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
         }
 
         let mut full_name = file.get_package().to_string();
@@ -85,16 +94,10 @@ impl MessageDescriptor {
         full_name.push_str(proto.message.get_name());
 
         MessageDescriptor {
-            full_name: full_name,
+            full_name,
             proto: proto.message,
             factory,
-            fields: fields
-                .into_iter()
-                .map(|f| {
-                    let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
-                    FieldDescriptor::new(f, proto)
-                })
-                .collect(),
+            fields,
             index_by_name,
             index_by_number,
         }
