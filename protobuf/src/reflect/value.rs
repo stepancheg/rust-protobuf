@@ -11,7 +11,7 @@ use crate::reflect::transmute_eq::transmute_eq;
 
 /// Type implemented by all protobuf elementary types
 /// (ints, floats, bool, string, bytes, enums, messages).
-pub trait ProtobufValue: Any + 'static {
+pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// As ref
     fn as_ref(&self) -> ReflectValueRef;
 

@@ -4,7 +4,7 @@ use crate::reflect::ProtobufValue;
 use crate::ProtobufEnum;
 use std::any::TypeId;
 use std::collections::HashMap;
-use std::fmt;
+use std::{fmt, marker};
 
 /// Description for enum variant.
 ///
@@ -43,6 +43,19 @@ impl EnumValueDescriptor {
     }
 }
 
+trait GetEnumDescriptor: Send + Sync + 'static {
+    unsafe fn copy_to(&self, value: i32, dest: *mut ());
+}
+
+struct GetDescriptorImpl<E: ProtobufEnum>(marker::PhantomData<E>);
+
+impl<E: ProtobufEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
+    unsafe fn copy_to(&self, value: i32, dest: *mut ()) {
+        let e = E::from_i32(value).expect("unknown value");
+        (&e as *const E).copy_to(dest as *mut E, 1);
+    }
+}
+
 /// Dynamic representation of enum type.
 ///
 /// Can be used in reflective operations.
@@ -51,6 +64,9 @@ pub struct EnumDescriptor {
     values: Vec<EnumValueDescriptor>,
     /// Type id of `<E>`
     type_id: TypeId,
+
+    #[cfg(not(rustc_nightly))]
+    get_descriptor: &'static dyn GetEnumDescriptor,
 
     index_by_name: HashMap<String, usize>,
     index_by_number: HashMap<i32, usize>,
@@ -104,6 +120,8 @@ impl EnumDescriptor {
             proto: proto.en,
             values,
             type_id: TypeId::of::<E>(),
+            #[cfg(not(rustc_nightly))]
+            get_descriptor: &GetDescriptorImpl(marker::PhantomData::<E>),
             index_by_name,
             index_by_number,
         }

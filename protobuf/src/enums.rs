@@ -1,8 +1,9 @@
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
+use crate::reflect::ProtobufValue;
 
 /// Trait implemented by all protobuf enum types.
-pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
+pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue {
     /// Get enum `i32` value.
     fn value(&self) -> i32;
 
