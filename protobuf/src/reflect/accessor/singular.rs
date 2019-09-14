@@ -3,11 +3,15 @@ use crate::reflect::accessor::{AccessorKind, FieldAccessor};
 use crate::reflect::optional::ReflectOptional;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::runtime_types::RuntimeType;
-use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectFieldRef;
-use crate::reflect::{EnumValueDescriptor, ProtobufValue, ReflectValueRef};
-use crate::{Message, ProtobufEnum, SingularField, SingularPtrField};
+use crate::reflect::ReflectValueRef;
+use crate::Message;
+use crate::ProtobufEnum;
+use crate::SingularField;
+use crate::SingularPtrField;
 use std::fmt;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
@@ -26,7 +30,7 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_f32_generic(&self, m: &dyn Message) -> f32;
     fn get_f64_generic(&self, m: &dyn Message) -> f64;
 
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a>;
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
 }
 
 pub(crate) struct SingularFieldAccessorHolder {
@@ -291,30 +295,30 @@ impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
         }
     }
 
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
         match self.fns {
-            FieldAccessorFunctions::Optional(ref accessor2) => ReflectFieldRef::Optional(
-                accessor2
-                    .get_field(message_down_cast(m))
-                    .to_option()
-                    .map(|v| v.as_ref()),
-            ),
-            FieldAccessorFunctions::Simple(ref accessor2) => ReflectFieldRef::Optional({
+            FieldAccessorFunctions::Optional(ref accessor2) => accessor2
+                .get_field(message_down_cast(m))
+                .to_option()
+                .map(|v| v.as_ref()),
+            FieldAccessorFunctions::Simple(ref accessor2) => {
                 let v = accessor2.get_field(message_down_cast(m));
                 if v.is_non_zero() {
                     Some(v.as_ref())
                 } else {
                     None
                 }
-            }),
+            }
             FieldAccessorFunctions::SingularHasGetSet {
                 ref has,
                 ref get_set,
-            } => ReflectFieldRef::Optional(if has(message_down_cast(m)) {
-                Some(get_set.get_ref(message_down_cast(m)))
-            } else {
-                None
-            }),
+            } => {
+                if has(message_down_cast(m)) {
+                    Some(get_set.get_ref(message_down_cast(m)))
+                } else {
+                    None
+                }
+            }
         }
     }
 }
