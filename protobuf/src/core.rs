@@ -211,6 +211,38 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
         Self: Sized;
 }
 
+impl dyn Message {
+    /// Downcast `Box<dyn Message>` to specific message type.
+    pub(crate) fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<dyn Message>> {
+        if Any::type_id(&*self) == TypeId::of::<T>() {
+            unsafe {
+                let raw: *mut dyn Message = Box::into_raw(self);
+                Ok(Box::from_raw(raw as *mut T))
+            }
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Downcast `&dyn Message` to specific message type.
+    pub(crate) fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
+        if Any::type_id(&*self) == TypeId::of::<M>() {
+            unsafe { Some(&*(self as *const dyn Message as *const M)) }
+        } else {
+            None
+        }
+    }
+
+    /// Downcast `&mut dyn Message` to specific message type.
+    pub(crate) fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
+        if Any::type_id(&*self) == TypeId::of::<M>() {
+            unsafe { Some(&mut *(self as *mut dyn Message as *mut M)) }
+        } else {
+            None
+        }
+    }
+}
+
 pub fn message_down_cast<'a, M: Message + 'a>(m: &'a Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
