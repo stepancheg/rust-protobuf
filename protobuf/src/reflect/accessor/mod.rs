@@ -48,11 +48,15 @@ pub trait FieldAccessorTrait: 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a>;
 }
 
+pub(crate) enum AccessorKind {
+    Old(Box<dyn FieldAccessorTrait>),
+}
+
 /// Accessor object is constructed in generated code.
 /// Should not be used directly.
 pub struct FieldAccessor {
     pub(crate) name: &'static str,
-    pub(crate) accessor: Box<dyn FieldAccessorTrait>,
+    pub(crate) accessor: AccessorKind,
 }
 
 trait GetSingularMessage<M> {
@@ -385,7 +389,7 @@ pub fn make_singular_u32_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -393,7 +397,7 @@ pub fn make_singular_u32_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -404,7 +408,7 @@ pub fn make_singular_i32_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -412,7 +416,7 @@ pub fn make_singular_i32_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -423,7 +427,7 @@ pub fn make_singular_u64_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -431,7 +435,7 @@ pub fn make_singular_u64_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -442,7 +446,7 @@ pub fn make_singular_i64_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -450,7 +454,7 @@ pub fn make_singular_i64_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -461,7 +465,7 @@ pub fn make_singular_f32_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -469,7 +473,7 @@ pub fn make_singular_f32_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -480,7 +484,7 @@ pub fn make_singular_f64_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -488,7 +492,7 @@ pub fn make_singular_f64_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -499,7 +503,7 @@ pub fn make_singular_bool_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
@@ -507,7 +511,7 @@ pub fn make_singular_bool_accessor<M: Message + 'static>(
                     _set: set_panic,
                 })),
             },
-        }),
+        })),
     }
 }
 
@@ -518,12 +522,12 @@ pub fn make_singular_enum_accessor<M: Message + 'static, E: ProtobufEnum + 'stat
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Enum(Box::new(GetSingularEnumImpl { get: get })),
             },
-        }),
+        })),
     }
 }
 
@@ -534,12 +538,12 @@ pub fn make_singular_string_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::String(get, set_panic),
             },
-        }),
+        })),
     }
 }
 
@@ -550,12 +554,12 @@ pub fn make_singular_bytes_accessor<M: Message + 'static>(
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Bytes(get, set_panic),
             },
-        }),
+        })),
     }
 }
 
@@ -566,12 +570,12 @@ pub fn make_singular_message_accessor<M: Message + 'static, F: Message + 'static
 ) -> FieldAccessor {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::SingularHasGetSet {
                 has,
                 get_set: SingularGetSet::Message(Box::new(GetSingularMessageImpl { get: get })),
             },
-        }),
+        })),
     }
 }
 
@@ -602,7 +606,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
                 M,
                 Vec<<V::RuntimeType as RuntimeType>::Value>,
@@ -610,7 +614,7 @@ where
                 get_field: get_vec,
                 mut_field: mut_vec,
             })),
-        }),
+        })),
     }
 }
 
@@ -639,7 +643,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
                 M,
                 RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
@@ -647,7 +651,7 @@ where
                 get_field: get_vec,
                 mut_field: mut_vec,
             })),
-        }),
+        })),
     }
 }
 
@@ -676,7 +680,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
                 M,
                 Option<<V::RuntimeType as RuntimeType>::Value>,
@@ -684,7 +688,7 @@ where
                 get_field,
                 mut_field,
             })),
-        }),
+        })),
     }
 }
 
@@ -715,7 +719,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
                 M,
                 SingularField<<V::RuntimeType as RuntimeType>::Value>,
@@ -723,7 +727,7 @@ where
                 get_field,
                 mut_field,
             })),
-        }),
+        })),
     }
 }
 
@@ -754,7 +758,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
                 M,
                 SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
@@ -762,7 +766,7 @@ where
                 get_field,
                 mut_field,
             })),
-        }),
+        })),
     }
 }
 
@@ -791,7 +795,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Simple(Box::new(MessageGetMut::<
                 M,
                 <V::RuntimeType as RuntimeType>::Value,
@@ -799,7 +803,7 @@ where
                 get_field,
                 mut_field,
             })),
-        }),
+        })),
     }
 }
 
@@ -842,7 +846,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: Box::new(FieldAccessorImpl {
+        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
             fns: FieldAccessorFunctions::Map(Box::new(MessageGetMut::<
                 M,
                 HashMap<
@@ -853,6 +857,6 @@ where
                 get_field,
                 mut_field,
             })),
-        }),
+        })),
     }
 }

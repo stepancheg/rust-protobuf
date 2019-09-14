@@ -1,5 +1,5 @@
 use crate::descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
-use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::accessor::{AccessorKind, FieldAccessor};
 use crate::reflect::map::ReflectMap;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::{EnumValueDescriptor, ReflectValueRef};
@@ -57,7 +57,9 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &Message) -> bool {
-        self.accessor.accessor.has_field_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.has_field_generic(m),
+        }
     }
 
     /// Return length of repeated field.
@@ -68,7 +70,9 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type.
     pub fn len_field(&self, m: &dyn Message) -> usize {
-        self.accessor.accessor.len_field_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.len_field_generic(m),
+        }
     }
 
     /// Get message field or default instance if field is unset.
@@ -77,7 +81,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type or
     /// field type is not message.
     pub fn get_message<'a>(&self, m: &'a dyn Message) -> &'a dyn Message {
-        self.accessor.accessor.get_message_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_message_generic(m),
+        }
     }
 
     /// Get `enum` field.
@@ -87,7 +93,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `enum`.
     pub fn get_enum(&self, m: &dyn Message) -> &'static EnumValueDescriptor {
-        self.accessor.accessor.get_enum_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_enum_generic(m),
+        }
     }
 
     /// Get `string` field.
@@ -97,7 +105,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `string`.
     pub fn get_str<'a>(&self, m: &'a dyn Message) -> &'a str {
-        self.accessor.accessor.get_str_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_str_generic(m),
+        }
     }
 
     /// Get `bytes` field.
@@ -107,7 +117,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `bytes`.
     pub fn get_bytes<'a>(&self, m: &'a dyn Message) -> &'a [u8] {
-        self.accessor.accessor.get_bytes_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_bytes_generic(m),
+        }
     }
 
     /// Get `u32` field.
@@ -117,7 +129,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `u32`.
     pub fn get_u32(&self, m: &dyn Message) -> u32 {
-        self.accessor.accessor.get_u32_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_u32_generic(m),
+        }
     }
 
     /// Get `u64` field.
@@ -127,7 +141,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `u64`.
     pub fn get_u64(&self, m: &dyn Message) -> u64 {
-        self.accessor.accessor.get_u64_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_u64_generic(m),
+        }
     }
 
     /// Get `i32` field.
@@ -137,7 +153,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `i32`.
     pub fn get_i32(&self, m: &dyn Message) -> i32 {
-        self.accessor.accessor.get_i32_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_i32_generic(m),
+        }
     }
 
     /// Get `i64` field.
@@ -147,7 +165,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `i64`.
     pub fn get_i64(&self, m: &dyn Message) -> i64 {
-        self.accessor.accessor.get_i64_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_i64_generic(m),
+        }
     }
 
     /// Get `bool` field.
@@ -157,7 +177,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type or
     /// field type is not singular `bool`.
     pub fn get_bool(&self, m: &dyn Message) -> bool {
-        self.accessor.accessor.get_bool_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_bool_generic(m),
+        }
     }
 
     /// Get `float` field.
@@ -167,7 +189,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type or
     /// field type is not singular `float`.
     pub fn get_f32(&self, m: &dyn Message) -> f32 {
-        self.accessor.accessor.get_f32_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_f32_generic(m),
+        }
     }
 
     /// Get `double` field.
@@ -177,7 +201,9 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type
     /// or field type is not singular `double`.
     pub fn get_f64(&self, m: &dyn Message) -> f64 {
-        self.accessor.accessor.get_f64_generic(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_f64_generic(m),
+        }
     }
 
     /// Get field of any type.
@@ -186,6 +212,8 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type.
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
-        self.accessor.accessor.get_reflect(m)
+        match &self.accessor.accessor {
+            AccessorKind::Old(a) => a.get_reflect(m),
+        }
     }
 }
