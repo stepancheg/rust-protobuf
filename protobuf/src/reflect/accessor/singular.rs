@@ -18,10 +18,10 @@ use crate::singular::OptionLike;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
-    fn get_singular_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a>;
-    fn mut_singular_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a>;
-    fn set_singular_field(&self, m: &mut dyn Message, value: ReflectValueBox);
+    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
+    fn get_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a>;
+    fn mut_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a>;
+    fn set_field(&self, m: &mut dyn Message, value: ReflectValueBox);
 }
 
 pub(crate) struct SingularFieldAccessorHolder {
@@ -97,24 +97,24 @@ where
     E: MutOrDefaultImpl<M>,
     S: SetImpl<M>,
 {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
+    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
         let m = m.downcast_ref().unwrap();
         self.get_option_impl.get_reflect_impl(m)
     }
 
-    fn get_singular_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
+    fn get_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
         let m = m.downcast_ref().unwrap();
         self.get_or_default_impl
             .get_singular_field_or_default_impl(m)
     }
 
-    fn mut_singular_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a> {
+    fn mut_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a> {
         let m = m.downcast_mut().unwrap();
         self.mut_or_default_impl
             .mut_singular_field_or_default_impl(m)
     }
 
-    fn set_singular_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
+    fn set_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
         let m = m.downcast_mut().unwrap();
         self.set_impl.set_singular_field(m, value)
     }

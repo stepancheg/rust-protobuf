@@ -154,7 +154,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &dyn Message) -> bool {
         match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.accessor.get_reflect(m).is_some(),
+            AccessorKind::Singular(ref a) => a.accessor.get_field(m).is_some(),
             AccessorKind::Repeated(ref a) => a.accessor.get_reflect(m).len() != 0,
             AccessorKind::Map(ref a) => a.accessor.get_reflect(m).len() != 0,
         }
@@ -170,7 +170,7 @@ impl FieldDescriptor {
     pub fn len_field(&self, m: &dyn Message) -> usize {
         match self.accessor.accessor {
             AccessorKind::Singular(ref a) => {
-                if a.accessor.get_reflect(m).is_some() {
+                if a.accessor.get_field(m).is_some() {
                     1
                 } else {
                     0
@@ -367,12 +367,12 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or fields is not singular.
     pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
-        self.singular().accessor.get_singular_field_or_default(m)
+        self.singular().accessor.get_field_or_default(m)
     }
 
     // Not public because it is not implemented for all types
     fn mut_singular_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a> {
-        self.singular().accessor.mut_singular_field_or_default(m)
+        self.singular().accessor.mut_field_or_default(m)
     }
 
     /// Runtime representation of singular field.
@@ -391,7 +391,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type or
     /// field is not singular or value is of different type.
     pub fn set_singular_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
-        self.singular().accessor.set_singular_field(m, value)
+        self.singular().accessor.set_field(m, value)
     }
 
     /// Dynamic representation of field type.
@@ -414,7 +414,7 @@ impl FieldDescriptor {
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         use self::AccessorKind::*;
         match self.accessor.accessor {
-            Singular(ref a) => ReflectFieldRef::Optional(a.accessor.get_reflect(m)),
+            Singular(ref a) => ReflectFieldRef::Optional(a.accessor.get_field(m)),
             Repeated(ref a) => ReflectFieldRef::Repeated(a.accessor.get_reflect(m)),
             Map(ref a) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
         }
