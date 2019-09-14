@@ -121,9 +121,6 @@ pub struct ProtobufTypeString;
 /// `bytes`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeBytes;
-/// `chars`
-#[derive(Copy, Clone)]
-pub struct ProtobufTypeChars;
 
 /// `bytes` as [`Bytes`](bytes::Bytes)
 #[cfg(feature = "bytes")]
