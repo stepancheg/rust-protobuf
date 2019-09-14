@@ -9,11 +9,15 @@ mod map;
 mod message;
 mod optional;
 mod repeated;
+mod runtime_type_box;
+mod runtime_type_dynamic;
+pub(crate) mod runtime_types;
 mod transmute_eq;
 pub mod types;
 mod value;
 
 pub use self::value::ProtobufValue;
+pub use self::value::ReflectValueBox;
 pub use self::value::ReflectValueRef;
 #[doc(hidden)]
 pub use self::value::ReflectValueRef as ProtobufValueRef;
