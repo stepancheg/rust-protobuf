@@ -41,10 +41,19 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.9] - Unreleased
 
+### Backward compatibility
+
+- Minimum supported Rust version is 1.34.2 now
+- Generated code by protobuf compiler is now compatible
+  only with exactly the same version of protobuf library.
+  Note you can use
+  [pure rust protobuf compiler](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
+  to avoid dependency on `protoc` binary.
+
+### Other changes
+
 - All fields are public now except optional or repeated fields when `syntax = "proto2"`,
   but message fields are public even when `syntax = "proto2"`
-- Minimum supported Rust version
-  [is 1.31.1 now](https://github.com/stepancheg/rust-protobuf/commit/d952b025f02e5982daf737324f60207c545f1e28)
 - [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
   `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
 - [`Debug` is now implemented for `EnumValueDescriptor` and
