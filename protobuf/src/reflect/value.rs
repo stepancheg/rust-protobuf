@@ -291,7 +291,7 @@ impl ReflectValueBox {
     /// Downcast to real typed value.
     ///
     /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
-    pub fn downcast<V: 'static>(self) -> Result<V, Self> {
+    pub fn downcast<V: ProtobufValue>(self) -> Result<V, Self> {
         match self {
             ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),
             ReflectValueBox::U64(v) => transmute_eq(v).map_err(ReflectValueBox::U64),

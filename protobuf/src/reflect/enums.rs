@@ -280,7 +280,7 @@ impl EnumDescriptor {
     /// # Panics
     ///
     /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
-    pub(crate) fn cast<E: 'static>(&self, value: i32) -> Option<E> {
+    pub(crate) fn cast<E: ProtobufValue>(&self, value: i32) -> Option<E> {
         if let Some(e) = self.cast_to_protobuf_enum(value) {
             return Some(e);
         }
@@ -291,7 +291,7 @@ impl EnumDescriptor {
     }
 
     #[cfg(rustc_nightly)]
-    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> Option<E> {
+    fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() != self.type_id {
             return None;
         }
@@ -300,7 +300,7 @@ impl EnumDescriptor {
     }
 
     #[cfg(not(rustc_nightly))]
-    fn cast_to_protobuf_enum<E: 'static>(&self, value: i32) -> Option<E> {
+    fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() != self.type_id {
             return None;
         }
@@ -315,7 +315,7 @@ impl EnumDescriptor {
     }
 
     #[cfg(rustc_nightly)]
-    fn cast_to_protobuf_enum_or_unknown<E: 'static>(&self, value: i32) -> Option<E> {
+    fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() != self.enum_or_unknown_type_id {
             return None;
         }
@@ -326,7 +326,7 @@ impl EnumDescriptor {
     }
 
     #[cfg(not(rustc_nightly))]
-    fn cast_to_protobuf_enum_or_unknown<E: 'static>(&self, value: i32) -> Option<E> {
+    fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
         if TypeId::of::<E>() != self.enum_or_unknown_type_id {
             return None;
         }
