@@ -157,7 +157,7 @@ impl MessageDescriptor {
     }
 
     /// Find field by number
-    pub fn field_by_number<'a>(&'a self, number: u32) -> &'a FieldDescriptor {
+    pub fn field_by_number(&self, number: u32) -> &FieldDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.fields[index]
     }
