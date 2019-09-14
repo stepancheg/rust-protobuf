@@ -911,13 +911,13 @@ where
         let (field_number, wire_type) = is.read_tag_unpack()?;
         match field_number {
             1 => {
-                if wire_type != K::wire_type() {
+                if wire_type != K::WIRE_TYPE {
                     return Err(unexpected_wire_type(wire_type));
                 }
                 key = K::read(is)?;
             }
             2 => {
-                if wire_type != V::wire_type() {
+                if wire_type != V::WIRE_TYPE {
                     return Err(unexpected_wire_type(wire_type));
                 }
                 value = V::read(is)?;
