@@ -1,8 +1,8 @@
 use std::mem;
 
 use super::value::ProtobufValue;
-
-use crate::singular::*;
+use crate::SingularField;
+use crate::SingularPtrField;
 
 pub trait ReflectOptional: 'static {
     fn to_option(&self) -> Option<&ProtobufValue>;
@@ -16,10 +16,7 @@ impl<V: ProtobufValue + Clone + 'static> ReflectOptional for Option<V> {
     }
 
     fn set_value(&mut self, value: &ProtobufValue) {
-        match value.as_any().downcast_ref::<V>() {
-            Some(v) => mem::replace(self, Some(v.clone())),
-            None => panic!(),
-        };
+        *self = Some(value.as_ref().to_box().downcast().unwrap());
     }
 }
 
@@ -29,10 +26,7 @@ impl<V: ProtobufValue + Clone + 'static> ReflectOptional for SingularField<V> {
     }
 
     fn set_value(&mut self, value: &ProtobufValue) {
-        match value.as_any().downcast_ref::<V>() {
-            Some(v) => mem::replace(self, SingularField::some(v.clone())),
-            None => panic!(),
-        };
+        *self = SingularField::some(value.as_ref().to_box().downcast().unwrap());
     }
 }
 
@@ -42,9 +36,6 @@ impl<V: ProtobufValue + Clone + 'static> ReflectOptional for SingularPtrField<V>
     }
 
     fn set_value(&mut self, value: &ProtobufValue) {
-        match value.as_any().downcast_ref::<V>() {
-            Some(v) => mem::replace(self, SingularPtrField::some(v.clone())),
-            None => panic!(),
-        };
+        *self = SingularPtrField::some(value.as_ref().to_box().downcast().unwrap());
     }
 }

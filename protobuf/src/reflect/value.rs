@@ -15,11 +15,6 @@ pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// As ref
     fn as_ref(&self) -> ReflectValueRef;
 
-    /// Convert to `Any`
-    fn as_any(&self) -> &Any {
-        unimplemented!()
-    }
-
     /// Is value non-zero?
     fn is_non_zero(&self) -> bool {
         self.as_ref().is_non_zero()

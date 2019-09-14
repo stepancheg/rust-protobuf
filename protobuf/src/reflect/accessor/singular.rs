@@ -2,11 +2,22 @@ use crate::core::message_down_cast;
 use crate::reflect::accessor::{AccessorKind, FieldAccessor};
 use crate::reflect::optional::ReflectOptional;
 use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeBool;
+use crate::reflect::runtime_types::RuntimeTypeEnum;
+use crate::reflect::runtime_types::RuntimeTypeF32;
+use crate::reflect::runtime_types::RuntimeTypeF64;
+use crate::reflect::runtime_types::RuntimeTypeI32;
+use crate::reflect::runtime_types::RuntimeTypeI64;
+use crate::reflect::runtime_types::RuntimeTypeMessage;
+use crate::reflect::runtime_types::RuntimeTypeString;
+use crate::reflect::runtime_types::RuntimeTypeU32;
+use crate::reflect::runtime_types::RuntimeTypeU64;
+use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValue;
-use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectValueRef;
 use crate::Message;
 use crate::ProtobufEnum;
@@ -155,6 +166,7 @@ impl<M> fmt::Debug for FieldAccessorFunctions<M> {
 
 struct FieldAccessorImpl<M> {
     fns: FieldAccessorFunctions<M>,
+    runtime_type: &'static dyn RuntimeTypeDynamic,
 }
 
 impl<M: Message + Send + Sync + 'static> FieldAccessorImpl<M> {
@@ -347,6 +359,7 @@ pub fn make_singular_u32_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeU32::dynamic(),
             }),
         }),
     }
@@ -368,6 +381,7 @@ pub fn make_singular_i32_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeI32::dynamic(),
             }),
         }),
     }
@@ -389,6 +403,7 @@ pub fn make_singular_u64_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeU64::dynamic(),
             }),
         }),
     }
@@ -410,6 +425,7 @@ pub fn make_singular_i64_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeI64::dynamic(),
             }),
         }),
     }
@@ -431,6 +447,7 @@ pub fn make_singular_f32_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeF32::dynamic(),
             }),
         }),
     }
@@ -452,6 +469,7 @@ pub fn make_singular_f64_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeF64::dynamic(),
             }),
         }),
     }
@@ -473,6 +491,7 @@ pub fn make_singular_bool_accessor<M: Message + 'static>(
                         _set: set_panic,
                     })),
                 },
+                runtime_type: RuntimeTypeBool::dynamic(),
             }),
         }),
     }
@@ -491,6 +510,7 @@ pub fn make_singular_enum_accessor<M: Message + 'static, E: ProtobufEnum + 'stat
                     has,
                     get_set: SingularGetSet::Enum(Box::new(GetSingularEnumImpl { get: get })),
                 },
+                runtime_type: RuntimeTypeEnum::<E>::dynamic(),
             }),
         }),
     }
@@ -509,6 +529,7 @@ pub fn make_singular_string_accessor<M: Message + 'static>(
                     has,
                     get_set: SingularGetSet::String(get, set_panic),
                 },
+                runtime_type: RuntimeTypeString::dynamic(),
             }),
         }),
     }
@@ -527,12 +548,16 @@ pub fn make_singular_bytes_accessor<M: Message + 'static>(
                     has,
                     get_set: SingularGetSet::Bytes(get, set_panic),
                 },
+                runtime_type: RuntimeTypeVecU8::dynamic(),
             }),
         }),
     }
 }
 
-pub fn make_singular_message_accessor<M: Message + 'static, F: Message + 'static>(
+pub fn make_singular_message_accessor<
+    M: Message + 'static,
+    F: Message + Clone + Default + 'static,
+>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a F,
@@ -545,6 +570,7 @@ pub fn make_singular_message_accessor<M: Message + 'static, F: Message + 'static
                     has,
                     get_set: SingularGetSet::Message(Box::new(GetSingularMessageImpl { get: get })),
                 },
+                runtime_type: RuntimeTypeMessage::<F>::dynamic(),
             }),
         }),
     }
@@ -584,6 +610,7 @@ where
                     get_field,
                     mut_field,
                 })),
+                runtime_type: <V::RuntimeType as RuntimeType>::dynamic(),
             }),
         }),
     }
@@ -625,6 +652,7 @@ where
                     get_field,
                     mut_field,
                 })),
+                runtime_type: <V::RuntimeType as RuntimeType>::dynamic(),
             }),
         }),
     }
@@ -666,6 +694,7 @@ where
                     get_field,
                     mut_field,
                 })),
+                runtime_type: <V::RuntimeType as RuntimeType>::dynamic(),
             }),
         }),
     }
@@ -705,6 +734,7 @@ where
                     get_field,
                     mut_field,
                 })),
+                runtime_type: <V::RuntimeType as RuntimeType>::dynamic(),
             }),
         }),
     }

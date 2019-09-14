@@ -110,7 +110,7 @@ pub struct RuntimeTypeCarllercheChars;
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
+pub struct RuntimeTypeMessage<M: Message + Clone + ProtobufValue + Default>(marker::PhantomData<M>);
 
 impl RuntimeType for RuntimeTypeF32 {
     type Value = f32;
