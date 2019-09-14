@@ -108,7 +108,8 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
 
     /// Write the message to bytes vec.
     ///    
-    /// > **Note**: You can use `parse_from_bytes` to do the reverse.
+    /// > **Note**: You can use [`parse_from_bytes`](crate::parse_from_bytes)
+    /// to do the reverse.
     fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
         self.check_initialized()?;
 
