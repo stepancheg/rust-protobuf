@@ -1,5 +1,6 @@
 //! This module contains functions references for reflection in generated code.
-//! Should not probably be used directly.
+
+#![doc(hidden)]
 
 pub use crate::reflect::accessor::map::make_map_accessor;
 pub use crate::reflect::accessor::repeated::make_repeated_field_accessor;

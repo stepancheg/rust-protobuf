@@ -1,5 +1,7 @@
 //! Implementations of `ProtobufType` for all types.
 
+#![doc(hidden)]
+
 use std::fmt;
 use std::marker;
 
