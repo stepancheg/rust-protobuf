@@ -1,9 +1,9 @@
 use crate::descriptor::{EnumDescriptorProto, EnumValueDescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_enum_by_rust_name;
 use crate::ProtobufEnum;
+use std::any::TypeId;
 use std::collections::HashMap;
 use std::fmt;
-use std::any::TypeId;
 
 /// Description for enum variant.
 ///
@@ -11,6 +11,7 @@ use std::any::TypeId;
 #[derive(Clone)]
 pub struct EnumValueDescriptor {
     proto: &'static EnumValueDescriptorProto,
+    enum_descriptor_static: fn() -> &'static EnumDescriptor,
 }
 
 impl fmt::Debug for EnumValueDescriptor {
@@ -33,6 +34,11 @@ impl EnumValueDescriptor {
     /// `i32` value of the enum variant
     pub fn value(&self) -> i32 {
         self.proto.get_number()
+    }
+
+    /// Get descriptor of enum holding this value.
+    pub fn enum_descriptor(&self) -> &EnumDescriptor {
+        (self.enum_descriptor_static)()
     }
 }
 
@@ -84,14 +90,18 @@ impl EnumDescriptor {
     ) -> EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let (index_by_name, index_by_number) = EnumDescriptor::make_indices(proto.en);
+        let values = proto
+            .en
+            .get_value()
+            .iter()
+            .map(|v| EnumValueDescriptor {
+                proto: v,
+                enum_descriptor_static: E::enum_descriptor_static,
+            })
+            .collect();
         EnumDescriptor {
             proto: proto.en,
-            values: proto
-                .en
-                .get_value()
-                .iter()
-                .map(|v| EnumValueDescriptor { proto: v })
-                .collect(),
+            values,
             type_id: TypeId::of::<E>(),
             index_by_name,
             index_by_number,
