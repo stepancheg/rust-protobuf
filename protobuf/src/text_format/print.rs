@@ -204,7 +204,7 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
     for f in d.fields() {
         match f.get_reflect(m) {
             ReflectFieldRef::Map(map) => {
-                for (k, v) in map {
+                for (k, v) in &map {
                     print_start_field(buf, pretty, indent, &mut first, f.name());
                     buf.push_str(" {");
                     if pretty {
@@ -213,15 +213,8 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
 
                     let mut entry_first = true;
 
-                    print_field(buf, pretty, indent + 1, &mut entry_first, "key", k.as_ref());
-                    print_field(
-                        buf,
-                        pretty,
-                        indent + 1,
-                        &mut entry_first,
-                        "value",
-                        v.as_ref(),
-                    );
+                    print_field(buf, pretty, indent + 1, &mut entry_first, "key", k);
+                    print_field(buf, pretty, indent + 1, &mut entry_first, "value", v);
                     do_indent(buf, pretty, indent);
                     buf.push_str("}");
                     print_end_field(buf, pretty);

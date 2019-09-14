@@ -1,24 +1,20 @@
 #![doc(hidden)]
 
-use std::collections::HashMap;
 use std::fmt;
-use std::hash::Hash;
 
 use crate::core::message_down_cast;
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::reflect::EnumValueDescriptor;
 
-use crate::repeated::RepeatedField;
 use crate::singular::SingularField;
 use crate::singular::SingularPtrField;
 
-use super::map::ReflectMap;
 use super::optional::ReflectOptional;
-use super::repeated::ReflectRepeated;
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
+use crate::reflect::accessor::map::MapFieldAccessorHolder;
 use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::runtime_types::RuntimeType;
@@ -31,7 +27,6 @@ pub(crate) mod singular;
 /// this trait should not be used directly, use `FieldDescriptor` instead
 pub trait FieldAccessorTrait: 'static {
     fn has_field_generic(&self, m: &dyn Message) -> bool;
-    fn len_field_generic(&self, m: &dyn Message) -> usize;
     // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a dyn Message) -> &'a dyn Message;
     fn get_enum_generic(&self, m: &dyn Message) -> &'static EnumValueDescriptor;
@@ -50,6 +45,7 @@ pub trait FieldAccessorTrait: 'static {
 
 pub(crate) enum AccessorKind {
     Repeated(RepeatedFieldAccessorHolder),
+    Map(MapFieldAccessorHolder),
     Old(Box<dyn FieldAccessorTrait>),
 }
 
@@ -161,8 +157,6 @@ enum FieldAccessorFunctions<M> {
     Simple(Box<dyn FieldAccessor2<M, dyn ProtobufValue>>),
     // optional, required or message
     Optional(Box<dyn FieldAccessor2<M, dyn ReflectOptional>>),
-    // protobuf 3 map
-    Map(Box<dyn FieldAccessor2<M, dyn ReflectMap>>),
 }
 
 impl<M> fmt::Debug for FieldAccessorFunctions<M> {
@@ -173,7 +167,6 @@ impl<M> fmt::Debug for FieldAccessorFunctions<M> {
             }
             &FieldAccessorFunctions::Simple(..) => write!(f, "Simple(..)"),
             &FieldAccessorFunctions::Optional(..) => write!(f, "Optional(..)"),
-            &FieldAccessorFunctions::Map(..) => write!(f, "Map(..)"),
         }
     }
 }
@@ -185,7 +178,6 @@ struct FieldAccessorImpl<M> {
 impl<M: Message> FieldAccessorImpl<M> {
     fn get_value_option<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         match self.fns {
-            FieldAccessorFunctions::Map(..) => panic!("repeated"),
             FieldAccessorFunctions::Simple(ref a) => Some(a.get_field(m).as_ref()),
             FieldAccessorFunctions::Optional(ref a) => {
                 a.get_field(m).to_option().map(|v| v.as_ref())
@@ -213,20 +205,6 @@ impl<M: Message + 'static> FieldAccessorTrait for FieldAccessorImpl<M> {
             }
             FieldAccessorFunctions::Simple(ref a) => {
                 a.get_field(message_down_cast(m)).is_non_zero()
-            }
-            FieldAccessorFunctions::Map(..) => {
-                panic!("has_xxx is not implemented for repeated");
-            }
-        }
-    }
-
-    fn len_field_generic(&self, m: &dyn Message) -> usize {
-        match self.fns {
-            FieldAccessorFunctions::Map(ref a) => a.get_field(message_down_cast(m)).len(),
-            FieldAccessorFunctions::Simple(..)
-            | FieldAccessorFunctions::SingularHasGetSet { .. }
-            | FieldAccessorFunctions::Optional(..) => {
-                panic!("not a repeated field");
             }
         }
     }
@@ -336,9 +314,6 @@ impl<M: Message + 'static> FieldAccessorTrait for FieldAccessorImpl<M> {
 
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         match self.fns {
-            FieldAccessorFunctions::Map(ref accessor2) => {
-                ReflectFieldRef::Map(accessor2.get_field(message_down_cast(m)))
-            }
             FieldAccessorFunctions::Optional(ref accessor2) => ReflectFieldRef::Optional(
                 accessor2
                     .get_field(message_down_cast(m))
@@ -715,60 +690,6 @@ where
             fns: FieldAccessorFunctions::Simple(Box::new(MessageGetMut::<
                 M,
                 <V::RuntimeType as RuntimeType>::Value,
-            > {
-                get_field,
-                mut_field,
-            })),
-        })),
-    }
-}
-
-impl<M, K, V> FieldAccessor2<M, dyn ReflectMap> for MessageGetMut<M, HashMap<K, V>>
-where
-    M: Message + 'static,
-    K: ProtobufValue + 'static,
-    V: ProtobufValue + 'static,
-    K: Hash + Eq,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectMap {
-        (self.get_field)(m) as &dyn ReflectMap
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut dyn ReflectMap {
-        (self.mut_field)(m) as &mut dyn ReflectMap
-    }
-}
-
-pub fn make_map_accessor<M, K, V>(
-    name: &'static str,
-    get_field: for<'a> fn(
-        &'a M,
-    ) -> &'a HashMap<
-        <K::RuntimeType as RuntimeType>::Value,
-        <V::RuntimeType as RuntimeType>::Value,
-    >,
-    mut_field: for<'a> fn(
-        &'a mut M,
-    ) -> &'a mut HashMap<
-        <K::RuntimeType as RuntimeType>::Value,
-        <V::RuntimeType as RuntimeType>::Value,
-    >,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    K: ProtobufType + 'static,
-    V: ProtobufType + 'static,
-    <<K as ProtobufType>::RuntimeType as RuntimeType>::Value: Hash + Eq,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Old(Box::new(FieldAccessorImpl {
-            fns: FieldAccessorFunctions::Map(Box::new(MessageGetMut::<
-                M,
-                HashMap<
-                    <K::RuntimeType as RuntimeType>::Value,
-                    <V::RuntimeType as RuntimeType>::Value,
-                >,
             > {
                 get_field,
                 mut_field,

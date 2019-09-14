@@ -2,12 +2,13 @@ use std::collections::hash_map;
 use std::collections::HashMap;
 use std::hash::Hash;
 
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 
 /// Implemented for `HashMap` with appropriate keys and values
-pub trait ReflectMap: 'static {
+pub(crate) trait ReflectMap: Send + Sync + 'static {
     fn reflect_iter(&self) -> ReflectMapIter;
 
     fn len(&self) -> usize;
@@ -92,5 +93,129 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
 
     fn into_iter(self) -> Self::IntoIter {
         self.reflect_iter()
+    }
+}
+
+/// Dynamic reference to `map` field
+#[derive(Copy, Clone)]
+pub struct ReflectMapRef<'a> {
+    pub(crate) map: &'a dyn ReflectMap,
+    pub(crate) key_dynamic: &'a dyn RuntimeTypeDynamic,
+    pub(crate) value_dynamic: &'a dyn RuntimeTypeDynamic,
+}
+
+/// Dynamic mutable reference to `map` field
+pub struct ReflectMapMut<'a> {
+    pub(crate) map: &'a mut dyn ReflectMap,
+    pub(crate) key_dynamic: &'a dyn RuntimeTypeDynamic,
+    pub(crate) value_dynamic: &'a dyn RuntimeTypeDynamic,
+}
+
+impl<'a> ReflectMapRef<'a> {
+    /// Size of the map
+    pub fn len(&self) -> usize {
+        self.map.len()
+    }
+
+    /// Is map empty?
+    pub fn is_empty(&self) -> bool {
+        self.map.is_empty()
+    }
+
+    /// Find a value by given key.
+    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+        self.map
+            .get(key)
+            .map(|v| self.value_dynamic.value_to_ref(v))
+    }
+
+    /// Map key type
+    pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
+        self.key_dynamic
+    }
+
+    /// Map value type
+    pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
+        self.value_dynamic
+    }
+}
+
+impl<'a> ReflectMapMut<'a> {
+    fn as_ref(&'a self) -> ReflectMapRef<'a> {
+        ReflectMapRef {
+            map: self.map,
+            key_dynamic: self.key_dynamic,
+            value_dynamic: self.value_dynamic,
+        }
+    }
+
+    /// Map key type
+    pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
+        self.key_dynamic
+    }
+
+    /// Map value type
+    pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
+        self.value_dynamic
+    }
+
+    /// Number of map entries
+    pub fn len(&self) -> usize {
+        self.as_ref().len()
+    }
+
+    /// Is this map empty?
+    pub fn is_empty(&self) -> bool {
+        self.as_ref().is_empty()
+    }
+
+    /// Find a value for given key
+    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+        self.map
+            .get(key)
+            .map(|v| self.value_dynamic.value_to_ref(v))
+    }
+
+    /// Insert a value into the map
+    pub fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
+        self.map.insert(key, value)
+    }
+
+    /// Clear
+    pub fn clear(&mut self) {
+        self.map.clear();
+    }
+}
+
+/// Iterator over map
+pub struct ReflectMapRefIter<'a> {
+    iter: ReflectMapIter<'a>,
+    key_dynamic: &'a dyn RuntimeTypeDynamic,
+    value_dynamic: &'a dyn RuntimeTypeDynamic,
+}
+
+impl<'a> Iterator for ReflectMapRefIter<'a> {
+    type Item = (ReflectValueRef<'a>, ReflectValueRef<'a>);
+
+    fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
+        self.iter.next().map(|(k, v)| {
+            (
+                self.key_dynamic.value_to_ref(k),
+                self.value_dynamic.value_to_ref(v),
+            )
+        })
+    }
+}
+
+impl<'a, 'b> IntoIterator for &'b ReflectMapRef<'a> {
+    type Item = (ReflectValueRef<'a>, ReflectValueRef<'a>);
+    type IntoIter = ReflectMapRefIter<'a>;
+
+    fn into_iter(self) -> ReflectMapRefIter<'a> {
+        ReflectMapRefIter {
+            iter: self.map.reflect_iter(),
+            key_dynamic: self.key_dynamic,
+            value_dynamic: self.value_dynamic,
+        }
     }
 }

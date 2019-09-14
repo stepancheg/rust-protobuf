@@ -7,7 +7,7 @@ use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::ReflectValueBox;
 use crate::repeated::RepeatedField;
 
-pub trait ReflectRepeated: Sync + 'static + fmt::Debug {
+pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &dyn ProtobufValue;
