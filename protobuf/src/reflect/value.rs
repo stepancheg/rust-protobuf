@@ -205,7 +205,7 @@ impl<'a> ReflectValueRef<'a> {
 
 /// Owner value of any elementary type
 #[derive(Debug, Clone)]
-pub(crate) enum ReflectValueBox {
+pub enum ReflectValueBox {
     /// `u32`
     U32(u32),
     /// `u64`
