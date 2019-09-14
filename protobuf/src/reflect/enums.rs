@@ -4,7 +4,7 @@ use crate::ProtobufEnum;
 use std::any::TypeId;
 use std::collections::HashMap;
 use std::fmt;
-use reflect::ProtobufValue;
+use crate::reflect::ProtobufValue;
 
 /// Description for enum variant.
 ///
