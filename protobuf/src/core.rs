@@ -107,6 +107,9 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     }
 
     /// Write the message to bytes vec.
+    ///
+    /// > **Note**: You can use [`parse_from_bytes`](crate::parse_from_bytes)
+    /// to do the reverse.
     fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
         self.check_initialized()?;
 
@@ -137,9 +140,9 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     }
 
     /// Get a reference to unknown fields.
-    fn get_unknown_fields<'s>(&'s self) -> &'s UnknownFields;
+    fn get_unknown_fields(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
-    fn mut_unknown_fields<'s>(&'s mut self) -> &'s mut UnknownFields;
+    fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
 
     /// Get type id for downcasting.
     fn type_id(&self) -> TypeId {
@@ -165,7 +168,6 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     // }
 
     /// Create an empty message object.
-    ///
     ///
     /// ```
     /// # use protobuf::Message;
@@ -238,7 +240,7 @@ pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M: Message>(reader: &mut Read) -> ProtobufResult<M> {
+pub fn parse_from_reader<M: Message>(reader: &mut dyn Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
