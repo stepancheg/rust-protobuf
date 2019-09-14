@@ -16,6 +16,7 @@ use std::fmt;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
     fn has_field_generic(&self, m: &dyn Message) -> bool;
     // TODO: should it return default value or panic on unset field?
     fn get_message_generic<'a>(&self, m: &'a dyn Message) -> &'a dyn Message;
@@ -29,8 +30,6 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_bool_generic(&self, m: &dyn Message) -> bool;
     fn get_f32_generic(&self, m: &dyn Message) -> f32;
     fn get_f64_generic(&self, m: &dyn Message) -> f64;
-
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
 }
 
 pub(crate) struct SingularFieldAccessorHolder {
@@ -180,6 +179,33 @@ impl<M: Message + Send + Sync + 'static> FieldAccessorImpl<M> {
 }
 
 impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
+    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
+        match self.fns {
+            FieldAccessorFunctions::Optional(ref accessor2) => accessor2
+                .get_field(message_down_cast(m))
+                .to_option()
+                .map(|v| v.as_ref()),
+            FieldAccessorFunctions::Simple(ref accessor2) => {
+                let v = accessor2.get_field(message_down_cast(m));
+                if v.is_non_zero() {
+                    Some(v.as_ref())
+                } else {
+                    None
+                }
+            }
+            FieldAccessorFunctions::SingularHasGetSet {
+                ref has,
+                ref get_set,
+            } => {
+                if has(message_down_cast(m)) {
+                    Some(get_set.get_ref(message_down_cast(m)))
+                } else {
+                    None
+                }
+            }
+        }
+    }
+
     fn has_field_generic(&self, m: &dyn Message) -> bool {
         match self.fns {
             FieldAccessorFunctions::SingularHasGetSet { has, .. } => has(message_down_cast(m)),
@@ -292,33 +318,6 @@ impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
             Some(ReflectValueRef::F64(v)) => v,
             Some(_) => panic!("wrong type"),
             None => 0.0, // TODO: check type
-        }
-    }
-
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
-        match self.fns {
-            FieldAccessorFunctions::Optional(ref accessor2) => accessor2
-                .get_field(message_down_cast(m))
-                .to_option()
-                .map(|v| v.as_ref()),
-            FieldAccessorFunctions::Simple(ref accessor2) => {
-                let v = accessor2.get_field(message_down_cast(m));
-                if v.is_non_zero() {
-                    Some(v.as_ref())
-                } else {
-                    None
-                }
-            }
-            FieldAccessorFunctions::SingularHasGetSet {
-                ref has,
-                ref get_set,
-            } => {
-                if has(message_down_cast(m)) {
-                    Some(get_set.get_ref(message_down_cast(m)))
-                } else {
-                    None
-                }
-            }
         }
     }
 }
