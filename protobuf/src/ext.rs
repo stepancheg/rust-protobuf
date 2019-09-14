@@ -7,6 +7,7 @@
 use std::marker::PhantomData;
 
 use crate::core::Message;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 
 /// Optional ext field
@@ -31,7 +32,7 @@ impl<M: Message, T: ProtobufType> ExtFieldOptional<M, T> {
     /// Get a copy of value from a message.
     ///
     /// Extension data is stored in [`UnknownFields`](crate::UnknownFields).
-    pub fn get(&self, m: &M) -> Option<T::Value> {
+    pub fn get(&self, m: &M) -> Option<<T::RuntimeType as RuntimeType>::Value> {
         m.get_unknown_fields()
             .get(self.field_number)
             .and_then(T::get_from_unknown)
@@ -40,7 +41,7 @@ impl<M: Message, T: ProtobufType> ExtFieldOptional<M, T> {
 
 impl<M: Message, T: ProtobufType> ExtFieldRepeated<M, T> {
     /// Get a copy of value from a message (**not implemented**).
-    pub fn get(&self, _m: &M) -> Vec<T::Value> {
+    pub fn get(&self, _m: &M) -> Vec<<T::RuntimeType as RuntimeType>::Value> {
         // TODO
         unimplemented!()
     }

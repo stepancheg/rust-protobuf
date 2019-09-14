@@ -28,6 +28,7 @@ use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
 use crate::zigzag::*;
 
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::unknown::UnknownFields;
 
@@ -838,11 +839,14 @@ pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
 }
 
 /// Compute serialized size of `map` field and cache nested field sizes.
-pub fn compute_map_size<K, V>(field_number: u32, map: &HashMap<K::Value, V::Value>) -> u32
+pub fn compute_map_size<K, V>(
+    field_number: u32,
+    map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
+) -> u32
 where
     K: ProtobufType,
     V: ProtobufType,
-    K::Value: Eq + Hash,
+    <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
 {
     let mut sum = 0;
     for (k, v) in map {
@@ -861,13 +865,13 @@ where
 /// Write map, message sizes must be already known.
 pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
-    map: &HashMap<K::Value, V::Value>,
+    map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
     os: &mut CodedOutputStream,
 ) -> ProtobufResult<()>
 where
     K: ProtobufType,
     V: ProtobufType,
-    K::Value: Eq + Hash,
+    <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
 {
     for (k, v) in map {
         let key_tag_size = 1;
@@ -890,13 +894,16 @@ where
 pub fn read_map_into<K, V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut HashMap<K::Value, V::Value>,
+    target: &mut HashMap<
+        <K::RuntimeType as RuntimeType>::Value,
+        <V::RuntimeType as RuntimeType>::Value,
+    >,
 ) -> ProtobufResult<()>
 where
     K: ProtobufType,
     V: ProtobufType,
-    K::Value: Eq + Hash + Default,
-    V::Value: Default,
+    <K::RuntimeType as RuntimeType>::Value: Eq + Hash + Default,
+    <V::RuntimeType as RuntimeType>::Value: Default,
 {
     if wire_type != WireType::WireTypeLengthDelimited {
         return Err(unexpected_wire_type(wire_type));

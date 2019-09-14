@@ -21,6 +21,7 @@ use super::repeated::ReflectRepeatedMessage;
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
@@ -565,8 +566,8 @@ where
 
 pub fn make_vec_accessor<M, V>(
     name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a Vec<V::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::Value>,
+    get_vec: for<'a> fn(&'a M) -> &'a Vec<<V::RuntimeType as RuntimeType>::Value>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<<V::RuntimeType as RuntimeType>::Value>,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
@@ -574,7 +575,10 @@ where
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<M, Vec<V::Value>> {
+        fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
+            M,
+            Vec<<V::RuntimeType as RuntimeType>::Value>,
+        > {
             get_field: get_vec,
             mut_field: mut_vec,
         })),
@@ -597,8 +601,8 @@ where
 
 pub fn make_repeated_field_accessor<M, V>(
     name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::Value>,
+    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
@@ -608,7 +612,7 @@ where
         name: name,
         fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
             M,
-            RepeatedField<V::Value>,
+            RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
         > {
             get_field: get_vec,
             mut_field: mut_vec,
@@ -632,8 +636,8 @@ where
 
 pub fn make_option_accessor<M, V>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a Option<V::Value>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V::Value>,
+    get_field: for<'a> fn(&'a M) -> &'a Option<<V::RuntimeType as RuntimeType>::Value>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<<V::RuntimeType as RuntimeType>::Value>,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
@@ -641,7 +645,10 @@ where
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<M, Option<V::Value>> {
+        fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
+            M,
+            Option<<V::RuntimeType as RuntimeType>::Value>,
+        > {
             get_field: get_field,
             mut_field: mut_field,
         })),
@@ -664,8 +671,10 @@ where
 
 pub fn make_singular_field_accessor<M, V>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a SingularField<V::Value>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularField<V::Value>,
+    get_field: for<'a> fn(&'a M) -> &'a SingularField<<V::RuntimeType as RuntimeType>::Value>,
+    mut_field: for<'a> fn(
+        &'a mut M,
+    ) -> &'a mut SingularField<<V::RuntimeType as RuntimeType>::Value>,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
@@ -675,7 +684,7 @@ where
         name: name,
         fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
             M,
-            SingularField<V::Value>,
+            SingularField<<V::RuntimeType as RuntimeType>::Value>,
         > {
             get_field: get_field,
             mut_field: mut_field,
@@ -699,8 +708,10 @@ where
 
 pub fn make_singular_ptr_field_accessor<M, V>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<V::Value>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularPtrField<V::Value>,
+    get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
+    mut_field: for<'a> fn(
+        &'a mut M,
+    ) -> &'a mut SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
@@ -710,7 +721,7 @@ where
         name: name,
         fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
             M,
-            SingularPtrField<V::Value>,
+            SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
         > {
             get_field: get_field,
             mut_field: mut_field,
@@ -734,8 +745,8 @@ where
 
 pub fn make_simple_field_accessor<M, V>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a V::Value,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut V::Value,
+    get_field: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeType>::Value,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut <V::RuntimeType as RuntimeType>::Value,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
@@ -743,7 +754,10 @@ where
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Simple(Box::new(MessageGetMut::<M, V::Value> {
+        fns: FieldAccessorFunctions::Simple(Box::new(MessageGetMut::<
+            M,
+            <V::RuntimeType as RuntimeType>::Value,
+        > {
             get_field: get_field,
             mut_field: mut_field,
         })),
@@ -768,22 +782,33 @@ where
 
 pub fn make_map_accessor<M, K, V>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>,
+    get_field: for<'a> fn(
+        &'a M,
+    ) -> &'a HashMap<
+        <K::RuntimeType as RuntimeType>::Value,
+        <V::RuntimeType as RuntimeType>::Value,
+    >,
+    mut_field: for<'a> fn(
+        &'a mut M,
+    ) -> &'a mut HashMap<
+        <K::RuntimeType as RuntimeType>::Value,
+        <V::RuntimeType as RuntimeType>::Value,
+    >,
 ) -> Box<FieldAccessor + 'static>
 where
     M: Message + 'static,
     K: ProtobufType + 'static,
     V: ProtobufType + 'static,
-    <K as ProtobufType>::Value: Hash + Eq,
+    <<K as ProtobufType>::RuntimeType as RuntimeType>::Value: Hash + Eq,
 {
     Box::new(FieldAccessorImpl {
         name: name,
-        fns: FieldAccessorFunctions::Map(Box::new(
-            MessageGetMut::<M, HashMap<K::Value, V::Value>> {
-                get_field: get_field,
-                mut_field: mut_field,
-            },
-        )),
+        fns: FieldAccessorFunctions::Map(Box::new(MessageGetMut::<
+            M,
+            HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
+        > {
+            get_field: get_field,
+            mut_field: mut_field,
+        })),
     })
 }
