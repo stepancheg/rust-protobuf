@@ -10,6 +10,7 @@ use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ReflectValueRef;
 use crate::Message;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -20,6 +21,19 @@ pub enum ReflectFieldRef<'a> {
     Repeated(ReflectRepeatedRef<'a>),
     /// Map field
     Map(ReflectMapRef<'a>),
+}
+
+/// Reflective representation of field type
+pub(crate) enum RuntimeFieldType {
+    /// Singular field (required, optional for proto2 or singular for proto3)
+    Singular(&'static dyn RuntimeTypeDynamic),
+    /// Repeated field
+    Repeated(&'static dyn RuntimeTypeDynamic),
+    /// Map field
+    Map(
+        &'static dyn RuntimeTypeDynamic,
+        &'static dyn RuntimeTypeDynamic,
+    ),
 }
 
 /// Field descriptor.

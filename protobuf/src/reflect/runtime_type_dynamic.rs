@@ -12,7 +12,7 @@ use crate::reflect::ReflectValueRef;
 /// Dynamic version of `RuntimeType`.
 ///
 /// This is used internally in reflection implementation.
-pub trait RuntimeTypeDynamic: Send + Sync + 'static {
+pub(crate) trait RuntimeTypeDynamic: Send + Sync + 'static {
     /// Convert to "enum" version
     fn to_box(&self) -> RuntimeTypeBox;
 

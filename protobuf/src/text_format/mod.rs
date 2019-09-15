@@ -19,7 +19,14 @@
 //! protobuf implementations, including `protoc` command which can decode
 //! and encode messages using text format.
 
+mod parse;
 mod print;
+
+// Used by text format parser and by pure-rust codegen parsed
+// this it is public but hidden module.
+// https://github.com/rust-lang/rust/issues/44663
+#[doc(hidden)]
+pub mod lexer;
 
 pub use self::print::fmt;
 pub use self::print::print_to;

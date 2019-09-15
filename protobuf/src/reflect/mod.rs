@@ -4,13 +4,13 @@ use crate::core::Message;
 
 mod accessor;
 mod enums;
-mod field;
+pub(crate) mod field;
 mod map;
 mod message;
 mod optional;
 mod repeated;
-mod runtime_type_box;
-mod runtime_type_dynamic;
+pub(crate) mod runtime_type_box;
+pub(crate) mod runtime_type_dynamic;
 pub(crate) mod runtime_types;
 mod transmute_eq;
 mod type_dynamic;
