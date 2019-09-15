@@ -631,15 +631,19 @@ impl crate::Message for Value {
                     Value::get_bool_value,
                     Value::set_bool_value,
                 ));
-                fields.push(crate::reflect::rt::make_singular_message_accessor::<_, Struct>(
+                fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
                     "struct_value",
                     Value::has_struct_value,
                     Value::get_struct_value,
+                    Value::mut_struct_value,
+                    Value::set_struct_value,
                 ));
-                fields.push(crate::reflect::rt::make_singular_message_accessor::<_, ListValue>(
+                fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
                     "list_value",
                     Value::has_list_value,
                     Value::get_list_value,
+                    Value::mut_list_value,
+                    Value::set_list_value,
                 ));
                 crate::reflect::MessageDescriptor::new::<Value>(
                     "Value",

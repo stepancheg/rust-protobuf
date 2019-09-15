@@ -30,6 +30,8 @@ use crate::SingularPtrField;
 use std::fmt;
 use std::marker;
 
+pub(crate) mod oneof;
+
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
@@ -588,36 +590,6 @@ impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
 fn set_panic<A, B>(_: &mut A, _: B) {
     panic!()
 }
-
-// TODO: make_singular_xxx_accessor are used only for oneof fields
-// oneof codegen should be changed
-
-/// Make accessor for `Copy` field
-pub fn make_oneof_copy_has_get_set_accessors<M, V>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> <V::RuntimeType as RuntimeType>::Value,
-    set: fn(&mut M, <V::RuntimeType as RuntimeType>::Value),
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-    <V::RuntimeType as RuntimeType>::Value: Copy,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
-                get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
-                get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
-                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplSetField::<M, V::RuntimeType> { set_field: set },
-                _marker: marker::PhantomData,
-            }),
-        }),
-    }
-}
-
 
 pub fn make_singular_u32_accessor<M: Message + 'static>(
     name: &'static str,

@@ -20,4 +20,6 @@ pub use crate::reflect::accessor::singular::make_singular_ptr_field_accessor;
 pub use crate::reflect::accessor::singular::make_singular_string_accessor;
 pub use crate::reflect::accessor::singular::make_singular_u32_accessor;
 pub use crate::reflect::accessor::singular::make_singular_u64_accessor;
-pub use crate::reflect::accessor::singular::make_oneof_copy_has_get_set_accessors;
+pub use crate::reflect::accessor::singular::oneof::make_oneof_copy_has_get_set_accessors;
+pub use crate::reflect::accessor::singular::oneof::make_oneof_deref_has_get_set_accessor;
+pub use crate::reflect::accessor::singular::oneof::make_oneof_message_has_get_mut_set_accessor;

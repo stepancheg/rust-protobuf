@@ -60,6 +60,16 @@ impl FieldGen<'_> {
         ]
     }
 
+    fn make_accessor_fns_has_get_mut_set(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::mut_{}", message, self.rust_name),
+            format!("{}::set_{}", message, self.rust_name),
+        ]
+    }
+
     fn accessor_fn_map(&self, map_field: &MapField) -> AccessorFn {
         let MapField {
             ref key, ref value, ..
@@ -141,6 +151,14 @@ impl FieldGen<'_> {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
                 type_params: vec![elem.protobuf_type_gen().rust_type(&self.customize)],
                 callback_params: self.make_accessor_fns_has_get_set(),
+            };
+        }
+
+        if let FieldElem::Message(ref name, ..) = elem {
+            return AccessorFn {
+                name: "make_oneof_message_has_get_mut_set_accessor".to_owned(),
+                type_params: vec![format!("{}", name)],
+                callback_params: self.make_accessor_fns_has_get_mut_set(),
             };
         }
 
