@@ -510,14 +510,6 @@ where
     fn mut_field<'a>(&self, _: &'a mut M) -> &'a mut R;
 }
 
-struct MessageGetMut<M, L>
-where
-    M: Message + 'static,
-{
-    get_field: for<'a> fn(&'a M) -> &'a L,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut L,
-}
-
 enum FieldAccessorFunctions<M> {
     // up to 1.0.24 optional or required
     SingularHasGetSet {
