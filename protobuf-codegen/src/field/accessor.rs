@@ -136,6 +136,14 @@ impl FieldGen<'_> {
             };
         }
 
+        if elem.is_copy() {
+            return AccessorFn {
+                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
+                type_params: vec![elem.protobuf_type_gen().rust_type(&self.customize)],
+                callback_params: self.make_accessor_fns_has_get_set(),
+            };
+        }
+
         let suffix = match &self.elem().rust_storage_type() {
             t if t.is_primitive() => t.to_code(&self.customize),
             &RustType::String | &RustType::Chars => "string".to_string(),

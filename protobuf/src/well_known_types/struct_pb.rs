@@ -614,20 +614,22 @@ impl crate::Message for Value {
                     Value::get_null_value,
                     Value::set_null_value,
                 ));
-                fields.push(crate::reflect::rt::make_singular_f64_accessor::<_>(
+                fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
                     "number_value",
                     Value::has_number_value,
                     Value::get_number_value,
+                    Value::set_number_value,
                 ));
                 fields.push(crate::reflect::rt::make_singular_string_accessor::<_>(
                     "string_value",
                     Value::has_string_value,
                     Value::get_string_value,
                 ));
-                fields.push(crate::reflect::rt::make_singular_bool_accessor::<_>(
+                fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
                     "bool_value",
                     Value::has_bool_value,
                     Value::get_bool_value,
+                    Value::set_bool_value,
                 ));
                 fields.push(crate::reflect::rt::make_singular_message_accessor::<_, Struct>(
                     "struct_value",
