@@ -77,6 +77,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type.
+    #[deprecated]
     pub fn len_field(&self, m: &dyn Message) -> usize {
         match &self.accessor.accessor {
             AccessorKind::Singular(a) => {
