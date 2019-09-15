@@ -257,36 +257,6 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_descriptor_field(&self, fields_var: &str, field: &FieldGen, w: &mut CodeWriter) {
-        let accessor_fn = field.accessor_fn();
-        w.write_line(&format!(
-            "{}.push({}::reflect::rt::{}(",
-            fields_var,
-            protobuf_crate_path(&self.customize),
-            accessor_fn.sig()
-        ));
-        w.indented(|w| {
-            w.write_line(&format!("\"{}\",", field.proto_field.name()));
-            match accessor_fn.style {
-                AccessorStyle::Lambda => {
-                    w.write_line(&format!(
-                        "|m: &{}| {{ &m.{} }},",
-                        self.type_name, field.rust_name
-                    ));
-                    w.write_line(&format!(
-                        "|m: &mut {}| {{ &mut m.{} }},",
-                        self.type_name, field.rust_name
-                    ));
-                }
-                AccessorStyle::HasGet => {
-                    w.write_line(&format!("{}::has_{},", self.type_name, field.rust_name));
-                    w.write_line(&format!("{}::get_{},", self.type_name, field.rust_name));
-                }
-            }
-        });
-        w.write_line("));");
-    }
-
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
         let sig = format!(
             "descriptor_static() -> &'static {}::reflect::MessageDescriptor",
@@ -308,7 +278,7 @@ impl<'a> MessageGen<'a> {
                         w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
                     }
                     for field in fields {
-                        self.write_descriptor_field("fields", field, w);
+                        field.write_descriptor_field(&self.type_name, "fields", w);
                     }
                     w.write_line(&format!(
                         "{}::reflect::MessageDescriptor::new::<{}>(",
