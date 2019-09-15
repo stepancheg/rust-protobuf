@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+enum Fruit {
+    APPLE = 1;
+    BANANA = 2;
+}
+
+message TestReflectDefault {
+    optional int32 i = 1 [default=10];
+    optional string s = 2 [default="sss"];
+    optional Fruit e = 3 [default=BANANA];
+}

@@ -11,7 +11,7 @@ use crate::field::SingularFieldFlag;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
 use crate::rust_types_values::ProtobufTypeGen;
-use crate::rust_types_values::RustType;
+use protobuf::descriptor::FieldDescriptorProto_Type;
 use protobuf::descriptorx::WithScope;
 
 struct AccessorFn {
@@ -40,6 +40,15 @@ impl FieldGen<'_> {
         vec![
             format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
             format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_lambda_get(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
         ]
     }
 
@@ -118,18 +127,28 @@ impl FieldGen<'_> {
     fn accessor_fn_singular_with_flag(
         &self,
         elem: &FieldElem,
-        option_kind: OptionKind,
+        _option_kind: OptionKind,
     ) -> AccessorFn {
-        let name = match option_kind {
-            OptionKind::Option => "make_option_accessor",
-            OptionKind::SingularField => "make_singular_field_accessor",
-            OptionKind::SingularPtrField => "make_singular_ptr_field_accessor",
-            OptionKind::_OptionBox => unreachable!(),
-        };
-        AccessorFn {
-            name: name.to_owned(),
-            type_params: vec![elem.lib_protobuf_type(&self.customize)],
-            callback_params: self.make_accessor_fns_lambda(),
+        match elem {
+            FieldElem::Message(..) => AccessorFn {
+                name: "make_option_accessor_new".to_owned(),
+                type_params: vec![elem.lib_protobuf_type(&self.customize), "_".to_owned()],
+                callback_params: self.make_accessor_fns_lambda(),
+            },
+            FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_STRING, ..)
+            | FieldElem::Primitive(FieldDescriptorProto_Type::TYPE_BYTES, ..) => AccessorFn {
+                name: "make_option_get_ref_accessor".to_owned(),
+                type_params: vec![elem.lib_protobuf_type(&self.customize), "_".to_owned()],
+                callback_params: self.make_accessor_fns_lambda_get(),
+            },
+            FieldElem::Primitive(..) | FieldElem::Enum(..) => AccessorFn {
+                name: "make_option_get_copy_accessor".to_owned(),
+                type_params: vec![elem.lib_protobuf_type(&self.customize), "_".to_owned()],
+                callback_params: self.make_accessor_fns_lambda_get(),
+            },
+            FieldElem::Group => {
+                unreachable!("no accessor for group field");
+            }
         }
     }
 

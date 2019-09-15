@@ -1,10 +1,9 @@
 use crate::core::message_down_cast;
 use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
-use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::runtime_types::RuntimeTypeMessage;
 use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeMessage;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
@@ -579,6 +578,43 @@ pub fn make_singular_message_accessor<
     }
 }
 
+/// Make accessor for option or option-like field
+pub fn make_option_accessor_new<M, V, O>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a O,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufType + 'static,
+    O: OptionLike<<V::RuntimeType as RuntimeType>::Value> + Send + Sync + 'static,
+{
+    FieldAccessor {
+        name,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                mut_or_default_impl: MutOrDefaultOptionMut::<M, V::RuntimeType, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+        }),
+    }
+}
+
 pub fn make_option_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<<V::RuntimeType as RuntimeType>::Value>,
@@ -605,6 +641,40 @@ where
                     _marker: marker::PhantomData,
                 },
                 set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+        }),
+    }
+}
+
+/// Make accessor for option-like field
+pub fn make_option_get_copy_accessor<M, V, O>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a O,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
+    get_value: fn(&M) -> <V::RuntimeType as RuntimeType>::Value,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufType + 'static,
+    O: OptionLike<<V::RuntimeType as RuntimeType>::Value> + Send + Sync + 'static,
+{
+    FieldAccessor {
+        name,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> {
+                    get_field: get_value,
+                },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     mut_field,
                     _marker: marker::PhantomData,
                 },
@@ -679,6 +749,41 @@ where
                     _marker: marker::PhantomData,
                 },
                 set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+        }),
+    }
+}
+
+/// String or bytes field
+pub fn make_option_get_ref_accessor<M, V, O>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a O,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
+    get_value: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufType + 'static,
+    V::RuntimeType: RuntimeTypeWithDeref,
+    O: OptionLike<<V::RuntimeType as RuntimeType>::Value> + Send + Sync + 'static,
+{
+    FieldAccessor {
+        name,
+        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultGetRefDeref::<M, V::RuntimeType> {
+                    get_field: get_value,
+                },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     mut_field,
                     _marker: marker::PhantomData,
                 },

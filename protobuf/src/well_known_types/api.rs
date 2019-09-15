@@ -408,7 +408,7 @@ impl crate::Message for Api {
                     |m: &Api| { &m.version },
                     |m: &mut Api| { &mut m.version },
                 ));
-                fields.push(crate::reflect::rt::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::rt::make_option_accessor_new::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
                     "source_context",
                     |m: &Api| { &m.source_context },
                     |m: &mut Api| { &mut m.source_context },

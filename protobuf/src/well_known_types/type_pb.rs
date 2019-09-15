@@ -364,7 +364,7 @@ impl crate::Message for Type {
                     |m: &Type| { &m.options },
                     |m: &mut Type| { &mut m.options },
                 ));
-                fields.push(crate::reflect::rt::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::rt::make_option_accessor_new::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
                     "source_context",
                     |m: &Type| { &m.source_context },
                     |m: &mut Type| { &mut m.source_context },
@@ -1406,7 +1406,7 @@ impl crate::Message for Enum {
                     |m: &Enum| { &m.options },
                     |m: &mut Enum| { &mut m.options },
                 ));
-                fields.push(crate::reflect::rt::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>>(
+                fields.push(crate::reflect::rt::make_option_accessor_new::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
                     "source_context",
                     |m: &Enum| { &m.source_context },
                     |m: &mut Enum| { &mut m.source_context },
@@ -1899,7 +1899,7 @@ impl crate::Message for Option {
                     |m: &Option| { &m.name },
                     |m: &mut Option| { &mut m.name },
                 ));
-                fields.push(crate::reflect::rt::make_singular_ptr_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Any>>(
+                fields.push(crate::reflect::rt::make_option_accessor_new::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Any>, _>(
                     "value",
                     |m: &Option| { &m.value },
                     |m: &mut Option| { &mut m.value },
