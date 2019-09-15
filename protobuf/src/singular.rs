@@ -11,6 +11,7 @@ use std::option;
 use crate::clear::Clear;
 
 /// Option-like objects
+#[doc(hidden)]
 pub trait OptionLike<T> {
     fn into_option(self) -> Option<T>;
     fn as_option_ref(&self) -> Option<&T>;
