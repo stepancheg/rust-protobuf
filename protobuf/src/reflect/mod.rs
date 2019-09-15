@@ -17,6 +17,8 @@ mod type_dynamic;
 pub mod types;
 mod value;
 
+pub(crate) mod reflect_eq;
+
 pub mod rt;
 
 pub use self::value::ProtobufValue;

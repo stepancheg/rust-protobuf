@@ -2,6 +2,8 @@ use crate::core::message_down_cast;
 use crate::descriptor::{DescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_message_by_rust_name;
 use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::FieldDescriptor;
 use crate::Message;
 use std::collections::HashMap;
@@ -141,6 +143,37 @@ impl MessageDescriptor {
         self.factory.clone(message)
     }
 
+    /// Similar to `eq`, but considers `NaN` values equal.
+    ///
+    /// # Panics
+    ///
+    /// Is any message has different type than this descriptor.
+    pub(crate) fn reflect_eq(
+        &self,
+        a: &dyn Message,
+        b: &dyn Message,
+        mode: &ReflectEqMode,
+    ) -> bool {
+        // Explicitly force panic even if field list is empty
+        assert_eq!(
+            self as *const MessageDescriptor,
+            a.descriptor() as *const MessageDescriptor
+        );
+        assert_eq!(
+            self as *const MessageDescriptor,
+            b.descriptor() as *const MessageDescriptor
+        );
+
+        for field in self.fields() {
+            let af = field.get_reflect(a);
+            let bf = field.get_reflect(b);
+            if !af.reflect_eq(&bf, mode) {
+                return false;
+            }
+        }
+        true
+    }
+
     /// Message name as given in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
@@ -180,5 +213,12 @@ impl MessageDescriptor {
     #[deprecated]
     pub fn field_by_number(&self, number: u32) -> &FieldDescriptor {
         self.get_field_by_number(number).unwrap()
+    }
+}
+
+/// Identity comparison: message descriptor are equal if their addresses are equal
+impl PartialEq for MessageDescriptor {
+    fn eq(&self, other: &MessageDescriptor) -> bool {
+        self as *const MessageDescriptor == other as *const MessageDescriptor
     }
 }

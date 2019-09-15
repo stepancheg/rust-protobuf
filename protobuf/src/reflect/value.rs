@@ -7,6 +7,7 @@ use bytes::Bytes;
 
 use super::*;
 
+use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::transmute_eq::transmute_eq;
 
 /// Type implemented by all protobuf elementary types
@@ -280,6 +281,42 @@ impl<'a> ReflectValueRef<'a> {
     /// Convert a value to arbitrary value.
     pub fn downcast_clone<V: ProtobufValue>(&self) -> Result<V, Self> {
         self.to_box().downcast().map_err(|_| self.clone())
+    }
+}
+
+impl<'a> ReflectEq for ReflectValueRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
+        use super::ReflectValueRef::*;
+        match (self, that) {
+            (U32(a), U32(b)) => a == b,
+            (U64(a), U64(b)) => a == b,
+            (I32(a), I32(b)) => a == b,
+            (I64(a), I64(b)) => a == b,
+            (F32(a), F32(b)) => {
+                if a.is_nan() || b.is_nan() {
+                    a.is_nan() == b.is_nan() && mode.nan_equal
+                } else {
+                    a == b
+                }
+            }
+            (F64(a), F64(b)) => {
+                if a.is_nan() || b.is_nan() {
+                    a.is_nan() == b.is_nan() && mode.nan_equal
+                } else {
+                    a == b
+                }
+            }
+            (Bool(a), Bool(b)) => a == b,
+            (String(a), String(b)) => a == b,
+            (Bytes(a), Bytes(b)) => a == b,
+            (Enum(a), Enum(b)) => a == b,
+            (Message(a), Message(b)) => {
+                let ad = a.descriptor();
+                let bd = b.descriptor();
+                ad == bd && ad.reflect_eq(*a, *b, mode)
+            }
+            _ => false,
+        }
     }
 }
 

@@ -2,6 +2,8 @@ use std::collections::hash_map;
 use std::collections::HashMap;
 use std::hash::Hash;
 
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueBox;
@@ -137,6 +139,29 @@ impl<'a> ReflectMapRef<'a> {
     /// Map value type
     pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
         self.value_dynamic
+    }
+}
+
+impl<'a> ReflectEq for ReflectMapRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
+        let len = self.len();
+
+        if len != that.len() {
+            return false;
+        }
+
+        for (k, va) in self {
+            let vb = match that.get(k) {
+                Some(v) => v,
+                None => return false,
+            };
+
+            if !va.reflect_eq(&vb, mode) {
+                return false;
+            }
+        }
+
+        true
     }
 }
 

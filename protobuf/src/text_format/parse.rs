@@ -3,6 +3,9 @@ use std::str;
 
 use crate::core::Message;
 
+use crate::reflect::field::RuntimeFieldType;
+use crate::reflect::runtime_type_box::RuntimeTypeBox;
+use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -13,9 +16,6 @@ use crate::text_format::lexer::ParserLanguage;
 use crate::text_format::lexer::StrLitDecodeError;
 use crate::text_format::lexer::Tokenizer;
 use crate::text_format::lexer::TokenizerError;
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::runtime_type_box::RuntimeTypeBox;
-use crate::reflect::field::RuntimeFieldType;
 
 #[derive(Debug)]
 pub enum ParseError {

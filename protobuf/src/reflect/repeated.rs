@@ -1,8 +1,11 @@
-use std::{fmt, slice};
+use std::fmt;
+use std::slice;
 
 use super::value::ProtobufValue;
 use super::value::ReflectValueRef;
 
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::ReflectValueBox;
 use crate::repeated::RepeatedField;
@@ -176,6 +179,26 @@ impl<'a> ReflectRepeatedRef<'a> {
     /// Runtime type of element
     pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
         self.dynamic
+    }
+}
+
+impl<'a> ReflectEq for ReflectRepeatedRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
+        let len = self.len();
+
+        if len != that.len() {
+            return false;
+        }
+
+        for i in 0..len {
+            let a = self.get(i);
+            let b = that.get(i);
+            if !a.reflect_eq(&b, mode) {
+                return false;
+            }
+        }
+
+        true
     }
 }
 

@@ -10,6 +10,7 @@ use bytes::Bytes;
 use crate::clear::Clear;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::stream::with_coded_output_stream_to_bytes;
@@ -241,6 +242,18 @@ impl dyn Message {
         } else {
             None
         }
+    }
+
+    /// Check two messages for equality.
+    ///
+    /// Messages of different types are not equal,
+    /// `NaN` values are considered equal (useful for tests).
+    pub fn reflect_eq(&self, other: &dyn Message) -> bool {
+        let d = self.descriptor();
+        if d != other.descriptor() {
+            return false;
+        }
+        d.reflect_eq(self, other, &ReflectEqMode { nan_equal: true })
     }
 }
 
