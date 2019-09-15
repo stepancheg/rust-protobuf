@@ -3,6 +3,7 @@ use crate::field::FieldElem;
 use crate::field::FieldGen;
 use crate::field::FieldKind;
 use crate::field::MapField;
+use crate::field::OptionKind;
 use crate::field::RepeatedField;
 use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
@@ -83,7 +84,11 @@ impl FieldGen<'_> {
         }
     }
 
-    fn accessor_fn_singular_with_flag(&self, elem: &FieldElem) -> AccessorFn {
+    fn accessor_fn_singular_with_flag(
+        &self,
+        elem: &FieldElem,
+        _option_kind: OptionKind,
+    ) -> AccessorFn {
         let coll = match self.full_storage_type() {
             RustType::Option(..) => "option",
             RustType::SingularField(..) => "singular_field",
@@ -140,8 +145,8 @@ impl FieldGen<'_> {
             }) => self.accessor_fn_singular_without_flag(elem),
             FieldKind::Singular(SingularField {
                 ref elem,
-                flag: SingularFieldFlag::WithFlag { .. },
-            }) => self.accessor_fn_singular_with_flag(elem),
+                flag: SingularFieldFlag::WithFlag { option_kind, .. },
+            }) => self.accessor_fn_singular_with_flag(elem, option_kind),
             FieldKind::Oneof(ref oneof) => self.accessor_fn_oneof(oneof),
         }
     }

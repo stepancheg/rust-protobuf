@@ -122,10 +122,58 @@ fn field_type_size(field_type: FieldDescriptorProto_Type) -> Option<u32> {
     }
 }
 
+/// Optional fields can be stored are `Option<T>`, `SingularField<T>` or `SingularPtrField<T>`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum OptionKind {
+    /// Field is `Option<T>`
+    Option,
+    /// Field is `Option<Box<T>>`
+    _OptionBox,
+    /// Field is `SingularField<T>`
+    SingularField,
+    /// Field is `SingularPtrField<T>`
+    SingularPtrField,
+}
+
+impl OptionKind {
+    fn wrap_element(&self, element_type: RustType) -> RustType {
+        let element_type = Box::new(element_type);
+        match self {
+            OptionKind::Option => RustType::Option(element_type),
+            OptionKind::_OptionBox => RustType::Option(Box::new(RustType::Uniq(element_type))),
+            OptionKind::SingularField => RustType::SingularField(element_type),
+            OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
+        }
+    }
+
+    fn wrap_value(&self, value: &str, customize: &Customize) -> String {
+        match self {
+            OptionKind::Option => format!("::std::option::Option::Some({})", value),
+            OptionKind::_OptionBox => {
+                // TODO: could reuse allocated memory
+                format!("::std::option::Option::Some(Box::new({}))", value)
+            }
+            OptionKind::SingularField => format!(
+                "{}::SingularField::some({})",
+                protobuf_crate_path(customize),
+                value
+            ),
+            OptionKind::SingularPtrField => format!(
+                "{}::SingularPtrField::some({})",
+                protobuf_crate_path(customize),
+                value
+            ),
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Eq)]
 pub enum SingularFieldFlag {
     // proto2 or proto3 message
-    WithFlag { required: bool },
+    WithFlag {
+        required: bool,
+        option_kind: OptionKind,
+    },
     // proto3
     WithoutFlag,
 }
@@ -133,7 +181,7 @@ pub enum SingularFieldFlag {
 impl SingularFieldFlag {
     pub fn is_required(&self) -> bool {
         match *self {
-            SingularFieldFlag::WithFlag { required } => required,
+            SingularFieldFlag::WithFlag { required, .. } => required,
             SingularFieldFlag::WithoutFlag => false,
         }
     }
@@ -148,17 +196,9 @@ pub struct SingularField {
 impl SingularField {
     fn rust_storage_type(&self) -> RustType {
         match self.flag {
-            SingularFieldFlag::WithFlag { .. } => match self.elem.proto_type() {
-                FieldDescriptorProto_Type::TYPE_MESSAGE => {
-                    RustType::SingularPtrField(Box::new(self.elem.rust_storage_type()))
-                }
-                FieldDescriptorProto_Type::TYPE_STRING | FieldDescriptorProto_Type::TYPE_BYTES
-                    if self.elem.primitive_type_variant() == PrimitiveTypeVariant::Default =>
-                {
-                    RustType::SingularField(Box::new(self.elem.rust_storage_type()))
-                }
-                _ => RustType::Option(Box::new(self.elem.rust_storage_type())),
-            },
+            SingularFieldFlag::WithFlag { option_kind, .. } => {
+                option_kind.wrap_element(self.elem.rust_storage_type())
+            }
             SingularFieldFlag::WithoutFlag => self.elem.rust_storage_type(),
         }
     }
@@ -447,8 +487,23 @@ impl<'a> FieldGen<'a> {
             {
                 SingularFieldFlag::WithoutFlag
             } else {
+                let required =
+                    field.field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED;
+
+                let option_kind = match field.field.get_field_type() {
+                    FieldDescriptorProto_Type::TYPE_MESSAGE => OptionKind::SingularPtrField,
+                    FieldDescriptorProto_Type::TYPE_STRING
+                    | FieldDescriptorProto_Type::TYPE_BYTES
+                        if elem.primitive_type_variant() == PrimitiveTypeVariant::Default =>
+                    {
+                        OptionKind::SingularField
+                    }
+                    _ => OptionKind::Option,
+                };
+
                 SingularFieldFlag::WithFlag {
-                    required: field.field.get_label() == FieldDescriptorProto_Label::LABEL_REQUIRED,
+                    required,
+                    option_kind,
                 }
             };
             FieldKind::Singular(SingularField { elem, flag })
@@ -1076,16 +1131,12 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_self_field_assign_some(&self, w: &mut CodeWriter, value: &str) {
-        let full_storage_type = self.full_storage_type();
         match self.singular() {
             &SingularField {
-                flag: SingularFieldFlag::WithFlag { .. },
+                flag: SingularFieldFlag::WithFlag { option_kind, .. },
                 ..
             } => {
-                self.write_self_field_assign(
-                    w,
-                    &full_storage_type.wrap_value(value, &self.customize),
-                );
+                self.write_self_field_assign(w, &option_kind.wrap_value(value, &self.customize));
             }
             &SingularField {
                 flag: SingularFieldFlag::WithoutFlag,
