@@ -53,7 +53,7 @@ impl<M : Message> ProtobufValue for M {
 */
 
 /// A reference to a value
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ReflectValueRef<'a> {
     /// `u32`
     U32(u32),
@@ -112,6 +112,10 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::Enum(d, v) => ReflectValueBox::Enum(d, v),
             ReflectValueRef::Message(v) => ReflectValueBox::Message(v.descriptor().clone(v)),
         }
+    }
+
+    fn _downcast_clone<V: ProtobufValue>(&self) -> Result<V, Self> {
+        self.to_box().downcast().map_err(|_| self.clone())
     }
 }
 
