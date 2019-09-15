@@ -262,7 +262,7 @@ impl<'a> Parser<'a> {
     ) -> ParseResult<()> {
         let field_name = self.next_field_name()?;
 
-        let field = match descriptor.field_by_name(&field_name) {
+        let field = match descriptor.get_field_by_name(&field_name) {
             Some(field) => field,
             None => {
                 // TODO: shouldn't unknown fields be quietly skipped?

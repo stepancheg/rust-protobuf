@@ -200,7 +200,7 @@ fn test_message_descriptor() {
     let mut t = TestDescriptor::new();
     t.set_stuff(55);
 
-    let field = d.field_by_name("stuff").unwrap();
+    let field = d.get_field_by_name("stuff").unwrap();
     assert_eq!(55, field.get_singular_field_or_default(&t).to_i32().unwrap());
 }
 

@@ -15,7 +15,7 @@ fn test_get_sub_message_via_reflection() {
     m.mut_sub_m().set_n(42);
     assert!(m.has_sub_m());
 
-    let descriptor = m.descriptor().field_by_name("sub_m").unwrap();
+    let descriptor = m.descriptor().get_field_by_name("sub_m").unwrap();
     assert_eq!("sub_m", descriptor.name());
 
     let sub_m = descriptor.get_message(&m);
@@ -24,7 +24,7 @@ fn test_get_sub_message_via_reflection() {
         42,
         sub_m
             .descriptor()
-            .field_by_name("n")
+            .get_field_by_name("n")
             .unwrap()
             .get_singular_field_or_default(sub_m)
             .to_i32()
@@ -37,7 +37,7 @@ fn test_singular_basic() {
     let mut message = TestTypesSingular::new();
     let descriptor = message.descriptor();
 
-    let bool_field = descriptor.field_by_name("bool_field").unwrap();
+    let bool_field = descriptor.get_field_by_name("bool_field").unwrap();
     assert!(!bool_field.has_field(&message));
 
     bool_field.set_singular_field(&mut message, ReflectValueBox::Bool(true));
@@ -71,7 +71,7 @@ fn test_repeated_debug() {
     message.set_int32_field(vec![10, 20, 30]);
     let field = message
         .descriptor()
-        .field_by_name("int32_field")
+        .get_field_by_name("int32_field")
         .unwrap()
         .get_repeated(&message);
     assert_eq!("[10, 20, 30]", format!("{:?}", field));
@@ -181,9 +181,9 @@ fn test_nested_enum() {
 fn test_mut_message() {
     let mut m = TestTypesSingular::new();
     {
-        let message_field_field = m.descriptor().field_by_name("message_field").unwrap();
+        let message_field_field = m.descriptor().get_field_by_name("message_field").unwrap();
         let sub_m = message_field_field.mut_message(&mut m);
-        let n_field = sub_m.descriptor().field_by_name("n").unwrap();
+        let n_field = sub_m.descriptor().get_field_by_name("n").unwrap();
         n_field.set_singular_field(sub_m, ReflectValueBox::I32(10));
         // TODO: test `mut_message` works for oneof fields
     }
@@ -194,7 +194,7 @@ fn test_mut_message() {
 fn test_get_reflect_singular() {
     let mut m = TestTypesSingular::new();
     m.set_int64_field(10);
-    let f = m.descriptor().field_by_name("int64_field").unwrap();
+    let f = m.descriptor().get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
         ReflectFieldRef::Optional(Some(ReflectValueRef::I64(10))) => {},
         _ => panic!(),
@@ -205,7 +205,7 @@ fn test_get_reflect_singular() {
 fn test_get_reflect_repeated() {
     let mut m = TestTypesRepeated::new();
     m.set_int64_field(vec![10, 20]);
-    let f = m.descriptor().field_by_name("int64_field").unwrap();
+    let f = m.descriptor().get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
         ReflectFieldRef::Repeated(repeated) => {
             assert_eq!(2, repeated.len());
@@ -220,7 +220,7 @@ fn test_get_reflect_repeated() {
 fn test_get_reflect_map() {
     let mut m = TestTypesMap::new();
     m.set_int64_field(vec![(10, 33), (20, 44)].into_iter().collect());
-    let f = m.descriptor().field_by_name("int64_field").unwrap();
+    let f = m.descriptor().get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
         ReflectFieldRef::Map(map) => {
             assert_eq!(2, map.len());

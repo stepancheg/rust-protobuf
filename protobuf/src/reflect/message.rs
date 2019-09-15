@@ -245,19 +245,19 @@ impl MessageDescriptor {
     /// Find message field by protobuf field name
     ///
     /// Note: protobuf field name might be different for Rust field name.
-    pub fn field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+    pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
         let &index = self.index_by_name.get(name)?;
         Some(&self.fields[index])
     }
 
     /// Find message field by field name or field JSON name
-    pub fn field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+    pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
         let &index = self.index_by_name_or_json_name.get(name)?;
         Some(&self.fields[index])
     }
 
     /// Find message field by field name
-    pub fn field_by_number(&self, number: u32) -> Option<&FieldDescriptor> {
+    pub fn get_field_by_number(&self, number: u32) -> Option<&FieldDescriptor> {
         let &index = self.index_by_number.get(&number)?;
         Some(&self.fields[index])
     }

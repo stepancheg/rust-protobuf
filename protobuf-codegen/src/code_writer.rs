@@ -309,7 +309,7 @@ impl<'a> CodeWriter<'a> {
     /// use protobuf::reflect::MessageDescriptor;
     ///
     /// let id = MessageDescriptor::for_type::<FileDescriptorProto>()
-    ///     .field_by_name("message_type")
+    ///     .get_field_by_name("message_type")
     ///     .expect("`message_type` must exist")
     ///     .proto()
     ///     .get_number();
