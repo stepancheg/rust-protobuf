@@ -169,6 +169,14 @@ impl<'a> ReflectValueRef<'a> {
         }
     }
 
+    /// Take message value.
+    pub fn to_message(&self) -> Option<&'a dyn Message> {
+        match *self {
+            ReflectValueRef::Message(m) => Some(m),
+            _ => None,
+        }
+    }
+
     /// Clone to a box
     pub fn to_box(&self) -> ReflectValueBox {
         match *self {
