@@ -3,6 +3,8 @@ use protobuf::Message;
 use protobuf_test_common::*;
 
 use super::test_fmt_text_format_pb::*;
+use protobuf::text_format::print_to_string;
+use protobuf::prelude::MessageField;
 
 #[test]
 fn test_show() {
@@ -159,4 +161,99 @@ fn test_parse_error() {
     let e = protobuf::text_format::parse_from_str::<TestTypes>("nonexistent: 42").unwrap_err();
     let _error: &dyn std::error::Error = &e;
     assert_eq!(e.to_string(), "1:1: UnknownField(\"nonexistent\")");
+}
+
+fn t<F: FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
+    let mut m = TestTypes::new();
+    setter(&mut m);
+    assert_eq!(&*print_to_string(&m), expected);
+}
+
+#[test]
+fn test_singular() {
+    t("int32_singular: 99", |m| m.set_int32_singular(99));
+    t("double_singular: 99", |m| m.set_double_singular(99.0));
+    t("float_singular: 99", |m| m.set_float_singular(99.0));
+    t("int32_singular: 99", |m| m.set_int32_singular(99));
+    t("int64_singular: 99", |m| m.set_int64_singular(99));
+    t("uint32_singular: 99", |m| m.set_uint32_singular(99));
+    t("uint64_singular: 99", |m| m.set_uint64_singular(99));
+    t("sint32_singular: 99", |m| m.set_sint32_singular(99));
+    t("sint64_singular: 99", |m| m.set_sint64_singular(99));
+    t("fixed32_singular: 99", |m| m.set_fixed32_singular(99));
+    t("fixed64_singular: 99", |m| m.set_fixed64_singular(99));
+    t("sfixed32_singular: 99", |m| m.set_sfixed32_singular(99));
+    t("sfixed64_singular: 99", |m| m.set_sfixed64_singular(99));
+    t("bool_singular: true", |m| m.set_bool_singular(true));
+    t("string_singular: \"abc\"", |m| {
+        m.set_string_singular("abc".to_string())
+    });
+    t("bytes_singular: \"def\"", |m| {
+        m.set_bytes_singular(b"def".to_vec())
+    });
+    t("test_enum_singular: DARK", |m| {
+        m.set_test_enum_singular(TestEnum::DARK)
+    });
+    t("test_message_singular {}", |m| {
+        m.test_message_singular.set_default();
+    });
+}
+
+#[test]
+fn test_repeated_one() {
+    t("int32_repeated: 99", |m| m.int32_repeated.push(99));
+    t("double_repeated: 99", |m| m.double_repeated.push(99.0));
+    t("float_repeated: 99", |m| m.float_repeated.push(99.0));
+    t("int32_repeated: 99", |m| m.int32_repeated.push(99));
+    t("int64_repeated: 99", |m| m.int64_repeated.push(99));
+    t("uint32_repeated: 99", |m| m.uint32_repeated.push(99));
+    t("uint64_repeated: 99", |m| m.uint64_repeated.push(99));
+    t("sint32_repeated: 99", |m| m.sint32_repeated.push(99));
+    t("sint64_repeated: 99", |m| m.sint64_repeated.push(99));
+    t("fixed32_repeated: 99", |m| m.fixed32_repeated.push(99));
+    t("fixed64_repeated: 99", |m| m.fixed64_repeated.push(99));
+    t("sfixed32_repeated: 99", |m| m.sfixed32_repeated.push(99));
+    t("sfixed64_repeated: 99", |m| m.sfixed64_repeated.push(99));
+    t("bool_repeated: false", |m| m.bool_repeated.push(false));
+    t("string_repeated: \"abc\"", |m| {
+        m.string_repeated.push("abc".to_string())
+    });
+    t("bytes_repeated: \"def\"", |m| {
+        m.bytes_repeated.push(b"def".to_vec())
+    });
+    t("test_enum_repeated: DARK", |m| {
+        m.test_enum_repeated.push(TestEnum::DARK.into())
+    });
+    t("test_message_repeated {}", |m| {
+        m.test_message_repeated.push(Default::default());
+    });
+}
+
+#[test]
+fn test_repeated_multiple() {
+    t(
+        "uint32_singular: 30 int32_repeated: 10 int32_repeated: -20",
+        |m| {
+            m.set_uint32_singular(30);
+            m.int32_repeated.push(10);
+            m.int32_repeated.push(-20);
+        },
+    );
+}
+
+#[test]
+fn test_complex_message() {
+    t("test_message_singular {value: 30}", |m| {
+        m.test_message_singular.mut_message().set_value(30)
+    });
+}
+
+#[test]
+fn test_string_escaped() {
+    let mut m = TestTypes::new();
+    m.set_string_singular("quote\"newline\nbackslash\\del\x7f".to_string());
+    assert_eq!(
+        "string_singular: \"quote\\\"newline\\nbackslash\\\\del\\177\"",
+        &*format!("{:?}", m)
+    );
 }
