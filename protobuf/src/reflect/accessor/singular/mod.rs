@@ -615,41 +615,6 @@ where
     }
 }
 
-pub fn make_option_accessor<M, V>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a Option<<V::RuntimeType as RuntimeType>::Value>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<<V::RuntimeType as RuntimeType>::Value>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultOptionMut::<M, V::RuntimeType, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
-    }
-}
-
 /// Make accessor for option-like field
 pub fn make_option_get_copy_accessor<M, V, O>(
     name: &'static str,

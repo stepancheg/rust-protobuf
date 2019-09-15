@@ -5,7 +5,6 @@
 pub use crate::reflect::accessor::map::make_map_accessor;
 pub use crate::reflect::accessor::repeated::make_repeated_field_accessor;
 pub use crate::reflect::accessor::repeated::make_vec_accessor;
-pub use crate::reflect::accessor::singular::make_option_accessor;
 pub use crate::reflect::accessor::singular::make_option_accessor_new;
 pub use crate::reflect::accessor::singular::make_option_get_copy_accessor;
 pub use crate::reflect::accessor::singular::make_option_get_ref_accessor;
