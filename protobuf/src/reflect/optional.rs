@@ -1,5 +1,3 @@
-use std::mem;
-
 use super::value::ProtobufValue;
 use crate::SingularField;
 use crate::SingularPtrField;

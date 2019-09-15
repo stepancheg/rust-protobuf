@@ -198,6 +198,11 @@ impl<'a> ReflectValueRef<'a> {
     }
 }
 
+#[doc(hidden)]
+pub enum ReflectValueMut<'a> {
+    Message(&'a mut dyn Message),
+}
+
 /// Owner value of any elementary type
 #[derive(Debug, Clone)]
 pub enum ReflectValueBox {

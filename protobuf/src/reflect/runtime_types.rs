@@ -19,6 +19,7 @@ use crate::reflect::ReflectValueRef;
 use crate::chars::Chars;
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
+use crate::reflect::value::ReflectValueMut;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -64,6 +65,7 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     }
 
     fn as_ref(value: &Self::Value) -> ReflectValueRef;
+    fn as_mut(value: &mut Self::Value) -> ReflectValueMut;
 
     fn is_non_zero(value: &Self::Value) -> bool;
 
@@ -143,6 +145,10 @@ impl RuntimeType for RuntimeTypeF32 {
         ReflectValueRef::F32(*value)
     }
 
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
+
     fn is_non_zero(value: &f32) -> bool {
         *value != 0.0
     }
@@ -184,6 +190,10 @@ impl RuntimeType for RuntimeTypeF64 {
     fn is_non_zero(value: &f64) -> bool {
         *value != 0.0
     }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
 }
 
 impl RuntimeType for RuntimeTypeI32 {
@@ -221,6 +231,10 @@ impl RuntimeType for RuntimeTypeI32 {
 
     fn is_non_zero(value: &i32) -> bool {
         *value != 0
+    }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
     }
 }
 
@@ -260,6 +274,10 @@ impl RuntimeType for RuntimeTypeI64 {
     fn is_non_zero(value: &i64) -> bool {
         *value != 0
     }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
 }
 
 impl RuntimeType for RuntimeTypeU32 {
@@ -293,6 +311,10 @@ impl RuntimeType for RuntimeTypeU32 {
 
     fn as_ref(value: &u32) -> ReflectValueRef {
         ReflectValueRef::U32(*value)
+    }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
     }
 
     fn is_non_zero(value: &u32) -> bool {
@@ -336,6 +358,10 @@ impl RuntimeType for RuntimeTypeU64 {
     fn is_non_zero(value: &u64) -> bool {
         *value != 0
     }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
 }
 
 impl RuntimeType for RuntimeTypeBool {
@@ -374,6 +400,10 @@ impl RuntimeType for RuntimeTypeBool {
     fn is_non_zero(value: &bool) -> bool {
         *value
     }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
 }
 
 impl RuntimeType for RuntimeTypeString {
@@ -403,6 +433,10 @@ impl RuntimeType for RuntimeTypeString {
 
     fn as_ref(value: &String) -> ReflectValueRef {
         ReflectValueRef::String(&*value)
+    }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
     }
 
     fn is_non_zero(value: &String) -> bool {
@@ -445,6 +479,10 @@ impl RuntimeType for RuntimeTypeVecU8 {
 
     fn as_ref(value: &Vec<u8>) -> ReflectValueRef {
         ReflectValueRef::Bytes(value.as_slice())
+    }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
     }
 
     fn is_non_zero(value: &Vec<u8>) -> bool {
@@ -494,6 +532,10 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
     fn is_non_zero(value: &Bytes) -> bool {
         !value.is_empty()
     }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
 }
 
 #[cfg(feature = "bytes")]
@@ -538,6 +580,10 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
 
     fn is_non_zero(value: &Chars) -> bool {
         !value.is_empty()
+    }
+
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
     }
 }
 
@@ -593,6 +639,10 @@ where
         ReflectValueRef::Enum(value.descriptor())
     }
 
+    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
+        unimplemented!()
+    }
+
     fn is_non_zero(value: &E) -> bool {
         value.value() != 0
     }
@@ -631,6 +681,10 @@ where
     }
     fn as_ref(value: &M) -> ReflectValueRef {
         ReflectValueRef::Message(value)
+    }
+
+    fn as_mut(value: &mut M) -> ReflectValueMut {
+        ReflectValueMut::Message(value)
     }
 
     fn is_non_zero(_value: &M) -> bool {
