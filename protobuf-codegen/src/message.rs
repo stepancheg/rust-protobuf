@@ -278,7 +278,7 @@ impl<'a> MessageGen<'a> {
                         w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
                     }
                     for field in fields {
-                        field.write_descriptor_field(&self.type_name, "fields", w);
+                        field.write_descriptor_field("fields", w);
                     }
                     w.write_line(&format!(
                         "{}::reflect::MessageDescriptor::new::<{}>(",

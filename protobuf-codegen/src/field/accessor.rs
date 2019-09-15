@@ -1,27 +1,23 @@
 use crate::code_writer::CodeWriter;
+use crate::field::FieldElem;
 use crate::field::FieldGen;
 use crate::field::FieldKind;
 use crate::field::MapField;
 use crate::field::OptionKind;
 use crate::field::RepeatedField;
+use crate::field::RepeatedFieldKind;
 use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
-use crate::field::FieldElem;
-use crate::field::RepeatedFieldKind;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
 use crate::rust_types_values::RustType;
-
-enum AccessorStyle {
-    Lambda,
-    HasGet,
-}
+use protobuf::descriptorx::WithScope;
 
 struct AccessorFn {
     name: String,
     // function type params after first underscore
     type_params: Vec<String>,
-    pub style: AccessorStyle,
+    callback_params: Vec<String>,
 }
 
 impl AccessorFn {
@@ -38,6 +34,22 @@ impl AccessorFn {
 }
 
 impl FieldGen<'_> {
+    fn make_accessor_fns_lambda(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+        ]
+    }
+
     fn accessor_fn_map(&self, map_field: &MapField) -> AccessorFn {
         let MapField {
             ref key, ref value, ..
@@ -48,7 +60,7 @@ impl FieldGen<'_> {
                 key.lib_protobuf_type(&self.customize),
                 value.lib_protobuf_type(&self.customize),
             ],
-            style: AccessorStyle::Lambda,
+            callback_params: self.make_accessor_fns_lambda(),
         }
     }
 
@@ -61,7 +73,7 @@ impl FieldGen<'_> {
         AccessorFn {
             name: name.to_owned(),
             type_params: vec![elem.lib_protobuf_type(&self.customize)],
-            style: AccessorStyle::Lambda,
+            callback_params: self.make_accessor_fns_lambda(),
         }
     }
 
@@ -72,13 +84,13 @@ impl FieldGen<'_> {
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
                 type_params: vec![name.clone()],
-                style: AccessorStyle::HasGet,
+                callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
             AccessorFn {
                 name: "make_simple_field_accessor".to_owned(),
                 type_params: vec![elem.lib_protobuf_type(&self.customize)],
-                style: AccessorStyle::Lambda,
+                callback_params: self.make_accessor_fns_lambda(),
             }
         }
     }
@@ -98,7 +110,7 @@ impl FieldGen<'_> {
         AccessorFn {
             name,
             type_params: vec![elem.lib_protobuf_type(&self.customize)],
-            style: AccessorStyle::Lambda,
+            callback_params: self.make_accessor_fns_lambda(),
         }
     }
 
@@ -130,7 +142,7 @@ impl FieldGen<'_> {
         AccessorFn {
             name,
             type_params,
-            style: AccessorStyle::HasGet,
+            callback_params: self.make_accessor_fns_has_get(),
         }
     }
 
@@ -150,12 +162,7 @@ impl FieldGen<'_> {
         }
     }
 
-    pub fn write_descriptor_field(
-        &self,
-        message_type_name: &str,
-        fields_var: &str,
-        w: &mut CodeWriter,
-    ) {
+    pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
         let accessor_fn = self.accessor_fn();
         w.write_line(&format!(
             "{}.push({}::reflect::rt::{}(",
@@ -165,21 +172,8 @@ impl FieldGen<'_> {
         ));
         w.indented(|w| {
             w.write_line(&format!("\"{}\",", self.proto_field.name()));
-            match accessor_fn.style {
-                AccessorStyle::Lambda => {
-                    w.write_line(&format!(
-                        "|m: &{}| {{ &m.{} }},",
-                        message_type_name, self.rust_name
-                    ));
-                    w.write_line(&format!(
-                        "|m: &mut {}| {{ &mut m.{} }},",
-                        message_type_name, self.rust_name
-                    ));
-                }
-                AccessorStyle::HasGet => {
-                    w.write_line(&format!("{}::has_{},", message_type_name, self.rust_name));
-                    w.write_line(&format!("{}::get_{},", message_type_name, self.rust_name));
-                }
+            for callback in &accessor_fn.callback_params {
+                w.write_line(&format!("{},", callback));
             }
         });
         w.write_line("));");
