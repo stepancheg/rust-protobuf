@@ -1,9 +1,6 @@
-use crate::core::message_down_cast;
 use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::runtime_types::RuntimeType;
-use crate::reflect::runtime_types::RuntimeTypeMessage;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
@@ -11,8 +8,6 @@ use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::singular::OptionLike;
 use crate::Message;
-use crate::SingularField;
-use crate::SingularPtrField;
 use std::marker;
 
 pub(crate) mod oneof;
@@ -474,80 +469,6 @@ where
                 },
                 mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, O> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_field_accessor<M, V>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a SingularField<<V::RuntimeType as RuntimeType>::Value>,
-    mut_field: for<'a> fn(
-        &'a mut M,
-    ) -> &'a mut SingularField<<V::RuntimeType as RuntimeType>::Value>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultOptionMut::<M, V::RuntimeType, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_ptr_field_accessor<M, V>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
-    mut_field: for<'a> fn(
-        &'a mut M,
-    ) -> &'a mut SingularPtrField<<V::RuntimeType as RuntimeType>::Value>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::RuntimeType, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultOptionMut::<M, V::RuntimeType, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                set_impl: SetImplOptionFieldPointer::<M, V::RuntimeType, _> {
                     mut_field,
                     _marker: marker::PhantomData,
                 },
