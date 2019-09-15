@@ -73,7 +73,7 @@ impl OneofField {
 }
 
 #[derive(Clone)]
-pub struct OneofVariantGen<'a> {
+pub(crate) struct OneofVariantGen<'a> {
     oneof: &'a OneofGen<'a>,
     variant: OneofVariantWithContext<'a>,
     oneof_field: OneofField,
@@ -91,7 +91,7 @@ impl<'a> OneofVariantGen<'a> {
         customize: Customize,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {
-            oneof: oneof,
+            oneof,
             variant: variant.clone(),
             field: field.clone(),
             path: format!(
@@ -119,7 +119,7 @@ impl<'a> OneofVariantGen<'a> {
 }
 
 #[derive(Clone)]
-pub struct OneofGen<'a> {
+pub(crate) struct OneofGen<'a> {
     // Message containing this oneof
     message: &'a MessageGen<'a>,
     oneof: OneofWithContext<'a>,

@@ -13,11 +13,11 @@ use crate::oneof::OneofVariantGen;
 use crate::serde;
 
 /// Message info for codegen
-pub struct MessageGen<'a> {
+pub(crate) struct MessageGen<'a> {
     pub(crate) message: &'a MessageWithScope<'a>,
     pub(crate) root_scope: &'a RootScope<'a>,
     type_name: String,
-    pub fields: Vec<FieldGen<'a>>,
+    pub(crate) fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
     customize: Customize,
 }

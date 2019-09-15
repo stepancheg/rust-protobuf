@@ -407,12 +407,12 @@ impl AccessorFn {
 }
 
 #[derive(Clone)]
-pub struct FieldGen<'a> {
+pub(crate) struct FieldGen<'a> {
     root_scope: &'a RootScope<'a>,
     syntax: Syntax,
     pub proto_field: FieldWithContext<'a>,
     // field name in generated code
-    pub rust_name: String,
+    pub rust_name: RustIdent,
     pub proto_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     enum_default_value: Option<EnumValueGen>,
@@ -477,17 +477,17 @@ impl<'a> FieldGen<'a> {
         };
 
         FieldGen {
-            root_scope: root_scope,
+            root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: field.field.rust_name(),
+            rust_name: RustIdent(field.field.rust_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             enum_default_value: enum_default_value,
             proto_field: field,
-            kind: kind,
-            expose_field: expose_field,
-            generate_accessors: generate_accessors,
-            customize: customize.clone(),
+            kind,
+            expose_field,
+            generate_accessors,
+            customize,
         }
     }
 
@@ -902,16 +902,19 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn write_clear(&self, w: &mut CodeWriter) {
-        if self.is_oneof() {
-            w.write_line(&format!(
-                "self.{} = ::std::option::Option::None;",
-                self.oneof().oneof_name
-            ));
-        } else {
-            let clear_expr = self
-                .full_storage_type()
-                .clear(&self.self_field(), &self.customize);
-            w.write_line(&format!("{};", clear_expr));
+        match self.kind {
+            FieldKind::Oneof(..) => {
+                w.write_line(&format!(
+                    "self.{} = ::std::option::Option::None;",
+                    self.oneof().oneof_name
+                ));
+            }
+            _ => {
+                let clear_expr = self
+                    .full_storage_type()
+                    .clear(&self.self_field(), &self.customize);
+                w.write_line(&format!("{};", clear_expr));
+            }
         }
     }
 
@@ -1079,7 +1082,7 @@ impl<'a> FieldGen<'a> {
             let vis = self.visibility();
             w.field_decl_vis(
                 vis,
-                &self.rust_name,
+                &self.rust_name.0,
                 &self.full_storage_type().to_code(&self.customize),
             );
         }
@@ -1719,6 +1722,28 @@ impl<'a> FieldGen<'a> {
         }
     }
 
+    fn write_message_field_get_oneof(&self, o: &OneofField, w: &mut CodeWriter) {
+        let get_xxx_return_type = self.get_xxx_return_type();
+        let OneofField { ref elem, .. } = o;
+        let self_field_oneof = self.self_field_oneof();
+        w.match_expr(self_field_oneof, |w| {
+            let (refv, vtype) = if !self.elem_type_is_copy() {
+                ("ref v", elem.rust_storage_type().ref_type())
+            } else {
+                ("v", elem.rust_storage_type())
+            };
+            w.case_expr(
+                format!(
+                    "::std::option::Option::Some({}({}))",
+                    self.variant_path(),
+                    refv
+                ),
+                vtype.into_target(&get_xxx_return_type, "v", &self.customize),
+            );
+            w.case_expr("_", self.get_xxx_default_value_rust());
+        })
+    }
+
     fn write_message_field_get(&self, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
         let fn_def = format!(
@@ -1728,24 +1753,8 @@ impl<'a> FieldGen<'a> {
         );
 
         w.pub_fn(&fn_def, |w| match self.kind {
-            FieldKind::Oneof(OneofField { ref elem, .. }) => {
-                let self_field_oneof = self.self_field_oneof();
-                w.match_expr(self_field_oneof, |w| {
-                    let (refv, vtype) = if !self.elem_type_is_copy() {
-                        ("ref v", elem.rust_storage_type().ref_type())
-                    } else {
-                        ("v", elem.rust_storage_type())
-                    };
-                    w.case_expr(
-                        format!(
-                            "::std::option::Option::Some({}({}))",
-                            self.variant_path(),
-                            refv
-                        ),
-                        vtype.into_target(&get_xxx_return_type, "v", &self.customize),
-                    );
-                    w.case_expr("_", self.get_xxx_default_value_rust());
-                })
+            FieldKind::Oneof(ref o) => {
+                self.write_message_field_get_oneof(o, w);
             }
             FieldKind::Singular(..) => {
                 self.write_message_field_get_singular(w);
