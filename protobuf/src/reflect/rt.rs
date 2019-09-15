@@ -10,7 +10,6 @@ pub use crate::reflect::accessor::singular::make_option_get_copy_accessor;
 pub use crate::reflect::accessor::singular::make_option_get_ref_accessor;
 pub use crate::reflect::accessor::singular::make_simple_field_accessor;
 pub use crate::reflect::accessor::singular::make_singular_field_accessor;
-pub use crate::reflect::accessor::singular::make_singular_message_accessor;
 pub use crate::reflect::accessor::singular::make_singular_ptr_field_accessor;
 pub use crate::reflect::accessor::singular::oneof::make_oneof_copy_has_get_set_accessors;
 pub use crate::reflect::accessor::singular::oneof::make_oneof_deref_has_get_set_accessor;

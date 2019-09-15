@@ -7,16 +7,12 @@ use crate::reflect::runtime_types::RuntimeTypeMessage;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::EnumValueDescriptor;
-use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::singular::OptionLike;
 use crate::Message;
-use crate::ProtobufEnum;
 use crate::SingularField;
 use crate::SingularPtrField;
-use std::fmt;
 use std::marker;
 
 pub(crate) mod oneof;
@@ -413,168 +409,6 @@ where
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
         let value = value.downcast::<V::Value>().expect("message");
         (self.set_field)(m, value)
-    }
-}
-
-trait GetSingularMessage<M>: Send + Sync + 'static {
-    fn get_message<'a>(&self, m: &'a M) -> &'a dyn Message;
-}
-
-struct GetSingularMessageImpl<M, N> {
-    get: for<'a> fn(&'a M) -> &'a N,
-}
-
-impl<M: Message, N: Message + 'static> GetSingularMessage<M> for GetSingularMessageImpl<M, N> {
-    fn get_message<'a>(&self, m: &'a M) -> &'a dyn Message {
-        (self.get)(m)
-    }
-}
-
-trait GetSingularEnum<M>: Send + Sync + 'static {
-    fn get_enum(&self, m: &M) -> &'static EnumValueDescriptor;
-}
-
-struct GetSingularEnumImpl<M, E> {
-    get: fn(&M) -> E,
-}
-
-impl<M: Message, E: ProtobufEnum> GetSingularEnum<M> for GetSingularEnumImpl<M, E> {
-    fn get_enum(&self, m: &M) -> &'static EnumValueDescriptor {
-        (self.get)(m).descriptor()
-    }
-}
-
-trait GetSetCopyFns<M>: Send + Sync + 'static {
-    fn get_field<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
-}
-
-struct GetSetCopyFnsImpl<M, V: ProtobufValue + Copy> {
-    get: fn(&M) -> V,
-    _set: fn(&mut M, V),
-}
-
-impl<M: Send + Sync + 'static, V: ProtobufValue + Copy> GetSetCopyFns<M>
-    for GetSetCopyFnsImpl<M, V>
-{
-    fn get_field<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        (&(self.get)(m) as &dyn ProtobufValue).as_ref_copy()
-    }
-}
-
-enum SingularGetSet<M> {
-    Message(Box<dyn GetSingularMessage<M> + 'static>),
-}
-
-impl<M: Message + 'static> SingularGetSet<M> {
-    fn get_ref<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        match self {
-            &SingularGetSet::Message(ref get) => ReflectValueRef::Message(get.get_message(m)),
-        }
-    }
-}
-
-trait FieldAccessor2<M, R: ?Sized>: Send + Sync + 'static
-where
-    M: Message + Send + Sync + 'static,
-{
-    fn get_field<'a>(&self, _: &'a M) -> &'a R;
-    fn mut_field<'a>(&self, _: &'a mut M) -> &'a mut R;
-}
-
-enum FieldAccessorFunctions<M> {
-    // up to 1.0.24 optional or required
-    SingularHasGetSet {
-        has: fn(&M) -> bool,
-        get_set: SingularGetSet<M>,
-    },
-}
-
-impl<M> fmt::Debug for FieldAccessorFunctions<M> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            &FieldAccessorFunctions::SingularHasGetSet { .. } => {
-                write!(f, "SingularHasGetSet {{ .. }}")
-            }
-        }
-    }
-}
-
-struct FieldAccessorImpl<M> {
-    fns: FieldAccessorFunctions<M>,
-    runtime_type: &'static dyn RuntimeTypeDynamic,
-}
-
-impl<M: Message + Send + Sync + 'static> FieldAccessorImpl<M> {
-    fn get_value_option<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
-        match self.fns {
-            FieldAccessorFunctions::SingularHasGetSet {
-                ref has,
-                ref get_set,
-            } => {
-                if !has(m) {
-                    None
-                } else {
-                    Some(get_set.get_ref(m))
-                }
-            }
-        }
-    }
-}
-
-impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
-    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
-        match self.fns {
-            FieldAccessorFunctions::SingularHasGetSet {
-                ref has,
-                ref get_set,
-            } => {
-                if has(message_down_cast(m)) {
-                    Some(get_set.get_ref(message_down_cast(m)))
-                } else {
-                    None
-                }
-            }
-        }
-    }
-
-    fn get_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
-        match &self.fns {
-            FieldAccessorFunctions::SingularHasGetSet { get_set, .. } => {
-                get_set.get_ref(message_down_cast(m))
-            }
-        }
-    }
-
-    fn mut_field_or_default<'a>(&self, _m: &'a mut dyn Message) -> ReflectValueMut<'a> {
-        unimplemented!()
-    }
-
-    fn set_field(&self, _m: &mut dyn Message, _value: ReflectValueBox) {
-        unimplemented!()
-    }
-}
-
-// singular
-
-pub fn make_singular_message_accessor<
-    M: Message + 'static,
-    F: Message + Clone + Default + 'static,
->(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a F,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Message(Box::new(GetSingularMessageImpl { get: get })),
-                },
-                runtime_type: RuntimeTypeMessage::<F>::dynamic(),
-            }),
-        }),
     }
 }
 
