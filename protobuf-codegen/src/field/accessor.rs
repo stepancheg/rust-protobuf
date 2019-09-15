@@ -11,6 +11,7 @@ use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
 use crate::rust_types_values::ProtobufTypeGen;
 use crate::rust_types_values::RustType;
+use crate::scope::WithScope;
 use protobuf::descriptor::field_descriptor_proto;
 
 struct AccessorFn {
@@ -34,6 +35,59 @@ impl AccessorFn {
 }
 
 impl FieldGen<'_> {
+    fn make_accessor_fns_lambda(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_lambda_get(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_lambda_default_value(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
+            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
+            format!("{}", self.get_xxx_default_value_rust()),
+        ]
+    }
+
+    fn make_accessor_fns_has_get(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get_set(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::set_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get_mut_set(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::mut_{}", message, self.rust_name),
+            format!("{}::set_{}", message, self.rust_name),
+        ]
+    }
+
     fn accessor_fn_map(&self, map_field: &MapField) -> AccessorFn {
         let MapField {
             ref key, ref value, ..
