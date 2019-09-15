@@ -10,6 +10,7 @@ use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
+use crate::rust_types_values::ProtobufTypeGen;
 use crate::rust_types_values::RustType;
 use protobuf::descriptorx::WithScope;
 
@@ -47,6 +48,15 @@ impl FieldGen<'_> {
         vec![
             format!("{}::has_{}", message, self.rust_name),
             format!("{}::get_{}", message, self.rust_name),
+        ]
+    }
+
+    fn make_accessor_fns_has_get_set(&self) -> Vec<String> {
+        let message = self.proto_field.message.rust_name();
+        vec![
+            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::set_{}", message, self.rust_name),
         ]
     }
 
@@ -117,6 +127,14 @@ impl FieldGen<'_> {
     fn accessor_fn_oneof(&self, oneof: &OneofField) -> AccessorFn {
         let OneofField { ref elem, .. } = oneof;
         // TODO: uses old style
+
+        if let FieldElem::Enum(ref name, ..) = &oneof.elem {
+            return AccessorFn {
+                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
+                type_params: vec![ProtobufTypeGen::Enum(name.clone()).rust_type(&self.customize)],
+                callback_params: self.make_accessor_fns_has_get_set(),
+            };
+        }
 
         let suffix = match &self.elem().rust_storage_type() {
             t if t.is_primitive() => t.to_code(&self.customize),

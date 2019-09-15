@@ -608,10 +608,11 @@ impl crate::Message for Value {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_singular_enum_accessor::<_, NullValue>(
+                fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
                     "null_value",
                     Value::has_null_value,
                     Value::get_null_value,
+                    Value::set_null_value,
                 ));
                 fields.push(crate::reflect::rt::make_singular_f64_accessor::<_>(
                     "number_value",
