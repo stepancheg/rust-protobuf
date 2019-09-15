@@ -145,17 +145,28 @@ impl EnumDescriptor {
         &self.values
     }
 
+    /// Find enum variant by name
+    pub fn get_value_by_name<'a>(&'a self, name: &str) -> Option<&'a EnumValueDescriptor> {
+        let &index = self.index_by_name.get(name)?;
+        Some(&self.values[index])
+    }
+
+    /// Find enum variant by number
+    pub fn get_value_by_number(&self, number: i32) -> Option<&EnumValueDescriptor> {
+        let &index = self.index_by_number.get(&number)?;
+        Some(&self.values[index])
+    }
+
     /// Find enum value by name
+    #[deprecated]
     pub fn value_by_name<'a>(&'a self, name: &str) -> &'a EnumValueDescriptor {
-        // TODO: clone is weird
-        let &index = self.index_by_name.get(&name.to_string()).unwrap();
-        &self.values[index]
+        self.get_value_by_name(name).unwrap()
     }
 
     /// Find enum value by number
+    #[deprecated]
     pub fn value_by_number<'a>(&'a self, number: i32) -> &'a EnumValueDescriptor {
-        let &index = self.index_by_number.get(&number).unwrap();
-        &self.values[index]
+        self.get_value_by_number(number).unwrap()
     }
 
     /// Check if this enum descriptor corresponds given enum type

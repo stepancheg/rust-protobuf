@@ -8,10 +8,10 @@ fn test_get_sub_message_via_reflection() {
     m.mut_sub_m().set_n(42);
     assert!(m.has_sub_m());
 
-    let descriptor = m.descriptor().field_by_name("sub_m");
+    let descriptor = m.descriptor().get_field_by_name("sub_m").unwrap();
     assert_eq!("sub_m", descriptor.name());
 
     let sub_m = descriptor.get_singular_field_or_default(&m).to_message().unwrap();
     assert_eq!("test_reflect.SubM", sub_m.descriptor().full_name());
-    assert_eq!(42, sub_m.descriptor().field_by_name("n").get_singular_field_or_default(sub_m).to_i32().unwrap());
+    assert_eq!(42, sub_m.descriptor().get_field_by_name("n").unwrap().get_singular_field_or_default(sub_m).to_i32().unwrap());
 }
