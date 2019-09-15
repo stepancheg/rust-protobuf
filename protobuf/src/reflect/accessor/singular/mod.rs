@@ -1,21 +1,11 @@
 use crate::core::message_down_cast;
 use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
-use crate::reflect::optional::ReflectOptional;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::runtime_types::RuntimeTypeBool;
-use crate::reflect::runtime_types::RuntimeTypeEnum;
-use crate::reflect::runtime_types::RuntimeTypeF32;
-use crate::reflect::runtime_types::RuntimeTypeF64;
-use crate::reflect::runtime_types::RuntimeTypeI32;
-use crate::reflect::runtime_types::RuntimeTypeI64;
 use crate::reflect::runtime_types::RuntimeTypeMessage;
-use crate::reflect::runtime_types::RuntimeTypeString;
-use crate::reflect::runtime_types::RuntimeTypeU32;
-use crate::reflect::runtime_types::RuntimeTypeU64;
-use crate::reflect::runtime_types::RuntimeTypeVecU8;
-use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeWithDeref};
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::EnumValueDescriptor;
@@ -455,18 +445,6 @@ impl<M: Message, E: ProtobufEnum> GetSingularEnum<M> for GetSingularEnumImpl<M, 
     }
 }
 
-trait GetRepeatedMessage<M> {
-    fn len_field(&self, m: &M) -> usize;
-    fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a dyn Message;
-    fn reflect_repeated_message<'a>(&self, m: &'a M) -> ReflectRepeatedRef<'a>;
-}
-
-trait GetRepeatedEnum<M: Message + 'static> {
-    fn len_field(&self, m: &M) -> usize;
-    fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor;
-    fn reflect_repeated_enum<'a>(&self, m: &'a M) -> ReflectRepeatedRef<'a>;
-}
-
 trait GetSetCopyFns<M>: Send + Sync + 'static {
     fn get_field<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
 }
@@ -485,20 +463,12 @@ impl<M: Send + Sync + 'static, V: ProtobufValue + Copy> GetSetCopyFns<M>
 }
 
 enum SingularGetSet<M> {
-    Copy(Box<dyn GetSetCopyFns<M>>),
-    String(for<'a> fn(&'a M) -> &'a str, fn(&mut M, String)),
-    Bytes(for<'a> fn(&'a M) -> &'a [u8], fn(&mut M, Vec<u8>)),
-    Enum(Box<dyn GetSingularEnum<M> + 'static>),
     Message(Box<dyn GetSingularMessage<M> + 'static>),
 }
 
 impl<M: Message + 'static> SingularGetSet<M> {
     fn get_ref<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         match self {
-            &SingularGetSet::Copy(ref copy) => copy.get_field(m),
-            &SingularGetSet::String(get, _) => ReflectValueRef::String(get(m)),
-            &SingularGetSet::Bytes(get, _) => ReflectValueRef::Bytes(get(m)),
-            &SingularGetSet::Enum(ref get) => ReflectValueRef::Enum(get.get_enum(m)),
             &SingularGetSet::Message(ref get) => ReflectValueRef::Message(get.get_message(m)),
         }
     }
@@ -586,221 +556,6 @@ impl<M: Message + 'static> SingularFieldAccessor for FieldAccessorImpl<M> {
 }
 
 // singular
-
-fn set_panic<A, B>(_: &mut A, _: B) {
-    panic!()
-}
-
-pub fn make_singular_u32_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> u32,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeU32::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_i32_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> i32,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeI32::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_u64_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> u64,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeU64::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_i64_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> i64,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeI64::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_f32_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> f32,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeF32::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_f64_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> f64,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeF64::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_bool_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> bool,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Copy(Box::new(GetSetCopyFnsImpl {
-                        get,
-                        _set: set_panic,
-                    })),
-                },
-                runtime_type: RuntimeTypeBool::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_enum_accessor<M: Message + 'static, E: ProtobufEnum + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: fn(&M) -> E,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Enum(Box::new(GetSingularEnumImpl { get: get })),
-                },
-                runtime_type: RuntimeTypeEnum::<E>::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_string_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a str,
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::String(get, set_panic),
-                },
-                runtime_type: RuntimeTypeString::dynamic(),
-            }),
-        }),
-    }
-}
-
-pub fn make_singular_bytes_accessor<M: Message + 'static>(
-    name: &'static str,
-    has: fn(&M) -> bool,
-    get: for<'a> fn(&'a M) -> &'a [u8],
-) -> FieldAccessor {
-    FieldAccessor {
-        name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(FieldAccessorImpl {
-                fns: FieldAccessorFunctions::SingularHasGetSet {
-                    has,
-                    get_set: SingularGetSet::Bytes(get, set_panic),
-                },
-                runtime_type: RuntimeTypeVecU8::dynamic(),
-            }),
-        }),
-    }
-}
 
 pub fn make_singular_message_accessor<
     M: Message + 'static,
