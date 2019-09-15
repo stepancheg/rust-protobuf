@@ -162,31 +162,11 @@ impl FieldGen<'_> {
             };
         }
 
-        let suffix = match &self.elem().rust_storage_type() {
-            t if t.is_primitive() => t.to_code(&self.customize),
-            &RustType::String | &RustType::Chars => "string".to_string(),
-            &RustType::Vec(ref t) if t.is_u8() => "bytes".to_string(),
-            &RustType::Bytes => "bytes".to_string(),
-            &RustType::Enum(..) => "enum".to_string(),
-            &RustType::Message(..) => "message".to_string(),
-            t => panic!("unexpected field type: {:?}", t),
-        };
-
-        let name = format!("make_singular_{}_accessor", suffix);
-
-        let mut type_params = Vec::new();
-        match elem {
-            &FieldElem::Message(ref name, ..) | &FieldElem::Enum(ref name, ..) => {
-                type_params.push(name.0.clone());
-            }
-            _ => (),
-        }
-
         // string or bytes
         AccessorFn {
-            name,
-            type_params,
-            callback_params: self.make_accessor_fns_has_get(),
+            name: "make_oneof_deref_has_get_set_accessor".to_owned(),
+            type_params: vec![elem.protobuf_type_gen().rust_type(&self.customize)],
+            callback_params: self.make_accessor_fns_has_get_set(),
         }
     }
 

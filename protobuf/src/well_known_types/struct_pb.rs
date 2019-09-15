@@ -620,10 +620,11 @@ impl crate::Message for Value {
                     Value::get_number_value,
                     Value::set_number_value,
                 ));
-                fields.push(crate::reflect::rt::make_singular_string_accessor::<_>(
+                fields.push(crate::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "string_value",
                     Value::has_string_value,
                     Value::get_string_value,
+                    Value::set_string_value,
                 ));
                 fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
                     "bool_value",
