@@ -9,4 +9,10 @@ message TestReflectDefault {
     optional int32 i = 1 [default=10];
     optional string s = 2 [default="sss"];
     optional Fruit e = 3 [default=BANANA];
+
+    oneof o {
+        int32 oi = 21 [default=10];
+        string os = 22 [default="sss"];
+        Fruit oe = 23 [default=BANANA];
+    }
 }
