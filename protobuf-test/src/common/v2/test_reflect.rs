@@ -78,7 +78,6 @@ fn test_repeated_debug() {
 }
 
 fn test_repeated_field(message: &mut dyn Message, field: &FieldDescriptor) {
-    assert_eq!(0, field.len_field(message));
     assert!(!field.has_field(message));
 
     let mut expected = Vec::new();

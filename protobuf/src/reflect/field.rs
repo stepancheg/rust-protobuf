@@ -159,27 +159,6 @@ impl FieldDescriptor {
         }
     }
 
-    /// Return length of repeated field.
-    ///
-    /// For singualar field return `1` if field is set and `0` otherwise.
-    ///
-    /// # Panics
-    ///
-    /// If this field belongs to a different message type.
-    pub fn len_field(&self, m: &dyn Message) -> usize {
-        match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => {
-                if a.accessor.get_field(m).is_some() {
-                    1
-                } else {
-                    0
-                }
-            }
-            AccessorKind::Repeated(ref a) => a.accessor.get_reflect(m).len(),
-            AccessorKind::Map(ref a) => a.accessor.get_reflect(m).len(),
-        }
-    }
-
     // accessors
 
     fn singular(&self) -> &SingularFieldAccessorHolder {
