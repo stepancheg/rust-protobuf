@@ -131,7 +131,7 @@ impl FieldGen<'_> {
     ) -> AccessorFn {
         match elem {
             FieldElem::Message(..) => AccessorFn {
-                name: "make_option_accessor_new".to_owned(),
+                name: "make_option_accessor".to_owned(),
                 type_params: vec![elem.lib_protobuf_type(&self.customize), "_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda(),
             },

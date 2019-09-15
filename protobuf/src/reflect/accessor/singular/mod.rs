@@ -579,7 +579,7 @@ pub fn make_singular_message_accessor<
 }
 
 /// Make accessor for option or option-like field
-pub fn make_option_accessor_new<M, V, O>(
+pub fn make_option_accessor<M, V, O>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a O,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
