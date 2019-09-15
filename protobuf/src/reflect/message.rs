@@ -37,6 +37,7 @@ where
 /// Dynamic message type
 pub struct MessageDescriptor {
     full_name: String,
+    file_descriptor_proto: &'static FileDescriptorProto,
     proto: &'static DescriptorProto,
     factory: &'static dyn MessageFactory,
     fields: Vec<FieldDescriptor>,
@@ -61,10 +62,10 @@ impl MessageDescriptor {
     fn new_non_generic(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
-        file: &'static FileDescriptorProto,
+        file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
-        let proto = find_message_by_rust_name(file, rust_name);
+        let proto = find_message_by_rust_name(file_descriptor_proto, rust_name);
 
         let mut field_proto_by_name = HashMap::new();
         for field_proto in &proto.message.field {
@@ -87,7 +88,7 @@ impl MessageDescriptor {
             assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
         }
 
-        let mut full_name = file.get_package().to_string();
+        let mut full_name = file_descriptor_proto.get_package().to_string();
         if full_name.len() > 0 {
             full_name.push('.');
         }
@@ -100,6 +101,7 @@ impl MessageDescriptor {
             fields,
             index_by_name,
             index_by_number,
+            file_descriptor_proto,
         }
     }
 
@@ -113,10 +115,15 @@ impl MessageDescriptor {
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<FieldAccessor>,
-        file: &'static FileDescriptorProto,
+        file_descriptor_proto: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        MessageDescriptor::new_non_generic(rust_name, fields, file, factory)
+        MessageDescriptor::new_non_generic(rust_name, fields, file_descriptor_proto, factory)
+    }
+
+    /// `FileDescriptorProto` containg this message type
+    pub fn file_descriptor_proto(&self) -> &FileDescriptorProto {
+        self.file_descriptor_proto
     }
 
     /// New empty message

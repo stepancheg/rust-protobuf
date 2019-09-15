@@ -5,10 +5,14 @@ extern crate protobuf_codegen;
 extern crate glob;
 #[macro_use]
 extern crate log;
+extern crate tempfile;
 
 mod test;
 
 pub mod build;
 pub mod hex;
+
+mod text_format_tests;
+pub use text_format_tests::*;
 
 pub use test::*;

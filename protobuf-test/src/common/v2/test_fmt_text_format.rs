@@ -1,8 +1,47 @@
 use std::default::Default;
 
+use protobuf_test_common::*;
+
 use super::test_fmt_text_format_pb::*;
 
 use protobuf::text_format::print_to_string;
+use protobuf::Message;
+
+#[test]
+fn test_show() {
+    let mut m = TestTypes::new();
+    m.set_bool_singular(true);
+    assert_eq!("bool_singular: true", &*format!("{:?}", m));
+}
+
+#[test]
+fn test_pretty() {
+    let mut tm = TestMessage::new();
+    tm.set_value(23);
+    let mut m = TestTypes::new();
+    m.set_test_message_singular(tm);
+    m.set_string_singular("abc".to_string());
+    m.mut_string_repeated().push("def".to_string());
+    m.mut_string_repeated().push("ghi".to_string());
+    assert_eq!(
+        "string_singular: \"abc\"\ntest_message_singular {\n  value: 23\n}\nstring_repeated: \"def\"\nstring_repeated: \"ghi\"\n",
+        &*format!("{:#?}", m)
+    );
+}
+
+#[test]
+fn test_rust_identifier() {
+    let mut m = TestTextFormatRustIdentifier::new();
+    m.set_field_const(true);
+    assert_eq!("const: true", &*format!("{:?}", m));
+}
+
+#[test]
+fn test_parse_error() {
+    let e = protobuf::text_format::parse_from_str::<TestTypes>("nonexistent: 42").unwrap_err();
+    let _error: &dyn std::error::Error = &e;
+    assert_eq!(e.to_string(), "1:1: UnknownField(\"nonexistent\")");
+}
 
 fn t<F: FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();
@@ -90,13 +129,6 @@ fn test_complex_message() {
 }
 
 #[test]
-fn test_show() {
-    let mut m = TestTypes::new();
-    m.set_bool_singular(true);
-    assert_eq!("bool_singular: true", &*format!("{:?}", m));
-}
-
-#[test]
 fn test_string_escaped() {
     let mut m = TestTypes::new();
     m.set_string_singular("quote\"newline\nbackslash\\del\x7f".to_string());
@@ -104,26 +136,4 @@ fn test_string_escaped() {
         "string_singular: \"quote\\\"newline\\nbackslash\\\\del\\177\"",
         &*format!("{:?}", m)
     );
-}
-
-#[test]
-fn test_pretty() {
-    let mut tm = TestMessage::new();
-    tm.set_value(23);
-    let mut m = TestTypes::new();
-    m.set_test_message_singular(tm);
-    m.set_string_singular("abc".to_string());
-    m.mut_string_repeated().push("def".to_string());
-    m.mut_string_repeated().push("ghi".to_string());
-    assert_eq!(
-        "string_singular: \"abc\"\ntest_message_singular {\n  value: 23\n}\nstring_repeated: \"def\"\nstring_repeated: \"ghi\"\n",
-        &*format!("{:#?}", m)
-    );
-}
-
-#[test]
-fn test_rust_identifier() {
-    let mut m = TestTextFormatRustIdentifier::new();
-    m.set_field_const(true);
-    assert_eq!("const: true", &*format!("{:?}", m));
 }
