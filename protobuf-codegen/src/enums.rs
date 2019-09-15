@@ -7,20 +7,21 @@ use super::code_writer::*;
 use super::customize::Customize;
 use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
+use crate::rust_name::RustRelativePath;
 use crate::rust_types_values::type_name_to_rust_relative;
 use crate::serde;
 
 #[derive(Clone)]
 pub struct EnumValueGen {
     proto: EnumValueDescriptorProto,
-    enum_rust_name: String,
+    enum_rust_name: RustRelativePath,
 }
 
 impl EnumValueGen {
-    fn parse(proto: &EnumValueDescriptorProto, enum_rust_name: &str) -> EnumValueGen {
+    fn parse(proto: &EnumValueDescriptorProto, enum_rust_name: &RustRelativePath) -> EnumValueGen {
         EnumValueGen {
             proto: proto.clone(),
-            enum_rust_name: enum_rust_name.to_string(),
+            enum_rust_name: enum_rust_name.clone(),
         }
     }
 
@@ -36,7 +37,7 @@ impl EnumValueGen {
 
     pub fn rust_name_outer(&self) -> String {
         let mut r = String::new();
-        r.push_str(&self.enum_rust_name);
+        r.push_str(&self.enum_rust_name.0);
         r.push_str("::");
         r.push_str(&self.rust_name_inner());
         r
@@ -45,7 +46,7 @@ impl EnumValueGen {
 
 pub struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
-    type_name: String,
+    type_name: RustRelativePath,
     lite_runtime: bool,
     customize: Customize,
 }
@@ -61,7 +62,7 @@ impl<'a> EnumGen<'a> {
             == current_file.get_name()
         {
             // field type is a message or enum declared in the same file
-            enum_with_scope.rust_name()
+            RustRelativePath(enum_with_scope.rust_name())
         } else {
             type_name_to_rust_relative(
                 &enum_with_scope.name_absolute(),
@@ -283,25 +284,33 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_copy(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::marker::Copy", &self.type_name, |_w| {});
+        w.impl_for_block(
+            "::std::marker::Copy",
+            &format!("{}", self.type_name),
+            |_w| {},
+        );
     }
 
     fn write_impl_eq(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
-            w.def_fn("eq(&self, other: &Self) -> bool", |w| {
-                w.write_line(&format!(
-                    "{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
-                    protobuf_crate_path(&self.customize),
-                    protobuf_crate_path(&self.customize),
-                ));
-            });
-        });
+        w.impl_for_block(
+            "::std::cmp::PartialEq",
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("eq(&self, other: &Self) -> bool", |w| {
+                    w.write_line(&format!(
+                        "{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
+                        protobuf_crate_path(&self.customize),
+                        protobuf_crate_path(&self.customize),
+                    ));
+                });
+            },
+        );
     }
 
     fn write_impl_hash(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::hash::Hash", &self.type_name, |w| {
+        w.impl_for_block("::std::hash::Hash", &format!("{}", self.type_name), |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
                 w.write_line(&format!(
                     "state.write_i32({}::ProtobufEnum::value(self))",
@@ -323,14 +332,18 @@ impl<'a> EnumGen<'a> {
             // so this implementation is not completely unreasonable.
             w.comment("Note, `Default` is implemented although default value is not 0");
         }
-        w.impl_for_block("::std::default::Default", &self.type_name, |w| {
-            w.def_fn("default() -> Self", |w| {
-                w.write_line(&format!(
-                    "{}::{}",
-                    &self.type_name,
-                    &first_value.rust_name()
-                ))
-            });
-        });
+        w.impl_for_block(
+            "::std::default::Default",
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("default() -> Self", |w| {
+                    w.write_line(&format!(
+                        "{}::{}",
+                        &self.type_name,
+                        &first_value.rust_name()
+                    ))
+                });
+            },
+        );
     }
 }

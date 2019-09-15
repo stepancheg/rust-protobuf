@@ -1,6 +1,7 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use crate::inside::protobuf_crate_path;
+use crate::rust_name::RustRelativePath;
 use crate::Customize;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
@@ -13,7 +14,7 @@ struct ExtGen<'a> {
 }
 
 impl<'a> ExtGen<'a> {
-    fn extendee_rust_name(&self) -> String {
+    fn extendee_rust_name(&self) -> RustRelativePath {
         type_name_to_rust_relative(
             self.field.get_extendee(),
             self.file,

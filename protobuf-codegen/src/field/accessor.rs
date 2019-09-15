@@ -103,7 +103,7 @@ impl FieldGen<'_> {
 
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![name.clone()],
+                type_params: vec![name.0.clone()],
                 callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
@@ -177,7 +177,7 @@ impl FieldGen<'_> {
         let mut type_params = Vec::new();
         match elem {
             &FieldElem::Message(ref name, ..) | &FieldElem::Enum(ref name, ..) => {
-                type_params.push(name.to_owned());
+                type_params.push(name.0.clone());
             }
             _ => (),
         }

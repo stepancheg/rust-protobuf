@@ -4,6 +4,7 @@ use crate::code_writer::CodeWriter;
 use crate::field::FieldElem;
 use crate::field::FieldGen;
 use crate::message::MessageGen;
+use crate::rust_name::RustRelativePath;
 use crate::rust_types_values::RustType;
 use crate::serde;
 use crate::Customize;
@@ -15,7 +16,7 @@ use std::collections::HashSet;
 
 // oneof one { ... }
 #[derive(Clone)]
-pub struct OneofField {
+pub(crate) struct OneofField {
     pub elem: FieldElem,
     pub oneof_name: String,
     pub oneof_type_name: RustType,
@@ -54,10 +55,10 @@ impl OneofField {
         let boxed = OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute());
 
         OneofField {
-            elem: elem,
+            elem,
             oneof_name: oneof.name().to_string(),
-            oneof_type_name: RustType::Oneof(oneof.rust_name()),
-            boxed: boxed,
+            oneof_type_name: RustType::Oneof(RustRelativePath(oneof.rust_name())),
+            boxed,
         }
     }
 
@@ -136,9 +137,9 @@ impl<'a> OneofGen<'a> {
     ) -> OneofGen<'a> {
         let rust_name = oneof.rust_name();
         OneofGen {
-            message: message,
-            oneof: oneof,
-            type_name: RustType::Oneof(rust_name),
+            message,
+            oneof,
+            type_name: RustType::Oneof(RustRelativePath(rust_name)),
             lite_runtime: message.lite_runtime,
             customize: customize.clone(),
         }

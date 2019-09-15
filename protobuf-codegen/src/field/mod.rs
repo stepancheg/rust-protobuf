@@ -17,6 +17,7 @@ use crate::code_writer::Visibility;
 use crate::float;
 use crate::ident::RustIdent;
 use crate::inside::protobuf_crate_path;
+use crate::rust_name::RustRelativePath;
 
 mod accessor;
 
@@ -188,7 +189,7 @@ impl SingularFieldFlag {
 }
 
 #[derive(Clone)]
-pub struct SingularField {
+pub(crate) struct SingularField {
     pub flag: SingularFieldFlag,
     pub elem: FieldElem,
 }
@@ -222,7 +223,7 @@ impl RepeatedFieldKind {
 }
 
 #[derive(Clone)]
-pub struct RepeatedField {
+pub(crate) struct RepeatedField {
     pub elem: FieldElem,
     pub packed: bool,
 }
@@ -244,14 +245,14 @@ impl RepeatedField {
 }
 
 #[derive(Clone)]
-pub struct MapField {
-    name: String,
+pub(crate) struct MapField {
+    name: RustRelativePath,
     key: FieldElem,
     value: FieldElem,
 }
 
 #[derive(Clone)]
-pub enum FieldKind {
+pub(crate) enum FieldKind {
     // optional or required
     Singular(SingularField),
     // repeated except map
@@ -284,12 +285,12 @@ impl FieldKind {
 pub struct EntryKeyValue(FieldElem, FieldElem);
 
 #[derive(Clone, Debug)]
-pub enum FieldElem {
+pub(crate) enum FieldElem {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name, entry
-    Message(String, String, Option<Box<EntryKeyValue>>),
+    Message(RustRelativePath, String, Option<Box<EntryKeyValue>>),
     // name, file name, default value
-    Enum(String, String, RustIdent),
+    Enum(RustRelativePath, String, RustIdent),
     Group,
 }
 
@@ -490,7 +491,7 @@ impl<'a> FieldGen<'a> {
             match (elem, true) {
                 // map field
                 (FieldElem::Message(name, _, Some(key_value)), true) => FieldKind::Map(MapField {
-                    name: name,
+                    name,
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),

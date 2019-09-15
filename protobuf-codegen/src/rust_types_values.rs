@@ -3,13 +3,14 @@ use std::cmp;
 use super::well_known_types::is_well_known_type_full;
 use crate::ident::RustIdent;
 use crate::inside::protobuf_crate_path;
+use crate::rust_name::RustRelativePath;
 use crate::Customize;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 
 // Represent subset of rust types used in generated code
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum RustType {
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) enum RustType {
     // integer: signed?, size in bits
     Int(bool, u32),
     // param is size in bits
@@ -31,11 +32,11 @@ pub enum RustType {
     // &T
     Ref(Box<RustType>),
     // protobuf message
-    Message(String),
+    Message(RustRelativePath),
     // protobuf enum, not any enum
-    Enum(String, RustIdent),
+    Enum(RustRelativePath, RustIdent),
     // oneof enum
-    Oneof(String),
+    Oneof(RustRelativePath),
     // bytes::Bytes
     Bytes,
     // chars::Chars
@@ -409,7 +410,7 @@ impl RustType {
 }
 
 /// Representation of an expression in code generator: text and type
-pub struct RustValueTyped {
+pub(crate) struct RustValueTyped {
     pub value: String,
     pub rust_type: RustType,
 }
@@ -453,7 +454,7 @@ pub fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
 }
 
 // rust type for protobuf base type
-pub fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
+pub(crate) fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
         FieldDescriptorProto_Type::TYPE_DOUBLE => RustType::Float(64),
         FieldDescriptorProto_Type::TYPE_FLOAT => RustType::Float(32),
@@ -498,48 +499,50 @@ fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
         && file_last_component(file.get_name()) == "descriptor.proto"
 }
 
-pub fn type_name_to_rust_relative(
+pub(crate) fn type_name_to_rust_relative(
     type_name: &str,
     file: &FileDescriptorProto,
     subm: bool,
     customize: &Customize,
     root_scope: &RootScope,
-) -> String {
+) -> RustRelativePath {
     assert!(
         type_name.starts_with("."),
         "type name must start with dot: {}",
         type_name
     );
     let message_or_enum = root_scope.find_message_or_enum(type_name);
-    if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
-        // field type is a message or enum declared in the same file
-        if subm {
-            format!("super::{}", message_or_enum.rust_name())
+    RustRelativePath(
+        if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
+            // field type is a message or enum declared in the same file
+            if subm {
+                format!("super::{}", message_or_enum.rust_name())
+            } else {
+                format!("{}", message_or_enum.rust_name())
+            }
+        } else if let Some(name) = is_well_known_type_full(type_name) {
+            // Well-known types are included in rust-protobuf library
+            // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
+            format!(
+                "{}::well_known_types::{}",
+                protobuf_crate_path(customize),
+                name
+            )
+        } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
+            // Messages defined in descriptor.proto
+            format!(
+                "{}::descriptor::{}",
+                protobuf_crate_path(customize),
+                message_or_enum.name_to_package()
+            )
         } else {
-            format!("{}", message_or_enum.rust_name())
-        }
-    } else if let Some(name) = is_well_known_type_full(type_name) {
-        // Well-known types are included in rust-protobuf library
-        // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
-        format!(
-            "{}::well_known_types::{}",
-            protobuf_crate_path(customize),
-            name
-        )
-    } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
-        // Messages defined in descriptor.proto
-        format!(
-            "{}::descriptor::{}",
-            protobuf_crate_path(customize),
-            message_or_enum.name_to_package()
-        )
-    } else {
-        if subm {
-            format!("super::super::{}", message_or_enum.rust_fq_name())
-        } else {
-            format!("super::{}", message_or_enum.rust_fq_name())
-        }
-    }
+            if subm {
+                format!("super::super::{}", message_or_enum.rust_fq_name())
+            } else {
+                format!("super::{}", message_or_enum.rust_fq_name())
+            }
+        },
+    )
 }
 
 fn capitalize(s: &str) -> String {
@@ -561,10 +564,10 @@ pub enum _CarllercheBytesType {
 }
 
 // ProtobufType trait name
-pub enum ProtobufTypeGen {
+pub(crate) enum ProtobufTypeGen {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
-    Message(String),
-    Enum(String),
+    Message(RustRelativePath),
+    Enum(RustRelativePath),
 }
 
 impl ProtobufTypeGen {
