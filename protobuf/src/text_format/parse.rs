@@ -85,7 +85,7 @@ impl<'a> Parser<'a> {
 
         // TODO: read integer?
         let ident = self.tokenizer.next_ident()?;
-        let value = match e.value_by_name(&ident) {
+        let value = match e.get_value_by_name(&ident) {
             Some(value) => value,
             None => return Err(ParseError::UnknownEnumValue(ident)),
         };

@@ -212,7 +212,7 @@ fn test_enum_descriptor() {
         "TestEnumDescriptor",
         reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name()
     );
-    assert_eq!("GREEN", d.value_by_name("GREEN").unwrap().name());
+    assert_eq!("GREEN", d.get_value_by_name("GREEN").unwrap().name());
 }
 
 #[test]

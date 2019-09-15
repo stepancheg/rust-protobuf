@@ -360,7 +360,7 @@ impl<'a> Parser<'a> {
             self.parse_enum(name, descriptor)
         } else if self.tokenizer.lookahead_is_json_number()? {
             let number = self.read_i32()?;
-            match descriptor.value_by_number(number) {
+            match descriptor.get_value_by_number(number) {
                 Some(v) => Ok(v),
                 // TODO: EnumValueOrUnknown
                 None => Err(ParseErrorWithoutLoc(
@@ -380,7 +380,7 @@ impl<'a> Parser<'a> {
         descriptor: &'e EnumDescriptor,
     ) -> ParseResultWithoutLoc<&'e EnumValueDescriptor> {
         // TODO: can map key be int
-        match descriptor.value_by_name(&name) {
+        match descriptor.get_value_by_name(&name) {
             Some(v) => Ok(v),
             None => Err(ParseErrorWithoutLoc(
                 ParseErrorWithoutLocInner::UnknownEnumVariantName(name),

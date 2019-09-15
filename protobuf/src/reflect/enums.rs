@@ -239,20 +239,20 @@ impl EnumDescriptor {
     }
 
     /// Find enum variant by name
-    pub fn value_by_name<'a>(&'a self, name: &str) -> Option<&'a EnumValueDescriptor> {
+    pub fn get_value_by_name<'a>(&'a self, name: &str) -> Option<&'a EnumValueDescriptor> {
         let &index = self.index_by_name.get(name)?;
         Some(&self.values[index])
     }
 
     /// Find enum variant by number
-    pub fn value_by_number(&self, number: i32) -> Option<&EnumValueDescriptor> {
+    pub fn get_value_by_number(&self, number: i32) -> Option<&EnumValueDescriptor> {
         let &index = self.index_by_number.get(&number)?;
         Some(&self.values[index])
     }
 
     /// Find enum variant by number or return default (first) enum value
-    pub fn value_by_number_or_default(&self, number: i32) -> &EnumValueDescriptor {
-        match self.value_by_number(number) {
+    pub fn get_value_by_number_or_default(&self, number: i32) -> &EnumValueDescriptor {
+        match self.get_value_by_number(number) {
             Some(v) => v,
             None => &self.values()[0],
         }

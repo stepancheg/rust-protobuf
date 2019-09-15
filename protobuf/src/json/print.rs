@@ -411,7 +411,7 @@ impl Printer {
         if self.print_options.enum_values_int {
             self.print_printable(&v)
         } else {
-            match descriptor.value_by_number(v) {
+            match descriptor.get_value_by_number(v) {
                 Some(value) => self.print_enum_known(value),
                 None => self.print_printable(&v),
             }

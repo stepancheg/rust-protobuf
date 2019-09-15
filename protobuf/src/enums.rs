@@ -22,7 +22,7 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug
     /// Get enum value descriptor.
     fn descriptor(&self) -> &'static EnumValueDescriptor {
         self.enum_descriptor()
-            .value_by_number(self.value())
+            .get_value_by_number(self.value())
             .unwrap()
     }
 
