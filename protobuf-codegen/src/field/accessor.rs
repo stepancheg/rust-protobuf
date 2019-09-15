@@ -203,7 +203,7 @@ impl FieldGen<'_> {
             };
         }
 
-        if elem.rust_storage_elem_type(&reference).is_copy() {
+        if elem.is_copy() {
             return AccessorFn {
                 name: "make_oneof_copy_has_get_set_accessors".to_owned(),
                 type_params: vec![elem
@@ -257,7 +257,7 @@ impl FieldGen<'_> {
         ));
         w.indented(|w| {
             w.write_line(&format!("\"{}\",", self.proto_field.name()));
-            for callback in accessor_fn.callback_params {
+            for callback in &accessor_fn.callback_params {
                 w.write_line(&format!("{},", callback));
             }
         });
