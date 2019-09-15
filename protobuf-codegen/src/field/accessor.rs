@@ -1,5 +1,4 @@
 use crate::code_writer::CodeWriter;
-use crate::field::FieldElem;
 use crate::field::FieldGen;
 use crate::field::FieldKind;
 use crate::field::MapField;
@@ -7,6 +6,8 @@ use crate::field::OptionKind;
 use crate::field::RepeatedField;
 use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
+use crate::field::FieldElem;
+use crate::field::RepeatedFieldKind;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
 use crate::rust_types_values::RustType;
@@ -53,14 +54,12 @@ impl FieldGen<'_> {
 
     fn accessor_fn_repeated(&self, repeated_field: &RepeatedField) -> AccessorFn {
         let RepeatedField { ref elem, .. } = repeated_field;
-        let coll = match self.full_storage_type() {
-            RustType::Vec(..) => "vec",
-            RustType::RepeatedField(..) => "repeated_field",
-            _ => unreachable!(),
+        let name = match repeated_field.kind() {
+            RepeatedFieldKind::Vec => "make_vec_accessor",
+            RepeatedFieldKind::RepeatedField => "make_repeated_field_accessor",
         };
-        let name = format!("make_{}_accessor", coll);
         AccessorFn {
-            name,
+            name: name.to_owned(),
             type_params: vec![elem.lib_protobuf_type(&self.customize)],
             style: AccessorStyle::Lambda,
         }
