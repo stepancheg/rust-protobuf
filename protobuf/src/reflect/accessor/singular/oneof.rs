@@ -36,6 +36,7 @@ where
                 set_impl: SetImplSetField::<M, V::RuntimeType> { set_field: set },
                 _marker: marker::PhantomData,
             }),
+            element_type: V::dynamic(),
         }),
     }
 }
@@ -64,6 +65,7 @@ where
                 set_impl: SetImplSetField::<M, F::RuntimeType> { set_field: set },
                 _marker: marker::PhantomData,
             }),
+            element_type: F::dynamic(),
         }),
     }
 }
@@ -99,6 +101,7 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
+            element_type: ProtobufTypeMessage::<F>::dynamic(),
         }),
     }
 }

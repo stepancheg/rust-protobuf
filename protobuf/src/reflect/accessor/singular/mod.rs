@@ -2,6 +2,7 @@ use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
+use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ReflectValueBox;
@@ -22,6 +23,7 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
 
 pub(crate) struct SingularFieldAccessorHolder {
     pub accessor: Box<dyn SingularFieldAccessor>,
+    pub element_type: &'static dyn ProtobufTypeDynamic,
 }
 
 trait GetOptionImpl<M>: Send + Sync + 'static {
@@ -440,6 +442,7 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
+            element_type: V::dynamic(),
         }),
     }
 }
@@ -474,6 +477,7 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
+            element_type: V::dynamic(),
         }),
     }
 }
@@ -509,6 +513,7 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
+            element_type: V::dynamic(),
         }),
     }
 }
@@ -533,6 +538,7 @@ where
                 set_impl: SetImplFieldPointer::<M, V::RuntimeType> { mut_field },
                 _marker: marker::PhantomData,
             }),
+            element_type: V::dynamic(),
         }),
     }
 }
