@@ -1,5 +1,6 @@
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FieldDescriptorProto_Label;
+use crate::json::json_name;
 use crate::reflect::accessor::map::MapFieldAccessorHolder;
 use crate::reflect::accessor::repeated::RepeatedFieldAccessorHolder;
 use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
@@ -62,6 +63,7 @@ pub enum RuntimeFieldType {
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
     accessor: FieldAccessor,
+    json_name: String,
 }
 
 impl FieldDescriptor {
@@ -70,7 +72,17 @@ impl FieldDescriptor {
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), accessor.name);
-        FieldDescriptor { proto, accessor }
+        let json_name = if !proto.get_json_name().is_empty() {
+            proto.get_json_name().to_string()
+        } else {
+            json_name(proto.get_name())
+        };
+        FieldDescriptor {
+            proto,
+            accessor,
+            // probably could be lazy-init
+            json_name,
+        }
     }
 
     /// Get `.proto` description of field
@@ -81,6 +93,17 @@ impl FieldDescriptor {
     /// Field name as specified in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
+    }
+
+    /// JSON field name.
+    ///
+    /// Can be different from `.proto` field name.
+    ///
+    /// See [JSON mapping][json] for details.
+    ///
+    /// [json]: https://developers.google.com/protocol-buffers/docs/proto3#json
+    pub fn json_name(&self) -> &str {
+        &self.json_name
     }
 
     /// If this field repeated?

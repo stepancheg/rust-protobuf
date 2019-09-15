@@ -27,6 +27,10 @@ pub use self::value::ReflectValueRef;
 #[doc(hidden)]
 pub use self::value::ReflectValueRef as ProtobufValueRef;
 
+pub use self::repeated::ReflectRepeatedRef;
+
+pub use self::map::ReflectMapRef;
+
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
 

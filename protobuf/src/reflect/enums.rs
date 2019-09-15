@@ -47,6 +47,22 @@ impl EnumValueDescriptor {
     pub fn enum_descriptor(&self) -> &EnumDescriptor {
         (self.enum_descriptor_static)()
     }
+
+    /// Convert this value descriptor into proper enum object.
+    ///
+    /// ```
+    /// # use protobuf::well_known_types::NullValue;
+    /// # use protobuf::ProtobufEnum;
+    /// # use protobuf::reflect::EnumValueDescriptor;
+    ///
+    /// let value: &EnumValueDescriptor = NullValue::NULL_VALUE.descriptor();
+    /// let null: Option<NullValue> = value.cast();
+    /// assert_eq!(Some(NullValue::NULL_VALUE), null);
+    /// ```
+    pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
+        self.enum_descriptor()
+            .cast_to_protobuf_enum::<E>(self.value())
+    }
 }
 
 trait GetEnumDescriptor: Send + Sync + 'static {
