@@ -204,6 +204,23 @@ impl SingularField {
     }
 }
 
+/// Repeated field can be `Vec<T>` or `RepeatedField<T>`.
+#[derive(Eq, PartialEq, Copy, Clone)]
+pub enum RepeatedFieldKind {
+    Vec,
+    RepeatedField,
+}
+
+impl RepeatedFieldKind {
+    fn wrap_element(&self, element_type: RustType) -> RustType {
+        let element_type = Box::new(element_type);
+        match self {
+            RepeatedFieldKind::Vec => RustType::Vec(element_type),
+            RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct RepeatedField {
     pub elem: FieldElem,
@@ -211,14 +228,18 @@ pub struct RepeatedField {
 }
 
 impl RepeatedField {
-    fn rust_type(&self) -> RustType {
+    fn kind(&self) -> RepeatedFieldKind {
         if !self.elem.is_copy()
             && self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche
         {
-            RustType::RepeatedField(Box::new(self.elem.rust_storage_type()))
+            RepeatedFieldKind::RepeatedField
         } else {
-            RustType::Vec(Box::new(self.elem.rust_storage_type()))
+            RepeatedFieldKind::Vec
         }
+    }
+
+    fn rust_type(&self) -> RustType {
+        self.kind().wrap_element(self.elem.rust_storage_type())
     }
 }
 
