@@ -4,7 +4,7 @@ use super::test_fmt_text_format_pb::*;
 
 use protobuf::text_format::print_to_string;
 
-fn t<F : FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
+fn t<F: FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();
     setter(&mut m);
     assert_eq!(&*print_to_string(&m), expected);
@@ -42,47 +42,31 @@ fn test_singular() {
 
 #[test]
 fn test_repeated_one() {
-    t("int32_repeated: 99", |m| m.mut_int32_repeated().push(99));
-    t(
-        "double_repeated: 99",
-        |m| m.mut_double_repeated().push(99.0),
-    );
-    t("float_repeated: 99", |m| m.mut_float_repeated().push(99.0));
-    t("int32_repeated: 99", |m| m.mut_int32_repeated().push(99));
-    t("int64_repeated: 99", |m| m.mut_int64_repeated().push(99));
-    t("uint32_repeated: 99", |m| m.mut_uint32_repeated().push(99));
-    t("uint64_repeated: 99", |m| m.mut_uint64_repeated().push(99));
-    t("sint32_repeated: 99", |m| m.mut_sint32_repeated().push(99));
-    t("sint64_repeated: 99", |m| m.mut_sint64_repeated().push(99));
-    t(
-        "fixed32_repeated: 99",
-        |m| m.mut_fixed32_repeated().push(99),
-    );
-    t(
-        "fixed64_repeated: 99",
-        |m| m.mut_fixed64_repeated().push(99),
-    );
-    t("sfixed32_repeated: 99", |m| {
-        m.mut_sfixed32_repeated().push(99)
-    });
-    t("sfixed64_repeated: 99", |m| {
-        m.mut_sfixed64_repeated().push(99)
-    });
-    t(
-        "bool_repeated: false",
-        |m| m.mut_bool_repeated().push(false),
-    );
+    t("int32_repeated: 99", |m| m.int32_repeated.push(99));
+    t("double_repeated: 99", |m| m.double_repeated.push(99.0));
+    t("float_repeated: 99", |m| m.float_repeated.push(99.0));
+    t("int32_repeated: 99", |m| m.int32_repeated.push(99));
+    t("int64_repeated: 99", |m| m.int64_repeated.push(99));
+    t("uint32_repeated: 99", |m| m.uint32_repeated.push(99));
+    t("uint64_repeated: 99", |m| m.uint64_repeated.push(99));
+    t("sint32_repeated: 99", |m| m.sint32_repeated.push(99));
+    t("sint64_repeated: 99", |m| m.sint64_repeated.push(99));
+    t("fixed32_repeated: 99", |m| m.fixed32_repeated.push(99));
+    t("fixed64_repeated: 99", |m| m.fixed64_repeated.push(99));
+    t("sfixed32_repeated: 99", |m| m.sfixed32_repeated.push(99));
+    t("sfixed64_repeated: 99", |m| m.sfixed64_repeated.push(99));
+    t("bool_repeated: false", |m| m.bool_repeated.push(false));
     t("string_repeated: \"abc\"", |m| {
-        m.mut_string_repeated().push("abc".to_string())
+        m.string_repeated.push("abc".to_string())
     });
     t("bytes_repeated: \"def\"", |m| {
-        m.mut_bytes_repeated().push(b"def".to_vec())
+        m.bytes_repeated.push(b"def".to_vec())
     });
     t("test_enum_repeated: DARK", |m| {
-        m.mut_test_enum_repeated().push(TestEnum::DARK)
+        m.test_enum_repeated.push(TestEnum::DARK)
     });
     t("test_message_repeated {}", |m| {
-        m.mut_test_message_repeated().push(Default::default());
+        m.test_message_repeated.push(Default::default());
     });
 }
 
@@ -92,8 +76,8 @@ fn test_repeated_multiple() {
         "uint32_singular: 30 int32_repeated: 10 int32_repeated: -20",
         |m| {
             m.set_uint32_singular(30);
-            m.mut_int32_repeated().push(10);
-            m.mut_int32_repeated().push(-20);
+            m.int32_repeated.push(10);
+            m.int32_repeated.push(-20);
         },
     );
 }
