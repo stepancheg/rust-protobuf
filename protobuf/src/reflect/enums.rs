@@ -250,7 +250,8 @@ impl EnumDescriptor {
         Some(&self.values[index])
     }
 
-    pub(crate) fn value_by_number_or_default(&self, number: i32) -> &EnumValueDescriptor {
+    /// Find enum variant by number or return default (first) enum value
+    pub fn value_by_number_or_default(&self, number: i32) -> &EnumValueDescriptor {
         match self.value_by_number(number) {
             Some(v) => v,
             None => &self.values()[0],

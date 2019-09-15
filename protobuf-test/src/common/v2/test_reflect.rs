@@ -26,7 +26,9 @@ fn test_get_sub_message_via_reflection() {
             .descriptor()
             .field_by_name("n")
             .unwrap()
-            .get_i32(sub_m)
+            .get_singular_field_or_default(sub_m)
+            .to_i32()
+            .unwrap()
     );
 }
 
@@ -40,7 +42,7 @@ fn test_singular_basic() {
 
     bool_field.set_singular_field(&mut message, ReflectValueBox::Bool(true));
     assert!(bool_field.has_field(&message));
-    assert_eq!(true, bool_field.get_bool(&message));
+    assert_eq!(true, bool_field.get_singular_field_or_default(&message).to_bool().unwrap());
 }
 
 fn test_singular_field(message: &mut dyn Message, field: &FieldDescriptor) {

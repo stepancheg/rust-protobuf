@@ -201,7 +201,7 @@ fn test_message_descriptor() {
     t.set_stuff(55);
 
     let field = d.field_by_name("stuff").unwrap();
-    assert_eq!(55, field.get_i32(&t));
+    assert_eq!(55, field.get_singular_field_or_default(&t).to_i32().unwrap());
 }
 
 #[test]
