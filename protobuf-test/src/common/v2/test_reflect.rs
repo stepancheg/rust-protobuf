@@ -11,7 +11,7 @@ fn test_get_sub_message_via_reflection() {
     let descriptor = m.descriptor().field_by_name("sub_m");
     assert_eq!("sub_m", descriptor.name());
 
-    let sub_m = descriptor.get_message(&m);
+    let sub_m = descriptor.get_singular_field_or_default(&m).to_message().unwrap();
     assert_eq!("test_reflect.SubM", sub_m.descriptor().full_name());
-    assert_eq!(42, sub_m.descriptor().field_by_name("n").get_i32(sub_m));
+    assert_eq!(42, sub_m.descriptor().field_by_name("n").get_singular_field_or_default(sub_m).to_i32().unwrap());
 }

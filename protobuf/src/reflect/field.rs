@@ -119,6 +119,7 @@ impl FieldDescriptor {
     /// # Panics
     /// If this field belongs to a different message type or
     /// field type is not message.
+    #[deprecated]
     pub fn get_message<'a>(&self, m: &'a dyn Message) -> &'a dyn Message {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Message(m) => m,
@@ -132,6 +133,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `enum`.
+    #[deprecated]
     pub fn get_enum(&self, m: &dyn Message) -> &'static EnumValueDescriptor {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Enum(v) => v,
@@ -145,6 +147,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `string`.
+    #[deprecated]
     pub fn get_str<'a>(&self, m: &'a dyn Message) -> &'a str {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::String(v) => v,
@@ -158,6 +161,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `bytes`.
+    #[deprecated]
     pub fn get_bytes<'a>(&self, m: &'a dyn Message) -> &'a [u8] {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Bytes(v) => v,
@@ -171,6 +175,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `u32`.
+    #[deprecated]
     pub fn get_u32(&self, m: &dyn Message) -> u32 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::U32(v) => v,
@@ -184,6 +189,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `u64`.
+    #[deprecated]
     pub fn get_u64(&self, m: &dyn Message) -> u64 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::U64(v) => v,
@@ -197,6 +203,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `i32`.
+    #[deprecated]
     pub fn get_i32(&self, m: &dyn Message) -> i32 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::I32(v) => v,
@@ -210,6 +217,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `i64`.
+    #[deprecated]
     pub fn get_i64(&self, m: &dyn Message) -> i64 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::I64(v) => v,
@@ -223,6 +231,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or
     /// field type is not singular `bool`.
+    #[deprecated]
     pub fn get_bool(&self, m: &dyn Message) -> bool {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Bool(v) => v,
@@ -236,6 +245,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or
     /// field type is not singular `float`.
+    #[deprecated]
     pub fn get_f32(&self, m: &dyn Message) -> f32 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::F32(v) => v,
@@ -249,6 +259,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type
     /// or field type is not singular `double`.
+    #[deprecated]
     pub fn get_f64(&self, m: &dyn Message) -> f64 {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::F64(v) => v,
@@ -263,7 +274,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or fields is not singular.
-    fn get_singular_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
+    pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
         self.singular().accessor.get_field_or_default(m)
     }
 

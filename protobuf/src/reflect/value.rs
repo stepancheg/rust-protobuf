@@ -180,6 +180,86 @@ impl<'a> ReflectValueRef<'a> {
         }
     }
 
+    /// Take `i32` value.
+    pub fn to_i32(&self) -> Option<i32> {
+        match *self {
+            ReflectValueRef::I32(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `i64` value.
+    pub fn to_i64(&self) -> Option<i64> {
+        match *self {
+            ReflectValueRef::I64(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `u32` value.
+    pub fn to_u32(&self) -> Option<u32> {
+        match *self {
+            ReflectValueRef::U32(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `u64` value.
+    pub fn to_u64(&self) -> Option<u64> {
+        match *self {
+            ReflectValueRef::U64(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `f32` value.
+    pub fn to_f32(&self) -> Option<f32> {
+        match *self {
+            ReflectValueRef::F32(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `f64` value.
+    pub fn to_f64(&self) -> Option<f64> {
+        match *self {
+            ReflectValueRef::F64(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `bool` value.
+    pub fn to_bool(&self) -> Option<bool> {
+        match *self {
+            ReflectValueRef::Bool(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `str` value.
+    pub fn to_str(&self) -> Option<&str> {
+        match *self {
+            ReflectValueRef::String(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take `[u8]` value.
+    pub fn to_bytes(&self) -> Option<&[u8]> {
+        match *self {
+            ReflectValueRef::Bytes(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take message value.
+    pub fn to_message(&self) -> Option<&'a dyn Message> {
+        match *self {
+            ReflectValueRef::Message(m) => Some(m),
+            _ => None,
+        }
+    }
+
     /// Clone to a box
     pub(crate) fn to_box(&self) -> ReflectValueBox {
         match *self {
@@ -197,7 +277,8 @@ impl<'a> ReflectValueRef<'a> {
         }
     }
 
-    fn _downcast_clone<V: ProtobufValue>(&self) -> Result<V, Self> {
+    /// Convert a value to arbitrary value.
+    pub fn downcast_clone<V: ProtobufValue>(&self) -> Result<V, Self> {
         self.to_box().downcast().map_err(|_| self.clone())
     }
 }
