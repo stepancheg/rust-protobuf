@@ -4,7 +4,7 @@ use std::slice;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueRef;
 
-use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::ReflectValueBox;
 use crate::repeated::RepeatedField;
@@ -181,8 +181,8 @@ impl<'a> ReflectRepeatedRef<'a> {
     }
 }
 
-impl<'a> ReflectDeepEq for ReflectRepeatedRef<'a> {
-    fn reflect_deep_eq(&self, that: &Self) -> bool {
+impl<'a> ReflectEq for ReflectRepeatedRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
         let len = self.len();
 
         if len != that.len() {
@@ -192,7 +192,7 @@ impl<'a> ReflectDeepEq for ReflectRepeatedRef<'a> {
         for i in 0..len {
             let a = self.get(i);
             let b = that.get(i);
-            if !a.reflect_deep_eq(&b) {
+            if !a.reflect_eq(&b, mode) {
                 return false;
             }
         }

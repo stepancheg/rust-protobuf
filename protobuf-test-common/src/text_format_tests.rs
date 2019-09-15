@@ -183,13 +183,13 @@ pub fn test_text_format_message(message: &dyn Message) {
     let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, descriptor);
 
     assert!(
-        descriptor.deep_eq(&*message, &*from_protoc),
+        message.reflect_eq(&*from_protoc),
         "{:?} != {:?}",
         message,
         from_protoc
     );
     assert!(
-        descriptor.deep_eq(&*message, &*from_protobuf),
+        message.reflect_eq(&*from_protobuf),
         "{:?} != {:?}",
         message,
         from_protobuf

@@ -2,7 +2,7 @@ use std::collections::hash_map;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -141,8 +141,8 @@ impl<'a> ReflectMapRef<'a> {
     }
 }
 
-impl<'a> ReflectDeepEq for ReflectMapRef<'a> {
-    fn reflect_deep_eq(&self, that: &Self) -> bool {
+impl<'a> ReflectEq for ReflectMapRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
         let len = self.len();
 
         if len != that.len() {
@@ -155,7 +155,7 @@ impl<'a> ReflectDeepEq for ReflectMapRef<'a> {
                 None => return false,
             };
 
-            if !va.reflect_deep_eq(&vb) {
+            if !va.reflect_eq(&vb, mode) {
                 return false;
             }
         }

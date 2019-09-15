@@ -10,7 +10,7 @@ use crate::chars::Chars;
 
 use super::*;
 use crate::core::*;
-use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::transmute_eq::transmute_eq;
 
 /// Type implemented by all protobuf singular types
@@ -200,8 +200,8 @@ impl<'a> ReflectValueRef<'a> {
     }
 }
 
-impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
-    fn reflect_deep_eq(&self, that: &Self) -> bool {
+impl<'a> ReflectEq for ReflectValueRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
         use super::ReflectValueRef::*;
         match (self, that) {
             (U32(a), U32(b)) => a == b,
@@ -210,14 +210,14 @@ impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
             (I64(a), I64(b)) => a == b,
             (F32(a), F32(b)) => {
                 if a.is_nan() || b.is_nan() {
-                    a.is_nan() == b.is_nan()
+                    a.is_nan() == b.is_nan() && mode.nan_equal
                 } else {
                     a == b
                 }
             }
             (F64(a), F64(b)) => {
                 if a.is_nan() || b.is_nan() {
-                    a.is_nan() == b.is_nan()
+                    a.is_nan() == b.is_nan() && mode.nan_equal
                 } else {
                     a == b
                 }
@@ -225,18 +225,11 @@ impl<'a> ReflectDeepEq for ReflectValueRef<'a> {
             (Bool(a), Bool(b)) => a == b,
             (String(a), String(b)) => a == b,
             (Bytes(a), Bytes(b)) => a == b,
-            (Enum(ad, a), Enum(bd, b)) => {
-                assert_eq!(*ad as *const EnumDescriptor, *bd as *const EnumDescriptor);
-                a == b
-            }
+            (Enum(ad, a), Enum(bd, b)) => ad == bd && a == b,
             (Message(a), Message(b)) => {
                 let ad = a.descriptor();
-                let bd = a.descriptor();
-                assert_eq!(
-                    ad as *const MessageDescriptor,
-                    bd as *const MessageDescriptor
-                );
-                ad.deep_eq(*a, *b)
+                let bd = b.descriptor();
+                ad == bd && ad.reflect_eq(*a, *b, mode)
             }
             _ => unreachable!(),
         }

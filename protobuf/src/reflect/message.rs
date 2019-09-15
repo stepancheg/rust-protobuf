@@ -9,7 +9,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::FieldDescriptor;
 
 trait MessageFactory: Send + Sync + 'static {
@@ -206,7 +206,12 @@ impl MessageDescriptor {
     /// # Panics
     ///
     /// Is any message has different type than this descriptor.
-    pub fn deep_eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
+    pub(crate) fn reflect_eq(
+        &self,
+        a: &dyn Message,
+        b: &dyn Message,
+        mode: &ReflectEqMode,
+    ) -> bool {
         // Explicitly force panic even if field list is empty
         assert_eq!(
             self as *const MessageDescriptor,
@@ -220,7 +225,7 @@ impl MessageDescriptor {
         for field in self.fields() {
             let af = field.get_reflect(a);
             let bf = field.get_reflect(b);
-            if !af.reflect_deep_eq(&bf) {
+            if !af.reflect_eq(&bf, mode) {
                 return false;
             }
         }

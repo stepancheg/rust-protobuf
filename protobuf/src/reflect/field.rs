@@ -9,7 +9,7 @@ use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
-use crate::reflect::reflect_deep_eq::ReflectDeepEq;
+use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::value::ReflectValueMut;
@@ -30,17 +30,17 @@ pub enum ReflectFieldRef<'a> {
     Map(ReflectMapRef<'a>),
 }
 
-impl<'a> ReflectDeepEq for ReflectFieldRef<'a> {
-    fn reflect_deep_eq(&self, that: &Self) -> bool {
+impl<'a> ReflectEq for ReflectFieldRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
         match (self, that) {
             (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => match (a, b) {
-                (Some(av), Some(bv)) => av.reflect_deep_eq(&bv),
+                (Some(av), Some(bv)) => av.reflect_eq(&bv, mode),
                 (None, None) => true,
                 _ => false,
             },
-            (ReflectFieldRef::Repeated(a), ReflectFieldRef::Repeated(b)) => a.reflect_deep_eq(b),
-            (ReflectFieldRef::Map(a), ReflectFieldRef::Map(b)) => a.reflect_deep_eq(b),
-            _ => unreachable!(),
+            (ReflectFieldRef::Repeated(a), ReflectFieldRef::Repeated(b)) => a.reflect_eq(b, mode),
+            (ReflectFieldRef::Map(a), ReflectFieldRef::Map(b)) => a.reflect_eq(b, mode),
+            _ => false,
         }
     }
 }

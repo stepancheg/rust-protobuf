@@ -15,7 +15,7 @@ mod type_dynamic;
 pub mod types;
 mod value;
 
-mod reflect_deep_eq;
+pub(crate) mod reflect_eq;
 
 pub mod rt;
 
