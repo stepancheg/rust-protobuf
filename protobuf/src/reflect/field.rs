@@ -6,8 +6,11 @@ use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
 use crate::reflect::accessor::AccessorKind;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::map::ReflectMapRef;
+use crate::reflect::map::ReflectMapMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::EnumValueDescriptor;
+use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::Message;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
@@ -293,6 +296,28 @@ impl FieldDescriptor {
         self.singular().accessor.get_field_or_default(m)
     }
 
+    /// Set singular field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or
+    /// field is not singular or value is of different type.
+    pub fn set_singular_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
+        self.singular().accessor.set_field(m, value)
+    }
+
+    /// Dynamic representation of field type.
+    pub(crate) fn runtime_field_type(&self) -> RuntimeFieldType {
+        use self::AccessorKind::*;
+        match self.accessor.accessor {
+            Singular(ref a) => RuntimeFieldType::Singular(a.element_type.runtime_type()),
+            Repeated(ref a) => RuntimeFieldType::Repeated(a.element_type.runtime_type()),
+            Map(ref a) => {
+                RuntimeFieldType::Map(a.key_type.runtime_type(), a.value_type.runtime_type())
+            }
+        }
+    }
+
     /// Get field of any type.
     ///
     /// # Panics
@@ -304,5 +329,46 @@ impl FieldDescriptor {
             AccessorKind::Repeated(a) => ReflectFieldRef::Repeated(a.accessor.get_reflect(m)),
             AccessorKind::Map(a) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
         }
+    }
+
+
+    // repeated
+
+    /// Get repeated field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not repeated.
+    pub fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
+        self.repeated().accessor.get_reflect(m)
+    }
+
+    /// Get a mutable reference to `repeated` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not `repeated`.
+    pub fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
+        self.repeated().accessor.mut_reflect(m)
+    }
+
+    // map
+
+    /// Get `map` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not `map`.
+    pub fn get_map<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
+        self.map().accessor.get_reflect(m)
+    }
+
+    /// Get a mutable reference to `map` field.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or field is not `map`.
+    pub fn mut_map<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
+        self.map().accessor.mut_reflect(m)
     }
 }

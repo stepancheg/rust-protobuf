@@ -33,5 +33,9 @@ pub use self::print::print_to;
 pub use self::print::print_to_string;
 #[doc(hidden)]
 pub use self::print::quote_escape_bytes;
+
+pub use self::parse::merge_from_str;
+pub use self::parse::parse_from_str;
+
 #[doc(hidden)]
 pub use self::print::unescape_string;

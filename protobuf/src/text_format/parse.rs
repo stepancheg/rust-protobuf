@@ -85,7 +85,7 @@ impl<'a> Parser<'a> {
 
         // TODO: read integer?
         let ident = self.tokenizer.next_ident()?;
-        let value = match e.value_by_name(&ident) {
+        let value = match e.get_value_by_name(&ident) {
             Some(value) => value,
             None => return Err(ParseError::UnknownEnumValue(ident)),
         };
@@ -237,7 +237,7 @@ impl<'a> Parser<'a> {
 
     fn read_value_of_type(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
         Ok(match t.to_box() {
-            RuntimeTypeBox::Enum(d) => ReflectValueBox::Enum(self.read_enum(d)?.descriptor()),
+            RuntimeTypeBox::Enum(d) => ReflectValueBox::Enum(self.read_enum(d)?),
             RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
             RuntimeTypeBox::U64 => ReflectValueBox::U64(self.read_u64()?),
             RuntimeTypeBox::I32 => ReflectValueBox::I32(self.read_i32()?),
@@ -262,7 +262,7 @@ impl<'a> Parser<'a> {
     ) -> ParseResult<()> {
         let field_name = self.next_field_name()?;
 
-        let field = match descriptor.field_by_name(&field_name) {
+        let field = match descriptor.get_field_by_name(&field_name) {
             Some(field) => field,
             None => {
                 // TODO: shouldn't unknown fields be quietly skipped?

@@ -2,7 +2,7 @@ use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 
 /// Runtime representation of elementary protobuf type.
-pub(crate) enum RuntimeTypeBox {
+pub enum RuntimeTypeBox {
     /// `i32`
     I32,
     /// `i64`
