@@ -118,13 +118,13 @@ impl FieldGen<'_> {
     fn accessor_fn_singular_with_flag(
         &self,
         elem: &FieldElem,
-        _option_kind: OptionKind,
+        option_kind: OptionKind,
     ) -> AccessorFn {
-        let name = match self.full_storage_type() {
-            RustType::Option(..) => "make_option_accessor",
-            RustType::SingularField(..) => "make_singular_field_accessor",
-            RustType::SingularPtrField(..) => "make_singular_ptr_field_accessor",
-            _ => unreachable!(),
+        let name = match option_kind {
+            OptionKind::Option => "make_option_accessor",
+            OptionKind::SingularField => "make_singular_field_accessor",
+            OptionKind::SingularPtrField => "make_singular_ptr_field_accessor",
+            OptionKind::_OptionBox => unreachable!(),
         };
         AccessorFn {
             name: name.to_owned(),
