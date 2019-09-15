@@ -17,5 +17,8 @@ pub use text_format_tests::*;
 
 pub use test::*;
 
+mod json_tests;
+pub use json_tests::*;
+
 mod reflect_tests;
 pub use reflect_tests::*;

@@ -1,0 +1,90 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+package test_fmt_json;
+
+
+enum TestEnum {
+    UNKNOWN = 0;
+    DARK = 10;
+    LIGHT = 20;
+}
+
+message TestMessage {
+    optional int32 value = 10;
+}
+
+message TestTypes {
+    optional double double_singular = 1;
+    optional float float_singular = 2;
+    optional int32 int32_singular = 3;
+    optional int64 int64_singular = 4;
+    optional uint32 uint32_singular = 5;
+    optional uint64 uint64_singular = 6;
+    optional sint32 sint32_singular = 7;
+    optional sint64 sint64_singular = 8;
+    optional fixed32 fixed32_singular = 9;
+    optional fixed64 fixed64_singular = 10;
+    optional sfixed32 sfixed32_singular = 11;
+    optional sfixed64 sfixed64_singular = 12;
+    optional bool bool_singular = 13;
+    optional string string_singular = 14;
+    optional bytes bytes_singular = 15;
+    optional TestEnum test_enum_singular = 16;
+    optional TestMessage test_message_singular = 17;
+
+    repeated double double_repeated = 31;
+    repeated float float_repeated = 32;
+    repeated int32 int32_repeated = 33;
+    repeated int64 int64_repeated = 34;
+    repeated uint32 uint32_repeated = 35;
+    repeated uint64 uint64_repeated = 36;
+    repeated sint32 sint32_repeated = 37;
+    repeated sint64 sint64_repeated = 38;
+    repeated fixed32 fixed32_repeated = 39;
+    repeated fixed64 fixed64_repeated = 40;
+    repeated sfixed32 sfixed32_repeated = 41;
+    repeated sfixed64 sfixed64_repeated = 42;
+    repeated bool bool_repeated = 43;
+    repeated string string_repeated = 44;
+    repeated bytes bytes_repeated = 45;
+    repeated TestEnum test_enum_repeated = 46;
+    repeated TestMessage test_message_repeated = 47;
+
+    map<uint32, double> double_map_field = 301;
+    map<uint64, float> float_map_field = 302;
+    map<int32, int32> int32_map_field = 303;
+    map<int64, int64> int64_map_field = 304;
+    map<bool, uint32> uint32_map_field = 305;
+    map<string, uint64> uint64_map_field = 306;
+    map<sfixed32, sint32> sint32_map_field = 307;
+    map<sfixed64, sint64> sint64_map_field = 308;
+    map<fixed64, fixed32> fixed32_map_field = 309;
+    map<fixed32, fixed64> fixed64_map_field = 310;
+    map<sint64, sfixed32> sfixed32_map_field = 311;
+    map<sint32, sfixed64> sfixed64_map_field = 312;
+    map<uint64, bool> bool_map_field = 313;
+    map<uint32, string> string_map_field = 314;
+    map<uint64, bytes> bytes_map_field = 315;
+    map<uint32, TestEnum> enum_map_field = 316;
+    map<string, TestMessage> message_map_field = 317;
+}
+
+message TestRustIdentifier {
+    optional bool const = 1;
+}
+
+message TestIncludeDefaultValues {
+    optional int32 iii = 1;
+    optional TestMessage mmm = 2;
+    oneof ooo {
+        string sss = 3;
+        bool bbb = 4;
+    }
+}
+
+message TestJsonName {
+    optional bool field_with_json_name = 1 [json_name = "Field With json_name"];
+}
