@@ -406,7 +406,7 @@ impl Printer {
         }
     }
 
-    fn print_enum(&mut self, descriptor: &EnumDescriptor, v: i32) -> PrintResult<()> {
+    fn _print_enum(&mut self, descriptor: &EnumDescriptor, v: i32) -> PrintResult<()> {
         if self.print_options.enum_values_int {
             self.print_printable(&v)
         } else {
