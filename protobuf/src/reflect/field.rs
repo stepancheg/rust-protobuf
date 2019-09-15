@@ -44,7 +44,7 @@ impl<'a> ReflectEq for ReflectFieldRef<'a> {
 }
 
 /// Reflective representation of field type
-pub(crate) enum RuntimeFieldType {
+pub enum RuntimeFieldType {
     /// Singular field (required, optional for proto2 or singular for proto3)
     Singular(&'static dyn RuntimeTypeDynamic),
     /// Repeated field
@@ -324,7 +324,7 @@ impl FieldDescriptor {
     }
 
     /// Dynamic representation of field type.
-    pub(crate) fn runtime_field_type(&self) -> RuntimeFieldType {
+    pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorKind::*;
         match self.accessor.accessor {
             Singular(ref a) => RuntimeFieldType::Singular(a.element_type.runtime_type()),

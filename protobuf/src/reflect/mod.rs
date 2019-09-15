@@ -34,3 +34,7 @@ pub use self::message::MessageDescriptor;
 
 pub use self::field::FieldDescriptor;
 pub use self::field::ReflectFieldRef;
+pub use self::field::RuntimeFieldType;
+
+pub use self::runtime_type_box::RuntimeTypeBox;
+pub use self::runtime_type_dynamic::RuntimeTypeDynamic;

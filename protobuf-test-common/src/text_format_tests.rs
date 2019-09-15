@@ -143,3 +143,55 @@ fn print_using_protoc(message: &dyn Message) -> String {
 
     decoded
 }
+
+pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageDescriptor) {
+    let message = parse_using_rust_protobuf(text, message_descriptor);
+    let expected = parse_using_protoc(text, message_descriptor);
+
+    assert!(
+        expected.reflect_eq(&*message),
+        "{:?} != {:?}",
+        expected,
+        message
+    );
+
+    // print using protoc and parse using rust-protobuf
+    let printed_using_protoc = print_using_protoc(&*message);
+    let pp = parse_using_rust_protobuf(&printed_using_protoc, message_descriptor);
+
+    assert!(
+        expected.reflect_eq(&*pp),
+        "{:?} != {:?}",
+        expected,
+        message
+    );
+}
+
+pub fn test_text_format_str_message(expected: &str, message: &dyn Message) {
+    assert_eq!(expected, &*print_to_string(message));
+
+    test_text_format_str_descriptor(expected, message.descriptor());
+}
+
+pub fn test_text_format_message(message: &dyn Message) {
+    let descriptor = message.descriptor();
+
+    let printed_with_rust_protobuf = print_to_string(message);
+    let printed_with_protoc = print_using_protoc(message);
+
+    let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, descriptor);
+    let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, descriptor);
+
+    assert!(
+        message.reflect_eq(&*from_protoc),
+        "{:?} != {:?}",
+        message,
+        from_protoc
+    );
+    assert!(
+        message.reflect_eq(&*from_protobuf),
+        "{:?} != {:?}",
+        message,
+        from_protobuf
+    );
+}

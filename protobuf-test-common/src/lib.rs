@@ -16,3 +16,6 @@ mod text_format_tests;
 pub use text_format_tests::*;
 
 pub use test::*;
+
+mod reflect_tests;
+pub use reflect_tests::*;

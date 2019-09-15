@@ -215,7 +215,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
 
 impl dyn Message {
     /// Downcast `Box<dyn Message>` to specific message type.
-    pub(crate) fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<dyn Message>> {
+    pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<dyn Message>> {
         if Any::type_id(&*self) == TypeId::of::<T>() {
             unsafe {
                 let raw: *mut dyn Message = Box::into_raw(self);
