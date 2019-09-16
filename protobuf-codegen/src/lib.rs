@@ -122,10 +122,8 @@ fn write_file_descriptor_data(
             protobuf_crate_path(customize)
         ),
         |w| {
-            w.unsafe_expr(|w| {
-                w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                    w.write_line("parse_descriptor_proto()");
-                });
+            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
+                w.write_line("parse_descriptor_proto()");
             });
         },
     );

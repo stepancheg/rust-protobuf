@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/type.proto`
@@ -337,54 +336,50 @@ impl crate::Message for Type {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Type| { &m.name },
-                    |m: &mut Type| { &mut m.name },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Field>>(
-                    "fields",
-                    |m: &Type| { &m.fields },
-                    |m: &mut Type| { &mut m.fields },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "oneofs",
-                    |m: &Type| { &m.oneofs },
-                    |m: &mut Type| { &mut m.oneofs },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                    "options",
-                    |m: &Type| { &m.options },
-                    |m: &mut Type| { &mut m.options },
-                ));
-                fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
-                    "source_context",
-                    |m: &Type| { &m.source_context },
-                    |m: &mut Type| { &mut m.source_context },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Syntax>>(
-                    "syntax",
-                    |m: &Type| { &m.syntax },
-                    |m: &mut Type| { &mut m.syntax },
-                ));
-                crate::reflect::MessageDescriptor::new::<Type>(
-                    "Type",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "name",
+                |m: &Type| { &m.name },
+                |m: &mut Type| { &mut m.name },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Field>>(
+                "fields",
+                |m: &Type| { &m.fields },
+                |m: &mut Type| { &mut m.fields },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "oneofs",
+                |m: &Type| { &m.oneofs },
+                |m: &mut Type| { &mut m.oneofs },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+                "options",
+                |m: &Type| { &m.options },
+                |m: &mut Type| { &mut m.options },
+            ));
+            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
+                "source_context",
+                |m: &Type| { &m.source_context },
+                |m: &mut Type| { &mut m.source_context },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Syntax>>(
+                "syntax",
+                |m: &Type| { &m.syntax },
+                |m: &mut Type| { &mut m.syntax },
+            ));
+            crate::reflect::MessageDescriptor::new::<Type>(
+                "Type",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Type {
-        static mut instance: crate::lazy::Lazy<Type> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Type::new)
-        }
+        static instance: crate::lazy::Lazy<Type> = crate::lazy::Lazy::INIT;
+        instance.get(Type::new)
     }
 }
 
@@ -821,74 +816,70 @@ impl crate::Message for Field {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Field_Kind>>(
-                    "kind",
-                    |m: &Field| { &m.kind },
-                    |m: &mut Field| { &mut m.kind },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Field_Cardinality>>(
-                    "cardinality",
-                    |m: &Field| { &m.cardinality },
-                    |m: &mut Field| { &mut m.cardinality },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "number",
-                    |m: &Field| { &m.number },
-                    |m: &mut Field| { &mut m.number },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Field| { &m.name },
-                    |m: &mut Field| { &mut m.name },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "type_url",
-                    |m: &Field| { &m.type_url },
-                    |m: &mut Field| { &mut m.type_url },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "oneof_index",
-                    |m: &Field| { &m.oneof_index },
-                    |m: &mut Field| { &mut m.oneof_index },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
-                    "packed",
-                    |m: &Field| { &m.packed },
-                    |m: &mut Field| { &mut m.packed },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                    "options",
-                    |m: &Field| { &m.options },
-                    |m: &mut Field| { &mut m.options },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "json_name",
-                    |m: &Field| { &m.json_name },
-                    |m: &mut Field| { &mut m.json_name },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "default_value",
-                    |m: &Field| { &m.default_value },
-                    |m: &mut Field| { &mut m.default_value },
-                ));
-                crate::reflect::MessageDescriptor::new::<Field>(
-                    "Field",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Field_Kind>>(
+                "kind",
+                |m: &Field| { &m.kind },
+                |m: &mut Field| { &mut m.kind },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Field_Cardinality>>(
+                "cardinality",
+                |m: &Field| { &m.cardinality },
+                |m: &mut Field| { &mut m.cardinality },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+                "number",
+                |m: &Field| { &m.number },
+                |m: &mut Field| { &mut m.number },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "name",
+                |m: &Field| { &m.name },
+                |m: &mut Field| { &mut m.name },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "type_url",
+                |m: &Field| { &m.type_url },
+                |m: &mut Field| { &mut m.type_url },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+                "oneof_index",
+                |m: &Field| { &m.oneof_index },
+                |m: &mut Field| { &mut m.oneof_index },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+                "packed",
+                |m: &Field| { &m.packed },
+                |m: &mut Field| { &mut m.packed },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+                "options",
+                |m: &Field| { &m.options },
+                |m: &mut Field| { &mut m.options },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "json_name",
+                |m: &Field| { &m.json_name },
+                |m: &mut Field| { &mut m.json_name },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "default_value",
+                |m: &Field| { &m.default_value },
+                |m: &mut Field| { &mut m.default_value },
+            ));
+            crate::reflect::MessageDescriptor::new::<Field>(
+                "Field",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Field {
-        static mut instance: crate::lazy::Lazy<Field> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Field::new)
-        }
+        static instance: crate::lazy::Lazy<Field> = crate::lazy::Lazy::INIT;
+        instance.get(Field::new)
     }
 }
 
@@ -1000,12 +991,10 @@ impl crate::ProtobufEnum for Field_Kind {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Field_Kind>("Field_Kind", file_descriptor_proto())
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            crate::reflect::EnumDescriptor::new::<Field_Kind>("Field_Kind", file_descriptor_proto())
+        })
     }
 }
 
@@ -1059,12 +1048,10 @@ impl crate::ProtobufEnum for Field_Cardinality {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Field_Cardinality>("Field_Cardinality", file_descriptor_proto())
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            crate::reflect::EnumDescriptor::new::<Field_Cardinality>("Field_Cardinality", file_descriptor_proto())
+        })
     }
 }
 
@@ -1366,49 +1353,45 @@ impl crate::Message for Enum {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Enum| { &m.name },
-                    |m: &mut Enum| { &mut m.name },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValue>>(
-                    "enumvalue",
-                    |m: &Enum| { &m.enumvalue },
-                    |m: &mut Enum| { &mut m.enumvalue },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                    "options",
-                    |m: &Enum| { &m.options },
-                    |m: &mut Enum| { &mut m.options },
-                ));
-                fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
-                    "source_context",
-                    |m: &Enum| { &m.source_context },
-                    |m: &mut Enum| { &mut m.source_context },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Syntax>>(
-                    "syntax",
-                    |m: &Enum| { &m.syntax },
-                    |m: &mut Enum| { &mut m.syntax },
-                ));
-                crate::reflect::MessageDescriptor::new::<Enum>(
-                    "Enum",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "name",
+                |m: &Enum| { &m.name },
+                |m: &mut Enum| { &mut m.name },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValue>>(
+                "enumvalue",
+                |m: &Enum| { &m.enumvalue },
+                |m: &mut Enum| { &mut m.enumvalue },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+                "options",
+                |m: &Enum| { &m.options },
+                |m: &mut Enum| { &mut m.options },
+            ));
+            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
+                "source_context",
+                |m: &Enum| { &m.source_context },
+                |m: &mut Enum| { &mut m.source_context },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnum<Syntax>>(
+                "syntax",
+                |m: &Enum| { &m.syntax },
+                |m: &mut Enum| { &mut m.syntax },
+            ));
+            crate::reflect::MessageDescriptor::new::<Enum>(
+                "Enum",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Enum {
-        static mut instance: crate::lazy::Lazy<Enum> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Enum::new)
-        }
+        static instance: crate::lazy::Lazy<Enum> = crate::lazy::Lazy::INIT;
+        instance.get(Enum::new)
     }
 }
 
@@ -1628,39 +1611,35 @@ impl crate::Message for EnumValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "name",
-                    |m: &EnumValue| { &m.name },
-                    |m: &mut EnumValue| { &mut m.name },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "number",
-                    |m: &EnumValue| { &m.number },
-                    |m: &mut EnumValue| { &mut m.number },
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                    "options",
-                    |m: &EnumValue| { &m.options },
-                    |m: &mut EnumValue| { &mut m.options },
-                ));
-                crate::reflect::MessageDescriptor::new::<EnumValue>(
-                    "EnumValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "name",
+                |m: &EnumValue| { &m.name },
+                |m: &mut EnumValue| { &mut m.name },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+                "number",
+                |m: &EnumValue| { &m.number },
+                |m: &mut EnumValue| { &mut m.number },
+            ));
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+                "options",
+                |m: &EnumValue| { &m.options },
+                |m: &mut EnumValue| { &mut m.options },
+            ));
+            crate::reflect::MessageDescriptor::new::<EnumValue>(
+                "EnumValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static EnumValue {
-        static mut instance: crate::lazy::Lazy<EnumValue> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(EnumValue::new)
-        }
+        static instance: crate::lazy::Lazy<EnumValue> = crate::lazy::Lazy::INIT;
+        instance.get(EnumValue::new)
     }
 }
 
@@ -1857,34 +1836,30 @@ impl crate::Message for Option {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Option| { &m.name },
-                    |m: &mut Option| { &mut m.name },
-                ));
-                fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Any>, _>(
-                    "value",
-                    |m: &Option| { &m.value },
-                    |m: &mut Option| { &mut m.value },
-                ));
-                crate::reflect::MessageDescriptor::new::<Option>(
-                    "Option",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "name",
+                |m: &Option| { &m.name },
+                |m: &mut Option| { &mut m.name },
+            ));
+            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Any>, _>(
+                "value",
+                |m: &Option| { &m.value },
+                |m: &mut Option| { &mut m.value },
+            ));
+            crate::reflect::MessageDescriptor::new::<Option>(
+                "Option",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Option {
-        static mut instance: crate::lazy::Lazy<Option> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Option::new)
-        }
+        static instance: crate::lazy::Lazy<Option> = crate::lazy::Lazy::INIT;
+        instance.get(Option::new)
     }
 }
 
@@ -1937,12 +1912,10 @@ impl crate::ProtobufEnum for Syntax {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            crate::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
+        })
     }
 }
 
@@ -2251,16 +2224,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

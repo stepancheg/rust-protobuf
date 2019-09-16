@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/any.proto`
@@ -176,34 +175,30 @@ impl crate::Message for Any {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "type_url",
-                    |m: &Any| { &m.type_url },
-                    |m: &mut Any| { &mut m.type_url },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
-                    "value",
-                    |m: &Any| { &m.value },
-                    |m: &mut Any| { &mut m.value },
-                ));
-                crate::reflect::MessageDescriptor::new::<Any>(
-                    "Any",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "type_url",
+                |m: &Any| { &m.type_url },
+                |m: &mut Any| { &mut m.type_url },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
+                "value",
+                |m: &Any| { &m.value },
+                |m: &mut Any| { &mut m.value },
+            ));
+            crate::reflect::MessageDescriptor::new::<Any>(
+                "Any",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Any {
-        static mut instance: crate::lazy::Lazy<Any> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Any::new)
-        }
+        static instance: crate::lazy::Lazy<Any> = crate::lazy::Lazy::INIT;
+        instance.get(Any::new)
     }
 }
 
@@ -351,16 +346,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x05\x04\0\x02\x01\x03\x12\x04\x89\x01\x10\x11b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

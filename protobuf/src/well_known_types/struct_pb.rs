@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/struct.proto`
@@ -135,29 +134,25 @@ impl crate::Message for Struct {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
-                    "fields",
-                    |m: &Struct| { &m.fields },
-                    |m: &mut Struct| { &mut m.fields },
-                ));
-                crate::reflect::MessageDescriptor::new::<Struct>(
-                    "Struct",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
+                "fields",
+                |m: &Struct| { &m.fields },
+                |m: &mut Struct| { &mut m.fields },
+            ));
+            crate::reflect::MessageDescriptor::new::<Struct>(
+                "Struct",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Struct {
-        static mut instance: crate::lazy::Lazy<Struct> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Struct::new)
-        }
+        static instance: crate::lazy::Lazy<Struct> = crate::lazy::Lazy::INIT;
+        instance.get(Struct::new)
     }
 }
 
@@ -595,62 +590,58 @@ impl crate::Message for Value {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
-                    "null_value",
-                    Value::has_null_value,
-                    Value::get_null_value,
-                    Value::set_null_value,
-                ));
-                fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
-                    "number_value",
-                    Value::has_number_value,
-                    Value::get_number_value,
-                    Value::set_number_value,
-                ));
-                fields.push(crate::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "string_value",
-                    Value::has_string_value,
-                    Value::get_string_value,
-                    Value::set_string_value,
-                ));
-                fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
-                    "bool_value",
-                    Value::has_bool_value,
-                    Value::get_bool_value,
-                    Value::set_bool_value,
-                ));
-                fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
-                    "struct_value",
-                    Value::has_struct_value,
-                    Value::get_struct_value,
-                    Value::mut_struct_value,
-                    Value::set_struct_value,
-                ));
-                fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
-                    "list_value",
-                    Value::has_list_value,
-                    Value::get_list_value,
-                    Value::mut_list_value,
-                    Value::set_list_value,
-                ));
-                crate::reflect::MessageDescriptor::new::<Value>(
-                    "Value",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
+                "null_value",
+                Value::has_null_value,
+                Value::get_null_value,
+                Value::set_null_value,
+            ));
+            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
+                "number_value",
+                Value::has_number_value,
+                Value::get_number_value,
+                Value::set_number_value,
+            ));
+            fields.push(crate::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                "string_value",
+                Value::has_string_value,
+                Value::get_string_value,
+                Value::set_string_value,
+            ));
+            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
+                "bool_value",
+                Value::has_bool_value,
+                Value::get_bool_value,
+                Value::set_bool_value,
+            ));
+            fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
+                "struct_value",
+                Value::has_struct_value,
+                Value::get_struct_value,
+                Value::mut_struct_value,
+                Value::set_struct_value,
+            ));
+            fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
+                "list_value",
+                Value::has_list_value,
+                Value::get_list_value,
+                Value::mut_list_value,
+                Value::set_list_value,
+            ));
+            crate::reflect::MessageDescriptor::new::<Value>(
+                "Value",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Value {
-        static mut instance: crate::lazy::Lazy<Value> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Value::new)
-        }
+        static instance: crate::lazy::Lazy<Value> = crate::lazy::Lazy::INIT;
+        instance.get(Value::new)
     }
 }
 
@@ -806,29 +797,25 @@ impl crate::Message for ListValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
-                    "values",
-                    |m: &ListValue| { &m.values },
-                    |m: &mut ListValue| { &mut m.values },
-                ));
-                crate::reflect::MessageDescriptor::new::<ListValue>(
-                    "ListValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
+                "values",
+                |m: &ListValue| { &m.values },
+                |m: &mut ListValue| { &mut m.values },
+            ));
+            crate::reflect::MessageDescriptor::new::<ListValue>(
+                "ListValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static ListValue {
-        static mut instance: crate::lazy::Lazy<ListValue> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(ListValue::new)
-        }
+        static instance: crate::lazy::Lazy<ListValue> = crate::lazy::Lazy::INIT;
+        instance.get(ListValue::new)
     }
 }
 
@@ -877,12 +864,10 @@ impl crate::ProtobufEnum for NullValue {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<NullValue>("NullValue", file_descriptor_proto())
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            crate::reflect::EnumDescriptor::new::<NullValue>("NullValue", file_descriptor_proto())
+        })
     }
 }
 
@@ -1019,16 +1004,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \0\x03\x12\x03^\x1a\x1bb\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

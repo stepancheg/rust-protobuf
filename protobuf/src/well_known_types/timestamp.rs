@@ -14,7 +14,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/timestamp.proto`
@@ -162,34 +161,30 @@ impl crate::Message for Timestamp {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
-                    "seconds",
-                    |m: &Timestamp| { &m.seconds },
-                    |m: &mut Timestamp| { &mut m.seconds },
-                ));
-                fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "nanos",
-                    |m: &Timestamp| { &m.nanos },
-                    |m: &mut Timestamp| { &mut m.nanos },
-                ));
-                crate::reflect::MessageDescriptor::new::<Timestamp>(
-                    "Timestamp",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
+                "seconds",
+                |m: &Timestamp| { &m.seconds },
+                |m: &mut Timestamp| { &mut m.seconds },
+            ));
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+                "nanos",
+                |m: &Timestamp| { &m.nanos },
+                |m: &mut Timestamp| { &mut m.nanos },
+            ));
+            crate::reflect::MessageDescriptor::new::<Timestamp>(
+                "Timestamp",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Timestamp {
-        static mut instance: crate::lazy::Lazy<Timestamp> = crate::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Timestamp::new)
-        }
+        static instance: crate::lazy::Lazy<Timestamp> = crate::lazy::Lazy::INIT;
+        instance.get(Timestamp::new)
     }
 }
 
@@ -318,16 +313,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03j\x10\x11b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }
