@@ -35,7 +35,7 @@ trait ProtobufOptions {
 
     fn by_name_bool(&self, name: &str) -> ConvertResult<Option<bool>> {
         match self.by_name(name) {
-            Some(&model::ProtobufConstant::Bool(b)) => Ok(Some(b)),
+            Some(model::ProtobufConstant::Bool(b)) => Ok(Some(*b)),
             Some(_) => Err(ConvertError::WrongOptionType),
             None => Ok(None),
         }
@@ -56,13 +56,9 @@ trait ProtobufOptions {
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
         let option_name = name;
-        for &model::ProtobufOption {
-            ref name,
-            ref value,
-        } in *self
-        {
+        for model::ProtobufOption { name, value } in *self {
             if name == option_name {
-                return Some(value);
+                return Some(&value);
             }
         }
         None
