@@ -49,6 +49,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   Note you can use
   [pure rust protobuf compiler](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
   to avoid dependency on `protoc` binary.
+- `UnknownFields::fields` field is
+  [no longer public](https://github.com/stepancheg/rust-protobuf/commit/8ad35ecaa0accaa251f9f29708e4ed3b96f2351b)
 
 ## Big changes
 
