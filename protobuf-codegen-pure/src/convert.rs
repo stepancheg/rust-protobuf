@@ -181,6 +181,9 @@ struct Resolver<'a> {
 
 impl<'a> Resolver<'a> {
     fn map_entry_name_for_field_name(field_name: &str) -> ProtobufIdent {
+        // Field name and message name must match, otherwise
+        // Google's validation fails.
+        // https://git.io/JeOvF
         ProtobufIdent::from(format!("{}Entry", camel_case(field_name)))
     }
 
