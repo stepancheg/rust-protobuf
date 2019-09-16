@@ -171,8 +171,7 @@ pub struct UnknownFields {
     /// The map.
     // option is needed, because HashMap constructor performs allocation,
     // and very expensive
-    // TODO: hide
-    pub fields: Option<Box<HashMap<u32, UnknownValues>>>,
+    fields: Option<Box<HashMap<u32, UnknownValues>>>,
 }
 
 /// Very simple hash implementation of `Hash` for `UnknownFields`.
