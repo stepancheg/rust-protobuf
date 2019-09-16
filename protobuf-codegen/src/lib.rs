@@ -12,6 +12,7 @@ use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
 use protobuf::Message;
 
+pub mod case_convert;
 mod customize;
 mod enums;
 mod extensions;

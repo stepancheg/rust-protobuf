@@ -7,6 +7,7 @@ use model;
 use protobuf;
 use protobuf::Message;
 
+use crate::protobuf_codegen::case_convert::camel_case;
 use str_lit::StrLitDecodeError;
 
 use std::mem;
@@ -409,7 +410,7 @@ struct Resolver<'a> {
 
 impl<'a> Resolver<'a> {
     fn map_entry_name_for_field_name(field_name: &str) -> String {
-        format!("{}_MapEntry", field_name)
+        format!("{}Entry", camel_case(field_name))
     }
 
     fn map_entry_field(
