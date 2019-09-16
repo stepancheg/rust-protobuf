@@ -28,9 +28,7 @@ pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// if `Self` is not `Copy`.
     #[doc(hidden)]
     #[deprecated]
-    fn as_ref_copy(&self) -> ReflectValueRef<'static>
-//where Self : Copy // TODO
-    {
+    fn as_ref_copy(&self) -> ReflectValueRef<'static> {
         match self.as_ref() {
             ReflectValueRef::Bool(v) => ReflectValueRef::Bool(v),
             ReflectValueRef::U32(v) => ReflectValueRef::U32(v),
