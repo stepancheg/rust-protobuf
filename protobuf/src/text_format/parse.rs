@@ -18,7 +18,7 @@ use crate::text_format::lexer::Tokenizer;
 use crate::text_format::lexer::TokenizerError;
 
 #[derive(Debug)]
-pub enum ParseError {
+pub enum ParseErrorWithoutLoc {
     TokenizerError(TokenizerError),
     StrLitDecodeError(StrLitDecodeError),
     UnknownField(String),
@@ -29,40 +29,40 @@ pub enum ParseError {
     MessageNotInitialized,
 }
 
-impl From<TokenizerError> for ParseError {
+impl From<TokenizerError> for ParseErrorWithoutLoc {
     fn from(e: TokenizerError) -> Self {
-        ParseError::TokenizerError(e)
+        ParseErrorWithoutLoc::TokenizerError(e)
     }
 }
 
-impl From<StrLitDecodeError> for ParseError {
+impl From<StrLitDecodeError> for ParseErrorWithoutLoc {
     fn from(e: StrLitDecodeError) -> Self {
-        ParseError::StrLitDecodeError(e)
+        ParseErrorWithoutLoc::StrLitDecodeError(e)
     }
 }
 
-impl From<int::Overflow> for ParseError {
+impl From<int::Overflow> for ParseErrorWithoutLoc {
     fn from(_: int::Overflow) -> Self {
-        ParseError::IntegerOverflow
+        ParseErrorWithoutLoc::IntegerOverflow
     }
 }
 
 #[derive(Debug)]
-pub struct ParseErrorWithLoc {
-    error: ParseError,
+pub struct ParseError {
+    error: ParseErrorWithoutLoc,
     loc: Loc,
 }
 
-impl fmt::Display for ParseErrorWithLoc {
+impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: {:?}", self.loc, self.error)
     }
 }
 
-impl std::error::Error for ParseErrorWithLoc {}
+impl std::error::Error for ParseError {}
 
-pub type ParseResult<A> = Result<A, ParseError>;
-pub type ParseWithLocResult<A> = Result<A, ParseErrorWithLoc>;
+pub type ParseResult<A> = Result<A, ParseErrorWithoutLoc>;
+pub type ParseWithLocResult<A> = Result<A, ParseError>;
 
 #[derive(Clone)]
 struct Parser<'a> {
@@ -87,7 +87,7 @@ impl<'a> Parser<'a> {
         let ident = self.tokenizer.next_ident()?;
         let value = match e.get_value_by_name(&ident) {
             Some(value) => value,
-            None => return Err(ParseError::UnknownEnumValue(ident)),
+            None => return Err(ParseErrorWithoutLoc::UnknownEnumValue(ident)),
         };
         Ok(value)
     }
@@ -104,7 +104,7 @@ impl<'a> Parser<'a> {
         let int_lit = self.tokenizer.next_int_lit()?;
         let value_u32 = int_lit as u32;
         if value_u32 as u64 != int_lit {
-            return Err(ParseError::IntegerOverflow);
+            return Err(ParseErrorWithoutLoc::IntegerOverflow);
         }
         Ok(value_u32)
     }
@@ -118,7 +118,7 @@ impl<'a> Parser<'a> {
         } else {
             let int_lit = self.tokenizer.next_int_lit()?;
             if int_lit > i64::max_value() as u64 {
-                return Err(ParseError::IntegerOverflow);
+                return Err(ParseErrorWithoutLoc::IntegerOverflow);
             }
             Ok(int_lit as i64)
         }
@@ -127,7 +127,7 @@ impl<'a> Parser<'a> {
     fn read_i32(&mut self) -> ParseResult<i32> {
         let value = self.read_i64()?;
         if value < i32::min_value() as i64 || value > i32::max_value() as i64 {
-            return Err(ParseError::IntegerOverflow);
+            return Err(ParseErrorWithoutLoc::IntegerOverflow);
         }
         Ok(value as i32)
     }
@@ -158,7 +158,7 @@ impl<'a> Parser<'a> {
         } else if self.tokenizer.next_ident_if_eq("false")? {
             Ok(false)
         } else {
-            Err(ParseError::ExpectingBool)
+            Err(ParseErrorWithoutLoc::ExpectingBool)
         }
     }
 
@@ -213,11 +213,11 @@ impl<'a> Parser<'a> {
             } else if ident == value_field_name {
                 (&mut value, v)
             } else {
-                return Err(ParseError::UnknownField(ident));
+                return Err(ParseErrorWithoutLoc::UnknownField(ident));
             };
 
             if let Some(..) = *field {
-                return Err(ParseError::MapFieldIsSpecifiedMoreThanOnce(ident));
+                return Err(ParseErrorWithoutLoc::MapFieldIsSpecifiedMoreThanOnce(ident));
             }
 
             let field_value = self.read_value_of_type(field_type)?;
@@ -267,7 +267,7 @@ impl<'a> Parser<'a> {
             Some(field) => field,
             None => {
                 // TODO: shouldn't unknown fields be quietly skipped?
-                return Err(ParseError::UnknownField(field_name));
+                return Err(ParseErrorWithoutLoc::UnknownField(field_name));
             }
         };
 
@@ -303,7 +303,7 @@ impl<'a> Parser<'a> {
     fn merge(&mut self, message: &mut dyn Message) -> ParseWithLocResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
-            Err(error) => Err(ParseErrorWithLoc {
+            Err(error) => Err(ParseError {
                 error,
                 loc: self.tokenizer.loc(),
             }),
@@ -326,8 +326,8 @@ pub fn parse_from_str<M: Message>(input: &str) -> ParseWithLocResult<M> {
     let mut m = M::new();
     merge_from_str(&mut m, input)?;
     if let Err(_) = m.check_initialized() {
-        return Err(ParseErrorWithLoc {
-            error: ParseError::MessageNotInitialized,
+        return Err(ParseError {
+            error: ParseErrorWithoutLoc::MessageNotInitialized,
             loc: Loc::start(),
         });
     }
