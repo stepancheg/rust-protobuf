@@ -8,10 +8,8 @@ use std::sync;
 
 /// Lasily initialized data.
 pub struct Lazy<T> {
-    #[doc(hidden)]
-    pub lock: sync::Once,
-    #[doc(hidden)]
-    pub ptr: *const T,
+    lock: sync::Once,
+    ptr: *const T,
 }
 
 unsafe impl<T> Sync for Lazy<T> {}
@@ -41,12 +39,9 @@ impl<T> Lazy<T> {
     }
 }
 
-/// Used to initialize `lock` field in `Lazy` struct.
-pub const ONCE_INIT: sync::Once = sync::Once::new();
-
 #[cfg(test)]
 mod test {
-    use super::{Lazy, ONCE_INIT};
+    use super::Lazy;
     use std::sync::atomic::{AtomicIsize, Ordering};
     use std::sync::{Arc, Barrier};
     use std::thread;
@@ -57,10 +52,7 @@ mod test {
         const N_ITERS_IN_THREAD: usize = 32;
         const N_ITERS: usize = 16;
 
-        static mut LAZY: Lazy<String> = Lazy {
-            lock: ONCE_INIT,
-            ptr: 0 as *const String,
-        };
+        static mut LAZY: Lazy<String> = Lazy::INIT;
         static CALL_COUNT: AtomicIsize = AtomicIsize::new(0);
 
         let value = "Hello, world!".to_owned();
@@ -68,10 +60,7 @@ mod test {
         for _ in 0..N_ITERS {
             // Reset mutable state.
             unsafe {
-                LAZY = Lazy {
-                    lock: ONCE_INIT,
-                    ptr: 0 as *const String,
-                }
+                LAZY = Lazy::INIT;
             }
             CALL_COUNT.store(0, Ordering::SeqCst);
 
