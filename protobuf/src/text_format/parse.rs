@@ -47,6 +47,7 @@ impl From<int::Overflow> for ParseErrorWithoutLoc {
     }
 }
 
+/// Text format parse error.
 #[derive(Debug)]
 pub struct ParseError {
     error: ParseErrorWithoutLoc,

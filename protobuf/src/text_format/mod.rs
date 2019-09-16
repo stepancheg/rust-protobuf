@@ -36,3 +36,4 @@ pub use self::print::quote_escape_bytes;
 
 pub use self::parse::merge_from_str;
 pub use self::parse::parse_from_str;
+pub use self::parse::ParseError;
