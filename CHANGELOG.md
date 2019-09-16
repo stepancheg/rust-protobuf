@@ -50,10 +50,14 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   [pure rust protobuf compiler](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
   to avoid dependency on `protoc` binary.
 
-### Other changes
+## Big changes
 
+- Text format and JSON printing and parsing is now implemented
 - All fields are public now except optional or repeated fields when `syntax = "proto2"`,
   but message fields are public even when `syntax = "proto2"`
+
+### Other changes
+
 - [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
   `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
 - [`Debug` is now implemented for `EnumValueDescriptor` and
