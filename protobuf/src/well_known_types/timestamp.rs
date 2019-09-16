@@ -162,10 +162,7 @@ impl crate::Message for Timestamp {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -189,10 +186,7 @@ impl crate::Message for Timestamp {
     }
 
     fn default_instance() -> &'static Timestamp {
-        static mut instance: crate::lazy::Lazy<Timestamp> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const Timestamp,
-        };
+        static mut instance: crate::lazy::Lazy<Timestamp> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(Timestamp::new)
         }
@@ -324,10 +318,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03j\x10\x11b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy {
-    lock: crate::lazy::ONCE_INIT,
-    ptr: 0 as *const crate::descriptor::FileDescriptorProto,
-};
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()

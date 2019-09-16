@@ -102,45 +102,14 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("pub const {}: {} = {};", name, field_type, init));
     }
 
-    pub fn lazy_static(&mut self, name: &str, ty: &str) {
-        self.stmt_block(
-            &format!(
-                "static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy",
-                name, ty
-            ),
-            |w| {
-                w.field_entry("lock", "::protobuf::lazy::ONCE_INIT");
-                w.field_entry("ptr", &format!("0 as *const {}", ty));
-            },
-        );
+    pub(crate) fn lazy_static(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
+        self.write_line(&format!(
+            "static mut {}: {}::lazy::Lazy<{}> = {}::lazy::Lazy::INIT;",
+            name, protobuf_crate_path, ty, protobuf_crate_path,
+        ));
     }
 
-    pub fn lazy_static_protobuf_path(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
-        self.stmt_block(
-            &format!(
-                "static mut {}: {}::lazy::Lazy<{}> = {}::lazy::Lazy",
-                name, protobuf_crate_path, ty, protobuf_crate_path
-            ),
-            |w| {
-                w.field_entry("lock", &format!("{}::lazy::ONCE_INIT", protobuf_crate_path));
-                w.field_entry("ptr", &format!("0 as *const {}", ty));
-            },
-        );
-    }
-
-    pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, init: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        self.lazy_static(name, ty);
-        self.unsafe_expr(|w| {
-            w.write_line(&format!("{}.get(|| {{", name));
-            w.indented(|w| init(w));
-            w.write_line(&format!("}})"));
-        });
-    }
-
-    pub(crate) fn lazy_static_protobuf_path_decl_get<F>(
+    pub(crate) fn lazy_static_decl_get<F>(
         &mut self,
         name: &str,
         ty: &str,
@@ -149,7 +118,7 @@ impl<'a> CodeWriter<'a> {
     ) where
         F: Fn(&mut CodeWriter),
     {
-        self.lazy_static_protobuf_path(name, ty, protobuf_crate_path);
+        self.lazy_static(name, ty, protobuf_crate_path);
         self.unsafe_expr(|w| {
             w.write_line(&format!("{}.get(|| {{", name));
             w.indented(|w| init(w));
@@ -157,21 +126,14 @@ impl<'a> CodeWriter<'a> {
         });
     }
 
-    pub fn lazy_static_decl_get_simple(&mut self, name: &str, ty: &str, init: &str) {
-        self.lazy_static(name, ty);
-        self.unsafe_expr(|w| {
-            w.write_line(&format!("{}.get({})", name, init));
-        });
-    }
-
-    pub(crate) fn lazy_static_protobuf_path_decl_get_simple(
+    pub(crate) fn lazy_static_decl_get_simple(
         &mut self,
         name: &str,
         ty: &str,
         init: &str,
         protobuf_crate_path: &str,
     ) {
-        self.lazy_static_protobuf_path(name, ty, protobuf_crate_path);
+        self.lazy_static(name, ty, protobuf_crate_path);
         self.unsafe_expr(|w| {
             w.write_line(&format!("{}.get({})", name, init));
         });

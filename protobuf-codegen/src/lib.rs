@@ -94,7 +94,7 @@ fn write_file_descriptor_data(
     });
     w.write_line("\";");
     w.write_line("");
-    w.lazy_static_protobuf_path(
+    w.lazy_static(
         "file_descriptor_proto_lazy",
         &format!(
             "{}::descriptor::FileDescriptorProto",

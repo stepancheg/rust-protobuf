@@ -337,10 +337,7 @@ impl crate::Message for Type {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -384,10 +381,7 @@ impl crate::Message for Type {
     }
 
     fn default_instance() -> &'static Type {
-        static mut instance: crate::lazy::Lazy<Type> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const Type,
-        };
+        static mut instance: crate::lazy::Lazy<Type> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(Type::new)
         }
@@ -827,10 +821,7 @@ impl crate::Message for Field {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -894,10 +885,7 @@ impl crate::Message for Field {
     }
 
     fn default_instance() -> &'static Field {
-        static mut instance: crate::lazy::Lazy<Field> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const Field,
-        };
+        static mut instance: crate::lazy::Lazy<Field> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(Field::new)
         }
@@ -1012,10 +1000,7 @@ impl crate::ProtobufEnum for Field_Kind {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::EnumDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 crate::reflect::EnumDescriptor::new::<Field_Kind>("Field_Kind", file_descriptor_proto())
@@ -1074,10 +1059,7 @@ impl crate::ProtobufEnum for Field_Cardinality {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::EnumDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 crate::reflect::EnumDescriptor::new::<Field_Cardinality>("Field_Cardinality", file_descriptor_proto())
@@ -1384,10 +1366,7 @@ impl crate::Message for Enum {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -1426,10 +1405,7 @@ impl crate::Message for Enum {
     }
 
     fn default_instance() -> &'static Enum {
-        static mut instance: crate::lazy::Lazy<Enum> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const Enum,
-        };
+        static mut instance: crate::lazy::Lazy<Enum> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(Enum::new)
         }
@@ -1652,10 +1628,7 @@ impl crate::Message for EnumValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -1684,10 +1657,7 @@ impl crate::Message for EnumValue {
     }
 
     fn default_instance() -> &'static EnumValue {
-        static mut instance: crate::lazy::Lazy<EnumValue> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const EnumValue,
-        };
+        static mut instance: crate::lazy::Lazy<EnumValue> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(EnumValue::new)
         }
@@ -1887,10 +1857,7 @@ impl crate::Message for Option {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -1914,10 +1881,7 @@ impl crate::Message for Option {
     }
 
     fn default_instance() -> &'static Option {
-        static mut instance: crate::lazy::Lazy<Option> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const Option,
-        };
+        static mut instance: crate::lazy::Lazy<Option> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(Option::new)
         }
@@ -1973,10 +1937,7 @@ impl crate::ProtobufEnum for Syntax {
     }
 
     fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::EnumDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::EnumDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 crate::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
@@ -2290,10 +2251,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy {
-    lock: crate::lazy::ONCE_INIT,
-    ptr: 0 as *const crate::descriptor::FileDescriptorProto,
-};
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()

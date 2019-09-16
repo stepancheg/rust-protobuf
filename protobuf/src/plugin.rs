@@ -228,10 +228,7 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -261,10 +258,7 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
-        static mut instance: crate::lazy::Lazy<CodeGeneratorRequest> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorRequest,
-        };
+        static mut instance: crate::lazy::Lazy<CodeGeneratorRequest> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(CodeGeneratorRequest::new)
         }
@@ -466,10 +460,7 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -494,10 +485,7 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
-        static mut instance: crate::lazy::Lazy<CodeGeneratorResponse> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorResponse,
-        };
+        static mut instance: crate::lazy::Lazy<CodeGeneratorResponse> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(CodeGeneratorResponse::new)
         }
@@ -747,10 +735,7 @@ impl crate::Message for CodeGeneratorResponse_File {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const crate::reflect::MessageDescriptor,
-        };
+        static mut descriptor: crate::lazy::Lazy<crate::reflect::MessageDescriptor> = crate::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -782,10 +767,7 @@ impl crate::Message for CodeGeneratorResponse_File {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static mut instance: crate::lazy::Lazy<CodeGeneratorResponse_File> = crate::lazy::Lazy {
-            lock: crate::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorResponse_File,
-        };
+        static mut instance: crate::lazy::Lazy<CodeGeneratorResponse_File> = crate::lazy::Lazy::INIT;
         unsafe {
             instance.get(CodeGeneratorResponse_File::new)
         }
@@ -1003,10 +985,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x02\x01\x03\x12\x04\x94\x01\x17\x19\
 ";
 
-static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy {
-    lock: crate::lazy::ONCE_INIT,
-    ptr: 0 as *const crate::descriptor::FileDescriptorProto,
-};
+static mut file_descriptor_proto_lazy: crate::lazy::Lazy<crate::descriptor::FileDescriptorProto> = crate::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()

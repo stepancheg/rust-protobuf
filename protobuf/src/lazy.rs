@@ -1,6 +1,8 @@
 //! Lazily initialized data.
 //! Used in generated code.
 
+#![doc(hidden)]
+
 use std::mem;
 use std::sync;
 
@@ -12,7 +14,15 @@ pub struct Lazy<T> {
     pub ptr: *const T,
 }
 
+unsafe impl<T> Sync for Lazy<T> {}
+
 impl<T> Lazy<T> {
+    /// Uninitialized `Lazy` object.
+    pub const INIT: Lazy<T> = Lazy {
+        lock: sync::Once::new(),
+        ptr: 0 as *const T,
+    };
+
     /// Get lazy field value, initialize it with given function if not yet.
     pub fn get<F>(&'static mut self, init: F) -> &'static T
     where
