@@ -1,4 +1,8 @@
 //! Library to read and write protocol buffers data.
+//!
+//! Rust files from `.proto` files can be generated with
+//! `protobuf-codegen`, `protobuf-codegen-pure` crates.
+//! See readme on the [project github page](https://github.com/stepancheg/rust-protobuf).
 
 #![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
