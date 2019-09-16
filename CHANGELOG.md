@@ -31,14 +31,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
-### Improvements
-
-- [JSON printing/parsing](https://github.com/stepancheg/rust-protobuf/issues/142) implemented
-- Text format parsing is implemented (previously it was only possible to print to text format)
-- Reflection can now mutate data (previously reflection could only read data)
-- [Unsafe code is not used in generated code](https://github.com/stepancheg/rust-protobuf/issues/340)
-  (although protobuf implementation does a couple of unsafe calls).
-
 ## [2.9] - Unreleased
 
 ### Backward compatibility
