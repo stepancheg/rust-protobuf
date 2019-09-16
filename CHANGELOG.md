@@ -52,7 +52,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `UnknownFields::fields` field is
   [no longer public](https://github.com/stepancheg/rust-protobuf/commit/8ad35ecaa0accaa251f9f29708e4ed3b96f2351b)
 
-## Big changes
+### Big changes
 
 - Text format and JSON printing and parsing is now implemented
 - All fields are public now except optional or repeated fields when `syntax = "proto2"`,
