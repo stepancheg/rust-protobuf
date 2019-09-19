@@ -116,3 +116,9 @@ fn test_map() {
     let deserialized: TestSerdeMap = serde_json::from_str(&serialized).unwrap();
     assert_eq!(deserialized, map);
 }
+
+#[test]
+fn test_deserialize_with_missing_map() {
+    let deserialized: TestSerdeMap = serde_json::from_str(&"{}").unwrap();
+    assert_eq!(deserialized.test_map, HashMap::new());
+}
