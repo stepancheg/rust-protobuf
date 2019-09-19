@@ -122,3 +122,9 @@ fn test_deserialize_with_missing_map() {
     let deserialized: TestSerdeMap = serde_json::from_str(&"{}").unwrap();
     assert_eq!(deserialized.test_map, HashMap::new());
 }
+
+#[test]
+fn test_deserialize_with_missing_repeated_vector() {
+    let deserialized: TestSerdeVec = serde_json::from_str(&"{}").unwrap();
+    assert_eq!(0, deserialized.test_repeated.len());
+}

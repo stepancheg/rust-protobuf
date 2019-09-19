@@ -44,3 +44,8 @@ message RepeatedMessage {
 message TestSerdeMap {
     map<uint32, uint32> test_map = 1;
 }
+
+message TestSerdeVec {
+    option (rustproto.repeated_field_vec) = true;
+    repeated string test_repeated = 1;
+}
