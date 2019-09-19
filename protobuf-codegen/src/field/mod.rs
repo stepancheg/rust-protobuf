@@ -27,6 +27,7 @@ use crate::scope::MessageOrEnumWithScope;
 use crate::scope::MessageWithScope;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
+use crate::serde;
 use crate::syntax::Syntax;
 use protobuf::wire_format::WireType;
 
@@ -1207,6 +1208,11 @@ impl<'a> FieldGen<'a> {
             w.comment(&format!("{}: <group>", &self.rust_name));
         } else {
             w.all_documentation(self.info, &self.path);
+
+            match self.kind {
+                FieldKind::Map(..) => serde::write_serde_attr(w, &self.customize, "serde(default)"),
+                _ => {},
+            }
 
             let vis = self.visibility();
             w.field_decl_vis(
