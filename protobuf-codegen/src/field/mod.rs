@@ -1211,6 +1211,9 @@ impl<'a> FieldGen<'a> {
 
             match self.kind {
                 FieldKind::Map(..) => serde::write_serde_attr(w, &self.customize, "serde(default)"),
+                FieldKind::Repeated(..) if self.customize.repeated_field_vec == Some(true) => {
+                    serde::write_serde_attr(w, &self.customize, "serde(default)")
+                },
                 _ => {},
             }
 
