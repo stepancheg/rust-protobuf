@@ -128,3 +128,9 @@ fn test_deserialize_with_missing_repeated_vector() {
     let deserialized: TestSerdeVec = serde_json::from_str(&"{}").unwrap();
     assert_eq!(0, deserialized.test_repeated.len());
 }
+
+#[test]
+fn test_deserialize_with_renamed_field() {
+    let deserialized: TestRenameField = serde_json::from_str(&r#"{"static": "works"}"#).unwrap();
+    assert_eq!(deserialized.get_field_static(), "works");
+}

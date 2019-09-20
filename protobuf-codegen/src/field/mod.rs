@@ -558,6 +558,7 @@ pub(crate) struct FieldGen<'a> {
     pub rust_name: RustIdent,
     pub proto_type: field_descriptor_proto::Type,
     wire_type: wire_format::WireType,
+    wire_name: RustIdent,
     pub kind: FieldKind<'a>,
     pub expose_field: bool,
     pub generate_accessors: bool,
@@ -672,6 +673,7 @@ impl<'a> FieldGen<'a> {
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
+            wire_name: RustIdent::new(&field.field.get_name()),
             proto_field: field,
             kind,
             expose_field,
@@ -1209,14 +1211,7 @@ impl<'a> FieldGen<'a> {
         } else {
             w.all_documentation(self.info, &self.path);
 
-            match self.kind {
-                FieldKind::Map(..) => serde::write_serde_attr(w, &self.customize, "serde(default)"),
-                FieldKind::Repeated(..) if self.customize.repeated_field_vec == Some(true) => {
-                    serde::write_serde_attr(w, &self.customize, "serde(default)")
-                },
-                _ => {},
-            }
-
+            self.write_serde_attr(w);
             let vis = self.visibility();
             w.field_decl_vis(
                 vis,
@@ -1231,6 +1226,25 @@ impl<'a> FieldGen<'a> {
                     )
                     .to_code(&self.customize),
             );
+        }
+    }
+
+    fn write_serde_attr(&self, w: &mut CodeWriter) {
+        let mut tags = vec![];
+        if self.wire_name != self.rust_name {
+            tags.push(format!(r#"alias="{}""#, &self.wire_name));
+        }
+
+        match self.kind {
+            FieldKind::Map(..) => tags.push("default".to_string()),
+            FieldKind::Repeated(..) if self.customize.repeated_field_vec == Some(true) => {
+                tags.push("default".to_string());
+            },
+            _ => {},
+        }
+
+        if !tags.is_empty() {
+            serde::write_serde_attr(w, &self.customize, &format!("serde({})", tags.join(", ")));
         }
     }
 
