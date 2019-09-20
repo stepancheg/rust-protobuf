@@ -1230,7 +1230,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_serde_attr(&self, w: &mut CodeWriter) {
-        let mut tags = vec![];
+        let mut tags = Vec::new();
         if self.rust_name.get() != &self.serde_name {
             tags.push(format!(r#"alias="{}""#, &self.serde_name));
         }
