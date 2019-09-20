@@ -49,3 +49,7 @@ message TestSerdeVec {
     option (rustproto.repeated_field_vec) = true;
     repeated string test_repeated = 1;
 }
+
+message TestRenameField {
+    optional string static = 1;
+}
