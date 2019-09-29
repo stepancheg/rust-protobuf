@@ -847,6 +847,16 @@ impl<'a> Parser<'a> {
 }
 
 /// JSON parse options.
+///
+/// # Examples
+///
+/// ```
+/// use protobuf::json;
+/// let parse_options = json::ParseOptions {
+///     ignore_unknown_fields: true,
+///     ..Default::default()
+/// };
+/// ```
 #[derive(Default, Debug, Clone)]
 pub struct ParseOptions {
     /// Ignore unknown fields when parsing.
@@ -854,6 +864,8 @@ pub struct ParseOptions {
     /// When `true` fields with unknown names are ignored.
     /// When `false` parser returns an error on unknown field.
     pub ignore_unknown_fields: bool,
+    /// Prevent initializing `ParseOptions` enumerating all field.
+    pub _future_options: (),
 }
 
 /// Merge JSON into provided message
