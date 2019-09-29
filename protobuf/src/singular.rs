@@ -94,6 +94,30 @@ pub struct SingularField<T> {
 }
 
 /// Like `Option<Box<T>>`, but keeps the actual element on `clear`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # use protobuf::SingularPtrField;
+/// # use std::ops::Add;
+/// # struct Address {
+/// # }
+/// # struct Customer {
+/// #     address: SingularPtrField<Address>,
+/// # }
+/// # impl Customer {
+/// #     fn new() -> Customer { unimplemented!() }
+/// # }
+/// #
+/// #
+/// # fn make_address() -> Address { unimplemented!() }
+/// let mut customer = Customer::new();
+///
+/// // field of type `SingularPtrField` can be initialized like this
+/// customer.address = SingularPtrField::some(make_address());
+/// // or using `Option` and `Into`
+/// customer.address = Some(make_address()).into();
+/// ```
 pub struct SingularPtrField<T> {
     value: Option<Box<T>>,
     set: bool,
