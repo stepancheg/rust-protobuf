@@ -20,12 +20,8 @@ pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectVal
         RuntimeTypeBox::F32 => ReflectValueBox::F32(15.5),
         RuntimeTypeBox::F64 => ReflectValueBox::F64(16.5),
         RuntimeTypeBox::Bool => ReflectValueBox::Bool(true),
-        RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
-            ReflectValueBox::String("here".to_owned())
-        }
-        RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
-            ReflectValueBox::Bytes(b"there".as_ref().to_owned())
-        }
+        RuntimeTypeBox::String => ReflectValueBox::String("here".to_owned()),
+        RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
         RuntimeTypeBox::Enum(e) => ReflectValueBox::from(&e.values()[0]),
         RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
@@ -95,13 +91,13 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
             ReflectValueBox::F64(-f64::INFINITY),
         ],
         RuntimeTypeBox::Bool => vec![ReflectValueBox::Bool(true), ReflectValueBox::Bool(false)],
-        RuntimeTypeBox::String | RuntimeTypeBox::Chars => vec![
+        RuntimeTypeBox::String => vec![
             ReflectValueBox::String("here".to_owned()),
             ReflectValueBox::String("".to_owned()),
             ReflectValueBox::String(" \t\n".to_owned()),
             ReflectValueBox::String("\0".to_owned()),
         ],
-        RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => vec![
+        RuntimeTypeBox::VecU8 => vec![
             ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
             ReflectValueBox::Bytes(b"".as_ref().to_owned()),
         ],
