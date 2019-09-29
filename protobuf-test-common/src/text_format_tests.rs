@@ -1,8 +1,8 @@
+use std::error::Error;
 use std::fs;
 use std::io::Read;
 use std::io::Write;
 use std::process;
-use std::error::Error;
 
 use tempfile;
 
@@ -16,8 +16,8 @@ use protobuf::Message;
 
 pub fn parse_using_rust_protobuf(
     text: &str,
-    message_descriptor: &MessageDescriptor
-) -> Result<Box<dyn Message>, Box<dyn Error>>  {
+    message_descriptor: &MessageDescriptor,
+) -> Result<Box<dyn Message>, Box<dyn Error>> {
     let mut message = message_descriptor.new_instance();
 
     merge_from_str(&mut *message, text)?;
@@ -36,7 +36,8 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
         descriptor::file_descriptor_proto().clone(),
         rustproto::file_descriptor_proto().clone(),
         message_descriptor.file_descriptor_proto().clone(),
-    ].into();
+    ]
+    .into();
 
     let mut temp_file = temp_dir.path().to_owned();
     temp_file.push("fds");
@@ -52,7 +53,8 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
             ),
             &format!("--encode={}", message_descriptor.full_name()),
             message_descriptor.file_descriptor_proto().get_name(),
-        ]).stdin(process::Stdio::piped())
+        ])
+        .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())
         .stderr(process::Stdio::inherit())
         .spawn()
@@ -101,7 +103,8 @@ fn print_using_protoc(message: &dyn Message) -> String {
         descriptor::file_descriptor_proto().clone(),
         rustproto::file_descriptor_proto().clone(),
         message_descriptor.file_descriptor_proto().clone(),
-    ].into();
+    ]
+    .into();
 
     let mut temp_file = temp_dir.path().to_owned();
     temp_file.push("fds");
@@ -117,7 +120,8 @@ fn print_using_protoc(message: &dyn Message) -> String {
             ),
             &format!("--decode={}", message_descriptor.full_name()),
             message_descriptor.file_descriptor_proto().get_name(),
-        ]).stdin(process::Stdio::piped())
+        ])
+        .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())
         .stderr(process::Stdio::inherit())
         .spawn()
@@ -165,12 +169,7 @@ pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageD
     let pp = parse_using_rust_protobuf(&printed_using_protoc, message_descriptor)
         .expect(format!("parse_using_rust_protobuf: {:?}", &printed_using_protoc).as_str());
 
-    assert!(
-        expected.reflect_eq(&*pp),
-        "{:?} != {:?}",
-        expected,
-        message
-    );
+    assert!(expected.reflect_eq(&*pp), "{:?} != {:?}", expected, message);
 }
 
 pub fn test_text_format_str_message(expected: &str, message: &dyn Message) {

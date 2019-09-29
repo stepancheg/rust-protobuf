@@ -112,7 +112,10 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
     }
 }
 
-pub fn special_values_for_field(f: &FieldDescriptor, d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
+pub fn special_values_for_field(
+    f: &FieldDescriptor,
+    d: &MessageDescriptor,
+) -> Vec<Box<dyn Message>> {
     let mut r = Vec::new();
     match f.runtime_field_type() {
         RuntimeFieldType::Singular(t) => {

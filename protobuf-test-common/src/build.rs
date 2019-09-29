@@ -2,16 +2,15 @@
 
 pub use protobuf_codegen::Customize;
 
-use std::io::Write;
-use std::io::Read;
+use std::fmt;
+use std::fs;
 use std::io::BufRead;
 use std::io::BufReader;
-use std::fs;
-use std::fmt;
+use std::io::Read;
+use std::io::Write;
 use std::path::Path;
 
 use glob;
-
 
 pub fn glob_simple(pattern: &str) -> Vec<String> {
     let mut r: Vec<_> = glob::glob(pattern)
@@ -28,7 +27,6 @@ pub fn glob_simple(pattern: &str) -> Vec<String> {
     r.sort();
     r
 }
-
 
 fn read_gitignore(dir: &Path) -> Vec<String> {
     let mut patterns = Vec::new();
@@ -49,7 +47,6 @@ fn read_gitignore(dir: &Path) -> Vec<String> {
     patterns
 }
 
-
 fn clean_recursively(dir: &Path, patterns: &[&str]) {
     assert!(dir.is_dir());
 
@@ -58,7 +55,8 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
     let mut patterns = patterns.to_vec();
     patterns.extend(gitignore_patterns.iter().map(String::as_str));
 
-    let patterns_compiled: Vec<_> = patterns.iter()
+    let patterns_compiled: Vec<_> = patterns
+        .iter()
         .map(|&p| glob::Pattern::new(p).expect("failed to compile pattern"))
         .collect();
 
@@ -80,7 +78,6 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
         }
     }
 }
-
 
 pub fn clean_old_files() {
     clean_recursively(&Path::new("src"), &["*_pb.rs", "*_pb_proto3.rs"]);
@@ -106,7 +103,11 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
     let rs_files = glob_simple(&format!("{}/*.rs", dir));
 
     for rs in rs_files {
-        let file_name = Path::new(&rs).file_name().expect("file_name").to_str().expect("file_name");
+        let file_name = Path::new(&rs)
+            .file_name()
+            .expect("file_name")
+            .to_str()
+            .expect("file_name");
         if file_name == "mod.rs" {
             continue;
         }
@@ -126,9 +127,9 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
 }
 
 pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, protoc3: bool, gen: F)
-    where
-        F : for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
-        E : fmt::Debug,
+where
+    F: for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
+    E: fmt::Debug,
 {
     info!("generating protos in {}", dir);
 
@@ -148,12 +149,12 @@ pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, protoc3: bool, gen: F
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
         includes: &["../proto", include_dir],
-        .. Default::default()
-    }).expect("protoc");
+        ..Default::default()
+    })
+    .expect("protoc");
 
     gen_mod_rs_in_dir(dir);
 }
-
 
 pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
     let mut r = Vec::new();
@@ -184,25 +185,23 @@ pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
     r
 }
 
-
 pub fn copy_tests_v2_v3(v2_dir: &str, v3_dir: &str) {
     for test_name in list_tests_in_dir(v2_dir) {
-        let mut p2f = fs::File::open(&format!("{}/{}_pb.proto", v2_dir, test_name))
-            .expect("open v2 .proto");
+        let mut p2f =
+            fs::File::open(&format!("{}/{}_pb.proto", v2_dir, test_name)).expect("open v2 .proto");
         let mut proto = String::new();
         p2f.read_to_string(&mut proto).expect("read .proto");
         drop(p2f);
 
-        let mut r2f = fs::File::open(&format!("{}/{}.rs", v2_dir, test_name))
-            .expect("open v2 .rs");
+        let mut r2f = fs::File::open(&format!("{}/{}.rs", v2_dir, test_name)).expect("open v2 .rs");
         let mut rs = String::new();
         r2f.read_to_string(&mut rs).expect("read .rs");
         drop(r2f);
 
         let mut p3f = fs::File::create(&format!("{}/{}_pb.proto", v3_dir, test_name))
             .expect("create v3 .proto");
-        let mut r3f = fs::File::create(&format!("{}/{}.rs", v3_dir, test_name))
-            .expect("create v3 .rs");
+        let mut r3f =
+            fs::File::create(&format!("{}/{}.rs", v3_dir, test_name)).expect("create v3 .rs");
 
         // convert proto2 to proto3
         let proto = proto.replace("optional ", "");
