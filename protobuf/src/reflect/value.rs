@@ -17,29 +17,6 @@ use crate::reflect::transmute_eq::transmute_eq;
 pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// As ref
     fn as_ref(&self) -> ReflectValueRef;
-
-    /// Return `ProtobufValueRef` if self is `Copy`.
-    ///
-    /// # Panics
-    ///
-    /// if `Self` is not `Copy`.
-    #[doc(hidden)]
-    #[deprecated]
-    fn as_ref_copy(&self) -> ReflectValueRef<'static> {
-        match self.as_ref() {
-            ReflectValueRef::Bool(v) => ReflectValueRef::Bool(v),
-            ReflectValueRef::U32(v) => ReflectValueRef::U32(v),
-            ReflectValueRef::U64(v) => ReflectValueRef::U64(v),
-            ReflectValueRef::I32(v) => ReflectValueRef::I32(v),
-            ReflectValueRef::I64(v) => ReflectValueRef::I64(v),
-            ReflectValueRef::F32(v) => ReflectValueRef::F32(v),
-            ReflectValueRef::F64(v) => ReflectValueRef::F64(v),
-            ReflectValueRef::Enum(v) => ReflectValueRef::Enum(v),
-            ReflectValueRef::String(..)
-            | ReflectValueRef::Bytes(..)
-            | ReflectValueRef::Message(..) => unreachable!(),
-        }
-    }
 }
 
 impl ProtobufValue for u32 {
