@@ -10,8 +10,10 @@ use super::*;
 use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::transmute_eq::transmute_eq;
 
-/// Type implemented by all protobuf elementary types
-/// (ints, floats, bool, string, bytes, enums, messages).
+/// Type implemented by all protobuf singular types
+/// (primitives, string, messages, enums).
+///
+/// Used for dynamic casting in reflection.
 pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// As ref
     fn as_ref(&self) -> ReflectValueRef;
