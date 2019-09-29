@@ -18,11 +18,6 @@ pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// As ref
     fn as_ref(&self) -> ReflectValueRef;
 
-    /// Is value non-zero?
-    fn is_non_zero(&self) -> bool {
-        self.as_ref().is_non_zero()
-    }
-
     /// Return `ProtobufValueRef` if self is `Copy`.
     ///
     /// # Panics
