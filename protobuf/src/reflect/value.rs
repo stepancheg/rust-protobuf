@@ -14,99 +14,38 @@ use crate::reflect::transmute_eq::transmute_eq;
 /// (primitives, string, messages, enums).
 ///
 /// Used for dynamic casting in reflection.
-pub trait ProtobufValue: Any + 'static + Send + Sync {
-    /// As ref
-    fn as_ref(&self) -> ReflectValueRef {
-        unimplemented!()
-    }
-}
+pub trait ProtobufValue: Any + 'static + Send + Sync {}
 
-impl ProtobufValue for u32 {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::U32(*self)
-    }
-}
+impl ProtobufValue for u32 {}
 
-impl ProtobufValue for u64 {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::U64(*self)
-    }
-}
+impl ProtobufValue for u64 {}
 
-impl ProtobufValue for i32 {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::I32(*self)
-    }
-}
+impl ProtobufValue for i32 {}
 
-impl ProtobufValue for i64 {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::I64(*self)
-    }
-}
+impl ProtobufValue for i64 {}
 
-impl ProtobufValue for f32 {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::F32(*self)
-    }
-}
+impl ProtobufValue for f32 {}
 
-impl ProtobufValue for f64 {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::F64(*self)
-    }
-}
+impl ProtobufValue for f64 {}
 
-impl ProtobufValue for bool {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::Bool(*self)
-    }
-}
+impl ProtobufValue for bool {}
 
-impl ProtobufValue for String {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::String(*&self)
-    }
-}
+impl ProtobufValue for String {}
 
-impl ProtobufValue for str {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::String(self)
-    }
-}
-
-impl ProtobufValue for Vec<u8> {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::Bytes(*&self)
-    }
-}
+impl ProtobufValue for Vec<u8> {}
 
 #[cfg(feature = "bytes")]
-impl ProtobufValue for Bytes {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::Bytes(&*self)
-    }
-}
+impl ProtobufValue for Bytes {}
 
 #[cfg(feature = "bytes")]
-impl ProtobufValue for Chars {
-    fn as_ref(&self) -> ReflectValueRef {
-        ReflectValueRef::String(&*self)
-    }
-}
+impl ProtobufValue for Chars {}
 
 // conflicting implementations, so generated code is used instead
 /*
 impl<E : ProtobufEnum> ProtobufValue for E {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Enum(self.descriptor())
-    }
 }
 
 impl<M : Message> ProtobufValue for M {
-    fn as_ref(&self) -> ProtobufValueRef {
-        ProtobufValueRef::Message(self)
-    }
 }
 */
 
