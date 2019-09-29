@@ -411,12 +411,8 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::F32 => self.read_f32().map(ReflectValueBox::from),
             RuntimeTypeBox::F64 => self.read_f64().map(ReflectValueBox::from),
             RuntimeTypeBox::Bool => self.read_bool().map(ReflectValueBox::from),
-            RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
-                self.read_string().map(ReflectValueBox::from)
-            }
-            RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
-                self.read_bytes().map(ReflectValueBox::from)
-            }
+            RuntimeTypeBox::String => self.read_string().map(ReflectValueBox::from),
+            RuntimeTypeBox::VecU8 => self.read_bytes().map(ReflectValueBox::from),
             RuntimeTypeBox::Enum(e) => self.read_enum(e).map(ReflectValueBox::from),
             RuntimeTypeBox::Message(m) => self.read_message(m).map(ReflectValueBox::from),
         }
@@ -524,10 +520,8 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::F32 => self.parse_number::<f32>(&key).map(ReflectValueBox::F32),
             RuntimeTypeBox::F64 => self.parse_number::<f64>(&key).map(ReflectValueBox::F64),
             RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::from),
-            RuntimeTypeBox::String | RuntimeTypeBox::Chars => Ok(ReflectValueBox::String(key)),
-            RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
-                self.parse_bytes(&key).map(ReflectValueBox::Bytes)
-            }
+            RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
+            RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBox::Bytes),
             RuntimeTypeBox::Enum(e) => self
                 .parse_enum(key, e)
                 .map(|v| ReflectValueBox::Enum(v.enum_descriptor(), v.value())),

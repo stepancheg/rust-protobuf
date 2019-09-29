@@ -247,12 +247,8 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::F32 => ReflectValueBox::F32(self.read_f32()?),
             RuntimeTypeBox::F64 => ReflectValueBox::F64(self.read_f64()?),
             RuntimeTypeBox::Bool => ReflectValueBox::Bool(self.read_bool()?),
-            RuntimeTypeBox::String | RuntimeTypeBox::Chars => {
-                ReflectValueBox::String(self.read_string()?)
-            }
-            RuntimeTypeBox::VecU8 | RuntimeTypeBox::CarllercheBytes => {
-                ReflectValueBox::Bytes(self.read_bytes()?)
-            }
+            RuntimeTypeBox::String => ReflectValueBox::String(self.read_string()?),
+            RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(self.read_bytes()?),
             RuntimeTypeBox::Message(m) => ReflectValueBox::Message(self.read_message(m)?),
         })
     }
