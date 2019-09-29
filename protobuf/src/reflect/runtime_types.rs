@@ -10,8 +10,6 @@ use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::EnumDescriptor;
-use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -45,16 +43,6 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
         Self: Sized;
 
     fn default_value_ref() -> ReflectValueRef<'static>;
-
-    /// Get enum descriptor for this type, panics if not enum
-    fn enum_descriptor() -> &'static EnumDescriptor {
-        panic!("not an enum");
-    }
-
-    /// Get enum descriptor for this type, panics if not enum
-    fn message_descriptor() -> &'static MessageDescriptor {
-        panic!("not an message");
-    }
 
     fn from_value_box(value_box: ReflectValueBox) -> Self::Value;
 
@@ -608,18 +596,14 @@ where
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Enum(Self::enum_descriptor())
+        RuntimeTypeBox::Enum(E::enum_descriptor_static())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(
-            Self::enum_descriptor(),
-            Self::enum_descriptor().values()[0].value(),
+            E::enum_descriptor_static(),
+            E::enum_descriptor_static().values()[0].value(),
         )
-    }
-
-    fn enum_descriptor() -> &'static EnumDescriptor {
-        E::enum_descriptor_static()
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> E {
@@ -639,7 +623,7 @@ where
     }
 
     fn as_ref(value: &E) -> ReflectValueRef {
-        ReflectValueRef::Enum(Self::enum_descriptor(), value.value())
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
@@ -661,18 +645,14 @@ where
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Enum(Self::enum_descriptor())
+        RuntimeTypeBox::Enum(E::enum_descriptor_static())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(
-            Self::enum_descriptor(),
-            Self::enum_descriptor().values()[0].value(),
+            E::enum_descriptor_static(),
+            E::enum_descriptor_static().values()[0].value(),
         )
-    }
-
-    fn enum_descriptor() -> &'static EnumDescriptor {
-        E::enum_descriptor_static()
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> ProtobufEnumOrUnknown<E> {
@@ -713,15 +693,11 @@ where
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Message(Self::message_descriptor())
+        RuntimeTypeBox::Message(M::descriptor_static())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Message(Self::message_descriptor().default_instance())
-    }
-
-    fn message_descriptor() -> &'static MessageDescriptor {
-        M::descriptor_static()
+        ReflectValueRef::Message(M::descriptor_static().default_instance())
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> M {
