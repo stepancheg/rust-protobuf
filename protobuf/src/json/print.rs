@@ -528,6 +528,16 @@ impl Printer {
 }
 
 /// Options for printing JSON to string
+///
+/// # Examples
+///
+/// ```
+/// use protobuf::json;
+/// let print_options = json::PrintOptions {
+///     enum_values_int: true,
+///     ..Default::default()
+/// };
+/// ```
 #[derive(Default, Debug, Clone)]
 pub struct PrintOptions {
     /// Use ints instead of strings for enums.
@@ -539,6 +549,8 @@ pub struct PrintOptions {
     pub proto_field_name: bool,
     /// Output field default values.
     pub always_output_default_values: bool,
+    /// Prevent initializing `PrintOptions` enumerating all field.
+    pub _future_options: (),
 }
 
 /// Serialize message to JSON according to protobuf specification.
