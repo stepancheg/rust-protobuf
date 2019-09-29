@@ -19,12 +19,8 @@ pub enum RuntimeTypeBox {
     Bool,
     /// [`String`](std::string::String)
     String,
-    /// `Chars`
-    Chars,
     /// [`Vec<u8>`](std::vec::Vec)
     VecU8,
-    /// `Bytes`
-    CarllercheBytes,
     /// `enum`
     Enum(&'static EnumDescriptor),
     /// `message`
