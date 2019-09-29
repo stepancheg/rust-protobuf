@@ -16,7 +16,9 @@ use crate::reflect::transmute_eq::transmute_eq;
 /// Used for dynamic casting in reflection.
 pub trait ProtobufValue: Any + 'static + Send + Sync {
     /// As ref
-    fn as_ref(&self) -> ReflectValueRef;
+    fn as_ref(&self) -> ReflectValueRef {
+        unimplemented!()
+    }
 }
 
 impl ProtobufValue for u32 {

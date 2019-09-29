@@ -452,9 +452,6 @@ impl ::std::fmt::Debug for Api {
 }
 
 impl crate::reflect::ProtobufValue for Api {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -848,9 +845,6 @@ impl ::std::fmt::Debug for Method {
 }
 
 impl crate::reflect::ProtobufValue for Method {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1052,9 +1046,6 @@ impl ::std::fmt::Debug for Mixin {
 }
 
 impl crate::reflect::ProtobufValue for Mixin {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

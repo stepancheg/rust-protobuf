@@ -385,21 +385,8 @@ impl<'a> MessageGen<'a> {
                 protobuf_crate_path(&self.customize)
             ),
             &format!("{}", self.type_name),
-            |w| {
-                w.def_fn(
-                    &format!(
-                        "as_ref(&self) -> {}::reflect::ReflectValueRef",
-                        protobuf_crate_path(&self.customize)
-                    ),
-                    |w| {
-                        w.write_line(format!(
-                            "{}::reflect::ReflectValueRef::Message(self)",
-                            protobuf_crate_path(&self.customize)
-                        ))
-                    },
-                )
-            },
-        )
+            |_w| {},
+        );
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {

@@ -170,9 +170,6 @@ impl ::std::fmt::Debug for Struct {
 }
 
 impl crate::reflect::ProtobufValue for Struct {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -664,9 +661,6 @@ impl ::std::fmt::Debug for Value {
 }
 
 impl crate::reflect::ProtobufValue for Value {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -833,9 +827,6 @@ impl ::std::fmt::Debug for ListValue {
 }
 
 impl crate::reflect::ProtobufValue for ListValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -881,9 +872,6 @@ impl ::std::default::Default for NullValue {
 }
 
 impl crate::reflect::ProtobufValue for NullValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

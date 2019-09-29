@@ -276,9 +276,6 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
 }
 
 impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -498,9 +495,6 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
 }
 
 impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -777,9 +771,6 @@ impl ::std::fmt::Debug for CodeGeneratorResponse_File {
 }
 
 impl crate::reflect::ProtobufValue for CodeGeneratorResponse_File {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

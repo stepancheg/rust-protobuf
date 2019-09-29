@@ -402,9 +402,6 @@ impl ::std::fmt::Debug for Type {
 }
 
 impl crate::reflect::ProtobufValue for Type {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -906,9 +903,6 @@ impl ::std::fmt::Debug for Field {
 }
 
 impl crate::reflect::ProtobufValue for Field {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -1008,9 +1002,6 @@ impl ::std::default::Default for Field_Kind {
 }
 
 impl crate::reflect::ProtobufValue for Field_Kind {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -1065,9 +1056,6 @@ impl ::std::default::Default for Field_Cardinality {
 }
 
 impl crate::reflect::ProtobufValue for Field_Cardinality {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1413,9 +1401,6 @@ impl ::std::fmt::Debug for Enum {
 }
 
 impl crate::reflect::ProtobufValue for Enum {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1659,9 +1644,6 @@ impl ::std::fmt::Debug for EnumValue {
 }
 
 impl crate::reflect::ProtobufValue for EnumValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1878,9 +1860,6 @@ impl ::std::fmt::Debug for Option {
 }
 
 impl crate::reflect::ProtobufValue for Option {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -1929,9 +1908,6 @@ impl ::std::default::Default for Syntax {
 }
 
 impl crate::reflect::ProtobufValue for Syntax {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

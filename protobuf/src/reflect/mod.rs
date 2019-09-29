@@ -7,7 +7,6 @@ mod enums;
 pub(crate) mod field;
 mod map;
 mod message;
-mod optional;
 mod repeated;
 pub(crate) mod runtime_type_box;
 pub(crate) mod runtime_type_dynamic;

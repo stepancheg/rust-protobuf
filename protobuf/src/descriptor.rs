@@ -182,9 +182,6 @@ impl ::std::fmt::Debug for FileDescriptorSet {
 }
 
 impl crate::reflect::ProtobufValue for FileDescriptorSet {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -894,9 +891,6 @@ impl ::std::fmt::Debug for FileDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for FileDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1508,9 +1502,6 @@ impl ::std::fmt::Debug for DescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for DescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1708,9 +1699,6 @@ impl ::std::fmt::Debug for DescriptorProto_ExtensionRange {
 }
 
 impl crate::reflect::ProtobufValue for DescriptorProto_ExtensionRange {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1908,9 +1896,6 @@ impl ::std::fmt::Debug for DescriptorProto_ReservedRange {
 }
 
 impl crate::reflect::ProtobufValue for DescriptorProto_ReservedRange {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -2502,9 +2487,6 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -2602,9 +2584,6 @@ impl ::std::default::Default for FieldDescriptorProto_Type {
 }
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto_Type {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -2657,9 +2636,6 @@ impl ::std::default::Default for FieldDescriptorProto_Label {
 }
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto_Label {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -2887,9 +2863,6 @@ impl ::std::fmt::Debug for OneofDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for OneofDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -3166,9 +3139,6 @@ impl ::std::fmt::Debug for EnumDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for EnumDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -3436,9 +3406,6 @@ impl ::std::fmt::Debug for EnumValueDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -3715,9 +3682,6 @@ impl ::std::fmt::Debug for ServiceDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -4131,9 +4095,6 @@ impl ::std::fmt::Debug for MethodDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for MethodDescriptorProto {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -4921,9 +4882,6 @@ impl ::std::fmt::Debug for FileOptions {
 }
 
 impl crate::reflect::ProtobufValue for FileOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -4976,9 +4934,6 @@ impl ::std::default::Default for FileOptions_OptimizeMode {
 }
 
 impl crate::reflect::ProtobufValue for FileOptions_OptimizeMode {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5305,9 +5260,6 @@ impl ::std::fmt::Debug for MessageOptions {
 }
 
 impl crate::reflect::ProtobufValue for MessageOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5706,9 +5658,6 @@ impl ::std::fmt::Debug for FieldOptions {
 }
 
 impl crate::reflect::ProtobufValue for FieldOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -5760,9 +5709,6 @@ impl ::std::default::Default for FieldOptions_CType {
 }
 
 impl crate::reflect::ProtobufValue for FieldOptions_CType {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -5814,9 +5760,6 @@ impl ::std::default::Default for FieldOptions_JSType {
 }
 
 impl crate::reflect::ProtobufValue for FieldOptions_JSType {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Enum(crate::ProtobufEnum::descriptor(self))
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5983,9 +5926,6 @@ impl ::std::fmt::Debug for OneofOptions {
 }
 
 impl crate::reflect::ProtobufValue for OneofOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -6232,9 +6172,6 @@ impl ::std::fmt::Debug for EnumOptions {
 }
 
 impl crate::reflect::ProtobufValue for EnumOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -6441,9 +6378,6 @@ impl ::std::fmt::Debug for EnumValueOptions {
 }
 
 impl crate::reflect::ProtobufValue for EnumValueOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -6650,9 +6584,6 @@ impl ::std::fmt::Debug for ServiceOptions {
 }
 
 impl crate::reflect::ProtobufValue for ServiceOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -6859,9 +6790,6 @@ impl ::std::fmt::Debug for MethodOptions {
 }
 
 impl crate::reflect::ProtobufValue for MethodOptions {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -7307,9 +7235,6 @@ impl ::std::fmt::Debug for UninterpretedOption {
 }
 
 impl crate::reflect::ProtobufValue for UninterpretedOption {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -7526,9 +7451,6 @@ impl ::std::fmt::Debug for UninterpretedOption_NamePart {
 }
 
 impl crate::reflect::ProtobufValue for UninterpretedOption_NamePart {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -7695,9 +7617,6 @@ impl ::std::fmt::Debug for SourceCodeInfo {
 }
 
 impl crate::reflect::ProtobufValue for SourceCodeInfo {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -8054,9 +7973,6 @@ impl ::std::fmt::Debug for SourceCodeInfo_Location {
 }
 
 impl crate::reflect::ProtobufValue for SourceCodeInfo_Location {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -8223,9 +8139,6 @@ impl ::std::fmt::Debug for GeneratedCodeInfo {
 }
 
 impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -8522,9 +8435,6 @@ impl ::std::fmt::Debug for GeneratedCodeInfo_Annotation {
 }
 
 impl crate::reflect::ProtobufValue for GeneratedCodeInfo_Annotation {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

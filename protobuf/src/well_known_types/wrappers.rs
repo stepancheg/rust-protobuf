@@ -168,9 +168,6 @@ impl ::std::fmt::Debug for DoubleValue {
 }
 
 impl crate::reflect::ProtobufValue for DoubleValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -323,9 +320,6 @@ impl ::std::fmt::Debug for FloatValue {
 }
 
 impl crate::reflect::ProtobufValue for FloatValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -478,9 +472,6 @@ impl ::std::fmt::Debug for Int64Value {
 }
 
 impl crate::reflect::ProtobufValue for Int64Value {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -633,9 +624,6 @@ impl ::std::fmt::Debug for UInt64Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt64Value {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -788,9 +776,6 @@ impl ::std::fmt::Debug for Int32Value {
 }
 
 impl crate::reflect::ProtobufValue for Int32Value {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -943,9 +928,6 @@ impl ::std::fmt::Debug for UInt32Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt32Value {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1098,9 +1080,6 @@ impl ::std::fmt::Debug for BoolValue {
 }
 
 impl crate::reflect::ProtobufValue for BoolValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1260,9 +1239,6 @@ impl ::std::fmt::Debug for StringValue {
 }
 
 impl crate::reflect::ProtobufValue for StringValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -1422,9 +1398,6 @@ impl ::std::fmt::Debug for BytesValue {
 }
 
 impl crate::reflect::ProtobufValue for BytesValue {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

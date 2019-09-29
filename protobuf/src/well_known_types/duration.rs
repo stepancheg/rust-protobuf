@@ -203,9 +203,6 @@ impl ::std::fmt::Debug for Duration {
 }
 
 impl crate::reflect::ProtobufValue for Duration {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

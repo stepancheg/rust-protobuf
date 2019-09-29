@@ -267,19 +267,7 @@ impl<'a> EnumGen<'a> {
                 protobuf_crate_path(&self.customize)
             ),
             &format!("{}", self.type_name),
-            |w| {
-                let sig = format!(
-                    "as_ref(&self) -> {}::reflect::ReflectValueRef",
-                    protobuf_crate_path(&self.customize)
-                );
-                w.def_fn(&sig, |w| {
-                    w.write_line(&format!(
-                        "{}::reflect::ReflectValueRef::Enum({}::ProtobufEnum::descriptor(self))",
-                        protobuf_crate_path(&self.customize),
-                        protobuf_crate_path(&self.customize),
-                    ))
-                })
-            },
+            |_w| {},
         )
     }
 

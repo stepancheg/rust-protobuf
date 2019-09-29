@@ -175,9 +175,6 @@ impl ::std::fmt::Debug for SourceContext {
 }
 
 impl crate::reflect::ProtobufValue for SourceContext {
-    fn as_ref(&self) -> crate::reflect::ReflectValueRef {
-        crate::reflect::ReflectValueRef::Message(self)
-    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
