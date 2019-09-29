@@ -501,7 +501,7 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
     where
         Self: Sized,
     {
-        RuntimeTypeBox::CarllercheBytes
+        RuntimeTypeBox::VecU8
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Bytes {
@@ -550,7 +550,7 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Chars
+        RuntimeTypeBox::String
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Chars {
