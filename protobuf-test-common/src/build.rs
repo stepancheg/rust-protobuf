@@ -23,7 +23,8 @@ pub fn glob_simple(pattern: &str) -> Vec<String> {
                 .to_str()
                 .expect("utf-8")
                 .to_owned()
-        }).collect();
+        })
+        .collect();
     // Make test stable
     r.sort();
     r
@@ -236,7 +237,8 @@ where
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
         includes: &includes,
         customize,
-    }).expect("codegen failed");
+    })
+    .expect("codegen failed");
 
     gen_mod_rs_in_dir(dir);
 }

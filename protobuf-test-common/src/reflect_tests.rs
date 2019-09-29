@@ -7,8 +7,8 @@ use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::reflect::RuntimeTypeDynamic;
-use protobuf::well_known_types::Value;
 use protobuf::well_known_types::value;
+use protobuf::well_known_types::Value;
 use protobuf::Message;
 
 pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectValueBox {
@@ -112,7 +112,10 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
     }
 }
 
-pub fn special_values_for_field(f: &FieldDescriptor, d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
+pub fn special_values_for_field(
+    f: &FieldDescriptor,
+    d: &MessageDescriptor,
+) -> Vec<Box<dyn Message>> {
     let mut r = Vec::new();
     match f.runtime_field_type() {
         RuntimeFieldType::Singular(t) => {
