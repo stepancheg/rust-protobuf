@@ -4,8 +4,6 @@ use std::marker;
 
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::runtime_types::RuntimeType;
-use crate::reflect::EnumDescriptor;
-use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueRef;
 
@@ -25,20 +23,6 @@ pub trait RuntimeTypeDynamic: Send + Sync + 'static {
 
     /// Default value for type
     fn default_value_ref(&self) -> ReflectValueRef;
-
-    /// `EnumDescriptor` for this type.
-    ///
-    /// # Panics
-    ///
-    /// If this type is not enum.
-    fn enum_descriptor(&self) -> &'static EnumDescriptor;
-
-    /// `MessageDescriptor` for this type.
-    ///
-    /// # Panics
-    ///
-    /// If this type is not message.
-    fn message_descriptor(&self) -> &'static MessageDescriptor;
 }
 
 pub(crate) struct RuntimeTypeDynamicImpl<T: RuntimeType>(pub marker::PhantomData<T>);
@@ -58,12 +42,5 @@ impl<T: RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
 
     fn default_value_ref(&self) -> ReflectValueRef {
         T::default_value_ref()
-    }
-
-    fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        T::enum_descriptor()
-    }
-    fn message_descriptor(&self) -> &'static MessageDescriptor {
-        T::message_descriptor()
     }
 }
