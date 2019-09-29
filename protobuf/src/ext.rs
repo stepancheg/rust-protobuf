@@ -11,20 +11,26 @@ use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 
 /// Optional ext field
+///
+/// This is initialized from generated code, do not instantiate directly.
 pub struct ExtFieldOptional<M: Message, T: ProtobufType> {
     /// Extension field number
+    #[doc(hidden)]
     pub field_number: u32,
     /// Marker
-    // TODO: hide
+    #[doc(hidden)]
     pub phantom: PhantomData<(M, T)>,
 }
 
 /// Repeated ext field
+///
+/// This is initialized from generated code, do not instantiate directly.
 pub struct ExtFieldRepeated<M: Message, T: ProtobufType> {
     /// Extension field number
+    #[doc(hidden)]
     pub field_number: u32,
     /// Extension field number
-    // TODO: hide
+    #[doc(hidden)]
     pub phantom: PhantomData<(M, T)>,
 }
 
