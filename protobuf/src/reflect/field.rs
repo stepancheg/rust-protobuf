@@ -13,8 +13,6 @@ use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::EnumDescriptor;
-use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeDynamic;
@@ -115,32 +113,6 @@ impl FieldDescriptor {
     /// If this field repeated?
     pub fn is_repeated(&self) -> bool {
         self.proto.get_label() == field_descriptor_proto::Label::LABEL_REPEATED
-    }
-
-    /// Return enum descriptor for enum field.
-    ///
-    /// # Panics
-    ///
-    /// If field type is not enum.
-    pub fn enum_descriptor(&self) -> &'static EnumDescriptor {
-        match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.element_type.runtime_type().enum_descriptor(),
-            AccessorKind::Repeated(ref a) => a.element_type.runtime_type().enum_descriptor(),
-            _ => panic!("not a singular or repeated field"),
-        }
-    }
-
-    /// Return enum descriptor for message field.
-    ///
-    /// # Panics
-    ///
-    /// If field type is not message.
-    pub fn message_descriptor(&self) -> &'static MessageDescriptor {
-        match self.accessor.accessor {
-            AccessorKind::Singular(ref a) => a.element_type.runtime_type().message_descriptor(),
-            AccessorKind::Repeated(ref a) => a.element_type.runtime_type().message_descriptor(),
-            _ => panic!("not a singular or repeated field"),
-        }
     }
 
     /// Check if field is set in given message.
