@@ -160,9 +160,12 @@ fn print_field(
             do_indent(buf, pretty, indent);
             buf.push_str("}");
         }
-        ReflectValueRef::Enum(e) => {
+        ReflectValueRef::Enum(d, v) => {
             buf.push_str(": ");
-            buf.push_str(e.name());
+            match d.get_value_by_number(v) {
+                Some(e) => buf.push_str(e.name()),
+                None => write!(buf, ": {}", v).unwrap(),
+            }
         }
         ReflectValueRef::String(s) => {
             buf.push_str(": ");

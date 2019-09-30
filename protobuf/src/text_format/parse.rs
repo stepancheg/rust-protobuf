@@ -239,7 +239,7 @@ impl<'a> Parser<'a> {
 
     fn read_value_of_type(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
         Ok(match t.to_box() {
-            RuntimeTypeBox::Enum(d) => ReflectValueBox::Enum(self.read_enum(d)?),
+            RuntimeTypeBox::Enum(d) => ReflectValueBox::Enum(d, self.read_enum(d)?.value()),
             RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
             RuntimeTypeBox::U64 => ReflectValueBox::U64(self.read_u64()?),
             RuntimeTypeBox::I32 => ReflectValueBox::I32(self.read_i32()?),

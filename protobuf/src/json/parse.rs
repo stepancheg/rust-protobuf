@@ -521,7 +521,9 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::from),
             RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
             RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBox::Bytes),
-            RuntimeTypeBox::Enum(e) => self.parse_enum(key, e).map(|v| ReflectValueBox::Enum(v)),
+            RuntimeTypeBox::Enum(e) => self
+                .parse_enum(key, e)
+                .map(|v| ReflectValueBox::Enum(e, v.value())),
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }

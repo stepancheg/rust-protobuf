@@ -203,7 +203,7 @@ impl<'a> PrintableToJson for ReflectValueRef<'a> {
             ReflectValueRef::Bool(v) => w.print_printable(v),
             ReflectValueRef::String(v) => w.print_printable::<str>(v),
             ReflectValueRef::Bytes(v) => w.print_printable::<[u8]>(v),
-            ReflectValueRef::Enum(v) => w.print_enum_known(v),
+            ReflectValueRef::Enum(d, v) => w.print_enum(d, *v),
             ReflectValueRef::Message(v) => w.print_message(*v),
         }
     }
@@ -292,8 +292,8 @@ impl<'a> ObjectKey for ReflectValueRef<'a> {
             // do not quote, because printable is quoted
             ReflectValueRef::U64(v) => return w.print_printable(v),
             ReflectValueRef::I64(v) => return w.print_printable(v),
-            ReflectValueRef::Enum(v) if !w.print_options.enum_values_int => {
-                return w.print_enum_known(v)
+            ReflectValueRef::Enum(d, v) if !w.print_options.enum_values_int => {
+                return w.print_enum(d, *v)
             }
             _ => {}
         }
@@ -304,7 +304,7 @@ impl<'a> ObjectKey for ReflectValueRef<'a> {
             ReflectValueRef::U32(v) => w.print_printable(v),
             ReflectValueRef::I32(v) => w.print_printable(v),
             ReflectValueRef::Bool(v) => w.print_printable(v),
-            ReflectValueRef::Enum(v) if w.print_options.enum_values_int => w.print_enum_known(v),
+            ReflectValueRef::Enum(d, v) if w.print_options.enum_values_int => w.print_enum(d, *v),
             ReflectValueRef::Enum(..)
             | ReflectValueRef::U64(_)
             | ReflectValueRef::I64(_)
@@ -406,7 +406,7 @@ impl Printer {
         }
     }
 
-    fn _print_enum(&mut self, descriptor: &EnumDescriptor, v: i32) -> PrintResult<()> {
+    fn print_enum(&mut self, descriptor: &EnumDescriptor, v: i32) -> PrintResult<()> {
         if self.print_options.enum_values_int {
             self.print_printable(&v)
         } else {

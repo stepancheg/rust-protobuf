@@ -194,7 +194,7 @@ impl FieldDescriptor {
     #[deprecated]
     pub fn get_enum(&self, m: &dyn Message) -> &'static EnumValueDescriptor {
         match self.get_singular_field_or_default(m) {
-            ReflectValueRef::Enum(v) => v,
+            ReflectValueRef::Enum(d, v) => d.get_value_by_number(v).expect("unknown enum value"),
             _ => panic!("not enum"),
         }
     }

@@ -610,7 +610,10 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(&Self::enum_descriptor().values()[0])
+        ReflectValueRef::Enum(
+            E::enum_descriptor_static(),
+            E::enum_descriptor_static().values()[0].value(),
+        )
     }
 
     fn enum_descriptor() -> &'static EnumDescriptor {
@@ -619,24 +622,22 @@ where
 
     fn from_value_box(value_box: ReflectValueBox) -> E {
         match value_box {
-            ReflectValueBox::Enum(v) => {
-                // TODO: check enum
-                E::from_i32(v.value()).expect("unknown enum value")
-            }
+            // TODO: panic
+            ReflectValueBox::Enum(_d, v) => E::from_i32(v).expect("unknown enum value"),
             _ => panic!("wrong type"),
         }
     }
 
     fn into_value_box(value: E) -> ReflectValueBox {
-        ReflectValueBox::Enum(value.descriptor())
+        ReflectValueBox::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn into_static_value_ref(value: E) -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(value.descriptor())
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn as_ref(value: &E) -> ReflectValueRef {
-        ReflectValueRef::Enum(value.descriptor())
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {

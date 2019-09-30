@@ -71,8 +71,7 @@ pub enum ReflectValueRef<'a> {
     /// `bytes`
     Bytes(&'a [u8]),
     /// `enum`
-    // TODO: change to (i32, EnumDescriptor)
-    Enum(&'static EnumValueDescriptor),
+    Enum(&'static EnumDescriptor, i32),
     /// `message`
     Message(&'a dyn Message),
 }
@@ -91,7 +90,7 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::Bool(v) => v,
             ReflectValueRef::String(v) => !v.is_empty(),
             ReflectValueRef::Bytes(v) => !v.is_empty(),
-            ReflectValueRef::Enum(v) => v.value() != 0,
+            ReflectValueRef::Enum(_d, v) => v != 0,
             ReflectValueRef::Message(_) => true,
         }
     }
@@ -188,7 +187,7 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::Bool(v) => ReflectValueBox::Bool(v),
             ReflectValueRef::String(v) => ReflectValueBox::String(v.to_owned()),
             ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes(v.to_owned()),
-            ReflectValueRef::Enum(v) => ReflectValueBox::Enum(v),
+            ReflectValueRef::Enum(d, v) => ReflectValueBox::Enum(d, v),
             ReflectValueRef::Message(v) => ReflectValueBox::Message(v.descriptor().clone(v)),
         }
     }
@@ -224,7 +223,7 @@ impl<'a> ReflectEq for ReflectValueRef<'a> {
             (Bool(a), Bool(b)) => a == b,
             (String(a), String(b)) => a == b,
             (Bytes(a), Bytes(b)) => a == b,
-            (Enum(a), Enum(b)) => a == b,
+            (Enum(ad, a), Enum(bd, b)) => ad == bd && a == b,
             (Message(a), Message(b)) => {
                 let ad = a.descriptor();
                 let bd = b.descriptor();
@@ -262,8 +261,7 @@ pub enum ReflectValueBox {
     /// `bytes`
     Bytes(Vec<u8>),
     /// `enum`
-    // TODO: change to (i32, EnumDescriptor)
-    Enum(&'static EnumValueDescriptor),
+    Enum(&'static EnumDescriptor, i32),
     /// `message`
     Message(Box<dyn Message>),
 }
@@ -324,7 +322,7 @@ impl From<Vec<u8>> for ReflectValueBox {
 
 impl From<&'static EnumValueDescriptor> for ReflectValueBox {
     fn from(v: &'static EnumValueDescriptor) -> Self {
-        ReflectValueBox::Enum(v)
+        ReflectValueBox::Enum(v.enum_descriptor(), v.value())
     }
 }
 
@@ -367,10 +365,7 @@ impl ReflectValueBox {
             ReflectValueBox::Bytes(v) => transmute_eq::<Vec<u8>, _>(v)
                 .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
                 .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into())),
-            ReflectValueBox::Enum(v) => v
-                .enum_descriptor()
-                .cast_to_protobuf_enum(v.value())
-                .ok_or(ReflectValueBox::Enum(v)),
+            ReflectValueBox::Enum(d, e) => d.cast(e).ok_or(ReflectValueBox::Enum(d, e)),
             ReflectValueBox::Message(m) => m
                 .downcast_box::<V>()
                 .map(|m| *m)

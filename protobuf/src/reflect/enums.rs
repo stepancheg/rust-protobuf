@@ -94,6 +94,12 @@ pub struct EnumDescriptor {
     index_by_number: HashMap<i32, usize>,
 }
 
+impl fmt::Debug for EnumDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("EnumDescriptor").field("..", &"..").finish()
+    }
+}
+
 /// Identity comparison: message descriptor are equal if their addresses are equal
 impl PartialEq for EnumDescriptor {
     fn eq(&self, other: &EnumDescriptor) -> bool {
@@ -198,6 +204,21 @@ impl EnumDescriptor {
     /// ```
     pub fn is<E: ProtobufEnum>(&self) -> bool {
         TypeId::of::<E>() == self.type_id
+    }
+
+    /// Create enum object from given value.
+    ///
+    /// Type parameter `E` can be either [`ProtobufEnum`](crate::ProtobufEnum)
+    /// or [`ProtobufEnumOrUnknown`](crate::ProtobufEnumOrUnknown).
+    ///
+    /// # Panics
+    ///
+    /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
+    pub(crate) fn cast<E: ProtobufValue>(&self, value: i32) -> Option<E> {
+        if let Some(e) = self.cast_to_protobuf_enum(value) {
+            return Some(e);
+        }
+        None
     }
 
     #[cfg(rustc_nightly)]
