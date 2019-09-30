@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.9] - Unreleased
 
+## [2.9.1] - 2019-09-30
+
 ### Backward compatibility
 
 - Minimum supported Rust version is 1.34.2 now
