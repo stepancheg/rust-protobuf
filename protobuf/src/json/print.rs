@@ -498,12 +498,14 @@ impl Printer {
                 }
                 ReflectFieldRef::Repeated(v) => {
                     if !v.is_empty() {
+                        self.print_comma_but_first(&mut first)?;
                         write!(self.buf, "\"{}\": ", json_field_name)?;
                         self.print_repeated(&v)?;
                     }
                 }
                 ReflectFieldRef::Map(v) => {
                     if !v.is_empty() {
+                        self.print_comma_but_first(&mut first)?;
                         write!(self.buf, "\"{}\": ", json_field_name)?;
                         self.print_map(&v)?;
                     }
