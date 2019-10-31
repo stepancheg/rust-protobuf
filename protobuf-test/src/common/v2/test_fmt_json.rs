@@ -331,3 +331,16 @@ fn test_use_json_name() {
     let json = json::print_to_string(&m).unwrap();
     assert_eq!("{\"Field With json_name\": true}", json);
 }
+
+#[test]
+fn test_more_than_one() {
+    let mut m = TestTypes::new();
+    m.set_bool_singular(true);
+    m.set_bool_repeated(vec![true, false, false]);
+    m.uint64_map_field.insert("foo".to_owned(), 20);
+
+    test_json_print_parse_message(
+        "{\"boolSingular\": true, \"boolRepeated\": [true, false, false], \"uint64MapField\": {\"foo\": \"20\"}}",
+        &m,
+    );
+}
