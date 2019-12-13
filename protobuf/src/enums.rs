@@ -107,7 +107,7 @@ impl<E: ProtobufEnum> Default for ProtobufEnumOrUnknown<E> {
 }
 
 impl<E: ProtobufEnum> fmt::Debug for ProtobufEnumOrUnknown<E> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.enum_value() {
             Ok(e) => fmt::Debug::fmt(&e, f),
             Err(e) => fmt::Debug::fmt(&e, f),

@@ -77,7 +77,7 @@ fn print_field(
     indent: usize,
     first: &mut bool,
     field_name: &str,
-    value: ReflectValueRef,
+    value: ReflectValueRef<'_>,
 ) {
     print_start_field(buf, pretty, indent, first, field_name);
 
@@ -188,7 +188,7 @@ pub fn print_to_string(m: &dyn Message) -> String {
 }
 
 /// Text-format to `fmt::Formatter`.
-pub fn fmt(m: &dyn Message, f: &mut fmt::Formatter) -> fmt::Result {
+pub fn fmt(m: &dyn Message, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let pretty = f.alternate();
     f.write_str(&print_to_string_internal(m, pretty))
 }

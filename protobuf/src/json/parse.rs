@@ -697,7 +697,7 @@ impl<'a> Parser<'a> {
         let s = self.read_string()?;
         let mut lexer = Lexer::new(&s, ParserLanguage::Json);
 
-        fn next_dec(lexer: &mut Lexer) -> ParseResultWithoutLoc<(u64, u32)> {
+        fn next_dec(lexer: &mut Lexer<'_>) -> ParseResultWithoutLoc<(u64, u32)> {
             let s = lexer.take_while(|c| c >= '0' && c <= '9');
 
             if s.len() == 0 {

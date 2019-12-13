@@ -665,13 +665,13 @@ impl<'a> BufRead for CodedInputStream<'a> {
 pub trait WithCodedOutputStream {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>;
+        F: FnOnce(&mut CodedOutputStream<'_>) -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
     fn with_coded_output_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedOutputStream<'_>) -> ProtobufResult<T>,
     {
         let mut os = CodedOutputStream::new(self);
         let r = cb(&mut os)?;
@@ -683,7 +683,7 @@ impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
 impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     fn with_coded_output_stream<T, F>(mut self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedOutputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedOutputStream<'_>) -> ProtobufResult<T>,
     {
         let mut os = CodedOutputStream::vec(&mut self);
         let r = cb(&mut os)?;
@@ -695,13 +695,13 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
 pub trait WithCodedInputStream {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
+        F: FnOnce(&mut CodedInputStream<'_>) -> ProtobufResult<T>;
 }
 
 impl<'a> WithCodedInputStream for &'a mut (dyn Read + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream<'_>) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::new(self);
         let r = cb(&mut is)?;
@@ -713,7 +713,7 @@ impl<'a> WithCodedInputStream for &'a mut (dyn Read + 'a) {
 impl<'a> WithCodedInputStream for &'a mut (dyn BufRead + 'a) {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream<'_>) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::from_buffered_reader(self);
         let r = cb(&mut is)?;
@@ -725,7 +725,7 @@ impl<'a> WithCodedInputStream for &'a mut (dyn BufRead + 'a) {
 impl<'a> WithCodedInputStream for &'a [u8] {
     fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
     where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
+        F: FnOnce(&mut CodedInputStream<'_>) -> ProtobufResult<T>,
     {
         let mut is = CodedInputStream::from_bytes(self);
         let r = cb(&mut is)?;
@@ -1055,7 +1055,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write unknown value
-    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> ProtobufResult<()> {
+    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef<'_>) -> ProtobufResult<()> {
         match unknown {
             UnknownValueRef::Fixed64(fixed64) => self.write_raw_little_endian64(fixed64),
             UnknownValueRef::Fixed32(fixed32) => self.write_raw_little_endian32(fixed32),
@@ -1172,7 +1172,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_unknown(
         &mut self,
         field_number: u32,
-        value: UnknownValueRef,
+        value: UnknownValueRef<'_>,
     ) -> ProtobufResult<()> {
         self.write_tag(field_number, value.wire_type())?;
         self.write_unknown_no_tag(value)?;
@@ -1268,7 +1268,7 @@ mod test {
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
-        F: FnMut(&mut CodedInputStream),
+        F: FnMut(&mut CodedInputStream<'_>),
     {
         let d = decode_hex(hex);
         let mut reader = io::Cursor::new(d);
@@ -1279,7 +1279,7 @@ mod test {
 
     fn test_read<F>(hex: &str, mut callback: F)
     where
-        F: FnMut(&mut CodedInputStream),
+        F: FnMut(&mut CodedInputStream<'_>),
     {
         let len = decode_hex(hex).len();
         test_read_partial(hex, |reader| {
@@ -1291,7 +1291,7 @@ mod test {
 
     fn test_read_v<F, V>(hex: &str, v: V, mut callback: F)
     where
-        F: FnMut(&mut CodedInputStream) -> ProtobufResult<V>,
+        F: FnMut(&mut CodedInputStream<'_>) -> ProtobufResult<V>,
         V: PartialEq + Debug,
     {
         test_read(hex, |reader| {
@@ -1468,7 +1468,7 @@ mod test {
 
     fn test_write<F>(expected: &str, mut gen: F)
     where
-        F: FnMut(&mut CodedOutputStream) -> ProtobufResult<()>,
+        F: FnMut(&mut CodedOutputStream<'_>) -> ProtobufResult<()>,
     {
         let expected_bytes = decode_hex(expected);
 

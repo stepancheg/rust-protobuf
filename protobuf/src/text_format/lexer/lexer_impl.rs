@@ -700,7 +700,7 @@ mod test {
 
     fn lex<P, R>(input: &str, parse_what: P) -> R
     where
-        P: FnOnce(&mut Lexer) -> LexerResult<R>,
+        P: FnOnce(&mut Lexer<'_>) -> LexerResult<R>,
     {
         let mut lexer = Lexer::new(input, ParserLanguage::Proto);
         let r = parse_what(&mut lexer).expect(&format!("lexer failed at {}", lexer.loc));
@@ -710,7 +710,7 @@ mod test {
 
     fn lex_opt<P, R>(input: &str, parse_what: P) -> R
     where
-        P: FnOnce(&mut Lexer) -> LexerResult<Option<R>>,
+        P: FnOnce(&mut Lexer<'_>) -> LexerResult<Option<R>>,
     {
         let mut lexer = Lexer::new(input, ParserLanguage::Proto);
         let o = parse_what(&mut lexer).expect(&format!("lexer failed at {}", lexer.loc));

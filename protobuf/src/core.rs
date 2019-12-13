@@ -31,13 +31,13 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn is_initialized(&self) -> bool;
 
     /// Update this message object with fields read from given stream.
-    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
+    fn merge_from(&mut self, is: &mut CodedInputStream<'_>) -> ProtobufResult<()>;
 
     /// Write message to the stream.
     ///
     /// Sizes of this messages and nested messages must be cached
     /// by calling `compute_size` prior to this call.
-    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()>;
+    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream<'_>) -> ProtobufResult<()>;
 
     /// Compute and cache size of this message and all nested messages
     fn compute_size(&self) -> u32;
@@ -48,7 +48,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Write the message to the stream.
     ///
     /// Results in error if message is not fully initialized.
-    fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_to(&self, os: &mut CodedOutputStream<'_>) -> ProtobufResult<()> {
         self.check_initialized()?;
 
         // cache sizes
@@ -61,7 +61,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
 
     /// Write the message to the stream prepending the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_length_delimited_to(&self, os: &mut CodedOutputStream<'_>) -> ProtobufResult<()> {
         let size = self.compute_size();
         os.write_raw_varint32(size)?;
         self.write_to_with_cached_sizes(os)?;
@@ -275,7 +275,7 @@ impl PartialEq for Box<Message> {
 }
 
 /// Parse message from stream.
-pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
+pub fn parse_from<M: Message>(is: &mut CodedInputStream<'_>) -> ProtobufResult<M> {
     let mut r: M = Message::new();
     r.merge_from(is)?;
     r.check_initialized()?;

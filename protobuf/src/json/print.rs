@@ -368,7 +368,7 @@ impl Printer {
         Ok(())
     }
 
-    fn print_repeated(&mut self, repeated: &ReflectRepeatedRef) -> PrintResult<()> {
+    fn print_repeated(&mut self, repeated: &ReflectRepeatedRef<'_>) -> PrintResult<()> {
         self.print_list(repeated)
     }
 
@@ -391,7 +391,7 @@ impl Printer {
         Ok(())
     }
 
-    fn print_map(&mut self, map: &ReflectMapRef) -> PrintResult<()> {
+    fn print_map(&mut self, map: &ReflectMapRef<'_>) -> PrintResult<()> {
         self.print_object(map.into_iter())
     }
 

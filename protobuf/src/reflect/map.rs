@@ -10,13 +10,13 @@ use crate::reflect::ReflectValueRef;
 
 /// Implemented for `HashMap` with appropriate keys and values
 pub(crate) trait ReflectMap: Send + Sync + 'static {
-    fn reflect_iter(&self) -> ReflectMapIter;
+    fn reflect_iter(&self) -> ReflectMapIter<'_>;
 
     fn len(&self) -> usize;
 
     fn is_empty(&self) -> bool;
 
-    fn get(&self, key: ReflectValueRef) -> Option<&dyn ProtobufValue>;
+    fn get(&self, key: ReflectValueRef<'_>) -> Option<&dyn ProtobufValue>;
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
 
@@ -40,7 +40,7 @@ impl<K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> Reflect
         self.is_empty()
     }
 
-    fn get(&self, key: ReflectValueRef) -> Option<&dyn ProtobufValue> {
+    fn get(&self, key: ReflectValueRef<'_>) -> Option<&dyn ProtobufValue> {
         // TODO: malloc for string or bytes
         let key: K = key.to_box().downcast().expect("wrong key type");
         self.get(&key).map(|v| v as &dyn ProtobufValue)
@@ -124,7 +124,7 @@ impl<'a> ReflectMapRef<'a> {
     }
 
     /// Find a value by given key.
-    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+    pub fn get(&self, key: ReflectValueRef<'_>) -> Option<ReflectValueRef<'_>> {
         self.map
             .get(key)
             .map(|v| self.value_dynamic.value_to_ref(v))
@@ -194,7 +194,7 @@ impl<'a> ReflectMapMut<'a> {
     }
 
     /// Find a value for given key
-    pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
+    pub fn get(&self, key: ReflectValueRef<'_>) -> Option<ReflectValueRef<'_>> {
         self.map
             .get(key)
             .map(|v| self.value_dynamic.value_to_ref(v))

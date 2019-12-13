@@ -22,7 +22,7 @@ pub trait RuntimeTypeDynamic: Send + Sync + 'static {
     fn value_to_ref<'a>(&self, value: &'a dyn ProtobufValue) -> ReflectValueRef<'a>;
 
     /// Default value for type
-    fn default_value_ref(&self) -> ReflectValueRef;
+    fn default_value_ref(&self) -> ReflectValueRef<'_>;
 }
 
 pub(crate) struct RuntimeTypeDynamicImpl<T: RuntimeType>(pub marker::PhantomData<T>);
@@ -40,7 +40,7 @@ impl<T: RuntimeType> RuntimeTypeDynamic for RuntimeTypeDynamicImpl<T> {
         }
     }
 
-    fn default_value_ref(&self) -> ReflectValueRef {
+    fn default_value_ref(&self) -> ReflectValueRef<'_> {
         T::default_value_ref()
     }
 }

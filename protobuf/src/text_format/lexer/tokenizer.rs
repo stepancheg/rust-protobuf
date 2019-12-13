@@ -284,7 +284,7 @@ mod test {
 
     fn tokenize<P, R>(input: &str, what: P) -> R
     where
-        P: FnOnce(&mut Tokenizer) -> TokenizerResult<R>,
+        P: FnOnce(&mut Tokenizer<'_>) -> TokenizerResult<R>,
     {
         let mut tokenizer = Tokenizer::new(input, ParserLanguage::Proto);
         let r = what(&mut tokenizer).expect(&format!("parse failed at {}", tokenizer.loc()));

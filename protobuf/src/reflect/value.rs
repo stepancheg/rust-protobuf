@@ -349,7 +349,7 @@ type StringOrChars = Chars;
 
 impl ReflectValueBox {
     /// As ref
-    pub fn as_value_ref(&self) -> ReflectValueRef {
+    pub fn as_value_ref(&self) -> ReflectValueRef<'_> {
         use std::ops::Deref;
         match *self {
             ReflectValueBox::U32(v) => ReflectValueRef::U32(v),
@@ -394,7 +394,7 @@ impl ReflectValueBox {
 }
 
 impl<'a> PartialEq for ReflectValueRef<'a> {
-    fn eq(&self, other: &ReflectValueRef) -> bool {
+    fn eq(&self, other: &ReflectValueRef<'_>) -> bool {
         use self::ReflectValueRef::*;
         match (self, other) {
             (U32(a), U32(b)) => a == b,
@@ -424,7 +424,7 @@ impl<'a> PartialEq for ReflectValueBox {
 }
 
 impl<'a> PartialEq<ReflectValueRef<'a>> for ReflectValueBox {
-    fn eq(&self, other: &ReflectValueRef) -> bool {
+    fn eq(&self, other: &ReflectValueRef<'_>) -> bool {
         self.as_value_ref() == *other
     }
 }

@@ -42,7 +42,7 @@ fn _assert_send_sync() {
 }
 
 impl fmt::Debug for EnumValueDescriptor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("EnumValueDescriptor")
             .field("proto", self.proto)
             .field("value", &"...")
@@ -123,7 +123,7 @@ pub struct EnumDescriptor {
 }
 
 impl fmt::Debug for EnumDescriptor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("EnumDescriptor")
             .field("full_name", &self.full_name)
             .field("..", &"..")

@@ -523,7 +523,7 @@ impl<T: Clone> Clone for SingularPtrField<T> {
 
 impl<T: fmt::Debug> fmt::Debug for SingularField<T> {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.is_some() {
             write!(f, "Some({:?})", *self.as_ref().unwrap())
         } else {
@@ -534,7 +534,7 @@ impl<T: fmt::Debug> fmt::Debug for SingularField<T> {
 
 impl<T: fmt::Debug> fmt::Debug for SingularPtrField<T> {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.is_some() {
             write!(f, "Some({:?})", *self.as_ref().unwrap())
         } else {

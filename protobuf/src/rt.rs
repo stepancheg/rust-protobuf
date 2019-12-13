@@ -305,7 +305,7 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
 /// Read repeated `int32` field into given vec.
 pub fn read_repeated_int32_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<i32>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -321,7 +321,7 @@ pub fn read_repeated_int32_into(
 /// Read repeated `int64` field into given vec.
 pub fn read_repeated_int64_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<i64>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -337,7 +337,7 @@ pub fn read_repeated_int64_into(
 /// Read repeated `uint32` field into given vec.
 pub fn read_repeated_uint32_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<u32>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -353,7 +353,7 @@ pub fn read_repeated_uint32_into(
 /// Read repeated `uint64` field into given vec.
 pub fn read_repeated_uint64_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<u64>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -369,7 +369,7 @@ pub fn read_repeated_uint64_into(
 /// Read repeated `sint32` field into given vec.
 pub fn read_repeated_sint32_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<i32>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -385,7 +385,7 @@ pub fn read_repeated_sint32_into(
 /// Read repeated `sint64` field into given vec.
 pub fn read_repeated_sint64_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<i64>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -401,7 +401,7 @@ pub fn read_repeated_sint64_into(
 /// Read repeated `fixed32` field into given vec.
 pub fn read_repeated_fixed32_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<u32>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -417,7 +417,7 @@ pub fn read_repeated_fixed32_into(
 /// Read repeated `fixed64` field into given vec.
 pub fn read_repeated_fixed64_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<u64>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -433,7 +433,7 @@ pub fn read_repeated_fixed64_into(
 /// Read repeated `sfixed32` field into given vec.
 pub fn read_repeated_sfixed32_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<i32>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -449,7 +449,7 @@ pub fn read_repeated_sfixed32_into(
 /// Read repeated `sfixed64` field into given vec.
 pub fn read_repeated_sfixed64_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<i64>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -465,7 +465,7 @@ pub fn read_repeated_sfixed64_into(
 /// Read repeated `double` field into given vec.
 pub fn read_repeated_double_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<f64>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -481,7 +481,7 @@ pub fn read_repeated_double_into(
 /// Read repeated `float` field into given vec.
 pub fn read_repeated_float_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<f32>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -497,7 +497,7 @@ pub fn read_repeated_float_into(
 /// Read repeated `bool` field into given vec.
 pub fn read_repeated_bool_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<bool>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -514,7 +514,7 @@ pub fn read_repeated_bool_into(
 /// This function is no longer called from generated code, remove in 1.5.
 pub fn read_repeated_enum_into<E: ProtobufEnum>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<E>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -530,7 +530,7 @@ pub fn read_repeated_enum_into<E: ProtobufEnum>(
 /// Helper function to read single enum value.
 #[inline]
 fn read_enum_with_unknown_fields_into<E: ProtobufEnum, C>(
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: C,
     field_number: u32,
     unknown_fields: &mut UnknownFields,
@@ -547,7 +547,7 @@ where
 }
 
 fn read_repeated_packed_enum_with_unknown_fields_into<E: ProtobufEnum>(
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<E>,
     field_number: u32,
     unknown_fields: &mut UnknownFields,
@@ -562,7 +562,7 @@ fn read_repeated_packed_enum_with_unknown_fields_into<E: ProtobufEnum>(
 }
 
 fn read_repeated_packed_enum_or_unknown_into<E: ProtobufEnum>(
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<ProtobufEnumOrUnknown<E>>,
 ) -> ProtobufResult<()> {
     let len = is.read_raw_varint64()?;
@@ -582,7 +582,7 @@ fn read_repeated_packed_enum_or_unknown_into<E: ProtobufEnum>(
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
 pub fn read_repeated_enum_with_unknown_fields_into<E: ProtobufEnum>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<E>,
     field_number: u32,
     unknown_fields: &mut UnknownFields,
@@ -609,7 +609,7 @@ pub fn read_repeated_enum_with_unknown_fields_into<E: ProtobufEnum>(
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
 pub fn read_repeated_enum_or_unknown_into<E: ProtobufEnum>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<ProtobufEnumOrUnknown<E>>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -630,7 +630,7 @@ pub fn read_repeated_enum_or_unknown_into<E: ProtobufEnum>(
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
 pub fn read_proto3_enum_with_unknown_fields_into<E: ProtobufEnum>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut E,
     field_number: u32,
     unknown_fields: &mut UnknownFields,
@@ -650,7 +650,7 @@ pub fn read_proto3_enum_with_unknown_fields_into<E: ProtobufEnum>(
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
 pub fn read_proto2_enum_with_unknown_fields_into<E: ProtobufEnum>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Option<E>,
     field_number: u32,
     unknown_fields: &mut UnknownFields,
@@ -665,7 +665,7 @@ pub fn read_proto2_enum_with_unknown_fields_into<E: ProtobufEnum>(
 /// Read repeated `string` field into given vec.
 pub fn read_repeated_string_into<V>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut V,
 ) -> ProtobufResult<()>
 where
@@ -702,7 +702,7 @@ where
 /// Read singular `string` field.
 pub fn read_singular_string_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut SingularField<String>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -733,7 +733,7 @@ pub fn read_singular_carllerche_string_into(
 /// Read singular `string` field for proto3.
 pub fn read_singular_proto3_string_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut String,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -761,7 +761,7 @@ pub fn read_singular_proto3_carllerche_string_into(
 /// Read repeated `bytes` field into given vec.
 pub fn read_repeated_bytes_into<V>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut V,
 ) -> ProtobufResult<()>
 where
@@ -798,7 +798,7 @@ where
 /// Read singular `bytes` field.
 pub fn read_singular_bytes_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut SingularField<Vec<u8>>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -829,7 +829,7 @@ pub fn read_singular_carllerche_bytes_into(
 /// Read singular `bytes` field for proto3.
 pub fn read_singular_proto3_bytes_into(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<u8>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -857,7 +857,7 @@ pub fn read_singular_proto3_carllerche_bytes_into(
 /// Read repeated `message` field.
 pub fn read_repeated_message_into_repeated_field<M: Message + Default>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut RepeatedField<M>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -875,7 +875,7 @@ pub fn read_repeated_message_into_repeated_field<M: Message + Default>(
 /// Read repeated `message` field.
 pub fn read_repeated_message_into_vec<M: Message + Default>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut Vec<M>,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -898,7 +898,7 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
 /// Read singular `message` field.
 pub fn read_singular_message_into<M, O>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut O,
 ) -> ProtobufResult<()>
 where
@@ -917,7 +917,7 @@ where
     }
 }
 
-fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
+fn skip_group(is: &mut CodedInputStream<'_>) -> ProtobufResult<()> {
     loop {
         let (_, wire_type) = is.read_tag_unpack()?;
         if wire_type == wire_format::WireTypeEndGroup {
@@ -932,7 +932,7 @@ fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
 pub fn read_unknown_or_skip_group(
     field_number: u32,
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     unknown_fields: &mut UnknownFields,
 ) -> ProtobufResult<()> {
     match wire_type {
@@ -981,7 +981,7 @@ where
 pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
     map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
-    os: &mut CodedOutputStream,
+    os: &mut CodedOutputStream<'_>,
 ) -> ProtobufResult<()>
 where
     K: ProtobufType,
@@ -1009,7 +1009,7 @@ where
 pub fn write_message_field_with_cached_size<M>(
     field_number: u32,
     message: &M,
-    os: &mut CodedOutputStream,
+    os: &mut CodedOutputStream<'_>,
 ) -> ProtobufResult<()>
 where
     M: Message,
@@ -1022,7 +1022,7 @@ where
 /// Read `map` field.
 pub fn read_map_into<K, V>(
     wire_type: WireType,
-    is: &mut CodedInputStream,
+    is: &mut CodedInputStream<'_>,
     target: &mut HashMap<
         <K::RuntimeType as RuntimeType>::Value,
         <V::RuntimeType as RuntimeType>::Value,

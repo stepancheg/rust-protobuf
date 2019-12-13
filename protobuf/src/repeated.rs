@@ -463,7 +463,7 @@ impl<T> IndexMut<usize> for RepeatedField<T> {
 
 impl<T: fmt::Debug> fmt::Debug for RepeatedField<T> {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.as_ref().fmt(f)
     }
 }

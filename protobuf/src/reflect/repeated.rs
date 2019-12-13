@@ -10,7 +10,7 @@ use crate::reflect::ReflectValueBox;
 use crate::repeated::RepeatedField;
 
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
-    fn reflect_iter(&self) -> ReflectRepeatedIter;
+    fn reflect_iter(&self) -> ReflectRepeatedIter<'_>;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> &dyn ProtobufValue;
     fn set(&mut self, index: usize, value: ReflectValueBox);
@@ -234,7 +234,7 @@ impl<'a> PartialEq<[ReflectValueBox]> for ReflectRepeatedRef<'a> {
 }
 
 impl<'a> PartialEq<ReflectRepeatedRef<'a>> for [ReflectValueBox] {
-    fn eq(&self, other: &ReflectRepeatedRef) -> bool {
+    fn eq(&self, other: &ReflectRepeatedRef<'_>) -> bool {
         other == self
     }
 }
@@ -246,7 +246,7 @@ impl<'a> PartialEq<Vec<ReflectValueBox>> for ReflectRepeatedRef<'a> {
 }
 
 impl<'a> PartialEq<ReflectRepeatedRef<'a>> for Vec<ReflectValueBox> {
-    fn eq(&self, other: &ReflectRepeatedRef) -> bool {
+    fn eq(&self, other: &ReflectRepeatedRef<'_>) -> bool {
         self.as_slice() == other
     }
 }
@@ -360,13 +360,13 @@ impl<'a> IntoIterator for &'a ReflectRepeatedMut<'a> {
 }
 
 impl<'a> fmt::Debug for ReflectRepeatedRef<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(self.repeated, f)
     }
 }
 
 impl<'a> fmt::Debug for ReflectRepeatedMut<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(self.repeated, f)
     }
 }
@@ -378,7 +378,7 @@ impl<'a> PartialEq for ReflectRepeatedMut<'a> {
 }
 
 impl<'a> PartialEq<ReflectRepeatedRef<'a>> for ReflectRepeatedMut<'a> {
-    fn eq(&self, other: &ReflectRepeatedRef) -> bool {
+    fn eq(&self, other: &ReflectRepeatedRef<'_>) -> bool {
         PartialEq::eq(&self.as_ref(), other)
     }
 }
@@ -390,7 +390,7 @@ impl<'a> PartialEq<[ReflectValueBox]> for ReflectRepeatedMut<'a> {
 }
 
 impl<'a> PartialEq<ReflectRepeatedMut<'a>> for [ReflectValueBox] {
-    fn eq(&self, other: &ReflectRepeatedMut) -> bool {
+    fn eq(&self, other: &ReflectRepeatedMut<'_>) -> bool {
         PartialEq::eq(self, &other.as_ref())
     }
 }
@@ -402,7 +402,7 @@ impl<'a> PartialEq<Vec<ReflectValueBox>> for ReflectRepeatedMut<'a> {
 }
 
 impl<'a> PartialEq<ReflectRepeatedMut<'a>> for Vec<ReflectValueBox> {
-    fn eq(&self, other: &ReflectRepeatedMut) -> bool {
+    fn eq(&self, other: &ReflectRepeatedMut<'_>) -> bool {
         self.as_slice() == other
     }
 }

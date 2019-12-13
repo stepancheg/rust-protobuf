@@ -415,7 +415,7 @@ impl TmUtc {
 }
 
 impl fmt::Display for TmUtc {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.year > 9999 {
             write!(f, "+{}", self.year)?;
         } else if self.year < 0 {
