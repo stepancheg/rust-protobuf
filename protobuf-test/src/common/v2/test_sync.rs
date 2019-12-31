@@ -27,7 +27,8 @@ fn test_sync() {
                 read.check_initialized().unwrap();
                 read.get_int32_field()
             })
-        }).collect();
+        })
+        .collect();
 
     let results = threads
         .into_iter()

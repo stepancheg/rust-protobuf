@@ -1239,8 +1239,8 @@ impl<'a> FieldGen<'a> {
             FieldKind::Map(..) => tags.push("default".to_string()),
             FieldKind::Repeated(..) if self.customize.repeated_field_vec == Some(true) => {
                 tags.push("default".to_string());
-            },
-            _ => {},
+            }
+            _ => {}
         }
 
         if !tags.is_empty() {

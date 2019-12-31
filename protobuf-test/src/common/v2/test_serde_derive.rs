@@ -93,7 +93,8 @@ fn test_repeated_message() {
                 m.set_x(20);
                 m
             },
-        ].into(),
+        ]
+        .into(),
     );
 
     let serialized = serde_json::to_string(&repeated).unwrap();

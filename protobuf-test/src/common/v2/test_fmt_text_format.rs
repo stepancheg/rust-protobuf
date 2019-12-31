@@ -3,8 +3,8 @@ use protobuf::Message;
 use protobuf_test_common::*;
 
 use super::test_fmt_text_format_pb::*;
-use protobuf::text_format::print_to_string;
 use protobuf::prelude::MessageField;
+use protobuf::text_format::print_to_string;
 
 #[test]
 fn test_show() {

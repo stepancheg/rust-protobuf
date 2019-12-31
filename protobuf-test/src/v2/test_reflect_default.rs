@@ -12,7 +12,12 @@ fn test_regular() {
     assert_eq!("sss", s.get_singular_field_or_default(&m).to_str().unwrap());
 
     let e = m.descriptor().get_field_by_name("e").unwrap();
-    assert_eq!(Fruit::BANANA, e.get_singular_field_or_default(&m).downcast_clone().unwrap());
+    assert_eq!(
+        Fruit::BANANA,
+        e.get_singular_field_or_default(&m)
+            .downcast_clone()
+            .unwrap()
+    );
 }
 
 #[test]
@@ -26,5 +31,10 @@ fn test_oneof() {
     assert_eq!("sss", s.get_singular_field_or_default(&m).to_str().unwrap());
 
     let e = m.descriptor().get_field_by_name("oe").unwrap();
-    assert_eq!(Fruit::BANANA, e.get_singular_field_or_default(&m).downcast_clone().unwrap());
+    assert_eq!(
+        Fruit::BANANA,
+        e.get_singular_field_or_default(&m)
+            .downcast_clone()
+            .unwrap()
+    );
 }

@@ -9,9 +9,9 @@
 
 use std::ffi::{OsStr, OsString};
 use std::fmt;
-use std::{io, env};
 use std::path::{Path, PathBuf};
 use std::process;
+use std::{env, io};
 
 #[macro_use]
 extern crate log;
@@ -247,7 +247,9 @@ impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
         if which::which("protoc").is_ok() {
-            Protoc { exec: OsString::from("protoc") }
+            Protoc {
+                exec: OsString::from("protoc"),
+            }
         } else {
             let protoc_bin_name = match (env::consts::OS, env::consts::ARCH) {
                 ("linux", "x86") => "protoc-linux-x86_32",
@@ -261,7 +263,9 @@ impl Protoc {
             let bin_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("bin")
                 .join(protoc_bin_name);
-            Protoc { exec: bin_path.into_os_string() }
+            Protoc {
+                exec: bin_path.into_os_string(),
+            }
         }
     }
 
@@ -385,5 +389,4 @@ mod test {
     fn version() {
         Protoc::from_env_path().version().expect("version");
     }
-
 }

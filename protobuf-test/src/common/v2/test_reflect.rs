@@ -1,5 +1,5 @@
-use protobuf::reflect::{FieldDescriptor, ReflectFieldRef, ReflectValueRef};
 use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::{FieldDescriptor, ReflectFieldRef, ReflectValueRef};
 use protobuf::Message;
 use protobuf::ProtobufEnum;
 
@@ -7,7 +7,6 @@ use super::test_reflect_pb::*;
 use protobuf::reflect::RuntimeFieldType;
 
 use protobuf_test_common::value_for_runtime_type;
-
 
 #[test]
 fn test_get_sub_message_via_reflection() {
@@ -42,7 +41,13 @@ fn test_singular_basic() {
 
     bool_field.set_singular_field(&mut message, ReflectValueBox::Bool(true));
     assert!(bool_field.has_field(&message));
-    assert_eq!(true, bool_field.get_singular_field_or_default(&message).to_bool().unwrap());
+    assert_eq!(
+        true,
+        bool_field
+            .get_singular_field_or_default(&message)
+            .to_bool()
+            .unwrap()
+    );
 }
 
 fn test_singular_field(message: &mut dyn Message, field: &FieldDescriptor) {
@@ -167,14 +172,18 @@ fn test_map() {
 
 #[test]
 fn test_nested_message() {
-    assert_eq!("test_reflect.WithNestedMessage.NestedMessage",
-        with_nested_message::NestedMessage::descriptor_static().full_name());
+    assert_eq!(
+        "test_reflect.WithNestedMessage.NestedMessage",
+        with_nested_message::NestedMessage::descriptor_static().full_name()
+    );
 }
 
 #[test]
 fn test_nested_enum() {
-    assert_eq!("test_reflect.WithNestedMessage.NestedEnum",
-        with_nested_message::NestedEnum::enum_descriptor_static().full_name());
+    assert_eq!(
+        "test_reflect.WithNestedMessage.NestedEnum",
+        with_nested_message::NestedEnum::enum_descriptor_static().full_name()
+    );
 }
 
 #[test]
@@ -196,7 +205,7 @@ fn test_get_reflect_singular() {
     m.set_int64_field(10);
     let f = m.descriptor().get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
-        ReflectFieldRef::Optional(Some(ReflectValueRef::I64(10))) => {},
+        ReflectFieldRef::Optional(Some(ReflectValueRef::I64(10))) => {}
         _ => panic!(),
     }
 }
@@ -211,7 +220,7 @@ fn test_get_reflect_repeated() {
             assert_eq!(2, repeated.len());
             assert_eq!(ReflectValueRef::I64(10), repeated.get(0));
             assert_eq!(ReflectValueRef::I64(20), repeated.get(1));
-        },
+        }
         _ => panic!(),
     }
 }
@@ -224,9 +233,15 @@ fn test_get_reflect_map() {
     match f.get_reflect(&m) {
         ReflectFieldRef::Map(map) => {
             assert_eq!(2, map.len());
-            assert_eq!(Some(ReflectValueRef::I64(33)), map.get(ReflectValueRef::I64(10)));
-            assert_eq!(Some(ReflectValueRef::I64(44)), map.get(ReflectValueRef::I64(20)));
-        },
+            assert_eq!(
+                Some(ReflectValueRef::I64(33)),
+                map.get(ReflectValueRef::I64(10))
+            );
+            assert_eq!(
+                Some(ReflectValueRef::I64(44)),
+                map.get(ReflectValueRef::I64(20))
+            );
+        }
         _ => panic!(),
     }
 }

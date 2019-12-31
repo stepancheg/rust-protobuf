@@ -89,12 +89,7 @@ fn test_print_message(m: &InteropMessageList) {
 
     mm.merge_from_bytes(&bytes).expect("parse bytes");
 
-    assert!(
-        Message::reflect_eq(m, &mm),
-        "{:?} != {:?}",
-        m,
-        mm
-    );
+    assert!(Message::reflect_eq(m, &mm), "{:?} != {:?}", m, mm);
 }
 
 #[test]
