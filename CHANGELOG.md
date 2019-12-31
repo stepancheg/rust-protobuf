@@ -65,6 +65,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Generated code no longer uses unsafe (protobuf library still does)
 - Add a couple functions to reflection
 
+## [2.8] - Unreleased
+
+- [Add `async` and `await` to rust keywords](https://github.com/stepancheg/rust-protobuf/pull/461)
+
 ## [2.8.1] - 2019-09-06
 
 - [hidden lifetime parameters in types are deprecated](https://github.com/stepancheg/rust-protobuf/issues/435)
