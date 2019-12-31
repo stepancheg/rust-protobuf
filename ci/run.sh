@@ -19,9 +19,20 @@ protobuf-codegen-pure-test/test.sh
 protoc/test.sh
 cargo build --all --all-targets
 
+check_protoc_crate() {
+    # test depends on `protoc-gen-rust` binary, thus it cannot be a part of workspace
+    cargo build -p protobuf-codegen
+    (
+        cd protoc/test-protoc
+        cargo check
+    )
+}
+
 if [ -z "$ON_WINDOWS" ]; then
     cargo doc -p protobuf
     cargo doc -p protoc
+
+    check_protoc_crate
 fi
 
 # vim: set ts=4 sw=4 et:

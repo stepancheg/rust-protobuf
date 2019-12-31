@@ -369,14 +369,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test-protoc"
-version = "0.0.0"
-dependencies = [
- "protobuf 2.10.0-pre",
- "protoc 2.10.0-pre",
-]
-
-[[package]]
 name = "thread_local"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
