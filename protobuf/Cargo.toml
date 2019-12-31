@@ -20,7 +20,7 @@ with-bytes = ["bytes"]
 with-serde = ["serde", "serde_derive"]
 
 [dependencies]
-bytes = { version = "0.4", optional = true }
+bytes = { version = "0.5", optional = true }
 serde        = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
 

@@ -36,7 +36,7 @@ impl Chars {
 
 impl<'a> From<&'a str> for Chars {
     fn from(src: &'a str) -> Chars {
-        Chars(Bytes::from(src))
+        Chars(Bytes::copy_from_slice(src.as_bytes()))
     }
 }
 
