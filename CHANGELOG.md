@@ -21,7 +21,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
   signatures](https://github.com/stepancheg/rust-protobuf/commit/a05a4216fc3305c67b7a2d19011be3bd503d5166)
 - [Remove `descriptorx` from `protobuf`
   crate](https://github.com/stepancheg/rust-protobuf/commit/4e8896645c3e017ac91f529cb69ce76b002f6fc1)
-  
+- [`ProtobufError` now provides error message in `Display` instead of
+  `Error::description`](https://github.com/stepancheg/rust-protobuf/commit/24c20a0503c0946836d3044dad524757bac2cc8a)
+
 ### New features
 
 - [Option to store repeated message fields in `Vec` instead of `RepeatedField`](
