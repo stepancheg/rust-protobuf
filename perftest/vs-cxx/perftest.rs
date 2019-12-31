@@ -1,6 +1,5 @@
 extern crate protobuf;
 extern crate rand;
-extern crate time;
 
 use std::fs::File;
 use std::path::Path;
@@ -11,13 +10,14 @@ use rand::StdRng;
 
 use perftest_data::PerftestData;
 use protobuf::Message;
+use std::time::Instant;
 
 mod perftest_data;
 
 fn measure_ns<R, F: FnMut() -> R>(mut f: F) -> (u64, R) {
-    let start = time::precise_time_ns();
+    let start = Instant::now();
     let r = f();
-    (time::precise_time_ns() - start, r)
+    (start.elapsed().as_nanos() as u64, r)
 }
 
 fn measure_and_print<R, F: FnMut() -> R>(title: &str, iter: u64, f: F) -> R {
