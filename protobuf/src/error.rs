@@ -90,6 +90,7 @@ impl fmt::Display for ProtobufError {
 }
 
 impl Error for ProtobufError {
+    #[allow(deprecated)] // call to `description`
     fn description(&self) -> &str {
         match self {
             // not sure that cause should be included in message
