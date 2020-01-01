@@ -255,6 +255,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     /// Copy-paste of `MaybeUninit::slice_get_mut`
+    #[allow(dead_code)] // only used when bytes feature is on
     unsafe fn slice_get_mut<T>(slice: &mut [MaybeUninit<T>]) -> &mut [T] {
         &mut *(slice as *mut [MaybeUninit<T>] as *mut [T])
     }
