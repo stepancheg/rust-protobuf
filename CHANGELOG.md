@@ -33,6 +33,11 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.11] - Unreleased
 
+### Backward compatibility
+
+- [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
+  `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
+
 ## [2.10] - Unreleased
 
 ## [2.10.0] - 2020-01-01
@@ -63,8 +68,6 @@ Changes in 2.9 branch not included in 2.10.
   to avoid dependency on `protoc` binary.
 - `UnknownFields::fields` field is
   [no longer public](https://github.com/stepancheg/rust-protobuf/commit/8ad35ecaa0accaa251f9f29708e4ed3b96f2351b)
-- [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
-  `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
 
 ### Big changes
 
