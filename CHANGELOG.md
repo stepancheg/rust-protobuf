@@ -60,7 +60,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.9] - Unreleased
 
-Changes in 2.9 branch not included in 2.10.
+Changes in 2.9 branch are not included in 2.10.
 
 ## [2.9.0] - (2019-09-30) yanked
 
