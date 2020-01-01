@@ -32,7 +32,7 @@ impl<T> Lazy<T> {
 }
 
 /// Used to initialize `lock` field in `Lazy` struct.
-pub const ONCE_INIT: sync::Once = sync::ONCE_INIT;
+pub const ONCE_INIT: sync::Once = sync::Once::new();
 
 #[cfg(test)]
 mod test {
