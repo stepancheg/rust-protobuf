@@ -36,9 +36,12 @@ pub const ONCE_INIT: sync::Once = sync::Once::new();
 
 #[cfg(test)]
 mod test {
-    use super::{Lazy, ONCE_INIT};
-    use std::sync::atomic::{AtomicIsize, Ordering, ATOMIC_ISIZE_INIT};
-    use std::sync::{Arc, Barrier};
+    use super::Lazy;
+    use super::ONCE_INIT;
+    use std::sync::atomic::AtomicIsize;
+    use std::sync::atomic::Ordering;
+    use std::sync::Arc;
+    use std::sync::Barrier;
     use std::thread;
 
     #[test]
@@ -51,7 +54,7 @@ mod test {
             lock: ONCE_INIT,
             ptr: 0 as *const String,
         };
-        static CALL_COUNT: AtomicIsize = ATOMIC_ISIZE_INIT;
+        static CALL_COUNT: AtomicIsize = AtomicIsize::new(0);
 
         let value = "Hello, world!".to_owned();
 
