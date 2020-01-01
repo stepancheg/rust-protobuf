@@ -29,9 +29,8 @@ fn make_repeated(len: usize) -> Vec<u8> {
     let mut m = messages::TestMessage::new();
 
     for i in 0..100 {
-        m.mut_sr().push(make_string_of_len(i % len));
-        m.mut_br()
-            .push(make_string_of_len((i + len / 2) % len).into_bytes());
+        m.sr.push(make_string_of_len(i % len));
+        m.br.push(make_string_of_len((i + len / 2) % len).into_bytes());
     }
 
     m.write_to_bytes().expect("write")
