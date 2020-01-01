@@ -38,6 +38,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
   `ProtobufValueRef` to `ReflectValueRef`. Old name is kept for a while.
 
+### Other changes
+
+
+
 ## [2.10] - Unreleased
 
 ## [2.10.0] - 2020-01-01
@@ -51,6 +55,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - - [`ProtobufError` now provides error message in `Display` instead of
   `Error::description`](https://github.com/stepancheg/rust-protobuf/commit/24c20a0503c0946836d3044dad524757bac2cc8a)
+- [`Debug` is now implemented for `EnumValueDescriptor` and
+  `ReflectValueRef`](https://github.com/stepancheg/rust-protobuf/commit/0e6a2f4c50f07d2c6f8007abd469daa08bc09b9c)
 
 ## [2.9] - Unreleased
 
@@ -78,8 +84,6 @@ Changes in 2.9 branch not included in 2.10.
 
 ### Other changes
 
-- [`Debug` is now implemented for `EnumValueDescriptor` and
-  `ReflectValueRef`](https://github.com/stepancheg/rust-protobuf/commit/0e6a2f4c50f07d2c6f8007abd469daa08bc09b9c)
 - [`Box<dyn Message>` now implements
   `Clone`](https://github.com/stepancheg/rust-protobuf/commit/08aedca14f6a4cf8bb85c3e82d2dae05cddf57b8)
 - Generated code is slightly cleaner now (does not use `use` statements)
