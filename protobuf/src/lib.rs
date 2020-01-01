@@ -20,8 +20,11 @@ pub use core::parse_from_bytes;
 #[cfg(feature = "bytes")]
 pub use core::parse_from_carllerche_bytes;
 pub use core::parse_from_reader;
+#[allow(deprecated)]
 pub use core::parse_length_delimited_from;
+#[allow(deprecated)]
 pub use core::parse_length_delimited_from_bytes;
+#[allow(deprecated)]
 pub use core::parse_length_delimited_from_reader;
 pub use core::Message;
 pub use enums::ProtobufEnum;
