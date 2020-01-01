@@ -31,5 +31,4 @@ mod test {
         assert_eq!("bbb", remove_suffix("bbbaaa", "aaa"));
         assert_eq!("aaa", remove_suffix("aaa", "bbb"));
     }
-
 }

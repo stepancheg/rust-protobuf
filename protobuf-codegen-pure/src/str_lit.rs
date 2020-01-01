@@ -1,5 +1,5 @@
-use parser::Loc;
 use parser::Lexer;
+use parser::Loc;
 use parser::ParserError;
 
 #[derive(Debug)]
@@ -14,7 +14,6 @@ impl From<ParserError> for StrLitDecodeError {
 }
 
 pub type StrLitDecodeResult<T> = Result<T, StrLitDecodeError>;
-
 
 /// String literal, both `string` and `bytes`.
 #[derive(Clone, Eq, PartialEq, Debug)]

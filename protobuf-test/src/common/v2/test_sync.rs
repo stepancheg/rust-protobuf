@@ -1,5 +1,5 @@
-use std::thread;
 use std::sync::Arc;
+use std::thread;
 
 use protobuf::CodedInputStream;
 use protobuf::Message;

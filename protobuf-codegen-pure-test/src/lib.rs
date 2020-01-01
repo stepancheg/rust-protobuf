@@ -1,5 +1,4 @@
 #![cfg(test)]
-
 // Because we need compat with Rust 1.26
 #![allow(bare_trait_objects)]
 

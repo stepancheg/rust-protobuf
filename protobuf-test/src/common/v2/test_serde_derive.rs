@@ -81,10 +81,21 @@ fn test_repeated_int() {
 #[test]
 fn test_repeated_message() {
     let mut repeated = RepeatedMessage::new();
-    repeated.set_test_repeated(vec![
-        { let mut m = MessageInRepeatedMessage::new(); m.set_x(10); m },
-        { let mut m = MessageInRepeatedMessage::new(); m.set_x(20); m },
-    ].into());
+    repeated.set_test_repeated(
+        vec![
+            {
+                let mut m = MessageInRepeatedMessage::new();
+                m.set_x(10);
+                m
+            },
+            {
+                let mut m = MessageInRepeatedMessage::new();
+                m.set_x(20);
+                m
+            },
+        ]
+        .into(),
+    );
 
     let serialized = serde_json::to_string(&repeated).unwrap();
     assert_eq!(serialized, r#"{"test_repeated":[{"x":10},{"x":20}]}"#);

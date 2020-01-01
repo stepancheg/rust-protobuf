@@ -8,11 +8,10 @@ extern crate protoc_rust;
 
 extern crate protobuf_test_common;
 
-use std::io::Write;
 use std::fs;
+use std::io::Write;
 
 use protobuf_test_common::build::*;
-
 
 fn protoc_is_v3() -> bool {
     protoc::Protoc::from_env_path()
@@ -23,11 +22,24 @@ fn protoc_is_v3() -> bool {
 
 fn gen_in_dir(dir: &str, include_dir: &str) {
     let v3 = protoc_is_v3();
-    gen_in_dir_impl(dir, include_dir, v3, |GenInDirArgs { out_dir, input, includes, customize }| {
-        protoc_rust::run(protoc_rust::Args {
-            out_dir, input, includes, customize
-        })
-    });
+    gen_in_dir_impl(
+        dir,
+        include_dir,
+        v3,
+        |GenInDirArgs {
+             out_dir,
+             input,
+             includes,
+             customize,
+         }| {
+            protoc_rust::run(protoc_rust::Args {
+                out_dir,
+                input,
+                includes,
+                customize,
+            })
+        },
+    );
 }
 
 fn generate_in_common() {
@@ -45,7 +57,6 @@ fn generate_in_common() {
 }
 
 fn generate_in_v2_v3() {
-
     gen_in_dir("src/v2", "src/v2");
 
     if protoc_is_v3() {

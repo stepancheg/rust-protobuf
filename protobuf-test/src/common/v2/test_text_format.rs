@@ -4,7 +4,7 @@ use super::test_text_format_pb::*;
 
 use protobuf::text_format::print_to_string;
 
-fn t<F : FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
+fn t<F: FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();
     setter(&mut m);
     assert_eq!(&*print_to_string(&m), expected);
@@ -43,10 +43,9 @@ fn test_singular() {
 #[test]
 fn test_repeated_one() {
     t("int32_repeated: 99", |m| m.mut_int32_repeated().push(99));
-    t(
-        "double_repeated: 99",
-        |m| m.mut_double_repeated().push(99.0),
-    );
+    t("double_repeated: 99", |m| {
+        m.mut_double_repeated().push(99.0)
+    });
     t("float_repeated: 99", |m| m.mut_float_repeated().push(99.0));
     t("int32_repeated: 99", |m| m.mut_int32_repeated().push(99));
     t("int64_repeated: 99", |m| m.mut_int64_repeated().push(99));
@@ -54,24 +53,21 @@ fn test_repeated_one() {
     t("uint64_repeated: 99", |m| m.mut_uint64_repeated().push(99));
     t("sint32_repeated: 99", |m| m.mut_sint32_repeated().push(99));
     t("sint64_repeated: 99", |m| m.mut_sint64_repeated().push(99));
-    t(
-        "fixed32_repeated: 99",
-        |m| m.mut_fixed32_repeated().push(99),
-    );
-    t(
-        "fixed64_repeated: 99",
-        |m| m.mut_fixed64_repeated().push(99),
-    );
+    t("fixed32_repeated: 99", |m| {
+        m.mut_fixed32_repeated().push(99)
+    });
+    t("fixed64_repeated: 99", |m| {
+        m.mut_fixed64_repeated().push(99)
+    });
     t("sfixed32_repeated: 99", |m| {
         m.mut_sfixed32_repeated().push(99)
     });
     t("sfixed64_repeated: 99", |m| {
         m.mut_sfixed64_repeated().push(99)
     });
-    t(
-        "bool_repeated: false",
-        |m| m.mut_bool_repeated().push(false),
-    );
+    t("bool_repeated: false", |m| {
+        m.mut_bool_repeated().push(false)
+    });
     t("string_repeated: \"abc\"", |m| {
         m.mut_string_repeated().push("abc".to_string())
     });

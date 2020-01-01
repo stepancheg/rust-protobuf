@@ -1,8 +1,8 @@
 extern crate tempfile;
 
-extern crate protoc;
 extern crate protobuf;
 extern crate protobuf_codegen;
+extern crate protoc;
 
 mod slashes;
 use slashes::Slashes;
@@ -16,7 +16,6 @@ pub use protoc::Error;
 pub use protoc::Result;
 
 pub use protobuf_codegen::Customize;
-
 
 #[derive(Debug, Default)]
 pub struct Args<'a> {
@@ -53,8 +52,8 @@ pub fn run(args: Args) -> Result<()> {
     drop(file);
     drop(temp_dir);
 
-    let fds: protobuf::descriptor::FileDescriptorSet = protobuf::parse_from_bytes(&fds)
-        .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+    let fds: protobuf::descriptor::FileDescriptorSet =
+        protobuf::parse_from_bytes(&fds).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
     let mut includes = args.includes;
     if includes.is_empty() {
@@ -75,8 +74,7 @@ pub fn run(args: Args) -> Result<()> {
             io::ErrorKind::Other,
             format!(
                 "file {:?} is not found in includes {:?}",
-                file,
-                args.includes
+                file, args.includes
             ),
         ));
     }
@@ -85,7 +83,8 @@ pub fn run(args: Args) -> Result<()> {
         fds.get_file(),
         &files_to_generate,
         &Path::new(&args.out_dir),
-        &args.customize)
+        &args.customize,
+    )
 }
 
 fn remove_path_prefix(mut path: &str, mut prefix: &str) -> Option<String> {

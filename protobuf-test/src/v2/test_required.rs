@@ -2,7 +2,6 @@ use protobuf::*;
 
 use super::test_required_pb::*;
 
-
 #[test]
 #[should_panic]
 fn test_write_missing_required() {

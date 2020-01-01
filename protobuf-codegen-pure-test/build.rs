@@ -1,6 +1,6 @@
+extern crate env_logger;
 extern crate glob;
 extern crate log;
-extern crate env_logger;
 
 extern crate protobuf_codegen_pure;
 
@@ -14,11 +14,12 @@ use std::path::Path;
 
 use protobuf_test_common::build::*;
 
-
-fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
+fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     let mut content = Vec::new();
-    fs::File::open(src.as_ref()).expect(&format!("open {}", src.as_ref().display()))
-        .read_to_end(&mut content).expect("read_to_end");
+    fs::File::open(src.as_ref())
+        .expect(&format!("open {}", src.as_ref().display()))
+        .read_to_end(&mut content)
+        .expect("read_to_end");
 
     let mut write = fs::File::create(dst).expect("create");
     writeln!(write, "// generated").expect("write");
@@ -28,7 +29,6 @@ fn copy_test<P1 : AsRef<Path>, P2 : AsRef<Path>>(src: P1, dst: P2) {
     write.flush().expect("flush");
 }
 
-
 // Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
     let src_dir = format!("../protobuf-test/{}", dir);
@@ -37,7 +37,8 @@ fn copy_tests(dir: &str) {
 
         // Only copy rust and proto files
         if !file_name.ends_with(".rs")
-            && !file_name.ends_with(".proto") && !file_name.ends_with(".proto3")
+            && !file_name.ends_with(".proto")
+            && !file_name.ends_with(".proto3")
         {
             continue;
         }
@@ -58,15 +59,26 @@ fn copy_tests(dir: &str) {
     }
 }
 
-
 fn gen_in_dir(dir: &str, include_dir: &str) {
-    gen_in_dir_impl(dir, include_dir, true, |GenInDirArgs { out_dir, input, includes, customize }| {
-        protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-            out_dir, input, includes, customize
-        })
-    });
+    gen_in_dir_impl(
+        dir,
+        include_dir,
+        true,
+        |GenInDirArgs {
+             out_dir,
+             input,
+             includes,
+             customize,
+         }| {
+            protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
+                out_dir,
+                input,
+                includes,
+                customize,
+            })
+        },
+    );
 }
-
 
 fn generate_pb_rs() {
     copy_tests("src/v2");
@@ -84,7 +96,6 @@ fn generate_pb_rs() {
     copy_tests("src/google/protobuf");
     gen_in_dir("src/google/protobuf", "src");
 }
-
 
 fn main() {
     env_logger::init();

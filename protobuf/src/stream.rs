@@ -145,7 +145,6 @@ pub mod wire_format {
             self.field_number
         }
     }
-
 }
 
 /// Buffered read with handy utilities.
