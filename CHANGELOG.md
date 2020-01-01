@@ -79,6 +79,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.8] - Unreleased
 
+## [2.8.2] - 2019-12-31
+
 - [Add `async` and `await` to rust keywords](https://github.com/stepancheg/rust-protobuf/pull/461)
 
 ## [2.8.1] - 2019-09-06
