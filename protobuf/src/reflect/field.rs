@@ -17,10 +17,7 @@ impl FieldDescriptor {
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), accessor.name_generic());
-        FieldDescriptor {
-            proto,
-            accessor,
-        }
+        FieldDescriptor { proto, accessor }
     }
 
     /// Get `.proto` description of field
