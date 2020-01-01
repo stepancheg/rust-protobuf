@@ -72,7 +72,7 @@ impl<'a> Drop for BufReadIter<'a> {
 }
 
 impl<'ignore> BufReadIter<'ignore> {
-    pub fn from_read<'a>(read: &'a mut Read) -> BufReadIter<'a> {
+    pub fn from_read<'a>(read: &'a mut dyn Read) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(BufReader::with_capacity(
                 INPUT_STREAM_BUFFER_SIZE,
@@ -86,7 +86,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    pub fn from_buf_read<'a>(buf_read: &'a mut BufRead) -> BufReadIter<'a> {
+    pub fn from_buf_read<'a>(buf_read: &'a mut dyn BufRead) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::BufRead(buf_read),
             buf: &[],
@@ -145,7 +145,6 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
-        // TODO: return error instead of panic
         let new_limit = match self.pos().checked_add(limit) {
             Some(new_limit) => new_limit,
             None => return Err(ProtobufError::WireError(WireError::Other)),
@@ -189,6 +188,7 @@ impl<'ignore> BufReadIter<'ignore> {
         self.limit_within_buf - self.pos_within_buf
     }
 
+    #[inline(always)]
     pub fn bytes_until_limit(&self) -> u64 {
         if self.limit == NO_LIMIT {
             NO_LIMIT
@@ -310,8 +310,6 @@ impl<'ignore> BufReadIter<'ignore> {
                 unsafe {
                     let buf = Self::slice_get_mut(&mut r.bytes_mut()[..len]);
                     self.read_exact(buf)?;
-                }
-                unsafe {
                     r.advance_mut(len);
                 }
                 Ok(r.freeze())
