@@ -3,6 +3,7 @@ use hex::encode_hex;
 
 use protobuf::*;
 
+#[allow(deprecated)] // `parse_length_delimited_from_bytes`
 pub fn test_serialize_deserialize_length_delimited<M: Message + PartialEq>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();
     let parsed = parse_length_delimited_from_bytes::<M>(&serialized_bytes).unwrap();
