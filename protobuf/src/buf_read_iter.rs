@@ -320,6 +320,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     /// Copy-paste of `MaybeUninit::slice_get_mut`
+    #[cfg(feature = "bytes")]
     unsafe fn slice_get_mut<T>(slice: &mut [MaybeUninit<T>]) -> &mut [T] {
         &mut *(slice as *mut [MaybeUninit<T>] as *mut [T])
     }
