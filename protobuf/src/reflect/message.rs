@@ -188,7 +188,7 @@ impl MessageDescriptor {
     }
 
     /// Clone a message
-    pub fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
+    pub(crate) fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
         self.factory.clone(message)
     }
 

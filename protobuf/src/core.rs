@@ -257,12 +257,16 @@ impl dyn Message {
         }
         d.reflect_eq(self, other, &ReflectEqMode { nan_equal: true })
     }
+
+    /// Clone from a `dyn Message` reference.
+    pub fn clone_box(&self) -> Box<dyn Message> {
+        self.descriptor().clone(self)
+    }
 }
 
 impl Clone for Box<dyn Message> {
     fn clone(&self) -> Self {
-        use std::ops::Deref;
-        self.descriptor().clone(self.deref())
+        (*self).clone_box()
     }
 }
 

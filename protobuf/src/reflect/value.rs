@@ -190,7 +190,7 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::String(v) => ReflectValueBox::String(v.to_owned()),
             ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes(v.to_owned()),
             ReflectValueRef::Enum(d, v) => ReflectValueBox::Enum(d, v),
-            ReflectValueRef::Message(v) => ReflectValueBox::Message(v.descriptor().clone(v)),
+            ReflectValueRef::Message(v) => ReflectValueBox::Message(v.clone_box()),
         }
     }
 
