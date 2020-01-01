@@ -274,6 +274,7 @@ fn test_bug_sint() {
 
 /// Smoke test which validates that read from the network doesn't block
 #[test]
+#[allow(deprecated)] // parse_length_delimited_from_reader
 fn test_parse_length_delimited_from_network_smoke() {
     use std::io::Write;
     use std::net;
