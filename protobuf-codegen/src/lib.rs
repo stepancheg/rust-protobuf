@@ -154,11 +154,13 @@ fn gen_file(
             w.write_line("");
             w.write_line("/// Generated files are compatible only with the same version");
             w.write_line("/// of protobuf runtime.");
-            w.write_line(&format!(
-                "const _PROTOBUF_VERSION_CHECK: () = {}::{};",
-                protobuf_crate_path(&customize),
-                protobuf::VERSION_IDENT
-            ));
+            w.commented(|w| {
+                w.write_line(&format!(
+                    "const _PROTOBUF_VERSION_CHECK: () = {}::{};",
+                    protobuf_crate_path(&customize),
+                    protobuf::VERSION_IDENT
+                ));
+            })
         }
 
         for message in &scope.get_messages() {
