@@ -40,9 +40,11 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ### Other changes
 
-
-
 ## [2.10] - Unreleased
+
+## [2.10.1] - 2020-01-14
+
+- Remove accidentally slipped into 2.10 [version check](https://github.com/stepancheg/rust-protobuf/issues/466)
 
 ## [2.10.0] - 2020-01-01
 
