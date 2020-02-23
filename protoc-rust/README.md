@@ -33,7 +33,7 @@ use protoc_rust::Customize;
 fn main() {
     protoc_rust::Args::new()
         .out_dir("src/protos")
-        .inputs(&["protos/a.proto", "protos/b.proto"]),
+        .inputs(&["protos/a.proto", "protos/b.proto"])
         .include("protos")
         .run()
         .expect("protoc");
