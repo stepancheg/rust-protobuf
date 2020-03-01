@@ -5,6 +5,7 @@ static RUST_KEYWORDS: &'static [&'static str] = &[
     "await",
     "break",
     "crate",
+    "dyn",
     "else",
     "enum",
     "extern",
