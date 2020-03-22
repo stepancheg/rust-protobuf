@@ -475,7 +475,7 @@ impl<'a> MessageGen<'a> {
                     };
                     w.field_decl_vis(
                         vis,
-                        oneof.name(),
+                        &oneof.name(),
                         &oneof.full_storage_type().to_code(&self.customize),
                     );
                 }

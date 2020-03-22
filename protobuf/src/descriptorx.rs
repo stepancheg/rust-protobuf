@@ -576,11 +576,11 @@ pub struct OneofWithContext<'a> {
 
 impl<'a> OneofWithContext<'a> {
     /// Oneof rust name
-    pub fn name(&'a self) -> &'a str {
-        match self.oneof.get_name() {
-            "type" => "field_type",
-            "box" => "field_box",
-            x => x,
+    pub fn name(&'a self) -> String {
+        if rust::is_rust_keyword(self.oneof.get_name()) {
+            format!("field_{}", self.oneof.get_name())
+        } else {
+            self.oneof.get_name().to_owned()
         }
     }
 
