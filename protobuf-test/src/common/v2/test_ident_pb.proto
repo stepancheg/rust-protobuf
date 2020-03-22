@@ -28,11 +28,17 @@ message Outer {
     message fn {}
 }
 
-// oneof named type
+// oneof named keywords
 
 message TestType {
     oneof type {
         string s = 1;
+    }
+    oneof box {
+        string fn = 4;
+    }
+    oneof move {
+        string dyn = 5;
     }
     repeated string struct = 2;
     repeated uint32 ref = 3;
