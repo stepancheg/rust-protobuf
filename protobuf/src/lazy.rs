@@ -45,10 +45,8 @@ impl<T> Lazy<T> {
 pub const ONCE_INIT: sync::Once = sync::Once::new();
 
 #[cfg(test)]
-#[allow(deprecated)]
 mod test {
     use super::Lazy;
-    use super::ONCE_INIT;
     use std::sync::atomic::AtomicIsize;
     use std::sync::atomic::Ordering;
     use std::sync::Arc;
@@ -61,10 +59,7 @@ mod test {
         const N_ITERS_IN_THREAD: usize = 32;
         const N_ITERS: usize = 16;
 
-        static mut LAZY: Lazy<String> = Lazy {
-            lock: ONCE_INIT,
-            ptr: 0 as *const String,
-        };
+        static mut LAZY: Lazy<String> = Lazy::INIT;
         static CALL_COUNT: AtomicIsize = AtomicIsize::new(0);
 
         let value = "Hello, world!".to_owned();
@@ -72,10 +67,7 @@ mod test {
         for _ in 0..N_ITERS {
             // Reset mutable state.
             unsafe {
-                LAZY = Lazy {
-                    lock: ONCE_INIT,
-                    ptr: 0 as *const String,
-                }
+                LAZY = Lazy::INIT;
             }
             CALL_COUNT.store(0, Ordering::SeqCst);
 
