@@ -5,6 +5,7 @@ use protobuf::descriptorx::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
+use protobuf_name::ProtobufAbsolutePath;
 use rust_types_values::type_name_to_rust_relative;
 use serde;
 
@@ -62,7 +63,7 @@ impl<'a> EnumGen<'a> {
             enum_with_scope.rust_name()
         } else {
             type_name_to_rust_relative(
-                &enum_with_scope.name_absolute(),
+                &ProtobufAbsolutePath::from(enum_with_scope.name_absolute()),
                 current_file,
                 false,
                 root_scope,

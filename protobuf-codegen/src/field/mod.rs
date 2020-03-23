@@ -15,6 +15,7 @@ use oneof::OneofField;
 
 use float;
 use inside::protobuf_crate_path;
+use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
 use std::marker;
 
@@ -308,7 +309,7 @@ fn field_elem<'a>(
             .get_name()
             .to_owned();
         let rust_relative_name = type_name_to_rust_relative(
-            field.field.get_type_name(),
+            &ProtobufAbsolutePath::from(field.field.get_type_name()),
             field.message.get_scope().file_scope.file_descriptor,
             false,
             root_scope,

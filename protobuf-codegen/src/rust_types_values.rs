@@ -4,6 +4,7 @@ use super::well_known_types::is_well_known_type_full;
 use inside::protobuf_crate_path;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
+use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
 use Customize;
 
@@ -474,18 +475,13 @@ fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
         && file_last_component(file.get_name()) == "descriptor.proto"
 }
 
-pub fn type_name_to_rust_relative(
-    type_name: &str,
+pub(crate) fn type_name_to_rust_relative(
+    type_name: &ProtobufAbsolutePath,
     file: &FileDescriptorProto,
     subm: bool,
     root_scope: &RootScope,
 ) -> String {
-    assert!(
-        type_name.starts_with("."),
-        "type name must start with dot: {}",
-        type_name
-    );
-    let message_or_enum = root_scope.find_message_or_enum(type_name);
+    let message_or_enum = root_scope.find_message_or_enum(&type_name.path);
     if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
         // field type is a message or enum declared in the same file
         if subm {
@@ -493,7 +489,7 @@ pub fn type_name_to_rust_relative(
         } else {
             format!("{}", message_or_enum.rust_name())
         }
-    } else if let Some(name) = is_well_known_type_full(type_name) {
+    } else if let Some(name) = is_well_known_type_full(&type_name.path) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
         format!("::protobuf::well_known_types::{}", name)
