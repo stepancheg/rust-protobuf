@@ -14,7 +14,7 @@ mod value;
 pub use self::value::ProtobufValue;
 pub use self::value::ReflectValueRef;
 #[doc(hidden)]
-#[deprecated] // deprecated alias
+#[deprecated(since = "2.11", note = "Use ReflectValueRef instead")]
 pub use self::value::ReflectValueRef as ProtobufValueRef;
 
 pub use self::enums::EnumDescriptor;
