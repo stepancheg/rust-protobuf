@@ -1,15 +1,15 @@
 use std::cmp;
 
 use super::well_known_types::is_well_known_type_full;
-use ident::RustIdent;
 use inside::protobuf_crate_path;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
+use rust_name::RustIdent;
 use Customize;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum RustType {
+pub(crate) enum RustType {
     // integer: signed?, size in bits
     Int(bool, u32),
     // param is size in bits
@@ -385,7 +385,7 @@ impl RustType {
 }
 
 /// Representation of an expression in code generator: text and type
-pub struct RustValueTyped {
+pub(crate) struct RustValueTyped {
     pub value: String,
     pub rust_type: RustType,
 }
@@ -429,7 +429,7 @@ pub fn protobuf_name(field_type: FieldDescriptorProto_Type) -> &'static str {
 }
 
 // rust type for protobuf base type
-pub fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
+pub(crate) fn rust_name(field_type: FieldDescriptorProto_Type) -> RustType {
     match field_type {
         FieldDescriptorProto_Type::TYPE_DOUBLE => RustType::Float(64),
         FieldDescriptorProto_Type::TYPE_FLOAT => RustType::Float(32),

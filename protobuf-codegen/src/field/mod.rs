@@ -14,8 +14,8 @@ use super::customize::Customize;
 use oneof::OneofField;
 
 use float;
-use ident::RustIdent;
 use inside::protobuf_crate_path;
+use rust_name::RustIdent;
 use std::marker;
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
@@ -357,7 +357,7 @@ fn field_elem<'a>(
                     FieldElem::Enum(
                         rust_relative_name,
                         file_name,
-                        RustIdent(enum_with_scope.values()[0].rust_name().to_owned()),
+                        RustIdent::from(enum_with_scope.values()[0].rust_name().to_owned()),
                     ),
                     Some(ev),
                 )
