@@ -5,10 +5,14 @@ use field::FieldElem;
 use field::FieldGen;
 use message::MessageGen;
 use protobuf::descriptor::FieldDescriptorProto_Type;
-use protobuf::descriptorx::OneofWithContext;
-use protobuf::descriptorx::WithScope;
-use protobuf::descriptorx::{FieldWithContext, OneofVariantWithContext, RootScope};
+use protobuf_name::ProtobufAbsolutePath;
+use rust_name::RustIdent;
 use rust_types_values::RustType;
+use scope::FieldWithContext;
+use scope::OneofVariantWithContext;
+use scope::OneofWithContext;
+use scope::RootScope;
+use scope::WithScope;
 use serde;
 use std::collections::HashSet;
 use Customize;
@@ -17,7 +21,7 @@ use Customize;
 #[derive(Clone)]
 pub(crate) struct OneofField<'a> {
     pub elem: FieldElem<'a>,
-    pub oneof_name: String,
+    pub oneof_rust_field_name: RustIdent,
     pub oneof_type_name: RustType,
     pub boxed: bool,
 }
@@ -31,11 +35,11 @@ impl<'a> OneofField<'a> {
         let mut fields = vec![field.clone()];
         while let Some(field) = fields.pop() {
             if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_MESSAGE {
-                let message_name = field.field.get_type_name().to_owned();
+                let message_name = ProtobufAbsolutePath::from(field.field.get_type_name());
                 if !visited_messages.insert(message_name.clone()) {
                     continue;
                 }
-                if message_name == *owner_name {
+                if message_name.path == owner_name {
                     return true;
                 }
                 let message = root_scope.find_message(&message_name);
@@ -51,13 +55,13 @@ impl<'a> OneofField<'a> {
         elem: FieldElem<'a>,
         root_scope: &RootScope,
     ) -> OneofField<'a> {
-        let boxed = OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute());
+        let boxed = OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute().path);
 
         OneofField {
             elem,
             boxed,
-            oneof_name: oneof.name().to_string(),
-            oneof_type_name: RustType::Oneof(oneof.rust_name()),
+            oneof_rust_field_name: oneof.field_name().into(),
+            oneof_type_name: RustType::Oneof(oneof.rust_name().to_string()),
         }
     }
 
@@ -138,7 +142,7 @@ impl<'a> OneofGen<'a> {
         OneofGen {
             message,
             oneof,
-            type_name: RustType::Oneof(rust_name),
+            type_name: RustType::Oneof(rust_name.to_string()),
             lite_runtime: message.lite_runtime,
             customize: customize.clone(),
         }

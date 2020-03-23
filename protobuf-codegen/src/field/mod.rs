@@ -1,5 +1,4 @@
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 use protobuf::rt;
 use protobuf::rust;
 use protobuf::text_format;
@@ -17,7 +16,12 @@ use float;
 use inside::protobuf_crate_path;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
+use scope::FieldWithContext;
+use scope::MessageOrEnumWithScope;
+use scope::RootScope;
+use scope::WithScope;
 use std::marker;
+use syntax::Syntax;
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
     match field_type {
@@ -301,7 +305,8 @@ fn field_elem<'a>(
     if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         (FieldElem::Group, None)
     } else if field.field.has_type_name() {
-        let message_or_enum = root_scope.find_message_or_enum(field.field.get_type_name());
+        let message_or_enum = root_scope
+            .find_message_or_enum(&ProtobufAbsolutePath::from(field.field.get_type_name()));
         let file_name = message_or_enum
             .get_scope()
             .file_scope
@@ -912,7 +917,7 @@ impl<'a> FieldGen<'a> {
         if self.is_oneof() {
             w.write_line(&format!(
                 "self.{} = ::std::option::Option::None;",
-                self.oneof().oneof_name
+                self.oneof().oneof_rust_field_name
             ));
         } else {
             let clear_expr = self
@@ -1295,7 +1300,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_oneof(&self) -> String {
-        format!("self.{}", self.oneof().oneof_name)
+        format!("self.{}", self.oneof().oneof_rust_field_name)
     }
 
     pub fn clear_field_func(&self) -> String {
@@ -1368,7 +1373,7 @@ impl<'a> FieldGen<'a> {
 
         w.write_line(&format!(
             "self.{} = ::std::option::Option::Some({}({}));",
-            self.oneof().oneof_name,
+            self.oneof().oneof_rust_field_name,
             self.variant_path(),
             maybe_boxed.value
         )); // TODO: into_type

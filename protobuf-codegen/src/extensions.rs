@@ -1,8 +1,9 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
+use protobuf::descriptorx::FieldDescriptorProtoExt;
 use protobuf_name::ProtobufAbsolutePath;
+use scope::RootScope;
 use Customize;
 
 struct ExtGen<'a> {

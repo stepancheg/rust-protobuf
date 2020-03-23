@@ -49,6 +49,12 @@ impl From<String> for RustIdent {
     }
 }
 
+impl Into<String> for RustIdent {
+    fn into(self) -> String {
+        self.0
+    }
+}
+
 #[derive(Default, Eq, PartialEq, Debug, Clone)]
 pub(crate) struct RustRelativePath {
     path: Vec<RustIdent>,
@@ -62,7 +68,7 @@ impl RustRelativePath {
         }
     }
 
-    pub fn _empty() -> RustRelativePath {
+    pub fn empty() -> RustRelativePath {
         RustRelativePath { path: Vec::new() }
     }
 
