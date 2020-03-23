@@ -485,7 +485,7 @@ impl<'a> FieldGen<'a> {
         FieldGen {
             root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: field.field.rust_name(),
+            rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()).to_string(),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
             enum_default_value,
@@ -1978,5 +1978,13 @@ impl<'a> FieldGen<'a> {
             w.write_line("");
             self.write_message_field_take(w);
         }
+    }
+}
+
+pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
+    if rust::is_rust_keyword(name) {
+        RustIdent::new(&format!("field_{}", name))
+    } else {
+        RustIdent::new(name)
     }
 }
