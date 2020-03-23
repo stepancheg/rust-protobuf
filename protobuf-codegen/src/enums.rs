@@ -1,25 +1,34 @@
 use std::collections::HashSet;
 
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
 use protobuf_name::ProtobufAbsolutePath;
+use rust_name::RustIdent;
 use rust_types_values::type_name_to_rust_relative;
+use scope::EnumWithScope;
+use scope::RootScope;
+use scope::WithScope;
 use serde;
 
 #[derive(Clone)]
 pub struct EnumValueGen {
     proto: EnumValueDescriptorProto,
     enum_rust_name: String,
+    variant_rust_name: String,
 }
 
 impl EnumValueGen {
-    fn parse(proto: &EnumValueDescriptorProto, enum_rust_name: &str) -> EnumValueGen {
+    fn parse(
+        proto: &EnumValueDescriptorProto,
+        enum_rust_name: &str,
+        variant_rust_name: &str,
+    ) -> EnumValueGen {
         EnumValueGen {
             proto: proto.clone(),
             enum_rust_name: enum_rust_name.to_string(),
+            variant_rust_name: variant_rust_name.to_string(),
         }
     }
 
@@ -30,7 +39,7 @@ impl EnumValueGen {
 
     // name of enum variant in generated rust code
     fn rust_name_inner(&self) -> String {
-        self.proto.rust_name()
+        self.variant_rust_name.clone()
     }
 
     pub fn rust_name_outer(&self) -> String {
@@ -42,7 +51,7 @@ impl EnumValueGen {
     }
 }
 
-pub struct EnumGen<'a> {
+pub(crate) struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
     type_name: String,
     lite_runtime: bool,
@@ -60,7 +69,7 @@ impl<'a> EnumGen<'a> {
             == current_file.get_name()
         {
             // field type is a message or enum declared in the same file
-            enum_with_scope.rust_name()
+            enum_with_scope.rust_name().to_string()
         } else {
             type_name_to_rust_relative(
                 &ProtobufAbsolutePath::from(enum_with_scope.name_absolute()),
@@ -68,6 +77,7 @@ impl<'a> EnumGen<'a> {
                 false,
                 root_scope,
             )
+            .to_string()
         };
         let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
@@ -81,7 +91,7 @@ impl<'a> EnumGen<'a> {
         EnumGen {
             enum_with_scope,
             type_name: rust_name,
-            lite_runtime: lite_runtime,
+            lite_runtime,
             customize: customize.clone(),
         }
     }
@@ -93,7 +103,11 @@ impl<'a> EnumGen<'a> {
     fn values_all(&self) -> Vec<EnumValueGen> {
         let mut r = Vec::new();
         for p in self.enum_with_scope.values() {
-            r.push(EnumValueGen::parse(p, &self.type_name));
+            r.push(EnumValueGen::parse(
+                &p.proto,
+                &self.type_name,
+                p.rust_name().get(),
+            ));
         }
         r
     }
@@ -104,17 +118,22 @@ impl<'a> EnumGen<'a> {
         for p in self.enum_with_scope.values() {
             // skipping non-unique enums
             // TODO: should support it
-            if !used.insert(p.get_number()) {
+            if !used.insert(p.proto.get_number()) {
                 continue;
             }
-            r.push(EnumValueGen::parse(p, &self.type_name));
+            r.push(EnumValueGen::parse(
+                p.proto,
+                &self.type_name,
+                p.rust_name().get(),
+            ));
         }
         r
     }
 
     // find enum value by name
     pub fn value_by_name(&'a self, name: &str) -> EnumValueGen {
-        EnumValueGen::parse(self.enum_with_scope.value_by_name(name), &self.type_name)
+        let v = self.enum_with_scope.value_by_name(name);
+        EnumValueGen::parse(v.proto, &self.type_name, v.rust_name().get())
     }
 
     pub fn write(&self, w: &mut CodeWriter) {
@@ -259,7 +278,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_default(&self, w: &mut CodeWriter) {
         let first_value = &self.enum_with_scope.values()[0];
-        if first_value.get_number() != 0 {
+        if first_value.proto.get_number() != 0 {
             // This warning is emitted only for proto2
             // (because in proto3 first enum variant number is always 0).
             // `Default` implemented unconditionally to simplify certain

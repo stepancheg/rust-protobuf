@@ -9,7 +9,6 @@ use std::path::Path;
 
 use protobuf::compiler_plugin;
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 use protobuf::Message;
 
 mod customize;
@@ -29,6 +28,7 @@ mod serde;
 mod well_known_types;
 
 pub(crate) mod rust;
+pub(crate) mod scope;
 pub(crate) mod strx;
 pub(crate) mod syntax;
 
@@ -41,7 +41,10 @@ use self::code_writer::CodeWriter;
 use self::enums::*;
 use self::extensions::*;
 use self::message::*;
+use file::proto_path_to_rust_mod;
 use inside::protobuf_crate_path;
+use scope::FileScope;
+use scope::RootScope;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {

@@ -1,6 +1,3 @@
-use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
-
 use super::code_writer::*;
 use super::customize::customize_from_rustproto_for_message;
 use super::customize::Customize;
@@ -10,6 +7,10 @@ use super::rust_types_values::*;
 use inside::protobuf_crate_path;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
+use protobuf::descriptor::*;
+use scope::MessageWithScope;
+use scope::RootScope;
+use scope::WithScope;
 use serde;
 
 /// Message info for codegen
@@ -48,7 +49,7 @@ impl<'a> MessageGen<'a> {
         MessageGen {
             message: message,
             root_scope: root_scope,
-            type_name: message.rust_name(),
+            type_name: message.rust_name().into(),
             fields: fields,
             lite_runtime,
             customize,

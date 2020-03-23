@@ -3,9 +3,10 @@ use std::cmp;
 use super::well_known_types::is_well_known_type_full;
 use inside::protobuf_crate_path;
 use protobuf::descriptor::*;
-use protobuf::descriptorx::*;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
+use scope::RootScope;
+use scope::WithScope;
 use Customize;
 
 // Represent subset of rust types used in generated code
@@ -481,7 +482,7 @@ pub(crate) fn type_name_to_rust_relative(
     subm: bool,
     root_scope: &RootScope,
 ) -> String {
-    let message_or_enum = root_scope.find_message_or_enum(&type_name.path);
+    let message_or_enum = root_scope.find_message_or_enum(type_name);
     if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
         // field type is a message or enum declared in the same file
         if subm {
