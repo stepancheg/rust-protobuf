@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.11] - Unreleased
 
+## [2.11.0] - 2020-03-23
+
 ### Backward compatibility
 
 - [Rename](https://github.com/stepancheg/rust-protobuf/commit/65667cb6e75e91027d595e8be1bce25cc29d7c88)
