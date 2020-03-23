@@ -1,7 +1,7 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
+use field::rust_field_name_for_protobuf_field_name;
 use protobuf::descriptor::*;
-use protobuf::descriptorx::FieldDescriptorProtoExt;
 use protobuf_name::ProtobufAbsolutePath;
 use scope::RootScope;
 use Customize;
@@ -61,7 +61,7 @@ impl<'a> ExtGen<'a> {
         };
         let field_type = format!("::protobuf::ext::ExtField{}", suffix);
         w.pub_const(
-            &self.field.rust_name(),
+            rust_field_name_for_protobuf_field_name(self.field.get_name()).get(),
             &format!(
                 "{}<{}, {}>",
                 field_type,
