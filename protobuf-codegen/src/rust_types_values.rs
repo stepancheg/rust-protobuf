@@ -7,6 +7,7 @@ use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
 use scope::RootScope;
 use scope::WithScope;
+use strx::capitalize;
 use Customize;
 
 // Represent subset of rust types used in generated code
@@ -507,13 +508,6 @@ pub(crate) fn type_name_to_rust_relative(
             format!("super::{}", message_or_enum.rust_fq_name())
         }
     }
-}
-
-fn capitalize(s: &str) -> String {
-    if s.is_empty() {
-        return String::new();
-    }
-    s[..1].to_uppercase() + &s[1..]
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
