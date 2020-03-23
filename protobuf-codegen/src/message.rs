@@ -110,7 +110,7 @@ impl<'a> MessageGen<'a> {
         for oneof in self.oneofs() {
             w.if_let_stmt(
                 "::std::option::Option::Some(ref v)",
-                &format!("self.{}", oneof.name())[..],
+                &format!("self.{}", oneof.oneof.field_name())[..],
                 |w| {
                     w.match_block("v", |w| {
                         for variant in oneof.variants_except_group() {
@@ -476,7 +476,7 @@ impl<'a> MessageGen<'a> {
                     };
                     w.field_decl_vis(
                         vis,
-                        oneof.name(),
+                        oneof.oneof.field_name().get(),
                         &oneof.full_storage_type().to_code(&self.customize),
                     );
                 }
