@@ -41,9 +41,11 @@ impl<T> Lazy<T> {
 }
 
 /// Used to initialize `lock` field in `Lazy` struct.
+#[deprecated(since = "2.11", note = "Regenerate .proto files to use safer initializer")]
 pub const ONCE_INIT: sync::Once = sync::Once::new();
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod test {
     use super::Lazy;
     use super::ONCE_INIT;
