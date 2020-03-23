@@ -13,6 +13,15 @@ pub struct Lazy<T> {
 }
 
 impl<T> Lazy<T> {
+    /// Uninitialized `Lazy` object.
+    ///
+    /// The initializer is added in rust-protobuf 2.11, for compatibility with
+    /// previously generated code, existing fields are kept public.
+    pub const INIT: Lazy<T> = Lazy {
+        lock: sync::Once::new(),
+        ptr: 0 as *const T,
+    };
+
     /// Get lazy field value, initialize it with given function if not yet.
     pub fn get<F>(&'static mut self, init: F) -> &'static T
     where

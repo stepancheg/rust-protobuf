@@ -103,29 +103,14 @@ impl<'a> CodeWriter<'a> {
     }
 
     pub fn lazy_static(&mut self, name: &str, ty: &str) {
-        self.stmt_block(
-            &format!(
-                "static mut {}: ::protobuf::lazy::Lazy<{}> = ::protobuf::lazy::Lazy",
-                name, ty
-            ),
-            |w| {
-                w.field_entry("lock", "::protobuf::lazy::ONCE_INIT");
-                w.field_entry("ptr", &format!("0 as *const {}", ty));
-            },
-        );
+        self.lazy_static_protobuf_path(name, ty, "::protobuf")
     }
 
     pub fn lazy_static_protobuf_path(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
-        self.stmt_block(
-            &format!(
-                "static mut {}: {}::lazy::Lazy<{}> = ::protobuf::lazy::Lazy",
-                name, protobuf_crate_path, ty
-            ),
-            |w| {
-                w.field_entry("lock", &format!("{}::lazy::ONCE_INIT", protobuf_crate_path));
-                w.field_entry("ptr", &format!("0 as *const {}", ty));
-            },
-        );
+        self.write_line(&format!(
+            "static mut {}: {}::lazy::Lazy<{}> = {}::lazy::Lazy::INIT;",
+            name, protobuf_crate_path, ty, protobuf_crate_path,
+        ));
     }
 
     pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, init: F)
