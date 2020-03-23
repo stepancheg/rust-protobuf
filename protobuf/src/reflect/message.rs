@@ -46,7 +46,7 @@ impl MessageDescriptor {
 
     // Non-generic part of `new` is a separate function
     // to reduce code bloat from multiple instantiations.
-    fn new_non_generic(
+    fn new_non_generic_by_rust_name(
         rust_name: &'static str,
         fields: Vec<Box<FieldAccessor + 'static>>,
         file: &'static FileDescriptorProto,
@@ -99,7 +99,7 @@ impl MessageDescriptor {
         file: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        MessageDescriptor::new_non_generic(rust_name, fields, file, factory)
+        MessageDescriptor::new_non_generic_by_rust_name(rust_name, fields, file, factory)
     }
 
     /// New empty message
