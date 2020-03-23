@@ -66,7 +66,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## Other changes
 
-- - [`ProtobufError` now provides error message in `Display` instead of
+- [`ProtobufError` now provides error message in `Display` instead of
   `Error::description`](https://github.com/stepancheg/rust-protobuf/commit/24c20a0503c0946836d3044dad524757bac2cc8a)
 - [`Debug` is now implemented for `EnumValueDescriptor` and
   `ReflectValueRef`](https://github.com/stepancheg/rust-protobuf/commit/0e6a2f4c50f07d2c6f8007abd469daa08bc09b9c)
