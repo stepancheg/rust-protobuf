@@ -42,6 +42,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.10] - Unreleased
 
+## [2.10.3] - 2020-03-23
+
+- Oneof names are escaped now in generated code
+
 ## [2.10.2] - 2020-03-01
 
 - Added `dyn` to a list of rust keyword needed escaping
