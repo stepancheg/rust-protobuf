@@ -231,10 +231,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
-        };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -263,10 +260,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorRequest> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorRequest,
-        };
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorRequest> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             instance.get(CodeGeneratorRequest::new)
         }
@@ -468,10 +462,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
-        };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -495,10 +486,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorResponse,
-        };
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             instance.get(CodeGeneratorResponse::new)
         }
@@ -748,10 +736,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
-        };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -780,10 +765,7 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse_File {
-        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse_File> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const CodeGeneratorResponse_File,
-        };
+        static mut instance: ::protobuf::lazy::Lazy<CodeGeneratorResponse_File> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             instance.get(CodeGeneratorResponse_File::new)
         }
@@ -1001,10 +983,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x02\x01\x03\x12\x04\x94\x01\x17\x19\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
-};
+static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()

@@ -165,10 +165,7 @@ impl ::protobuf::Message for Duration {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
-        };
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
@@ -192,10 +189,7 @@ impl ::protobuf::Message for Duration {
     }
 
     fn default_instance() -> &'static Duration {
-        static mut instance: ::protobuf::lazy::Lazy<Duration> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const Duration,
-        };
+        static mut instance: ::protobuf::lazy::Lazy<Duration> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             instance.get(Duration::new)
         }
@@ -323,10 +317,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03f\x08\r\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03f\x10\x11b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
-    lock: ::protobuf::lazy::ONCE_INIT,
-    ptr: 0 as *const ::protobuf::descriptor::FileDescriptorProto,
-};
+static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
