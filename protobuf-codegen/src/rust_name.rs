@@ -27,7 +27,7 @@ impl RustIdent {
     }
 
     pub fn to_path(&self) -> RustIdentWithPath {
-        RustIdentWithPath::new(&self.0)
+        RustIdentWithPath::from(&self.0)
     }
 }
 
@@ -235,7 +235,7 @@ pub(crate) struct RustIdentWithPath {
 }
 
 impl RustIdentWithPath {
-    pub fn new(s: &str) -> RustIdentWithPath {
+    pub fn new(s: String) -> RustIdentWithPath {
         let mut path = RustPath::from(s);
         let ident = path.path.path.pop().unwrap();
         RustIdentWithPath { path, ident }
@@ -250,15 +250,9 @@ impl RustIdentWithPath {
     }
 }
 
-impl From<&'_ str> for RustIdentWithPath {
-    fn from(s: &str) -> Self {
-        RustIdentWithPath::new(s)
-    }
-}
-
-impl From<String> for RustIdentWithPath {
-    fn from(s: String) -> Self {
-        RustIdentWithPath::new(&s)
+impl<S: Into<String>> From<S> for RustIdentWithPath {
+    fn from(s: S) -> Self {
+        RustIdentWithPath::new(s.into())
     }
 }
 
