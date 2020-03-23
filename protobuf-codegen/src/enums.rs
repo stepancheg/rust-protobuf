@@ -5,7 +5,6 @@ use protobuf::descriptor::*;
 use super::code_writer::*;
 use super::customize::Customize;
 use protobuf_name::ProtobufAbsolutePath;
-use rust_name::RustIdent;
 use rust_types_values::type_name_to_rust_relative;
 use scope::EnumWithScope;
 use scope::RootScope;

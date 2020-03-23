@@ -17,10 +17,6 @@ impl ProtobufIdent {
     pub fn get(&self) -> &str {
         &self.0
     }
-
-    pub fn into_string(self) -> String {
-        self.0
-    }
 }
 
 impl From<&'_ str> for ProtobufIdent {
@@ -46,6 +42,7 @@ pub struct ProtobufRelativePath {
     pub path: String,
 }
 
+#[allow(dead_code)]
 impl ProtobufRelativePath {
     pub fn empty() -> ProtobufRelativePath {
         ProtobufRelativePath::new(String::new())
@@ -216,19 +213,6 @@ mod relative_path_test {
             ProtobufRelativePath::new("abc.def.gh".to_owned())._last_part()
         );
     }
-
-    #[test]
-    fn self_and_parents() {
-        assert_eq!(
-            vec![
-                ProtobufRelativePath::new("ab.cde.fghi".to_owned()),
-                ProtobufRelativePath::new("ab.cde".to_owned()),
-                ProtobufRelativePath::new("ab".to_owned()),
-                ProtobufRelativePath::empty(),
-            ],
-            ProtobufRelativePath::new("ab.cde.fghi".to_owned()).self_and_parents()
-        );
-    }
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
@@ -261,6 +245,7 @@ impl ProtobufAbsolutePath {
         }
     }
 
+    #[allow(dead_code)]
     pub fn from_path_maybe_dot(path: &str) -> ProtobufAbsolutePath {
         if path.starts_with(".") {
             ProtobufAbsolutePath::new(path.to_owned())
