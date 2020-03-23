@@ -7,7 +7,6 @@ use message::MessageGen;
 use protobuf::descriptor::FieldDescriptorProto_Type;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
-use rust_name::RustIdentWithPath;
 use rust_types_values::RustType;
 use scope::FieldWithContext;
 use scope::OneofVariantWithContext;
@@ -147,10 +146,6 @@ impl<'a> OneofGen<'a> {
             lite_runtime: message.lite_runtime,
             customize: customize.clone(),
         }
-    }
-
-    pub fn name(&self) -> RustIdentWithPath {
-        self.oneof.rust_name()
     }
 
     pub fn variants_except_group(&'a self) -> Vec<OneofVariantGen<'a>> {

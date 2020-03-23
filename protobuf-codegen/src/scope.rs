@@ -1,15 +1,11 @@
-use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file::proto_path_to_rust_mod;
-use crate::file_and_mod::FileAndMod;
 use crate::protobuf_name::ProtobufAbsolutePath;
 use crate::protobuf_name::ProtobufIdent;
 use crate::protobuf_name::ProtobufRelativePath;
 use crate::rust;
-use crate::rust::is_rust_keyword;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustRelativePath;
 use crate::syntax::Syntax;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
@@ -227,11 +223,6 @@ impl<'a> Scope<'a> {
         F: FnMut(&Scope<'a>),
     {
         self.walk_scopes_impl(&mut callback);
-    }
-
-    pub fn path_str(&self) -> String {
-        let v: Vec<&str> = self.path.iter().map(|m| m.get_name()).collect();
-        v.join(".")
     }
 
     pub fn prefix(&self) -> String {

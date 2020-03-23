@@ -5,6 +5,7 @@ use std::iter;
 #[derive(Eq, PartialEq, Debug, Clone)]
 pub(crate) struct RustIdent(String);
 
+#[allow(dead_code)]
 impl RustIdent {
     pub fn new(s: &str) -> RustIdent {
         assert!(!s.is_empty());
@@ -22,7 +23,7 @@ impl RustIdent {
         &self.0
     }
 
-    pub fn _into_string(self) -> String {
+    pub fn into_string(self) -> String {
         self.0
     }
 
@@ -60,6 +61,7 @@ pub(crate) struct RustRelativePath {
     path: Vec<RustIdent>,
 }
 
+#[allow(dead_code)]
 impl RustRelativePath {
     pub fn into_path(self) -> RustPath {
         RustPath {
@@ -147,6 +149,7 @@ impl From<&'_ str> for RustRelativePath {
     }
 }
 
+#[allow(dead_code)]
 impl RustPath {
     pub fn is_absolute(&self) -> bool {
         self.absolute
@@ -240,6 +243,7 @@ pub(crate) struct RustIdentWithPath {
     pub ident: RustIdent,
 }
 
+#[allow(dead_code)]
 impl RustIdentWithPath {
     pub fn new(s: String) -> RustIdentWithPath {
         let mut path = RustPath::from(s);
