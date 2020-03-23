@@ -1,6 +1,6 @@
 [package]
 name = "protoc-rust"
-version = "2.10.2"
+version = "2.10.3"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust/"
@@ -14,9 +14,9 @@ doctest = false
 bench = false
 
 [dependencies]
-protoc = { path = "../protoc", version = "=2.10.2" }
-protobuf = { path = "../protobuf", version = "=2.10.2" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "=2.10.2" }
+protoc = { path = "../protoc", version = "=2.10.3" }
+protobuf = { path = "../protobuf", version = "=2.10.3" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "=2.10.3" }
 tempfile = "3"
 
 [package.metadata.docs.rs]
