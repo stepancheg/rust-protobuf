@@ -384,20 +384,20 @@ impl<'a> MessageWithScope<'a> {
             .collect()
     }
 
-    pub fn oneofs(&'a self) -> Vec<OneofWithContext<'a>> {
+    pub fn oneofs(&self) -> Vec<OneofWithContext<'a>> {
         self.message
             .get_oneof_decl()
             .iter()
             .enumerate()
             .map(|(index, oneof)| OneofWithContext {
-                message: &self,
+                message: self.clone(),
                 oneof: &oneof,
                 index: index as u32,
             })
             .collect()
     }
 
-    pub fn oneof_by_index(&'a self, index: u32) -> OneofWithContext<'a> {
+    pub fn oneof_by_index(&self, index: u32) -> OneofWithContext<'a> {
         self.oneofs().swap_remove(index as usize)
     }
 
@@ -526,7 +526,7 @@ impl<'a> FieldWithContext<'a> {
         self.field.has_oneof_index()
     }
 
-    pub fn oneof(&'a self) -> Option<OneofWithContext<'a>> {
+    pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
         if self.is_oneof() {
             Some(
                 self.message
@@ -571,7 +571,7 @@ pub struct OneofVariantWithContext<'a> {
 pub struct OneofWithContext<'a> {
     pub oneof: &'a OneofDescriptorProto,
     pub index: u32,
-    pub message: &'a MessageWithScope<'a>,
+    pub message: MessageWithScope<'a>,
 }
 
 impl<'a> OneofWithContext<'a> {

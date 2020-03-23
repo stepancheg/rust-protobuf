@@ -16,6 +16,7 @@ use oneof::OneofField;
 use float;
 use ident::RustIdent;
 use inside::protobuf_crate_path;
+use std::marker;
 
 fn type_is_copy(field_type: FieldDescriptorProto_Type) -> bool {
     match field_type {
@@ -130,19 +131,19 @@ pub enum SingularFieldFlag {
 impl SingularFieldFlag {
     pub fn is_required(&self) -> bool {
         match *self {
-            SingularFieldFlag::WithFlag { required } => required,
+            SingularFieldFlag::WithFlag { required, .. } => required,
             SingularFieldFlag::WithoutFlag => false,
         }
     }
 }
 
 #[derive(Clone)]
-pub struct SingularField {
+pub(crate) struct SingularField<'a> {
     pub flag: SingularFieldFlag,
-    pub elem: FieldElem,
+    pub elem: FieldElem<'a>,
 }
 
-impl SingularField {
+impl<'a> SingularField<'a> {
     fn rust_storage_type(&self) -> RustType {
         match self.flag {
             SingularFieldFlag::WithFlag { .. } => match self.elem.proto_type() {
@@ -162,12 +163,12 @@ impl SingularField {
 }
 
 #[derive(Clone)]
-pub struct RepeatedField {
-    pub elem: FieldElem,
+pub(crate) struct RepeatedField<'a> {
+    pub elem: FieldElem<'a>,
     pub packed: bool,
 }
 
-impl RepeatedField {
+impl<'a> RepeatedField<'a> {
     fn rust_type(&self) -> RustType {
         if !self.elem.is_copy()
             && self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche
@@ -180,25 +181,25 @@ impl RepeatedField {
 }
 
 #[derive(Clone)]
-pub struct MapField {
+pub struct MapField<'a> {
     name: String,
-    key: FieldElem,
-    value: FieldElem,
+    key: FieldElem<'a>,
+    value: FieldElem<'a>,
 }
 
 #[derive(Clone)]
-pub enum FieldKind {
+pub(crate) enum FieldKind<'a> {
     // optional or required
-    Singular(SingularField),
+    Singular(SingularField<'a>),
     // repeated except map
-    Repeated(RepeatedField),
+    Repeated(RepeatedField<'a>),
     // map
-    Map(MapField),
+    Map(MapField<'a>),
     // part of oneof
-    Oneof(OneofField),
+    Oneof(OneofField<'a>),
 }
 
-impl FieldKind {
+impl<'a> FieldKind<'a> {
     fn elem(&self) -> &FieldElem {
         match self {
             &FieldKind::Singular(ref s) => &s.elem,
@@ -217,19 +218,24 @@ impl FieldKind {
 
 // Representation of map entry: key type and value type
 #[derive(Clone, Debug)]
-pub struct EntryKeyValue(FieldElem, FieldElem);
+pub struct EntryKeyValue<'a>(FieldElem<'a>, FieldElem<'a>);
 
 #[derive(Clone, Debug)]
-pub enum FieldElem {
+pub(crate) enum FieldElem<'a> {
     Primitive(FieldDescriptorProto_Type, PrimitiveTypeVariant),
     // name, file name, entry
-    Message(String, String, Option<Box<EntryKeyValue>>),
+    Message(
+        String,
+        String,
+        Option<Box<EntryKeyValue<'a>>>,
+        marker::PhantomData<&'a ()>,
+    ),
     // name, file name, default value
     Enum(String, String, RustIdent),
     Group,
 }
 
-impl FieldElem {
+impl<'a> FieldElem<'a> {
     fn proto_type(&self) -> FieldDescriptorProto_Type {
         match *self {
             FieldElem::Primitive(t, ..) => t,
@@ -285,12 +291,12 @@ impl FieldElem {
     }
 }
 
-fn field_elem(
+fn field_elem<'a>(
     field: &FieldWithContext,
-    root_scope: &RootScope,
+    root_scope: &'a RootScope<'a>,
     parse_map: bool,
     customize: &Customize,
-) -> (FieldElem, Option<EnumValueGen>) {
+) -> (FieldElem<'a>, Option<EnumValueGen>) {
     if field.field.get_field_type() == FieldDescriptorProto_Type::TYPE_GROUP {
         (FieldElem::Group, None)
     } else if field.field.has_type_name() {
@@ -323,7 +329,12 @@ fn field_elem(
                     None
                 };
                 (
-                    FieldElem::Message(rust_relative_name, file_name, entry_key_value),
+                    FieldElem::Message(
+                        rust_relative_name,
+                        file_name,
+                        entry_key_value,
+                        marker::PhantomData,
+                    ),
                     None,
                 )
             }
@@ -405,7 +416,7 @@ impl AccessorFn {
 }
 
 #[derive(Clone)]
-pub struct FieldGen<'a> {
+pub(crate) struct FieldGen<'a> {
     root_scope: &'a RootScope<'a>,
     syntax: Syntax,
     pub proto_field: FieldWithContext<'a>,
@@ -414,7 +425,7 @@ pub struct FieldGen<'a> {
     pub proto_type: FieldDescriptorProto_Type,
     wire_type: wire_format::WireType,
     enum_default_value: Option<EnumValueGen>,
-    pub kind: FieldKind,
+    pub kind: FieldKind<'a>,
     pub expose_field: bool,
     pub generate_accessors: bool,
     pub(crate) customize: Customize,
@@ -443,11 +454,13 @@ impl<'a> FieldGen<'a> {
         let kind = if field.field.get_label() == FieldDescriptorProto_Label::LABEL_REPEATED {
             match (elem, true) {
                 // map field
-                (FieldElem::Message(name, _, Some(key_value)), true) => FieldKind::Map(MapField {
-                    name: name,
-                    key: key_value.0.clone(),
-                    value: key_value.1.clone(),
-                }),
+                (FieldElem::Message(name, _, Some(key_value), _), true) => {
+                    FieldKind::Map(MapField {
+                        name: name,
+                        key: key_value.0.clone(),
+                        value: key_value.1.clone(),
+                    })
+                }
                 // regular repeated field
                 (elem, _) => FieldKind::Repeated(RepeatedField {
                     elem,
@@ -470,17 +483,17 @@ impl<'a> FieldGen<'a> {
         };
 
         FieldGen {
-            root_scope: root_scope,
+            root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: field.field.rust_name(),
             proto_type: field.field.get_field_type(),
             wire_type: field_type_wire_type(field.field.get_field_type()),
-            enum_default_value: enum_default_value,
-            proto_field: field,
-            kind: kind,
-            expose_field: expose_field,
-            generate_accessors: generate_accessors,
-            customize: customize.clone(),
+            enum_default_value,
+            proto_field: field.clone(),
+            kind,
+            expose_field,
+            generate_accessors,
+            customize,
         }
     }
 

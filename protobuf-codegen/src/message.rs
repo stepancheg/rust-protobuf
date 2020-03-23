@@ -13,9 +13,9 @@ use oneof::OneofVariantGen;
 use serde;
 
 /// Message info for codegen
-pub struct MessageGen<'a> {
-    pub(crate) message: &'a MessageWithScope<'a>,
-    pub(crate) root_scope: &'a RootScope<'a>,
+pub(crate) struct MessageGen<'a> {
+    pub message: &'a MessageWithScope<'a>,
+    pub root_scope: &'a RootScope<'a>,
     type_name: String,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,

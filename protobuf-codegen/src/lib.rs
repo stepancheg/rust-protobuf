@@ -16,6 +16,7 @@ mod customize;
 mod enums;
 mod extensions;
 mod field;
+mod file;
 mod file_and_mod;
 pub mod float;
 mod ident;
@@ -26,6 +27,10 @@ mod rust_name;
 mod rust_types_values;
 mod serde;
 mod well_known_types;
+
+pub(crate) mod rust;
+pub(crate) mod strx;
+pub(crate) mod syntax;
 
 use customize::customize_from_rustproto_for_file;
 pub use customize::Customize;

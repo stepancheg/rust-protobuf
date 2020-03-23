@@ -15,14 +15,14 @@ use Customize;
 
 // oneof one { ... }
 #[derive(Clone)]
-pub struct OneofField {
-    pub elem: FieldElem,
+pub(crate) struct OneofField<'a> {
+    pub elem: FieldElem<'a>,
     pub oneof_name: String,
     pub oneof_type_name: RustType,
     pub boxed: bool,
 }
 
-impl OneofField {
+impl<'a> OneofField<'a> {
     // Detecting recursion: if oneof fields contains a self-reference
     // or another message which has a reference to self,
     // put oneof variant into a box.
@@ -46,18 +46,18 @@ impl OneofField {
     }
 
     pub fn parse(
-        oneof: &OneofWithContext,
-        field: &FieldWithContext,
-        elem: FieldElem,
+        oneof: &OneofWithContext<'a>,
+        field: &FieldWithContext<'a>,
+        elem: FieldElem<'a>,
         root_scope: &RootScope,
-    ) -> OneofField {
+    ) -> OneofField<'a> {
         let boxed = OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute());
 
         OneofField {
-            elem: elem,
+            elem,
+            boxed,
             oneof_name: oneof.name().to_string(),
             oneof_type_name: RustType::Oneof(oneof.rust_name()),
-            boxed: boxed,
         }
     }
 
@@ -73,10 +73,10 @@ impl OneofField {
 }
 
 #[derive(Clone)]
-pub struct OneofVariantGen<'a> {
+pub(crate) struct OneofVariantGen<'a> {
     oneof: &'a OneofGen<'a>,
     variant: OneofVariantWithContext<'a>,
-    oneof_field: OneofField,
+    oneof_field: OneofField<'a>,
     pub field: FieldGen<'a>,
     path: String,
     customize: Customize,
@@ -91,7 +91,7 @@ impl<'a> OneofVariantGen<'a> {
         customize: Customize,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {
-            oneof: oneof,
+            oneof,
             variant: variant.clone(),
             field: field.clone(),
             path: format!(
@@ -119,10 +119,10 @@ impl<'a> OneofVariantGen<'a> {
 }
 
 #[derive(Clone)]
-pub struct OneofGen<'a> {
+pub(crate) struct OneofGen<'a> {
     // Message containing this oneof
     message: &'a MessageGen<'a>,
-    oneof: OneofWithContext<'a>,
+    pub oneof: OneofWithContext<'a>,
     type_name: RustType,
     lite_runtime: bool,
     customize: Customize,
@@ -136,8 +136,8 @@ impl<'a> OneofGen<'a> {
     ) -> OneofGen<'a> {
         let rust_name = oneof.rust_name();
         OneofGen {
-            message: message,
-            oneof: oneof,
+            message,
+            oneof,
             type_name: RustType::Oneof(rust_name),
             lite_runtime: message.lite_runtime,
             customize: customize.clone(),
