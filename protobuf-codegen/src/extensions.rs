@@ -2,6 +2,7 @@ use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use protobuf::descriptor::*;
 use protobuf::descriptorx::*;
+use protobuf_name::ProtobufAbsolutePath;
 use Customize;
 
 struct ExtGen<'a> {
@@ -13,7 +14,12 @@ struct ExtGen<'a> {
 
 impl<'a> ExtGen<'a> {
     fn extendee_rust_name(&self) -> String {
-        type_name_to_rust_relative(self.field.get_extendee(), self.file, true, self.root_scope)
+        type_name_to_rust_relative(
+            &ProtobufAbsolutePath::from(self.field.get_extendee()),
+            self.file,
+            true,
+            self.root_scope,
+        )
     }
 
     fn repeated(&self) -> bool {
@@ -29,7 +35,7 @@ impl<'a> ExtGen<'a> {
     fn return_type_gen(&self) -> ProtobufTypeGen {
         if self.field.has_type_name() {
             let rust_name_relative = type_name_to_rust_relative(
-                self.field.get_type_name(),
+                &ProtobufAbsolutePath::from(self.field.get_type_name()),
                 self.file,
                 true,
                 self.root_scope,
