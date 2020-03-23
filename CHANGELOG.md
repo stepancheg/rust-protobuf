@@ -40,6 +40,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ### Other changes
 
+- Generated code [now uses](https://github.com/stepancheg/rust-protobuf/commit/f362d93c3a0f2405115f92a7f6bb08ad058fbf02)
+  associated constant `Lazy::INIT` for `Lazy` intialization instead of initializing fields directly.
+
 ## [2.10] - Unreleased
 
 ## [2.10.3] - 2020-03-23
