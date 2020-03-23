@@ -461,7 +461,7 @@ impl<'a> MessageGen<'a> {
                         };
                         w.field_decl_vis(
                             vis,
-                            &field.rust_name,
+                            &field.rust_name.get(),
                             &field.full_storage_type().to_code(&self.customize),
                         );
                     }
