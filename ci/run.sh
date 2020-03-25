@@ -4,8 +4,12 @@ if [ -z "$ON_WINDOWS" ]; then ccache --zero-stats; fi
 ci/install-protobuf.sh
 if [ -z "$ON_WINDOWS" ]; then ccache --show-stats; fi
 export PATH="$HOME/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/lib"
 which protoc
 protoc --version
+if [ -z "$ON_WINDOWS" ];
+    then PKG_CONFIG_PATH="$HOME/lib/pkgconfig" interop/cxx/compile.sh
+fi
 export RUST_BACKTRACE=1
 
 rustc --version

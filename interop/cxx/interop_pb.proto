@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/api.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/source_context.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/type.proto";
+import "google/protobuf/wrappers.proto";
+
+
+enum TestEnum {
+    UNKNOWN = 0;
+    DARK = 10;
+    LIGHT = 20;
+}
+
+message TestMessage {
+    int32 value = 10;
+}
+
+message InteropMessage {
+    double double_singular = 1;
+    float float_singular = 2;
+    int32 int32_singular = 3;
+    int64 int64_singular = 4;
+    uint32 uint32_singular = 5;
+    uint64 uint64_singular = 6;
+    sint32 sint32_singular = 7;
+    sint64 sint64_singular = 8;
+    fixed32 fixed32_singular = 9;
+    fixed64 fixed64_singular = 10;
+    sfixed32 sfixed32_singular = 11;
+    sfixed64 sfixed64_singular = 12;
+    bool bool_singular = 13;
+    string string_singular = 14;
+    bytes bytes_singular = 15;
+    TestEnum test_enum_singular = 16;
+    TestMessage test_message_singular = 17;
+
+    repeated double double_repeated = 31;
+    repeated float float_repeated = 32;
+    repeated int32 int32_repeated = 33;
+    repeated int64 int64_repeated = 34;
+    repeated uint32 uint32_repeated = 35;
+    repeated uint64 uint64_repeated = 36;
+    repeated sint32 sint32_repeated = 37;
+    repeated sint64 sint64_repeated = 38;
+    repeated fixed32 fixed32_repeated = 39;
+    repeated fixed64 fixed64_repeated = 40;
+    repeated sfixed32 sfixed32_repeated = 41;
+    repeated sfixed64 sfixed64_repeated = 42;
+    repeated bool bool_repeated = 43;
+    repeated string string_repeated = 44;
+    repeated bytes bytes_repeated = 45;
+    repeated TestEnum test_enum_repeated = 46;
+    repeated TestMessage test_message_repeated = 47;
+
+    map<uint32, double> double_map_field = 301;
+    map<uint64, float> float_map_field = 302;
+    map<int32, int32> int32_map_field = 303;
+    map<int64, int64> int64_map_field = 304;
+    map<bool, uint32> uint32_map_field = 305;
+    map<string, uint64> uint64_map_field = 306;
+    map<sfixed32, sint32> sint32_map_field = 307;
+    map<sfixed64, sint64> sint64_map_field = 308;
+    map<fixed64, fixed32> fixed32_map_field = 309;
+    map<fixed32, fixed64> fixed64_map_field = 310;
+    map<sint64, sfixed32> sfixed32_map_field = 311;
+    map<sint32, sfixed64> sfixed64_map_field = 312;
+    map<uint64, bool> bool_map_field = 313;
+    map<uint32, string> string_map_field = 314;
+    map<uint64, bytes> bytes_map_field = 315;
+    map<uint32, TestEnum> enum_map_field = 316;
+    map<string, TestMessage> message_map_field = 317;
+
+    .google.protobuf.Duration duration = 503;
+    .google.protobuf.Timestamp timestamp = 504;
+    .google.protobuf.FieldMask field_mask = 505;
+    repeated .google.protobuf.NullValue null_values = 510;
+    .google.protobuf.Value value = 512;
+    .google.protobuf.ListValue list_value = 513;
+    .google.protobuf.Struct struct_value = 514;
+
+    // not implemented
+    //.google.protobuf.Any any_value = 515;
+
+    .google.protobuf.DoubleValue double_value = 531;
+    .google.protobuf.FloatValue float_value = 532;
+    .google.protobuf.Int64Value int64_value = 533;
+    .google.protobuf.UInt64Value uint64_value = 534;
+    .google.protobuf.Int32Value int32_value = 535;
+    .google.protobuf.UInt32Value uint32_value = 536;
+    .google.protobuf.BoolValue bool_value = 537;
+    .google.protobuf.StringValue string_value = 538;
+    .google.protobuf.BytesValue bytes_value = 539;
+}
+
+message InteropMessageList {
+    repeated InteropMessage ts = 1;
+}
