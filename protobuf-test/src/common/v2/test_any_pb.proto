@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+package test_any;
+
+message MessageOne {
+    optional int32 i = 1;
+}
+
+message MessageTwo {
+
+}
