@@ -1350,6 +1350,7 @@ pub struct FieldDescriptorProto {
     label: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
     ///  If type_name is set, this need not be set.  If both this and type_name
     ///  are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
+    #[cfg_attr(serde, serde(alias="type"))]
     field_type: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Type>>,
     ///  For message and enum types, this is the name of the type.  If the name
     ///  starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
