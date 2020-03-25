@@ -29,6 +29,10 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     write.flush().expect("flush");
 }
 
+fn copy_from_protobuf_test(path: &str) {
+    copy_test(&format!("../protobuf-test/{}", path), &format!("{}", path))
+}
+
 // Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
     let src_dir = format!("../protobuf-test/{}", dir);
@@ -81,7 +85,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
 }
 
 fn generate_interop() {
-    //copy_from_protobuf_test("src/interop/mod.rs");
+    copy_from_protobuf_test("src/interop/mod.rs");
     //copy_from_protobuf_test("src/interop/json.rs");
 
     protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
@@ -89,7 +93,8 @@ fn generate_interop() {
         includes: &["../interop/cxx", "../proto"],
         input: &["../interop/cxx/interop_pb.proto"],
         ..Default::default()
-    }).unwrap();
+    })
+    .unwrap();
 }
 
 fn generate_pb_rs() {
