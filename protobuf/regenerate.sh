@@ -38,9 +38,15 @@ protoc \
     -I../proto \
     ../proto/google/protobuf/*.proto \
     ../proto/google/protobuf/compiler/* \
-    ../proto/rustproto.proto
+    ../proto/rustproto.proto \
+    ../proto/doctest_pb.proto \
 
-mv tmp-generated/descriptor.rs tmp-generated/plugin.rs tmp-generated/rustproto.rs src/
+mv \
+    tmp-generated/descriptor.rs \
+    tmp-generated/plugin.rs \
+    tmp-generated/rustproto.rs \
+    tmp-generated/doctest_pb.rs \
+    src/
 mv tmp-generated/*.rs src/well_known_types/
 (
     cd src/well_known_types

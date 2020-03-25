@@ -1,0 +1,6 @@
+// Messages used in doctests
+
+syntax = "proto3";
+
+message MyMessage {
+}

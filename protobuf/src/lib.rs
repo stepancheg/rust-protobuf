@@ -80,6 +80,10 @@ mod misc;
 mod buf_read_iter;
 mod buf_read_or_reader;
 
+// TODO: does not work: https://github.com/rust-lang/rust/issues/67295
+#[cfg(doctest)]
+mod doctest_pb;
+
 /// This symbol is in generated `version.rs`, include here for IDE
 #[cfg(never)]
 pub const VERSION: &str = "";
