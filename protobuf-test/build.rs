@@ -85,9 +85,19 @@ fn generate_in_v2_v3() {
     }
 }
 
+fn generate_interop() {
+    protoc_rust::run(protoc_rust::Args {
+        out_dir: "src/interop",
+        includes: &["../interop/cxx", "../proto"],
+        input: &["../interop/cxx/interop_pb.proto"],
+        ..Default::default()
+    }).unwrap();
+}
+
 fn generate_pb_rs() {
     generate_in_common();
     generate_in_v2_v3();
+    generate_interop();
 }
 
 fn main() {

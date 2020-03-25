@@ -80,6 +80,18 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
     );
 }
 
+fn generate_interop() {
+    //copy_from_protobuf_test("src/interop/mod.rs");
+    //copy_from_protobuf_test("src/interop/json.rs");
+
+    protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
+        out_dir: "src/interop",
+        includes: &["../interop/cxx", "../proto"],
+        input: &["../interop/cxx/interop_pb.proto"],
+        ..Default::default()
+    }).unwrap();
+}
+
 fn generate_pb_rs() {
     copy_tests("src/v2");
     gen_in_dir("src/v2", "src/v2");
@@ -95,6 +107,8 @@ fn generate_pb_rs() {
 
     copy_tests("src/google/protobuf");
     gen_in_dir("src/google/protobuf", "src");
+
+    generate_interop();
 }
 
 fn main() {
