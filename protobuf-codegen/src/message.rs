@@ -8,11 +8,11 @@ use inside::protobuf_crate_path;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
 use protobuf::descriptor::*;
+use rust_name::RustIdentWithPath;
 use scope::MessageWithScope;
 use scope::RootScope;
 use scope::WithScope;
 use serde;
-use rust_name::RustIdentWithPath;
 
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
@@ -394,12 +394,16 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name.to_string(), |w| {
-            w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
-                |w| w.write_line("::protobuf::reflect::ReflectValueRef::Message(self)"),
-            )
-        })
+        w.impl_for_block(
+            "::protobuf::reflect::ProtobufValue",
+            &self.type_name.to_string(),
+            |w| {
+                w.def_fn(
+                    "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
+                    |w| w.write_line("::protobuf::reflect::ReflectValueRef::Message(self)"),
+                )
+            },
+        )
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
