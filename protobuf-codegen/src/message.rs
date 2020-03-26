@@ -4,6 +4,7 @@ use super::customize::Customize;
 use super::enums::*;
 use super::field::*;
 use super::rust_types_values::*;
+use file_descriptor::file_descriptor_proto_expr;
 use inside::protobuf_crate_path;
 use oneof::OneofGen;
 use oneof::OneofVariantGen;
@@ -309,7 +310,7 @@ impl<'a> MessageGen<'a> {
                         w.indented(|w| {
                             w.write_line(&format!("\"{}\",", self.type_name));
                             w.write_line("fields,");
-                            w.write_line("file_descriptor_proto()");
+                            w.write_line(&file_descriptor_proto_expr(&self.message.scope));
                         });
                         w.write_line(")");
                     },
