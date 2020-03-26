@@ -1,6 +1,8 @@
 use descriptor::{DescriptorProto, FileDescriptorProto};
 use descriptorx::find_message_by_rust_name;
 use reflect::accessor::FieldAccessor;
+use reflect::find_message_or_enum::find_message_or_enum;
+use reflect::find_message_or_enum::MessageOrEnum;
 use reflect::FieldDescriptor;
 use std::collections::HashMap;
 use std::marker;
@@ -42,6 +44,21 @@ impl MessageDescriptor {
     /// Get a message descriptor for given message type
     pub fn for_type<M: Message>() -> &'static MessageDescriptor {
         M::descriptor_static()
+    }
+
+    fn compute_full_name(package: &str, path_to_package: &str, proto: &DescriptorProto) -> String {
+        let mut full_name = package.to_owned();
+        if path_to_package.len() != 0 {
+            if full_name.len() != 0 {
+                full_name.push('.');
+            }
+            full_name.push_str(path_to_package);
+        }
+        if full_name.len() != 0 {
+            full_name.push('.');
+        }
+        full_name.push_str(proto.get_name());
+        full_name
     }
 
     // Non-generic part of `new` is a separate function
@@ -88,6 +105,52 @@ impl MessageDescriptor {
         }
     }
 
+    // Non-generic part of `new` is a separate function
+    // to reduce code bloat from multiple instantiations.
+    fn new_non_generic_by_pb_name(
+        protobuf_name_to_package: &'static str,
+        fields: Vec<Box<FieldAccessor + 'static>>,
+        file_descriptor_proto: &'static FileDescriptorProto,
+        factory: &'static dyn MessageFactory,
+    ) -> MessageDescriptor {
+        let (path_to_package, proto) =
+            match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
+                (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
+                (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
+            };
+
+        let mut field_proto_by_name = HashMap::new();
+        for field_proto in proto.get_field() {
+            field_proto_by_name.insert(field_proto.get_name(), field_proto);
+        }
+
+        let mut index_by_name = HashMap::new();
+        let mut index_by_number = HashMap::new();
+        for (i, f) in proto.get_field().iter().enumerate() {
+            index_by_number.insert(f.get_number() as u32, i);
+            index_by_name.insert(f.get_name().to_string(), i);
+        }
+
+        MessageDescriptor {
+            full_name: MessageDescriptor::compute_full_name(
+                file_descriptor_proto.get_package(),
+                &path_to_package,
+                &proto,
+            ),
+            proto,
+            factory,
+            fields: fields
+                .into_iter()
+                .map(|f| {
+                    let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                    FieldDescriptor::new(f, proto)
+                })
+                .collect(),
+            index_by_name,
+            index_by_number,
+        }
+    }
+
     /// Construct a new message descriptor.
     ///
     /// This operation is called from generated code and rarely
@@ -100,6 +163,25 @@ impl MessageDescriptor {
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
         MessageDescriptor::new_non_generic_by_rust_name(rust_name, fields, file, factory)
+    }
+
+    /// Construct a new message descriptor.
+    ///
+    /// This operation is called from generated code and rarely
+    /// need to be called directly.
+    #[doc(hidden)]
+    pub fn new_pb_name<M: 'static + Message + Default + Clone + PartialEq>(
+        protobuf_name_to_package: &'static str,
+        fields: Vec<Box<FieldAccessor + 'static>>,
+        file_descriptor_proto: &'static FileDescriptorProto,
+    ) -> MessageDescriptor {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+        MessageDescriptor::new_non_generic_by_pb_name(
+            protobuf_name_to_package,
+            fields,
+            file_descriptor_proto,
+            factory,
+        )
     }
 
     /// New empty message

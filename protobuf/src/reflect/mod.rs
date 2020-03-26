@@ -5,6 +5,7 @@ use core::Message;
 pub mod accessor;
 mod enums;
 mod field;
+mod find_message_or_enum;
 mod map;
 mod message;
 mod optional;

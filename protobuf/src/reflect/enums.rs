@@ -2,6 +2,8 @@ use descriptor::EnumDescriptorProto;
 use descriptor::EnumValueDescriptorProto;
 use descriptor::FileDescriptorProto;
 use descriptorx::find_enum_by_rust_name;
+use reflect::find_message_or_enum::find_message_or_enum;
+use reflect::find_message_or_enum::MessageOrEnum;
 use std::collections::HashMap;
 use ProtobufEnum;
 
@@ -65,6 +67,40 @@ impl EnumDescriptor {
             proto: proto.en,
             values: proto
                 .en
+                .get_value()
+                .iter()
+                .map(|v| EnumValueDescriptor { proto: v })
+                .collect(),
+            index_by_name: index_by_name,
+            index_by_number: index_by_number,
+        }
+    }
+
+    /// Create new enum descriptor.
+    ///
+    /// This function is called by generated code, and rarely needed otherwise.
+    #[doc(hidden)]
+    pub fn new_pb_name<E>(
+        name_in_file: &'static str,
+        file: &'static FileDescriptorProto,
+    ) -> EnumDescriptor
+    where
+        E: ProtobufEnum,
+    {
+        let (_path_to_package, proto) = match find_message_or_enum(file, name_in_file) {
+            (path_to_package, MessageOrEnum::Enum(e)) => (path_to_package, e),
+            (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
+        };
+
+        let mut index_by_name = HashMap::new();
+        let mut index_by_number = HashMap::new();
+        for (i, v) in proto.get_value().iter().enumerate() {
+            index_by_number.insert(v.get_number(), i);
+            index_by_name.insert(v.get_name().to_string(), i);
+        }
+        EnumDescriptor {
+            proto,
+            values: proto
                 .get_value()
                 .iter()
                 .map(|v| EnumValueDescriptor { proto: v })
