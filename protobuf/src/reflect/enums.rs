@@ -53,8 +53,7 @@ impl EnumDescriptor {
 
     /// Create new enum descriptor.
     ///
-    /// This function is called by generated code, and rarely needed otherwise.
-    #[doc(hidden)]
+    /// This function is called by generated code, and should not be called manually.
     #[deprecated(
         since = "2.12",
         note = "Please regenerate .rs files from .proto files to use newer APIs"
@@ -82,8 +81,7 @@ impl EnumDescriptor {
 
     /// Create new enum descriptor.
     ///
-    /// This function is called by generated code, and rarely needed otherwise.
-    #[doc(hidden)]
+    /// This function is called by generated code, and should not be called manually.
     pub fn new_pb_name<E>(
         name_in_file: &'static str,
         file: &'static FileDescriptorProto,
