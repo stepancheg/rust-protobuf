@@ -255,8 +255,9 @@ impl<'a> EnumGen<'a> {
                             |w| {
                                 let ref type_name = self.type_name;
                                 w.write_line(&format!(
-                                    "::protobuf::reflect::EnumDescriptor::new(\"{}\", {})",
+                                    "::protobuf::reflect::EnumDescriptor::new_pb_name::<{}>(\"{}\", {})",
                                     type_name,
+                                    self.enum_with_scope.name_to_package(),
                                     file_descriptor_proto_expr(&self.enum_with_scope.scope)
                                 ));
                             },

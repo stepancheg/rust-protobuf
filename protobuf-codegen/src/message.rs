@@ -304,11 +304,11 @@ impl<'a> MessageGen<'a> {
                             self.write_descriptor_field("fields", field, w);
                         }
                         w.write_line(&format!(
-                            "::protobuf::reflect::MessageDescriptor::new::<{}>(",
+                            "::protobuf::reflect::MessageDescriptor::new_pb_name::<{}>(",
                             self.type_name
                         ));
                         w.indented(|w| {
-                            w.write_line(&format!("\"{}\",", self.type_name));
+                            w.write_line(&format!("\"{}\",", self.message.name_to_package()));
                             w.write_line("fields,");
                             w.write_line(&file_descriptor_proto_expr(&self.message.scope));
                         });
