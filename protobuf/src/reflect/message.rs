@@ -156,6 +156,10 @@ impl MessageDescriptor {
     /// This operation is called from generated code and rarely
     /// need to be called directly.
     #[doc(hidden)]
+    #[deprecated(
+        since = "2.12",
+        note = "Please regenerate .rs files from .proto files to use newer APIs"
+    )]
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
         fields: Vec<Box<FieldAccessor + 'static>>,

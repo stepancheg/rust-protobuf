@@ -55,6 +55,10 @@ impl EnumDescriptor {
     ///
     /// This function is called by generated code, and rarely needed otherwise.
     #[doc(hidden)]
+    #[deprecated(
+        since = "2.12",
+        note = "Please regenerate .rs files from .proto files to use newer APIs"
+    )]
     pub fn new(rust_name: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor {
         let proto = find_enum_by_rust_name(file, rust_name);
         let mut index_by_name = HashMap::new();
