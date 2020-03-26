@@ -76,10 +76,10 @@ impl<'a> MessageGen<'a> {
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
         MessageGen {
-            message: message,
-            root_scope: root_scope,
+            message,
+            root_scope,
             type_name: message.rust_name().to_path(),
-            fields: fields,
+            fields,
             lite_runtime,
             customize,
             path,
