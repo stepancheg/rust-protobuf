@@ -17,6 +17,7 @@ mod extensions;
 mod field;
 mod file;
 mod file_and_mod;
+mod file_descriptor;
 pub mod float;
 mod inside;
 mod message;
