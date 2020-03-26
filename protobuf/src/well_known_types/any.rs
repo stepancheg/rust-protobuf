@@ -193,7 +193,7 @@ impl ::protobuf::Message for Any {
                     |m: &Any| { &m.value },
                     |m: &mut Any| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Any>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Any>(
                     "Any",
                     fields,
                     file_descriptor_proto()

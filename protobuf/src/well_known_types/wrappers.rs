@@ -145,7 +145,7 @@ impl ::protobuf::Message for DoubleValue {
                     |m: &DoubleValue| { &m.value },
                     |m: &mut DoubleValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<DoubleValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<DoubleValue>(
                     "DoubleValue",
                     fields,
                     file_descriptor_proto()
@@ -304,7 +304,7 @@ impl ::protobuf::Message for FloatValue {
                     |m: &FloatValue| { &m.value },
                     |m: &mut FloatValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FloatValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FloatValue>(
                     "FloatValue",
                     fields,
                     file_descriptor_proto()
@@ -463,7 +463,7 @@ impl ::protobuf::Message for Int64Value {
                     |m: &Int64Value| { &m.value },
                     |m: &mut Int64Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Int64Value>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Int64Value>(
                     "Int64Value",
                     fields,
                     file_descriptor_proto()
@@ -622,7 +622,7 @@ impl ::protobuf::Message for UInt64Value {
                     |m: &UInt64Value| { &m.value },
                     |m: &mut UInt64Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<UInt64Value>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<UInt64Value>(
                     "UInt64Value",
                     fields,
                     file_descriptor_proto()
@@ -781,7 +781,7 @@ impl ::protobuf::Message for Int32Value {
                     |m: &Int32Value| { &m.value },
                     |m: &mut Int32Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Int32Value>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Int32Value>(
                     "Int32Value",
                     fields,
                     file_descriptor_proto()
@@ -940,7 +940,7 @@ impl ::protobuf::Message for UInt32Value {
                     |m: &UInt32Value| { &m.value },
                     |m: &mut UInt32Value| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<UInt32Value>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<UInt32Value>(
                     "UInt32Value",
                     fields,
                     file_descriptor_proto()
@@ -1099,7 +1099,7 @@ impl ::protobuf::Message for BoolValue {
                     |m: &BoolValue| { &m.value },
                     |m: &mut BoolValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<BoolValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<BoolValue>(
                     "BoolValue",
                     fields,
                     file_descriptor_proto()
@@ -1265,7 +1265,7 @@ impl ::protobuf::Message for StringValue {
                     |m: &StringValue| { &m.value },
                     |m: &mut StringValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<StringValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<StringValue>(
                     "StringValue",
                     fields,
                     file_descriptor_proto()
@@ -1431,7 +1431,7 @@ impl ::protobuf::Message for BytesValue {
                     |m: &BytesValue| { &m.value },
                     |m: &mut BytesValue| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<BytesValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<BytesValue>(
                     "BytesValue",
                     fields,
                     file_descriptor_proto()

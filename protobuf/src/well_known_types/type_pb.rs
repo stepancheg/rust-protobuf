@@ -374,7 +374,7 @@ impl ::protobuf::Message for Type {
                     |m: &Type| { &m.syntax },
                     |m: &mut Type| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Type>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Type>(
                     "Type",
                     fields,
                     file_descriptor_proto()
@@ -878,7 +878,7 @@ impl ::protobuf::Message for Field {
                     |m: &Field| { &m.default_value },
                     |m: &mut Field| { &mut m.default_value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Field>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Field>(
                     "Field",
                     fields,
                     file_descriptor_proto()
@@ -1006,7 +1006,7 @@ impl ::protobuf::ProtobufEnum for Field_Kind {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("Field_Kind", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<Field_Kind>("Field.Kind", file_descriptor_proto())
             })
         }
     }
@@ -1065,7 +1065,7 @@ impl ::protobuf::ProtobufEnum for Field_Cardinality {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("Field_Cardinality", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<Field_Cardinality>("Field.Cardinality", file_descriptor_proto())
             })
         }
     }
@@ -1398,7 +1398,7 @@ impl ::protobuf::Message for Enum {
                     |m: &Enum| { &m.syntax },
                     |m: &mut Enum| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Enum>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Enum>(
                     "Enum",
                     fields,
                     file_descriptor_proto()
@@ -1650,7 +1650,7 @@ impl ::protobuf::Message for EnumValue {
                     |m: &EnumValue| { &m.options },
                     |m: &mut EnumValue| { &mut m.options },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<EnumValue>(
                     "EnumValue",
                     fields,
                     file_descriptor_proto()
@@ -1874,7 +1874,7 @@ impl ::protobuf::Message for Option {
                     |m: &Option| { &m.value },
                     |m: &mut Option| { &mut m.value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Option>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Option>(
                     "Option",
                     fields,
                     file_descriptor_proto()
@@ -1943,7 +1943,7 @@ impl ::protobuf::ProtobufEnum for Syntax {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("Syntax", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<Syntax>("Syntax", file_descriptor_proto())
             })
         }
     }

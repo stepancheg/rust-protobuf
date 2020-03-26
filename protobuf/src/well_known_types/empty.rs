@@ -110,7 +110,7 @@ impl ::protobuf::Message for Empty {
         unsafe {
             descriptor.get(|| {
                 let fields = ::std::vec::Vec::new();
-                ::protobuf::reflect::MessageDescriptor::new::<Empty>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Empty>(
                     "Empty",
                     fields,
                     file_descriptor_proto()

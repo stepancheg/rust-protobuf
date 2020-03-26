@@ -151,7 +151,7 @@ impl ::protobuf::Message for FieldMask {
                     |m: &FieldMask| { &m.paths },
                     |m: &mut FieldMask| { &mut m.paths },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FieldMask>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FieldMask>(
                     "FieldMask",
                     fields,
                     file_descriptor_proto()

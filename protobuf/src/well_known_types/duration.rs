@@ -179,7 +179,7 @@ impl ::protobuf::Message for Duration {
                     |m: &Duration| { &m.nanos },
                     |m: &mut Duration| { &mut m.nanos },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Duration>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Duration>(
                     "Duration",
                     fields,
                     file_descriptor_proto()

@@ -147,7 +147,7 @@ impl ::protobuf::Message for Struct {
                     |m: &Struct| { &m.fields },
                     |m: &mut Struct| { &mut m.fields },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Struct>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Struct>(
                     "Struct",
                     fields,
                     file_descriptor_proto()
@@ -632,7 +632,7 @@ impl ::protobuf::Message for Value {
                     Value::has_list_value,
                     Value::get_list_value,
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Value>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Value>(
                     "Value",
                     fields,
                     file_descriptor_proto()
@@ -810,7 +810,7 @@ impl ::protobuf::Message for ListValue {
                     |m: &ListValue| { &m.values },
                     |m: &mut ListValue| { &mut m.values },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<ListValue>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<ListValue>(
                     "ListValue",
                     fields,
                     file_descriptor_proto()
@@ -875,7 +875,7 @@ impl ::protobuf::ProtobufEnum for NullValue {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("NullValue", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<NullValue>("NullValue", file_descriptor_proto())
             })
         }
     }

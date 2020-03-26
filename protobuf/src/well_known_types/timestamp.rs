@@ -179,7 +179,7 @@ impl ::protobuf::Message for Timestamp {
                     |m: &Timestamp| { &m.nanos },
                     |m: &mut Timestamp| { &mut m.nanos },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Timestamp>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Timestamp>(
                     "Timestamp",
                     fields,
                     file_descriptor_proto()

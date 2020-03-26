@@ -159,7 +159,7 @@ impl ::protobuf::Message for FileDescriptorSet {
                     |m: &FileDescriptorSet| { &m.file },
                     |m: &mut FileDescriptorSet| { &mut m.file },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorSet>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileDescriptorSet>(
                     "FileDescriptorSet",
                     fields,
                     file_descriptor_proto()
@@ -861,7 +861,7 @@ impl ::protobuf::Message for FileDescriptorProto {
                     |m: &FileDescriptorProto| { &m.syntax },
                     |m: &mut FileDescriptorProto| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FileDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileDescriptorProto>(
                     "FileDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -1480,7 +1480,7 @@ impl ::protobuf::Message for DescriptorProto {
                     |m: &DescriptorProto| { &m.reserved_name },
                     |m: &mut DescriptorProto| { &mut m.reserved_name },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<DescriptorProto>(
                     "DescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -1690,8 +1690,8 @@ impl ::protobuf::Message for DescriptorProto_ExtensionRange {
                     |m: &DescriptorProto_ExtensionRange| { &m.end },
                     |m: &mut DescriptorProto_ExtensionRange| { &mut m.end },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ExtensionRange>(
-                    "DescriptorProto_ExtensionRange",
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<DescriptorProto_ExtensionRange>(
+                    "DescriptorProto.ExtensionRange",
                     fields,
                     file_descriptor_proto()
                 )
@@ -1892,8 +1892,8 @@ impl ::protobuf::Message for DescriptorProto_ReservedRange {
                     |m: &DescriptorProto_ReservedRange| { &m.end },
                     |m: &mut DescriptorProto_ReservedRange| { &mut m.end },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<DescriptorProto_ReservedRange>(
-                    "DescriptorProto_ReservedRange",
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<DescriptorProto_ReservedRange>(
+                    "DescriptorProto.ReservedRange",
                     fields,
                     file_descriptor_proto()
                 )
@@ -2473,7 +2473,7 @@ impl ::protobuf::Message for FieldDescriptorProto {
                     |m: &FieldDescriptorProto| { &m.options },
                     |m: &mut FieldDescriptorProto| { &mut m.options },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FieldDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FieldDescriptorProto>(
                     "FieldDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -2598,7 +2598,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Type {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("FieldDescriptorProto_Type", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<FieldDescriptorProto_Type>("FieldDescriptorProto.Type", file_descriptor_proto())
             })
         }
     }
@@ -2655,7 +2655,7 @@ impl ::protobuf::ProtobufEnum for FieldDescriptorProto_Label {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("FieldDescriptorProto_Label", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<FieldDescriptorProto_Label>("FieldDescriptorProto.Label", file_descriptor_proto())
             })
         }
     }
@@ -2873,7 +2873,7 @@ impl ::protobuf::Message for OneofDescriptorProto {
                     |m: &OneofDescriptorProto| { &m.options },
                     |m: &mut OneofDescriptorProto| { &mut m.options },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<OneofDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<OneofDescriptorProto>(
                     "OneofDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -3154,7 +3154,7 @@ impl ::protobuf::Message for EnumDescriptorProto {
                     |m: &EnumDescriptorProto| { &m.options },
                     |m: &mut EnumDescriptorProto| { &mut m.options },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<EnumDescriptorProto>(
                     "EnumDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -3426,7 +3426,7 @@ impl ::protobuf::Message for EnumValueDescriptorProto {
                     |m: &EnumValueDescriptorProto| { &m.options },
                     |m: &mut EnumValueDescriptorProto| { &mut m.options },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumValueDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<EnumValueDescriptorProto>(
                     "EnumValueDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -3708,7 +3708,7 @@ impl ::protobuf::Message for ServiceDescriptorProto {
                     |m: &ServiceDescriptorProto| { &m.options },
                     |m: &mut ServiceDescriptorProto| { &mut m.options },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<ServiceDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<ServiceDescriptorProto>(
                     "ServiceDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -4120,7 +4120,7 @@ impl ::protobuf::Message for MethodDescriptorProto {
                     |m: &MethodDescriptorProto| { &m.server_streaming },
                     |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<MethodDescriptorProto>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<MethodDescriptorProto>(
                     "MethodDescriptorProto",
                     fields,
                     file_descriptor_proto()
@@ -4891,7 +4891,7 @@ impl ::protobuf::Message for FileOptions {
                     |m: &FileOptions| { &m.uninterpreted_option },
                     |m: &mut FileOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FileOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileOptions>(
                     "FileOptions",
                     fields,
                     file_descriptor_proto()
@@ -4976,7 +4976,7 @@ impl ::protobuf::ProtobufEnum for FileOptions_OptimizeMode {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("FileOptions_OptimizeMode", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<FileOptions_OptimizeMode>("FileOptions.OptimizeMode", file_descriptor_proto())
             })
         }
     }
@@ -5287,7 +5287,7 @@ impl ::protobuf::Message for MessageOptions {
                     |m: &MessageOptions| { &m.uninterpreted_option },
                     |m: &mut MessageOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<MessageOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<MessageOptions>(
                     "MessageOptions",
                     fields,
                     file_descriptor_proto()
@@ -5684,7 +5684,7 @@ impl ::protobuf::Message for FieldOptions {
                     |m: &FieldOptions| { &m.uninterpreted_option },
                     |m: &mut FieldOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FieldOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FieldOptions>(
                     "FieldOptions",
                     fields,
                     file_descriptor_proto()
@@ -5761,7 +5761,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_CType {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("FieldOptions_CType", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<FieldOptions_CType>("FieldOptions.CType", file_descriptor_proto())
             })
         }
     }
@@ -5817,7 +5817,7 @@ impl ::protobuf::ProtobufEnum for FieldOptions_JSType {
         static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy::INIT;
         unsafe {
             descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("FieldOptions_JSType", file_descriptor_proto())
+                ::protobuf::reflect::EnumDescriptor::new_pb_name::<FieldOptions_JSType>("FieldOptions.JSType", file_descriptor_proto())
             })
         }
     }
@@ -5975,7 +5975,7 @@ impl ::protobuf::Message for OneofOptions {
                     |m: &OneofOptions| { &m.uninterpreted_option },
                     |m: &mut OneofOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<OneofOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<OneofOptions>(
                     "OneofOptions",
                     fields,
                     file_descriptor_proto()
@@ -6224,7 +6224,7 @@ impl ::protobuf::Message for EnumOptions {
                     |m: &EnumOptions| { &m.uninterpreted_option },
                     |m: &mut EnumOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<EnumOptions>(
                     "EnumOptions",
                     fields,
                     file_descriptor_proto()
@@ -6437,7 +6437,7 @@ impl ::protobuf::Message for EnumValueOptions {
                     |m: &EnumValueOptions| { &m.uninterpreted_option },
                     |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<EnumValueOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<EnumValueOptions>(
                     "EnumValueOptions",
                     fields,
                     file_descriptor_proto()
@@ -6649,7 +6649,7 @@ impl ::protobuf::Message for ServiceOptions {
                     |m: &ServiceOptions| { &m.uninterpreted_option },
                     |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<ServiceOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<ServiceOptions>(
                     "ServiceOptions",
                     fields,
                     file_descriptor_proto()
@@ -6861,7 +6861,7 @@ impl ::protobuf::Message for MethodOptions {
                     |m: &MethodOptions| { &m.uninterpreted_option },
                     |m: &mut MethodOptions| { &mut m.uninterpreted_option },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<MethodOptions>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<MethodOptions>(
                     "MethodOptions",
                     fields,
                     file_descriptor_proto()
@@ -7302,7 +7302,7 @@ impl ::protobuf::Message for UninterpretedOption {
                     |m: &UninterpretedOption| { &m.aggregate_value },
                     |m: &mut UninterpretedOption| { &mut m.aggregate_value },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<UninterpretedOption>(
                     "UninterpretedOption",
                     fields,
                     file_descriptor_proto()
@@ -7528,8 +7528,8 @@ impl ::protobuf::Message for UninterpretedOption_NamePart {
                     |m: &UninterpretedOption_NamePart| { &m.is_extension },
                     |m: &mut UninterpretedOption_NamePart| { &mut m.is_extension },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<UninterpretedOption_NamePart>(
-                    "UninterpretedOption_NamePart",
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<UninterpretedOption_NamePart>(
+                    "UninterpretedOption.NamePart",
                     fields,
                     file_descriptor_proto()
                 )
@@ -7702,7 +7702,7 @@ impl ::protobuf::Message for SourceCodeInfo {
                     |m: &SourceCodeInfo| { &m.location },
                     |m: &mut SourceCodeInfo| { &mut m.location },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<SourceCodeInfo>(
                     "SourceCodeInfo",
                     fields,
                     file_descriptor_proto()
@@ -8059,8 +8059,8 @@ impl ::protobuf::Message for SourceCodeInfo_Location {
                     |m: &SourceCodeInfo_Location| { &m.leading_detached_comments },
                     |m: &mut SourceCodeInfo_Location| { &mut m.leading_detached_comments },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceCodeInfo_Location>(
-                    "SourceCodeInfo_Location",
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<SourceCodeInfo_Location>(
+                    "SourceCodeInfo.Location",
                     fields,
                     file_descriptor_proto()
                 )
@@ -8236,7 +8236,7 @@ impl ::protobuf::Message for GeneratedCodeInfo {
                     |m: &GeneratedCodeInfo| { &m.annotation },
                     |m: &mut GeneratedCodeInfo| { &mut m.annotation },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<GeneratedCodeInfo>(
                     "GeneratedCodeInfo",
                     fields,
                     file_descriptor_proto()
@@ -8533,8 +8533,8 @@ impl ::protobuf::Message for GeneratedCodeInfo_Annotation {
                     |m: &GeneratedCodeInfo_Annotation| { &m.end },
                     |m: &mut GeneratedCodeInfo_Annotation| { &mut m.end },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<GeneratedCodeInfo_Annotation>(
-                    "GeneratedCodeInfo_Annotation",
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<GeneratedCodeInfo_Annotation>(
+                    "GeneratedCodeInfo.Annotation",
                     fields,
                     file_descriptor_proto()
                 )

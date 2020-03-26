@@ -152,7 +152,7 @@ impl ::protobuf::Message for SourceContext {
                     |m: &SourceContext| { &m.file_name },
                     |m: &mut SourceContext| { &mut m.file_name },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<SourceContext>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<SourceContext>(
                     "SourceContext",
                     fields,
                     file_descriptor_proto()

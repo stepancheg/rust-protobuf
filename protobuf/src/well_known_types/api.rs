@@ -423,7 +423,7 @@ impl ::protobuf::Message for Api {
                     |m: &Api| { &m.syntax },
                     |m: &mut Api| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Api>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Api>(
                     "Api",
                     fields,
                     file_descriptor_proto()
@@ -823,7 +823,7 @@ impl ::protobuf::Message for Method {
                     |m: &Method| { &m.syntax },
                     |m: &mut Method| { &mut m.syntax },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Method>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Method>(
                     "Method",
                     fields,
                     file_descriptor_proto()
@@ -1036,7 +1036,7 @@ impl ::protobuf::Message for Mixin {
                     |m: &Mixin| { &m.root },
                     |m: &mut Mixin| { &mut m.root },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<Mixin>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Mixin>(
                     "Mixin",
                     fields,
                     file_descriptor_proto()

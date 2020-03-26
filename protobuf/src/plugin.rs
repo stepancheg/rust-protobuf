@@ -250,7 +250,7 @@ impl ::protobuf::Message for CodeGeneratorRequest {
                     |m: &CodeGeneratorRequest| { &m.proto_file },
                     |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<CodeGeneratorRequest>(
                     "CodeGeneratorRequest",
                     fields,
                     file_descriptor_proto()
@@ -476,7 +476,7 @@ impl ::protobuf::Message for CodeGeneratorResponse {
                     |m: &CodeGeneratorResponse| { &m.file },
                     |m: &mut CodeGeneratorResponse| { &mut m.file },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<CodeGeneratorResponse>(
                     "CodeGeneratorResponse",
                     fields,
                     file_descriptor_proto()
@@ -755,8 +755,8 @@ impl ::protobuf::Message for CodeGeneratorResponse_File {
                     |m: &CodeGeneratorResponse_File| { &m.content },
                     |m: &mut CodeGeneratorResponse_File| { &mut m.content },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<CodeGeneratorResponse_File>(
-                    "CodeGeneratorResponse_File",
+                ::protobuf::reflect::MessageDescriptor::new_pb_name::<CodeGeneratorResponse_File>(
+                    "CodeGeneratorResponse.File",
                     fields,
                     file_descriptor_proto()
                 )
