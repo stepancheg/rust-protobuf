@@ -35,9 +35,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.12] - Unreleased
 
-- Generated code for reflection now references messages by Protobuf name, not by Rust name.
+## [2.12.0] - 2020-03-26
 
-## [2.11] - Unreleased
+- Generated code for reflection now references messages by Protobuf name, not by Rust name.
 
 ## [2.11.0] - 2020-03-23
 
